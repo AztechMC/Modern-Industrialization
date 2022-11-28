@@ -23,13 +23,17 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
+import aztech.modern_industrialization.machines.models.MachineCasings;
+import dev.latvian.mods.kubejs.event.EventJS;
 
-public interface MIMachineKubeJSEvents {
-    EventGroup EVENT_GROUP = EventGroup.of("MIMachineEvents");
+public class RegisterCasingsEventJS extends EventJS {
+    public void register(String... names) {
+        for (var name : names) {
+            if (name.contains(":")) {
+                throw new IllegalArgumentException("Casing name cannot contain ':'.");
+            }
 
-    EventHandler REGISTER_RECIPE_TYPES = EVENT_GROUP.startup("registerRecipeTypes", () -> RegisterRecipeTypesEventJS.class);
-    EventHandler REGISTER_CASINGS = EVENT_GROUP.startup("registerCasings", () -> RegisterCasingsEventJS.class);
-    EventHandler REGISTER_MACHINES = EVENT_GROUP.startup("registerMachines", () -> RegisterMachinesEventJS.class);
+            MachineCasings.create(name);
+        }
+    }
 }

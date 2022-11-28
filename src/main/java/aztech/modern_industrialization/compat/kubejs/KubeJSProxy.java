@@ -32,6 +32,9 @@ public class KubeJSProxy {
     public void fireRegisterRecipeTypesEvent() {
     }
 
+    public void fireRegisterMachineCasingsEvent() {
+    }
+
     public void fireRegisterMachinesEvent() {
     }
 }

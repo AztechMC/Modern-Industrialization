@@ -21,15 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.machine;
+package aztech.modern_industrialization.compat.jeirei;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.machines.gui.GuiComponentClient;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
 
-public interface MIMachineKubeJSEvents {
-    EventGroup EVENT_GROUP = EventGroup.of("MIMachineEvents");
-
-    EventHandler REGISTER_RECIPE_TYPES = EVENT_GROUP.startup("registerRecipeTypes", () -> RegisterRecipeTypesEventJS.class);
-    EventHandler REGISTER_CASINGS = EVENT_GROUP.startup("registerCasings", () -> RegisterCasingsEventJS.class);
-    EventHandler REGISTER_MACHINES = EVENT_GROUP.startup("registerMachines", () -> RegisterMachinesEventJS.class);
+public class MachineScreenPredicateTest {
+    public static boolean test(ReiMachineRecipes.MachineScreenPredicate predicate, MachineScreen screen) {
+        return switch (predicate) {
+        case ANY -> true;
+        case MULTIBLOCK -> {
+            for (GuiComponentClient client : screen.getMenu().components) {
+                if (client instanceof CraftingMultiblockGuiClient cmGui) {
+                    if (cmGui.isShapeValid) {
+                        yield true;
+                    }
+                }
+            }
+            yield false;
+        }
+        };
+    }
 }

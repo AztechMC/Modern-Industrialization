@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.jei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.compat.jeirei.MachineScreenPredicateTest;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -190,7 +191,7 @@ public class MachinesPlugin implements IModPlugin {
                     boolean foundSome = false;
                     var result = new ArrayList<mezz.jei.api.recipe.RecipeType<?>>();
                     for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
-                        if (!cac.predicate.test(screen))
+                        if (!MachineScreenPredicateTest.test(cac.predicate, screen))
                             continue;
 
                         var recipeManager = jeiRuntime.getRecipeManager();

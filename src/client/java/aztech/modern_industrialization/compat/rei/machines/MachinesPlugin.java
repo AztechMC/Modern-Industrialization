@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.jeirei.MachineScreenPredicateTest;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
@@ -132,7 +133,7 @@ public class MachinesPlugin implements REIClientPlugin {
                 ClickArea.Result result = ClickArea.Result.success();
                 boolean foundSome = false;
                 for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
-                    if (!cac.predicate.test(context.getScreen()))
+                    if (!MachineScreenPredicateTest.test(cac.predicate, context.getScreen()))
                         continue;
                     List<Display> displays = DisplayRegistry.getInstance().get(CategoryIdentifier.of(cac.category));
                     if (displays.size() > 0) {

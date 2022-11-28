@@ -25,18 +25,24 @@ package aztech.modern_industrialization.compat.kubejs.machine;
 
 import static aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines.*;
 
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
+import aztech.modern_industrialization.machines.init.MachineRegistrationHelper;
+import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
+import aztech.modern_industrialization.machines.models.MachineCasings;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import dev.latvian.mods.kubejs.event.EventJS;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RegisterMachinesEventJS extends EventJS {
+public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHelper {
     public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
         return new ProgressBar.Parameters(renderX, renderY, type);
     }
@@ -79,5 +85,28 @@ public class RegisterMachinesEventJS extends EventJS {
                 itemSlotPositions, fluidSlotPositions,
                 frontOverlay, topOverlay, sideOverlay,
                 tiersMask, bucketCapacity);
+    }
+
+    public void simpleElectricCraftingMultiBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
+            // REI parameters
+            ProgressBar.Parameters progressBar,
+            Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
+            Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+
+        var controllerCasing = MachineCasings.get(controllerCasingName);
+
+        MachineRegistrationHelper.registerMachine(
+                englishName, internalName,
+                bet -> new ElectricCraftingMultiblockBlockEntity(bet, internalName, multiblockShape, recipeType));
+        MachineRegistrationHelper.addMachineModel(internalName, overlayFolder, controllerCasing, frontOverlay, topOverlay, sideOverlay);
+        new MultiblockMachines.Rei(englishName, internalName, recipeType, progressBar)
+                .items(itemInputPositions::accept, itemOutputPositions::accept)
+                .fluids(fluidInputPositions::accept, fluidOutputPositions::accept)
+                .register();
+        ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);
     }
 }

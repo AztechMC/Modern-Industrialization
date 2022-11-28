@@ -1,12 +1,16 @@
-# JSON machine models
-Each machine model in MI consists of a casing, and a set of overlays.
-The casing is the core cube of the machine that can never be rotated, and may be reused for multiple machines or by multiblock hatches.
+# Machine models
+Each machine model in MI consists of two parts:
+- A casing: the core cube of the machine. It that can never be rotated, and may be reused for multiple machines or by multiblock hatches.
+- A set of overlays: extra textures applied on some sides.
 
 ## Casing models
 The top, side and bottom textures of a casing must be `modern_industrialization:textures/casing/<casing name>/{top,side,bottom}.png`.
-For the rest, casings are loaded automatically when requested by a machine model.
+The textures are loaded automatically for all registered casings, hence there is no JSON model for casings.
 
 ## Machine models
+A machine model JSON file defines which overlays are applied on which sides of the machine.
+The JSON file must be located at `modern_industrialization:models/machine/<machine name>.json`.
+
 Example JSON:
 ```json5
 {

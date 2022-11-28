@@ -25,10 +25,7 @@ package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
-import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,11 +117,5 @@ public class CommonProxy {
 
     public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         throw new UnsupportedOperationException("Only supported on the server");
-    }
-
-    public void registerReiTiers(String englishName, String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
-    }
-
-    public void registerReiMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
     }
 }

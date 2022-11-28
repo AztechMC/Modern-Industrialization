@@ -44,7 +44,7 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.init.MultiblockMachinesClient;
+import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineRendering;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
@@ -84,7 +84,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         CreativeBarrelClientSetup.setupClient();
         MachineRendering.init();
         MachineModelLoader.init();
-        MultiblockMachinesClient.clientInit();
+        MultiblockMachines.clientInit();
         MultiblockErrorHighlight.init();
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(MachineOverlayClient::onBlockOutline);
         (new MIPipesClient()).setupClient();

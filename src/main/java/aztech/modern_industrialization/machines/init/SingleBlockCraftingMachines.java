@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -38,7 +39,6 @@ import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -227,12 +227,42 @@ public final class SingleBlockCraftingMachines {
 
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
         SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
-        CommonProxy.INSTANCE.registerReiTiers(englishName, machine, type,
+        registerReiTiers(englishName, machine, type,
                 new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
                         items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
                         null, false, SteamMode.BOTH),
                 tiers);
+    }
+
+    private static void registerReiTiers(String englishName, String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams,
+            int tiers) {
+        List<MachineCategoryParams> previousCategories = new ArrayList<>();
+        int previousMaxEu = 0;
+        for (int i = 0; i < 3; ++i) {
+            if (((tiers >> i) & 1) > 0) {
+                int minEu = previousMaxEu + 1;
+                int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
+                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : tiers == SingleBlockCraftingMachines.TIER_ELECTRIC ? "" : "electric_";
+                String itemId = prefix + machine;
+                String englishPrefix = i == 0 ? "Bronze " : i == 1 ? "Steel " : "Electric ";
+                String fullEnglishName = tiers == SingleBlockCraftingMachines.TIER_ELECTRIC || previousMaxEu == 0 ? englishName
+                        : englishPrefix + englishName;
+                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, itemId, categoryParams.itemInputs,
+                        categoryParams.itemOutputs,
+                        categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
+                        recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
+                        i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
+                ReiMachineRecipes.registerCategory(itemId, category);
+                ReiMachineRecipes.registerMachineClickArea(itemId, categoryParams.progressBarParams.toRectangle());
+                previousCategories.add(category);
+                for (MachineCategoryParams param : previousCategories) {
+                    param.workstations.add(itemId);
+                    ReiMachineRecipes.registerRecipeCategoryForMachine(itemId, param.category);
+                }
+                previousMaxEu = maxEu;
+            }
+        }
     }
 
     public static final int TIER_BRONZE = 1;

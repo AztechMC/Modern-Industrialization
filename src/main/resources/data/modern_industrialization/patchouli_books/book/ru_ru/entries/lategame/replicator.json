@@ -1,0 +1,18 @@
+{
+  "name": "E = mc²",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:uu_matter_bucket",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:uu_matter_bucket",
+      "text": "Со специальной установкой Электролизёра и Сингулярностью, большое количество энергии может быть превращено, задействовав Квантовое Излучение Хокинга, в Универсальную используемую материю, также известную как УИ Материя, ту самую ткань вселенной."
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:replicator",
+      "text": "Со 100 мв УИ Материи расщепитель может скопировать (фактически) любой предмет в игре!$(br2)Поздравляем теперь это Тыремесло. Перевёл DrHesperus. Спасибо за игру в Modern Industrialization."
+    }
+  ],
+  "sortnum": 303
+}

@@ -1,0 +1,18 @@
+{
+  "name": "СИИИНТЕЗ",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:fusion_reactor",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/fusion_reactor_asbl",
+      "text": "Термоядерный реактор — это совершенный источник энергии! Он может объединить Дейтерий, Тритий и/или Гелий-3 в Гелиевую плазму — наиболее мощное топливо в игре! И всё таки он требует большое количество энергии, чтобы начать реакцию."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/plasma_turbine_asbl",
+      "text": "Плазменная турбина может превратить Гелиевую плазму в ЭЕ со скоростью 100 кЭЕ за милливедро. Его максимальная норма выработки — что-то около 1 МЭЕ/такт."
+    }
+  ],
+  "sortnum": 302
+}

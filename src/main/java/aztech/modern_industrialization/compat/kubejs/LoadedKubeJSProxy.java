@@ -21,14 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.event;
+package aztech.modern_industrialization.compat.kubejs;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.script.ScriptType;
+import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEventJS;
+import aztech.modern_industrialization.compat.kubejs.machine.RegisterRecipeTypesEventJS;
+import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
+import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 
-public interface MIMaterialKubeJSEvents {
-    EventGroup EVENT_GROUP = EventGroup.of("MIMaterialEvents");
+public class LoadedKubeJSProxy extends KubeJSProxy {
+    @Override
+    public void fireAddMaterialsEvent() {
+        MIMaterialKubeJSEvents.ADD_MATERIALS.post(new AddMaterialsEventJS());
+    }
 
-    EventHandler ADD_MATERIALS = EVENT_GROUP.add("addMaterials", ScriptType.STARTUP, () -> AddMaterialsEventJS.class);
+    @Override
+    public void fireRegisterRecipeTypesEvent() {
+        MIMachineKubeJSEvents.REGISTER_RECIPE_TYPES.post(new RegisterRecipeTypesEventJS());
+    }
+
+    @Override
+    public void fireRegisterMachinesEvent() {
+        MIMachineKubeJSEvents.REGISTER_MACHINES.post(new RegisterMachinesEventJS());
+    }
 }

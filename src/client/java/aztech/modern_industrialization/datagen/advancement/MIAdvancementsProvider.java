@@ -37,8 +37,11 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class MIAdvancementsProvider extends FabricAdvancementProvider {
-    public MIAdvancementsProvider(FabricDataGenerator dataGenerator) {
+    private final TranslationProvider translations;
+
+    public MIAdvancementsProvider(FabricDataGenerator dataGenerator, TranslationProvider translations) {
         super(dataGenerator);
+        this.translations = translations;
     }
 
     @SuppressWarnings("unused")
@@ -117,11 +120,11 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var quantumChestplate = createBasic(consumer, "quantum_chestplate", quantumUpgrade, FrameType.CHALLENGE, "Quantum Immortality™", "Craft a Quantum Chestplate to reduce the probability of taking any damage by 25% for each piece of the Quantum Armor Set");
     }
 
-    private static Advancement createBasic(Consumer<Advancement> consumer, String item, @Nullable Advancement parent, String titleEnglishName, String englishDescription) {
+    private Advancement createBasic(Consumer<Advancement> consumer, String item, @Nullable Advancement parent, String titleEnglishName, String englishDescription) {
         return createBasic(consumer, item, parent, FrameType.TASK, titleEnglishName, englishDescription);
     }
 
-    private static Advancement createBasic(Consumer<Advancement> consumer, String itemId, @Nullable Advancement parent, FrameType frame,
+    private Advancement createBasic(Consumer<Advancement> consumer, String itemId, @Nullable Advancement parent, FrameType frame,
                                            String titleEnglishName, String englishDescription) {
         var item = Registry.ITEM.get(new MIIdentifier(itemId));
         var titleKey = "advancements.modern_industrialization." + itemId;
@@ -150,8 +153,8 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var advancement = advancementTask.build(new MIIdentifier(itemId));
         consumer.accept(advancement);
 
-        TranslationProvider.addTranslation(titleKey, titleEnglishName);
-        TranslationProvider.addTranslation(descKey, englishDescription);
+        translations.addTranslation(titleKey, titleEnglishName);
+        translations.addTranslation(descKey, englishDescription);
 
         return advancement;
     }

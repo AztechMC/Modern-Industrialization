@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
@@ -93,6 +94,7 @@ public class ModernIndustrialization {
         SingleBlockSpecialMachines.init();
         MultiblockHatches.init();
         MultiblockMachines.init();
+        KubeJSProxy.instance.fireRegisterMachinesEvent();
         NuclearItem.init();
         MIPipes.INSTANCE.setup();
         setupFluids();

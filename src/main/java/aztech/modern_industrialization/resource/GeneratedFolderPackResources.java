@@ -21,14 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.resource;
 
-import aztech.modern_industrialization.compat.kubejs.event.AddMaterialsEventJS;
-import aztech.modern_industrialization.compat.kubejs.event.MIMaterialKubeJSEvents;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PackType;
 
-public class LoadedKubeJSFacade extends KubeJSFacade {
+public class GeneratedFolderPackResources extends FolderPackResources {
+    private final PackType type;
+
+    public GeneratedFolderPackResources(File file, PackType type) {
+        super(file);
+        this.type = type;
+    }
+
     @Override
-    public void fireAddMaterialsEvent() {
-        MIMaterialKubeJSEvents.ADD_MATERIALS.post(new AddMaterialsEventJS());
+    protected InputStream getResource(String resourcePath) throws IOException {
+        if ("pack.mcmeta".equals(resourcePath)) {
+            return new ByteArrayInputStream("""
+                    {
+                        "pack": {
+                            "description": "Generated resources for Modern Industrialization",
+                            "pack_format": %d
+                        }
+                    }
+                    """.formatted(type.getVersion(SharedConstants.getCurrentVersion())).getBytes());
+        } else {
+            return super.getResource(resourcePath);
+        }
     }
 }

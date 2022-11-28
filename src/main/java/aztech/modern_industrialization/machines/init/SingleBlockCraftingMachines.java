@@ -235,8 +235,8 @@ public final class SingleBlockCraftingMachines {
                 tiers);
     }
 
-    private static final int TIER_BRONZE = 1;
-    private static final int TIER_STEEL = 2;
+    public static final int TIER_BRONZE = 1;
+    public static final int TIER_STEEL = 2;
     public static final int TIER_ELECTRIC = 4;
 
     /**

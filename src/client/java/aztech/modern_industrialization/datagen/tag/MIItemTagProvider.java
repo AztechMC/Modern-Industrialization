@@ -32,6 +32,7 @@ import aztech.modern_industrialization.materials.part.MIParts;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -41,8 +42,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    public MIItemTagProvider(FabricDataGenerator dataGenerator) {
+    private final boolean runtimeDatagen;
+
+    public MIItemTagProvider(FabricDataGenerator dataGenerator, boolean runtimeDatagen) {
         super(dataGenerator, null);
+        this.runtimeDatagen = runtimeDatagen;
     }
 
     @Override
@@ -74,8 +78,10 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
 
-        tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
-                .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
+        if (FabricLoader.getInstance().isModLoaded("ae2") && !runtimeDatagen) {
+            tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
+                    .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
+        }
     }
 
     private static TagKey<Item> key(ResourceLocation id) {

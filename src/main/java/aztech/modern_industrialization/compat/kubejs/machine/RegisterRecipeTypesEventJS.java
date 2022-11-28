@@ -21,37 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.compat.kubejs.machine;
 
-import aztech.modern_industrialization.MIStartup;
-import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeJS;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.*;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import dev.latvian.mods.kubejs.event.EventJS;
 
-public class MIKubeJSPlugin extends KubeJSPlugin {
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public void registerEvents() {
-        MIMachineKubeJSEvents.EVENT_GROUP.register();
-        MIMaterialKubeJSEvents.EVENT_GROUP.register();
-    }
-
-    @Override
-    public void initStartup() {
-        KubeJSProxy.instance = new LoadedKubeJSProxy();
-        MIStartup.onKubejsPluginLoaded();
-    }
-
-    @Override
-    public void registerRecipeTypes(RegisterRecipeTypesEvent event) {
-        for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-            event.register(mrt.getId(), MachineRecipeJS::new);
-        }
+public class RegisterRecipeTypesEventJS extends EventJS {
+    public MachineRecipeType register(String type) {
+        return MIMachineRecipeTypes.create(type);
     }
 }

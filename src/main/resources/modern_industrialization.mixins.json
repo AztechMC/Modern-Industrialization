@@ -6,6 +6,8 @@
   "mixins": [
     "ItemStackMixin",
     "LivingEntityMixin",
+    "PackConfigMixin",
+    "ReloadableResourceManagerMixin",
     "WorldChunkMixin"
   ],
   "injectors": {

@@ -274,12 +274,6 @@ sourceSets {
             srcDir "src/generated/resources"
         }
     }
-    datagen {
-        compileClasspath += client.compileClasspath
-        runtimeClasspath += client.runtimeClasspath
-        compileClasspath += client.output
-        runtimeClasspath += client.output
-    }
 }
 
 loom {
@@ -307,7 +301,7 @@ loom {
 
             ideConfigGenerated = true
             runDir "build/datagen"
-            source sourceSets.datagen
+            source sourceSets.client
         }
     }
 }

@@ -23,35 +23,15 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
-import aztech.modern_industrialization.MIStartup;
-import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeJS;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.*;
+public class KubeJSProxy {
+    public static KubeJSProxy instance = new KubeJSProxy();
 
-public class MIKubeJSPlugin extends KubeJSPlugin {
-    @Override
-    public void init() {
+    public void fireAddMaterialsEvent() {
     }
 
-    @Override
-    public void registerEvents() {
-        MIMachineKubeJSEvents.EVENT_GROUP.register();
-        MIMaterialKubeJSEvents.EVENT_GROUP.register();
+    public void fireRegisterRecipeTypesEvent() {
     }
 
-    @Override
-    public void initStartup() {
-        KubeJSProxy.instance = new LoadedKubeJSProxy();
-        MIStartup.onKubejsPluginLoaded();
-    }
-
-    @Override
-    public void registerRecipeTypes(RegisterRecipeTypesEvent event) {
-        for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-            event.register(mrt.getId(), MachineRecipeJS::new);
-        }
+    public void fireRegisterMachinesEvent() {
     }
 }

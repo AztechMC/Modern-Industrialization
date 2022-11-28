@@ -21,11 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.datagen;
 
-public class KubeJSFacade {
-    public static KubeJSFacade instance = new KubeJSFacade();
+import aztech.modern_industrialization.ModernIndustrialization;
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-    public void fireAddMaterialsEvent() {
+public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
+
+    @Override
+    public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
+        ModernIndustrialization.LOGGER.info("Starting Modern Industrialization Datagen");
+        MIDatagen.configure(dataGenerator, false);
+        ModernIndustrialization.LOGGER.info("Modern Industrialization Datagen done");
     }
 }

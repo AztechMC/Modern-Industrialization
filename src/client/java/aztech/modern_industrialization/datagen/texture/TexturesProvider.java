@@ -23,60 +23,86 @@
  */
 package aztech.modern_industrialization.datagen.texture;
 
+// fetch:
+
+// - datagen override (des resource packs, MI jar)
+// - datagen
+// - resource pack utilisateur
+// - jar MI et MC client
+// generate texture:
+// - if override exists: copy from override
+// - else: generate
+
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.textures.MITextures;
 import com.google.common.hash.Hashing;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.resources.AssetIndex;
 import net.minecraft.client.resources.ClientPackSource;
 import net.minecraft.client.resources.DefaultClientPackResources;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 
-public class TexturesProvider implements DataProvider {
-    private final FabricDataGenerator dataGenerator;
-    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    public TexturesProvider(FabricDataGenerator dataGenerator) {
-        this.dataGenerator = dataGenerator;
-    }
+public record TexturesProvider(FabricDataGenerator dataGenerator, boolean runtimeDatagen) implements DataProvider {
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
-        // Delete output folder first, because textures won't be generated if they already exist,
-        // leading to the DataCache clearing the textures when it deletes unused paths from the cache.
-        // Code from https://stackoverflow.com/questions/35988192/java-nio-most-concise-recursive-directory-delete
-        var textureDir = dataGenerator.getOutputFolder().resolve("assets/modern_industrialization/textures");
-        if (Files.exists(textureDir)) {
-            try (Stream<Path> walk = Files.walk(textureDir)) {
-                walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-            }
+    public void run(CachedOutput cache) {
+        PackResources miResources;
+        if (runtimeDatagen) {
+            ModContainer container = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
+            miResources = ModNioResourcePack.create(new ResourceLocation("fabric", container.getMetadata().getId()),
+                    container.getMetadata().getName(), container, null, PackType.CLIENT_RESOURCES, ResourcePackActivationType.ALWAYS_ENABLED);
+        } else {
+            var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources").toFile();
+            miResources = new FolderPackResources(nonGeneratedResources);
         }
 
-        var generatedResources = dataGenerator.getOutputFolder();
-        var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        var manager = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, List.of(
+        var packs = List.of(
                 new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")),
-                new FolderPackResources(nonGeneratedResources.toFile()),
-                new FolderPackResources(generatedResources.toFile())));
+                miResources);
+        try (var fallbackProvider = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, packs)) {
+            generateTextures(cache, fallbackProvider);
+        }
+    }
 
-        MITextures.offerTextures(
-                (image, textureId) -> writeTexture(cache, image, textureId),
-                (json, path) -> customJsonSave(cache, json, path),
-                manager);
+    private void generateTextures(CachedOutput cache, ResourceProvider fallbackResourceProvider) {
+        // This is the order for texture fetching:
+        // - texture overrides (in the datagen output folder)
+        // - generated textures (also in the output folder)
+        // - user-provided resource packs
+        // - MI and MC jar textures
+        var generatedResources = dataGenerator.getOutputFolder().toFile();
+        List<PackResources> generatedPack = List.of(new FolderPackResources(generatedResources));
+
+        try (var outputPack = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, generatedPack)) {
+            MITextures.offerTextures(
+                    (image, textureId) -> writeTexture(cache, image, textureId),
+                    (json, path) -> customJsonSave(cache, json, path),
+                    resourceLocation -> {
+                        // Generated first
+                        var generated = outputPack.getResource(resourceLocation);
+                        if (generated.isPresent()) {
+                            return generated;
+                        }
+                        return fallbackResourceProvider.getResource(resourceLocation);
+                    });
+        }
     }
 
     private void writeTexture(CachedOutput cache, NativeImage image, String textureId) {

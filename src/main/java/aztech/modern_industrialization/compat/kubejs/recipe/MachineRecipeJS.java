@@ -41,15 +41,83 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeJS extends RecipeJS {
-    public final List<ProbabilityValue<Ingredient>> inputs = new ArrayList<>();
-    public final List<ProbabilityValue<ItemStack>> outputs = new ArrayList<>();
+    private final List<ProbabilityValue<Ingredient>> inputs = new ArrayList<>();
+    private final List<ProbabilityValue<ItemStack>> outputs = new ArrayList<>();
 
     @Override
-    public void create(RecipeArguments recipeArguments) {
-        throw new RecipeExceptionJS("MachineRecipe#create should never be called");
+    public void create(RecipeArguments args) {
+        if (args.size() != 2) {
+            throw new RecipeExceptionJS("Machine recipe should have exactly 2 arguments, EU/t and duration, received: " + args.size());
+        }
+
+        json.addProperty("eu", forceGetInt(args, 0));
+        json.addProperty("duration", forceGetInt(args, 1));
+    }
+
+    public MachineRecipeJS itemIn(Ingredient ingredient) {
+        return itemIn(ingredient, 1);
+    }
+
+    public MachineRecipeJS itemIn(Ingredient ingredient, float chance) {
+        inputs.add(new ProbabilityValue<>(ingredient, chance));
+        return this;
+    }
+
+    public MachineRecipeJS itemOut(ItemStack output) {
+        return itemOut(output, 1);
+    }
+
+    public MachineRecipeJS itemOut(ItemStack output, float chance) {
+        outputs.add(new ProbabilityValue<>(output, chance));
+        return this;
+    }
+
+    public MachineRecipeJS fluidIn(Fluid fluid, int amount) {
+        return fluidIn(fluid, amount, 1);
+    }
+
+    public MachineRecipeJS fluidIn(Fluid fluid, double mbs, float chance) {
+        if (!json.has("fluid_inputs")) {
+            json.add("fluid_inputs", new JsonArray());
+        }
+
+        var input = new JsonObject();
+        input.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+        input.addProperty("amount", mbs);
+        input.addProperty("probability", chance);
+
+        json.get("fluid_inputs").getAsJsonArray().add(input);
+        return this;
+    }
+
+    public MachineRecipeJS fluidOut(Fluid fluid, int amount) {
+        return fluidOut(fluid, amount, 1);
+    }
+
+    public MachineRecipeJS fluidOut(Fluid fluid, double mbs, float chance) {
+        if (!json.has("fluid_outputs")) {
+            json.add("fluid_outputs", new JsonArray());
+        }
+
+        var output = new JsonObject();
+        output.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+        output.addProperty("amount", mbs);
+        output.addProperty("probability", chance);
+
+        json.get("fluid_outputs").getAsJsonArray().add(output);
+        return this;
+    }
+
+    private static int forceGetInt(RecipeArguments args, int index) {
+        if (args.get(index) instanceof Number n) {
+            return n.intValue();
+        } else {
+            throw new RecipeExceptionJS("Expected an integer at index " + index + ", got " + args.get(index));
+        }
     }
 
     @Override

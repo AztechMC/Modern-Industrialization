@@ -9,10 +9,9 @@ or for pack developers who want to customize the look of their KubeJS-added mach
 
 ## KubeJS recipe integration
 MI comes with KubeJS integration for its custom recipes.
-The only visible effect, is that KubeJS commands like `replaceInputs` and `replaceOutputs`
-will work correctly on MI custom recipes.
+Please refer to [ADDING_RECIPES.md](ADDING_RECIPES.md) for details on the syntax.
 
-## Advanced KubeJS integration
+## KubeJS content customization
 MI has more advanced KubeJS integration starting from version 1.5.0,
 which allows modpack developers to customize many aspects of MI.
 

@@ -23,11 +23,8 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-abstract class UnbuildablePart<T> extends Part {
+public interface MaterialItemPartProvider {
 
-    public UnbuildablePart(String key) {
-        super(key);
-    }
+    MaterialItemPart create(String materialName);
 
-    public abstract BuildablePart of(T materialParams);
 }

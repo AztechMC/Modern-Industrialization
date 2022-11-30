@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "x": {
-      "tag": "c:lignite_coal"
+      "item": "modern_industrialization:lignite_coal"
     },
     "y": {
       "item": "modern_industrialization:lignite_coal"

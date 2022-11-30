@@ -26,11 +26,7 @@ package aztech.modern_industrialization.textures;
 import static aztech.modern_industrialization.materials.property.MaterialProperty.SET;
 
 import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.NuclearFuelPart;
-import aztech.modern_industrialization.materials.part.RegularPart;
-import aztech.modern_industrialization.materials.part.TextureGenParams;
+import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
@@ -46,15 +42,15 @@ import net.minecraft.resources.ResourceLocation;
  * All the per-part texture processing logic.
  */
 class PartTextureGenerator {
-    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, MaterialPart part) {
-        if (!part.isRegularPart() || !(part.getPart() instanceof RegularPart regularPart)) {
+    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, UnregisteredMaterialItemPart part) {
+        if (!part.isRegularPart()) {
             return;
         }
 
         var gen = new PartTextureGenerator(coloramp, mtm, material, part);
 
         try {
-            gen.build(regularPart);
+            gen.build(part);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +62,7 @@ class PartTextureGenerator {
     private final String materialName;
     private final String itemPath;
 
-    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, MaterialPart part) {
+    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, UnregisteredMaterialItemPart part) {
         this.coloramp = coloramp;
         this.mtm = mtm;
         this.material = material;
@@ -74,7 +70,7 @@ class PartTextureGenerator {
         this.itemPath = new ResourceLocation(part.getItemId()).getPath();
     }
 
-    private void build(RegularPart part) throws IOException {
+    private void build(UnregisteredMaterialItemPart part) throws IOException {
         var params = part.getTextureGenParams();
 
         if (params instanceof TextureGenParams.Block block) {
@@ -96,9 +92,9 @@ class PartTextureGenerator {
         } else if (params instanceof TextureGenParams.RawMetal rawMetal) {
             processRawMetal(rawMetal.isBlock(), rawMetal.rawSet());
         } else if (params instanceof TextureGenParams.SimpleRecoloredBlock) {
-            MITextures.generateItemPartTexture(mtm, part.key, material.get(SET).name, itemPath, true, coloramp);
+            MITextures.generateItemPartTexture(mtm, part.key().key, material.get(SET).name, itemPath, true, coloramp);
         } else if (params instanceof TextureGenParams.SimpleRecoloredItem item) {
-            String partTemplate = Objects.requireNonNullElse(item.basePart(), part).key;
+            String partTemplate = Objects.requireNonNullElse(item.basePart(), part).key().key;
             MITextures.generateItemPartTexture(mtm, partTemplate, item.overlay(), material.get(SET).name, itemPath, false, coloramp);
         } else if (!(params instanceof TextureGenParams.NoTexture)) {
             throw new IllegalArgumentException("Unknown texture gen params class " + params.getClass().getSimpleName());
@@ -114,8 +110,8 @@ class PartTextureGenerator {
         }
     }
 
-    private void processCasing(RegularPart part, boolean isBasicMaterialCasing) throws IOException {
-        try (NativeImage image = MITextures.generateTexture(mtm, part.key, material.get(SET).name, coloramp)) {
+    private void processCasing(PartKeyProvider part, boolean isBasicMaterialCasing) throws IOException {
+        try (NativeImage image = MITextures.generateTexture(mtm, part.key().key, material.get(SET).name, coloramp)) {
 
             if (isBasicMaterialCasing) {
                 MITextures.casingFromTexture(mtm, materialName, image);
@@ -126,11 +122,11 @@ class PartTextureGenerator {
         }
     }
 
-    private void processColumn(RegularPart part) {
+    private void processColumn(PartKeyProvider part) {
         for (String suffix : new String[] { "side", "top" }) {
             MITextures.generateItemPartTexture(
                     mtm,
-                    part.key + "_" + suffix,
+                    part.key().key + "_" + suffix,
                     material.get(SET).name,
                     itemPath + "_" + suffix,
                     true,
@@ -144,12 +140,12 @@ class PartTextureGenerator {
                 new ColorampDepleted(coloramp));
     }
 
-    private void processDoubleIngot(RegularPart part) {
+    private void processDoubleIngot(PartKeyProvider part) {
         mtm.runAtEnd(() -> {
             try {
                 MITextures.generateDoubleIngot(mtm, materialName);
             } catch (Throwable throwable) {
-                MITextures.logTextureGenerationError(throwable, materialName, material.get(SET).name, part.key);
+                MITextures.logTextureGenerationError(throwable, materialName, material.get(SET).name, part.key().key);
             }
         });
     }
@@ -164,7 +160,7 @@ class PartTextureGenerator {
     }
 
     private void processHotIngot() {
-        MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
+        MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key().key,
                 material.get(SET).name, itemPath, false, new HotIngotColoramp(coloramp, 0.1, 0.5));
     }
 

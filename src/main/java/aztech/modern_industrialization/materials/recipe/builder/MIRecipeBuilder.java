@@ -27,8 +27,8 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.gson.Gson;
 import java.util.function.Consumer;
@@ -60,21 +60,21 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         this(context, type, recipeSuffix, 2, (int) (200 * context.get(HARDNESS).timeFactor));
     }
 
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, Part recipeSuffix) {
-        this(context, type, recipeSuffix.key);
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, PartKeyProvider recipeSuffix) {
+        this(context, type, recipeSuffix.key().key);
     }
 
-    public MIRecipeBuilder addPartInput(Part part, int amount) {
+    public MIRecipeBuilder addPartInput(PartKeyProvider part, int amount) {
         return addPartInput(context.getPart(part), amount);
     }
 
-    public MIRecipeBuilder addTaggedPartInput(Part part, int amount) {
+    public MIRecipeBuilder addTaggedPartInput(PartKeyProvider part, int amount) {
         return addTaggedPartInput(context.getPart(part), amount);
     }
 
     // TODO: remove these two if the part is always a string passed through
     // addPartInput
-    public MIRecipeBuilder addPartInput(MaterialPart part, int amount) {
+    public MIRecipeBuilder addPartInput(MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -83,7 +83,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return this;
     }
 
-    public MIRecipeBuilder addTaggedPartInput(MaterialPart part, int amount) {
+    public MIRecipeBuilder addTaggedPartInput(MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -92,11 +92,11 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return this;
     }
 
-    public MIRecipeBuilder addPartOutput(Part part, int amount) {
+    public MIRecipeBuilder addPartOutput(PartKeyProvider part, int amount) {
         return addPartOutput(context.getPart(part), amount);
     }
 
-    public MIRecipeBuilder addPartOutput(MaterialPart part, int amount) {
+    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -105,11 +105,11 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return this;
     }
 
-    public MIRecipeBuilder addPartOutput(Part part, int amount, double probability) {
+    public MIRecipeBuilder addPartOutput(PartKeyProvider part, int amount, double probability) {
         return addPartOutput(context.getPart(part), amount, probability);
     }
 
-    public MIRecipeBuilder addPartOutput(MaterialPart part, int amount, double probability) {
+    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount, double probability) {
         if (part == null) {
             canceled = true;
         } else {

@@ -23,24 +23,27 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+public sealed interface PartEnglishNameFormatter {
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.pipes.MIPipes;
+    String format(String materialEnglishName);
 
-public class CablePart implements ParametrizedMaterialItemPartProvider<CableTier> {
+    record Default(String name) implements PartEnglishNameFormatter {
 
-    @Override
-    public PartTemplate of(CableTier tier) {
-        return new PartTemplate("Cable", key()).withoutTextureRegister()
-                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> MIPipes.INSTANCE
-                        .registerCableType(
-                                englishName,
-                                partContext.getMaterialName(), partContext.get(COLORAMP).getMeanRGB() | 0xff000000, tier));
+        @Override
+        public String format(String materialEnglishName) {
+            if (!name.contains("%s")) {
+                return materialEnglishName + " " + name;
+            } else {
+                return String.format(name, materialEnglishName);
+            }
+        }
     }
 
-    @Override
-    public PartKey key() {
-        return new PartKey("cable");
+    record Overridden(String name) implements PartEnglishNameFormatter {
+
+        @Override
+        public String format(String materialEnglishName) {
+            return name;
+        }
     }
 }

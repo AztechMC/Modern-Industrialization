@@ -59,45 +59,51 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
+public class OrePart implements ParametrizedMaterialItemPartProvider<OrePart.OrePartParams> {
 
     public final boolean deepslate;
+    public final PartKey key;
+
+    @Override
+    public PartKey key() {
+        return key;
+    }
 
     public final static Set<String> GENERATED_MATERIALS = new HashSet<>();
 
-    public BuildablePart of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public PartTemplate of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return of(new OrePartParams(UniformInt.of(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
     }
 
-    public BuildablePart of(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public PartTemplate of(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return of(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
     }
 
-    public BuildablePart of(UniformInt xpProvider, MaterialOreSet set) {
+    public PartTemplate of(UniformInt xpProvider, MaterialOreSet set) {
         return of(new OrePartParams(xpProvider, set));
     }
 
-    public BuildablePart of(MaterialOreSet set) {
+    public PartTemplate of(MaterialOreSet set) {
         return of(new OrePartParams(UniformInt.of(0, 0), set));
     }
 
     public OrePart(boolean deepslate) {
-        super(deepslate ? "ore_deepslate" : "ore");
+        key = new PartKey(deepslate ? "ore_deepslate" : "ore");
         this.deepslate = deepslate;
     }
 
     @Override
-    public BuildablePart of(OrePartParams oreParams) {
-        return new RegularPart("", key)
-                .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
+    public PartTemplate of(OrePartParams oreParams) {
+        return new PartTemplate(deepslate ? "Deepslate %s Ore" : "Ore", key)
+                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
-                    Part mainPart = partContext.get(MAIN_PART);
+                    PartKey mainPartKey = partContext.get(MAIN_PART).key();
                     String loot;
-                    if (mainPart.equals(MIParts.INGOT)) {
+                    if (mainPartKey.equals(MIParts.INGOT.key())) {
                         loot = partContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
-                    } else if (mainPart.equals(MIParts.DUST)) {
+                    } else if (mainPartKey.equals(MIParts.DUST.key())) {
                         loot = partContext.getMaterialPart(MIParts.DUST).getItemId();
-                    } else if (mainPart.equals(MIParts.GEM)) {
+                    } else if (mainPartKey.equals(MIParts.GEM.key())) {
                         loot = partContext.getMaterialPart(MIParts.GEM).getItemId();
                     } else {
                         throw new UnsupportedOperationException("Could not find matching main part.");
@@ -105,7 +111,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
                     BlockDefinition<OreBlock> oreBlockBlockDefinition;
                     oreBlockBlockDefinition = MIBlock.block(
-                            RegularPart.getEnglishName(deepslate ? "Deepslate %s Ore" : "Ore", partContext.getEnglishName()),
+                            englishName,
                             itemPath,
                             MIBlock.BlockDefinitionParams.of(STONE_MATERIAL)
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
@@ -119,7 +125,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
                     // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
                     // (i.e. the drop is raw ore).
-                    if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMaxValue() == 0)) {
+                    if (mainPartKey.equals(MIParts.INGOT.key()) != (oreParams.xpDropped.getMaxValue() == 0)) {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
@@ -163,18 +169,18 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
                 })
                 .withTexture(new TextureGenParams.Ore(deepslate, oreParams.set))
-                .withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
+                .withCustomPath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
     }
 
-    public List<BuildablePart> ofAll(OrePartParams params) {
+    public List<PartTemplate> ofAll(OrePartParams params) {
         return List.of(MIParts.ORE_DEEPSLATE.of(params), MIParts.ORE.of(params));
     }
 
-    public List<BuildablePart> ofAll(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public List<PartTemplate> ofAll(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return ofAll(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
     }
 
-    public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public List<PartTemplate> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return ofAll(new OrePartParams(UniformInt.of(0, 0), set, veinsPerChunk, veinSize, maxYLevel));
     }
 

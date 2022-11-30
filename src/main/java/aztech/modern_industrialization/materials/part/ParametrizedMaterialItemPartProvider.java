@@ -21,29 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials;
+package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
-import aztech.modern_industrialization.materials.part.*;
+public interface ParametrizedMaterialItemPartProvider<T> extends PartKeyProvider {
 
-public class GemPart extends Part implements BuildablePart {
-
-    public GemPart() {
-        super("gem");
-    }
-
-    @Override
-    public Part getPart() {
-        return MIParts.GEM;
-    }
-
-    @Override
-    public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return new RegularPart("", "gem").withRegister((partContext, part, itemPath, itemId, itemTag) -> {
-            var item = RegularPart.createSimpleItem(partContext.getEnglishName(), itemPath, partContext, part);
-            TagsToGenerate.generateTag("c:" + itemPath, item.asItem());
-        })
-                .withTexture(new TextureGenParams.Gem())
-                .withCustomFormattablePath("%s", "%s").build(ctx);
-    }
+    public MaterialItemPartProvider of(T parameter);
 }

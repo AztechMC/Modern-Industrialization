@@ -25,12 +25,12 @@ package aztech.modern_industrialization.materials.part;
 
 public record ExternalPart() {
 
-    public static MaterialPart of(Part part, String taggedItemId, String itemId) {
-        return new MaterialPart() {
+    public static MaterialItemPart of(PartKeyProvider part, String taggedItemId, String itemId) {
+        return new MaterialItemPart() {
 
             @Override
-            public Part getPart() {
-                return part;
+            public PartKey key() {
+                return part.key();
             }
 
             @Override
@@ -45,12 +45,12 @@ public record ExternalPart() {
         };
     }
 
-    public static MaterialPart of(Part part, String itemId) {
-        return new MaterialPart() {
+    public static MaterialItemPart of(PartKeyProvider part, String itemId) {
+        return new MaterialItemPart() {
 
             @Override
-            public Part getPart() {
-                return part;
+            public PartKey key() {
+                return part.key();
             }
 
             @Override

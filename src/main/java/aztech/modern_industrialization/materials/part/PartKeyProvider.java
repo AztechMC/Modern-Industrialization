@@ -23,40 +23,16 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/*
-Key to be type safe in the material builder
+public interface PartKeyProvider {
 
- */
-public class Part implements Comparable<Part> {
+    PartKey key();
 
-    public final String key;
-
-    public Part(String key) {
-        this.key = key;
+    public static List<PartKey> of(PartKeyProvider... providers) {
+        return Arrays.stream(providers).map(PartKeyProvider::key).collect(Collectors.toList());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof Part part) {
-            return part.key.equals(key);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return key;
-    }
-
-    @Override
-    public int compareTo(@NotNull Part o) {
-        return key.compareTo(o.key);
-    }
 }

@@ -23,30 +23,45 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.materials.MaterialBuilder;
+import org.jetbrains.annotations.NotNull;
 
-public interface BuildablePart extends MaterialPartBuilder {
+/*
+Key to be type safe in the material builder
 
-    Part getPart();
+ */
+public final class PartKey implements Comparable<PartKey>, PartKeyProvider {
 
-    static BuildablePart of(Part part, MaterialPartBuilder builder) {
-        return new BuildablePart() {
-            @Override
-            public Part getPart() {
-                return part;
-            }
+    public final String key;
 
-            @Override
-            public MaterialPart build(MaterialBuilder.PartContext ctx) {
-                return builder.build(ctx);
-            }
-        };
+    public PartKey(String key) {
+        this.key = key;
     }
 
-}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof PartKey partKey) {
+            return partKey.key.equals(key);
+        }
+        return false;
+    }
 
-@FunctionalInterface
-interface MaterialPartBuilder {
+    @Override
+    public int hashCode() {
+        return key.hashCode();
+    }
 
-    MaterialPart build(MaterialBuilder.PartContext ctx);
+    @Override
+    public String toString() {
+        return key;
+    }
+
+    @Override
+    public int compareTo(@NotNull PartKey o) {
+        return key.compareTo(o.key);
+    }
+
+    @Override
+    public PartKey key() {
+        return this;
+    }
 }

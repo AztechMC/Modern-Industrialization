@@ -48,43 +48,43 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class TankPart extends UnbuildablePart<Long> {
+public class TankPart implements ParametrizedMaterialItemPartProvider<Long> {
+
     public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
         var textureSlot = TextureSlot.create("0");
         var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + Registry.BLOCK.getKey(block).getPath()));
         gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
     };
 
-    public TankPart() {
-        super("tank");
+    @Override
+    public PartKey key() {
+        return new PartKey("tank");
     }
 
-    public RegularPart of(int bucketCapacity) {
+    public PartTemplate of(int bucketCapacity) {
         return of("Tank", (long) bucketCapacity);
     }
 
-    public RegularPart of(String englishNameFormatter, int bucketCapacity) {
+    public PartTemplate of(String englishNameFormatter, int bucketCapacity) {
         return of(englishNameFormatter, (long) bucketCapacity);
     }
 
     @Override
-    public RegularPart of(Long bucketCapacity) {
+    public PartTemplate of(Long bucketCapacity) {
         return of("Tank", bucketCapacity);
     }
 
-    public RegularPart of(String englishNameFormatter, Long bucketCapacity) {
+    public PartTemplate of(String englishNameFormatter, Long bucketCapacity) {
         MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
-        return new RegularPart(englishNameFormatter, key)
+        return new PartTemplate(englishNameFormatter, key())
                 .asBlock(SortOrder.TANKS, new TextureGenParams.SimpleRecoloredBlock())
-                .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
+                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
                     StorageBehaviour<FluidVariant> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);
 
                     EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, tankStorageBehaviour);
-
-                    String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
                     BlockDefinition<TankBlock> blockDefinition = MIBlock.block(
                             englishName,
@@ -113,4 +113,5 @@ public class TankPart extends UnbuildablePart<Long> {
                     CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue());
                 });
     }
+
 }

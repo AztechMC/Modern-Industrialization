@@ -23,22 +23,18 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
-/**
- * Stores a single combination material/part Register it and generate the
- * associated texture
- **/
-public interface MaterialPart extends ItemLike {
+public interface MaterialItemPart extends PartKeyProvider, ItemLike {
+
     /**
      * @return The name of this part, for example "ingot" or "dust".
      */
-    Part getPart();
+    PartKey key();
 
     /**
      * @return The common tag of this material prefixed by # if available, or the id
@@ -53,10 +49,6 @@ public interface MaterialPart extends ItemLike {
 
     default Item asItem() {
         return Registry.ITEM.getOrThrow(ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(getItemId())));
-    }
-
-    default void register(MaterialBuilder.PartContext context) {
-
     }
 
     default boolean isRegularPart() {

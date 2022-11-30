@@ -31,7 +31,7 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
 import java.util.List;
 
-public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuelParams> {
+public class NuclearFuelPart implements ParametrizedMaterialItemPartProvider<NuclearConstant.IsotopeFuelParams> {
 
     public enum Type {
         DEPLETED(0, "fuel_rod_depleted"),
@@ -49,14 +49,20 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
     }
 
     public final Type type;
+    public final PartKey key;
 
     public NuclearFuelPart(Type type) {
-        super(type.key);
+        this.key = new PartKey(type.key);
         this.type = type;
     }
 
     @Override
-    public RegularPart of(NuclearConstant.IsotopeFuelParams params) {
+    public PartKey key() {
+        return key;
+    }
+
+    @Override
+    public PartTemplate of(NuclearConstant.IsotopeFuelParams params) {
 
         NuclearFuelParams fuelParams = new NuclearFuelParams(NuclearConstant.DESINTEGRATION_BY_ROD * type.size, params.maxTemp, params.tempLimitLow,
                 params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
@@ -70,12 +76,12 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
         case DEPLETED -> "Depleted %s Fuel Rod";
         };
 
-        var out = new RegularPart(englishNameFormatter,
-                key).withRegister((partContext, part, itemPath, itemId, itemTag) -> {
+        var out = new PartTemplate(englishNameFormatter,
+                key).withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
                     if (Type.DEPLETED == type) {
-                        MIItem.item(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, SortOrder.ITEMS_OTHER);
+                        MIItem.item(englishName, itemPath, SortOrder.ITEMS_OTHER);
                     } else {
-                        NuclearFuel.of(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, fuelParams,
+                        NuclearFuel.of(englishName, itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
                     }
                 });
@@ -85,7 +91,7 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
         return out;
     }
 
-    public List<BuildablePart> ofAll(NuclearConstant.IsotopeFuelParams params) {
+    public List<PartTemplate> ofAll(NuclearConstant.IsotopeFuelParams params) {
         return List.of(MIParts.FUEL_ROD.of(params), MIParts.FUEL_ROD_DOUBLE.of(params), MIParts.FUEL_ROD_QUAD.of(params),
                 MIParts.FUEL_ROD_DEPLETED.of(params));
     }

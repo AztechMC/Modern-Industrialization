@@ -30,31 +30,29 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import java.util.List;
 
-public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
-
-    public final boolean isBlock;
-
-    public RawMetalPart(boolean isBlock) {
-        super(isBlock ? "raw_metal_block" : "raw_metal");
-        this.isBlock = isBlock;
-    }
+public record RawMetalPart(boolean isBlock) implements ParametrizedMaterialItemPartProvider<MaterialRawSet> {
 
     @Override
-    public BuildablePart of(MaterialRawSet set) {
-        RegularPart part = new RegularPart(isBlock ? "Block of Raw %s" : "Raw %s", key);
+    public MaterialItemPartProvider of(MaterialRawSet set) {
+        PartTemplate part = new PartTemplate(isBlock ? "Block of Raw %s" : "Raw %s", key());
 
         if (isBlock) {
             return part
                     .asBlock(SortOrder.RAW_ORE_BLOCKS, new TextureGenParams.RawMetal(true, set), 5, 6, 1)
-                    .withCustomFormattablePath("raw_%s_block", "raw_%s_blocks");
+                    .withCustomPath("raw_%s_block", "raw_%s_blocks");
         } else {
             return part
                     .withTexture(new TextureGenParams.RawMetal(false, set))
-                    .withCustomFormattablePath("raw_%s", "raw_%s_ores");
+                    .withCustomPath("raw_%s", "raw_%s_ores");
         }
     }
 
-    public List<BuildablePart> ofAll(MaterialRawSet set) {
+    public List<MaterialItemPartProvider> ofAll(MaterialRawSet set) {
         return List.of(RAW_METAL.of(set), RAW_METAL_BLOCK.of(set));
+    }
+
+    @Override
+    public PartKey key() {
+        return new PartKey("raw_metal" + (isBlock ? "_block" : ""));
     }
 }

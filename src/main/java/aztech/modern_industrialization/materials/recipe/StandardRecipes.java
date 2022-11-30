@@ -31,7 +31,7 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
@@ -177,7 +177,7 @@ public final class StandardRecipes {
     /**
      * Add a recycling recipe in the macerator.
      */
-    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, Part partInput, int tinyDustOutput) {
+    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, PartKeyProvider partInput, int tinyDustOutput) {
         MIRecipeBuilder builder = new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, partInput);
         builder.addTaggedPartInput(partInput, 1);
         if (tinyDustOutput % 9 == 0) {
@@ -190,10 +190,11 @@ public final class StandardRecipes {
     /**
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
-    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, Part smallPart, Part bigPart, boolean packer) {
-        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addPart('y', smallPart).addTaggedPart('x',
-                smallPart);
-        new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addPart('x', bigPart);
+    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, PartKeyProvider smallPart, PartKeyProvider bigPart, boolean packer) {
+        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "yxx", "xxx", "xxx").addPart('y', smallPart)
+                .addTaggedPart('x',
+                        smallPart);
+        new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart.key() + "_from_" + bigPart.key(), "x").addPart('x', bigPart);
         if (packer) {
             new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
         }
@@ -201,7 +202,8 @@ public final class StandardRecipes {
 
     }
 
-    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, Part inputPart, Part outputPart, int amount) {
+    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, PartKeyProvider inputPart, PartKeyProvider outputPart,
+            int amount) {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.CUTTING_MACHINE, name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
                 .addFluidInput("modern_industrialization:lubricant", 1);
     }

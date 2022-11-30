@@ -28,7 +28,7 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 
 /**
@@ -80,16 +80,16 @@ public class ForgeHammerRecipes {
         addRecipe(ctx, CRUSHED_DUST, 3, DUST, 4, 30);
     }
 
-    private static void addRecipe(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,
+    private static void addRecipe(MaterialBuilder.RecipeContext ctx, PartKeyProvider inputPart, int inputCount, PartKeyProvider outputPart,
             int outputCount, int cost) {
 
-        String recipeName = inputPart.key + "_to_" + outputPart.key + ((cost == 0) ? "" : "_with_tool");
+        String recipeName = inputPart.key() + "_to_" + outputPart.key() + ((cost == 0) ? "" : "_with_tool");
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.FORGE_HAMMER, recipeName, (int) ((cost) * ctx.get(HARDNESS).timeFactor),
                 0).addTaggedPartInput(inputPart, inputCount).addPartOutput(outputPart, outputCount);
     }
 
-    private static void addRecipe(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,
+    private static void addRecipe(MaterialBuilder.RecipeContext ctx, PartKeyProvider inputPart, int inputCount, PartKeyProvider outputPart,
             int outputCount) {
         addRecipe(ctx, inputPart, inputCount, outputPart, outputCount, 0);
     }

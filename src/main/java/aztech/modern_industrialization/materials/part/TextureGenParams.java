@@ -62,7 +62,7 @@ public sealed interface TextureGenParams {
     record SimpleRecoloredBlock() implements TextureGenParams {
     }
 
-    record SimpleRecoloredItem(@Nullable Part basePart, @Nullable String overlay) implements TextureGenParams {
+    record SimpleRecoloredItem(@Nullable PartKey basePart, @Nullable String overlay) implements TextureGenParams {
         public SimpleRecoloredItem() {
             this(null, null);
         }

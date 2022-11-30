@@ -29,14 +29,14 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 
 public class MIItemPart {
 
-    public static MaterialPart of(Part part, String englishName, String itemPath) {
+    public static UnregisteredMaterialItemPart of(PartKeyProvider part, String englishName, String itemPath) {
 
         String itemId = "modern_industrialization:" + itemPath;
 
-        return new MaterialPart() {
+        return new UnregisteredMaterialItemPart() {
             @Override
-            public Part getPart() {
-                return part;
+            public PartKey key() {
+                return part.key();
             }
 
             @Override
@@ -52,6 +52,10 @@ public class MIItemPart {
             @Override
             public void register(MaterialBuilder.PartContext context) {
                 MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(context.getMaterialName()));
+            }
+
+            public TextureGenParams getTextureGenParams() {
+                return new TextureGenParams.NoTexture();
             }
         };
     }

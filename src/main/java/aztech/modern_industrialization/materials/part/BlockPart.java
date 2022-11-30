@@ -26,14 +26,15 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 
-public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
+public class BlockPart implements ParametrizedMaterialItemPartProvider<MaterialBlockSet> {
 
-    public BlockPart() {
-        super("block");
+    @Override
+    public PartTemplate of(MaterialBlockSet set) {
+        return new PartTemplate("Block of %s", key()).asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
     }
 
     @Override
-    public BuildablePart of(MaterialBlockSet set) {
-        return new RegularPart("Block of %s", this.key).asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
+    public PartKey key() {
+        return new PartKey("block");
     }
 }

@@ -23,9 +23,7 @@
  */
 package aztech.modern_industrialization.materials;
 
-import aztech.modern_industrialization.materials.part.BuildablePart;
-import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import java.util.*;
@@ -34,9 +32,9 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 public final class MaterialBuilder {
 
-    private final Map<String, MaterialPart> partsMap = new TreeMap<>();
+    private final Map<PartKey, MaterialItemPart> partsMap = new TreeMap<>();
     private final Map<MaterialProperty<?>, Object> properties = new IdentityHashMap<>();
-    private final PartContext partContext = new PartContext();
+
     private final String englishName;
     private final String materialName;
 
@@ -60,47 +58,53 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public MaterialBuilder addParts(BuildablePart... parts) {
-        for (BuildablePart part : parts) {
-            addPart(part.build(partContext));
+    public MaterialBuilder addParts(MaterialItemPartProvider... providers) {
+        for (var provider : providers) {
+            addPart(provider.create(materialName));
         }
         return this;
     }
 
-    public MaterialBuilder addParts(List<BuildablePart> parts) {
-        for (BuildablePart part : parts) {
-            addPart(part.build(partContext));
-        }
-        return this;
-    }
-
-    public MaterialBuilder addParts(MaterialPart... parts) {
-        for (MaterialPart part : parts) {
+    public MaterialBuilder addParts(MaterialItemPart... parts) {
+        for (MaterialItemPart part : parts) {
             addPart(part);
         }
         return this;
     }
 
-    public MaterialBuilder removeParts(Part... parts) {
-        for (Part part : parts) {
-            removePart(part);
+    public MaterialBuilder addParts(List<?> parts) {
+        for (var part : parts) {
+            if (part instanceof MaterialItemPart itemPart) {
+                addParts(itemPart);
+            } else if (part instanceof MaterialItemPartProvider provider) {
+                addParts(provider.create(materialName));
+            } else {
+                throw new IllegalArgumentException("Invalid part type: " + part.getClass());
+            }
         }
         return this;
     }
 
-    private void addPart(MaterialPart part) {
-        if (partsMap.put(part.getPart().key, part) != null) {
-            throw new IllegalStateException("Part " + part.getItemId() + " is already registered for this material!");
+    public MaterialBuilder removeParts(PartKeyProvider... parts) {
+        for (PartKeyProvider part : parts) {
+            removePart(part.key());
+        }
+        return this;
+    }
+
+    private void addPart(MaterialItemPart part) {
+        if (partsMap.put(part.key(), part) != null) {
+            throw new IllegalStateException("Part " + part.key() + " is already registered for this material! (" + materialName + ")");
         }
     }
 
-    private void removePart(Part part) {
-        partsMap.remove(part.key);
+    private void removePart(PartKey part) {
+        partsMap.remove(part);
     }
 
-    public MaterialBuilder overridePart(MaterialPart part) {
-        if (partsMap.put(part.getPart().key, part) == null) {
-            throw new IllegalStateException("Part " + part.getItemId() + " was not already registered for this material!");
+    public MaterialBuilder overridePart(MaterialItemPart part) {
+        if (partsMap.put(part.key(), part) == null) {
+            throw new IllegalStateException("Part " + part.key() + " was not already registered for this material! (" + materialName + ")");
         }
         return this;
     }
@@ -132,8 +136,11 @@ public final class MaterialBuilder {
 
     public final Material build(RegisteringEvent... events) {
         var context = new PartContext();
-        for (MaterialPart part : partsMap.values()) {
-            part.register(context);
+
+        for (MaterialItemPart part : partsMap.values()) {
+            if (part instanceof UnregisteredMaterialItemPart unregistered) {
+                unregistered.register(context);
+            }
         }
 
         for (RegisteringEvent event : events) {
@@ -161,12 +168,12 @@ public final class MaterialBuilder {
             return materialName;
         }
 
-        public String getEnglishName() {
+        public String getMaterialEnglishName() {
             return englishName;
         }
 
-        public MaterialPart getMaterialPart(Part part) {
-            return partsMap.get(part.key);
+        public MaterialItemPart getMaterialPart(PartKeyProvider part) {
+            return partsMap.get(part.key());
         }
 
         public <T> T get(MaterialProperty<T> prop) {
@@ -199,8 +206,8 @@ public final class MaterialBuilder {
             }
         }
 
-        public MaterialPart getPart(Part part) {
-            return partsMap.get(part.key);
+        public MaterialItemPart getPart(PartKeyProvider part) {
+            return partsMap.get(part.key());
         }
 
         public String getMaterialName() {

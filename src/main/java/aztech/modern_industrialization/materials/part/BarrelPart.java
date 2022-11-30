@@ -44,36 +44,35 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class BarrelPart extends UnbuildablePart<Long> {
+public class BarrelPart implements ParametrizedMaterialItemPartProvider<Long>, PartKeyProvider {
 
-    public BarrelPart() {
-        super("barrel");
+    @Override
+    public PartKey key() {
+        return new PartKey("barrel");
     }
 
-    public RegularPart of(int stackCapacity) {
+    public PartTemplate of(int stackCapacity) {
         return of((long) stackCapacity);
     }
 
-    public RegularPart of(String englishName, int stackCapacity) {
+    public PartTemplate of(String englishName, int stackCapacity) {
         return of(englishName, (long) stackCapacity);
     }
 
     @Override
-    public RegularPart of(Long stackCapacity) {
+    public PartTemplate of(Long stackCapacity) {
         return of("Barrel", stackCapacity);
     }
 
-    public RegularPart of(String englishNameFormatter, Long stackCapacity) {
+    public PartTemplate of(String englishNameFormatter, Long stackCapacity) {
         MutableObject<BlockEntityType<BarrelBlockEntity>> bet = new MutableObject<>();
 
-        return new RegularPart(englishNameFormatter, key).asColumnBlock(SortOrder.BARRELS)
-                .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
+        return new PartTemplate(englishNameFormatter, key()).asColumnBlock(SortOrder.BARRELS)
+                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
                     StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
 
                     EntityBlock factory = (pos, state) -> new BarrelBlockEntity(bet.getValue(), pos, state, barrelStorageBehaviour);
-
-                    String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
                     BlockDefinition<BarrelBlock> blockDefinition = MIBlock.block(
                             englishName,

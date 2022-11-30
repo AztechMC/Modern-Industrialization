@@ -23,24 +23,15 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.pipes.MIPipes;
+/**
+ * Stores a single combination material/part Register it and generate the
+ * associated texture
+ **/
+public interface UnregisteredMaterialItemPart extends MaterialItemPart {
 
-public class CablePart implements ParametrizedMaterialItemPartProvider<CableTier> {
+    void register(MaterialBuilder.PartContext context);
 
-    @Override
-    public PartTemplate of(CableTier tier) {
-        return new PartTemplate("Cable", key()).withoutTextureRegister()
-                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> MIPipes.INSTANCE
-                        .registerCableType(
-                                englishName,
-                                partContext.getMaterialName(), partContext.get(COLORAMP).getMeanRGB() | 0xff000000, tier));
-    }
-
-    @Override
-    public PartKey key() {
-        return new PartKey("cable");
-    }
+    TextureGenParams getTextureGenParams();
 }

@@ -24,24 +24,24 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.materials.MaterialBuilder;
 
-public class CasingPart extends Part implements BuildablePart {
+public class CasingPart implements PartKeyProvider, MaterialItemPartProvider {
 
     public final String englishName;
+    public final PartKey key;
 
     public CasingPart(String englishName, String key) {
-        super(key);
         this.englishName = englishName;
+        this.key = new PartKey(key);
     }
 
     @Override
-    public Part getPart() {
-        return this;
+    public PartKey key() {
+        return key;
     }
 
-    public BuildablePart of(String englishNameFormatter, String path, float resistance) {
-        RegularPart regPart = new RegularPart(englishNameFormatter, this.key)
+    public PartTemplate of(PartEnglishNameFormatter formatter, String path, float resistance) {
+        PartTemplate regPart = new PartTemplate(formatter, this.key)
                 .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(this.equals(MIParts.MACHINE_CASING)), 5, resistance, 1);
         if (path != null) {
             return regPart.withCustomPath(path, path);
@@ -49,17 +49,20 @@ public class CasingPart extends Part implements BuildablePart {
         return regPart;
     }
 
+    public PartTemplate of(String englishName, String path, float resistance) {
+        return of(new PartEnglishNameFormatter.Overridden(englishName), path, resistance);
+    }
+
+    public PartTemplate of(String englishName, String path) {
+        return of(new PartEnglishNameFormatter.Overridden(englishName), path, 6f);
+    }
+
+    public PartTemplate of(float resistance) {
+        return of(new PartEnglishNameFormatter.Default(englishName), null, resistance);
+    }
+
     @Override
-    public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return of(englishName, null, 6f).build(ctx);
+    public MaterialItemPart create(String materialName) {
+        return of(6f).create(materialName);
     }
-
-    public BuildablePart of(String englishName, String path) {
-        return of(englishName + "!", path, 6f);
-    }
-
-    public BuildablePart of(float resistance) {
-        return of(englishName, null, resistance);
-    }
-
 }

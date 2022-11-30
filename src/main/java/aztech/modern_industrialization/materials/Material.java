@@ -23,8 +23,9 @@
  */
 package aztech.modern_industrialization.materials;
 
-import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.part.PartKey;
+import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import java.util.Collections;
 import java.util.Map;
@@ -36,12 +37,12 @@ import net.minecraft.data.recipes.FinishedRecipe;
  */
 public class Material {
     public final String name;
-    final Map<String, MaterialPart> parts;
+    final Map<PartKey, MaterialItemPart> parts;
     private final Map<MaterialProperty<?>, Object> properties;
 
     public final Consumer<Consumer<FinishedRecipe>> registerRecipes;
 
-    Material(String name, Map<MaterialProperty<?>, Object> properties, Map<String, MaterialPart> parts,
+    Material(String name, Map<MaterialProperty<?>, Object> properties, Map<PartKey, MaterialItemPart> parts,
             Consumer<Consumer<FinishedRecipe>> registerRecipes) {
         this.name = name;
         this.properties = properties;
@@ -49,12 +50,12 @@ public class Material {
         this.registerRecipes = registerRecipes;
     }
 
-    public Map<String, MaterialPart> getParts() {
+    public Map<PartKey, MaterialItemPart> getParts() {
         return Collections.unmodifiableMap(parts);
     }
 
-    public MaterialPart getPart(Part part) {
-        var ret = parts.get(part.key);
+    public MaterialItemPart getPart(PartKeyProvider part) {
+        var ret = parts.get(part.key());
         if (ret == null) {
             throw new IllegalArgumentException("Can't find part " + part + " in material " + name);
         }

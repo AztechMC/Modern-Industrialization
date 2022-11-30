@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.materials.property;
 
 import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.set.MaterialSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +59,7 @@ public class MaterialProperty<T> {
     /**
      * Defines the "main" part, i.e. the default form of the material. (ingot for metals, gem for gems, etc.)
      */
-    public static final MaterialProperty<Part> MAIN_PART = new MaterialProperty<>("main_part", MIParts.INGOT);
+    public static final MaterialProperty<PartKeyProvider> MAIN_PART = new MaterialProperty<>("main_part", MIParts.INGOT);
     /**
      * Which template set to use for the textures.
      */

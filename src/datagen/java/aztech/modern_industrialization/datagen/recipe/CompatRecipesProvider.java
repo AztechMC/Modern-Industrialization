@@ -116,7 +116,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:sphalerite_ores", "techreborn:sphalerite_dust", 2);
 
         for (Material material : MaterialRegistry.getMaterials().values()) {
-            if (material.getParts().containsKey(MIParts.CURVED_PLATE.key)) {
+            if (material.getParts().containsKey(MIParts.CURVED_PLATE.key())) {
                 String plate = material.name;
                 addCompatRecipe("%s_curved_plate".formatted(plate),
                         new TRCompressorRecipeJson("c:%s_plates".formatted(plate), "modern_industrialization:%s_curved_plate".formatted(plate)));
@@ -201,7 +201,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addItemOutput("indrev:nikolite_ore", 6, 0.03));
 
         for (Material material : MaterialRegistry.getMaterials().values()) {
-            if (material.getParts().containsKey(MIParts.CURVED_PLATE.key) && !material.name.equals("tin")) {
+            if (material.getParts().containsKey(MIParts.CURVED_PLATE.key()) && !material.name.equals("tin")) {
                 String plate = material.name;
                 addCompatRecipe("%s_curved_plate".formatted(plate),
                         new IRCompressRecipeJson("c:%s_plates".formatted(plate), "modern_industrialization:%s_curved_plate".formatted(plate)));

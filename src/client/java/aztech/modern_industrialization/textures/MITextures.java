@@ -28,7 +28,8 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.part.MaterialPart;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.part.UnregisteredMaterialItemPart;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
@@ -54,8 +55,12 @@ public final class MITextures {
                     continue;
                 }
 
-                for (MaterialPart part : material.getParts().values()) {
-                    PartTextureGenerator.processPart(coloramp, mtm, material, part);
+                for (MaterialItemPart part : material.getParts().values()) {
+                    if (part instanceof UnregisteredMaterialItemPart unregistered) {
+                        PartTextureGenerator.processPart(coloramp, mtm, material, unregistered);
+                        ;
+                    }
+
                 }
             }
 

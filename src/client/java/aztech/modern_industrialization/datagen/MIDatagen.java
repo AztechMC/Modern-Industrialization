@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.datagen;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
@@ -44,40 +43,34 @@ import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
+public class MIDatagen {
+    public static void configure(FabricDataGenerator gen, boolean runtimeDatagen) {
+        gen.addProvider(PetrochemRecipesProvider::new);
+        gen.addProvider(PlankRecipesProvider::new);
+        gen.addProvider(HeatExchangerRecipesProvider::new);
+        gen.addProvider(HatchRecipesProvider::new);
+        gen.addProvider(AlloyRecipesProvider::new);
+        gen.addProvider(MaterialRecipesProvider::new);
+        gen.addProvider(DyeRecipesProvider::new);
+        gen.addProvider(AssemblerRecipesProvider::new);
+        gen.addProvider(CompatRecipesProvider::new);
+        gen.addProvider(SteelUpgradeProvider::new);
+        gen.addProvider(VanillaCompatRecipesProvider::new);
+        gen.addProvider(BlockLootTableProvider::new);
 
-    @Override
-    public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-        ModernIndustrialization.LOGGER.info("Starting Modern Industrialization Datagen");
+        var translationProvider = new TranslationProvider(gen, runtimeDatagen);
+        gen.addProvider(new MIAdvancementsProvider(gen, translationProvider));
 
-        dataGenerator.addProvider(PetrochemRecipesProvider::new);
-        dataGenerator.addProvider(PlankRecipesProvider::new);
-        dataGenerator.addProvider(HeatExchangerRecipesProvider::new);
-        dataGenerator.addProvider(HatchRecipesProvider::new);
-        dataGenerator.addProvider(AlloyRecipesProvider::new);
-        dataGenerator.addProvider(MaterialRecipesProvider::new);
-        dataGenerator.addProvider(DyeRecipesProvider::new);
-        dataGenerator.addProvider(AssemblerRecipesProvider::new);
-        dataGenerator.addProvider(CompatRecipesProvider::new);
-        dataGenerator.addProvider(SteelUpgradeProvider::new);
-        dataGenerator.addProvider(VanillaCompatRecipesProvider::new);
-        dataGenerator.addProvider(BlockLootTableProvider::new);
+        gen.addProvider(MachineModelsProvider::new);
+        gen.addProvider(ModelProvider::new);
+        gen.addProvider(translationProvider);
 
-        dataGenerator.addProvider(MIAdvancementsProvider::new);
+        gen.addProvider(MIBlockTagProvider::new);
+        gen.addProvider(new MIItemTagProvider(gen, runtimeDatagen));
+        gen.addProvider(MIPoiTypeTagProvider::new);
 
-        dataGenerator.addProvider(MachineModelsProvider::new);
-        dataGenerator.addProvider(ModelProvider::new);
-        dataGenerator.addProvider(TranslationProvider::new);
-
-        dataGenerator.addProvider(MIBlockTagProvider::new);
-        dataGenerator.addProvider(MIItemTagProvider::new);
-        dataGenerator.addProvider(MIPoiTypeTagProvider::new);
-
-        dataGenerator.addProvider(TexturesProvider::new);
-
-        ModernIndustrialization.LOGGER.info("Modern Industrialization Datagen done");
+        gen.addProvider(new TexturesProvider(gen, runtimeDatagen));
     }
 }

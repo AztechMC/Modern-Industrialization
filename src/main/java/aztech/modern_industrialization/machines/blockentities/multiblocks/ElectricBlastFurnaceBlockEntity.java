@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
@@ -39,7 +40,6 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.*;
 import net.minecraft.core.Direction;
@@ -160,7 +160,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
     public static void registerReiShapes() {
         for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            CommonProxy.INSTANCE.registerReiMultiblockShape("electric_blast_furnace", shapeTemplate);
+            ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", shapeTemplate);
         }
     }
 

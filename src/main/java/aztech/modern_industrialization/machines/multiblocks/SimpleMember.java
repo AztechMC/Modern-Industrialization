@@ -57,6 +57,20 @@ public interface SimpleMember {
         };
     }
 
+    static SimpleMember forBlockId(ResourceLocation id) {
+        return new SimpleMember() {
+            @Override
+            public boolean matchesState(BlockState state) {
+                return Registry.BLOCK.getKey(state.getBlock()).equals(id);
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Registry.BLOCK.get(id).defaultBlockState();
+            }
+        };
+    }
+
     static SimpleMember forBlockState(BlockState state) {
         Objects.requireNonNull(state);
 
@@ -75,9 +89,5 @@ public interface SimpleMember {
 
     static SimpleMember verticalChain() {
         return forBlockState(Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
-    }
-
-    static SimpleMember forBlock(ResourceLocation id) {
-        return forBlock(Registry.BLOCK.get(id));
     }
 }

@@ -28,6 +28,8 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.google.gson.JsonObject;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface MachineProcessCondition {
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
@@ -36,8 +38,19 @@ public interface MachineProcessCondition {
 
     Serializer<?> getSerializer();
 
+    @ApiStatus.NonExtendable
+    default JsonObject toJson() {
+        var obj = ((Serializer) getSerializer()).toJson(this);
+        obj.addProperty("id", MachineProcessConditions.getId(getSerializer()).toString());
+        return obj;
+    }
+
     interface Context {
         MachineBlockEntity getBlockEntity();
+
+        default ServerLevel getLevel() {
+            return (ServerLevel) getBlockEntity().getLevel();
+        }
     }
 
     interface Serializer<T extends MachineProcessCondition> {

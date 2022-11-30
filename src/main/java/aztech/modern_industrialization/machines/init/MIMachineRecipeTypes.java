@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.CentrifugeMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
@@ -65,9 +66,11 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType PRESSURIZER = create("pressurizer").withItemInputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType QUARRY = create("quarry").withItemInputs().withItemOutputs();
     public static final MachineRecipeType VACUUM_FREEZER = create("vacuum_freezer").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
-
-
     // @formatter:on
+
+    static {
+        KubeJSProxy.instance.fireRegisterRecipeTypesEvent();
+    }
 
     public static void init() {
         // init static
@@ -77,7 +80,7 @@ public class MIMachineRecipeTypes {
         return Collections.unmodifiableList(recipeTypes);
     }
 
-    private static MachineRecipeType create(String name) {
+    public static MachineRecipeType create(String name) {
         return create(name, MachineRecipeType::new);
     }
 

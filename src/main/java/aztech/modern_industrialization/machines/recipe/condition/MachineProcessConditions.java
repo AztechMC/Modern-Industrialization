@@ -23,12 +23,13 @@
  */
 package aztech.modern_industrialization.machines.recipe.condition;
 
+import aztech.modern_industrialization.MIIdentifier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineProcessConditions {
+public final class MachineProcessConditions {
     private static final BiMap<ResourceLocation, MachineProcessCondition.Serializer<?>> MAP = HashBiMap.create();
 
     public static void register(ResourceLocation id, MachineProcessCondition.Serializer<?> serializer) {
@@ -46,5 +47,10 @@ public class MachineProcessConditions {
 
     public static ResourceLocation getId(MachineProcessCondition.Serializer<?> serializer) {
         return MAP.inverse().get(serializer);
+    }
+
+    static {
+        register(new MIIdentifier("dimension"), DimensionProcessCondition.SERIALIZER);
+        register(new MIIdentifier("adjacent_block"), AdjacentBlockProcessCondition.SERIALIZER);
     }
 }

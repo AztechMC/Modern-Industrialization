@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +56,10 @@ public class MachineCasings {
     public static final MachineCasing NUCLEAR = create("nuclear_casing");
     public static final MachineCasing PLASMA_HANDLING_IRIDIUM = create("plasma_handling_iridium_machine_casing");
 
+    static {
+        KubeJSProxy.instance.fireRegisterMachineCasingsEvent();
+    }
+
     public static MachineCasing casingFromCableTier(CableTier tier) {
         if (tier == CableTier.LV) {
             return LV;
@@ -70,7 +75,11 @@ public class MachineCasings {
         return null;
     }
 
-    private static MachineCasing create(String name) {
+    public static MachineCasing create(String name) {
+        if (registeredCasings.containsKey(name)) {
+            throw new IllegalArgumentException("Duplicate machine casing definition: " + name);
+        }
+
         MachineCasing casing = new MachineCasing(name);
         registeredCasings.put(name, casing);
         return casing;

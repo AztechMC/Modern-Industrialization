@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.ColorampParameters;
@@ -269,7 +270,8 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
+                        .addParts(CRUSHED_DUST, DUST, TINY_DUST)
+                        .addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
                         .addParts(ExternalPart.of(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed")
                         .addRecipes(context -> {
@@ -741,6 +743,7 @@ public class MIMaterials {
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply));
 
+        KubeJSProxy.instance.fireAddMaterialsEvent();
     }
 
 }

@@ -44,9 +44,10 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.init.MultiblockMachinesClient;
+import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineRendering;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -73,6 +74,8 @@ import net.minecraft.world.item.Item;
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        MIStartup.onClientStartup();
+
         setupScreens();
         MIFluidsRender.setupFluidRenders();
         RenderHelper.setupRenderHelper();
@@ -81,7 +84,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         CreativeBarrelClientSetup.setupClient();
         MachineRendering.init();
         MachineModelLoader.init();
-        MultiblockMachinesClient.clientInit();
+        MultiblockMachines.clientInit();
         MultiblockErrorHighlight.init();
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(MachineOverlayClient::onBlockOutline);
         (new MIPipesClient()).setupClient();
@@ -91,6 +94,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
         VersionEvents.init();
+        RuntimeDataGen.init();
 
         // Warn if neither JEI nor REI is present!
         if (!FabricLoader.getInstance().isModLoaded("jei") && !FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
@@ -102,6 +106,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         }
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
+
+        if (MIConfig.getConfig().datagenOnStartup) {
+            RuntimeDataGen.run();
+        }
     }
 
     @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })

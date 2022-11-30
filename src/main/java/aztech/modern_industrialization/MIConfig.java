@@ -69,6 +69,12 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Ore Generation Enabled (Restart needed)")
     public boolean generateOres = true;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Run MI runtime datagen on startup (Restart needed)")
+    public boolean datagenOnStartup = false;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Additionally load resources in modern_industrialization/generated_resources")
+    public boolean loadRuntimeGeneratedResources = true;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

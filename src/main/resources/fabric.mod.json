@@ -18,7 +18,7 @@
   "accessWidener": "modern_industrialization.accesswidener",
   "entrypoints": {
     "main": [
-      "aztech.modern_industrialization.ModernIndustrialization"
+      "aztech.modern_industrialization.MIStartup"
     ],
     "client": [
       "aztech.modern_industrialization.ModernIndustrializationClient"

@@ -24,11 +24,9 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
-import java.util.function.Predicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 
@@ -66,11 +64,11 @@ public class ReiMachineRecipes {
     }
 
     public static void registerRecipeCategoryForMachine(String machine, String category) {
-        registerRecipeCategoryForMachine(machine, category, screen -> true);
+        registerRecipeCategoryForMachine(machine, category, MachineScreenPredicate.ANY);
     }
 
     public static void registerRecipeCategoryForMachine(String machine, String category,
-            Predicate<MachineScreen> screenPredicate) {
+            MachineScreenPredicate screenPredicate) {
         machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
                 .add(new ClickAreaCategory(new MIIdentifier(category), screenPredicate));
     }
@@ -85,11 +83,16 @@ public class ReiMachineRecipes {
 
     public static class ClickAreaCategory {
         public final ResourceLocation category;
-        public final Predicate<MachineScreen> predicate;
+        public final MachineScreenPredicate predicate;
 
-        ClickAreaCategory(ResourceLocation category, Predicate<MachineScreen> predicate) {
+        ClickAreaCategory(ResourceLocation category, MachineScreenPredicate predicate) {
             this.category = category;
             this.predicate = predicate;
         }
+    }
+
+    public enum MachineScreenPredicate {
+        ANY,
+        MULTIBLOCK,
     }
 }

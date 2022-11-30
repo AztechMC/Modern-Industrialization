@@ -43,24 +43,30 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 
-public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
+public final class TranslationProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
-    private static final Map<String, String> TRANSLATION_PAIRS = new TreeMap<>();
+    private final FabricDataGenerator gen;
+    private final boolean runtimeDatagen;
+    private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public static void addTranslation(String key, String englishValue) {
-        if (!TRANSLATION_PAIRS.containsKey(key)) {
-            TRANSLATION_PAIRS.put(key, englishValue);
+    public TranslationProvider(FabricDataGenerator gen, boolean runtimeDatagen) {
+        this.gen = gen;
+        this.runtimeDatagen = runtimeDatagen;
+    }
+
+    public void addTranslation(String key, String englishValue) {
+        if (!translationPairs.containsKey(key)) {
+            translationPairs.put(key, englishValue);
         } else {
             throw new IllegalArgumentException(
-                    String.format("Error adding translation key %s for translation %s : already registered for translation %s",
-                            key, englishValue, TRANSLATION_PAIRS.get(key)));
+                    String.format("Error adding translation key %s for translation %s : already registered for translation %s", key, englishValue,
+                            translationPairs.get(key)));
         }
     }
 
-    private static void addManualEntries() {
+    private void addManualEntries() {
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
         addTranslation("book.modern_industrialization.landing_text",
                 "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
@@ -75,7 +81,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
     }
 
-    private static void collectTranslationEntries() {
+    private void collectTranslationEntries() {
         addManualEntries();
 
         for (var entry : MIText.values()) {
@@ -109,7 +115,11 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
     public void run(CachedOutput cache) throws IOException {
         collectTranslationEntries();
 
-        customJsonSave(cache, GSON.toJsonTree(TRANSLATION_PAIRS), gen.getOutputFolder().resolve(OUTPUT_PATH));
+        customJsonSave(cache, GSON.toJsonTree(translationPairs), gen.getOutputFolder().resolve(OUTPUT_PATH));
+
+        if (runtimeDatagen) {
+            return;
+        }
 
         // Inspect manual translations for other languages
         Path manualTranslationsPath = gen.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
@@ -125,7 +135,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
                         TreeMap<String, String> output = new TreeMap<>();
                         int ok = 0, missing = 0, unused = 0;
 
-                        for (var entry : TRANSLATION_PAIRS.entrySet()) {
+                        for (var entry : translationPairs.entrySet()) {
                             if (!manualTranslations.containsKey(entry.getKey())) {
                                 output.put(entry.getKey(), "[UNTRANSLATED] " + entry.getValue());
                                 missing++;
@@ -133,7 +143,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
                         }
 
                         for (var entry : manualTranslations.entrySet()) {
-                            if (TRANSLATION_PAIRS.containsKey(entry.getKey())) {
+                            if (translationPairs.containsKey(entry.getKey())) {
                                 output.put(entry.getKey(), entry.getValue());
                                 ok++;
                             } else {

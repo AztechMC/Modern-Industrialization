@@ -37,13 +37,13 @@ import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.function.BiConsumer;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import org.jetbrains.annotations.Nullable;
 
 public final class MITextures {
 
     public static void offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
-            ResourceManager manager) {
+            ResourceProvider manager) {
         TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
 
         try {

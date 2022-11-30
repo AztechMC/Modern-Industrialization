@@ -29,19 +29,21 @@ import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceProvider;
 
 public class TextureManager {
-    private final ResourceManager rm;
+    private final ResourceProvider rm;
     private final BiConsumer<NativeImage, String> textureWriter;
     private final BiConsumer<JsonElement, String> mcMetaWriter;
     private final List<Runnable> endRunnables = new ArrayList<>();
 
     private final Gson GSON = new Gson();
 
-    public TextureManager(ResourceManager rm, BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter) {
+    public TextureManager(ResourceProvider rm, BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter) {
         this.rm = rm;
         this.textureWriter = textureWriter;
         this.mcMetaWriter = mcMetaWriter;
@@ -70,10 +72,28 @@ public class TextureManager {
     }
 
     public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
-        ResourceLocation id = new ResourceLocation(textureId);
-        if (rm.getResource(id).isEmpty()) { // Allow textures to be manually overridden.
+        // The texture adding logic is as follows:
+        // - if there is an override, we copy the override over to the output
+        // - otherwise, we write the texture to the output
+        if (!textureId.contains(":textures/")) {
+            throw new IllegalArgumentException("Invalid texture location: " + textureId);
+        }
+
+        String overrideId = textureId.replace(":textures/", ":datagen_texture_overrides/");
+        Optional<Resource> overrideResource = rm.getResource(new ResourceLocation(overrideId));
+
+        if (overrideResource.isPresent()) {
+            // Copy the override over
+            try (var stream = overrideResource.get().open();
+                    var overrideImage = NativeImage.read(stream)) {
+                textureWriter.accept(overrideImage, textureId);
+            }
+        } else {
+            // Write generated texture
             textureWriter.accept(image, textureId);
         }
+
+        // Close image in any case...
         if (closeImage) {
             image.close();
         }

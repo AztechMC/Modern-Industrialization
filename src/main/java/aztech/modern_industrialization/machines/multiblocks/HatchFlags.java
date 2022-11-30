@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 public class HatchFlags {
+    public static final HatchFlags NO_HATCH = new Builder().build();
+
     private final int flags;
 
     public HatchFlags(int flags) {

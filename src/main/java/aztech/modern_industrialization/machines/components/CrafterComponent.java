@@ -202,7 +202,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null && (usedEnergy > 0 || recipeStarted)) {
             recipeMaxEu = getRecipeMaxEu(activeRecipe.eu, recipeEnergy, efficiencyTicks);
-            eu = behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT);
+            eu = activeRecipe.conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT) : 0;
             isActive = eu > 0;
             usedEnergy += eu;
 
@@ -285,7 +285,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
     private boolean updateActiveRecipe() {
         // Only then can we run the iteration over the recipes
         for (MachineRecipe recipe : getRecipes()) {
-            if (behavior.banRecipe(recipe) || !recipe.conditionsMatch(conditionContext))
+            if (behavior.banRecipe(recipe))
                 continue;
             if (tryStartRecipe(recipe)) {
                 // Make sure we recalculate the max efficiency ticks if the recipe changes or if
@@ -338,7 +338,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
      */
     private boolean tryStartRecipe(MachineRecipe recipe) {
         if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false)
-                && putFluidOutputs(recipe, true, false)) {
+                && putFluidOutputs(recipe, true, false) && recipe.conditionsMatch(conditionContext)) {
             takeItemInputs(recipe, false);
             takeFluidInputs(recipe, false);
             putItemOutputs(recipe, true, true);

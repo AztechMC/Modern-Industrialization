@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -44,7 +45,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineRecipeJS extends RecipeJS {
+public class MachineRecipeJS extends RecipeJS implements ProcessConditionHelper {
     private final List<ProbabilityValue<Ingredient>> inputs = new ArrayList<>();
     private final List<ProbabilityValue<ItemStack>> outputs = new ArrayList<>();
 
@@ -56,6 +57,14 @@ public class MachineRecipeJS extends RecipeJS {
 
         json.addProperty("eu", forceGetInt(args, 0));
         json.addProperty("duration", forceGetInt(args, 1));
+    }
+
+    private static int forceGetInt(RecipeArguments args, int index) {
+        if (args.get(index) instanceof Number n) {
+            return n.intValue();
+        } else {
+            throw new RecipeExceptionJS("Expected an integer at index " + index + ", got " + args.get(index));
+        }
     }
 
     public MachineRecipeJS itemIn(Ingredient ingredient) {
@@ -112,12 +121,14 @@ public class MachineRecipeJS extends RecipeJS {
         return this;
     }
 
-    private static int forceGetInt(RecipeArguments args, int index) {
-        if (args.get(index) instanceof Number n) {
-            return n.intValue();
-        } else {
-            throw new RecipeExceptionJS("Expected an integer at index " + index + ", got " + args.get(index));
+    @Override
+    public MachineRecipeJS processCondition(MachineProcessCondition condition) {
+        if (!json.has("process_conditions")) {
+            json.add("process_conditions", new JsonArray());
         }
+
+        json.get("process_conditions").getAsJsonArray().add(condition.toJson());
+        return this;
     }
 
     @Override

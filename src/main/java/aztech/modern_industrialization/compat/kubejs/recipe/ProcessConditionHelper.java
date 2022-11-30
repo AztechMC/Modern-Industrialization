@@ -21,36 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.recipe.condition;
+package aztech.modern_industrialization.compat.kubejs.recipe;
 
-import aztech.modern_industrialization.MIIdentifier;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import aztech.modern_industrialization.machines.recipe.condition.AdjacentBlockProcessCondition;
+import aztech.modern_industrialization.machines.recipe.condition.DimensionProcessCondition;
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.Block;
 
-public final class MachineProcessConditions {
-    private static final BiMap<ResourceLocation, MachineProcessCondition.Serializer<?>> MAP = HashBiMap.create();
+public interface ProcessConditionHelper {
+    ProcessConditionHelper processCondition(MachineProcessCondition condition);
 
-    public static void register(ResourceLocation id, MachineProcessCondition.Serializer<?> serializer) {
-        if (MAP.get(id) != null || MAP.inverse().get(serializer) != null) {
-            throw new IllegalArgumentException("Duplicate registration for process condition " + id);
-        }
-
-        MAP.put(id, serializer);
+    default ProcessConditionHelper dimension(ResourceLocation dimension) {
+        return processCondition(new DimensionProcessCondition(dimension));
     }
 
-    @Nullable
-    public static MachineProcessCondition.Serializer<?> get(ResourceLocation id) {
-        return MAP.get(id);
-    }
-
-    public static ResourceLocation getId(MachineProcessCondition.Serializer<?> serializer) {
-        return MAP.inverse().get(serializer);
-    }
-
-    static {
-        register(new MIIdentifier("dimension"), DimensionProcessCondition.SERIALIZER);
-        register(new MIIdentifier("adjacent_block"), AdjacentBlockProcessCondition.SERIALIZER);
+    default ProcessConditionHelper adjacentBlock(Block block, String relativePosition) {
+        return processCondition(new AdjacentBlockProcessCondition(block, relativePosition));
     }
 }

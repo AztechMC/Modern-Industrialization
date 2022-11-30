@@ -7,7 +7,7 @@ Refer to [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of how the ma
 This will be useful for resource pack developers,
 or for pack developers who want to customize the look of their KubeJS-added machines.
 
-## KubeJS recipe integration
+## Recipe format and KubeJS integration
 MI comes with KubeJS integration for its custom recipes.
 Please refer to [ADDING_RECIPES.md](ADDING_RECIPES.md) for details on the syntax.
 

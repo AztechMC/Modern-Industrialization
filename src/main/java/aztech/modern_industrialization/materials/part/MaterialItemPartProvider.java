@@ -25,6 +25,6 @@ package aztech.modern_industrialization.materials.part;
 
 public interface MaterialItemPartProvider {
 
-    MaterialItemPart create(String materialName);
+    MaterialItemPart create(String material, String materialEnglishName);
 
 }

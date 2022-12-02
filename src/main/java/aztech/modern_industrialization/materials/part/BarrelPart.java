@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class BarrelPart implements ParametrizedMaterialItemPartProvider<Long>, PartKeyProvider {
+public class BarrelPart implements ParametrizedMaterialItemPartProvider<Long> {
 
     @Override
     public PartKey key() {
@@ -55,16 +55,16 @@ public class BarrelPart implements ParametrizedMaterialItemPartProvider<Long>, P
         return of((long) stackCapacity);
     }
 
-    public PartTemplate of(String englishName, int stackCapacity) {
-        return of(englishName, (long) stackCapacity);
+    public PartTemplate of(String nameOverride, int stackCapacity) {
+        return of(new PartEnglishNameFormatter.Overridden(nameOverride), (long) stackCapacity);
     }
 
     @Override
     public PartTemplate of(Long stackCapacity) {
-        return of("Barrel", stackCapacity);
+        return of(new PartEnglishNameFormatter.Default("Barrel"), stackCapacity);
     }
 
-    public PartTemplate of(String englishNameFormatter, Long stackCapacity) {
+    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, Long stackCapacity) {
         MutableObject<BlockEntityType<BarrelBlockEntity>> bet = new MutableObject<>();
 
         return new PartTemplate(englishNameFormatter, key()).asColumnBlock(SortOrder.BARRELS)

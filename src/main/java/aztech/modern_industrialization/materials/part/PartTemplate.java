@@ -166,12 +166,12 @@ public class PartTemplate implements PartKeyProvider, MaterialItemPartProvider {
         return textureGenParams;
     }
 
-    public UnregisteredMaterialItemPart create(String materialName) {
+    public UnregisteredMaterialItemPart create(String material, String materialEnglishName) {
 
-        String itemPath = this.itemPathFormatter.getPartItemPath(materialName, partKey);
-        String itemId = this.itemPathFormatter.getPartItemId(materialName, partKey);
-        String itemTag = this.itemPathFormatter.getPartItemTag(materialName, partKey);
-        String itemEnglishName = englishNameFormatter.format(materialName);
+        String itemPath = this.itemPathFormatter.getPartItemPath(material, partKey);
+        String itemId = this.itemPathFormatter.getPartItemId(material, partKey);
+        String itemTag = this.itemPathFormatter.getPartItemTag(material, partKey);
+        String itemEnglishName = englishNameFormatter.format(materialEnglishName);
 
         return build(itemPath, itemId, itemTag, itemEnglishName, partKey, this.register, this.textureGenParams);
 

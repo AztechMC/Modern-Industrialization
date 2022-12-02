@@ -58,9 +58,7 @@ public final class MITextures {
                 for (MaterialItemPart part : material.getParts().values()) {
                     if (part instanceof UnregisteredMaterialItemPart unregistered) {
                         PartTextureGenerator.processPart(coloramp, mtm, material, unregistered);
-                        ;
                     }
-
                 }
             }
 

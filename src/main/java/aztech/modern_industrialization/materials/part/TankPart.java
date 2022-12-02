@@ -61,20 +61,20 @@ public class TankPart implements ParametrizedMaterialItemPartProvider<Long> {
         return new PartKey("tank");
     }
 
-    public PartTemplate of(int bucketCapacity) {
-        return of("Tank", (long) bucketCapacity);
+    public PartTemplate of(String nameOverride, int bucketCapacity) {
+        return of(new PartEnglishNameFormatter.Overridden(nameOverride), bucketCapacity);
     }
 
-    public PartTemplate of(String englishNameFormatter, int bucketCapacity) {
-        return of(englishNameFormatter, (long) bucketCapacity);
+    public PartTemplate of(long bucketCapacity) {
+        return of(Long.valueOf(bucketCapacity));
     }
 
     @Override
     public PartTemplate of(Long bucketCapacity) {
-        return of("Tank", bucketCapacity);
+        return of(new PartEnglishNameFormatter.Default("Tank"), bucketCapacity);
     }
 
-    public PartTemplate of(String englishNameFormatter, Long bucketCapacity) {
+    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity) {
         MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 

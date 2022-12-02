@@ -60,7 +60,7 @@ public final class MaterialBuilder {
 
     public MaterialBuilder addParts(MaterialItemPartProvider... providers) {
         for (var provider : providers) {
-            addPart(provider.create(materialName));
+            addPart(provider.create(materialName, englishName));
         }
         return this;
     }
@@ -77,7 +77,7 @@ public final class MaterialBuilder {
             if (part instanceof MaterialItemPart itemPart) {
                 addParts(itemPart);
             } else if (part instanceof MaterialItemPartProvider provider) {
-                addParts(provider.create(materialName));
+                addParts(provider.create(materialName, englishName));
             } else {
                 throw new IllegalArgumentException("Invalid part type: " + part.getClass());
             }

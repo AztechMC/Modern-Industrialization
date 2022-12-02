@@ -62,7 +62,7 @@ public class CasingPart implements PartKeyProvider, MaterialItemPartProvider {
     }
 
     @Override
-    public MaterialItemPart create(String materialName) {
-        return of(6f).create(materialName);
+    public MaterialItemPart create(String material, String materialEnglishName) {
+        return of(6f).create(material, materialEnglishName);
     }
 }

@@ -52,7 +52,7 @@ public class MIParts {
     public static final PartTemplate DUST = new PartTemplate("Dust", "dust");
     public static final PartTemplate FINE_WIRE = new PartTemplate("Fine Wire", "fine_wire");
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
-    public static final PartTemplate GEM = new PartTemplate("", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
+    public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
         var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
         TagsToGenerate.generateTag("c:" + itemPath, item.asItem());
     })

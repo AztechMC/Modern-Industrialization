@@ -96,3 +96,16 @@ MIMachineEvents.registerMachines(event => {
     );
 })
 ```
+
+## Adding new casing types
+See [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of machine models and what casings are.
+You can add new casings using the `register` function in the `MIMachineEvents.registerCasings` event.
+
+Remember that the top, side and bottom textures of a casing must be `modern_industrialization:textures/casing/<casing name>/{top,side,bottom}.png`.
+
+For example, to register two new casings:
+```js
+MIMachineEvents.registerCasings(event => {
+    event.register("my_fancy_casing", "my_other_casing")
+})
+```

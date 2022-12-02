@@ -152,13 +152,11 @@ public final class TranslationProvider implements DataProvider {
                             }
                         }
 
-                        if (missing > 0 || unused > 0) {
-                            String message = "%d ok, %d missing, %d unused".formatted(ok, missing, unused);
-                            output.put("__summary", message);
+                        String message = "%d ok, %d missing, %d unused".formatted(ok, missing, unused);
+                        output.put("__summary", message);
 
-                            var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
-                            customJsonSave(cache, GSON.toJsonTree(output), savePath);
-                        }
+                        var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
+                        customJsonSave(cache, GSON.toJsonTree(output), savePath);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

@@ -24,8 +24,9 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.items.SortOrder;
+import org.jetbrains.annotations.Nullable;
 
-public class CasingPart implements PartKeyProvider, MaterialItemPartProvider {
+public class CasingPart implements PartKeyProvider {
 
     public final String englishName;
     public final PartKey key;
@@ -40,7 +41,7 @@ public class CasingPart implements PartKeyProvider, MaterialItemPartProvider {
         return key;
     }
 
-    public PartTemplate of(PartEnglishNameFormatter formatter, String path, float resistance) {
+    public PartTemplate of(PartEnglishNameFormatter formatter, @Nullable String path, float resistance) {
         PartTemplate regPart = new PartTemplate(formatter, this.key)
                 .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(this.equals(MIParts.MACHINE_CASING)), 5, resistance, 1);
         if (path != null) {
@@ -61,8 +62,7 @@ public class CasingPart implements PartKeyProvider, MaterialItemPartProvider {
         return of(new PartEnglishNameFormatter.Default(englishName), null, resistance);
     }
 
-    @Override
-    public MaterialItemPart create(String material, String materialEnglishName) {
-        return of(6f).create(material, materialEnglishName);
+    public PartTemplate of() {
+        return of(6);
     }
 }

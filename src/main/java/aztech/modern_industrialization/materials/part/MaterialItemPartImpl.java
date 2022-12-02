@@ -23,41 +23,50 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import java.util.function.Consumer;
 
-public class MIItemPart {
+/**
+ * The unique implementation of {@link MaterialItemPart}, to keep impl details out of the interface.
+ */
+final class MaterialItemPartImpl implements MaterialItemPart {
+    private final PartKey key;
+    private final String taggedItemId;
+    private final String itemId;
+    private final Consumer<MaterialBuilder.PartContext> registration;
+    private final TextureGenParams textureGenParams;
 
-    public static UnregisteredMaterialItemPart of(PartKeyProvider part, String englishName, String itemPath) {
-
-        String itemId = "modern_industrialization:" + itemPath;
-
-        return new UnregisteredMaterialItemPart() {
-            @Override
-            public PartKey key() {
-                return part.key();
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemId;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.PartContext context) {
-                MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(context.getMaterialName()));
-            }
-
-            public TextureGenParams getTextureGenParams() {
-                return new TextureGenParams.NoTexture();
-            }
-        };
+    MaterialItemPartImpl(PartKey key, String taggedItemId, String itemId,
+            Consumer<MaterialBuilder.PartContext> registration, TextureGenParams textureGenParams) {
+        this.key = key;
+        this.taggedItemId = taggedItemId;
+        this.itemId = itemId;
+        this.registration = registration;
+        this.textureGenParams = textureGenParams;
     }
 
+    @Override
+    public PartKey key() {
+        return key;
+    }
+
+    @Override
+    public String getTaggedItemId() {
+        return taggedItemId;
+    }
+
+    @Override
+    public String getItemId() {
+        return itemId;
+    }
+
+    @Override
+    public void register(MaterialBuilder.PartContext partContext) {
+        registration.accept(partContext);
+    }
+
+    @Override
+    public TextureGenParams getTextureGenParams() {
+        return textureGenParams;
+    }
 }

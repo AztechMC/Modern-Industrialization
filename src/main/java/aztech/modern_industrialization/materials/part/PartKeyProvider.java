@@ -29,6 +29,9 @@ import java.util.stream.Collectors;
 
 public interface PartKeyProvider {
 
+    /**
+     * @return The name of this part, for example "ingot" or "dust".
+     */
     PartKey key();
 
     public static List<PartKey> of(PartKeyProvider... providers) {

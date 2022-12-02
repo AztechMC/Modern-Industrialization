@@ -44,23 +44,18 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class BarrelPart implements ParametrizedMaterialItemPartProvider<Long> {
+public class BarrelPart implements PartKeyProvider {
 
     @Override
     public PartKey key() {
         return new PartKey("barrel");
     }
 
-    public PartTemplate of(int stackCapacity) {
-        return of((long) stackCapacity);
-    }
-
     public PartTemplate of(String nameOverride, int stackCapacity) {
         return of(new PartEnglishNameFormatter.Overridden(nameOverride), (long) stackCapacity);
     }
 
-    @Override
-    public PartTemplate of(Long stackCapacity) {
+    public PartTemplate of(long stackCapacity) {
         return of(new PartEnglishNameFormatter.Default("Barrel"), stackCapacity);
     }
 

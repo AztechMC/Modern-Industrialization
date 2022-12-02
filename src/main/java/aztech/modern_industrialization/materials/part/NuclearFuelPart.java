@@ -31,7 +31,7 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
 import java.util.List;
 
-public class NuclearFuelPart implements ParametrizedMaterialItemPartProvider<NuclearConstant.IsotopeFuelParams> {
+public class NuclearFuelPart implements PartKeyProvider {
 
     public enum Type {
         DEPLETED(0, "fuel_rod_depleted"),
@@ -61,7 +61,6 @@ public class NuclearFuelPart implements ParametrizedMaterialItemPartProvider<Nuc
         return key;
     }
 
-    @Override
     public PartTemplate of(NuclearConstant.IsotopeFuelParams params) {
 
         NuclearFuelParams fuelParams = new NuclearFuelParams(NuclearConstant.DESINTEGRATION_BY_ROD * type.size, params.maxTemp, params.tempLimitLow,

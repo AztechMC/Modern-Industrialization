@@ -59,7 +59,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-public class OrePart implements ParametrizedMaterialItemPartProvider<OrePart.OrePartParams> {
+public class OrePart implements PartKeyProvider {
 
     public final boolean deepslate;
     public final PartKey key;
@@ -92,7 +92,6 @@ public class OrePart implements ParametrizedMaterialItemPartProvider<OrePart.Ore
         this.deepslate = deepslate;
     }
 
-    @Override
     public PartTemplate of(OrePartParams oreParams) {
         return new PartTemplate(deepslate ? "Deepslate %s Ore" : "Ore", key)
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {

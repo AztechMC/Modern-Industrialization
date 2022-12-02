@@ -58,7 +58,7 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public MaterialBuilder addParts(MaterialItemPartProvider... providers) {
+    public MaterialBuilder addParts(PartTemplate... providers) {
         for (var provider : providers) {
             addPart(provider.create(materialName, englishName));
         }
@@ -76,8 +76,8 @@ public final class MaterialBuilder {
         for (var part : parts) {
             if (part instanceof MaterialItemPart itemPart) {
                 addParts(itemPart);
-            } else if (part instanceof MaterialItemPartProvider provider) {
-                addParts(provider.create(materialName, englishName));
+            } else if (part instanceof PartTemplate template) {
+                addParts(template.create(materialName, englishName));
             } else {
                 throw new IllegalArgumentException("Invalid part type: " + part.getClass());
             }
@@ -138,9 +138,7 @@ public final class MaterialBuilder {
         var context = new PartContext();
 
         for (MaterialItemPart part : partsMap.values()) {
-            if (part instanceof UnregisteredMaterialItemPart unregistered) {
-                unregistered.register(context);
-            }
+            part.register(context);
         }
 
         for (RegisteringEvent event : events) {

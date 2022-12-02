@@ -23,18 +23,44 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.SortOrder;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
-public interface MaterialItemPart extends PartKeyProvider, ItemLike {
+public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permits MaterialItemPartImpl {
 
     /**
-     * @return The name of this part, for example "ingot" or "dust".
+     * External parts are already registered and already have a texture,
+     * but they're in the material system for recipe generation.
      */
-    PartKey key();
+    static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {
+        return new MaterialItemPartImpl(part.key(), taggedItemId, itemId, ctx -> {
+        }, new TextureGenParams.NoTexture());
+    }
+
+    /**
+     * External parts are already registered and already have a texture,
+     * but they're in the material system for recipe generation.
+     */
+    static MaterialItemPart external(PartKeyProvider part, String itemId) {
+        return external(part, itemId, itemId);
+    }
+
+    /**
+     * Simple item parts are just regular MIItems.
+     */
+    static MaterialItemPart simpleItem(PartKeyProvider part, String englishName, String itemPath) {
+        String itemId = "modern_industrialization:" + itemPath;
+
+        return new MaterialItemPartImpl(part.key(), itemId, itemId, ctx -> {
+            MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(ctx.getMaterialName()));
+        }, new TextureGenParams.NoTexture());
+    }
 
     /**
      * @return The common tag of this material prefixed by # if available, or the id
@@ -47,11 +73,18 @@ public interface MaterialItemPart extends PartKeyProvider, ItemLike {
      */
     String getItemId();
 
+    @Override
     default Item asItem() {
         return Registry.ITEM.getOrThrow(ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(getItemId())));
     }
 
-    default boolean isRegularPart() {
-        return false;
-    }
+    /**
+     * Perform any required registration.
+     */
+    void register(MaterialBuilder.PartContext partContext);
+
+    /**
+     * Return texture generation parameters. Return {@link TextureGenParams.NoTexture} if no texture is required.
+     */
+    TextureGenParams getTextureGenParams();
 }

@@ -28,9 +28,8 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.pipes.MIPipes;
 
-public class CablePart implements ParametrizedMaterialItemPartProvider<CableTier> {
+public class CablePart implements PartKeyProvider {
 
-    @Override
     public PartTemplate of(CableTier tier) {
         return new PartTemplate("Cable", key()).withoutTextureRegister()
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> MIPipes.INSTANCE

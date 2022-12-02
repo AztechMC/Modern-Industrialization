@@ -30,10 +30,9 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import java.util.List;
 
-public record RawMetalPart(boolean isBlock) implements ParametrizedMaterialItemPartProvider<MaterialRawSet> {
+public record RawMetalPart(boolean isBlock) implements PartKeyProvider {
 
-    @Override
-    public MaterialItemPartProvider of(MaterialRawSet set) {
+    public PartTemplate of(MaterialRawSet set) {
         PartTemplate part = new PartTemplate(isBlock ? "Block of Raw %s" : "Raw %s", key());
 
         if (isBlock) {
@@ -47,7 +46,7 @@ public record RawMetalPart(boolean isBlock) implements ParametrizedMaterialItemP
         }
     }
 
-    public List<MaterialItemPartProvider> ofAll(MaterialRawSet set) {
+    public List<PartTemplate> ofAll(MaterialRawSet set) {
         return List.of(RAW_METAL.of(set), RAW_METAL_BLOCK.of(set));
     }
 

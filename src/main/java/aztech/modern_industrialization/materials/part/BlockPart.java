@@ -26,9 +26,8 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 
-public class BlockPart implements ParametrizedMaterialItemPartProvider<MaterialBlockSet> {
+public class BlockPart implements PartKeyProvider {
 
-    @Override
     public PartTemplate of(MaterialBlockSet set) {
         return new PartTemplate("Block of %s", key()).asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
     }

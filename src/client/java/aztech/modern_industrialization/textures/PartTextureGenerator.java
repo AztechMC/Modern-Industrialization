@@ -42,11 +42,7 @@ import net.minecraft.resources.ResourceLocation;
  * All the per-part texture processing logic.
  */
 class PartTextureGenerator {
-    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, UnregisteredMaterialItemPart part) {
-        if (!part.isRegularPart()) {
-            return;
-        }
-
+    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         var gen = new PartTextureGenerator(coloramp, mtm, material, part);
 
         try {
@@ -62,7 +58,7 @@ class PartTextureGenerator {
     private final String materialName;
     private final String itemPath;
 
-    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, UnregisteredMaterialItemPart part) {
+    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         this.coloramp = coloramp;
         this.mtm = mtm;
         this.material = material;
@@ -70,7 +66,7 @@ class PartTextureGenerator {
         this.itemPath = new ResourceLocation(part.getItemId()).getPath();
     }
 
-    private void build(UnregisteredMaterialItemPart part) throws IOException {
+    private void build(MaterialItemPart part) throws IOException {
         var params = part.getTextureGenParams();
 
         if (params instanceof TextureGenParams.Block block) {

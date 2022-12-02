@@ -32,7 +32,7 @@ import aztech.modern_industrialization.util.TagHelper;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
 
-public class PartTemplate implements PartKeyProvider, MaterialItemPartProvider {
+public class PartTemplate implements PartKeyProvider {
 
     private final PartEnglishNameFormatter englishNameFormatter;
     private final PartKey partKey;
@@ -166,51 +166,16 @@ public class PartTemplate implements PartKeyProvider, MaterialItemPartProvider {
         return textureGenParams;
     }
 
-    public UnregisteredMaterialItemPart create(String material, String materialEnglishName) {
+    public MaterialItemPart create(String material, String materialEnglishName) {
 
         String itemPath = this.itemPathFormatter.getPartItemPath(material, partKey);
         String itemId = this.itemPathFormatter.getPartItemId(material, partKey);
         String itemTag = this.itemPathFormatter.getPartItemTag(material, partKey);
         String itemEnglishName = englishNameFormatter.format(materialEnglishName);
 
-        return build(itemPath, itemId, itemTag, itemEnglishName, partKey, this.register, this.textureGenParams);
-
-    }
-
-    private static UnregisteredMaterialItemPart build(String itemPath, String itemId, String itemTag, String itemEnglishName,
-            PartKey part,
-            Register register, TextureGenParams textureGenParams) {
-        return new UnregisteredMaterialItemPart() {
-            @Override
-            public PartKey key() {
-                return part;
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemTag;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.PartContext context) {
-                register.register(context, part, itemPath, itemId, itemTag, itemEnglishName);
-            }
-
-            @Override
-            public TextureGenParams getTextureGenParams() {
-                return textureGenParams;
-            }
-
-            @Override
-            public boolean isRegularPart() {
-                return true;
-            }
-        };
+        return new MaterialItemPartImpl(partKey, itemTag, itemId, ctx -> {
+            register.register(ctx, partKey, itemPath, itemId, itemTag, itemEnglishName);
+        }, this.textureGenParams);
     }
 
     @Override

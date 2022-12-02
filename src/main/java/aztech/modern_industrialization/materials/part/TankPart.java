@@ -48,7 +48,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class TankPart implements ParametrizedMaterialItemPartProvider<Long> {
+public class TankPart implements PartKeyProvider {
 
     public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
         var textureSlot = TextureSlot.create("0");
@@ -66,11 +66,6 @@ public class TankPart implements ParametrizedMaterialItemPartProvider<Long> {
     }
 
     public PartTemplate of(long bucketCapacity) {
-        return of(Long.valueOf(bucketCapacity));
-    }
-
-    @Override
-    public PartTemplate of(Long bucketCapacity) {
         return of(new PartEnglishNameFormatter.Default("Tank"), bucketCapacity);
     }
 

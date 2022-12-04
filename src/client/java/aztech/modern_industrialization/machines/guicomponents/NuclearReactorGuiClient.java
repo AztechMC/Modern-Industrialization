@@ -37,6 +37,7 @@ import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
@@ -380,12 +381,43 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
             return NeutronType.TYPES[(neutronMode.index + 1) % NeutronType.TYPES.length];
         }
 
+        private NeutronType previousNeutronMode() {
+            return NeutronType.TYPES[(neutronMode.index - 1 + NeutronType.TYPES.length) % NeutronType.TYPES.length];
+        }
+
+        private Mode nextMode() {
+            return Renderer.Mode.values()[(currentMode.index + 1) % Renderer.Mode.values().length];
+        }
+
+        private Mode previousMode() {
+            return Renderer.Mode.values()[(currentMode.index - 1 + Renderer.Mode.values().length) % Renderer.Mode.values().length];
+        }
+
+        private Mode circulateMode() {
+            if (CommonProxy.INSTANCE.hasShiftDown()) {
+                return previousMode();
+            } else {
+                return nextMode();
+            }
+        }
+
+        private NeutronType circulateNeutronMode() {
+            if (CommonProxy.INSTANCE.hasShiftDown()) {
+                return previousNeutronMode();
+            } else {
+                return nextNeutronMode();
+            }
+        }
+
         @Override
         public void addButtons(ButtonContainer container) {
             container.addButton(centerX + 64, 4, 20, 20,
-                    (i) -> currentMode = Renderer.Mode.values()[(currentMode.index + 1) % Renderer.Mode.values().length],
+                    (i) -> currentMode = circulateMode(),
                     () -> List.of(modeTooltip[currentMode.index], MIText.ClickToSwitch
-                            .text(modeTooltip[(currentMode.index + 1) % Renderer.Mode.values().length]).setStyle(TextHelper.GRAY_TEXT)),
+                            .text(modeTooltip[nextMode().index]).setStyle(TextHelper.GRAY_TEXT),
+                            MIText.ShiftClickToSwitch
+                                    .text(modeTooltip[previousMode().index])
+                                    .setStyle(TextHelper.GRAY_TEXT)),
                     (screen, button, matrices, mouseX, mouseY, delta) -> {
                         button.renderVanilla(matrices, mouseX, mouseY, delta);
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
@@ -403,9 +435,10 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
 
                     }, this::drawButton);
 
-            container.addButton(centerX + 64, 150, 20, 20, (i) -> neutronMode = nextNeutronMode(),
+            container.addButton(centerX + 64, 150, 20, 20, (i) -> neutronMode = circulateNeutronMode(),
                     () -> List.of(neutronModeTooltip[neutronMode.index],
-                            MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
+                            MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT),
+                            MIText.ShiftClickToSwitch.text(neutronModeTooltip[previousNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
                     (screen, button, matrices, mouseX, mouseY, delta) -> {
 
                         button.renderVanilla(matrices, mouseX, mouseY, delta);

@@ -1,5 +1,5 @@
 {
-  "__summary": "1306 ok, 5 missing, 0 unused",
+  "__summary": "1306 ok, 6 missing, 0 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1292,6 +1292,7 @@
   "text.modern_industrialization.ShapeTextMedium": "Médio",
   "text.modern_industrialization.ShapeTextSmall": "Pequeno",
   "text.modern_industrialization.ShapeTextWidth": "Largura: %d",
+  "text.modern_industrialization.ShiftClickToSwitch": "[UNTRANSLATED] Shift-Click to switch to %s",
   "text.modern_industrialization.SingleNeutronCapture": "Captura Neutrônica Única",
   "text.modern_industrialization.SteamDrillFuelHelp": "2) Coloque combustível na broca (botão direito).",
   "text.modern_industrialization.SteamDrillProfit": "3) Aproveite Toque Suave 3x3.",

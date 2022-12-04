@@ -1,5 +1,5 @@
 {
-  "__summary": "1000 ok, 311 missing, 368 unused",
+  "__summary": "1000 ok, 312 missing, 368 unused",
   "advancements.modern_industrialization.advanced_upgrade": "기계 빠르게-빠르게",
   "advancements.modern_industrialization.advanced_upgrade.description": "발전된 업그레이드를 제작하세요",
   "advancements.modern_industrialization.analog_circuit": "RLC 회로",
@@ -1503,6 +1503,7 @@
   "text.modern_industrialization.ShapeTextMedium": "[UNTRANSLATED] Medium",
   "text.modern_industrialization.ShapeTextSmall": "[UNTRANSLATED] Small",
   "text.modern_industrialization.ShapeTextWidth": "[UNTRANSLATED] Width: %d",
+  "text.modern_industrialization.ShiftClickToSwitch": "[UNTRANSLATED] Shift-Click to switch to %s",
   "text.modern_industrialization.SingleNeutronCapture": "[UNTRANSLATED] Single Neutron Capture",
   "text.modern_industrialization.SteamDrillFuelHelp": "[UNTRANSLATED] 2) Place fuel inside the drill (right click).",
   "text.modern_industrialization.SteamDrillProfit": "[UNTRANSLATED] 3) Enjoy 3x3 Silk Touch.",

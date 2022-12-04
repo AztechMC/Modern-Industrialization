@@ -200,6 +200,7 @@ public enum MIText {
     ShapeTextMedium("Medium"),
     ShapeTextSmall("Small"),
     ShapeTextWidth("Width: %d"),
+    ShiftClickToSwitch("Shift-Click to switch to %s"),
     SingleNeutronCapture("Single Neutron Capture"),
     SteamDrillFuelHelp("2) Place fuel inside the drill (right click)."),
     SteamDrillProfit("3) Enjoy 3x3 Silk Touch."),

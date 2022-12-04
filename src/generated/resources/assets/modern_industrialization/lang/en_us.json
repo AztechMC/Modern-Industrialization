@@ -1291,6 +1291,7 @@
   "text.modern_industrialization.ShapeTextMedium": "Medium",
   "text.modern_industrialization.ShapeTextSmall": "Small",
   "text.modern_industrialization.ShapeTextWidth": "Width: %d",
+  "text.modern_industrialization.ShiftClickToSwitch": "Shift-Click to switch to %s",
   "text.modern_industrialization.SingleNeutronCapture": "Single Neutron Capture",
   "text.modern_industrialization.SteamDrillFuelHelp": "2) Place fuel inside the drill (right click).",
   "text.modern_industrialization.SteamDrillProfit": "3) Enjoy 3x3 Silk Touch.",

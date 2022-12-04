@@ -1,5 +1,5 @@
 {
-  "__summary": "1004 ok, 307 missing, 0 unused",
+  "__summary": "1004 ok, 308 missing, 0 unused",
   "advancements.modern_industrialization.advanced_upgrade": "机器再加速",
   "advancements.modern_industrialization.advanced_upgrade.description": "制作进阶升级",
   "advancements.modern_industrialization.analog_circuit": "RLC电路",
@@ -1292,6 +1292,7 @@
   "text.modern_industrialization.ShapeTextMedium": "[UNTRANSLATED] Medium",
   "text.modern_industrialization.ShapeTextSmall": "[UNTRANSLATED] Small",
   "text.modern_industrialization.ShapeTextWidth": "[UNTRANSLATED] Width: %d",
+  "text.modern_industrialization.ShiftClickToSwitch": "[UNTRANSLATED] Shift-Click to switch to %s",
   "text.modern_industrialization.SingleNeutronCapture": "[UNTRANSLATED] Single Neutron Capture",
   "text.modern_industrialization.SteamDrillFuelHelp": "[UNTRANSLATED] 2) Place fuel inside the drill (right click).",
   "text.modern_industrialization.SteamDrillProfit": "[UNTRANSLATED] 3) Enjoy 3x3 Silk Touch.",

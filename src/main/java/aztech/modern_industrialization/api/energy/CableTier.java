@@ -48,6 +48,15 @@ public enum CableTier {
         this.englishNameComponent = englishNameComponent.text();
     }
 
+    public static CableTier getByName(String tier) {
+        for (CableTier cableTier : values()) {
+            if (cableTier.name.equals(tier)) {
+                return cableTier;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return The total EU/t transferred by this tier of network. The same number
      *         is also the internal storage of every node.

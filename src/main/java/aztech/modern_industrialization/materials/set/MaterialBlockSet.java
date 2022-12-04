@@ -41,4 +41,12 @@ public enum MaterialBlockSet {
 
     public final String name;
 
+    public static MaterialBlockSet getByName(String materialSet) {
+        for (MaterialBlockSet set : values()) {
+            if (set.name.equals(materialSet)) {
+                return set;
+            }
+        }
+        return null;
+    }
 }

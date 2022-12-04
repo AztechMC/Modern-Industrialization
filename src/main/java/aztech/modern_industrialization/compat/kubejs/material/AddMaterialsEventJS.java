@@ -23,7 +23,37 @@
  */
 package aztech.modern_industrialization.compat.kubejs.material;
 
+import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.MaterialRegistry;
+import aztech.modern_industrialization.materials.part.PartTemplate;
+import aztech.modern_industrialization.materials.property.ColorampParameters;
+import aztech.modern_industrialization.materials.property.MaterialProperty;
+import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
+import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import dev.latvian.mods.kubejs.event.EventJS;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AddMaterialsEventJS extends EventJS {
+public class AddMaterialsEventJS extends EventJS implements PartJsonCreator {
+
+    public MaterialBuilder materialBuilder(String englishName, String material_name, int color) {
+        return new MaterialBuilder(englishName, material_name).set(MaterialProperty.COLORAMP, new ColorampParameters.Uniform(color));
+    }
+
+    public void trivialRegister(MaterialBuilder materialBuilder) {
+        MaterialRegistry.addMaterial(materialBuilder.addRecipes(StandardRecipes::apply).addRecipes(SmeltingRecipes::apply));
+    }
+
+    public MaterialBuilder trivialMaterial(String englishName, String material_name, int color, List<String> regularPartKey) {
+
+        List<PartTemplate> materialParts = new ArrayList<>();
+
+        for (String part : regularPartKey) {
+            materialParts.add(regularPart(part));
+        }
+
+        return materialBuilder(englishName, material_name, color).addParts(materialParts);
+
+    }
+
 }

@@ -43,6 +43,7 @@ import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
 
 public class BarrelPart implements PartKeyProvider {
 
@@ -51,18 +52,18 @@ public class BarrelPart implements PartKeyProvider {
         return new PartKey("barrel");
     }
 
-    public PartTemplate of(String nameOverride, int stackCapacity) {
-        return of(new PartEnglishNameFormatter.Overridden(nameOverride), (long) stackCapacity);
+    public PartTemplate of(String nameOverride, String pathOverride, int stackCapacity) {
+        return of(new PartEnglishNameFormatter.Overridden(nameOverride), (long) stackCapacity, pathOverride);
     }
 
     public PartTemplate of(long stackCapacity) {
-        return of(new PartEnglishNameFormatter.Default("Barrel"), stackCapacity);
+        return of(new PartEnglishNameFormatter.Default("Barrel"), stackCapacity, null);
     }
 
-    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, Long stackCapacity) {
+    private PartTemplate of(PartEnglishNameFormatter englishNameFormatter, Long stackCapacity, @Nullable String maybeOverriddenPath) {
         MutableObject<BlockEntityType<BarrelBlockEntity>> bet = new MutableObject<>();
 
-        return new PartTemplate(englishNameFormatter, key()).asColumnBlock(SortOrder.BARRELS)
+        PartTemplate template = new PartTemplate(englishNameFormatter, key()).asColumnBlock(SortOrder.BARRELS)
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
                     StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
@@ -94,6 +95,10 @@ public class BarrelPart implements PartKeyProvider {
                     CommonProxy.INSTANCE.registerPartBarrelClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
                             partContext.get(COLORAMP).getMeanRGB());
                 });
+        if (maybeOverriddenPath != null) {
+            template = template.withCustomPath(maybeOverriddenPath);
+        }
+        return template;
     }
 
 }

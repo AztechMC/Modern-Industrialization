@@ -139,11 +139,11 @@ public class MIMaterials {
     public static MaterialBuilder addVanillaMetal(boolean nugget, MaterialBuilder builder) {
         String n = builder.getMaterialName();
         MaterialBuilder res = builder.overridePart(MaterialItemPart.external(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
-                .addParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-                .addParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
-                .addParts(MaterialItemPart.external(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
-                .addParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
 
         if (nugget) {
             res.overridePart(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
@@ -167,10 +167,10 @@ public class MIMaterials {
 
     public static MaterialBuilder addVanillaGem(boolean compressor, String gemPath, MaterialBuilder builder) {
         String n = builder.getMaterialName();
-        MaterialBuilder res = builder.addParts(MaterialItemPart.external(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
-                .addParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-                .addParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
+        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
 
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
                 .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting")
@@ -198,7 +198,7 @@ public class MIMaterials {
                                 .set(MaterialProperty.SET, METALLIC)
                                 .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xC8C8C8, common(INGOT), mcitem("iron_ingot")))
                                 .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                                .addParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
+                                .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
         );
 
         COPPER = MaterialRegistry.addMaterial(addVanillaMetal(false,
@@ -232,7 +232,7 @@ public class MIMaterials {
                         .set(MaterialProperty.HARDNESS, VERY_HARD)
                         .addParts(ITEM_PURE_NON_METAL)
                         .addParts(PLATE, LARGE_PLATE)
-                        .addParts(MaterialItemPart.external(HAMMER, MIItem.DIAMOND_HAMMER.getId().toString())))
+                        .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.DIAMOND_HAMMER.getId().toString())))
         );
 
         EMERALD = MaterialRegistry.addMaterial(addVanillaGem(false,
@@ -257,10 +257,10 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xd20000, common(DUST), mcitem("redstone")))
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY).addParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
-                        .addParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
-                        .addParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
-                        .addParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
+                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
+                        .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed")
                         .cancelRecipes("craft/block_from_dust", "craft/dust_from_block"));
 
@@ -272,7 +272,7 @@ public class MIMaterials {
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(CRUSHED_DUST, DUST, TINY_DUST)
                         .addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
-                        .addParts(MaterialItemPart.external(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
+                        .addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed")
                         .addRecipes(context -> {
                             new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
@@ -285,7 +285,7 @@ public class MIMaterials {
                 .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xb75a36, common("ingot"), mcitem("brick")))
                 .set(MaterialProperty.HARDNESS, SOFT)
                 .addParts(DUST, TINY_DUST)
-                .addParts(MaterialItemPart.external(INGOT, "minecraft:brick", "minecraft:brick"))
+                .addMaterialItemParts(MaterialItemPart.external(INGOT, "minecraft:brick", "minecraft:brick"))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         FIRE_CLAY = MaterialRegistry.addMaterial(
@@ -294,7 +294,7 @@ public class MIMaterials {
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xb75a36, common("ingot"), miitem("fire_clay_brick")))
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(DUST)
-                        .addParts(MaterialItemPart.simpleItem(INGOT, "Fire Clay Brick", "fire_clay_brick"))
+                        .addMaterialItemParts(MaterialItemPart.simpleItem(INGOT, "Fire Clay Brick", "fire_clay_brick"))
                         .addRecipes(SmeltingRecipes::apply));
 
         COKE = MaterialRegistry
@@ -304,7 +304,7 @@ public class MIMaterials {
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0x6d6d57, common("dust"), miitem("coke")))
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(DUST)
-                        .addParts(MaterialItemPart.simpleItem(GEM, "Coke", "coke"))
+                        .addMaterialItemParts(MaterialItemPart.simpleItem(GEM, "Coke", "coke"))
                         .addParts(BLOCK.of(MaterialBlockSet.COAL))
                         .addRecipes(context -> {
                             new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1);
@@ -340,7 +340,7 @@ public class MIMaterials {
                         .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
                         .addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of()).addParts(TANK.of(8)).addParts(BARREL.of(128))
-                        .addParts(MaterialItemPart.external(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
+                        .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 
         LIGNITE_COAL = MaterialRegistry.addMaterial(new MaterialBuilder("Lignite Coal", "lignite_coal")
@@ -639,8 +639,8 @@ public class MIMaterials {
                         .addParts(ORE.ofAll(10, 1, 16, MaterialOreSet.DIAMOND))
                         .addParts(MACHINE_CASING.of("Quantum Machine Casing", "quantum_machine_casing", 6000f))
 
-                        .addParts(TANK.of("Quantum Tank!", Integer.MAX_VALUE).withCustomPath("quantum_tank"))
-                        .addParts(BARREL.of("Quantum Barrel!", Integer.MAX_VALUE).withCustomPath("quantum_barrel"))
+                        .addParts(TANK.of("Quantum Tank","quantum_tank",  Integer.MAX_VALUE))
+                        .addParts(BARREL.of("Quantum Barrel", "quantum_barrel", Integer.MAX_VALUE))
 
                         .addParts(MACHINE_CASING_SPECIAL.of(
                                 new PartEnglishNameFormatter.Default(

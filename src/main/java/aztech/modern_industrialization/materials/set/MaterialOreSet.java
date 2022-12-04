@@ -43,4 +43,12 @@ public enum MaterialOreSet {
 
     public final String name;
 
+    public static MaterialOreSet getByName(String ore_set) {
+        for (MaterialOreSet set : values()) {
+            if (set.name.equals(ore_set)) {
+                return set;
+            }
+        }
+        return null;
+    }
 }

@@ -32,6 +32,7 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import blue.endless.jankson.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -61,19 +62,19 @@ public class TankPart implements PartKeyProvider {
         return new PartKey("tank");
     }
 
-    public PartTemplate of(String nameOverride, int bucketCapacity) {
-        return of(new PartEnglishNameFormatter.Overridden(nameOverride), bucketCapacity);
+    public PartTemplate of(String nameOverride, String path, int bucketCapacity) {
+        return of(new PartEnglishNameFormatter.Overridden(nameOverride), bucketCapacity, path);
     }
 
     public PartTemplate of(long bucketCapacity) {
-        return of(new PartEnglishNameFormatter.Default("Tank"), bucketCapacity);
+        return of(new PartEnglishNameFormatter.Default("Tank"), bucketCapacity, null);
     }
 
-    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity) {
+    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity, @Nullable String maybePathOverridden) {
         MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
-        return new PartTemplate(englishNameFormatter, key())
+        PartTemplate tank = new PartTemplate(englishNameFormatter, key())
                 .asBlock(SortOrder.TANKS, new TextureGenParams.SimpleRecoloredBlock())
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
@@ -107,6 +108,12 @@ public class TankPart implements PartKeyProvider {
 
                     CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue());
                 });
+
+        if (maybePathOverridden != null) {
+            tank = tank.withCustomPath(maybePathOverridden);
+        }
+
+        return tank;
     }
 
 }

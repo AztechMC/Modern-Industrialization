@@ -100,4 +100,5 @@ public class MIParts {
 
     public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
+
 }

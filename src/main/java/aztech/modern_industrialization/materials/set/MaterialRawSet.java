@@ -37,4 +37,12 @@ public enum MaterialRawSet {
 
     public final String name;
 
+    public static MaterialRawSet getByName(String materialSet) {
+        for (MaterialRawSet set : values()) {
+            if (set.name.equals(materialSet)) {
+                return set;
+            }
+        }
+        return null;
+    }
 }

@@ -147,7 +147,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int centerY = bounds.y + bounds.height / 2;
 
         Component heatConduction = MIText.HeatConduction.text(
-                String.format("%.2f", nuclearComponent.getHeatConduction())).setStyle(TextHelper.HEAT_CONDUCTION);
+                String.format("%d", (int) (1000 * nuclearComponent.getHeatConduction()))).setStyle(TextHelper.HEAT_CONDUCTION);
 
         widgets.add(Widgets.createLabel(new Point(centerX, centerY), heatConduction).noShadow());
 

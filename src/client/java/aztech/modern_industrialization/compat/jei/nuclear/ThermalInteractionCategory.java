@@ -170,7 +170,7 @@ public class ThermalInteractionCategory implements IRecipeCategory<ThermalIntera
             int centerY = background.getHeight() / 2;
 
             Component heatConduction = MIText.HeatConduction.text(
-                    String.format("%.2f", nuclearComponent.getHeatConduction())).setStyle(TextHelper.HEAT_CONDUCTION);
+                    String.format("%d", (int) (1000 * nuclearComponent.getHeatConduction()))).setStyle(TextHelper.HEAT_CONDUCTION);
 
             widgets.add(new Label(centerX, centerY, heatConduction).noShadow());
 

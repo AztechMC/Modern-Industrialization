@@ -1204,7 +1204,7 @@
   "text.modern_industrialization.GunpowderTime": "Overclock : %s",
   "text.modern_industrialization.GunpowderUpgrade": "Double MI Steam Machines speed for 2 minutes",
   "text.modern_industrialization.GunpowderUpgradeMachine": "Use Gunpowder to double this machine speed for 2 minutes",
-  "text.modern_industrialization.HeatConduction": "Heat Conduction %s / °Ct",
+  "text.modern_industrialization.HeatConduction": "Heat Conduction %s/°kCt",
   "text.modern_industrialization.ItemAutoExtractOff": "Item auto-extraction disabled",
   "text.modern_industrialization.ItemAutoExtractOn": "Item auto-extraction enabled",
   "text.modern_industrialization.ItemAutoInsertOff": "Item auto-insertion disabled",

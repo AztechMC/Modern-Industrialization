@@ -114,7 +114,7 @@ public enum MIText {
     GunpowderTime("Overclock : %s"),
     GunpowderUpgrade("Double MI Steam Machines speed for 2 minutes"),
     GunpowderUpgradeMachine("Use Gunpowder to double this machine speed for 2 minutes"),
-    HeatConduction("Heat Conduction %s / °Ct"),
+    HeatConduction("Heat Conduction %s/°kCt"),
     ItemAutoExtractOff("Item auto-extraction disabled"),
     ItemAutoExtractOn("Item auto-extraction enabled"),
     ItemAutoInsertOff("Item auto-insertion disabled"),

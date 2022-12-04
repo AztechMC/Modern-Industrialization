@@ -1416,7 +1416,7 @@
   "text.modern_industrialization.GunpowderTime": "[UNTRANSLATED] Overclock : %s",
   "text.modern_industrialization.GunpowderUpgrade": "[UNTRANSLATED] Double MI Steam Machines speed for 2 minutes",
   "text.modern_industrialization.GunpowderUpgradeMachine": "[UNTRANSLATED] Use Gunpowder to double this machine speed for 2 minutes",
-  "text.modern_industrialization.HeatConduction": "[UNTRANSLATED] Heat Conduction %s / °Ct",
+  "text.modern_industrialization.HeatConduction": "[UNTRANSLATED] Heat Conduction %s/°kCt",
   "text.modern_industrialization.ItemAutoExtractOff": "[UNTRANSLATED] Item auto-extraction disabled",
   "text.modern_industrialization.ItemAutoExtractOn": "[UNTRANSLATED] Item auto-extraction enabled",
   "text.modern_industrialization.ItemAutoInsertOff": "[UNTRANSLATED] Item auto-insertion disabled",

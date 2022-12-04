@@ -394,7 +394,14 @@ public class MIMaterials {
                         .addParts(MACHINE_CASING_SPECIAL.of(
                                 "Heatproof Machine Casing",
                                 "heatproof_machine_casing"))
-                        .addParts(TINY_DUST, DUST, INGOT, ROD, DOUBLE_INGOT, RING, BOLT, PLATE, LARGE_PLATE, NUGGET, GEAR)
+                        .addParts(TINY_DUST, DUST, INGOT, ROD, DOUBLE_INGOT, RING, BOLT, PLATE, NUGGET, GEAR)
+                        .addParts(
+                                LARGE_PLATE
+                                        .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> NuclearAbsorbable
+                                                .of(englishName, itemPath, 3200, -0.9 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                                        INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.INVAR,
+                                                                2),
+                                                        NuclearConstant.DESINTEGRATION_BY_ROD * 2)))
                         .addParts(BLOCK.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         CUPRONICKEL = MaterialRegistry.addMaterial(new MaterialBuilder("Cupronickel", "cupronickel")
@@ -506,7 +513,7 @@ public class MIMaterials {
                                 .addParts(
                                         LARGE_PLATE
                                                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> NuclearAbsorbable
-                                                        .of("Carbon Large Plate", itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                                        .of(englishName, itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
                                                                         2),
                                                                 NuclearConstant.DESINTEGRATION_BY_ROD * 2)))

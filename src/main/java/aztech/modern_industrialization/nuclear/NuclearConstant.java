@@ -133,4 +133,6 @@ public class NuclearConstant {
 
     public static final IsotopeParams CADMIUM = new IsotopeParams(0.95, 0.9, 0.05, 0.1);
     public static final IsotopeParams CARBON = new IsotopeParams(0.01, 0.005, 0.5, 0.85);
+
+    public static final IsotopeParams INVAR = new IsotopeParams(0.002, 0.001, 0.2, 0.5);
 }

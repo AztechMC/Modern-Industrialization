@@ -137,7 +137,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     @Override
     public double getHeatTransferCoeff() {
-        return NuclearConstant.BASE_HEAT_CONDUCTION + (getComponent().isPresent() ? getComponent().get().getHeatConduction() : 0);
+        return Math.max(NuclearConstant.BASE_HEAT_CONDUCTION + (getComponent().isPresent() ? getComponent().get().getHeatConduction() : 0), 0);
     }
 
     @Override

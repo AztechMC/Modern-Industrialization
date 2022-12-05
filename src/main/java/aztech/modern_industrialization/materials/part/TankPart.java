@@ -32,7 +32,6 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import blue.endless.jankson.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -48,6 +47,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
 

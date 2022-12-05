@@ -85,28 +85,10 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public MaterialBuilder removeParts(PartKeyProvider... parts) {
-        for (PartKeyProvider part : parts) {
-            removePart(part.key());
-        }
-        return this;
-    }
-
     private void addPart(MaterialItemPart part) {
         if (partsMap.put(part.key(), part) != null) {
             throw new IllegalStateException("Part " + part.key() + " is already registered for this material! (" + materialName + ")");
         }
-    }
-
-    private void removePart(PartKey part) {
-        partsMap.remove(part);
-    }
-
-    public MaterialBuilder overridePart(MaterialItemPart part) {
-        if (partsMap.put(part.key(), part) == null) {
-            throw new IllegalStateException("Part " + part.key() + " was not already registered for this material! (" + materialName + ")");
-        }
-        return this;
     }
 
     @SafeVarargs

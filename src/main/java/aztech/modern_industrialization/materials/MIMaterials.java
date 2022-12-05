@@ -138,7 +138,7 @@ public class MIMaterials {
 
     public static MaterialBuilder addVanillaMetal(boolean nugget, MaterialBuilder builder) {
         String n = builder.getMaterialName();
-        MaterialBuilder res = builder.overridePart(MaterialItemPart.external(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
+        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
                 .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
                 .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
@@ -146,7 +146,7 @@ public class MIMaterials {
                 .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
 
         if (nugget) {
-            res.overridePart(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
+            res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
         }
         res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
                 .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
@@ -188,7 +188,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, SHINY)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xFFE650, common(INGOT), mcitem("gold_ingot")))
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
                         .addParts(DRILL_HEAD, DRILL))
         );
 
@@ -197,7 +197,7 @@ public class MIMaterials {
                         new MaterialBuilder("Iron", "iron")
                                 .set(MaterialProperty.SET, METALLIC)
                                 .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xC8C8C8, common(INGOT), mcitem("iron_ingot")))
-                                .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                                .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
                                 .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
         );
 
@@ -206,7 +206,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, METALLIC)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xe77c56, common(INGOT), mcitem("copper_ingot")))
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE)
                         .addParts(FINE_WIRE)
                         .addParts(CABLE.of(CableTier.LV))
@@ -317,7 +317,7 @@ public class MIMaterials {
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Bakable(0xffcc00, common("ingot"), template("bronze_ingot")))
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .removeParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
+                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
                         .addParts(BARREL.of(32)).addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of())
                         .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
@@ -441,8 +441,8 @@ public class MIMaterials {
                         .set(MaterialProperty.MAIN_PART, DUST)
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.Uniform(0x071CB8))
-                        .set(MaterialProperty.HARDNESS, SOFT).addParts(ITEM_PURE_NON_METAL).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
-                        .addParts(BATTERY).removeParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+                        .set(MaterialProperty.HARDNESS, SOFT).addParts(TINY_DUST, DUST).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
+                        .addParts(BATTERY).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         SALT = MaterialRegistry.addMaterial(new MaterialBuilder("Salt", "salt")
                 .set(MaterialProperty.MAIN_PART, DUST)

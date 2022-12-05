@@ -29,13 +29,11 @@ import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import com.google.gson.JsonObject;
-import java.util.List;
 import net.minecraft.util.valueproviders.UniformInt;
-import org.jetbrains.annotations.NotNull;
 
-public interface PartJsonCreator {
+public class PartJsonCreator {
 
-    default PartTemplate regularPart(String name) {
+    public PartTemplate regularPart(String name) {
         try {
             return (PartTemplate) MIParts.class.getField(name.toUpperCase()).get(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
@@ -43,19 +41,19 @@ public interface PartJsonCreator {
         }
     }
 
-    default PartTemplate barrelPart(JsonObject json) {
-        if (json.has("english_name")) {
-            return MIParts.BARREL.of(
-                    json.get("english_name").getAsString(),
-                    json.get("path").getAsString(),
-                    json.get("stack_capacity").getAsInt());
-        } else {
-            return MIParts.BARREL.of(
-                    json.get("stack_capacity").getAsInt());
-        }
+    public PartTemplate customRegularPart(String englishName, String name) {
+        return new PartTemplate(englishName, name);
     }
 
-    default PartTemplate blockPart(String materialSet) {
+    public PartTemplate barrelPart(int stackCapacity) {
+        return MIParts.BARREL.of(stackCapacity);
+    }
+
+    public PartTemplate barrelPart(String englishName, String path, int stackCapacity) {
+        return MIParts.BARREL.of(englishName, path, stackCapacity);
+    }
+
+    public PartTemplate blockPart(String materialSet) {
         MaterialBlockSet blockSet = MaterialBlockSet.getByName(materialSet);
         if (blockSet == null) {
             throw new IllegalArgumentException("No such Material Block Set: " + materialSet);
@@ -63,7 +61,7 @@ public interface PartJsonCreator {
         return MIParts.BLOCK.of(blockSet);
     }
 
-    default PartTemplate cablePart(String tier) {
+    public PartTemplate cablePart(String tier) {
         CableTier cableTier = CableTier.getByName(tier);
         if (cableTier == null) {
             throw new IllegalArgumentException("No such Cable Tier: " + tier);
@@ -71,29 +69,39 @@ public interface PartJsonCreator {
         return MIParts.CABLE.of(cableTier);
     }
 
-    default PartTemplate casingPart(@NotNull JsonObject json) {
-        String type = json.get("type").getAsString();
-        CasingPart act = switch (type) {
-        case "default" -> MIParts.MACHINE_CASING;
-        case "pipe" -> MIParts.MACHINE_CASING_PIPE;
-        case "special" -> MIParts.MACHINE_CASING_SPECIAL;
-        default -> throw new IllegalArgumentException("No such Casing Type: " + type);
-        };
-
-        if (json.has("english_name")) {
-            if (json.has("resistance")) {
-                return act.of(json.get("english_name").getAsString(), json.get("path").getAsString(), json.get("resistance").getAsFloat());
-            }
-            return act.of(json.get("english_name").getAsString(), json.get("path").getAsString());
-        } else if (json.has("resistance")) {
-            return act.of(json.get("resistance").getAsFloat());
-        } else {
-            return act.of();
-        }
-
+    public PartTemplate machineCasing(String englishName, String path) {
+        return MIParts.MACHINE_CASING.of(englishName, path);
     }
 
-    default PartTemplate orePart(JsonObject json, boolean deepslate) {
+    public PartTemplate machineCasing(String englishName, String path, float resistance) {
+        return MIParts.MACHINE_CASING.of(englishName, path, resistance);
+    }
+
+    public PartTemplate machineCasing(float resistance) {
+        return MIParts.MACHINE_CASING.of(resistance);
+    }
+
+    public PartTemplate machineCasing() {
+        return MIParts.MACHINE_CASING.of();
+    }
+
+    public PartTemplate pipeCasing(float resistance) {
+        return MIParts.MACHINE_CASING_PIPE.of(resistance);
+    }
+
+    public PartTemplate pipeCasing() {
+        return MIParts.MACHINE_CASING_PIPE.of();
+    }
+
+    public PartTemplate specialCasing(String englishName, String path) {
+        return MIParts.MACHINE_CASING_SPECIAL.of(englishName, path);
+    }
+
+    public PartTemplate specialCasing(String englishName, String path, float resistance) {
+        return MIParts.MACHINE_CASING_SPECIAL.of(englishName, path, resistance);
+    }
+
+    public PartTemplate orePart(JsonObject json, boolean deepslate) {
         OrePart act;
         if (deepslate) {
             act = MIParts.ORE_DEEPSLATE;
@@ -121,11 +129,7 @@ public interface PartJsonCreator {
 
     }
 
-    default List<PartTemplate> oreParts(JsonObject json) {
-        return List.of(orePart(json, false), orePart(json, true));
-    }
-
-    default PartTemplate rawMetalPart(String materialSet, boolean block) {
+    public PartTemplate rawMetalPart(String materialSet, boolean block) {
         RawMetalPart act;
         if (block) {
             act = MIParts.RAW_METAL_BLOCK;
@@ -135,19 +139,11 @@ public interface PartJsonCreator {
         return act.of(MaterialRawSet.getByName(materialSet));
     }
 
-    default List<PartTemplate> rawMetalParts(String materialSet) {
-        return List.of(rawMetalPart(materialSet, false), rawMetalPart(materialSet, true));
+    public PartTemplate tankPart(int bucketCapacity) {
+        return MIParts.TANK.of(bucketCapacity);
     }
 
-    default PartTemplate tankPart(JsonObject json) {
-        if (json.has("english_name")) {
-            return MIParts.TANK.of(
-                    json.get("english_name").getAsString(),
-                    json.get("path").getAsString(),
-                    json.get("bucket_capacity").getAsInt());
-        } else {
-            return MIParts.TANK.of(
-                    json.get("bucket_capacity").getAsInt());
-        }
+    public PartTemplate tankPart(String englishName, String path, int bucketCapacity) {
+        return MIParts.TANK.of(englishName, path, bucketCapacity);
     }
 }

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.AbstractRenderer;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
@@ -64,22 +65,12 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         this.identifier = CategoryIdentifier.of(wrapped.id);
 
         this.icon = wrapped.icon instanceof ViewerCategory.Icon.Stack stack ? EntryStacks.of(stack.stack())
-                : new Renderer() {
-                    private int z = 2;
-
+                : new AbstractRenderer() {
                     @Override
                     public void render(PoseStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
                         var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
                         RenderSystem.setShaderTexture(0, texture.loc());
-                        blit(matrices, bounds.x - 1, bounds.y - 1, z, texture.u(), texture.v(), 18, 18, 256, 256);
-                    }
-
-                    public int getZ() {
-                        return z;
-                    }
-
-                    public void setZ(int z) {
-                        this.z = z;
+                        blit(matrices, bounds.x - 1, bounds.y - 1, getZ(), texture.u(), texture.v(), 18, 18, 256, 256);
                     }
                 };
     }
@@ -350,7 +341,12 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         }
 
         var point = new Point(bounds.x + ing.x, bounds.y + ing.y);
-        var slot = Widgets.createSlot(point).entries(ing.ing).markInput();
+        var slot = Widgets.createSlot(point).entries(ing.ing);
+        if (isInput) {
+            slot.markInput();
+        } else {
+            slot.markOutput();
+        }
         if (!ing.hasBackground) {
             slot.disableBackground();
         }

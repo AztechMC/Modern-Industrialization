@@ -69,6 +69,10 @@ public class RecipeConversions {
 
     @Nullable
     public static MachineRecipe ofCompostable(ItemLike compostable) {
+        if (compostable == null || compostable.asItem() == null) {
+            return null; // apparently bad mods do this
+        }
+
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
             ResourceLocation id = new MIIdentifier(Registry.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");

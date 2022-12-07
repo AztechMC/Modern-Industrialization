@@ -148,8 +148,8 @@ public class MachineRecipe implements Recipe<Container> {
             return Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
 
-        public List<ItemStack> getInputStacks() {
-            return Arrays.asList(ingredient.getItems());
+        public List<ItemStack> getStacksWithAmount() {
+            return getInputItems().stream().map(i -> new ItemStack(i, amount)).toList();
         }
     }
 
@@ -174,6 +174,10 @@ public class MachineRecipe implements Recipe<Container> {
             this.item = item;
             this.amount = amount;
             this.probability = probability;
+        }
+
+        public ItemStack getStack() {
+            return new ItemStack(item, amount);
         }
     }
 

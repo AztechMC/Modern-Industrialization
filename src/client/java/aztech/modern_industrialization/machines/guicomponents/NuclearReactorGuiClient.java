@@ -27,7 +27,7 @@ import static aztech.modern_industrialization.nuclear.NeutronType.*;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
+import aztech.modern_industrialization.compat.viewer.usage.NeutronInteractionCategory;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;

@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.compat.jeirei.MachineScreenPredicateTest;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.compat.viewer.impl.MachineScreenPredicateTest;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.Rectangle;

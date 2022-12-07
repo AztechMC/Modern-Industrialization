@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
-import aztech.modern_industrialization.compat.viewer.usage.ViewerUtil;
+import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;

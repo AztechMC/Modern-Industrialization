@@ -21,27 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.jeirei;
+package aztech.modern_industrialization.compat.viewer.impl;
 
-import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
-import aztech.modern_industrialization.machines.gui.GuiComponentClient;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.util.TextHelper;
+import java.text.DecimalFormat;
+import javax.annotation.Nullable;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
-public class MachineScreenPredicateTest {
-    public static boolean test(ReiMachineRecipes.MachineScreenPredicate predicate, MachineScreen screen) {
-        return switch (predicate) {
-        case ANY -> true;
-        case MULTIBLOCK -> {
-            for (GuiComponentClient client : screen.getMenu().components) {
-                if (client instanceof CraftingMultiblockGuiClient cmGui) {
-                    if (cmGui.isShapeValid) {
-                        yield true;
-                    }
+public class ViewerUtil {
+    private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
+
+    @Nullable
+    public static Component getProbabilityTooltip(float probability, boolean input) {
+        if (probability == 1) {
+            return null;
+        } else {
+            MutableComponent text;
+            if (probability == 0) {
+                text = MIText.NotConsumed.text();
+            } else {
+                if (input) {
+                    text = MIText.ChanceConsumption.text(PROBABILITY_FORMAT.format(probability * 100));
+                } else {
+                    text = MIText.ChanceProduction.text(PROBABILITY_FORMAT.format(probability * 100));
                 }
+
             }
-            yield false;
+            text.setStyle(TextHelper.YELLOW);
+            return text;
         }
-        };
     }
 }

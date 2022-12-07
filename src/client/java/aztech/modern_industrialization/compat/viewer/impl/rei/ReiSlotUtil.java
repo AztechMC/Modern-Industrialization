@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.compat.viewer.usage.ViewerUtil;
+import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.util.FluidHelper;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import java.util.ArrayList;

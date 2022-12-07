@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
-import aztech.modern_industrialization.compat.jeirei.MachineScreenPredicateTest;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.compat.viewer.impl.MachineScreenPredicateTest;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;

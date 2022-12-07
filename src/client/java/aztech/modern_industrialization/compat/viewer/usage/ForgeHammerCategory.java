@@ -63,7 +63,7 @@ public class ForgeHammerCategory extends ViewerCategory<MachineRecipe> {
         MachineRecipe.ItemInput input = recipe.itemInputs.get(0);
         MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);
 
-        builder.inputSlot(startPointX + 5, startPointY + 6).items(ViewerUtil.getItemStacks(input));
+        builder.inputSlot(startPointX + 5, startPointY + 6).items(input.getStacksWithAmount());
 
         if (recipe.eu > 0) {
             builder.inputSlot(startPointX - 23, startPointY + 6).ingredient(Ingredient.of(ForgeTool.TAG)).removeBackground();

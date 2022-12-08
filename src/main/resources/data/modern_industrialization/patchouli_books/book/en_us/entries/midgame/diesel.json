@@ -6,7 +6,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/turbo_diesel_generator_asbl",
-      "text": "Keep in mind you can use a Turbo Diesel Generator for compat HV power generation. As you might expect, it produces up to 512 EU/t. Remember that you can find the amount of energy stored in every fuel with REI."
+      "text": "Keep in mind you can use a Turbo Diesel Generator for compat HV power generation. As you might expect, it produces up to 1024 EU/t. Remember that you can find the amount of energy stored in every fuel with REI."
     },
     {
       "type": "crafting",

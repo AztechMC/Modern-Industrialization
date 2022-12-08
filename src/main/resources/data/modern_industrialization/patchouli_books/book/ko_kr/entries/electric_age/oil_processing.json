@@ -15,7 +15,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/diesel_generator_asbl",
-      "text": "디젤 발전기는 다양한 연료들을 사용할 수 있습니다. REI에서 연료들의 에너지 생산량을 확인할 수 있습니다. 디젤 발전기는 최대 128 EU/t 의 전기를 생산하고, MV 전선에만 연결됩니다."
+      "text": "디젤 발전기는 다양한 연료들을 사용할 수 있습니다. REI에서 연료들의 에너지 생산량을 확인할 수 있습니다. 디젤 발전기는 최대 256 EU/t 의 전기를 생산하고, MV 전선에만 연결됩니다."
     },
     {
       "type": "text",

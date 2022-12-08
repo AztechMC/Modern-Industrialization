@@ -15,7 +15,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/diesel_generator_asbl",
-      "text": "柴油发电机可以燃烧各种燃料，你可以在REI中查看每种燃料产生多少EU。柴油发电机的产量高达128EU/t，并且只能连接到中压电缆。"
+      "text": "柴油发电机可以燃烧各种燃料，你可以在REI中查看每种燃料产生多少EU。柴油发电机的产量高达256EU/t，并且只能连接到中压电缆。"
     },
     {
       "type": "text",

@@ -252,6 +252,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                     @Nullable Component tooltip) {
                 if (tooltip != null) {
                     var font = Minecraft.getInstance().font;
+                    // TOOD: should use alignedX
                     if (x <= mouseX && y <= mouseY && mouseX <= x + font.width(text) && mouseY <= y + font.lineHeight) {
                         tooltips.add(tooltip);
                     }

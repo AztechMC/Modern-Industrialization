@@ -39,6 +39,9 @@
     "jei_mod_plugin": [
       "aztech.modern_industrialization.compat.viewer.impl.jei.ManualPluginJei",
       "aztech.modern_industrialization.compat.viewer.impl.jei.ViewerPluginJei"
+    ],
+    "emi": [
+      "aztech.modern_industrialization.compat.viewer.impl.emi.ViewerPluginEmi"
     ]
   },
   "mixins": [

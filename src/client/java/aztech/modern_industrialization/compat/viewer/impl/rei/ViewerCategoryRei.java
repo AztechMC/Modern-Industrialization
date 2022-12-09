@@ -31,6 +31,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.AbstractRenderer;
@@ -52,6 +53,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -238,6 +240,11 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         @Override
         public CategoryIdentifier<?> getCategoryIdentifier() {
             return identifier;
+        }
+
+        @Override
+        public Optional<ResourceLocation> getDisplayLocation() {
+            return recipe instanceof Recipe<?>r ? Optional.of(r.getId()) : Optional.empty();
         }
     }
 

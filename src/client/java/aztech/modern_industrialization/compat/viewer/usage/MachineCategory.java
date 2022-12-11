@@ -42,6 +42,7 @@ import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -103,6 +104,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
         // regular recipes
         machineRecipes.stream()
                 .filter(params.recipePredicate)
+                .sorted(Comparator.comparing(MachineRecipe::getId))
                 .forEach(consumer);
 
         // converted recipes

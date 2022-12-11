@@ -182,7 +182,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 this.tooltip = List.of(tooltip);
             }
             if (probability == 0) {
-                isCatalyst = true;
+                markCatalyst();
             } else if (probability != 1) {
                 isInTree = false;
             }

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
@@ -43,15 +44,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.Slot;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-class MachineSlotLockingHandler implements EmiRecipeHandler<MachineMenuCommon> {
+class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
     @Override
     public List<Slot> getInputSources(MachineMenuCommon menu) {
-        return List.of();
+        return menu.slots.stream()
+                // Player inventory or machine input
+                .filter(s -> s.index < 36 || s instanceof ConfigurableItemStack.ConfigurableItemSlot cis && cis.getConfStack().canPlayerInsert())
+                .toList();
     }
 
     @Override
     public List<Slot> getCraftingSlots(MachineMenuCommon menu) {
-        return List.of();
+        return menu.slots.stream()
+                // Machine input only
+                .filter(s -> s instanceof ConfigurableItemStack.ConfigurableItemSlot cis && cis.getConfStack().canPlayerInsert())
+                .toList();
     }
 
     @Override
@@ -66,18 +73,32 @@ class MachineSlotLockingHandler implements EmiRecipeHandler<MachineMenuCommon> {
 
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiPlayerInventory inventory, AbstractContainerScreen<MachineMenuCommon> screen) {
-        return transfer(recipe, screen, false);
+        var handler = screen.getMenu();
+        if (!canApply(handler, ((ViewerCategoryEmi<?>.ViewerRecipe) recipe).getCategory()))
+            return false;
+        if (Minecraft.getInstance().screen == screen) {
+            // Let EMI move items
+            return inventory.canCraft(recipe);
+        } else {
+            return lockSlots(recipe, screen, false);
+        }
     }
 
     @Override
     public boolean performFill(EmiRecipe recipe, AbstractContainerScreen<MachineMenuCommon> screen, EmiFillAction action, int amount) {
-        return transfer(recipe, screen, true);
-    }
-
-    private boolean transfer(EmiRecipe recipe, AbstractContainerScreen<MachineMenuCommon> screen, boolean doTransfer) {
         var handler = screen.getMenu();
         if (!canApply(handler, ((ViewerCategoryEmi<?>.ViewerRecipe) recipe).getCategory()))
             return false;
+        if (Minecraft.getInstance().screen == screen) {
+            // Let EMI move items
+            return EmiRecipeHandler.super.performFill(recipe, screen, action, amount);
+        } else {
+            return lockSlots(recipe, screen, true);
+        }
+    }
+
+    private boolean lockSlots(EmiRecipe recipe, AbstractContainerScreen<MachineMenuCommon> screen, boolean doTransfer) {
+        var handler = screen.getMenu();
         ReiSlotLockingClient slotLocking = ((MachineMenuClient) handler).getComponent(ReiSlotLockingClient.class);
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return false;

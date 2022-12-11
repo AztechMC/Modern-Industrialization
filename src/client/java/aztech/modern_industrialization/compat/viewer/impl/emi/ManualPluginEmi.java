@@ -33,7 +33,7 @@ public class ManualPluginEmi implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addRecipeHandler(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, new ForgeHammerRecipeHandler());
-        registry.addRecipeHandler(ModernIndustrialization.SCREEN_HANDLER_MACHINE, new MachineSlotLockingHandler());
+        registry.addRecipeHandler(ModernIndustrialization.SCREEN_HANDLER_MACHINE, new MachineRecipeHandler());
 
         // We need a generic one because we want any subclass of MIHandledScreen
         registry.addGenericDragDropHandler(new MIDragDropHandler());

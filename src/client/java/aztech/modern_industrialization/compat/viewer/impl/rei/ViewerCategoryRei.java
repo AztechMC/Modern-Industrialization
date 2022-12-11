@@ -32,6 +32,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.AbstractRenderer;
@@ -125,7 +126,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
             @Override
             public void invisibleOutput(ItemStack item) {
                 var ing = new IngredientBuilder(0, 0, false);
-                ing.items(item);
+                ing.item(item);
                 ing.isVisible = false;
                 outputs.add(ing);
             }
@@ -159,11 +160,13 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         @Override
         public ViewerCategory.SlotBuilder variant(TransferVariant<?> variant) {
             if (variant instanceof ItemVariant item) {
-                items(item.toStack());
+                item(item.toStack());
             } else if (variant instanceof FluidVariant fluid) {
                 isFluid = true;
                 hasBackground = false;
-                ing.add(ReiSlotUtil.createFluidNoAmount(fluid));
+                if (!fluid.isBlank()) {
+                    ing.add(ReiSlotUtil.createFluidNoAmount(fluid));
+                }
             } else {
                 throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
             }
@@ -178,16 +181,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
             return this;
         }
 
-        @Override
-        public ViewerCategory.SlotBuilder items(ItemStack... stacks) {
-            for (var stack : stacks) {
-                ing.add(EntryStacks.of(stack));
-            }
-            return this;
-        }
-
-        @Override
-        public ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
+        private ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
             for (var stack : stacks) {
                 ing.add(EntryStacks.of(stack).tooltip(ReiSlotUtil.getProbabilitySetting(probability, input)));
             }
@@ -195,13 +189,27 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         }
 
         @Override
-        public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient) {
-            return items(ingredient.getItems());
+        public ViewerCategory.SlotBuilder item(ItemStack stack, float probability) {
+            return items(List.of(stack), probability);
+        }
+
+        @Override
+        public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient, long amount, float probability) {
+            return items(Stream.of(ingredient.getItems()).map(i -> {
+                var cp = i.copy();
+                cp.setCount((int) amount);
+                return cp;
+            }).toList(), probability);
         }
 
         @Override
         public ViewerCategory.SlotBuilder removeBackground() {
             hasBackground = false;
+            return this;
+        }
+
+        @Override
+        public ViewerCategory.SlotBuilder markCatalyst() {
             return this;
         }
     }

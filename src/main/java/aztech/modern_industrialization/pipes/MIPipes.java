@@ -98,7 +98,7 @@ public class MIPipes {
         var item = itemDef.asItem();
         pipeItems.put(type, item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.FLUID_PIPES, item);
+        TagsToGenerate.generateTag(MITags.FLUID_PIPES, item, "Fluid Pipes");
     }
 
     private void registerItemPipeType(PipeColor color) {
@@ -109,7 +109,7 @@ public class MIPipes {
         var item = itemDef.asItem();
         pipeItems.put(type, item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.ITEM_PIPES, item);
+        TagsToGenerate.generateTag(MITags.ITEM_PIPES, item, "Item Pipes");
     }
 
     public void registerCableType(String englishName, String name, int color, CableTier tier) {

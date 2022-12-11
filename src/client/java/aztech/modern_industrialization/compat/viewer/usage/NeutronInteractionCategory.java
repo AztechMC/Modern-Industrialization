@@ -109,16 +109,16 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
         switch (recipe.type) {
         case FISSION -> {
-            builder.inputSlot(52, centerY).items(((ItemVariant) recipe.nuclearComponent.getVariant()).toStack());
+            builder.inputSlot(52, centerY).variant(recipe.nuclearComponent.getVariant());
         }
         case NEUTRON_PRODUCT -> {
             long amount = recipe.nuclearComponent.getNeutronProductAmount();
             int baseX = 66;
 
             if (recipe.nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
-                builder.inputSlot(baseX - 35, centerY).items(itemVariant.toStack());
+                builder.inputSlot(baseX - 35, centerY).item(itemVariant.toStack());
                 ItemVariant product = (ItemVariant) recipe.nuclearComponent.getNeutronProduct();
-                builder.outputSlot(baseX + 35, centerY).items(product.toStack((int) amount));
+                builder.outputSlot(baseX + 35, centerY).item(product.toStack((int) amount));
             } else if (recipe.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
                 float probability = (float) recipe.nuclearComponent.getNeutronProductProbability();
                 builder.inputSlot(baseX - 35, centerY).fluid(fluidVariant, 1, probability);

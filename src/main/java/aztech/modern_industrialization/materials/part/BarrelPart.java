@@ -81,7 +81,7 @@ public class BarrelPart implements PartKeyProvider {
                                     .noLootTable()
                                     .sortOrder(SortOrder.BARRELS.and(stackCapacity)));
 
-                    TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem());
+                    TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem(), "Barrels");
                     BarrelBlock block = blockDefinition.asBlock();
                     BarrelItem item = (BarrelItem) blockDefinition.asItem();
 

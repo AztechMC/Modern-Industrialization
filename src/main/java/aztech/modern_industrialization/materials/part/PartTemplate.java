@@ -85,9 +85,28 @@ public class PartTemplate implements PartKeyProvider {
         // added to the tags
         for (PartKey partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item);
+                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item, getTagEnglishName(itemTag));
             }
         }
+    }
+
+    private static String getTagEnglishName(String tag) {
+        var path = tag.split(":")[1].replace('_', ' ');
+        var sb = new StringBuilder();
+        boolean capitalize = true;
+
+        for (char c : path.toCharArray()) {
+            if (c == ' ') {
+                capitalize = true;
+            } else if (capitalize) {
+                sb.append(Character.toUpperCase(c));
+                capitalize = false;
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
     }
 
     public PartTemplate asBlock(SortOrder sortOrder, TextureGenParams textureGenParams, float hardness, float resistance, int miningLevel) {

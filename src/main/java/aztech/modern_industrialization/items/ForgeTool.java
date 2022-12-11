@@ -42,7 +42,7 @@ public class ForgeTool extends TieredItem {
 
     public ForgeTool(Tier material, FabricItemSettings p) {
         super(forgeHammerMaterial(material), p.stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
-        TagsToGenerate.generateTag(TAG, this);
+        TagsToGenerate.generateTag(TAG, this, "Forge Hammer Tools");
     }
 
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {

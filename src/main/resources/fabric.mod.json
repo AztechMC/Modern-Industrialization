@@ -41,6 +41,7 @@
       "aztech.modern_industrialization.compat.viewer.impl.jei.ViewerPluginJei"
     ],
     "emi": [
+      "aztech.modern_industrialization.compat.viewer.impl.emi.ManualPluginEmi",
       "aztech.modern_industrialization.compat.viewer.impl.emi.ViewerPluginEmi"
     ]
   },

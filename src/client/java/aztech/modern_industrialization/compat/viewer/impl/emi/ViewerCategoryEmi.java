@@ -55,11 +55,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * TODO LIST
- * - Hammer is in the forge hammer recipe tree, should probably be a catalyst.
- * - I/Os with probability 0 are not considered catalysts, and are not in the recipe tree.
- * - Need to fix fluid slot background.
- * - Ingredient counts are missing and tags are not displayed properly.
- * - Need to remove REI's padding.
+ * - Tags need to be translated.
  * - Reactor fluid transformation doesn't render amounts properly (probably emi's fault).
  */
 class ViewerCategoryEmi<D> extends EmiRecipeCategory {
@@ -102,7 +98,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             @Override
             public void invisibleOutput(ItemStack item) {
                 var ing = new IngredientBuilder(0, 0, false);
-                ing.items(item);
+                ing.item(item);
                 ing.isVisible = false;
                 ing.isInTree = false;
                 outputs.add(ing);
@@ -120,45 +116,55 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
         processLayout(recipe, inputs, outputs);
 
+        // Remove empty ingredients that only exist for rendering reasons (e.g. empty fluid slots)
+        inputs.removeIf(b -> b.ing.isEmpty());
+        outputs.removeIf(b -> b.ing.isEmpty());
+
+        // Separate catalysts
+        List<IngredientBuilder> catalysts = inputs.stream().filter(b -> b.isCatalyst).toList();
+        inputs.removeIf(b -> b.isCatalyst);
+
         boolean inTree = !inputs.isEmpty() && !outputs.isEmpty() && inputs.stream().allMatch(b -> b.isInTree)
                 && outputs.stream().allMatch(b -> b.isInTree);
-        return new ViewerRecipe(recipe, convertInputs(inputs), convertOutputs(outputs), inTree);
+        return new ViewerRecipe(recipe, convertInputs(inputs), convertInputs(catalysts), convertOutputs(outputs), inTree);
     }
 
     private static List<EmiIngredient> convertInputs(List<IngredientBuilder> list) {
-        return list.stream().map(b -> EmiIngredient.of(b.ing)).toList();
+        return list.stream().map(b -> b.ing).toList();
     }
 
     private static List<EmiStack> convertOutputs(List<IngredientBuilder> list) {
         // A bit cursed... but we know that there's always one stack per output ;)
-        return list.stream().flatMap(b -> b.ing.stream()).toList();
+        return list.stream().flatMap(b -> b.ing.getEmiStacks().stream()).toList();
     }
 
     private static class IngredientBuilder implements ViewerCategory.SlotBuilder {
         private final int x, y;
         private final boolean input;
-        private final List<EmiStack> ing;
+        private EmiIngredient ing = EmiStack.EMPTY;
         private List<Component> tooltip = List.of();
         private boolean isFluid = false;
         private boolean hasBackground = true;
         private boolean isVisible = true;
         private boolean isInTree = true;
+        private boolean isCatalyst = false;
 
         IngredientBuilder(int x, int y, boolean input) {
             this.x = x;
             this.y = y;
             this.input = input;
-            this.ing = new ArrayList<>();
         }
 
         @Override
         public ViewerCategory.SlotBuilder variant(TransferVariant<?> variant) {
             if (variant instanceof ItemVariant item) {
-                items(item.toStack());
+                item(item.toStack());
             } else if (variant instanceof FluidVariant fluid) {
                 isFluid = true;
                 hasBackground = false;
-                ing.add(EmiStack.of(fluid));
+                if (!fluid.isBlank()) {
+                    ing = EmiStack.of(fluid);
+                }
             } else {
                 throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
             }
@@ -170,12 +176,8 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
             isFluid = true;
             hasBackground = false;
-            // TODO: check how fluid amount is displayed and adjust accordingly
-            ing.add(EmiStack.of(fluid, amount));
+            ing = EmiStack.of(fluid, amount);
             processProbability(probability);
-            if (probability != 1) {
-                isInTree = false;
-            }
             return this;
         }
 
@@ -184,31 +186,25 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             if (tooltip != null) {
                 this.tooltip = List.of(tooltip);
             }
-            if (probability != 1) {
+            if (probability == 0) {
+                isCatalyst = true;
+            } else if (probability != 1) {
                 isInTree = false;
             }
         }
 
         @Override
-        public ViewerCategory.SlotBuilder items(ItemStack... stacks) {
-            for (var stack : stacks) {
-                ing.add(EmiStack.of(stack));
-            }
-            return this;
-        }
-
-        @Override
-        public ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
-            for (var stack : stacks) {
-                ing.add(EmiStack.of(stack));
-            }
+        public ViewerCategory.SlotBuilder item(ItemStack stack, float probability) {
+            ing = EmiStack.of(stack);
             processProbability(probability);
             return this;
         }
 
         @Override
-        public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient) {
-            return items(ingredient.getItems());
+        public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient, long amount, float probability) {
+            ing = EmiIngredient.of(ingredient, amount);
+            processProbability(probability);
+            return this;
         }
 
         @Override
@@ -216,23 +212,31 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             hasBackground = false;
             return this;
         }
+
+        @Override
+        public ViewerCategory.SlotBuilder markCatalyst() {
+            isCatalyst = true;
+            return this;
+        }
     }
 
     public class ViewerRecipe implements EmiRecipe {
-        private final D recipe;
+        final D recipe;
         private final List<EmiIngredient> inputs;
+        private final List<EmiIngredient> catalysts;
         private final List<EmiStack> outputs;
         private final boolean inTree;
 
-        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiStack> outputs, boolean inTree) {
+        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiIngredient> catalysts, List<EmiStack> outputs, boolean inTree) {
             this.recipe = recipe;
             this.inputs = inputs;
+            this.catalysts = catalysts;
             this.outputs = outputs;
             this.inTree = inTree;
         }
 
         @Override
-        public EmiRecipeCategory getCategory() {
+        public ViewerCategoryEmi<D> getCategory() {
             return ViewerCategoryEmi.this;
         }
 
@@ -247,26 +251,27 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         }
 
         @Override
+        public List<EmiIngredient> getCatalysts() {
+            return catalysts;
+        }
+
+        @Override
         public List<EmiStack> getOutputs() {
             return outputs;
         }
 
         @Override
         public int getDisplayWidth() {
-            return wrapped.width;
+            return wrapped.width - 8;
         }
 
         @Override
         public int getDisplayHeight() {
-            return wrapped.height;
+            return wrapped.height - 8;
         }
 
         @Override
         public void addWidgets(WidgetHolder widgets) {
-            // Recipe base
-            // TODO: is it necessary?
-            // widgets.add(Widgets.createRecipeBase(bounds));
-
             // Extra widgets
             wrapped.buildWidgets(recipe, new ViewerCategory.WidgetList() {
                 @Override
@@ -279,7 +284,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                     case CENTER -> x - width / 2f;
                     case RIGHT -> x - width;
                     };
-                    widgets.addText(text.getVisualOrderText(), alignedX, (int) y, overrideColor ? 0xFF404040 : -1, shadow);
+                    widgets.addText(text.getVisualOrderText(), alignedX - 4, (int) y - 4, overrideColor ? 0xFF404040 : -1, shadow);
                     if (tooltip != null) {
                         tooltip(alignedX, (int) y, width, font.lineHeight, List.of(tooltip));
                     }
@@ -292,12 +297,12 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
                 @Override
                 public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
-                    widgets.addTexture(loc, x, y, width, height, u, v);
+                    widgets.addTexture(loc, x - 4, y - 4, width, height, u, v);
                 }
 
                 @Override
                 public void drawable(ViewerCategory.DrawableWidget widget) {
-                    widgets.addDrawable(0, 0, 0, 0, (matrices, mouseX, mouseY, delta) -> {
+                    widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
                         widget.draw(matrices);
                     });
                 }
@@ -305,7 +310,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 @Override
                 public void item(double x, double y, double w, double h, ItemLike item) {
                     var stack = EmiStack.of(item);
-                    widgets.addDrawable(0, 0, 0, 0, (matrices, mouseX, mouseY, delta) -> {
+                    widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
                         matrices.pushPose();
                         matrices.translate(x, y, 0);
                         matrices.scale((float) w / 16, (float) h / 16, 0);
@@ -317,7 +322,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 @Override
                 public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
                     var mapped = tooltip.stream().map(c -> ClientTooltipComponent.create(c.getVisualOrderText())).toList();
-                    widgets.addDrawable(x, y, w, h, (matrices, mouseX, mouseY, delta) -> {
+                    widgets.addDrawable(x - 4, y - 4, w, h, (matrices, mouseX, mouseY, delta) -> {
                     }).tooltip((mouseX, mouseY) -> mapped);
                 }
             });
@@ -348,7 +353,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     private static void createFluidSlotBackground(WidgetHolder widgets, int x, int y) {
         widgets.addDrawable(0, 0, 0, 0, (matrices, mouseX, mouseY, delta) -> {
             RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            Minecraft.getInstance().screen.blit(matrices, x - 1, y - 1, 18, 0, 18, 18);
+            Minecraft.getInstance().screen.blit(matrices, x - 1 - 4, y - 1 - 4, 18, 0, 18, 18);
         });
     }
 
@@ -360,12 +365,15 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         if (ing.isFluid) {
             createFluidSlotBackground(widgets, ing.x, ing.y);
         }
-        var slot = widgets.addSlot(EmiIngredient.of(ing.ing), ing.x - 1, ing.y - 1);
+        var slot = widgets.addSlot(ing.ing, ing.x - 1 - 4, ing.y - 1 - 4);
         if (!isInput) {
             slot.recipeContext(recipe);
         }
         if (!ing.hasBackground) {
             slot.drawBack(false);
+        }
+        if (ing.isCatalyst) {
+            slot.catalyst(true);
         }
         for (var component : ing.tooltip) {
             slot.appendTooltip(component);

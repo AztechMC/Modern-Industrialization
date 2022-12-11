@@ -33,15 +33,18 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 public class ForgeHammerCategory extends ViewerCategory<MachineRecipe> {
+    public static final ResourceLocation ID = new MIIdentifier("forge_hammer");
+
     private final int startPointX;
     private final int startPointY;
 
     protected ForgeHammerCategory() {
-        super(MachineRecipe.class, new MIIdentifier("forge_hammer"), MIBlock.FORGE_HAMMER.asBlock().getName(),
+        super(MachineRecipe.class, ID, MIBlock.FORGE_HAMMER.asBlock().getName(),
                 MIBlock.FORGE_HAMMER.asItem().getDefaultInstance(), 150, 40);
 
         this.startPointX = width / 2 - 25;

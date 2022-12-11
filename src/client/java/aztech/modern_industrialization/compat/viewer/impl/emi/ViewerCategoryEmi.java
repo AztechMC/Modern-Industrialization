@@ -53,11 +53,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * TODO LIST
- * - Tags need to be translated.
- * - Reactor fluid transformation doesn't render amounts properly (probably emi's fault).
- */
 class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     public final ViewerCategory<D> wrapped;
 
@@ -314,7 +309,19 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                         matrices.pushPose();
                         matrices.translate(x, y, 0);
                         matrices.scale((float) w / 16, (float) h / 16, 0);
-                        stack.render(matrices, 0, 0, delta);
+
+                        {
+                            PoseStack modelViewStack = RenderSystem.getModelViewStack();
+                            modelViewStack.pushPose();
+                            {
+                                modelViewStack.mulPoseMatrix(matrices.last().pose());
+                                stack.render(matrices, 0, 0, delta);
+                            }
+                            modelViewStack.popPose();
+                            // Restore model-view matrix now that the item has been rendered
+                            RenderSystem.applyModelViewMatrix();
+                        }
+
                         matrices.popPose();
                     });
                 }

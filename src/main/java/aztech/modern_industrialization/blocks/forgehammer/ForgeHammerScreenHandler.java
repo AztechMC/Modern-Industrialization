@@ -38,6 +38,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ResultContainer;
@@ -51,10 +52,10 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     private final DataSlot selectedRecipe;
     private final List<MachineRecipe> availableRecipes;
 
-    private final Slot output;
+    public final Slot output;
 
-    private final Slot tool;
-    private final Slot input;
+    public final Slot tool;
+    public final Slot input;
     private final ContainerLevelAccess context;
     private final Level world;
     private final Player player;
@@ -297,4 +298,119 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         });
     }
 
+    public void moveRecipe(ResourceLocation recipeId, int fillAction, int amount) {
+        MachineRecipe recipe = MIMachineRecipeTypes.FORGE_HAMMER.getRecipe(this.world, recipeId);
+        if (recipe == null) {
+            return;
+        }
+
+        var recipeInput = recipe.itemInputs.get(0);
+        boolean firstPass = true;
+
+        while (amount > 0) {
+            boolean didSomething = false;
+
+            if (recipeInput.matches(input.getItem())) {
+                // Pull from player inventory
+                int targetAmount = firstPass ? recipeInput.amount : input.getItem().getCount() + recipeInput.amount;
+                int delta = targetAmount - input.getItem().getCount();
+                if (delta < 0) {
+                    player.getInventory().placeItemBackInInventory(input.remove(-delta));
+                    didSomething = true;
+                } else {
+                    int toPull = delta;
+                    for (int i = 0; i < 36; ++i) {
+                        Slot slot = this.slots.get(i);
+                        if (ItemStack.isSameItemSameTags(slot.getItem(), input.getItem())) {
+                            int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
+                            if (toMove > 0) {
+                                ItemStack removed = slot.remove(toMove);
+                                input.getItem().grow(removed.getCount());
+                                input.setChanged();
+                                toPull -= removed.getCount();
+                                didSomething = true;
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Remove old input
+                var oldInput = input.remove(input.getItem().getCount());
+                player.getInventory().placeItemBackInInventory(oldInput);
+                // Find matching stack
+                var matchingStack = ItemStack.EMPTY;
+                for (int i = 0; i < 36 && matchingStack.isEmpty(); ++i) {
+                    Slot slot = this.slots.get(i);
+                    if (recipeInput.matches(slot.getItem())) {
+                        matchingStack = slot.getItem().copy();
+                    }
+                }
+                if (matchingStack.isEmpty()) {
+                    return;
+                }
+                // Pull matching input from player inventory
+                int toPull = recipeInput.amount;
+                input.set(matchingStack.copy());
+                input.getItem().setCount(0);
+                for (int i = 0; i < 36; ++i) {
+                    Slot slot = this.slots.get(i);
+                    if (ItemStack.isSameItemSameTags(slot.getItem(), matchingStack)) {
+                        int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
+                        if (toMove > 0) {
+                            ItemStack removed = slot.remove(toMove);
+                            input.getItem().grow(removed.getCount());
+                            input.setChanged();
+                            toPull -= removed.getCount();
+                            didSomething = true;
+                        }
+                    }
+                }
+            }
+
+            // Move hammer into gui
+            if (recipe.eu > 0 && !this.tool.hasItem()) {
+                for (int i = 0; i < 36; ++i) {
+                    Slot slot = this.slots.get(i);
+                    if (slot.getItem().is(ForgeTool.TAG)) {
+                        this.tool.set(slot.remove(1));
+                        didSomething = true;
+                        break;
+                    }
+                }
+            }
+
+            // Select recipe
+            int recipeIndex = -1;
+            for (int i = 0; i < this.availableRecipes.size(); ++i) {
+                if (this.availableRecipes.get(i).getId().equals(recipeId)) {
+                    recipeIndex = i;
+                    break;
+                }
+            }
+            if (recipeIndex == -1) {
+                return;
+            }
+            if (selectedRecipe.get() != recipeIndex) {
+                selectedRecipe.set(recipeIndex);
+                didSomething = true;
+            }
+            this.populateResult();
+
+            // Process fill action
+            ItemStack oldOutput = output.getItem().copy();
+            switch (fillAction) {
+            case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
+            case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
+            }
+            if (!ItemStack.isSame(oldOutput, output.getItem())) {
+                didSomething = true;
+            }
+
+            amount--;
+            if (!didSomething && !firstPass) {
+                break;
+            }
+            firstPass = false;
+        }
+    }
 }

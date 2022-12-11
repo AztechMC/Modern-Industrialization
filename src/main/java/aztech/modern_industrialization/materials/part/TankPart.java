@@ -96,7 +96,7 @@ public class TankPart implements PartKeyProvider {
                     TankBlock block = blockDefinition.asBlock();
                     TankItem item = (TankItem) blockDefinition.asItem();
 
-                    TagsToGenerate.generateTag(MITags.TANKS, item);
+                    TagsToGenerate.generateTag(MITags.TANKS, item, "Tanks");
 
                     // noinspection unchecked,rawtypes
                     bet.setValue((BlockEntityType) Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,

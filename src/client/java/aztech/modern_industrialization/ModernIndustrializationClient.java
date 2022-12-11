@@ -97,10 +97,11 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         RuntimeDataGen.init();
 
         // Warn if neither JEI nor REI is present!
-        if (!FabricLoader.getInstance().isModLoaded("jei") && !FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+        if (!FabricLoader.getInstance().isModLoaded("emi") && !FabricLoader.getInstance().isModLoaded("jei")
+                && !FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
             ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-                if (MIConfig.getConfig().enableNoJeiMessage) {
-                    client.player.displayClientMessage(MIText.NoJei.text().withStyle(ChatFormatting.GOLD), false);
+                if (MIConfig.getConfig().enableNoEmiMessage) {
+                    client.player.displayClientMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD), false);
                 }
             });
         }

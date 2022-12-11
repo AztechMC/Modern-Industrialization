@@ -147,10 +147,6 @@ public class MachineRecipe implements Recipe<Container> {
         public List<Item> getInputItems() {
             return Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
-
-        public List<ItemStack> getStacksWithAmount() {
-            return getInputItems().stream().map(i -> new ItemStack(i, amount)).toList();
-        }
     }
 
     public static class FluidInput {

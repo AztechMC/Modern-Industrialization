@@ -42,8 +42,8 @@ public class MIConfig implements ConfigData {
     @OreConfigEntry
     public List<String> blacklistedOres = Collections.emptyList();
 
-    @EnglishTranslation(value = "Enable login message when JEI and REI are missing")
-    public boolean enableNoJeiMessage = true;
+    @EnglishTranslation(value = "Enable login message when EMI, JEI and REI are missing")
+    public boolean enableNoEmiMessage = true;
     @EnglishTranslation(value = "Grant Guidebook at Spawn")
     public boolean spawnWithGuideBook = true;
     @EnglishTranslation(value = "Grant Guidebook at Respawn")

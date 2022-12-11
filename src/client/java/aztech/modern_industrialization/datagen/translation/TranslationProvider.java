@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
@@ -108,6 +109,10 @@ public final class TranslationProvider implements DataProvider {
 
         for (var entry : ReiMachineRecipes.categories.entrySet()) {
             addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
+        }
+
+        for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
+            addTranslation(entry.getKey(), entry.getValue());
         }
     }
 

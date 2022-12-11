@@ -42,6 +42,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
 
@@ -60,6 +61,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return getManagerRecipes(world);
     }
 
+    @Nullable
     public MachineRecipe getRecipe(Level world, ResourceLocation id) {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
     }

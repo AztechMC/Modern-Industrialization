@@ -109,17 +109,17 @@ public abstract class ViewerCategory<D> {
 
         SlotBuilder fluid(FluidVariant fluid, long amount, float probability);
 
-        SlotBuilder items(ItemStack... stacks);
-
-        SlotBuilder items(List<ItemStack> stacks, float probability);
-
-        default SlotBuilder items(List<ItemStack> stacks) {
-            return items(stacks, 1);
+        default SlotBuilder item(ItemStack stack) {
+            return item(stack, 1);
         }
 
-        SlotBuilder ingredient(Ingredient ingredient);
+        SlotBuilder item(ItemStack stack, float probability);
+
+        SlotBuilder ingredient(Ingredient ingredient, long amount, float probability);
 
         SlotBuilder removeBackground();
+
+        SlotBuilder markCatalyst();
     }
 
     public interface WidgetList {

@@ -32,6 +32,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -133,9 +134,11 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                     @Override
                     public ViewerCategory.SlotBuilder variant(TransferVariant<?> variant) {
                         if (variant instanceof ItemVariant item) {
-                            items(item.toStack());
+                            item(item.toStack());
                         } else if (variant instanceof FluidVariant fluid) {
-                            slotBuilder.addFluidStack(fluid.getFluid(), 1, fluid.copyNbt());
+                            if (!fluid.isBlank()) {
+                                slotBuilder.addFluidStack(fluid.getFluid(), 1, fluid.copyNbt());
+                            }
                             JeiSlotUtil.overrideFluidRenderer(slotBuilder);
                             slotBuilder.setBackground(fluidSlot, -1, -1);
                         } else {
@@ -153,30 +156,34 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                         return this;
                     }
 
-                    @Override
-                    public ViewerCategory.SlotBuilder items(ItemStack... stacks) {
-                        for (var stack : stacks) {
-                            slotBuilder.addItemStack(stack);
-                        }
-                        return this;
-                    }
-
-                    @Override
-                    public ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
+                    private ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
                         slotBuilder.addItemStacks(stacks);
                         JeiSlotUtil.customizeTooltip(slotBuilder, probability);
                         return this;
                     }
 
                     @Override
-                    public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient) {
-                        slotBuilder.addIngredients(ingredient);
-                        return this;
+                    public ViewerCategory.SlotBuilder item(ItemStack stack, float probability) {
+                        return items(List.of(stack), probability);
+                    }
+
+                    @Override
+                    public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient, long amount, float probability) {
+                        return items(Stream.of(ingredient.getItems()).map(i -> {
+                            var cp = i.copy();
+                            cp.setCount((int) amount);
+                            return cp;
+                        }).toList(), probability);
                     }
 
                     @Override
                     public ViewerCategory.SlotBuilder removeBackground() {
                         slotBuilder.setBackground(helpers.getGuiHelper().createBlankDrawable(0, 0), 0, 0);
+                        return this;
+                    }
+
+                    @Override
+                    public ViewerCategory.SlotBuilder markCatalyst() {
                         return this;
                     }
                 };
@@ -252,6 +259,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                     @Nullable Component tooltip) {
                 if (tooltip != null) {
                     var font = Minecraft.getInstance().font;
+                    // TOOD: should use alignedX
                     if (x <= mouseX && y <= mouseY && mouseX <= x + font.width(text) && mouseY <= y + font.lineHeight) {
                         tooltips.add(tooltip);
                     }

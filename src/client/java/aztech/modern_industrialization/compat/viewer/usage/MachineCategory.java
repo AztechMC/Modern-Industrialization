@@ -148,7 +148,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
 
             if (i < recipe.itemInputs.size()) {
                 var input = recipe.itemInputs.get(i);
-                slot.items(input.getStacksWithAmount(), input.probability);
+                slot.ingredient(input.ingredient, input.amount, input.probability);
             }
         }
     }
@@ -164,7 +164,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
 
             if (i < recipe.itemOutputs.size()) {
                 var output = recipe.itemOutputs.get(i);
-                slot.items(List.of(output.getStack()), output.probability);
+                slot.item(output.getStack(), output.probability);
             }
         }
     }
@@ -181,6 +181,8 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
                 slot.fluid(FluidVariant.of(input.fluid), input.amount, input.probability);
+            } else {
+                slot.variant(FluidVariant.blank());
             }
         }
     }
@@ -197,6 +199,8 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
             if (i < recipe.fluidOutputs.size()) {
                 var output = recipe.fluidOutputs.get(i);
                 slot.fluid(FluidVariant.of(output.fluid), output.amount, output.probability);
+            } else {
+                slot.variant(FluidVariant.blank());
             }
         }
     }

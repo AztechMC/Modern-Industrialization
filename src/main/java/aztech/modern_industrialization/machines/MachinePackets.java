@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
@@ -75,6 +76,19 @@ public class MachinePackets {
 
                     // Lock
                     slotLocking.slotLockable.lockSlots(recipeId, player.getInventory());
+                }
+            });
+        };
+        public static final ResourceLocation FORGE_HAMMER_MOVE_RECIPE = new MIIdentifier("forge_hammer_move_recipe");
+        public static final ServerPlayNetworking.PlayChannelHandler ON_FORGE_HAMMER_MOVE_RECIPE = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            ResourceLocation recipeId = buf.readResourceLocation();
+            int fillAction = buf.readByte();
+            int amount = buf.readInt();
+            ms.execute(() -> {
+                AbstractContainerMenu menu = player.containerMenu;
+                if (menu.containerId == syncId && menu instanceof ForgeHammerScreenHandler fh) {
+                    fh.moveRecipe(recipeId, fillAction, amount);
                 }
             });
         };

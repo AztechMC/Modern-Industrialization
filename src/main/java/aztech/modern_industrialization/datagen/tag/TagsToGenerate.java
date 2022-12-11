@@ -24,19 +24,23 @@
 package aztech.modern_industrialization.datagen.tag;
 
 import java.util.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class TagsToGenerate {
 
     static final Map<String, List<Item>> tagToItemMap = new HashMap<>();
+    public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
 
-    public static void generateTag(String tag, Item item) {
+    public static void generateTag(String tag, Item item, String tagEnglishName) {
         if (tag.startsWith("#")) {
             throw new IllegalArgumentException("Tag must not start with #: " + tag);
         }
         tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
+        var tagId = new ResourceLocation(tag);
+        tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 
     public static void addTagToTag(String tagTobeAdded, String tagTarget) {
@@ -52,7 +56,7 @@ public class TagsToGenerate {
 
     }
 
-    public static void generateTag(TagKey<Item> tag, Item item) {
-        generateTag(tag.location().toString(), item);
+    public static void generateTag(TagKey<Item> tag, Item item, String tagEnglishName) {
+        generateTag(tag.location().toString(), item, tagEnglishName);
     }
 }

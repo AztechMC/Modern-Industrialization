@@ -156,7 +156,7 @@ public enum MIText {
     NeutronsMultiplication("Max %s neutrons emitted"),
     NeutronsRate("%s neutrons/t"),
     NewVersion("A new version of Modern Industrialization (%s) is available on %s !"),
-    NoJei("WARNING: To play with Modern Industrialization, installing either Just Enough Items or Roughly Enough Items is STRONGLY RECOMMENDED. Otherwise you won't be able to view the recipes in-game, and you will not be able to deal with conflicting machine recipes. This message can be disabled in the config."),
+    NoEmi("WARNING: To play with Modern Industrialization, we STRONGLY RECOMMEND using EMI (Item and Recipe Viewer). Otherwise you won't be able to view the recipes in-game, and you will not be able to deal with conflicting machine recipes. Just Enough Items and Roughly Enough Items are also supported. This message can be disabled in the config."),
     NoToolRequired("No Tool Required"),
     NuclearFuelEfficiencyTooltip("%s produced for %s of fuel consumed"),
     NuclearFuelMode("Nuclear Fuel"),

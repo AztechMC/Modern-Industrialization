@@ -43,14 +43,14 @@ public class PartTemplate implements PartKeyProvider {
     public PartTemplate(PartEnglishNameFormatter englishNameFormatter, String key) {
         this(englishNameFormatter, key, (partContext, part, itemPath, itemId, itemTag, englishName) -> {
             var item = createSimpleItem(englishName, itemPath, partContext, part);
-            setupTag(part, itemTag, item);
+            setupTag(partContext, part, itemTag, item);
         }, new TextureGenParams.SimpleRecoloredItem());
     }
 
     public PartTemplate(PartEnglishNameFormatter englishNameFormatter, PartKey key) {
         this(englishNameFormatter, key, (partContext, part, itemPath, itemId, itemTag, englishName) -> {
             var item = createSimpleItem(englishName, itemPath, partContext, part);
-            setupTag(part, itemTag, item);
+            setupTag(partContext, part, itemTag, item);
         }, new TextureGenParams.SimpleRecoloredItem(), new PartItemPathFormatter.Default());
     }
 
@@ -79,15 +79,38 @@ public class PartTemplate implements PartKeyProvider {
         return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part)).asItem();
     }
 
-    private static void setupTag(PartKey part, String itemTag, Item item) {
+    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, Item item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
         for (PartKey partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item);
+                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item, getTagEnglishName(context, itemTag));
             }
         }
+    }
+
+    private static String getTagEnglishName(MaterialBuilder.PartContext context, String tag) {
+        var path = tag.split(":")[1];
+        // A bit hacky, but this is done to preserve weird capitalization, for example for LE Uranium
+        path = path.replace(context.getMaterialName(), context.getMaterialEnglishName());
+        path = path.replace('_', ' ');
+        var sb = new StringBuilder();
+        boolean capitalize = true;
+
+        for (char c : path.toCharArray()) {
+            if (c == ' ') {
+                sb.append(c);
+                capitalize = true;
+            } else if (capitalize) {
+                sb.append(Character.toUpperCase(c));
+                capitalize = false;
+            } else {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
     }
 
     public PartTemplate asBlock(SortOrder sortOrder, TextureGenParams textureGenParams, float hardness, float resistance, int miningLevel) {
@@ -102,7 +125,7 @@ public class PartTemplate implements PartKeyProvider {
                             .destroyTime(hardness)
                             .explosionResistance(resistance));
 
-            setupTag(part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition.asItem());
 
         };
         return new PartTemplate(englishNameFormatter, partKey, blockRegister, textureGenParams, itemPathFormatter);
@@ -124,7 +147,7 @@ public class PartTemplate implements PartKeyProvider {
 
             );
 
-            setupTag(part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition.asItem());
 
         };
         return new PartTemplate(englishNameFormatter, partKey, columnBlockRegister, new TextureGenParams.ColumnBlock(), itemPathFormatter);

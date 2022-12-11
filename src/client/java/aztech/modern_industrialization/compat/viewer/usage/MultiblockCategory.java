@@ -69,7 +69,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         for (int i = 0; i < SLOTS; ++i) {
             var slot = builder.inputSlot(MARGIN + i * 20, MARGIN);
             if (i < recipe.materials.size()) {
-                slot.items(recipe.materials.get(i));
+                slot.item(recipe.materials.get(i));
             }
         }
 

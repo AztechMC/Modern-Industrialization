@@ -159,6 +159,7 @@ public class ModernIndustrialization {
                 ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.ON_CHANGE_SHAPE);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE, MachinePackets.C2S.ON_FORGE_HAMMER_MOVE_RECIPE);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);

@@ -41,6 +41,9 @@ import java.util.List;
 import java.util.Optional;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
@@ -48,6 +51,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -73,6 +78,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -215,11 +221,19 @@ public class SteamDrillItem
             return InteractionResultHolder.pass(itemStack);
         FluidState fluidState = world.getFluidState(hitResult.getBlockPos());
         if (fluidState.getType() == Fluids.WATER || fluidState.getType() == Fluids.FLOWING_WATER) {
-            itemStack.getOrCreateTag().putInt("water", FULL_WATER);
+            fillWater(user, itemStack);
             return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
         }
 
         return super.use(world, user, hand);
+    }
+
+    private void fillWater(Player player, ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (tag.getInt("water") != FULL_WATER) {
+            tag.putInt("water", FULL_WATER);
+            player.playNotifySound(SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1, 1);
+        }
     }
 
     @Override
@@ -296,6 +310,27 @@ public class SteamDrillItem
     public boolean overrideOtherStackedOnMe(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
         return handleOtherStackedOnMe(stackBarrel, itemStack, slot, clickType, player, cursorStackReference);
+    }
+
+    @Override
+    public boolean handleClick(Player player, ItemStack barrelLike, Mutable<ItemStack> otherStack) {
+        // Try to refill water first if it's contained in the other stack
+        var otherStorage = ContainerItemContext.withInitial(otherStack.getValue()).find(FluidStorage.ITEM);
+        if (otherStorage != null) {
+            long totalWater = 0;
+            for (var view : otherStorage) {
+                if (view.getResource().isOf(Fluids.WATER)) {
+                    totalWater += view.getAmount();
+                }
+            }
+
+            if (totalWater * otherStack.getValue().getCount() >= FluidConstants.BUCKET) {
+                fillWater(player, barrelLike);
+                return true;
+            }
+        }
+
+        return ItemContainingItemHelper.super.handleClick(player, barrelLike, otherStack);
     }
 
     @Override

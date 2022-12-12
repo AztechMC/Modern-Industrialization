@@ -41,7 +41,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
     default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             Mutable<ItemStack> ref = new MutableObject<>(slot.getItem());
-            boolean result = handleClick(stackBarrel, ref);
+            boolean result = handleClick(player, stackBarrel, ref);
             slot.set(ref.getValue());
             return result;
         } else {
@@ -53,7 +53,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
             SlotAccess cursorStackReference) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             Mutable<ItemStack> ref = new MutableObject<>(itemStack);
-            boolean result = handleClick(stackBarrel, ref);
+            boolean result = handleClick(player, stackBarrel, ref);
             cursorStackReference.set(ref.getValue());
             slot.setChanged();
             return result;
@@ -62,7 +62,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         }
     }
 
-    private boolean handleClick(ItemStack barrelLike, Mutable<ItemStack> otherStack) {
+    default boolean handleClick(Player player, ItemStack barrelLike, Mutable<ItemStack> otherStack) {
         if (!(barrelLike.getItem() instanceof ItemContainingItemHelper helper)) {
             throw new AssertionError("This method should only be called on a ItemContainingItemHelper.");
         }

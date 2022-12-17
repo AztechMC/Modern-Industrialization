@@ -30,8 +30,7 @@ import aztech.modern_industrialization.util.Simulation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.FluidEmiStack;
-import dev.emi.emi.api.stack.ItemEmiStack;
+import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -46,6 +45,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,8 +56,11 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
             return false;
         }
 
-        FluidVariant fk = ingredient instanceof FluidEmiStack fs ? FluidVariant.of((Fluid) fs.getKey(), fs.getNbt()) : null;
-        ItemVariant ik = ingredient instanceof ItemEmiStack is ? is.item : null;
+        // Note: might provide peculiar behavior for tags. Checking for size == 1 is an option
+        EmiStack stack = ingredient.getEmiStacks().get(0);
+
+        FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
         @Nullable
         GuiEventListener element = gui.getChildAt(mouseX, mouseY).orElse(null);
         if (element instanceof ReiDraggable dw) {
@@ -101,8 +104,10 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         }
 
         List<Rect2i> bounds = new ArrayList<>();
-        FluidVariant fk = ingredient instanceof FluidEmiStack fs ? FluidVariant.of((Fluid) fs.getKey(), fs.getNbt()) : null;
-        ItemVariant ik = ingredient instanceof ItemEmiStack is ? is.item : null;
+        EmiStack stack = ingredient.getEmiStacks().get(0);
+
+        FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
                 if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {

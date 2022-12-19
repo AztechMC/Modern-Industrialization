@@ -73,6 +73,11 @@ public final class MIInventory implements IComponent {
         }
     }
 
+    public void addListener(ChangeListener listener, Object token) {
+        listener.listenAll(getItemStacks(), token);
+        listener.listenAll(getFluidStacks(), token);
+    }
+
     public List<ConfigurableItemStack> getItemStacks() {
         return itemStorage.stacks;
     }

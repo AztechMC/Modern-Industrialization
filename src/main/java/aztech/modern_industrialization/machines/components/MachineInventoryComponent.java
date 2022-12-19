@@ -69,10 +69,8 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
         fluidStacks.addAll(fluidInputs);
         fluidStacks.addAll(fluidOutputs);
 
-        listener.listenAll(itemStacks, null);
-        listener.listenAll(fluidStacks, null);
-
         this.inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
+        this.inventory.addListener(listener, null);
     }
 
     @Override
@@ -108,5 +106,6 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
     @Override
     public void readNbt(CompoundTag tag) {
         this.inventory.readNbt(tag);
+        this.inventory.addListener(listener, null);
     }
 }

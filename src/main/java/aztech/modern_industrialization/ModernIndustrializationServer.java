@@ -21,16 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen;
+package aztech.modern_industrialization;
 
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import aztech.modern_industrialization.datagen.MIDatagenServer;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
+import net.fabricmc.api.DedicatedServerModInitializer;
 
-public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
-
+public class ModernIndustrializationServer implements DedicatedServerModInitializer {
     @Override
-    public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-        MIDatagenClient.configure(dataGenerator, false);
-        MIDatagenServer.configure(dataGenerator, false);
+    public void onInitializeServer() {
+        if (MIConfig.getConfig().datagenOnStartup) {
+            RuntimeDataGen.run(gen -> {
+                MIDatagenServer.configure(gen, true);
+            });
+        }
     }
 }

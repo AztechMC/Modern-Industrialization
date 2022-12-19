@@ -23,14 +23,16 @@
  */
 package aztech.modern_industrialization.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
+import aztech.modern_industrialization.datagen.model.ModelProvider;
+import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
+public class MIDatagenClient {
+    public static void configure(FabricDataGenerator gen, boolean runtimeDatagen) {
+        gen.addProvider(MachineModelsProvider::new);
+        gen.addProvider(ModelProvider::new);
 
-    @Override
-    public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-        MIDatagenClient.configure(dataGenerator, false);
-        MIDatagenServer.configure(dataGenerator, false);
+        gen.addProvider(new TexturesProvider(gen, runtimeDatagen));
     }
 }

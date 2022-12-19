@@ -29,6 +29,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelToolti
 import aztech.modern_industrialization.blocks.storage.barrel.client.CreativeBarrelClientSetup;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankClientSetup;
 import aztech.modern_industrialization.client.model.MachineModelLoader;
+import aztech.modern_industrialization.datagen.MIDatagenClient;
+import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryS2CPacketHandlers;
 import aztech.modern_industrialization.items.ConfigCardItem;
@@ -94,7 +96,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
         VersionEvents.init();
-        RuntimeDataGen.init();
 
         // Warn if neither JEI nor REI is present!
         if (!FabricLoader.getInstance().isModLoaded("emi") && !FabricLoader.getInstance().isModLoaded("jei")
@@ -109,7 +110,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
 
         if (MIConfig.getConfig().datagenOnStartup) {
-            RuntimeDataGen.run();
+            RuntimeDataGen.run(gen -> {
+                MIDatagenClient.configure(gen, true);
+                MIDatagenServer.configure(gen, true);
+            });
         }
     }
 

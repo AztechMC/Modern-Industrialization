@@ -23,6 +23,9 @@
     "client": [
       "aztech.modern_industrialization.ModernIndustrializationClient"
     ],
+    "server": [
+      "aztech.modern_industrialization.ModernIndustrializationServer"
+    ],
     "rei_client": [
       "aztech.modern_industrialization.compat.viewer.impl.rei.ManualPluginRei",
       "aztech.modern_industrialization.compat.viewer.impl.rei.ViewerPluginRei"

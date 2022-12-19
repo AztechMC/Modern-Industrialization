@@ -23,12 +23,7 @@
  */
 package aztech.modern_industrialization.misc.runtime_datagen;
 
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
-
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.datagen.MIDatagen;
-import com.mojang.brigadier.Command;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,39 +31,21 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.chat.Component;
 
 public class RuntimeDataGen {
-    public static void init() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            if (!MIConfig.getConfig().enableDebugCommands) {
-                return;
-            }
-
-            dispatcher.register(literal("miclient")
-                    .then(literal("datagen")
-                            .executes(ctx -> {
-                                ctx.getSource().sendFeedback(Component.literal("Starting MI runtime datagen"));
-                                run();
-                                ctx.getSource().sendFeedback(Component.literal("Finished MI runtime datagen"));
-                                return Command.SINGLE_SUCCESS;
-                            })));
-        });
-    }
-
-    public static void run() {
+    public static void run(Consumer<FabricDataGenerator> config) {
         try {
-            runInner();
+            runInner(config);
         } catch (Exception ex) {
             ModernIndustrialization.LOGGER.error("Failed to runtime datagen", ex);
         }
     }
 
-    private static void runInner() throws Exception {
+    private static void runInner(Consumer<FabricDataGenerator> config) throws Exception {
         var miFolder = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization");
         var dataOutput = miFolder.resolve("runtime_datagen");
 
@@ -76,7 +53,7 @@ public class RuntimeDataGen {
 
         var modContainer = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
         var gen = new FabricDataGenerator(dataOutput, modContainer, true);
-        MIDatagen.configure(gen, true);
+        config.accept(gen);
         gen.run();
 
         ModernIndustrialization.LOGGER.info("Starting MI runtime pack calculation");

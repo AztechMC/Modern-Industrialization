@@ -25,8 +25,6 @@ package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
-import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
-import aztech.modern_industrialization.datagen.model.ModelProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
@@ -41,11 +39,10 @@ import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvid
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
-import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public class MIDatagen {
+public class MIDatagenServer {
     public static void configure(FabricDataGenerator gen, boolean runtimeDatagen) {
         gen.addProvider(PetrochemRecipesProvider::new);
         gen.addProvider(PlankRecipesProvider::new);
@@ -58,19 +55,15 @@ public class MIDatagen {
         gen.addProvider(CompatRecipesProvider::new);
         gen.addProvider(SteelUpgradeProvider::new);
         gen.addProvider(VanillaCompatRecipesProvider::new);
+
         gen.addProvider(BlockLootTableProvider::new);
-
-        var translationProvider = new TranslationProvider(gen, runtimeDatagen);
-        gen.addProvider(new MIAdvancementsProvider(gen, translationProvider));
-
-        gen.addProvider(MachineModelsProvider::new);
-        gen.addProvider(ModelProvider::new);
-        gen.addProvider(translationProvider);
 
         gen.addProvider(MIBlockTagProvider::new);
         gen.addProvider(new MIItemTagProvider(gen, runtimeDatagen));
         gen.addProvider(MIPoiTypeTagProvider::new);
 
-        gen.addProvider(new TexturesProvider(gen, runtimeDatagen));
+        var translationProvider = new TranslationProvider(gen, runtimeDatagen);
+        gen.addProvider(new MIAdvancementsProvider(gen, translationProvider));
+        gen.addProvider(translationProvider);
     }
 }

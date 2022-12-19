@@ -61,7 +61,8 @@ public class MIConfig implements ConfigData {
     public boolean colorWaterLava = true;
     @EnglishTranslation(value = "Enable UNSUPPORTED and DANGEROUS debug commands")
     public boolean enableDebugCommands = false;
-    @EnglishTranslation(value = "Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly.")
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly. (Restart needed)")
     public boolean enableBidirectionalEnergyCompat = false;
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")

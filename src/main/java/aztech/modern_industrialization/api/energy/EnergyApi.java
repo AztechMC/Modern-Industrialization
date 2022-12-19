@@ -80,40 +80,39 @@ public class EnergyApi {
 
     static {
         // Compat wrapper for TR energy
-        EnergyStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
-            if (!MIConfig.getConfig().enableBidirectionalEnergyCompat || IN_COMPAT.get()) {
-                return null;
-            }
-
-            IN_COMPAT.set(true);
-            try {
-                return SIDED.find(world, pos, state, blockEntity, context);
-            } finally {
-                IN_COMPAT.set(false);
-            }
-        });
-
-        SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
-            if (IN_COMPAT.get()) {
-                return null;
-            }
-
-            IN_COMPAT.set(true);
-            try {
-                EnergyStorage trStorage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
-                if (trStorage == null) {
+        if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {
+            EnergyStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+                if (IN_COMPAT.get()) {
                     return null;
                 }
 
-                if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {
-                    return new WrappedTrStorage(trStorage);
-                } else {
-                    return trStorage.supportsInsertion() ? new InsertOnlyTrStorage(trStorage) : null;
+                IN_COMPAT.set(true);
+                try {
+                    return SIDED.find(world, pos, state, blockEntity, context);
+                } finally {
+                    IN_COMPAT.set(false);
                 }
-            } finally {
-                IN_COMPAT.set(false);
-            }
-        });
+            });
+
+            SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    EnergyStorage trStorage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
+                    return trStorage == null ? null : new WrappedTrStorage(trStorage);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            });
+        } else {
+            SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+                EnergyStorage trStorage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
+                return trStorage == null || !trStorage.supportsInsertion() ? null : new InsertOnlyTrStorage(trStorage);
+            });
+        }
     }
 
     private record InsertOnlyTrStorage(EnergyStorage trStorage) implements MIEnergyStorage.NoExtract {

@@ -107,7 +107,7 @@ public class ElectricityNetwork extends PipeNetwork {
             }
         }
         // Sort from low to high result
-        sortableTargets.sort(Comparator.comparing(t -> t.simulationResult));
+        sortableTargets.sort(Comparator.comparingLong(t -> t.simulationResult));
         // Actually perform the transfer
         long transferredAmount = 0;
         for (int i = 0; i < sortableTargets.size(); ++i) {

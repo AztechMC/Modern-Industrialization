@@ -29,6 +29,7 @@ import aztech.modern_industrialization.util.StorageUtil2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -38,10 +39,13 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
+
+    private BlockApiCache<Storage<ItemVariant>, Direction> outputCache;
 
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;
@@ -78,7 +82,14 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractItems(Level world, BlockPos pos, Direction direction) {
-        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
+        if (outputCache == null) {
+            outputCache = BlockApiCache.create(ItemStorage.SIDED, (ServerLevel) world, pos.relative(direction));
+        } else if (outputCache.getWorld() != world || !outputCache.getPos().equals(pos.relative(direction))) {
+            // Needed in case we change the output side...
+            outputCache = BlockApiCache.create(ItemStorage.SIDED, (ServerLevel) world, pos.relative(direction));
+        }
+
+        Storage<ItemVariant> target = outputCache.find(direction.getOpposite());
         target = StorageUtil2.wrapInventory(target);
 
         if (target != null) {

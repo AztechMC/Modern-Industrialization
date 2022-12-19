@@ -103,7 +103,7 @@ public class FluidNetwork extends PipeNetwork {
     private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidVariant fluid, long maxAmount,
             TransactionContext transaction) {
         // Sort by decreasing priority
-        targets.sort(Comparator.comparing(target -> -target.priority));
+        targets.sort(Comparator.comparingInt(target -> -target.priority));
         // Transfer for each bucket
         long transferredAmount = 0;
         int bucketStart = 0;
@@ -135,7 +135,7 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
         // Sort from low result to high result
-        bucket.sort(Comparator.comparing(target -> target.simulationResult));
+        bucket.sort(Comparator.comparingLong(target -> target.simulationResult));
         // Actually perform the transfer
         long transferredAmount = 0;
         for (int i = 0; i < bucket.size(); ++i) {

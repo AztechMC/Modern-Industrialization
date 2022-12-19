@@ -34,6 +34,7 @@ import aztech.modern_industrialization.pipes.impl.PipeMeshCache;
 import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
+import aztech.modern_industrialization.util.RenderHelper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +47,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -73,7 +73,7 @@ public class MIPipesClient {
                 if (shape != null) {
                     BlockPos pos = boc.blockPos();
                     Vec3 camPos = wrc.camera().getPosition();
-                    LevelRenderer.renderVoxelShape(wrc.matrixStack(), wrc.consumers().getBuffer(RenderType.lines()), shape.shape,
+                    RenderHelper.renderVoxelShape(wrc.matrixStack(), wrc.consumers().getBuffer(RenderType.lines()), shape.shape,
                             pos.getX() - camPos.x(),
                             pos.getY() - camPos.y(),
                             pos.getZ() - camPos.z(),

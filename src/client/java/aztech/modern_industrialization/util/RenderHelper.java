@@ -55,6 +55,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -71,6 +72,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
@@ -385,6 +389,13 @@ public class RenderHelper {
         var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
         Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
     };
+
+    public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
+            float green, float blue, float alpha) {
+        for (AABB aabb : shape.toAabbs()) {
+            LevelRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, red, green, blue, alpha);
+        }
+    }
 
     public static void setupRenderHelper() {
 

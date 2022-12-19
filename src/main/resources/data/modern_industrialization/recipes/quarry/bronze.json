@@ -19,6 +19,11 @@
       "probability": 0.4
     },
     {
+      "item": "modern_industrialization:lignite_coal_ore",
+      "amount": 1,
+      "probability": 0.24
+    },
+    {
       "item": "minecraft:copper_ore",
       "amount": 1,
       "probability": 0.2

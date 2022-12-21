@@ -31,15 +31,28 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.compat.ae2.pipe.MENetwork;
+import aztech.modern_industrialization.compat.ae2.pipe.MENetworkData;
+import aztech.modern_industrialization.compat.ae2.pipe.MENetworkNode;
+import aztech.modern_industrialization.items.SortOrder;
+import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.PipeColor;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.impl.PipeItem;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 
 public class MIAEAddon implements IAEAddonEntrypoint {
+
     public static final Item ENERGY_P2P_TUNNEL = new PartItem<>(
             new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
+    public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
     @Override
     public void onAe2Initialized() {
@@ -51,5 +64,24 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(item);
         PartApiLookup.register(EnergyApi.SIDED, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
+    }
+
+    public static void onInitializePipes() {
+        for (var color : PipeColor.values()) {
+            registerMEPipeType(color);
+        }
+    }
+
+    private static void registerMEPipeType(PipeColor color) {
+        var pipeId = color.prefix + "me_wire";
+        var type = PipeNetworkType.register(new MIIdentifier(pipeId), MENetwork::new,
+                MENetworkNode::new, color.color, false);
+        PIPES.add(type);
+        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "ME Wire", pipeId,
+                prop -> new PipeItem(prop, type, new MENetworkData()), SortOrder.PIPES);
+        var item = itemDef.asItem();
+        MIPipes.INSTANCE.register(type, item);
+        MIPipes.PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        // TagsToGenerate.generateTag(MITags.ME_WIRE, item, "ME Wire");
     }
 }

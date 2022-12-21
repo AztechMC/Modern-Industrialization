@@ -50,6 +50,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -83,6 +84,10 @@ public class MIPipes {
         }
         for (PipeColor color : PipeColor.values()) {
             registerItemPipeType(color);
+        }
+
+        for (var entrypoint : FabricLoader.getInstance().getEntrypoints("mi:pipes", ExtraPipesInitializer.class)) {
+            entrypoint.onInitializePipes();
         }
 
         registerPackets();
@@ -122,6 +127,14 @@ public class MIPipes {
         pipeItems.put(type, item);
         ELECTRICITY_PIPE_TIER.put(item, tier);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
+    }
+
+    public void register(PipeNetworkType type, PipeItem item) {
+        if (pipeItems.containsKey(type)) {
+            throw new IllegalStateException("Type " + type + " already registered");
+        }
+
+        pipeItems.put(type, item);
     }
 
     public PipeItem getPipeItem(PipeNetworkType type) {

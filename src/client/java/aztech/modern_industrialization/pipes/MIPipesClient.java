@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.pipes.api.ExtraPipeRenderers;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
@@ -35,6 +36,7 @@ import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.util.RenderHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +47,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
@@ -123,7 +126,7 @@ public class MIPipesClient {
             Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
     private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
 
-    public static final List<PipeRenderer.Factory> RENDERERS = List.of(ITEM_RENDERER, FLUID_RENDERER, ELECTRICITY_RENDERER);
+    public static final List<PipeRenderer.Factory> RENDERERS = new ArrayList<>();
 
     private void registerRenderers() {
         for (var type : PipeNetworkType.getTypes().values()) {
@@ -134,6 +137,14 @@ public class MIPipesClient {
             } else if (type.getIdentifier().getPath().endsWith("cable")) {
                 PipeRenderer.register(type, ELECTRICITY_RENDERER);
             }
+        }
+
+        for (var entrypoint : FabricLoader.getInstance().getEntrypoints("mi:pipes-renderers", ExtraPipeRenderers.class)) {
+            entrypoint.registerPipeRenderers();
+        }
+
+        for (var value : PipeNetworkType.getTypes().values()) {
+            RENDERERS.add(PipeRenderer.get(value));
         }
     }
 }

@@ -23,10 +23,32 @@
  */
 package aztech.modern_industrialization.compat.ae2.pipe;
 
+import appeng.api.networking.*;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import net.minecraft.nbt.CompoundTag;
 
 public class MENetworkData extends PipeNetworkData {
+
+    private final IManagedGridNode mainNode;
+
+    public MENetworkData() {
+        this.mainNode = GridHelper.createManagedNode(this, new IGridNodeListener<>() {
+            @Override
+            public void onSecurityBreak(MENetworkData nodeOwner, IGridNode node) {
+                throw new UnsupportedOperationException("How did we get here?");
+            }
+
+            @Override
+            public void onSaveChanges(MENetworkData nodeOwner, IGridNode node) {
+            }
+        })
+                .setFlags(GridFlags.PREFERRED)
+                .setIdlePowerUsage(0.0);
+    }
+
+    public IManagedGridNode getMainNode() {
+        return mainNode;
+    }
 
     @Override
     public PipeNetworkData clone() {
@@ -35,10 +57,12 @@ public class MENetworkData extends PipeNetworkData {
 
     @Override
     public void fromTag(CompoundTag tag) {
+        this.getMainNode().loadFromNBT(tag);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
+        this.getMainNode().saveToNBT(tag);
         return tag;
     }
 

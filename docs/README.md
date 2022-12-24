@@ -29,3 +29,6 @@ MI can generate most of these resources for you if you ask it to.
 
 ### Adding new machines
 Refer to [ADDING_MACHINES.md](ADDING_MACHINES.md) for more information on how to add machines via KubeJS.
+
+### Adding new fluids
+Refer to [ADDING_FLUIDS.md](ADDING_FLUIDS.md) for more information on how to add fluids via KubeJS.

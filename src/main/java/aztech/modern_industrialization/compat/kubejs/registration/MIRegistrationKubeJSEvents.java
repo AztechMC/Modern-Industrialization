@@ -21,23 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
-public class KubeJSProxy {
-    public static KubeJSProxy instance = new KubeJSProxy();
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
 
-    public void fireAddMaterialsEvent() {
-    }
+public interface MIRegistrationKubeJSEvents {
+    EventGroup EVENT_GROUP = EventGroup.of("MIRegistrationEvents");
 
-    public void fireRegisterFluidsEvent() {
-    }
-
-    public void fireRegisterRecipeTypesEvent() {
-    }
-
-    public void fireRegisterMachineCasingsEvent() {
-    }
-
-    public void fireRegisterMachinesEvent() {
-    }
+    EventHandler REGISTER_FLUIDS = EVENT_GROUP.startup("registerFluids", () -> RegisterFluidsEventJS.class);
 }

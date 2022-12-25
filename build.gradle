@@ -443,10 +443,12 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
 
             relations {
                 requiredDependency "fabric-api"
-                requiredDependency "roughly-enough-items"
                 requiredDependency "cloth-config"
                 optionalDependency "wthit"
                 optionalDependency "megane"
+                optionalDependency "emi"
+                optionalDependency "jei"
+                optionalDependency "roughly-enough-items"
                 embeddedLibrary "no-indium"
                 embeddedLibrary "patchouli-fabric"
                 embeddedLibrary "pal"

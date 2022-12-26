@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 303 missing, 2 unused",
+  "__summary": "1304 ok, 304 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1515,6 +1515,7 @@
   "text.modern_industrialization.LockingModeOn": "Блокировка правки включена",
   "text.modern_industrialization.LubricantTooltip": "ПКМ по электрическому станку: потребит %s мв за 1 такт эффективности",
   "text.modern_industrialization.MachineUpgrade": "Модернизация электрического станка: Максимальный разгон +%s",
+  "text.modern_industrialization.MachineUpgradeStack": "[UNTRANSLATED] Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Может производить до %s",
   "text.modern_industrialization.MaxEuProductionSteam": "Может производить до %s общей стоимости %s",
   "text.modern_industrialization.MaxTemp": "Макс. температура: %d C°",

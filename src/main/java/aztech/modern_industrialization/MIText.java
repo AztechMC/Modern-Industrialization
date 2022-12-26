@@ -128,6 +128,7 @@ public enum MIText {
     Locked("Locked"),
     LubricantTooltip("Right-Click on Electric Machine : consume %s mb for 1 efficiency tick"),
     MachineUpgrade("Electric Machine Upgrade : Max Overclock +%s"),
+    MachineUpgradeStack("Total Stack Upgrade +%s"),
     MaxTemp("Max Temperature : %d C°"),
     MaxEuProduction("Can produce up to %s"),
     MaxEuProductionSteam("Can produce up to %s worth of %s"),

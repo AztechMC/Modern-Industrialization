@@ -165,9 +165,8 @@ public class MITooltips {
 
     // Tooltips
 
-    public static final TooltipAttachment CABLES = TooltipAttachment.of(
-            (item) -> item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe),
-            itemStack -> {
+    public static final TooltipAttachment CABLES = TooltipAttachment
+            .of((item) -> item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe), itemStack -> {
                 var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
                 return new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build();
             });
@@ -179,9 +178,10 @@ public class MITooltips {
                 return new Line(MIText.EbfMaxEu).arg(eu).build();
             });
 
-    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
-            (item) -> item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem(),
-            (itemStack) -> new Line(MIText.AllowCreativeFligth).build()).noShiftRequired();
+    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment
+            .of((item) -> item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem(),
+                    (itemStack) -> new Line(MIText.AllowCreativeFligth).build())
+            .noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),
             new Line(MIText.LubricantTooltip).arg(LubricantHelper.mbPerTick));
@@ -189,27 +189,23 @@ public class MITooltips {
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
 
     public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultiline(
-            (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock &&
-                    !machineBlock.getBlockEntityInstance().getTooltips().isEmpty(),
+            (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock
+                    && !machineBlock.getBlockEntityInstance().getTooltips().isEmpty(),
             (itemStack) -> (((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).getBlockEntityInstance()).getTooltips());
 
-    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(
-            item -> item.asItem() instanceof NuclearAbsorbable,
-            (itemStack) -> {
-                List<Component> tooltips = new LinkedList<>();
-                long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
-                tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs).arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax)
-                        .build());
-                if (itemStack.getItem() instanceof NuclearFuel fuel) {
-                    long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
-                    tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
-                }
-                return tooltips;
-            });
+    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(item -> item.asItem() instanceof NuclearAbsorbable, (itemStack) -> {
+        List<Component> tooltips = new LinkedList<>();
+        long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
+        tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs).arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
+        if (itemStack.getItem() instanceof NuclearFuel fuel) {
+            long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
+            tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+        }
+        return tooltips;
+    });
 
-    public static final TooltipAttachment ORES = TooltipAttachment.ofMultiline(
-            (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock,
-            (itemStack) -> {
+    public static final TooltipAttachment ORES = TooltipAttachment
+            .ofMultiline((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock, (itemStack) -> {
                 OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
                 List<Component> lines = new LinkedList<>();
                 MIConfig config = MIConfig.getConfig();
@@ -224,13 +220,19 @@ public class MITooltips {
                 return lines;
             });
 
-    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
-            SpeedUpgrade.UPGRADES::containsKey,
+    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(SpeedUpgrade.UPGRADES::containsKey,
             (itemStack) -> new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(itemStack.getItem())).build());
 
-    public static final TooltipAttachment UPGRADES = TooltipAttachment.of(
-            UpgradeComponent.UPGRADES::containsKey,
-            (itemStack) -> new Line(MIText.MachineUpgrade).arg(UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+    public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultiline(UpgradeComponent.UPGRADES::containsKey, (itemStack) -> {
+        List<Component> lines = new LinkedList<>();
+        lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+
+        if (itemStack.getCount() > 1) {
+            lines.add(new Line(MIText.MachineUpgradeStack)
+                    .arg(itemStack.getCount() * UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+        }
+        return lines;
+    });
 
     // Long Tooltip with only text, no need of MIText
 
@@ -248,10 +250,8 @@ public class MITooltips {
             TOOLTIPS_ENGLISH_TRANSLATION.put(translationKey[i], englishTooltipsLine[i]);
         }
 
-        MITooltips.TooltipAttachment.ofMultiline(
-                attachTo::test,
-                itemStack -> Arrays.stream(translationKey).map(s -> Component.translatable(s).withStyle(MITooltips.DEFAULT_STYLE))
-                        .collect(Collectors.toList()));
+        MITooltips.TooltipAttachment.ofMultiline(attachTo::test, itemStack -> Arrays.stream(translationKey)
+                .map(s -> Component.translatable(s).withStyle(MITooltips.DEFAULT_STYLE)).collect(Collectors.toList()));
     }
 
     private static void add(ItemLike itemLike, String... englishTooltipsLine) {
@@ -267,24 +267,15 @@ public class MITooltips {
                 "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
         add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
         add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
-        add(MIBlock.TRASH_CAN,
-                "Will delete any item or fluid sent into it.",
-                "Can also be used to empty a fluid slot",
+        add(MIBlock.TRASH_CAN, "Will delete any item or fluid sent into it.", "Can also be used to empty a fluid slot",
                 "by Right-Clicking on it with a Trash Can");
 
-        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe()),
-                "pipe",
-                "Can be instantly retrieved by",
-                "Right-Clicking with any Wrench.",
-                "Use Shift + Right-Click to connect ",
+        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe()), "pipe",
+                "Can be instantly retrieved by", "Right-Clicking with any Wrench.", "Use Shift + Right-Click to connect ",
                 "directly the pipe to the target block.");
 
-        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && pipe.isCable(),
-                "cable", " ",
-                "Can power blocks from any mod, but can",
-                "only extract energy from Modern",
-                "Industrialization blocks and machines.",
-                "They also are the only cables able",
+        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && pipe.isCable(), "cable", " ", "Can power blocks from any mod, but can",
+                "only extract energy from Modern", "Industrialization blocks and machines.", "They also are the only cables able",
                 "to power Modern Industrialization machines.");
 
     }

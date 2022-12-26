@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 303 missing, 2 unused",
+  "__summary": "1304 ok, 304 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1515,6 +1515,7 @@
   "text.modern_industrialization.LockingModeOn": "Edição de Trancas ativada",
   "text.modern_industrialization.LubricantTooltip": "Botão-Direito em Máquina Elétrica : consome %s mb por 1 tick de eficiência",
   "text.modern_industrialization.MachineUpgrade": "Melhoria de Máquina Elétrica : Overclock Máx. de +%s",
+  "text.modern_industrialization.MachineUpgradeStack": "[UNTRANSLATED] Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Pode produzir até %s",
   "text.modern_industrialization.MaxEuProductionSteam": "Pode produzir até %s de %s",
   "text.modern_industrialization.MaxTemp": "Temperatura Máx. : %d C°",

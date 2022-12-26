@@ -1,5 +1,5 @@
 {
-  "__summary": "410 ok, 1200 missing, 274 unused",
+  "__summary": "410 ok, 1201 missing, 274 unused",
   "advancements.modern_industrialization.advanced_upgrade": "[UNTRANSLATED] Machine Speedup-Speedup",
   "advancements.modern_industrialization.advanced_upgrade.description": "[UNTRANSLATED] Craft a Advanced Upgrade",
   "advancements.modern_industrialization.analog_circuit": "[UNTRANSLATED] RLC Circuits",
@@ -1600,6 +1600,7 @@
   "tag.modern_industrialization.fluid_pipes": "[UNTRANSLATED] Fluid Pipes",
   "tag.modern_industrialization.forge_hammer_tools": "[UNTRANSLATED] Forge Hammer Tools",
   "tag.modern_industrialization.item_pipes": "[UNTRANSLATED] Item Pipes",
+  "tag.modern_industrialization.replicator_blacklist": "[UNTRANSLATED] Replicator Blacklist",
   "tag.modern_industrialization.tanks": "[UNTRANSLATED] Tanks",
   "text.autoconfig.modern_industrialization.option.colorWaterLava": "[UNTRANSLATED] Color Water and Lava (Restart needed)",
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "[UNTRANSLATED] Run MI runtime datagen on startup (Restart needed)",

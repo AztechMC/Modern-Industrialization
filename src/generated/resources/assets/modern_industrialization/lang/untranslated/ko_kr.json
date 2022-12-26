@@ -1,5 +1,5 @@
 {
-  "__summary": "1000 ok, 610 missing, 368 unused",
+  "__summary": "1000 ok, 611 missing, 368 unused",
   "advancements.modern_industrialization.advanced_upgrade": "기계 빠르게-빠르게",
   "advancements.modern_industrialization.advanced_upgrade.description": "발전된 업그레이드를 제작하세요",
   "advancements.modern_industrialization.analog_circuit": "RLC 회로",
@@ -1610,6 +1610,7 @@
   "tag.modern_industrialization.fluid_pipes": "[UNTRANSLATED] Fluid Pipes",
   "tag.modern_industrialization.forge_hammer_tools": "[UNTRANSLATED] Forge Hammer Tools",
   "tag.modern_industrialization.item_pipes": "[UNTRANSLATED] Item Pipes",
+  "tag.modern_industrialization.replicator_blacklist": "[UNTRANSLATED] Replicator Blacklist",
   "tag.modern_industrialization.tanks": "[UNTRANSLATED] Tanks",
   "text.autoconfig.modern_industrialization.option.colorWaterLava": "Color water and lava",
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "[UNTRANSLATED] Run MI runtime datagen on startup (Restart needed)",

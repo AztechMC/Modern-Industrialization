@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 306 missing, 2 unused",
+  "__summary": "1304 ok, 307 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1402,6 +1402,7 @@
   "tag.modern_industrialization.fluid_pipes": "[UNTRANSLATED] Fluid Pipes",
   "tag.modern_industrialization.forge_hammer_tools": "[UNTRANSLATED] Forge Hammer Tools",
   "tag.modern_industrialization.item_pipes": "[UNTRANSLATED] Item Pipes",
+  "tag.modern_industrialization.replicator_blacklist": "[UNTRANSLATED] Replicator Blacklist",
   "tag.modern_industrialization.tanks": "[UNTRANSLATED] Tanks",
   "text.autoconfig.modern_industrialization.option.colorWaterLava": "Цвет воды и лавы (Необходим перезапуск)",
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "[UNTRANSLATED] Run MI runtime datagen on startup (Restart needed)",

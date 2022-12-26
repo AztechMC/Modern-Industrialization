@@ -24,10 +24,26 @@
 package aztech.modern_industrialization.api.energy;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus;
 import team.reborn.energy.api.EnergyStorage;
 
 public interface MIEnergyStorage extends EnergyStorage {
     boolean canConnect(CableTier cableTier);
+
+    /**
+     * Overload of {@link #canConnect(CableTier)} that's easier to access by reflection.
+     */
+    @ApiStatus.NonExtendable
+    default boolean canConnect(String cableTier) {
+        return switch (cableTier) {
+        case "lv" -> canConnect(CableTier.LV);
+        case "mv" -> canConnect(CableTier.MV);
+        case "hv" -> canConnect(CableTier.HV);
+        case "ev" -> canConnect(CableTier.EV);
+        case "superconductor" -> canConnect(CableTier.SUPERCONDUCTOR);
+        default -> false;
+        };
+    }
 
     interface NoExtract extends MIEnergyStorage {
         @Override

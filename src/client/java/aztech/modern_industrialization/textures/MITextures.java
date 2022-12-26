@@ -32,6 +32,7 @@ import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
+import aztech.modern_industrialization.textures.coloramp.GradientMapColoramp;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
@@ -47,11 +48,15 @@ public final class MITextures {
 
         try {
             for (Material material : MaterialRegistry.getMaterials().values()) {
-                Coloramp coloramp = Coloramp.of(mtm, material.get(MaterialProperty.COLORAMP));
+                Coloramp coloramp = Coloramp.of(mtm, material.get(MaterialProperty.COLORAMP), material);
 
                 if (coloramp == null) {
                     ModernIndustrialization.LOGGER.error("Missing coloramp for material {}", material.name);
                     continue;
+                }
+
+                if (!(coloramp instanceof GradientMapColoramp)) {
+                    mtm.addTexture(String.format("modern_industrialization:textures/gradient_maps/%s.png", material.name), coloramp.bakeAsImage());
                 }
 
                 for (MaterialItemPart part : material.getParts().values()) {

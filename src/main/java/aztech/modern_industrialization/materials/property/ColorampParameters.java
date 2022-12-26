@@ -48,5 +48,12 @@ public sealed interface ColorampParameters {
         }
     }
 
+    record GradientMap(int meanRGB) implements ColorampParameters {
+        @Override
+        public int getMeanRGB() {
+            return meanRGB;
+        }
+    }
+
     int getMeanRGB();
 }

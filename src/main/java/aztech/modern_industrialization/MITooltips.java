@@ -42,6 +42,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
@@ -234,6 +235,12 @@ public class MITooltips {
         return lines;
     });
 
+    public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultiline(MIItem.STEAM_MINING_DRILL,
+            MIText.SteamDrillWaterHelp,
+            MIText.SteamDrillFuelHelp,
+            MIText.SteamDrillProfit,
+            MIText.SteamDrillToggle);
+
     // Long Tooltip with only text, no need of MIText
 
     public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
@@ -293,6 +300,12 @@ public class MITooltips {
 
         public static TooltipAttachment ofMultiline(ItemLike itemLike, Function<ItemStack, List<Component>> tooltips) {
             return new TooltipAttachment((item) -> item == itemLike.asItem(), tooltips);
+        }
+
+        public static TooltipAttachment ofMultiline(ItemLike itemLike, MIText... tooltipLines) {
+            Preconditions.checkArgument(tooltipLines.length > 0);
+            var tooltip = Stream.of(tooltipLines).map(t -> new Line(t).build()).toList();
+            return new TooltipAttachment(item -> item == itemLike.asItem(), stack -> tooltip);
         }
 
         public static TooltipAttachment of(Predicate<Item> addTooltip, Function<ItemStack, Component> tooltips) {

@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.api.ExtraPipeRenderers;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
@@ -139,8 +139,14 @@ public class MIPipesClient {
             }
         }
 
-        for (var entrypoint : FabricLoader.getInstance().getEntrypoints("mi:pipes-renderers", ExtraPipeRenderers.class)) {
-            entrypoint.registerPipeRenderers();
+        if (MIConfig.getConfig().enableAe2Integration && FabricLoader.getInstance().isModLoaded("ae2")) {
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddonClient")
+                        .getMethod("registerPipeRenderers")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         for (var value : PipeNetworkType.getTypes().values()) {

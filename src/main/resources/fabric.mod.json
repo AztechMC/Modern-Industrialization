@@ -39,12 +39,6 @@
     "ae2": [
       "aztech.modern_industrialization.compat.ae2.MIAEAddon"
     ],
-    "mi:pipes": [
-      "aztech.modern_industrialization.compat.ae2.MIAEExtraPipes"
-    ],
-    "mi:pipes-renderers": [
-      "aztech.modern_industrialization.compat.ae2.MIAEExtraPipesRenderers"
-    ],
     "jei_mod_plugin": [
       "aztech.modern_industrialization.compat.viewer.impl.jei.ManualPluginJei",
       "aztech.modern_industrialization.compat.viewer.impl.jei.ViewerPluginJei"

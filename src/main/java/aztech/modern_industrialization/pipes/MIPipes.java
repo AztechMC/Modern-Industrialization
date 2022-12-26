@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
@@ -86,8 +87,14 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
-        for (var entrypoint : FabricLoader.getInstance().getEntrypoints("mi:pipes", ExtraPipesInitializer.class)) {
-            entrypoint.onInitializePipes();
+        if (MIConfig.getConfig().enableAe2Integration && FabricLoader.getInstance().isModLoaded("ae2")) {
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
+                        .getMethod("onInitializePipes")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         registerPackets();

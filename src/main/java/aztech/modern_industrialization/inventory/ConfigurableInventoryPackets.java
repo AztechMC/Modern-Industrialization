@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 public class ConfigurableInventoryPackets {
     public static final ResourceLocation UPDATE_ITEM_SLOT = new MIIdentifier("update_item_slot");
     public static final ResourceLocation UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
+    public static final ResourceLocation LOCK_ALL = new MIIdentifier("lock_all");
     public static final ResourceLocation SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
     public static final ResourceLocation DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
     public static final ResourceLocation ADJUST_SLOT_CAPACITY = new MIIdentifier("adjust_slot_capacity");

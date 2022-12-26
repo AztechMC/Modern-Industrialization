@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 304 missing, 2 unused",
+  "__summary": "1304 ok, 306 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1590,7 +1590,9 @@
   "text.modern_industrialization.ShapeTextMedium": "Средняя",
   "text.modern_industrialization.ShapeTextSmall": "Малая",
   "text.modern_industrialization.ShapeTextWidth": "Ширина: %d",
+  "text.modern_industrialization.ShiftClickToLockAll": "[UNTRANSLATED] Shift-Click to lock all",
   "text.modern_industrialization.ShiftClickToSwitch": "[UNTRANSLATED] Shift-Click to switch to %s",
+  "text.modern_industrialization.ShiftClickToUnlockAll": "[UNTRANSLATED] Shift-Click to unlock all",
   "text.modern_industrialization.SingleNeutronCapture": "Одиночное поглощение нейтронов",
   "text.modern_industrialization.SteamDrillFuelHelp": "2) Помести топливо в горный бур (ПКМ предметом).",
   "text.modern_industrialization.SteamDrillProfit": "3) Наслаждайся Шёлковым касанием 3x3.",

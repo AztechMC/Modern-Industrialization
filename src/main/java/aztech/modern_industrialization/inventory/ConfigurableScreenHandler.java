@@ -227,4 +227,38 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
 
         return insertedSomething;
     }
+
+    /**
+     * Return true if any slot is player locked, false otherwise.
+     */
+    public boolean hasUnlockedSlot() {
+        for (var slot : slots) {
+            if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot cis) {
+                if (!cis.getConfStack().playerLocked && cis.getConfStack().playerLockable) {
+                    return true;
+                }
+            }
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
+                if (!cfs.getConfStack().playerLocked && cfs.getConfStack().playerLockable) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void lockAll(boolean lock) {
+        for (var slot : slots) {
+            if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot cis) {
+                if (cis.getConfStack().playerLocked != lock) {
+                    cis.getConfStack().togglePlayerLock();
+                }
+            }
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
+                if (cfs.getConfStack().playerLocked != lock) {
+                    cfs.getConfStack().togglePlayerLock();
+                }
+            }
+        }
+    }
 }

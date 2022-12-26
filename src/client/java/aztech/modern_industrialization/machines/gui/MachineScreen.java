@@ -163,12 +163,21 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     private void addLockButton() {
         addButton(40, syncId -> {
-            boolean newLockingMode = !menu.lockingMode;
-            menu.lockingMode = newLockingMode;
-            FriendlyByteBuf buf = PacketByteBufs.create();
-            buf.writeInt(syncId);
-            buf.writeBoolean(newLockingMode);
-            ClientPlayNetworking.send(ConfigurableInventoryPackets.SET_LOCKING_MODE, buf);
+            if (hasShiftDown()) {
+                boolean lock = menu.hasUnlockedSlot();
+                menu.lockAll(lock);
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeBoolean(lock);
+                ClientPlayNetworking.send(ConfigurableInventoryPackets.LOCK_ALL, buf);
+            } else {
+                boolean newLockingMode = !menu.lockingMode;
+                menu.lockingMode = newLockingMode;
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeBoolean(newLockingMode);
+                ClientPlayNetworking.send(ConfigurableInventoryPackets.SET_LOCKING_MODE, buf);
+            }
         }, () -> {
             List<Component> lines = new ArrayList<>();
             if (menu.lockingMode) {
@@ -178,6 +187,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 lines.add(MIText.LockingModeOff.text());
                 lines.add(MIText.ClickToEnable.text().setStyle(TextHelper.GRAY_TEXT));
             }
+            lines.add((menu.hasUnlockedSlot() ? MIText.ShiftClickToLockAll : MIText.ShiftClickToUnlockAll).text().setStyle(TextHelper.GRAY_TEXT));
             return lines;
         }, () -> menu.lockingMode);
     }

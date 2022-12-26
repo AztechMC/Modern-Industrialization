@@ -25,17 +25,22 @@ package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
-import appeng.core.AELog;
-import appeng.me.GridConnection;
+import appeng.api.networking.GridHelper;
+import appeng.me.GridNode;
+import appeng.util.Platform;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class MENetwork extends PipeNetwork {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public MENetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new MENetworkData() : data);
@@ -72,12 +77,17 @@ public class MENetwork extends PipeNetwork {
                 me.getMainNode().create(world, posNode.getPos());
 
                 try {
-                    GridConnection.create(me.getMainNode().getNode(), mainNode.getNode(), null);
+                    GridHelper.createGridConnection(me.getMainNode().getNode(), mainNode.getNode());
                 } catch (SecurityConnectionException e) {
-                    AELog.debug(e);
-                    // todo: turn connection back to BLOCK
+                    LOGGER.debug(e);
+
+                    for (var direction : me.getConnections()) {
+                        if (GridHelper.getExposedNode(world, posNode.getPos().relative(direction), direction.getOpposite()) instanceof GridNode them && (true || !Platform.securityCheck((GridNode) me.getMainNode().getNode(), them))) {
+                            posNode.getNode().removeConnection(world, posNode.getPos(), direction);
+                        }
+                    }
                 } catch (FailedConnectionException e) {
-                    AELog.debug(e);
+                    LOGGER.debug(e);
                 }
             }
         }

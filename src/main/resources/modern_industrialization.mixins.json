@@ -2,10 +2,8 @@
   "required": true,
   "minVersion": "0.8",
   "package": "aztech.modern_industrialization.mixin",
-  "plugin": "aztech.modern_industrialization.MIMixinConfigPlugin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AE2PipeBlockEntityMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
     "PackConfigMixin",

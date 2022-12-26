@@ -162,6 +162,11 @@ public class PipeNetworkManager {
                 networkByBlock.put(nodePos, network);
                 network.setNode(nodePos, node);
             }
+            var nodesCopy = new ArrayList<>(otherNetwork.getRawNodeMap().keySet());
+            for (var nodePos : nodesCopy) {
+                otherNetwork.removeNode(nodePos);
+            }
+            otherNetwork.onRemove();
             networks.remove(otherNetwork);
         }
         network.tickingCacheValid = false;
@@ -268,6 +273,7 @@ public class PipeNetworkManager {
 
         PipeNetwork network = networkByBlock.remove(pos);
         decrementSpanned(pos);
+        network.onRemove();
         networks.remove(network);
         links.remove(pos);
         checkStateCoherence();
@@ -283,7 +289,7 @@ public class PipeNetworkManager {
             // because a pipe was moved with Carrier.
             // If that happens, we just create the node here. Hopefully it goes well.
             // TODO: refactor this in an api
-            PipeNetworkData data = MIPipes.INSTANCE.getPipeItem(getType()).defaultData;
+            PipeNetworkData data = MIPipes.INSTANCE.getPipeItem(getType()).defaultData.clone();
             addNode(node, pos, data);
             for (Direction direction : Direction.values()) {
                 addLink(pos, direction, false);

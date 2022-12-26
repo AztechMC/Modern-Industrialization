@@ -88,4 +88,7 @@ public abstract class PipeNetworkNode {
     public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
         return false;
     }
+
+    public void onUnload() {
+    }
 }

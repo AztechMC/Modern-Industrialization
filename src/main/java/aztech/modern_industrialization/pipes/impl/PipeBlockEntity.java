@@ -249,6 +249,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             // Don't clear pipes, otherwise they can't be dropped when broken by hand.
         } else {
             for (PipeNetworkNode pipe : pipes) {
+                pipe.onUnload();
                 pipe.getManager().nodeUnloaded(pipe, worldPosition);
             }
         }

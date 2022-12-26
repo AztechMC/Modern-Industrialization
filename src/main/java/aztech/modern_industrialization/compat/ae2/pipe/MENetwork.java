@@ -24,15 +24,17 @@
 package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridHelper;
-import appeng.me.GridNode;
-import appeng.util.Platform;
+import appeng.api.util.AEColor;
+import appeng.me.GridConnection;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import com.google.common.collect.Sets;
+import java.util.HashSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,23 +43,56 @@ import org.jetbrains.annotations.Nullable;
 public class MENetwork extends PipeNetwork {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    final AEColor color;
 
-    public MENetwork(int id, PipeNetworkData data) {
+    public MENetwork(int id, PipeNetworkData data, AEColor color) {
         super(id, data == null ? new MENetworkData() : data);
+
+        this.color = color;
     }
 
     @Override
-    public void setNode(BlockPos pos, @Nullable PipeNetworkNode node) {
-        super.setNode(pos, node);
-    }
+    public void setNode(BlockPos pos, @Nullable PipeNetworkNode maybeNode) {
+        if (maybeNode instanceof MENetworkNode node) {
+            var aeManagedNode = node.mainNode;
+            if (aeManagedNode != null && aeManagedNode.isReady()) {
+                // Disconnect node from previous network
+                for (var connection : aeManagedNode.getNode().getConnections()) {
+                    var otherSide = connection.getOtherSide(aeManagedNode.getNode());
+                    if (otherSide.getService(INetworkInternalNode.class) != null) {
+                        // Internal connection to old network, destroy it!
+                        connection.destroy();
+                        break; // max 1 connection to break
+                    }
+                }
 
-    @Override
-    public void removeNode(BlockPos pos) {
-        if (getNode(pos) instanceof MENetworkNode me) {
-            me.getMainNode().destroy();
+                // Connect to this network
+                if (data instanceof MENetworkData meData && meData.getMainNode().isReady()) {
+                    try {
+                        GridHelper.createGridConnection(meData.getMainNode().getNode(), aeManagedNode.getNode());
+                    } catch (FailedConnectionException e) {
+                        // Delete all the node's connections in that case, which also deletes the network node's IGridNode
+                        node.connections.clear();
+                        node.updateNode();
+                    }
+                }
+            }
         }
 
-        super.removeNode(pos);
+        super.setNode(pos, maybeNode);
+    }
+
+    @Override
+    public void onRemove() {
+        if (data instanceof MENetworkData meData) {
+            meData.getMainNode().destroy();
+        }
+
+        for (var node : getRawNodeMap().values()) {
+            if (node != null) {
+                node.onUnload();
+            }
+        }
     }
 
     @Override
@@ -69,32 +104,77 @@ public class MENetwork extends PipeNetwork {
         }
 
         for (PosNode posNode : iterateTickingNodes()) {
-            var me = (MENetworkNode) posNode.getNode();
-            me.getMainNode().setExposedOnSides(me.getConnections());
+            var node = (MENetworkNode) posNode.getNode();
 
-            if (!me.getMainNode().isReady()) {
-                me.getMainNode().setVisualRepresentation(MIPipes.INSTANCE.getPipeItem(manager.getType()));
-                me.getMainNode().create(world, posNode.getPos());
+            if (node.connectDelay-- > 0) {
+                continue;
+            }
+            node.connectDelay = 100;
 
-                try {
-                    GridHelper.createGridConnection(me.getMainNode().getNode(), mainNode.getNode());
-                } catch (SecurityConnectionException e) {
-                    LOGGER.debug(e);
+            node.updateNode(); // Recreate node if needed
 
-                    for (var direction : me.getConnections()) {
-                        if (GridHelper.getExposedNode(world, posNode.getPos().relative(direction), direction.getOpposite()) instanceof GridNode them && (true || !Platform.securityCheck((GridNode) me.getMainNode().getNode(), them))) {
-                            posNode.getNode().removeConnection(world, posNode.getPos(), direction);
-                        }
+            if (node.mainNode == null) {
+                continue; // no connections for this node
+            }
+
+            boolean wasReady = node.mainNode.isReady();
+            boolean hasInternalConnection = false;
+
+            if (node.mainNode.isReady()) {
+                for (var conn : node.mainNode.getNode().getConnections()) {
+                    if (conn.getOtherSide(node.mainNode.getNode()).getService(INetworkInternalNode.class) != null) {
+                        hasInternalConnection = true;
+                        break;
                     }
+                }
+            } else {
+                node.mainNode.setVisualRepresentation(MIPipes.INSTANCE.getPipeItem(manager.getType()));
+                node.mainNode.create(world, posNode.getPos());
+            }
+
+            if (!wasReady || !hasInternalConnection) {
+                // Connect to network's node
+                try {
+                    GridHelper.createGridConnection(mainNode.getNode(), node.mainNode.getNode());
                 } catch (FailedConnectionException e) {
-                    LOGGER.debug(e);
+                    // Delete all the node's connections in that case, which also deletes the network node's IGridNode
+                    node.connections.clear();
+                    node.updateNode();
+                    world.blockEntityChanged(posNode.getPos()); // setChanged
+                    world.getChunkSource().blockChanged(posNode.getPos()); // mark for s2c update
+                    continue;
                 }
             }
+
+            var failedConnections = new HashSet<Direction>();
+            for (var missingConnection : Sets.difference(node.connections, node.mainNode.getNode().getConnectedSides())) {
+                // Try to find node
+                var otherNode = GridHelper.getExposedNode(world, posNode.getPos().relative(missingConnection), missingConnection.getOpposite());
+                if (otherNode == null) {
+                    continue;
+                }
+
+                if (!MENetworkNode.areColorsCompatible(color, otherNode.getGridColor())) {
+                    failedConnections.add(missingConnection);
+                    continue;
+                }
+
+                try {
+                    GridConnection.create(node.mainNode.getNode(), otherNode, missingConnection);
+                } catch (FailedConnectionException e) {
+                    failedConnections.add(missingConnection);
+                }
+            }
+
+            node.connections.removeAll(failedConnections);
+            node.updateNode();
+            world.blockEntityChanged(posNode.getPos()); // setChanged
+            world.getChunkSource().blockChanged(posNode.getPos()); // mark for s2c update
         }
     }
 
     @Override
     public PipeNetworkData merge(PipeNetwork other) {
-        return new MENetworkData();
+        throw new UnsupportedOperationException("Unreachable!");
     }
 }

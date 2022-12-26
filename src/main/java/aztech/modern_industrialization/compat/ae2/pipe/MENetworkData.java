@@ -44,6 +44,7 @@ public class MENetworkData extends PipeNetworkData {
         })
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0);
+        this.mainNode.addService(INetworkInternalNode.class, INetworkInternalNode.INSTANCE);
     }
 
     public IManagedGridNode getMainNode() {

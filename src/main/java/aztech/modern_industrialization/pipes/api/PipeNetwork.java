@@ -77,6 +77,13 @@ public abstract class PipeNetwork {
         return null;
     }
 
+    /**
+     * Called when the network is removed from the world.
+     * At that point, all the nodes are already gone.
+     */
+    public void onRemove() {
+    }
+
     @Nullable
     public PipeNetworkNode getNode(BlockPos pos) {
         return this.nodes.get(pos);

@@ -27,6 +27,7 @@ import appeng.api.IAEAddonEntrypoint;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.inventories.PartApiLookup;
 import appeng.api.parts.PartModels;
+import appeng.api.util.AEColor;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.MIConfig;
@@ -73,8 +74,20 @@ public class MIAEAddon implements IAEAddonEntrypoint {
     }
 
     private static void registerMEPipeType(PipeColor color) {
+        var aeColor = switch (color) {
+        case REGULAR -> AEColor.TRANSPARENT;
+        default -> {
+            for (var candidate : AEColor.values()) {
+                if (candidate.registryPrefix.equals(color.name)) {
+                    yield candidate;
+                }
+            }
+            throw new UnsupportedOperationException("No AE color for " + color.name);
+        }
+        };
+
         var pipeId = color.prefix + "me_wire";
-        var type = PipeNetworkType.register(new MIIdentifier(pipeId), MENetwork::new,
+        var type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new MENetwork(id, data, aeColor),
                 MENetworkNode::new, color.color, false);
         PIPES.add(type);
         var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "ME Wire", pipeId,

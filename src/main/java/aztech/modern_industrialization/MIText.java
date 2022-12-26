@@ -168,7 +168,7 @@ public enum MIText {
     PipeConnectionIn("IN"),
     PipeConnectionIO("I/O"),
     PipeConnectionOut("OUT"),
-    PipeConnectionHelp("Click to change"),
+    PipeConnectionHelp("Click/Shift-Click to change"),
     PipeConnectionTooltipInsertOnly("Insert only"),
     PipeConnectionTooltipInsertOrExtract("Insert or Extract"),
     PipeConnectionTooltipExtractOnly("Extract only"),

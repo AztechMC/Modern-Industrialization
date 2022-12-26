@@ -1553,7 +1553,7 @@
   "text.modern_industrialization.OreGenerationTooltipVeinSize": "%d ores per vein",
   "text.modern_industrialization.OreGenerationTooltipY": "Y level %d to %d",
   "text.modern_industrialization.OreNotGenerated": "Not Generated but can be obtained with the Quarry",
-  "text.modern_industrialization.PipeConnectionHelp": "Click to change",
+  "text.modern_industrialization.PipeConnectionHelp": "Click/Shift-Click to change",
   "text.modern_industrialization.PipeConnectionIO": "I/O",
   "text.modern_industrialization.PipeConnectionIn": "IN",
   "text.modern_industrialization.PipeConnectionOut": "OUT",

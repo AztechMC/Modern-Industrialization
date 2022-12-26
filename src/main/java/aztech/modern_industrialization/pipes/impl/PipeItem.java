@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class PipeItem extends Item {
@@ -126,8 +127,7 @@ public class PipeItem extends Item {
         Level world = context.getLevel();
         // If there is a block entity we try to add the pipe.
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof PipeBlockEntity) {
-            PipeBlockEntity pipeBe = (PipeBlockEntity) be;
+        if (be instanceof PipeBlockEntity pipeBe) {
             if (pipeBe.canAddPipe(type)) {
                 if (!world.isClientSide()) {
                     pipeBe.addPipe(type, defaultData.clone());
@@ -137,7 +137,10 @@ public class PipeItem extends Item {
         }
         // Otherwise we try replacing the target block.
         if (canPlace(context, pos)) {
-            world.setBlock(pos, MIPipes.BLOCK_PIPE.defaultBlockState(), 3); // neighbor update is handled later
+            boolean waterLog = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
+
+            // neighbor update is handled later
+            world.setBlock(pos, MIPipes.BLOCK_PIPE.defaultBlockState().setValue(PipeBlock.WATERLOGGED, waterLog), 3);
             if (!world.isClientSide()) {
                 PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
                 pipeBe.addPipe(type, defaultData.clone());

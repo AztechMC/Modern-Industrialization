@@ -65,7 +65,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
-    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public PipeBlock(Properties settings) {
         super(settings.isValidSpawn(MobSpawning.NO_SPAWN).noOcclusion().isRedstoneConductor((s, p, w) -> false));

@@ -30,14 +30,12 @@ import appeng.api.parts.PartModels;
 import appeng.api.util.AEColor;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
-import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.*;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetwork;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkData;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkNode;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.PipeColor;
@@ -95,6 +93,6 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         var item = itemDef.asItem();
         MIPipes.INSTANCE.register(type, item);
         MIPipes.PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        // TagsToGenerate.generateTag(MITags.ME_WIRE, item, "ME Wire");
+        TagsToGenerate.generateTag(MITags.miItem("me_wires"), item, "ME Wire");
     }
 }

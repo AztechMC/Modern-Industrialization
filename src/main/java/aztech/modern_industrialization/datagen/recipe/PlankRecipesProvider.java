@@ -57,7 +57,7 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
         String packedSuffix = log ? "wood" : "hyphae";
 
         MIRecipeJson planks = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("#minecraft:" + prefix + "_" + suffixTag, 1).addItemOutput("minecraft:" + prefix + "_planks", 4);
+                .addItemInput("#minecraft:" + prefix + "_" + suffixTag, 1).addItemOutput("minecraft:" + prefix + "_planks", 6);
 
         planks.offerTo(consumer, "cutting_machine/planks/" + prefix);
 

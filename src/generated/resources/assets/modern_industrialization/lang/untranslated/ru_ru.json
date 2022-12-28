@@ -1419,7 +1419,7 @@
   "tag.modern_industrialization.fluid_pipes": "[UNTRANSLATED] Fluid Pipes",
   "tag.modern_industrialization.forge_hammer_tools": "[UNTRANSLATED] Forge Hammer Tools",
   "tag.modern_industrialization.item_pipes": "[UNTRANSLATED] Item Pipes",
-  "tag.modern_industrialization.me_wires": "[UNTRANSLATED] ME Wire",
+  "tag.modern_industrialization.me_wires": "[UNTRANSLATED] ME Wires",
   "tag.modern_industrialization.tanks": "[UNTRANSLATED] Tanks",
   "text.autoconfig.modern_industrialization.option.colorWaterLava": "Цвет воды и лавы (Необходим перезапуск)",
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "[UNTRANSLATED] Run MI runtime datagen on startup (Restart needed)",

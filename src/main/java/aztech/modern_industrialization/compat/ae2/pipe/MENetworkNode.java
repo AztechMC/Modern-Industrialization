@@ -68,13 +68,6 @@ public class MENetworkNode extends PipeNetworkNode {
 
     @Override
     public void buildInitialConnections(Level world, BlockPos pos) {
-//        for (Direction direction : Direction.values()) {
-//            if (canConnect(world, pos, direction)) {
-//                connections.add(direction);
-//            }
-//        }
-//
-//        updateNode();
     }
 
     @Override

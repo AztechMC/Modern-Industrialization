@@ -36,13 +36,10 @@ import java.util.HashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class MENetwork extends PipeNetwork {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     final AEColor color;
 
     public MENetwork(int id, PipeNetworkData data, AEColor color) {

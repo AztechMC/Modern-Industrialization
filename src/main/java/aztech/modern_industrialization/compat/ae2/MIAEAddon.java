@@ -93,6 +93,6 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         var item = itemDef.asItem();
         MIPipes.INSTANCE.register(type, item);
         MIPipes.PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.miItem("me_wires"), item, "ME Wire");
+        TagsToGenerate.generateTag(MITags.miItem("me_wires"), item, "ME Wires");
     }
 }

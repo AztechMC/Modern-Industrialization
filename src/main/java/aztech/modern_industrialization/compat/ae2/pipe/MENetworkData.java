@@ -66,4 +66,10 @@ public class MENetworkData extends PipeNetworkData {
         this.getMainNode().saveToNBT(tag);
         return tag;
     }
+
+    // someone abuses equals
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MENetworkData;
+    }
 }

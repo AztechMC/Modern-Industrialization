@@ -25,12 +25,20 @@ package aztech.modern_industrialization.pipes.impl;
 
 import static net.minecraft.core.Direction.*;
 
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 public class PipeMeshBuilder extends PipePartBuilder {
+    private static final RenderMaterial CUTOUT_MATERIAL = RendererAccess.INSTANCE.getRenderer().materialFinder()
+            .blendMode(0, BlendMode.CUTOUT)
+            .disableAo(0, true)
+            .find();
+
     protected final QuadEmitter emitter;
     private final TextureAtlasSprite sprite;
     private final float spriteSizeU;
@@ -50,6 +58,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
     protected void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
         emitter.square(direction, left, bottom, right, top, depth);
         emitter.cullFace(null);
+        emitter.material(CUTOUT_MATERIAL);
     }
 
     /**

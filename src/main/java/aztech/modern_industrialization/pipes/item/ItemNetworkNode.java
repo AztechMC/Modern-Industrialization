@@ -227,6 +227,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             if (player.isShiftKeyDown()) {
+                stack.removeTagKey(ConfigCardItem.TAG_CAMOUFLAGE);
                 stack.getOrCreateTag().put(ConfigCardItem.TAG_SAVEDCONFIG, conn.getConfig());
                 player.displayClientMessage(MIText.ConfigCardSet.text(), true);
             } else if (stack.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG) != null) {

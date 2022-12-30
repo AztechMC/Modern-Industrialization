@@ -25,14 +25,17 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -43,11 +46,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class ConfigCardItem extends Item {
     public static final String TAG_SAVEDCONFIG = "savedconfig";
+    public static final String TAG_CAMOUFLAGE = "camouflage";
 
     public ConfigCardItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -57,21 +63,41 @@ public class ConfigCardItem extends Item {
     public InteractionResult useOn(UseOnContext c) {
         var player = c.getPlayer();
         if (player != null && player.isShiftKeyDown()) {
-            if (c.getLevel().getBlockState(c.getClickedPos()).getBlock() instanceof PipeBlock pipe) {
+            var hitState = c.getLevel().getBlockState(c.getClickedPos());
+            var usedHand = c.getHand();
+
+            if (hitState.getBlock() instanceof PipeBlock pipe) {
                 var pipeUseResult = pipe.use(c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(), c.getPlayer(),
                         c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
                 if (pipeUseResult.consumesAction()) {
                     return pipeUseResult;
                 }
             }
+
+            // Try to save block for pipe facade
+            if (setCamouflage(player, usedHand, hitState)) {
+                return InteractionResult.sidedSuccess(c.getLevel().isClientSide);
+            }
         }
-        return super.useOn(c);
+        return InteractionResult.PASS;
+    }
+
+    public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
+        if (CamouflageHelper.isReasonableCamouflage(hitState)) {
+            player.getItemInHand(usedHand).removeTagKey(TAG_SAVEDCONFIG);
+            player.getItemInHand(usedHand).getOrCreateTag().put(TAG_CAMOUFLAGE, NbtUtils.writeBlockState(hitState));
+            player.displayClientMessage(
+                    MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build(), true);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             player.getItemInHand(usedHand).removeTagKey(TAG_SAVEDCONFIG);
+            player.getItemInHand(usedHand).removeTagKey(TAG_CAMOUFLAGE);
             player.displayClientMessage(MIText.ConfigCardCleared.text(), true);
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
         }
@@ -80,9 +106,9 @@ public class ConfigCardItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        var tag = stack.getTagElement(TAG_SAVEDCONFIG);
-        if (tag != null) {
-            var filterSize = readItemPipeFilter(tag).size();
+        var savedConfigTag = stack.getTagElement(TAG_SAVEDCONFIG);
+        if (savedConfigTag != null) {
+            var filterSize = readItemPipeFilter(savedConfigTag).size();
             MutableComponent component;
             if (filterSize == 0) {
                 component = MIText.ConfigCardConfiguredNoItems.text();
@@ -90,6 +116,12 @@ public class ConfigCardItem extends Item {
                 component = MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
             }
             tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));
+        }
+
+        var camouflage = readCamouflage(stack);
+        if (!camouflage.isAir()) {
+            tooltipComponents
+                    .add(MITooltips.line(MIText.ConfigCardConfiguredCamouflage, Style.EMPTY).arg(camouflage, MITooltips.BLOCK_STATE_PARSER).build());
         }
     }
 
@@ -106,15 +138,30 @@ public class ConfigCardItem extends Item {
         return stacks;
     }
 
+    public static BlockState readCamouflage(ItemStack stack) {
+        var tag = stack.getTag();
+        if (tag != null) {
+            var coverTag = tag.getCompound(TAG_CAMOUFLAGE);
+            return NbtUtils.readBlockState(coverTag);
+        } else {
+            return Blocks.AIR.defaultBlockState();
+        }
+    }
+
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        var tag = stack.getTagElement(TAG_SAVEDCONFIG);
-        if (tag == null) {
-            return Optional.empty();
+        var savedConfigTag = stack.getTagElement(TAG_SAVEDCONFIG);
+        if (savedConfigTag != null) {
+            var stacks = readItemPipeFilter(savedConfigTag);
+            return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
         }
 
-        var stacks = readItemPipeFilter(tag);
-        return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
+        var camouflage = readCamouflage(stack);
+        if (!camouflage.isAir()) {
+            return Optional.of(new TooltipData(List.of(new ItemStack(camouflage.getBlock()))));
+        }
+
+        return Optional.empty();
     }
 
     public record TooltipData(List<ItemStack> filter) implements TooltipComponent {

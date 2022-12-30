@@ -49,6 +49,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
@@ -164,6 +165,10 @@ public class MITooltips {
         }
     };
 
+    public static final Parser<BlockState> BLOCK_STATE_PARSER = state -> {
+        return state.getBlock().getName().withStyle(NUMBER_TEXT);
+    };
+
     // Tooltips
 
     public static final TooltipAttachment CABLES = TooltipAttachment
@@ -241,6 +246,22 @@ public class MITooltips {
             MIText.SteamDrillProfit,
             MIText.SteamDrillToggle);
 
+    public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultiline(MIItem.CONFIG_CARD,
+            MIText.ConfigCardHelpCamouflage1,
+            MIText.ConfigCardHelpCamouflage2,
+            MIText.ConfigCardHelpCamouflage3,
+            MIText.ConfigCardHelpCamouflage4,
+            MIText.ConfigCardHelpCamouflage5,
+            MIText.ConfigCardHelpCamouflage6,
+            MIText.ConfigCardHelpCamouflage7,
+            MIText.ConfigCardHelpCamouflage8,
+            MIText.ConfigCardHelpItems1,
+            MIText.ConfigCardHelpItems2,
+            MIText.ConfigCardHelpItems3,
+            MIText.ConfigCardHelpItems4,
+            MIText.ConfigCardHelpItems5,
+            MIText.ConfigCardHelpClear);
+
     // Long Tooltip with only text, no need of MIText
 
     public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
@@ -290,15 +311,15 @@ public class MITooltips {
     public static class TooltipAttachment implements Comparable<TooltipAttachment> {
 
         public final Predicate<Item> addTooltip;
-        public final Function<ItemStack, List<Component>> tooltipLines;
+        public final Function<ItemStack, List<? extends Component>> tooltipLines;
         public boolean requiresShift = true;
         public int priority = 0;
 
-        public static TooltipAttachment ofMultiline(Predicate<Item> addTooltip, Function<ItemStack, List<Component>> tooltipLines) {
+        public static TooltipAttachment ofMultiline(Predicate<Item> addTooltip, Function<ItemStack, List<? extends Component>> tooltipLines) {
             return new TooltipAttachment(addTooltip, tooltipLines);
         }
 
-        public static TooltipAttachment ofMultiline(ItemLike itemLike, Function<ItemStack, List<Component>> tooltips) {
+        public static TooltipAttachment ofMultiline(ItemLike itemLike, Function<ItemStack, List<? extends Component>> tooltips) {
             return new TooltipAttachment((item) -> item == itemLike.asItem(), tooltips);
         }
 
@@ -308,7 +329,7 @@ public class MITooltips {
             return new TooltipAttachment(item -> item == itemLike.asItem(), stack -> tooltip);
         }
 
-        public static TooltipAttachment of(Predicate<Item> addTooltip, Function<ItemStack, Component> tooltips) {
+        public static TooltipAttachment of(Predicate<Item> addTooltip, Function<ItemStack, ? extends Component> tooltips) {
             return ofMultiline(addTooltip, (item -> List.of(tooltips.apply(item))));
         }
 
@@ -324,7 +345,7 @@ public class MITooltips {
             return of(itemLike, (item) -> line.build());
         }
 
-        private TooltipAttachment(Predicate<Item> addTooltip, Function<ItemStack, List<Component>> tooltipLines) {
+        private TooltipAttachment(Predicate<Item> addTooltip, Function<ItemStack, List<? extends Component>> tooltipLines) {
             this.addTooltip = addTooltip;
             this.tooltipLines = tooltipLines;
             MITooltips.TOOLTIPS.add(this);
@@ -348,6 +369,10 @@ public class MITooltips {
 
     public static Line line(MIText baseText) {
         return new Line(baseText);
+    }
+
+    public static Line line(MIText baseText, Style style) {
+        return new Line(baseText, style);
     }
 
     public static class Line {
@@ -376,14 +401,14 @@ public class MITooltips {
             return this;
         }
 
-        public Component build() {
+        public MutableComponent build() {
             return baseText.text(args.toArray()).withStyle(baseStyle);
         }
-
     }
 
-    public static abstract class Parser<T> {
-        public abstract Component parse(T t);
+    @FunctionalInterface
+    public interface Parser<T> {
+        Component parse(T t);
     }
 
 }

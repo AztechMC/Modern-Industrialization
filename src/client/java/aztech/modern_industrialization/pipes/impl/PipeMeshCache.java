@@ -29,6 +29,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
@@ -61,12 +62,6 @@ public class PipeMeshCache implements PipeRenderer {
      * Custom material for the fluids.
      */
     private final RenderMaterial fluidMaterial;
-
-    public PipeMeshCache(Mesh[][][][] connectionMeshes, Mesh[][] centerMeshes, RenderMaterial fluidMaterial) {
-        this.connectionMeshes = connectionMeshes;
-        this.centerMeshes = centerMeshes;
-        this.fluidMaterial = fluidMaterial;
-    }
 
     /**
      * Create a new `PipeMeshCache`, and populate it.
@@ -128,7 +123,7 @@ public class PipeMeshCache implements PipeRenderer {
             }
         }
 
-        fluidMaterial = renderer.materialFinder().emissive(0, true).find();
+        fluidMaterial = renderer.materialFinder().blendMode(0, BlendMode.SOLID).emissive(0, true).disableAo(0, true).find();
     }
 
     /**

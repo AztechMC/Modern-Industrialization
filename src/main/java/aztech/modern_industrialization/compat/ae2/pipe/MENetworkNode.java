@@ -81,7 +81,7 @@ public class MENetworkNode extends PipeNetworkNode {
                     return true;
                 }
             }
-            return false;
+            return !canConnect(world, pos, connection);
         });
         updateNode();
 

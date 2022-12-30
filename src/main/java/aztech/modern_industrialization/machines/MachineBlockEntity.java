@@ -227,6 +227,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         }
     }
 
+    @Override
+    protected final boolean shouldSkipComparatorUpdate() {
+        return !hasComparatorOutput();
+    }
+
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
@@ -247,5 +252,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public List<Component> getTooltips() {
         return List.of();
+    }
+
+    protected boolean hasComparatorOutput() {
+        return false;
+    }
+
+    protected int getComparatorOutput() {
+        return 0;
     }
 }

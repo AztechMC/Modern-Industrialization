@@ -47,7 +47,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
         this.inventory = new MIInventory(Collections.emptyList(),
                 Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
-        this.energy = new EnergyComponent(3200);
+        this.energy = new EnergyComponent(this, 3200);
         this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
         registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
         this.registerComponents(energy);

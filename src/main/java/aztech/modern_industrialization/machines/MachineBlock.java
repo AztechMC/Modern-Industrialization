@@ -48,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
 public class MachineBlock extends Block implements TickableBlock {
 
     private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
-    private MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, and BER registration
+    private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
 
     /**
      * Used by the model loading code to identify machine models.
@@ -120,5 +120,18 @@ public class MachineBlock extends Block implements TickableBlock {
             blockEntityInstance = newBlockEntity(BlockPos.ZERO, this.defaultBlockState());
         }
         return blockEntityInstance;
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return getBlockEntityInstance().hasComparatorOutput();
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine) {
+            return machine.getComparatorOutput();
+        }
+        return 0;
     }
 }

@@ -80,14 +80,14 @@ public class TankPart implements PartKeyProvider {
 
                     StorageBehaviour<FluidVariant> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);
 
-                    EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, tankStorageBehaviour);
+                    EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state);
 
                     BlockDefinition<TankBlock> blockDefinition = MIBlock.block(
                             englishName,
                             itemPath,
-                            MIBlock.BlockDefinitionParams.of().withBlockConstructor(
-                                    s -> new TankBlock(factory)).withBlockItemConstructor(
-                                            (b, s) -> new TankItem(b, tankStorageBehaviour))
+                            MIBlock.BlockDefinitionParams.of()
+                                    .withBlockConstructor(s -> new TankBlock(factory, tankStorageBehaviour))
+                                    .withBlockItemConstructor(TankItem::new)
                                     .withModel(MODEL_GENERATOR)
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()

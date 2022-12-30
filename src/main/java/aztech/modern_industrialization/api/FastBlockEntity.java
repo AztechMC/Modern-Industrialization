@@ -30,19 +30,25 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Special BlockEntity that does NOT update comparators when markDirty is
- * called, making it VERY FAST. This might cause issues with blocks that change
- * BlockState, don't use block states with this class!
+ * Special BlockEntity that tries NOT to update comparators when markDirty is called, making it VERY FAST.
  */
 public abstract class FastBlockEntity extends BlockEntity {
     public FastBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
+    protected boolean shouldSkipComparatorUpdate() {
+        return true;
+    }
+
     @Override
     public void setChanged() {
-        if (this.level != null) {
-            this.level.blockEntityChanged(this.worldPosition);
+        if (shouldSkipComparatorUpdate()) {
+            if (this.level != null) {
+                this.level.blockEntityChanged(this.worldPosition);
+            }
+        } else {
+            super.setChanged();
         }
     }
 

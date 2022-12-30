@@ -25,10 +25,13 @@ package aztech.modern_industrialization.blocks.storage;
 
 import java.util.Arrays;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,13 +40,15 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
-public class AbstractStorageBlock extends Block implements EntityBlock {
+public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
 
     public final EntityBlock factory;
+    public final StorageBehaviour<T> behavior;
 
-    public AbstractStorageBlock(Properties settings, EntityBlock factory) {
+    public AbstractStorageBlock(Properties settings, EntityBlock factory, StorageBehaviour<T> behaviour) {
         super(settings);
         this.factory = factory;
+        this.behavior = behaviour;
     }
 
     @Override
@@ -72,5 +77,18 @@ public class AbstractStorageBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         return getStack(world.getBlockEntity(pos));
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return !behavior.isCreative();
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof AbstractStorageBlockEntity<?>storageBlockEntity) {
+            return StorageUtil.calculateComparatorOutput(storageBlockEntity);
+        }
+        return 0;
     }
 }

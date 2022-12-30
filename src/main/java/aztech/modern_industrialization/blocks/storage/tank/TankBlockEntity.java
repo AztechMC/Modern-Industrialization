@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -39,8 +38,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TankBlockEntity extends AbstractTankBlockEntity {
 
-    public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state, StorageBehaviour<FluidVariant> behaviour) {
-        super(bet, pos, state, behaviour);
+    public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state) {
+        super(bet, pos, state);
     }
 
     public boolean onPlayerUse(Player player) {

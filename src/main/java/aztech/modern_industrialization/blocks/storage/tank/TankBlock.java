@@ -24,8 +24,10 @@
 package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -37,12 +39,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class TankBlock extends AbstractStorageBlock implements EntityBlock {
+public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
 
-    public TankBlock(EntityBlock factory) {
+    public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
         super(FabricBlockSettings.of(Material.METAL)
                 .destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN),
-                factory);
+                factory, behaviour);
     }
 
     public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {

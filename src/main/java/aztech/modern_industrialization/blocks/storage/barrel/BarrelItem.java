@@ -24,13 +24,12 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
-import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.items.ItemContainingItemHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Optional;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -41,20 +40,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
 public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
 
     private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
-    public BarrelItem(Block block, StorageBehaviour<ItemVariant> behaviour) {
-        super(block,
-                new Item.Properties().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP),
-                behaviour);
+    public BarrelItem(BarrelBlock block, FabricItemSettings settings) {
+        super(block, settings.stacksTo(1));
     }
 
     @Override

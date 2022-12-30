@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
-import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
@@ -37,9 +36,8 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
 
     public AbstractTankBlockEntity(BlockEntityType<?> bet,
             BlockPos pos,
-            BlockState state,
-            StorageBehaviour<FluidVariant> behaviour) {
-        super(bet, pos, state, behaviour);
+            BlockState state) {
+        super(bet, pos, state);
     }
 
     @Override

@@ -62,7 +62,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
             FluidConsumerComponent fluidConsumer, Fluid locked, boolean lockButton) {
         super(bep, new MachineGuiParameters.Builder(name, lockButton).build(), new OrientationComponent.Params(true, false, false));
         this.outputTier = outputTier;
-        this.energy = new EnergyComponent(energyCapacity);
+        this.energy = new EnergyComponent(this, energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));

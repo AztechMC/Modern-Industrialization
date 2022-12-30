@@ -33,10 +33,12 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class EnergyComponent implements IComponent.ServerOnly {
     private long storedEu;
     private final Supplier<Long> capacity;
+    private final BlockEntity blockEntity; // used to call setChanged()
 
     private final SnapshotParticipant<Long> participant = new SnapshotParticipant<>() {
         @Override
@@ -48,14 +50,21 @@ public class EnergyComponent implements IComponent.ServerOnly {
         protected void readSnapshot(Long snapshot) {
             storedEu = snapshot;
         }
+
+        @Override
+        protected void onFinalCommit() {
+            blockEntity.setChanged();
+        }
     };
 
-    public EnergyComponent(Supplier<Long> capacity) {
+    public EnergyComponent(BlockEntity blockEntity, Supplier<Long> capacity) {
         this.capacity = capacity;
+        this.blockEntity = blockEntity;
     }
 
-    public EnergyComponent(long capacity) {
+    public EnergyComponent(BlockEntity blockEntity, long capacity) {
         this.capacity = () -> capacity;
+        this.blockEntity = blockEntity;
     }
 
     public long getEu() {
@@ -75,18 +84,22 @@ public class EnergyComponent implements IComponent.ServerOnly {
     }
 
     public void readNbt(CompoundTag tag) {
-        setEu(tag.getLong("storedEu"));
+        setEu(tag.getLong("storedEu"), false);
     }
 
-    private void setEu(long eu) {
+    private void setEu(long eu, boolean update) {
         this.storedEu = Math.min(eu, capacity.get());
+
+        if (update) {
+            blockEntity.setChanged();
+        }
     }
 
     public long consumeEu(long max, Simulation simulation) {
         Preconditions.checkArgument(max >= 0, "May not consume < 0 energy.");
         long ext = Math.min(max, getEu());
         if (simulation.isActing()) {
-            setEu(getEu() - ext);
+            setEu(getEu() - ext, true);
         }
         return ext;
     }
@@ -95,7 +108,7 @@ public class EnergyComponent implements IComponent.ServerOnly {
         Preconditions.checkArgument(max >= 0, "May not insert < 0 energy.");
         long ext = Math.min(max, capacity.get() - getEu());
         if (simulation.isActing()) {
-            setEu(getEu() + ext);
+            setEu(getEu() + ext, true);
         }
         return ext;
     }

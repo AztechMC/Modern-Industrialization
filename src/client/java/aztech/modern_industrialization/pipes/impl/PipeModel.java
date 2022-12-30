@@ -186,9 +186,14 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     private static final RenderContext.QuadTransform ITEM_TRANSFORM = quad -> {
+        // Scale pipe to make items look better
         for (int i = 0; i < 4; ++i) {
             Vector3f pos = quad.copyPos(i, null);
             quad.pos(i, pos.x(), pos.y() * 2 - 0.5f, pos.z() * 2 - 0.5f);
+        }
+        // Remove fluid quads
+        if (quad.tag() == 1) {
+            return false;
         }
         return true;
     };

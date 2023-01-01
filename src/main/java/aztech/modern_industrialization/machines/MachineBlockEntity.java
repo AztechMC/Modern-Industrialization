@@ -59,6 +59,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -166,6 +167,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
+            getLevel().blockUpdated(getBlockPos(), Blocks.AIR);
             setChanged();
             if (!getLevel().isClientSide()) {
                 sync();
@@ -225,6 +227,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         }
     }
 
+    @Override
+    protected final boolean shouldSkipComparatorUpdate() {
+        return !hasComparatorOutput();
+    }
+
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
@@ -245,5 +252,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public List<Component> getTooltips() {
         return List.of();
+    }
+
+    protected boolean hasComparatorOutput() {
+        return false;
+    }
+
+    protected int getComparatorOutput() {
+        return 0;
     }
 }

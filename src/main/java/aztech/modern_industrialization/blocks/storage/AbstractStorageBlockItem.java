@@ -32,16 +32,14 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
 public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> extends BlockItem implements ContainerItem<T> {
 
     public final StorageBehaviour<T> behaviour;
 
-    public AbstractStorageBlockItem(Block block, Properties properties, StorageBehaviour<T> behaviour) {
+    public AbstractStorageBlockItem(AbstractStorageBlock<T> block, Properties properties) {
         super(block, properties);
-        assert block instanceof AbstractStorageBlock;
-        this.behaviour = behaviour;
+        this.behaviour = block.behavior;
     }
 
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {

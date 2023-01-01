@@ -29,6 +29,7 @@ import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
+import java.util.Objects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -69,6 +70,13 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
             var tagId = new ResourceLocation(entry.getKey());
             for (var tag : entry.getValue()) {
                 tag(key(tagId)).forceAddTag(key(tag));
+            }
+        }
+
+        for (var goldenItem : MIMaterials.GOLD.getParts().values()) {
+            String namespace = goldenItem.getItemId().split(":")[0];
+            if (!Objects.equals(namespace, "minecraft")) {
+                tag(ItemTags.PIGLIN_LOVED).add(goldenItem.asItem());
             }
         }
 

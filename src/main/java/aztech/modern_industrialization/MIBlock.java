@@ -95,8 +95,8 @@ public class MIBlock {
             "Creative Tank",
             "creative_tank",
             BlockDefinitionParams.of()
-                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new))
-                    .withBlockItemConstructor((b, s) -> new TankItem(b, StorageBehaviour.creative()))
+                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockItemConstructor(TankItem::new)
                     .withModel(TankPart.MODEL_GENERATOR)
                     .withBlockEntityRendererItemModel()
                     .noLootTable().clearTags()
@@ -110,8 +110,8 @@ public class MIBlock {
             "Creative Barrel",
             "creative_barrel",
             BlockDefinitionParams.of()
-                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new))
-                    .withBlockItemConstructor((b, s) -> new BarrelItem(b, StorageBehaviour.creative()))
+                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockItemConstructor(BarrelItem::new)
                     .withModel(TexturedModel.COLUMN)
                     .withBlockEntityRendererItemModel()
                     .noLootTable().clearTags()
@@ -133,7 +133,7 @@ public class MIBlock {
             String englishName,
             String id,
             T block,
-            BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
+            BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
@@ -198,11 +198,11 @@ public class MIBlock {
         public SortOrder sortOrder = SortOrder.BLOCKS_OTHERS;
 
         public Function<BlockBehaviour.Properties, T> ctor;
-        public BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor;
+        public BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor;
 
         protected BlockDefinitionParams(BlockBehaviour.Properties properties,
                 Function<BlockBehaviour.Properties, T> ctor,
-                BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
+                BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
                 BiConsumer<Block, BlockModelGenerators> modelGenerator,
                 BiConsumer<Block, BlockLoot> lootTableGenerator,
                 List<TagKey<Block>> tags) {
@@ -230,19 +230,19 @@ public class MIBlock {
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
-            return new BlockDefinitionParams<>(this, ctor, this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
+            return new BlockDefinitionParams<>(this, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
             return new BlockDefinitionParams<>(this,
                     p -> ctor.get(),
-                    this.blockItemCtor,
+                    (BiFunction) this.blockItemCtor,
                     this.modelGenerator,
                     this.lootTableGenerator,
                     this.tags);
         }
 
-        public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor) {
+        public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor) {
             this.blockItemCtor = blockItemCtor;
             return this;
         }

@@ -34,6 +34,18 @@ import net.minecraft.world.inventory.Slot;
 
 public class ConfigurableInventoryPacketHandlers {
     public static class C2S {
+        // sync id, whether to lock
+        public static final ServerPlayNetworking.PlayChannelHandler LOCK_ALL = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            boolean lock = buf.readBoolean();
+            ms.execute(() -> {
+                AbstractContainerMenu menu = player.containerMenu;
+                if (menu.containerId == syncId) {
+                    ((ConfigurableScreenHandler) menu).lockAll(lock);
+                }
+            });
+        };
+
         // sync id, new locking mode
         public static final ServerPlayNetworking.PlayChannelHandler SET_LOCKING_MODE = (ms, player, handler, buf, sender) -> {
             int syncId = buf.readInt();

@@ -74,7 +74,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         this.to = to;
         this.euCapacity = euCapacity;
 
-        this.energy = new EnergyComponent(euCapacity);
+        this.energy = new EnergyComponent(this, euCapacity);
         insertable = energy.buildInsertable((CableTier tier) -> tier == from);
         extractable = energy.buildExtractable((CableTier tier) -> tier == to);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);

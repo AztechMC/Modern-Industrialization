@@ -63,11 +63,15 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     private final ResourceParticipant participant = new ResourceParticipant();
 
-    public AbstractStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
-            StorageBehaviour<T> behaviour) {
+    public AbstractStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         resource = getBlankResource();
-        this.behaviour = behaviour;
+        this.behaviour = ((AbstractStorageBlock<T>) state.getBlock()).behavior;
+    }
+
+    @Override
+    protected boolean shouldSkipComparatorUpdate() {
+        return behaviour.isCreative();
     }
 
     public void onChanged() {

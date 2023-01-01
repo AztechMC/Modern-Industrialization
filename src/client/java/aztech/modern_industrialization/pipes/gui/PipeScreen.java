@@ -114,9 +114,35 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         }, priorityTooltip));
     }
 
+    protected int connectionTypeForward(ConnectionTypeInterface connectionType) {
+        return (connectionType.getConnectionType() + 1) % 3;
+    }
+
+    protected int connectionTypeBackward(ConnectionTypeInterface connectionType) {
+        return (connectionType.getConnectionType() + 2) % 3;
+    }
+
+    protected int connectionTypeNext(ConnectionTypeInterface connectionType) {
+        if (!hasShiftDown()) {
+            return connectionTypeForward(connectionType);
+        } else {
+            return connectionTypeBackward(connectionType);
+        }
+    }
+
+    protected static Component getConnectionTypeText(int connectionType) {
+        return switch (connectionType) {
+        case 0 -> MIText.PipeConnectionTooltipInsertOnly.text();
+        case 1 -> MIText.PipeConnectionTooltipInsertOrExtract.text();
+        case 2 -> MIText.PipeConnectionTooltipExtractOnly.text();
+        default -> throw new IllegalArgumentException("Connection Type " + connectionType + " must be either 0, 1, 2");
+        };
+    }
+
     protected void addConnectionTypeButton(int x, int y, ConnectionTypeInterface connectionType) {
         addRenderableWidget(new ConnectionTypeButton(x + this.leftPos, y + this.topPos, widget -> {
-            int newType = (connectionType.getConnectionType() + 1) % 3;
+
+            int newType = connectionTypeNext(connectionType);
             connectionType.setConnectionType(newType);
             FriendlyByteBuf buf = PacketByteBufs.create();
             buf.writeInt(menu.containerId);
@@ -124,15 +150,11 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
-            Component component = switch (connectionType.getConnectionType()) {
-            case 0 -> MIText.PipeConnectionTooltipInsertOnly.text();
-            case 1 -> MIText.PipeConnectionTooltipInsertOrExtract.text();
-            case 2 -> MIText.PipeConnectionTooltipExtractOnly.text();
-            default -> throw new IllegalArgumentException("Connection Type " + connectionType.getConnectionType() + " must be either 0, 1, 2");
-            };
+            Component component = getConnectionTypeText(connectionType.getConnectionType());
 
             lines.add(component);
             lines.add(MIText.PipeConnectionHelp.text().setStyle(TextHelper.GRAY_TEXT));
+
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         }, connectionType));
     }

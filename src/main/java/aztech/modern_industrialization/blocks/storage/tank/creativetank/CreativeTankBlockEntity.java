@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.MIBlockEntityTypes;
-import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -40,7 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
-        super(MIBlockEntityTypes.CREATIVE_TANK, pos, state, StorageBehaviour.creative());
+        super(MIBlockEntityTypes.CREATIVE_TANK, pos, state);
     }
 
     @Override

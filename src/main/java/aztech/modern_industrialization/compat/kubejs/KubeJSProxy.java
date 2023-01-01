@@ -29,6 +29,9 @@ public class KubeJSProxy {
     public void fireAddMaterialsEvent() {
     }
 
+    public void fireRegisterFluidsEvent() {
+    }
+
     public void fireRegisterRecipeTypesEvent() {
     }
 

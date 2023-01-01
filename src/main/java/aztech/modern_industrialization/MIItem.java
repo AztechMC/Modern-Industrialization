@@ -167,7 +167,7 @@ public final class MIItem {
     // Others
     public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_OTHER);
 
-    public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Item Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
+    public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
 
     // @formatter:on
 

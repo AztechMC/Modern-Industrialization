@@ -38,27 +38,54 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
 
     @Override
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
-        genPlanks(consumer, "oak", "logs");
-        genPlanks(consumer, "spruce", "logs");
-        genPlanks(consumer, "birch", "logs");
-        genPlanks(consumer, "jungle", "logs");
-        genPlanks(consumer, "acacia", "logs");
-        genPlanks(consumer, "dark_oak", "logs");
-        genPlanks(consumer, "mangrove", "logs");
-        genPlanks(consumer, "crimson", "stems");
-        genPlanks(consumer, "warped", "stems");
+        genPlanks(consumer, "oak", true);
+        genPlanks(consumer, "spruce", true);
+        genPlanks(consumer, "birch", true);
+        genPlanks(consumer, "jungle", true);
+        genPlanks(consumer, "acacia", true);
+        genPlanks(consumer, "dark_oak", true);
+        genPlanks(consumer, "mangrove", true);
+        genPlanks(consumer, "crimson", false);
+        genPlanks(consumer, "warped", false);
     }
 
-    private static void genPlanks(Consumer<FinishedRecipe> consumer, String prefix, String suffix) {
-        MIRecipeJson json = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("#minecraft:" + prefix + "_" + suffix, 1).addItemOutput("minecraft:" + prefix + "_planks", 4);
+    private static void genPlanks(Consumer<FinishedRecipe> consumer, String prefix, boolean log) {
 
-        json.offerTo(consumer, "cutting_machine/planks/" + prefix);
+        String suffixTag = log ? "logs" : "stems";
+        String suffix = log ? "log" : "stem";
+
+        String packedSuffix = log ? "wood" : "hyphae";
+
+        MIRecipeJson planks = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("#minecraft:" + prefix + "_" + suffixTag, 1).addItemOutput("minecraft:" + prefix + "_planks", 6);
+
+        planks.offerTo(consumer, "cutting_machine/planks/" + prefix);
+
+        MIRecipeJson stripped = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("minecraft:" + prefix + "_" + suffix, 1).addItemOutput("minecraft:stripped_" + prefix + "_" + suffix, 1);
+
+        stripped.offerTo(consumer, "cutting_machine/stripped/" + prefix);
+
+        MIRecipeJson strippedWood = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("minecraft:" + prefix + "_" + packedSuffix, 1).addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 1);
+
+        strippedWood.offerTo(consumer, "cutting_machine/stripped_wood/" + prefix);
 
         MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                 .addItemInput("minecraft:" + prefix + "_planks", 1).addItemOutput("minecraft:" + prefix + "_slab", 2);
 
         slab.offerTo(consumer, "cutting_machine/slabs/" + prefix);
+
+        // packer
+
+        MIRecipeJson packedWood = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput("minecraft:" + prefix + "_" + suffix, 4)
+                .addItemOutput("minecraft:" + prefix + "_" + packedSuffix, 3);
+        packedWood.offerTo(consumer, "packer/wood/" + prefix);
+
+        MIRecipeJson packedStrippedWood = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 2, 100)
+                .addItemInput("minecraft:stripped_" + prefix + "_" + suffix, 4)
+                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 3);
+        packedStrippedWood.offerTo(consumer, "packer/stripped_wood/" + prefix);
     }
 
 }

@@ -58,4 +58,3 @@ ServerEvents.recipes(event => {
         .adjacentBlock("minecraft:bedrock", "below")
 })
 ```
-Here is an example that removes the default quarry recipe and makes it require bedrock below the quarry instead:

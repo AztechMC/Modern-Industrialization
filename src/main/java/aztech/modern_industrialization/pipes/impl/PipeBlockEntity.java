@@ -25,8 +25,13 @@ package aztech.modern_industrialization.pipes.impl;
 
 import static net.minecraft.core.Direction.NORTH;
 
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
+import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
@@ -35,15 +40,22 @@ import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -79,6 +91,11 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
      * Extra rendering data
      */
     SortedMap<PipeNetworkType, CompoundTag> customData = new TreeMap<>();
+    /**
+     * Current camouflage, both client-side and server-side.
+     */
+    @Nullable
+    BlockState camouflage = null;
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
@@ -222,6 +239,127 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         }
     }
 
+    public boolean hasCamouflage() {
+        return camouflage != null;
+    }
+
+    public ItemStack getCamouflageStack() {
+        Objects.requireNonNull(camouflage, "Can't get camouflage stack when there is no camouflage");
+
+        return new ItemStack(camouflage.getBlock());
+    }
+
+    /**
+     * Set the camouflage directly. The camouflage block should be consumed from the player before calling this.
+     */
+    private void setCamouflage(Player player, @Nullable BlockState newCamouflage) {
+        boolean hadCamouflage = hasCamouflage();
+
+        if (camouflage != null) {
+            // Give stack back
+            if (newCamouflage == null || newCamouflage.getBlock() != camouflage.getBlock()) {
+                var pos = worldPosition;
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), getCamouflageStack());
+            }
+
+            // Play a cool sound
+            if (newCamouflage == null) {
+                var group = camouflage.getSoundType();
+                var sound = group.getBreakSound();
+                level.playSound(player, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+            }
+
+            // Remove camouflage
+            camouflage = null;
+            setChanged();
+            if (!level.isClientSide()) {
+                sync();
+                rebuildCollisionShape();
+            }
+        }
+
+        camouflage = newCamouflage;
+
+        if (newCamouflage != null) {
+            // Play a cool sound
+            var group = newCamouflage.getSoundType();
+            var sound = group.getPlaceSound();
+            level.playSound(player, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+
+            setChanged();
+            if (!level.isClientSide()) {
+                sync();
+                rebuildCollisionShape();
+            }
+        }
+
+        if (hadCamouflage != hasCamouflage()) {
+            var newState = getBlockState().setValue(PipeBlock.CAMOUFLAGED, hasCamouflage());
+            if (hasCamouflage()) {
+                newState = newState.setValue(PipeBlock.WATERLOGGED, false); // sorry not sorry
+            }
+            level.setBlockAndUpdate(worldPosition, newState);
+        }
+    }
+
+    public boolean tryRemoveCamouflage(Player player, InteractionHand hand) {
+        var handStack = player.getItemInHand(hand);
+
+        if (camouflage == null || !handStack.is(MITags.WRENCHES)) {
+            return false;
+        }
+
+        setCamouflage(player, null);
+
+        return true;
+    }
+
+    public boolean tryApplyCamouflage(Player player, InteractionHand hand) {
+        var handStack = player.getItemInHand(hand);
+
+        if (!MIItem.CONFIG_CARD.is(handStack)) {
+            return false;
+        }
+
+        if (player.isShiftKeyDown()) {
+            if (camouflage != null) {
+                // Copy current camouflage to config card
+                return ConfigCardItem.setCamouflage(player, hand, camouflage);
+            } else {
+                return false;
+            }
+        }
+
+        var newCamouflage = ConfigCardItem.readCamouflage(handStack);
+        if (newCamouflage.isAir()) {
+            return false;
+        }
+
+        if (newCamouflage == camouflage) {
+            return true;
+        }
+
+        boolean itemChanged = camouflage == null || newCamouflage.getBlock() != camouflage.getBlock();
+
+        if (!player.getAbilities().instabuild && itemChanged) {
+            var itemToUse = newCamouflage.getBlock().asItem();
+            var inv = PlayerInventoryStorage.of(player);
+            var toExtract = StorageUtil.findExtractableResource(inv, v -> v.isOf(itemToUse), null);
+            try (var tx = Transaction.openOuter()) {
+                if (toExtract == null || inv.extract(toExtract, 1, tx) != 1) {
+                    player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
+                            .arg(newCamouflage, MITooltips.BLOCK_STATE_PARSER).build().withStyle(ChatFormatting.RED), true);
+                    return true; // return true to prevent other interactions
+                }
+
+                tx.commit();
+            }
+        }
+
+        setCamouflage(player, newCamouflage);
+        return true;
+    }
+
     public boolean customUse(PipeVoxelShape shape, Player player, InteractionHand hand) {
         for (var node : pipes) {
             if (node.getType() == shape.type) {
@@ -271,10 +409,15 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             tag.put("pipe_data_" + i, entry.getB().toTag(new CompoundTag()));
             i++;
         }
+        if (camouflage != null) {
+            tag.put("camouflage", NbtUtils.writeBlockState(camouflage));
+        }
     }
 
     @Override
     public void load(CompoundTag tag) {
+        camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(tag.getCompound("camouflage")) : null;
+
         if (!tag.contains("pipes")) {
             pipes.clear();
 
@@ -335,6 +478,9 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
         }
         tag.put("pipes", pipesTag);
+        if (camouflage != null) {
+            tag.put("camouflage", NbtUtils.writeBlockState(camouflage));
+        }
         return tag;
     }
 
@@ -356,7 +502,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             customData[i] = this.customData.get(entry.getKey());
             i++;
         }
-        return new RenderAttachment(types, renderedConnections, customData);
+        return new RenderAttachment(camouflage, types, renderedConnections, customData);
     }
 
     @Override
@@ -389,16 +535,11 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return PipeBlock.useWrench(this, player, hand, hitResult);
     }
 
-    static class RenderAttachment {
-        PipeNetworkType[] types;
-        PipeEndpointType[][] renderedConnections;
-        CompoundTag[] customData;
-
-        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, CompoundTag[] customData) {
-            this.types = types;
-            this.renderedConnections = renderedConnections;
-            this.customData = customData;
-        }
+    record RenderAttachment(
+            @Nullable BlockState camouflage,
+            PipeNetworkType[] types,
+            PipeEndpointType[][] renderedConnections,
+            CompoundTag[] customData) {
     }
 
     /**
@@ -434,23 +575,27 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     private void rebuildCollisionShape() {
-        currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
+        if (camouflage != null) {
+            currentCollisionShape = Shapes.block();
+        } else {
+            currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
 
-        for (Direction direction : Direction.values()) {
-            boolean renderConnector = false;
-            for (var entry : connections.entrySet()) {
-                var conn = entry.getValue()[direction.get3DDataValue()];
-                if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
-                    renderConnector = true;
+            for (Direction direction : Direction.values()) {
+                boolean renderConnector = false;
+                for (var entry : connections.entrySet()) {
+                    var conn = entry.getValue()[direction.get3DDataValue()];
+                    if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
+                        renderConnector = true;
+                    }
+                }
+
+                if (renderConnector) {
+                    currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
                 }
             }
 
-            if (renderConnector) {
-                currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
-            }
+            currentCollisionShape = currentCollisionShape.optimize();
         }
-
-        currentCollisionShape = currentCollisionShape.optimize();
     }
 
     static {

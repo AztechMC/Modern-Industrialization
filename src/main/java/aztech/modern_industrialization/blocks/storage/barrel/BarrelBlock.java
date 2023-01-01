@@ -25,7 +25,9 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -33,12 +35,13 @@ import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
 
-public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
+public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
 
-    public BarrelBlock(Properties properties, EntityBlock factory) {
-        super(properties, factory);
+    public BarrelBlock(Properties properties, EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
+        super(properties.isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
     }
 
     public static void setupBarrelEvents() {
@@ -55,6 +58,15 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
                 }
 
                 if (!player.isShiftKeyDown()) {
+
+                    ItemStack stack = player.getItemInHand(hand);
+
+                    if (stack.getItem() instanceof BarrelItem barrelItem) {
+                        var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
+                        if (StorageUtil.move(storage, barrel, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+                            return InteractionResult.sidedSuccess(world.isClientSide);
+                        }
+                    }
                     if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrel,
                             (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
                         return InteractionResult.sidedSuccess(world.isClientSide);
@@ -74,6 +86,16 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             if (world.getBlockEntity(pos) instanceof BarrelBlockEntity barrel && direction.getAxis().isHorizontal()) {
                 if (!barrel.isEmpty()) {
+
+                    ItemStack stack = player.getItemInHand(hand);
+
+                    if (stack.getItem() instanceof BarrelItem barrelItem) {
+                        var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
+                        if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+                            return InteractionResult.sidedSuccess(world.isClientSide);
+                        }
+                    }
+
                     try (Transaction transaction = Transaction.openOuter()) {
                         ItemVariant extractedResource = barrel.getResource();
 

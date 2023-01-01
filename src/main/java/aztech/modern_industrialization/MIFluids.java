@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.definition.FluidDefinition.*;
 
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.FluidTexture;
 import java.util.SortedMap;
@@ -109,6 +110,10 @@ public class MIFluids {
     public static final FluidDefinition TRITIUM = fluid("Tritium", "tritium", 0xffcc1b50, true);
     public static final FluidDefinition UU_MATER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
     public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY);
+
+    static {
+        KubeJSProxy.instance.fireRegisterFluidsEvent();
+    }
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, FluidTexture texture,  boolean isGas){
         FluidDefinition definition =  new FluidDefinition(englishName, id, color, opacity, texture, isGas);

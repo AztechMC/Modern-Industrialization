@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.proxy.CommonProxy;
@@ -348,11 +347,6 @@ public class SteamDrillItem
         if (data.burnTicks > 0) {
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
-        // Usage guide
-        tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
-        tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
-        tooltip.add(MIText.SteamDrillProfit.text().setStyle(MITooltips.DEFAULT_STYLE));
-        tooltip.add(MIText.SteamDrillToggle.text().setStyle(MITooltips.DEFAULT_STYLE));
     }
 
     @Override

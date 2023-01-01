@@ -33,6 +33,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -113,10 +114,23 @@ public class CasingComponent implements IComponent {
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
+                // Play a nice sound :)
+                playCasingPlaceSound(be);
                 return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
         }
         return InteractionResult.PASS;
+    }
+
+    private void playCasingPlaceSound(MachineBlockEntity be) {
+        if (tierCasing == defaultCasing) {
+            return; // no sound for LV
+        }
+
+        var casingState = blockCasing.inverse().get(tierCasing).defaultBlockState();
+        var group = casingState.getSoundType();
+        var sound = group.getBreakSound();
+        be.getLevel().playSound(null, be.getBlockPos(), sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
     }
 
     @Nullable
@@ -148,6 +162,7 @@ public class CasingComponent implements IComponent {
             be.sync();
             be.getLevel().blockUpdated(be.getBlockPos(), Blocks.AIR);
         }
+        playCasingPlaceSound(be);
     }
 
     public MachineCasing getCasing() {

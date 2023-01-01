@@ -151,6 +151,8 @@ public class ModernIndustrialization {
     }
 
     private static void setupPackets() {
+        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.LOCK_ALL,
+                ConfigurableInventoryPacketHandlers.C2S.LOCK_ALL);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,
                 ConfigurableInventoryPacketHandlers.C2S.SET_LOCKING_MODE);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.DO_SLOT_DRAGGING,

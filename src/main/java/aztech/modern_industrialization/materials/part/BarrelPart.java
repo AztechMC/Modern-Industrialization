@@ -68,14 +68,14 @@ public class BarrelPart implements PartKeyProvider {
 
                     StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
 
-                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(bet.getValue(), pos, state, barrelStorageBehaviour);
+                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(bet.getValue(), pos, state);
 
                     BlockDefinition<BarrelBlock> blockDefinition = MIBlock.block(
                             englishName,
                             itemPath,
-                            MIBlock.BlockDefinitionParams.of().withBlockConstructor(
-                                    s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
-                                            (b, s) -> new BarrelItem(b, barrelStorageBehaviour))
+                            MIBlock.BlockDefinitionParams.of()
+                                    .withBlockConstructor(s -> new BarrelBlock(s, factory, barrelStorageBehaviour))
+                                    .withBlockItemConstructor(BarrelItem::new)
                                     .withModel(TexturedModel.COLUMN)
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()

@@ -28,8 +28,11 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -38,6 +41,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -51,6 +55,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -61,15 +66,17 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
-    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
 
     public PipeBlock(Properties settings) {
-        super(settings.isValidSpawn(MobSpawning.NO_SPAWN).noOcclusion().isRedstoneConductor((s, p, w) -> false));
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
+        super(settings.isValidSpawn(MobSpawning.NO_SPAWN).isRedstoneConductor((state, level, pos) -> state.getValue(CAMOUFLAGED)));
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(CAMOUFLAGED, false));
     }
 
     @Override
@@ -79,8 +86,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(WATERLOGGED);
+        super.createBlockStateDefinition(builder.add(WATERLOGGED, CAMOUFLAGED));
     }
 
     @Nullable
@@ -104,6 +110,16 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         }
 
         return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+    }
+
+    @Override
+    public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
+    }
+
+    @Override
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
+        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.placeLiquid(level, pos, state, fluidState);
     }
 
     private static boolean isPartHit(VoxelShape shape, BlockHitResult hit) {
@@ -135,6 +151,14 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     static boolean useWrench(PipeBlockEntity pipe, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (pipe.hasCamouflage()) {
+            if (player.isShiftKeyDown()) {
+                return pipe.tryRemoveCamouflage(player, hand);
+            } else {
+                return false;
+            }
+        }
+
         PipeVoxelShape partShape = getHitPart(pipe, hit);
         if (partShape == null) {
             return false;
@@ -189,13 +213,17 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     public InteractionResult use(BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
+        if (pipeEntity.tryApplyCamouflage(player, hand)) {
+            return InteractionResult.sidedSuccess(world.isClientSide());
+        }
+
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
-        if (partShape == null || !partShape.opensGui) {
+        if (partShape == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
             return InteractionResult.PASS;
         }
 
         if (!world.isClientSide) {
-            if (!pipeEntity.customUse(partShape, player, hand)) {
+            if (!pipeEntity.customUse(partShape, player, hand) && !player.isShiftKeyDown()) {
                 player.openMenu(pipeEntity.getGui(partShape.type, partShape.direction));
             }
         }
@@ -212,6 +240,9 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
             droppedStacks.add(new ItemStack(MIPipes.INSTANCE.getPipeItem(node.getType())));
             node.appendDroppedStacks(droppedStacks);
         }
+        if (pipeEntity.hasCamouflage()) {
+            droppedStacks.add(pipeEntity.getCamouflageStack());
+        }
         return droppedStacks;
     }
 
@@ -227,7 +258,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return 0;
+        return state.getValue(CAMOUFLAGED) ? world.getMaxLightLevel() : 0;
     }
 
     @Override
@@ -242,6 +273,11 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
         return entity.currentCollisionShape;
+    }
+
+    @Override
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
     }
 
     @SuppressWarnings("deprecation")
@@ -259,5 +295,20 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
             }
             world.removeBlockEntity(pos);
         }
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
+            @Nullable BlockPos sourcePos) {
+        if (renderView instanceof ServerLevel) {
+            if (renderView.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+                return Objects.requireNonNullElse(pipe.camouflage, state);
+            }
+        } else {
+            if (((RenderAttachedBlockView) renderView).getBlockEntityRenderAttachment(pos) instanceof PipeBlockEntity.RenderAttachment att) {
+                return Objects.requireNonNullElse(att.camouflage(), state);
+            }
+        }
+        return state;
     }
 }

@@ -25,16 +25,20 @@ package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.pipes.impl.ClientPipePackets;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeColorProvider;
 import aztech.modern_industrialization.pipes.impl.PipeMeshCache;
 import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
+import aztech.modern_industrialization.util.InGameMouseScrollCallback;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -53,6 +58,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,6 +66,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class MIPipesClient {
+    public static volatile boolean transparentCamouflage = false;
+
     public void setupClient() {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new PipeModelProvider());
         ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
@@ -69,7 +77,7 @@ public class MIPipesClient {
         registerRenderers();
 
         WorldRenderEvents.BLOCK_OUTLINE.register((wrc, boc) -> {
-            if (boc.blockState().getBlock() instanceof PipeBlock) {
+            if (wrc.world().getBlockEntity(boc.blockPos()) instanceof PipeBlockEntity pipe && !pipe.hasCamouflage()) {
                 var shape = PipeBlock.getHitPart(wrc.world(), boc.blockPos(), (BlockHitResult) Minecraft.getInstance().hitResult);
 
                 if (shape != null) {
@@ -89,14 +97,34 @@ public class MIPipesClient {
 
         ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
             if (result instanceof BlockHitResult bhr) {
-                var targetedPart = PipeBlock.getHitPart(player.level, bhr.getBlockPos(), bhr);
-                return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
+                if (player.level.getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
+                    if (pipe.hasCamouflage()) {
+                        return pipe.getCamouflageStack();
+                    }
+
+                    var targetedPart = PipeBlock.getHitPart(player.level, bhr.getBlockPos(), bhr);
+                    return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
+                }
             }
 
             return ItemStack.EMPTY;
         });
 
+        InGameMouseScrollCallback.EVENT.register((player, direction) -> {
+            if (player.isShiftKeyDown() && MIItem.CONFIG_CARD.is(player.getItemInHand(InteractionHand.MAIN_HAND))) {
+                // noinspection NonAtomicOperationOnVolatileField
+                transparentCamouflage = !transparentCamouflage;
+                Minecraft.getInstance().levelRenderer.allChanged();
+                var miText = transparentCamouflage ? MIText.TransparentCamouflageEnabled : MIText.TransparentCamouflageDisabled;
+                player.displayClientMessage(miText.text(), true);
+                return false;
+            }
+
+            return true;
+        });
+
         PipeModelProvider.modelNames.addAll(MIPipes.PIPE_MODEL_NAMES);
+        BlockRenderLayerMap.INSTANCE.putBlock(MIPipes.BLOCK_PIPE, RenderType.cutout());
     }
 
     private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {

@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
-import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -35,9 +34,8 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
     public BarrelBlockEntity(BlockEntityType type,
             BlockPos pos,
-            BlockState state,
-            StorageBehaviour<ItemVariant> behaviour) {
-        super(type, pos, state, behaviour);
+            BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

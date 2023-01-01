@@ -50,7 +50,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     private BiConsumer<Block, Item> onBlockRegistrationEvent;
 
     public BlockDefinition(String englishName, String id, T block,
-            BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
+            BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,

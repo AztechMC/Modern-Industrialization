@@ -225,7 +225,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addFluidInput(Fluids.WATER, 125)
                 .addItemOutput("modern_industrialization:me_wire", 1));
         // 16 me wires direct
-        var meWiresDirect = new ShapedRecipeJson("modern_industrialization:me_wire", 16, "qCq", "GGG", "qCq")
+        var meWiresDirect = new ShapedRecipeJson("modern_industrialization:me_wire", 16, "qCq", "G G", "qCq")
                 .addInput('C', "modern_industrialization:bronze_curved_plate")
                 .addInput('G', "#ae2:glass_cable")
                 .addInput('q', "ae2:quartz_fiber");

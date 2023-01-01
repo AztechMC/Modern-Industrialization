@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "modern_industrialization:me_wires"
+    },
+    {
+      "amount": 1,
+      "tag": "c:black_dyes"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:black_me_wire"
+    }
+  ]
+}

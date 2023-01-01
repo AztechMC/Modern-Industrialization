@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "key": {
+    "d": {
+      "tag": "c:lime_dyes"
+    },
+    "p": {
+      "tag": "modern_industrialization:me_wires"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "pdp",
+    "ppp"
+  ],
+  "result": {
+    "count": 8,
+    "item": "modern_industrialization:lime_me_wire"
+  }
+}

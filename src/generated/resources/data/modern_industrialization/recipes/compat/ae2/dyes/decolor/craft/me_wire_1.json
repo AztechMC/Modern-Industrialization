@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:water_bucket"
+    },
+    "p": {
+      "tag": "modern_industrialization:me_wires"
+    }
+  },
+  "pattern": [
+    "pb"
+  ],
+  "result": {
+    "count": 8,
+    "item": "modern_industrialization:me_wire"
+  }
+}

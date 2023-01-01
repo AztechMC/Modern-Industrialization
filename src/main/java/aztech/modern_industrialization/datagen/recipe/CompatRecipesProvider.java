@@ -34,6 +34,7 @@ import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
+import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.IRCompressRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.TRCompressorRecipeJson;
 import com.google.common.base.Preconditions;
@@ -43,9 +44,11 @@ import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.Fluids;
 
 public class CompatRecipesProvider extends MIRecipesProvider {
+
     private Consumer<FinishedRecipe> consumer;
     private String currentCompatModid;
 
@@ -188,6 +191,46 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addItemInput(MIMaterials.SILICON.getPart(MIParts.INGOT), 1)
                 .addItemInput("ae2:silicon_press", 1, 0)
                 .addItemOutput("ae2:printed_silicon", 1));
+
+        for (DyeColor color : DyeColor.values()) {
+            // 16 me wires with dye in the center
+            var meWiresDirect = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 16, "qCq", "GdG", "qCq")
+                    .addInput('C', "modern_industrialization:bronze_curved_plate")
+                    .addInput('G', "#ae2:glass_cable")
+                    .addInput('d', "#c:" + color.getName() + "_dyes")
+                    .addInput('q', "ae2:quartz_fiber");
+            addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_direct", meWiresDirect);
+            addCompatRecipe("dyes/" + color.getName() + "/assembler/me_wire_direct", meWiresDirect.exportToAssembler());
+            // 8 me wires
+            var eightMeWires = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 8, "ppp", "pdp",
+                    "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:me_wires");
+            addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_8", eightMeWires);
+            addCompatRecipe("dyes/" + color.getName() + "/mixer/me_wire_8",
+                    eightMeWires.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1));
+            // 1 me wire
+            addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_1",
+                    new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 1, "pd")
+                            .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:me_wires"));
+        }
+
+        // decolor 8 me wires
+        addCompatRecipe("dyes/decolor/craft/me_wire_8", new ShapedRecipeJson("modern_industrialization:me_wire", 8, "ppp", "pbp",
+                "ppp").addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:me_wires"));
+        // decolor 1 me wire
+        addCompatRecipe("dyes/decolor/craft/me_wire_1", new ShapedRecipeJson("modern_industrialization:me_wire", 8, "pb")
+                .addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:me_wires"));
+        // decolor 1 me wire with mixer
+        addCompatRecipe("dyes/decolor/mixer/me_wire", MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100)
+                .addItemInput("#modern_industrialization:me_wires", 1)
+                .addFluidInput(Fluids.WATER, 125)
+                .addItemOutput("modern_industrialization:me_wire", 1));
+        // 16 me wires direct
+        var meWiresDirect = new ShapedRecipeJson("modern_industrialization:me_wire", 16, "qCq", "G G", "qCq")
+                .addInput('C', "modern_industrialization:bronze_curved_plate")
+                .addInput('G', "#ae2:glass_cable")
+                .addInput('q', "ae2:quartz_fiber");
+        addCompatRecipe("craft/me_wire_direct", meWiresDirect);
+        addCompatRecipe("assembler/me_wire_direct", meWiresDirect.exportToAssembler());
     }
 
     private void generateIndrevCompat() {

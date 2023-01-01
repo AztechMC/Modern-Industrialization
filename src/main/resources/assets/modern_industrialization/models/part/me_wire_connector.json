@@ -1,0 +1,21 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "ae2:part/import_bus",
+		"2": "ae2:part/import_bus_sides"
+	},
+	"elements": [
+		{
+			"from": [3.99, 3.99, -0.01],
+			"to": [12.01, 12.01, 2.01],
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#1"},
+				"east": {"uv": [12, 4, 14, 12], "texture": "#2"},
+				"south": {"uv": [4, 4, 12, 12], "texture": "#2"},
+				"west": {"uv": [2, 4, 4, 12], "texture": "#2"},
+				"up": {"uv": [4, 2, 12, 4], "texture": "#2"},
+				"down": {"uv": [4, 12, 12, 14], "texture": "#2"}
+			}
+		}
+	]
+}

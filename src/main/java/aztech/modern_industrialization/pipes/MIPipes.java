@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
@@ -85,6 +86,16 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
+        if (MIConfig.loadAe2Compat()) {
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
+                        .getMethod("onInitializePipes")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         registerPackets();
         DebugCommands.init();
     }
@@ -122,6 +133,14 @@ public class MIPipes {
         pipeItems.put(type, item);
         ELECTRICITY_PIPE_TIER.put(item, tier);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
+    }
+
+    public void register(PipeNetworkType type, PipeItem item) {
+        if (pipeItems.containsKey(type)) {
+            throw new IllegalStateException("Type " + type + " already registered");
+        }
+
+        pipeItems.put(type, item);
     }
 
     public PipeItem getPipeItem(PipeNetworkType type) {

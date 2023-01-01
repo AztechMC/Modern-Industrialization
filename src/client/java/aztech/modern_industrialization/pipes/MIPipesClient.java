@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
@@ -39,6 +40,7 @@ import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.util.InGameMouseScrollCallback;
 import aztech.modern_industrialization.util.RenderHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -151,7 +153,7 @@ public class MIPipesClient {
             Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
     private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
 
-    public static final List<PipeRenderer.Factory> RENDERERS = List.of(ITEM_RENDERER, FLUID_RENDERER, ELECTRICITY_RENDERER);
+    public static final List<PipeRenderer.Factory> RENDERERS = new ArrayList<>();
 
     private void registerRenderers() {
         for (var type : PipeNetworkType.getTypes().values()) {
@@ -162,6 +164,20 @@ public class MIPipesClient {
             } else if (type.getIdentifier().getPath().endsWith("cable")) {
                 PipeRenderer.register(type, ELECTRICITY_RENDERER);
             }
+        }
+
+        if (MIConfig.loadAe2Compat()) {
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddonClient")
+                        .getMethod("registerPipeRenderers")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        for (var value : PipeNetworkType.getTypes().values()) {
+            RENDERERS.add(PipeRenderer.get(value));
         }
     }
 }

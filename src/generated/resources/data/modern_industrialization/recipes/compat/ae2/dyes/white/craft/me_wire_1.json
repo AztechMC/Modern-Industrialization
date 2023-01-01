@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "key": {
+    "d": {
+      "tag": "c:white_dyes"
+    },
+    "p": {
+      "tag": "modern_industrialization:me_wires"
+    }
+  },
+  "pattern": [
+    "pd"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:white_me_wire"
+  }
+}

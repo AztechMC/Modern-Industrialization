@@ -124,7 +124,7 @@ public class DebugCommands {
         var networks = PipeNetworks.get(src.getLevel());
         var manager = networks.getManager(type);
         if (!manager.hasNode(pos)) {
-            manager.addNode(type.getNodeCtor().get(), pos, MIPipes.INSTANCE.getPipeItem(type).defaultData);
+            manager.addNode(type.getNodeCtor().get(), pos, MIPipes.INSTANCE.getPipeItem(type).defaultData.clone());
             src.sendSuccess(Component.literal("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
         } else {
             src.sendSuccess(

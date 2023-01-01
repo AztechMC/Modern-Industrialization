@@ -51,7 +51,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
@@ -87,7 +86,7 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
-        if (MIConfig.getConfig().enableAe2Integration && FabricLoader.getInstance().isModLoaded("ae2")) {
+        if (MIConfig.loadAe2Compat()) {
             try {
                 Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
                         .getMethod("onInitializePipes")

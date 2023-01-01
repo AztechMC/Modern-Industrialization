@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -33,7 +35,6 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -68,20 +69,15 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final ResourceLocation DEFAULT_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
+    private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = new MIIdentifier("part/me_wire_connector");
     private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation("minecraft:block/iron_block"));
+
     private TextureAtlasSprite particleSprite;
-    private Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
+    private final Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
     private ItemTransforms modelTransformation;
     private RenderMaterial cutoutMaterial;
-
-    public PipeModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, ItemTransforms modelTransformation,
-            RenderMaterial cutoutMaterial) {
-        this.particleSprite = particleSprite;
-        this.renderers = renderers;
-        this.modelTransformation = modelTransformation;
-        this.cutoutMaterial = cutoutMaterial;
-    }
+    private BakedModel[] meWireConnectors = null;
 
     public PipeModel() {
     }
@@ -114,6 +110,31 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                         attachment.customData[slot]);
 
                 renderContext.popTransform();
+            }
+
+            boolean hasMeWire = false;
+            if (meWireConnectors != null) {
+                for (var type : attachment.types) {
+                    if (type.getIdentifier().getPath().endsWith("me_wire")) {
+                        hasMeWire = true;
+                    }
+                }
+            }
+            if (hasMeWire) {
+                // Render connector if needed
+                for (var direction : Direction.values()) {
+                    boolean renderConnector = false;
+                    for (int slot = 0; slot < attachment.types.length; ++slot) {
+                        var conn = attachment.renderedConnections[slot][direction.get3DDataValue()];
+                        if (conn == PipeEndpointType.BLOCK && attachment.types[slot].getIdentifier().getPath().endsWith("me_wire")) {
+                            renderConnector = true;
+                        }
+                    }
+
+                    if (renderConnector) {
+                        renderContext.fallbackConsumer().accept(meWireConnectors[direction.get3DDataValue()]);
+                    }
+                }
             }
         }
         renderContext.popTransform();
@@ -197,14 +218,30 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public Collection<ResourceLocation> getDependencies() {
-        return Arrays.asList(DEFAULT_BLOCK_MODEL);
+        List<ResourceLocation> dependencies = new ArrayList<>();
+        dependencies.add(DEFAULT_BLOCK_MODEL);
+
+        if (MIConfig.loadAe2Compat()) {
+            dependencies.add(ME_WIRE_CONNECTOR_MODEL);
+        }
+
+        return dependencies;
     }
 
     @Override
     public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
-        return PipeNetworkType.getTypes().values().stream().flatMap(r -> PipeRenderer.get(r).getSpriteDependencies().stream())
-                .collect(Collectors.toList());
+        List<Material> materials = new ArrayList<>();
+
+        for (var type : PipeNetworkType.getTypes().values()) {
+            materials.addAll(PipeRenderer.get(type).getSpriteDependencies());
+        }
+
+        if (MIConfig.loadAe2Compat()) {
+            materials.addAll(unbakedModelGetter.apply(ME_WIRE_CONNECTOR_MODEL).getMaterials(unbakedModelGetter, unresolvedTextureReferences));
+        }
+
+        return materials;
     }
 
     @Override
@@ -218,16 +255,13 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             renderers.put(rendererFactory, rendererFactory.create(textureGetter));
         }
 
+        meWireConnectors = null;
+        if (MIConfig.loadAe2Compat()) {
+            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, loader);
+        }
+
         cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT).find();
 
         return this;
-    }
-
-    public RenderMaterial getCutoutMaterial() {
-        return cutoutMaterial;
-    }
-
-    public Map<PipeRenderer.Factory, PipeRenderer> getRenderers() {
-        return renderers;
     }
 }

@@ -60,6 +60,7 @@ import org.jetbrains.annotations.Nullable;
 public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, RenderAttachmentBlockEntity, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
+    private static final VoxelShape[] ME_WIRE_CONNECTOR_SHAPES;
     static final VoxelShape DEFAULT_SHAPE;
     /**
      * The current collision shape, i.e. the union of the shapes of the pipe parts.
@@ -434,6 +435,22 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     private void rebuildCollisionShape() {
         currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
+
+        for (Direction direction : Direction.values()) {
+            boolean renderConnector = false;
+            for (var entry : connections.entrySet()) {
+                var conn = entry.getValue()[direction.get3DDataValue()];
+                if (conn == PipeEndpointType.BLOCK && entry.getKey().getIdentifier().getPath().endsWith("me_wire")) {
+                    renderConnector = true;
+                }
+            }
+
+            if (renderConnector) {
+                currentCollisionShape = Shapes.or(currentCollisionShape, ME_WIRE_CONNECTOR_SHAPES[direction.get3DDataValue()]);
+            }
+        }
+
+        currentCollisionShape = currentCollisionShape.optimize();
     }
 
     static {
@@ -460,5 +477,20 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         }
 
         DEFAULT_SHAPE = SHAPE_CACHE[0][0][0];
+
+        ME_WIRE_CONNECTOR_SHAPES = buildSideShapes(8.0 / 16, 2.0 / 16);
+    }
+
+    public static VoxelShape[] buildSideShapes(double connectorSide, double connectorDepth) {
+        double connectorSideStart = (1 - connectorSide) / 2;
+        double connectorSideEnd = connectorSideStart + connectorSide;
+        return new VoxelShape[] {
+                Shapes.box(connectorSideStart, 0, connectorSideStart, connectorSideEnd, connectorDepth, connectorSideEnd),
+                Shapes.box(connectorSideStart, 1 - connectorDepth, connectorSideStart, connectorSideEnd, 1, connectorSideEnd),
+                Shapes.box(connectorSideStart, connectorSideStart, 0, connectorSideEnd, connectorSideEnd, connectorDepth),
+                Shapes.box(connectorSideStart, connectorSideStart, 1 - connectorDepth, connectorSideEnd, connectorSideEnd, 1),
+                Shapes.box(0, connectorSideStart, connectorSideStart, connectorDepth, connectorSideEnd, connectorSideEnd),
+                Shapes.box(1 - connectorDepth, connectorSideStart, connectorSideStart, 1, connectorSideEnd, connectorSideEnd),
+        };
     }
 }

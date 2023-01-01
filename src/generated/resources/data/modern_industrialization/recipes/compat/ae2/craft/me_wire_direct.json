@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    "G": {
+      "tag": "ae2:glass_cable"
+    },
+    "q": {
+      "item": "ae2:quartz_fiber"
+    }
+  },
+  "pattern": [
+    "qCq",
+    "GGG",
+    "qCq"
+  ],
+  "result": {
+    "count": 16,
+    "item": "modern_industrialization:me_wire"
+  }
+}

@@ -47,7 +47,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
@@ -139,7 +138,7 @@ public class MIPipesClient {
             }
         }
 
-        if (MIConfig.getConfig().enableAe2Integration && FabricLoader.getInstance().isModLoaded("ae2")) {
+        if (MIConfig.loadAe2Compat()) {
             try {
                 Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddonClient")
                         .getMethod("registerPipeRenderers")

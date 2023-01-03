@@ -29,8 +29,11 @@ import io.github.ladysnake.pal.AbilitySource;
 import io.github.ladysnake.pal.Pal;
 import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.concurrent.ThreadLocalRandom;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -38,10 +41,10 @@ public class MIArmorEffects {
     private MIArmorEffects() {
     }
 
-    public static boolean quantumArmorPreventsDamage(Player player) {
+    public static boolean quantumArmorPreventsDamage(LivingEntity entity) {
         int parts = 0;
         for (QuantumArmorItem item : QuantumArmorItem.ITEMS) {
-            if (player.getItemBySlot(item.getSlot()).getItem() == item) {
+            if (entity.getItemBySlot(item.getSlot()).getItem() == item) {
                 parts++;
             }
         }
@@ -79,6 +82,37 @@ public class MIArmorEffects {
                     SRC.revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
                 }
             }
+        });
+
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (quantumArmorPreventsDamage(entity)) {
+                return false;
+            }
+
+            // Find a suitable stack that can "tank" the damage
+            ItemStack tankingStack = null;
+            EquipmentSlot es = null;
+            if (source == DamageSource.FLY_INTO_WALL) {
+                es = EquipmentSlot.HEAD;
+                ItemStack head = entity.getItemBySlot(es);
+                if (MIArmorEffects.canTankFlyIntoWall(head)) {
+                    tankingStack = head;
+                }
+            } else if (source == DamageSource.FALL) {
+                es = EquipmentSlot.FEET;
+                ItemStack head = entity.getItemBySlot(es);
+                if (MIArmorEffects.canTankFall(head)) {
+                    tankingStack = head;
+                }
+            }
+            // Have the stack tank the damage
+            if (tankingStack != null) {
+                int intAmount = (int) Math.ceil(amount);
+                final EquipmentSlot equipmentSlot = es;
+                tankingStack.hurtAndBreak(intAmount, entity, p -> entity.broadcastBreakEvent(equipmentSlot));
+                return false;
+            }
+            return true;
         });
     }
 }

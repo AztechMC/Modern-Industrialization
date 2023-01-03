@@ -153,9 +153,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                         quad.material(translucentMaterial);
 
                         for (int vertex = 0; vertex < 4; ++vertex) {
-                            int c = quad.spriteColor(vertex, 0);
-                            int newAlpha = ((c >> 24) & 0xFF) * 3 / 4;
-                            quad.spriteColor(vertex, 0, (c & 0x00FFFFFF) | (newAlpha << 24));
+                            quad.spriteColor(vertex, 0, multiplyColor(0x9FFFFFFF, quad.spriteColor(vertex, 0)));
                         }
                     }
 

@@ -6,10 +6,12 @@
   "mixins": [
     "ItemStackMixin",
     "InventoryMixin",
-    "LivingEntityMixin",
     "PackConfigMixin",
     "ReloadableResourceManagerMixin",
     "WorldChunkMixin"
+  ],
+  "client": [
+    "client.BlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

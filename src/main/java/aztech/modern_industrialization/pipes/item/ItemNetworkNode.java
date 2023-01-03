@@ -164,10 +164,6 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 CompoundTag connectionTag = tag.getCompound(direction.toString());
                 int insertPriority = connectionTag.getInt("insertPriority");
                 int extractPriority = connectionTag.getInt("extractPriority");
-                if (connectionTag.contains("priority")) {
-                    // TODO: remove in 1.19, compat for old priorities
-                    insertPriority = extractPriority = connectionTag.getInt("priority");
-                }
                 ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
                         insertPriority, extractPriority);
                 connection.whitelist = connectionTag.getBoolean("whitelist");
@@ -176,7 +172,6 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     if (!connection.stacks[i].isEmpty()) {
                         connection.stacks[i].setCount(1);
                     }
-                    ;
                 }
                 connection.refreshStacksCache();
                 connection.upgradeStack = ItemStack.of(connectionTag.getCompound("upgradeStack"));
@@ -323,6 +318,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     stacks[i].setCount(1);
                 }
             }
+            refreshStacksCache();
 
             ItemStack requestedUpgrade = ItemStack.of(tag.getCompound("upgrade"));
             if (player.getAbilities().instabuild) {

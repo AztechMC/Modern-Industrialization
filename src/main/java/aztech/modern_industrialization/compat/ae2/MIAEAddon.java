@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.ae2;
 
-import appeng.api.IAEAddonEntrypoint;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.inventories.PartApiLookup;
 import appeng.api.parts.PartModels;
@@ -47,18 +46,18 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 
-public class MIAEAddon implements IAEAddonEntrypoint {
+public class MIAEAddon {
+    static {
+        if (!MIConfig.loadAe2Compat()) {
+            throw new RuntimeException("AE2 compat is disabled. How did this get loaded?");
+        }
+    }
 
     public static final Item ENERGY_P2P_TUNNEL = new PartItem<>(
             new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
-    @Override
-    public void onAe2Initialized() {
-        if (!MIConfig.getConfig().enableAe2Integration) {
-            return;
-        }
-
+    public static void init() {
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
         var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(item);
@@ -69,6 +68,8 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         for (var color : PipeColor.values()) {
             registerMEPipeType(color);
         }
+
+        TagsToGenerate.markTagOptional(MITags.ME_WIRES);
     }
 
     private static void registerMEPipeType(PipeColor color) {
@@ -93,6 +94,6 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         var item = itemDef.asItem();
         MIPipes.INSTANCE.register(type, item);
         MIPipes.PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.miItem("me_wires"), item, "ME Wires");
+        TagsToGenerate.generateTag(MITags.ME_WIRES, item, "ME Wires");
     }
 }

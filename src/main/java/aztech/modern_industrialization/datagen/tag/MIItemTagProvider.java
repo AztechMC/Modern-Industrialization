@@ -60,9 +60,14 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
         generatedConventionTag();
 
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
+            boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             var tagId = new ResourceLocation(entry.getKey());
             for (var item : entry.getValue()) {
-                tag(key(tagId)).add(item);
+                if (optional) {
+                    tag(key(tagId)).addOptional(Registry.ITEM.getKey(item));
+                } else {
+                    tag(key(tagId)).add(item);
+                }
             }
         }
 

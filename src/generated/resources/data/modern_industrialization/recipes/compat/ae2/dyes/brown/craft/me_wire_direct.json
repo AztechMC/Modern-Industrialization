@@ -2,10 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "fabric:load_conditions": [
     {
-      "condition": "fabric:all_mods_loaded",
-      "values": [
-        "ae2"
-      ]
+      "condition": "modern_industrialization:ae_compat_loaded"
     }
   ],
   "key": {

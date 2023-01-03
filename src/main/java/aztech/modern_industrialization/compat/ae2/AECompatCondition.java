@@ -21,27 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization;
+package aztech.modern_industrialization.compat.ae2;
 
-import net.minecraft.core.Registry;
+import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIIdentifier;
+import com.google.gson.JsonObject;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 
-public class MITags {
-    public static final TagKey<Item> WRENCHES = item("wrenches");
+public class AECompatCondition {
+    private static final ResourceLocation ID = new MIIdentifier("ae_compat_loaded");
+    public static final ConditionJsonProvider PROVIDER = new ConditionJsonProvider() {
+        @Override
+        public ResourceLocation getConditionId() {
+            return ID;
+        }
 
-    public static final TagKey<Item> BARRELS = miItem("barrels");
-    public static final TagKey<Item> TANKS = miItem("tanks");
-    public static final TagKey<Item> FLUID_PIPES = miItem("fluid_pipes");
-    public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
-    public static final TagKey<Item> ME_WIRES = miItem("me_wires");
+        @Override
+        public void writeParameters(JsonObject object) {
+        }
+    };
 
-    public static TagKey<Item> item(String path) {
-        return TagKey.create(Registry.ITEM.key(), new ResourceLocation("c", path));
-    }
-
-    public static TagKey<Item> miItem(String path) {
-        return TagKey.create(Registry.ITEM.key(), new MIIdentifier(path));
+    public static void init() {
+        boolean loadCompat = MIConfig.loadAe2Compat();
+        ResourceConditions.register(ID, obj -> loadCompat);
     }
 }

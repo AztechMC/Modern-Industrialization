@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
@@ -117,6 +118,7 @@ public class ModernIndustrialization {
         GuidebookEvents.init();
 
         CommonProxy.initEvents();
+        AECompatCondition.init();
 
         if (System.getProperty("modern_industrialization.autoTest") != null) {
             MIAutoTesting.init();

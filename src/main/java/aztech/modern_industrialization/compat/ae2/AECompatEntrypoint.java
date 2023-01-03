@@ -21,27 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization;
+package aztech.modern_industrialization.compat.ae2;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
+import appeng.api.IAEAddonEntrypoint;
+import aztech.modern_industrialization.MIConfig;
 
-public class MITags {
-    public static final TagKey<Item> WRENCHES = item("wrenches");
-
-    public static final TagKey<Item> BARRELS = miItem("barrels");
-    public static final TagKey<Item> TANKS = miItem("tanks");
-    public static final TagKey<Item> FLUID_PIPES = miItem("fluid_pipes");
-    public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
-    public static final TagKey<Item> ME_WIRES = miItem("me_wires");
-
-    public static TagKey<Item> item(String path) {
-        return TagKey.create(Registry.ITEM.key(), new ResourceLocation("c", path));
-    }
-
-    public static TagKey<Item> miItem(String path) {
-        return TagKey.create(Registry.ITEM.key(), new MIIdentifier(path));
+public class AECompatEntrypoint implements IAEAddonEntrypoint {
+    @Override
+    public void onAe2Initialized() {
+        if (MIConfig.loadAe2Compat()) {
+            MIAEAddon.init();
+        }
     }
 }

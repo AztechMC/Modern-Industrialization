@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.recipe;
 import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MIMaterials;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.DyeColor;
@@ -51,6 +53,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
 
     private Consumer<FinishedRecipe> consumer;
     private String currentCompatModid;
+    private ConditionJsonProvider[] conditions = null;
 
     public CompatRecipesProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
@@ -60,14 +63,19 @@ public class CompatRecipesProvider extends MIRecipesProvider {
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         this.consumer = consumer;
 
-        this.currentCompatModid = "techreborn";
+        startCompat("techreborn");
         generateTrCompat();
 
-        this.currentCompatModid = "ae2";
+        startCompat("ae2");
         generateAe2Compat();
 
-        this.currentCompatModid = "indrev";
+        startCompat("indrev");
         generateIndrevCompat();
+    }
+
+    private void startCompat(String modid) {
+        currentCompatModid = modid;
+        conditions = new ConditionJsonProvider[] { DefaultResourceConditions.allModsLoaded(modid) };
     }
 
     private void generateTrCompat() {
@@ -192,6 +200,9 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addItemInput("ae2:silicon_press", 1, 0)
                 .addItemOutput("ae2:printed_silicon", 1));
 
+        // ME Wire stuff follows - only enable if AE2 is loaded AND if AE2 compat is enabled
+        conditions = new ConditionJsonProvider[] { AECompatCondition.PROVIDER };
+
         for (DyeColor color : DyeColor.values()) {
             // 16 me wires with dye in the center
             var meWiresDirect = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 16, "qCq", "GdG", "qCq")
@@ -263,6 +274,6 @@ public class CompatRecipesProvider extends MIRecipesProvider {
 
     private void addCompatRecipe(String id, RecipeJson recipeJson) {
         id = "compat/%s/%s".formatted(currentCompatModid, id);
-        recipeJson.offerTo(withConditions(consumer, DefaultResourceConditions.allModsLoaded(currentCompatModid)), id);
+        recipeJson.offerTo(withConditions(consumer, conditions), id);
     }
 }

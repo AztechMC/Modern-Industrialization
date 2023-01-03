@@ -31,6 +31,7 @@ import net.minecraft.world.item.Item;
 public class TagsToGenerate {
 
     static final Map<String, List<Item>> tagToItemMap = new HashMap<>();
+    static final Set<String> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
 
@@ -52,11 +53,13 @@ public class TagsToGenerate {
         }
 
         tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new HashSet<>()).add(tagTobeAdded);
-        ;
-
     }
 
     public static void generateTag(TagKey<Item> tag, Item item, String tagEnglishName) {
         generateTag(tag.location().toString(), item, tagEnglishName);
+    }
+
+    public static void markTagOptional(TagKey<Item> tag) {
+        optionalTags.add(tag.location().toString());
     }
 }

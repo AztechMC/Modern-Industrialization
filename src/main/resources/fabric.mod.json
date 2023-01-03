@@ -37,7 +37,7 @@
       "aztech.modern_industrialization.datagen.MIDatagenEntrypoint"
     ],
     "ae2": [
-      "aztech.modern_industrialization.compat.ae2.MIAEAddon"
+      "aztech.modern_industrialization.compat.ae2.AECompatEntrypoint"
     ],
     "jei_mod_plugin": [
       "aztech.modern_industrialization.compat.viewer.impl.jei.ManualPluginJei",

@@ -87,10 +87,10 @@ public class SlotPositions {
             return this;
         }
 
-        public Builder addSlots(int x, int y, int rows, int columns) {
-            for (int i = 0; i < rows; ++i) {
-                for (int j = 0; j < columns; ++j) {
-                    addSlot(x + j * 18, y + i * 18);
+        public Builder addSlots(int x, int y, int columns, int rows) {
+            for (int i = 0; i < columns; ++i) {
+                for (int j = 0; j < rows; ++j) {
+                    addSlot(x + i * 18, y + j * 18);
                 }
             }
             return this;

@@ -65,7 +65,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 new OrientationComponent.Params(false, false, false));
 
         this.isFluid = isFluid;
-        SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 2, 1).build();
+        SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 1, 2).build();
 
         if (!isFluid) {
             List<ConfigurableItemStack> itemStack = new ArrayList<>();

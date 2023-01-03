@@ -50,7 +50,7 @@ The following parameters need to be provided, in order:
   - 11: Number of fluid input slots. (Note that steam tier machines always have an extra input slot for steam).
   - 12: Number of fluid output slots.
   - 13: Capacity of each fluid slot, i.e. how many buckets of fluids it can hold.
-  - 14: Positions of the item input and output slots. Grids of slots are added using `.addSlots(x in pixels, y in pixels, grid height in slots, grid width in slots)`.
+  - 14: Positions of the item input and output slots. Grids of slots are added using `.addSlots(x in pixels, y in pixels, grid width in slots, grid height in slots)`.
   - 15: Positions of the fluid input and output slots.
 - Model configuration. Here you can choose which overlays are available in your machine. The overlays are the machine-specific textures.
   - You can find overlay examples [here](../src/main/resources/assets/modern_industrialization/textures/block/machines/).
@@ -73,8 +73,8 @@ event.craftingSingleBlock(
     // Capacity for fluid slots (unused here)
     16,
     // Slot positions: items and fluids.
-    // Explanation: 3x3 grid of item slots starting at position (42, 27), then 3x1 grid of item slots starting at position (139, 27).
-    items => items.addSlots(42, 27, 3, 3).addSlots(139, 27, 3, 1), fluids => {},
+    // Explanation: 3x3 grid of item slots starting at position (42, 27), then 1x3 grid of item slots starting at position (139, 27).
+    items => items.addSlots(42, 27, 3, 3).addSlots(139, 27, 1, 3), fluids => {},
     /* MODEL CONFIGURATION */
     // front overlay?, top overlay?, side overlay?
     true, true, false,
@@ -126,7 +126,7 @@ MIMachineEvents.registerMachines(event => {
         // REI progress bar
         event.progressBar(77, 33, "arrow"),
         // REI item inputs, item outputs, fluid inputs, fluid outputs
-        itemInputs => itemInputs.addSlots(56, 35, 2, 1), itemOutputs => itemOutputs.addSlot(102, 35),
+        itemInputs => itemInputs.addSlots(56, 35, 1, 2), itemOutputs => itemOutputs.addSlot(102, 35),
         fluidInputs => fluidInputs.addSlot(36, 35), fluidOutputs => fluidOutputs.addSlot(122, 35),
         /* MODEL CONFIGUATION */
         // casing of the controller, overlay folder, front overlay?, top overlay?, side overlay?

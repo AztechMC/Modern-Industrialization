@@ -86,7 +86,7 @@ public class MultiblockHatches {
                     }
                 }
                 MIInventory inventory = new MIInventory(itemStacks, Collections.emptyList(),
-                        new SlotPositions.Builder().addSlots(xStart, yStart, rows, columns).build(), SlotPositions.empty());
+                        new SlotPositions.Builder().addSlots(xStart, yStart, columns, rows).build(), SlotPositions.empty());
                 return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerItemApi);
             MachineRegistrationHelper.addMachineModel(machine, "hatch_item", casing, true, false, true, false);

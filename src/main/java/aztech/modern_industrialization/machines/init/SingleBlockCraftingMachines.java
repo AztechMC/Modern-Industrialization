@@ -53,7 +53,7 @@ public final class SingleBlockCraftingMachines {
                 "Assembler", "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 2, 0,
                 guiParams -> guiParams.backgroundHeight(186),
                 new ProgressBar.Parameters(105, 45, "circuit"), new RecipeEfficiencyBar.Parameters(48, 86), new EnergyBar.Parameters(14, 44),
-                items -> items.addSlots(42, 27, 3, 3).addSlots(139, 27, 3, 1), fluids -> fluids.addSlots(98, 27, 1, 2),
+                items -> items.addSlots(42, 27, 3, 3).addSlots(139, 27, 1, 3), fluids -> fluids.addSlots(98, 27, 2, 1),
                 true, true, false,
                 TIER_ELECTRIC, 16
         );
@@ -67,7 +67,7 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "Chemical Reactor", "chemical_reactor", MIMachineRecipeTypes.CHEMICAL_REACTOR, 3, 3, 3, 3, guiParams -> {},
                 new ProgressBar.Parameters(88, 35, "triple_arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(12, 35),
-                items -> items.addSlots(30, 27, 1, 3).addSlots(116, 27, 1, 3), fluids -> fluids.addSlots(30, 47, 1, 3).addSlots(116, 47, 1, 3),
+                items -> items.addSlots(30, 27, 3, 1).addSlots(116, 27, 3, 1), fluids -> fluids.addSlots(30, 47, 3, 1).addSlots(116, 47, 3, 1),
                 true, false, false,
                 TIER_ELECTRIC, 24
         );
@@ -116,21 +116,21 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "Mixer", "mixer", MIMachineRecipeTypes.MIXER, 4, 2, 2, 2, guiParams -> {},
                 new ProgressBar.Parameters(103, 33, "arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(15, 34),
-                items -> items.addSlots(62, 27, 2, 2).addSlots(129, 27, 2, 1), fluids -> fluids.addSlots(42, 27, 2, 1).addSlots(149, 27, 2, 1),
+                items -> items.addSlots(62, 27, 2, 2).addSlots(129, 27, 1, 2), fluids -> fluids.addSlots(42, 27, 1, 2).addSlots(149, 27, 1, 2),
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
                 "Packer", "packer", MIMachineRecipeTypes.PACKER, 3, 1, 0, 0, guiParams -> guiParams.backgroundHeight(178),
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 74), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlots(56, 18, 3, 1).addSlot(102, 36), fluids -> {},
+                items -> items.addSlots(56, 18, 1, 3).addSlot(102, 36), fluids -> {},
                 true, false, false,
                 TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
                 "Polarizer", "polarizer", MIMachineRecipeTypes.POLARIZER, 2, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 30, "magnet"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlots(56, 23, 2, 1).addSlot(102, 32), fluids -> {},
+                items -> items.addSlots(56, 23, 1, 2).addSlot(102, 32), fluids -> {},
                 true, true, false,
                 TIER_ELECTRIC, 16
         );
@@ -145,7 +145,7 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "Unpacker", "unpacker", MIMachineRecipeTypes.UNPACKER, 1, 2, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlots(56, 36, 1, 1).addSlots(102, 27, 2, 1), fluids -> {},
+                items -> items.addSlots(56, 36, 1, 1).addSlots(102, 27, 1, 2), fluids -> {},
                 true, false, false,
                 TIER_STEEL | TIER_ELECTRIC, 16
         );

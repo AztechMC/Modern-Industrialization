@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
+import aztech.modern_industrialization.compat.kubejs.machine.AddMultiblockSlotsEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterCasingsEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEventJS;
@@ -31,6 +32,7 @@ import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJ
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
+import aztech.modern_industrialization.inventory.SlotPositions;
 
 public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
@@ -56,5 +58,12 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireRegisterMachinesEvent() {
         MIMachineKubeJSEvents.REGISTER_MACHINES.post(new RegisterMachinesEventJS());
+    }
+
+    @Override
+    public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
+            SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
+        var event = new AddMultiblockSlotsEventJS(itemInputs, itemOutputs, fluidInputs, fluidOutputs);
+        MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(category, event, true);
     }
 }

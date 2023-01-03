@@ -58,3 +58,41 @@ ServerEvents.recipes(event => {
         .adjacentBlock("minecraft:bedrock", "below")
 })
 ```
+
+## Adding multiblock slots
+Multiblock machines always have an unlimited number of input and output slots
+(provided the recipe type allows the relevant input/output types).
+However, only a limited number of slots is shown in EMI/JEI/REI.
+
+MI adds an event that you can use to add slots to multiblock machines.
+The event is called `MIMachineEvents.addMultiblockSlots` **and must be in a startup script**.
+
+The event registration needs a parameter which is the identifier of the category in EMI/JEI/REI.
+In the event, you can use `event.<type of slots>.addSlot(slot x position, slot y position)` to add a slot.
+The `<type of slots>` can be one of the following:
+- `itemInputs`,
+- `itemOutputs`,
+- `fluidInputs`,
+- `fluidOutputs`.
+
+Here is an example to add a fluid output slot to all 3 blast furnace categories:
+```js
+MIMachineEvents.addMultiblockSlots("steam_blast_furnace", event => {
+    event.fluidOutputs.addSlot(122, 53);
+})
+MIMachineEvents.addMultiblockSlots("electric_blast_furnace_0", event => {
+    event.fluidOutputs.addSlot(122, 53);
+})
+MIMachineEvents.addMultiblockSlots("electric_blast_furnace_1", event => {
+    event.fluidOutputs.addSlot(122, 53);
+})
+```
+
+The category ID can be found in various ways, for example by inspecting the `en_us.json` lang file:
+```json
+{
+  "rei_categories.modern_industrialization.electric_blast_furnace_0": "EBF (Cupronickel Tier)",
+  "rei_categories.modern_industrialization.electric_blast_furnace_1": "EBF (Kanthal Tier)"
+}
+```
+From this we deduce that the EBF categories are `electric_blast_furnace_0` and `electric_blast_furnace_1`.

@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
@@ -623,7 +624,6 @@ public class MultiblockMachines {
                 .register();
 
         MachineRegistrationHelper.addMachineModel("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
-        // note: the REI category is built in the static {} block of ElectricBlastFurnaceBlockEntity.java
 
         MachineRegistrationHelper.addMachineModel("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
 
@@ -735,10 +735,10 @@ public class MultiblockMachines {
         private final ProgressBar.Parameters progressBarParams;
         private final List<String> workstations;
         private Predicate<MachineRecipe> extraTest = recipe -> true;
-        private SlotPositions itemInputs = SlotPositions.empty();
-        private SlotPositions itemOutputs = SlotPositions.empty();
-        private SlotPositions fluidInputs = SlotPositions.empty();
-        private SlotPositions fluidOutputs = SlotPositions.empty();
+        private SlotPositions.Builder itemInputs = new SlotPositions.Builder();
+        private SlotPositions.Builder itemOutputs = new SlotPositions.Builder();
+        private SlotPositions.Builder fluidInputs = new SlotPositions.Builder();
+        private SlotPositions.Builder fluidOutputs = new SlotPositions.Builder();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
 
         public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
@@ -751,14 +751,14 @@ public class MultiblockMachines {
         }
 
         public Rei items(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
-            itemInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
-            itemOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
+            inputs.accept(itemInputs);
+            outputs.accept(itemOutputs);
             return this;
         }
 
         public Rei fluids(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
-            fluidInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
-            fluidOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
+            inputs.accept(fluidInputs);
+            outputs.accept(fluidOutputs);
             return this;
         }
 
@@ -779,8 +779,12 @@ public class MultiblockMachines {
         }
 
         public final void register() {
-            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category, itemInputs, itemOutputs, fluidInputs,
-                    fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
+            // Allow KJS scripts to add slots
+            KubeJSProxy.instance.fireAddMultiblockSlotsEvent(category, itemInputs, itemOutputs, fluidInputs, fluidOutputs);
+
+            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category,
+                    itemInputs.build(), itemOutputs.build(), fluidInputs.build(), fluidOutputs.build(),
+                    progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
             for (String workstation : workstations) {
                 ReiMachineRecipes.registerWorkstation(category, workstation);
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, ReiMachineRecipes.MachineScreenPredicate.MULTIBLOCK);

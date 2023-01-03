@@ -57,6 +57,16 @@ public class SlotPositions {
         return new SlotPositions(Arrays.copyOfRange(x, start, end), Arrays.copyOfRange(y, start, end));
     }
 
+    public Builder toBuilder() {
+        var builder = new Builder();
+
+        for (int i = 0; i < x.length; i++) {
+            builder.addSlot(x[i], y[i]);
+        }
+
+        return builder;
+    }
+
     public static SlotPositions read(FriendlyByteBuf buf) {
         int[] x = buf.readVarIntArray();
         int[] y = buf.readVarIntArray();

@@ -23,15 +23,38 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.event.Extra;
+import aztech.modern_industrialization.inventory.SlotPositions;
+import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.rhino.util.HideFromJS;
 
-public interface MIMachineKubeJSEvents {
-    EventGroup EVENT_GROUP = EventGroup.of("MIMachineEvents");
+public class AddMultiblockSlotsEventJS extends EventJS {
+    private final SlotPositions.Builder itemInputs;
+    private final SlotPositions.Builder itemOutputs;
+    private final SlotPositions.Builder fluidInputs;
+    private final SlotPositions.Builder fluidOutputs;
 
-    EventHandler REGISTER_RECIPE_TYPES = EVENT_GROUP.startup("registerRecipeTypes", () -> RegisterRecipeTypesEventJS.class);
-    EventHandler REGISTER_CASINGS = EVENT_GROUP.startup("registerCasings", () -> RegisterCasingsEventJS.class);
-    EventHandler REGISTER_MACHINES = EVENT_GROUP.startup("registerMachines", () -> RegisterMachinesEventJS.class);
-    EventHandler ADD_MULTIBLOCK_SLOTS = EVENT_GROUP.startup("addMultiblockSlots", () -> AddMultiblockSlotsEventJS.class).extra(Extra.REQUIRES_STRING);
+    @HideFromJS
+    public AddMultiblockSlotsEventJS(SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs, SlotPositions.Builder fluidInputs,
+            SlotPositions.Builder fluidOutputs) {
+        this.itemInputs = itemInputs;
+        this.itemOutputs = itemOutputs;
+        this.fluidInputs = fluidInputs;
+        this.fluidOutputs = fluidOutputs;
+    }
+
+    public SlotPositions.Builder getItemInputs() {
+        return itemInputs;
+    }
+
+    public SlotPositions.Builder getItemOutputs() {
+        return itemOutputs;
+    }
+
+    public SlotPositions.Builder getFluidInputs() {
+        return fluidInputs;
+    }
+
+    public SlotPositions.Builder getFluidOutputs() {
+        return fluidOutputs;
+    }
 }

@@ -49,7 +49,11 @@
     ]
   },
   "mixins": [
-    "modern_industrialization.mixins.json"
+    "modern_industrialization.mixins.json",
+    {
+      "config": "modern_industrialization.client_mixins.json",
+      "environment": "client"
+    }
   ],
   "depends": {
     "fabricloader": ">=0.7.4",

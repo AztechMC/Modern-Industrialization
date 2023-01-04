@@ -10,9 +10,6 @@
     "ReloadableResourceManagerMixin",
     "WorldChunkMixin"
   ],
-  "client": [
-    "client.BlockMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

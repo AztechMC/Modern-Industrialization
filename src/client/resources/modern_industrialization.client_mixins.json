@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "aztech.modern_industrialization.mixin.client",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

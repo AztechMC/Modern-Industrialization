@@ -88,9 +88,11 @@ public class SlotPositions {
         }
 
         public Builder addSlots(int x, int y, int columns, int rows) {
-            for (int i = 0; i < columns; ++i) {
-                for (int j = 0; j < rows; ++j) {
-                    addSlot(x + i * 18, y + j * 18);
+            // The loop order is intended here:
+            // We want to fill the slots horizontally first for correct insertion order.
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < columns; ++j) {
+                    addSlot(x + j * 18, y + i * 18);
                 }
             }
             return this;

@@ -52,9 +52,10 @@ public class RuntimeDataGen {
         ModernIndustrialization.LOGGER.info("Starting MI runtime data generation");
 
         var modContainer = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-        var gen = new FabricDataGenerator(dataOutput, modContainer, true);
-        config.accept(gen);
-        gen.run();
+	// FIXME 1.19.3
+        //var gen = new FabricDataGenerator(dataOutput, modContainer, true);
+        //config.accept(gen);
+        //gen.run();
 
         ModernIndustrialization.LOGGER.info("Starting MI runtime pack calculation");
 

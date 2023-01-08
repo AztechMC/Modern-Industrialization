@@ -40,6 +40,7 @@ import java.util.function.Function;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -68,7 +69,7 @@ public class MachineRegistrationHelper {
 
         Block block = blockDefinition.asBlock();
 
-        bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id),
+        bet[0] = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new MIIdentifier(id),
                 FabricBlockEntityTypeBuilder.create(ctor::apply, block).build(null));
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
             extraRegistrator.accept(bet[0]);

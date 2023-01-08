@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -75,7 +75,7 @@ public class RecipeConversions {
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = new MIIdentifier(Registry.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            ResourceLocation id = new MIIdentifier(BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(id, MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;

@@ -26,7 +26,8 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -75,7 +76,7 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
 
     @Override
     default Item asItem() {
-        return Registry.ITEM.getOrThrow(ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(getItemId())));
+        return BuiltInRegistries.ITEM.getOrThrow(ResourceKey.create(Registries.ITEM, new ResourceLocation(getItemId())));
     }
 
     /**

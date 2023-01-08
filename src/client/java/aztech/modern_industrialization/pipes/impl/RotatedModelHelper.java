@@ -23,15 +23,14 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Quaternionf;
 
 public class RotatedModelHelper {
     /**
@@ -48,8 +47,9 @@ public class RotatedModelHelper {
     };
 
     public static ModelState preRotated(BlockModelRotation rotation, float preAngle) {
-        Transformation preRotation = new Transformation(null, new Quaternion(new Vector3f(0, 0, 1), preAngle, true), null, null);
-        Transformation combined = rotation.getRotation().compose(preRotation);
+        Quaternionf q = (new Quaternionf()).setAngleAxis(Math.toRadians(preAngle), 0, 0, 1);
+        Transformation preRotation = new Transformation(null, q, null, null);
+
         return new ModelState() {
             @Override
             public Transformation getRotation() {

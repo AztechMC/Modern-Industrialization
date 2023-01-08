@@ -44,26 +44,31 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class MIDatagenServer {
     public static void configure(FabricDataGenerator gen, boolean runtimeDatagen) {
-        gen.addProvider(PetrochemRecipesProvider::new);
-        gen.addProvider(PlankRecipesProvider::new);
-        gen.addProvider(HeatExchangerRecipesProvider::new);
-        gen.addProvider(HatchRecipesProvider::new);
-        gen.addProvider(AlloyRecipesProvider::new);
-        gen.addProvider(MaterialRecipesProvider::new);
-        gen.addProvider(DyeRecipesProvider::new);
-        gen.addProvider(AssemblerRecipesProvider::new);
-        gen.addProvider(CompatRecipesProvider::new);
-        gen.addProvider(SteelUpgradeProvider::new);
-        gen.addProvider(VanillaCompatRecipesProvider::new);
+	FabricDataGenerator.Pack pack = gen.createPack();
 
-        gen.addProvider(BlockLootTableProvider::new);
+        pack.addProvider(PetrochemRecipesProvider::new);
+        pack.addProvider(PlankRecipesProvider::new);
+        pack.addProvider(HeatExchangerRecipesProvider::new);
+        pack.addProvider(HatchRecipesProvider::new);
+        pack.addProvider(AlloyRecipesProvider::new);
+        pack.addProvider(MaterialRecipesProvider::new);
+        pack.addProvider(DyeRecipesProvider::new);
+        pack.addProvider(AssemblerRecipesProvider::new);
+        pack.addProvider(CompatRecipesProvider::new);
+        pack.addProvider(SteelUpgradeProvider::new);
+        pack.addProvider(VanillaCompatRecipesProvider::new);
 
-        gen.addProvider(MIBlockTagProvider::new);
-        gen.addProvider(new MIItemTagProvider(gen, runtimeDatagen));
-        gen.addProvider(MIPoiTypeTagProvider::new);
+        pack.addProvider(BlockLootTableProvider::new);
 
-        var translationProvider = new TranslationProvider(gen, runtimeDatagen);
-        gen.addProvider(new MIAdvancementsProvider(gen, translationProvider));
-        gen.addProvider(translationProvider);
+        pack.addProvider(MIBlockTagProvider::new);
+	// FIXME 1.19.3
+        //pack.addProvider(new MIItemTagProvider(pack.output, runtimeDatagen));
+        pack.addProvider(MIPoiTypeTagProvider::new);
+
+        /*var translationProvider = new TranslationProvider(pack.output, runtimeDatagen);
+        pack.addProvider(new MIAdvancementsProvider(output, translationProvider));
+        pack.addProvider(translationProvider);*/
+
+        //pack.addProvider(WorldgenProvider::new);
     }
 }

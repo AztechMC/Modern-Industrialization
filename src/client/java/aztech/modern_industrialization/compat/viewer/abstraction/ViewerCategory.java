@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -91,7 +91,7 @@ public abstract class ViewerCategory<D> {
 
         default void accept(String... itemPath) {// only items in the MI namespace!
             for (var item : itemPath) {
-                accept(Registry.ITEM.get(new MIIdentifier(item)));
+                accept(BuiltInRegistries.ITEM.get(new MIIdentifier(item)));
             }
         }
     }

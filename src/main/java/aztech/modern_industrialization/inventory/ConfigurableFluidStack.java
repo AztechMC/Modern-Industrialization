@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -151,7 +152,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
     @Override
     protected Registry<Fluid> getRegistry() {
-        return Registry.FLUID;
+        return BuiltInRegistries.FLUID;
     }
 
     @Override

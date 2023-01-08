@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -56,7 +56,7 @@ public class MIMenu implements ModMenuApi {
     }
 
     private static Item getOreItem(Material material) {
-        return Registry.ITEM.get(new ResourceLocation(material.getParts().get(MIParts.ORE.key).getItemId()));
+        return BuiltInRegistries.ITEM.get(new ResourceLocation(material.getParts().get(MIParts.ORE.key).getItemId()));
     }
 
     private static boolean oreInList(List<String> list, Material material) {

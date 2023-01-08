@@ -34,10 +34,10 @@ class PriorityDisplay extends Button {
     private final Supplier<Integer> priorityGetter;
     private final Font textRenderer;
 
-    public PriorityDisplay(int x, int y, int width, int height, Component message, OnTooltip tooltipSupplier, Supplier<Integer> priorityGetter,
+    public PriorityDisplay(int x, int y, int width, int height, Component message, Supplier<Integer> priorityGetter,
             Font textRenderer) {
         super(x, y, width, height, message, button -> {
-        }, tooltipSupplier);
+        }, Button.DEFAULT_NARRATION);
         this.priorityGetter = priorityGetter;
         this.textRenderer = textRenderer;
         this.active = false;
@@ -51,8 +51,8 @@ class PriorityDisplay extends Button {
     @Override
     public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
         FormattedCharSequence orderedText = getMessage().getVisualOrderText();
-        textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.width(orderedText) / 2),
-                (float) (this.y + (this.height - 8) / 2), 4210752);
+        textRenderer.draw(matrices, orderedText, (float) (this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2),
+                (float) (this.getY() + (this.height - 8) / 2), 4210752);
         if (this.isHoveredOrFocused()) {
             this.renderToolTip(matrices, mouseX, mouseY);
         }

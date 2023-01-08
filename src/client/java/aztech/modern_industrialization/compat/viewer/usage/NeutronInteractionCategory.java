@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +58,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
     public NeutronInteractionCategory() {
         super(Recipe.class, new MIIdentifier("neutron_interaction"), MIText.NeutronInteraction.text(),
-                Registry.ITEM.get(new MIIdentifier("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
+                BuiltInRegistries.ITEM.get(new MIIdentifier("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
 
         this.centerX = width / 2;
         this.centerY = height / 2 - 5;
@@ -71,7 +71,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, Consumer<Recipe> consumer) {
-        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             if (component.neutronBehaviour != INeutronBehaviour.NO_INTERACTION) {
                 consumer.accept(new Recipe(component, CategoryType.FAST_NEUTRON_INTERACTION));
@@ -89,7 +89,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
         });
 
-        for (Fluid fluid : Registry.FLUID) {
+        for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
                 INuclearComponent<?> component = INuclearComponent.of(variant);

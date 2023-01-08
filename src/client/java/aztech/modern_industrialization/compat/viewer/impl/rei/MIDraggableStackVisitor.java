@@ -134,7 +134,7 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
     }
 
     private static DraggableStackVisitor.BoundsProvider getWidgetBounds(AbstractWidget cw) {
-        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(cw.x, cw.y, cw.getWidth(), cw.getHeight()));
+        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight()));
     }
 
     private static DraggableStackVisitor.BoundsProvider getSlotBounds(Slot slot, MIHandledScreen<?> screen) {

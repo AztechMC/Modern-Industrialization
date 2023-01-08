@@ -4,7 +4,7 @@ plugins {
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower' version '1.8.0'
+    //id 'io.github.juuxel.loom-quiltflower' version '1.8.0'
 }
 
 apply plugin: 'java-library'
@@ -17,6 +17,9 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
+    maven {
+        url 'file:///home/yuka/maven'
+    }
     // for KJS
     maven {
         url "https://www.cursemaven.com"
@@ -221,7 +224,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include modImplementation("com.github.Technici4n:magna:${project.magna_version}") {
+    include modImplementation("draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
         exclude(group: "net.fabricmc.fabric-api")
@@ -243,7 +246,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
+    /*modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
     }
@@ -251,7 +254,7 @@ dependencies {
     modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
-    }
+    }*/
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")

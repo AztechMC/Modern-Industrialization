@@ -71,6 +71,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     }
 
     protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {
+	/* FIXME 1.19.3
         Button.OnTooltip tooltip = (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
 
@@ -92,18 +93,19 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             lines.add(priorityTextHelp.text().setStyle(TextHelper.GRAY_TEXT));
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         };
-        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip);
-        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel, tooltip);
-        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel, tooltip);
-        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel, tooltip);
+	*/
+        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel/*, tooltip*/);
+        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel/*, tooltip*/);
+        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel/*, tooltip*/);
+        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel/*, tooltip*/);
         addRenderableWidget(
-                new PriorityDisplay(startX + 34 + this.leftPos, startY + this.topPos, 28, 12, Component.literal(""), tooltip,
+                new PriorityDisplay(startX + 34 + this.leftPos, startY + this.topPos, 28, 12, Component.literal("")/*, tooltip*/,
                         () -> priority.getPriority(channel),
                         font));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta, PriorityInterface priority,
-            int channel, Button.OnTooltip priorityTooltip) {
+            int channel) {
         addRenderableWidget(new PriorityButton(x + this.leftPos, y + this.topPos, width, u, text, button -> {
             priority.incrementPriority(channel, delta);
             FriendlyByteBuf buf = PacketByteBufs.create();
@@ -111,7 +113,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             buf.writeInt(channel);
             buf.writeInt(delta);
             ClientPlayNetworking.send(PipePackets.INCREMENT_PRIORITY, buf);
-        }, priorityTooltip));
+        }/*, priorityTooltip*/));
     }
 
     protected int connectionTypeForward(ConnectionTypeInterface connectionType) {

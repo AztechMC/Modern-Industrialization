@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableSet;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -42,13 +44,13 @@ public class MIVillager {
     public static final ResourceLocation ID = new MIIdentifier("industrialist");
 
     public static final PoiType POI_TYPE = PointOfInterestHelper.register(ID, 1, 1, MIBlock.FORGE_HAMMER.asBlock());
-    public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registry.POINT_OF_INTEREST_TYPE_REGISTRY, ID);
+    public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, ID);
 
     public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_TOOLSMITH);
 
     public static void init() {
-        Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
+        Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, ID, PROFESSION);
 
         sellItemsToVillager(1, MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM).asItem(), 15,
                 16, 2);
@@ -66,8 +68,8 @@ public class MIVillager {
         buyItemsFromVillager(3, MIMaterials.BRONZE.getPart(MIParts.GEAR), 4, 1, 5);
         buyItemsFromVillager(3, MIMaterials.BRONZE.getPart(MIParts.ROTOR), 4, 1, 5);
         buyItemsFromVillager(3, MIMaterials.STEEL.getPart(MIParts.INGOT), 6, 3, 10);
-        sellItemsToVillager(3, Registry.ITEM.get(new MIIdentifier("item_pipe")), 4, 20, 10);
-        sellItemsToVillager(3, Registry.ITEM.get(new MIIdentifier("fluid_pipe")), 4, 20, 10);
+        sellItemsToVillager(3, BuiltInRegistries.ITEM.get(new MIIdentifier("item_pipe")), 4, 20, 10);
+        sellItemsToVillager(3, BuiltInRegistries.ITEM.get(new MIIdentifier("fluid_pipe")), 4, 20, 10);
 
         buyItemsFromVillager(4, MIMaterials.STEEL.getPart(MIParts.GEAR), 5, 1, 5);
         buyItemsFromVillager(4, MIMaterials.STEEL.getPart(MIParts.PLATE), 6, 3, 10);

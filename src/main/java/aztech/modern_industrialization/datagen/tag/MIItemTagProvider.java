@@ -30,33 +30,37 @@ import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineB
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
 import java.util.Objects;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.core.HolderLookup;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
     private final boolean runtimeDatagen;
 
-    public MIItemTagProvider(FabricDataGenerator dataGenerator, boolean runtimeDatagen) {
-        super(dataGenerator, null);
+    public MIItemTagProvider(FabricDataOutput output, boolean runtimeDatagen, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
         this.runtimeDatagen = runtimeDatagen;
     }
 
     @Override
-    protected FabricTagBuilder<Item> tag(TagKey<Item> tag) {
+    protected FabricTagBuilder tag(TagKey<Item> tag) {
         return getOrCreateTagBuilder(tag);
     }
 
     @Override
-    protected void generateTags() {
+    public void addTags(HolderLookup.Provider registries) {
         generatedConventionTag();
 
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
@@ -64,7 +68,7 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
             var tagId = new ResourceLocation(entry.getKey());
             for (var item : entry.getValue()) {
                 if (optional) {
-                    tag(key(tagId)).addOptional(Registry.ITEM.getKey(item));
+                    tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item));
                 } else {
                     tag(key(tagId)).add(item);
                 }
@@ -98,7 +102,7 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private static TagKey<Item> key(ResourceLocation id) {
-        return TagKey.create(Registry.ITEM.key(), id);
+        return TagKey.create(BuiltInRegistries.ITEM.key(), id);
     }
 
     private static TagKey<Item> key(String id) {
@@ -140,8 +144,8 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
         tag(key(terracottas)).add(Items.TERRACOTTA);
 
         for (DyeColor color : DyeColor.values()) {
-            tag(key(terracottas)).add(Registry.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_terracotta")));
-            tag(key(terracottas)).add(Registry.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_glazed_terracotta")));
+            tag(key(terracottas)).add(BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_terracotta")));
+            tag(key(terracottas)).add(BuiltInRegistries.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_glazed_terracotta")));
         }
     }
 }

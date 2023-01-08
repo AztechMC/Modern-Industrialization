@@ -27,17 +27,17 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 public final class PlankRecipesProvider extends MIRecipesProvider {
 
-    public PlankRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public PlankRecipesProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         genPlanks(consumer, "oak", true);
         genPlanks(consumer, "spruce", true);
         genPlanks(consumer, "birch", true);

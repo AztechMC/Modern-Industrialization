@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.tags.TagKey;
@@ -44,7 +44,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     public final ItemDefinition<BlockItem> blockItem;
 
     public final BiConsumer<Block, BlockModelGenerators> modelGenerator;
-    public final BiConsumer<Block, BlockLoot> lootTableGenerator;
+    public final BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
     public final List<TagKey<Block>> tags;
 
     private BiConsumer<Block, Item> onBlockRegistrationEvent;
@@ -53,7 +53,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
             BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
-            BiConsumer<Block, BlockLoot> lootTableGenerator,
+            BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
 

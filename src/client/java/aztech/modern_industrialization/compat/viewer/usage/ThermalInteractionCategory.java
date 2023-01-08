@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
@@ -65,7 +65,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, Consumer<Recipe> consumer) {
-        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             consumer.accept(new Recipe(component, CategoryType.THERMAL_PROPERTIES));
 
@@ -74,7 +74,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
             }
         });
 
-        for (Fluid fluid : Registry.FLUID) {
+        for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
                 INuclearComponent<?> component = INuclearComponent.of(variant);
@@ -103,7 +103,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
                 @Override
                 public ItemVariant getVariant() {
-                    return ItemVariant.of(Registry.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
+                    return ItemVariant.of(BuiltInRegistries.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
                 }
             }, CategoryType.THERMAL_PROPERTIES));
         }

@@ -109,10 +109,11 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     public void blitButton(Button button, PoseStack pose, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, SLOT_ATLAS);
-        blit(pose, button.x, button.y, baseU, baseV, button.getWidth(), button.getHeight());
+        blit(pose, button.getX(), button.getY(), baseU, baseV, button.getWidth(), button.getHeight());
         if (button.isHoveredOrFocused()) {
-            blit(pose, button.x, button.y, selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
-            button.renderToolTip(pose, mouseX, mouseY);
+            blit(pose, button.getX(), button.getY(), selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
+	    // FIXME 1.19.3
+            //button.renderToolTip(pose, mouseX, mouseY);
         }
     }
 
@@ -132,9 +133,10 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     public void blitButtonNoHighlight(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, SLOT_ATLAS);
-        blit(pose, button.x, button.y, u, v, button.getWidth(), button.getHeight());
+        blit(pose, button.getX(), button.getY(), u, v, button.getWidth(), button.getHeight());
         if (button.isHoveredOrFocused()) {
-            button.renderToolTip(pose, mouseX, mouseY);
+	    // FIXME 1.19.3
+            //button.renderToolTip(pose, mouseX, mouseY);
         }
     }
 
@@ -402,13 +404,16 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         final ClientComponentRenderer.CustomButtonRenderer renderer;
         final Supplier<Boolean> isPresent;
 
-        private MachineButton(int x, int y, int width, int height, OnPress onPress, OnTooltip tooltipSupplier,
+        private MachineButton(int x, int y, int width, int height, OnPress onPress,
                 ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isPresent) {
-            super(x, y, width, height, Component.empty(), onPress, (btn, mat, mouseX, mouseY) -> {
+            super(x, y, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION
+		/* FIXME 1.19.3
+		(btn, mat, mouseX, mouseY) -> {
                 if (isPresent.get()) {
                     tooltipSupplier.onTooltip(btn, mat, mouseX, mouseY);
                 }
-            });
+            	}*/
+	    );
             this.renderer = renderer;
             this.isPresent = isPresent;
         }

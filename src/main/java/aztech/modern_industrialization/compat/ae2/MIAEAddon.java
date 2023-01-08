@@ -43,7 +43,9 @@ import aztech.modern_industrialization.pipes.impl.PipeItem;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 public class MIAEAddon {
@@ -54,14 +56,15 @@ public class MIAEAddon {
     }
 
     public static final Item ENERGY_P2P_TUNNEL = new PartItem<>(
-            new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
+            new FabricItemSettings(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
     public static void init() {
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-        var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
+        var item = Registry.register(BuiltInRegistries.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(item);
         PartApiLookup.register(EnergyApi.SIDED, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
+	ItemGroupEvents.modifyEntriesEvent(ModernIndustrialization.ITEM_GROUP).register(entries -> entries.accept(ENERGY_P2P_TUNNEL));
     }
 
     public static void onInitializePipes() {

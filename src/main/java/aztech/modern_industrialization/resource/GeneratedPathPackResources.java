@@ -27,22 +27,27 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import javax.annotation.Nullable;
+
+import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.SharedConstants;
-import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.PackType;
 
-public class GeneratedFolderPackResources extends FolderPackResources {
+public class GeneratedPathPackResources extends PathPackResources {
     private final PackType type;
 
-    public GeneratedFolderPackResources(File file, PackType type) {
-        super(file);
+    public GeneratedPathPackResources(Path p2, PackType type) {
+        super("", p2, true);
         this.type = type;
     }
 
     @Override
-    protected InputStream getResource(String resourcePath) throws IOException {
+    @Nullable
+    public IoSupplier<InputStream> getRootResource(String... resourcePath) {
         if ("pack.mcmeta".equals(resourcePath)) {
-            return new ByteArrayInputStream("""
+            return () -> new ByteArrayInputStream("""
                     {
                         "pack": {
                             "description": "Generated resources for Modern Industrialization",
@@ -51,7 +56,7 @@ public class GeneratedFolderPackResources extends FolderPackResources {
                     }
                     """.formatted(type.getVersion(SharedConstants.getCurrentVersion())).getBytes());
         } else {
-            return super.getResource(resourcePath);
+            return super.getRootResource(resourcePath);
         }
     }
 }

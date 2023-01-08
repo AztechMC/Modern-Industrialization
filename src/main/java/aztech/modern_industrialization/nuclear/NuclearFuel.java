@@ -29,6 +29,7 @@ import aztech.modern_industrialization.items.SortOrder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
@@ -90,7 +91,7 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     @Override
     public ItemVariant getNeutronProduct() {
-        return ItemVariant.of(Registry.ITEM.getOptional(new MIIdentifier(depletedVersionId)).get());
+        return ItemVariant.of(BuiltInRegistries.ITEM.getOptional(new MIIdentifier(depletedVersionId)).get());
     }
 
     @Override

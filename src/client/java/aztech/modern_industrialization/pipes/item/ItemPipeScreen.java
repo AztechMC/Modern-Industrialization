@@ -111,8 +111,8 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     private class WhitelistButton extends Button {
-        public WhitelistButton(int i, int j, OnPress onPress, OnTooltip tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, tooltipSupplier);
+        public WhitelistButton(int i, int j, OnPress onPress) {
+            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, Button.DEFAULT_NARRATION);
         }
 
         @Override
@@ -122,9 +122,10 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             int v = this.isHoveredOrFocused() ? 20 : 0;
 
             RenderSystem.enableDepthTest();
-            blit(matrices, this.x, this.y, u, v, this.width, this.height);
+            blit(matrices, this.getX(), this.getY(), u, v, this.width, this.height);
             if (this.isHoveredOrFocused()) {
-                this.renderToolTip(matrices, mouseX, mouseY);
+		// FIXME 1.19.3
+                //this.renderToolTip(matrices, mouseX, mouseY);
             }
         }
     }

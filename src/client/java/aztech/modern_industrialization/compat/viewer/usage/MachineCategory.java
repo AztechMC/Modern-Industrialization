@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -82,7 +82,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
     private MachineCategory(MachineCategoryParams params, int width, int height) {
         super(MachineRecipe.class, new MIIdentifier(params.category),
                 Component.translatable("rei_categories.modern_industrialization." + params.category),
-                Registry.ITEM.get(new MIIdentifier(params.workstations.get(0))).getDefaultInstance(), width, height);
+                BuiltInRegistries.ITEM.get(new MIIdentifier(params.workstations.get(0))).getDefaultInstance(), width, height);
 
         this.params = params;
     }
@@ -260,7 +260,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
             ItemLike displayedItem;
             if (steelHatchRequired) {
-                displayedItem = Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+                displayedItem = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
             } else if (conditionsRequired) {
                 displayedItem = MIItem.WRENCH;
             } else {

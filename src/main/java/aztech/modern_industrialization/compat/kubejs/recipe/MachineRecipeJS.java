@@ -38,7 +38,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -95,7 +95,7 @@ public class MachineRecipeJS extends RecipeJS implements ProcessConditionHelper 
         }
 
         var input = new JsonObject();
-        input.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+        input.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluid).toString());
         input.addProperty("amount", mbs);
         input.addProperty("probability", chance);
 
@@ -113,7 +113,7 @@ public class MachineRecipeJS extends RecipeJS implements ProcessConditionHelper 
         }
 
         var output = new JsonObject();
-        output.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+        output.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluid).toString());
         output.addProperty("amount", mbs);
         output.addProperty("probability", chance);
 
@@ -203,7 +203,7 @@ public class MachineRecipeJS extends RecipeJS implements ProcessConditionHelper 
             for (var output : outputs) {
                 var o = new JsonObject();
                 o.addProperty("probability", output.probability);
-                o.addProperty("item", Registry.ITEM.getKey(output.value.getItem()).toString());
+                o.addProperty("item", BuiltInRegistries.ITEM.getKey(output.value.getItem()).toString());
                 o.addProperty("amount", output.value.getCount());
                 itemOutputs.add(o);
             }

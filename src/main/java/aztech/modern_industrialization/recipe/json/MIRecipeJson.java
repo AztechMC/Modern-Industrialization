@@ -29,6 +29,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -40,7 +41,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
     protected transient final MachineRecipeType machineRecipeType;
 
     protected MIRecipeJson(MachineRecipeType machineRecipeType, int eu, int duration) {
-        this.type = Registry.RECIPE_SERIALIZER.getKey(machineRecipeType).toString();
+        this.type = BuiltInRegistries.RECIPE_SERIALIZER.getKey(machineRecipeType).toString();
         this.eu = eu;
         this.duration = duration;
         this.machineRecipeType = machineRecipeType;
@@ -135,7 +136,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
     }
 
     public T addItemInput(ItemLike item, int amount, double probability) {
-        return addItemInput(Registry.ITEM.getKey(item.asItem()).toString(), amount, probability);
+        return addItemInput(BuiltInRegistries.ITEM.getKey(item.asItem()).toString(), amount, probability);
     }
 
     public T addItemInput(ItemLike item, int amount) {
@@ -176,11 +177,11 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
     }
 
     public T addItemOutput(ItemLike item, int amount, double probability) {
-        return addItemOutput(Registry.ITEM.getKey(item.asItem()).toString(), amount, probability);
+        return addItemOutput(BuiltInRegistries.ITEM.getKey(item.asItem()).toString(), amount, probability);
     }
 
     public T addItemOutput(ItemLike item, int amount) {
-        return addItemOutput(Registry.ITEM.getKey(item.asItem()).toString(), amount);
+        return addItemOutput(BuiltInRegistries.ITEM.getKey(item.asItem()).toString(), amount);
     }
 
     public T addItemOutput(Item item, int amount) {
@@ -207,8 +208,8 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
     }
 
     public T addFluidInput(Fluid fluid, int amount, double probability) {
-        ResourceLocation id = Registry.FLUID.getKey(fluid);
-        if (id.equals(Registry.FLUID.getDefaultKey())) {
+        ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+        if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
         return addFluidInput(id.toString(), amount, probability);
@@ -253,6 +254,6 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
     }
 
     public T addFluidOutput(Fluid fluid, int amount, double probability) {
-        return addFluidOutput(Registry.FLUID.getKey(fluid).toString(), amount, probability);
+        return addFluidOutput(BuiltInRegistries.FLUID.getKey(fluid).toString(), amount, probability);
     }
 }

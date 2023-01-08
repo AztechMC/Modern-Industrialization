@@ -40,7 +40,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 
@@ -48,12 +49,12 @@ public final class TranslationProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
-    private final FabricDataGenerator gen;
+    private final FabricDataOutput dataOutput;
     private final boolean runtimeDatagen;
     private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public TranslationProvider(FabricDataGenerator gen, boolean runtimeDatagen) {
-        this.gen = gen;
+    public TranslationProvider(FabricDataOutput dataOutput, boolean runtimeDatagen) {
+        this.dataOutput = dataOutput;
         this.runtimeDatagen = runtimeDatagen;
     }
 
@@ -118,17 +119,17 @@ public final class TranslationProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<Void> run(CachedOutput cache) {
         collectTranslationEntries();
 
-        customJsonSave(cache, GSON.toJsonTree(translationPairs), gen.getOutputFolder().resolve(OUTPUT_PATH));
+        customJsonSave(cache, GSON.toJsonTree(translationPairs), dataOutput.getOutputFolder().resolve(OUTPUT_PATH));
 
         if (runtimeDatagen) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
         // Inspect manual translations for other languages
-        Path manualTranslationsPath = gen.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
+        Path manualTranslationsPath = dataOutput.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
         try (var paths = Files.walk(manualTranslationsPath, 1)) {
             paths.forEach(path -> {
                 try {
@@ -161,20 +162,25 @@ public final class TranslationProvider implements DataProvider {
                         String message = "%d ok, %d missing, %d unused".formatted(ok, missing, unused);
                         output.put("__summary", message);
 
-                        var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
+                        var savePath = dataOutput.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
                         customJsonSave(cache, GSON.toJsonTree(output), savePath);
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
-        }
+        } catch(IOException e) {
+	}
+	return CompletableFuture.completedFuture(null);
     }
 
-    private void customJsonSave(CachedOutput cache, JsonElement jsonElement, Path path) throws IOException {
+    private void customJsonSave(CachedOutput cache, JsonElement jsonElement, Path path) {
         String sortedJson = GSON.toJson(jsonElement);
         String prettyPrinted = sortedJson.replace("\\u0027", "'");
+	try {
         cache.writeIfNeeded(path, prettyPrinted.getBytes(StandardCharsets.UTF_8), Hashing.sha1().hashString(prettyPrinted, StandardCharsets.UTF_8));
+	} catch(IOException e) {
+	}
     }
 
     @Override

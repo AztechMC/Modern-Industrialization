@@ -28,17 +28,17 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.DyeColor;
 
 public class DyeRecipesProvider extends MIRecipesProvider {
-    public DyeRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public DyeRecipesProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         for (DyeColor color : DyeColor.values()) {
             String pathPrefix = "dyes/" + color.getName() + "/";
             // 16 item pipes with dye in the center

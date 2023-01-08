@@ -27,27 +27,30 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.core.HolderLookup;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
-    public MIBlockTagProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public MIBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, registriesFuture);
     }
 
     @Override
-    protected void generateTags() {
+    public void addTags(HolderLookup.Provider registries) {
         for (BlockDefinition<?> definition : MIBlock.BLOCKS.values()) {
             for (var tag : definition.tags) {
-                tag(tag).add(definition.asBlock());
+                tag(tag).add(BuiltInRegistries.BLOCK.getResourceKey(definition.asBlock()).get());
             }
         }
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE);
-        tag(ConventionalBlockTags.QUARTZ_ORES).add(Registry.BLOCK.get(new MIIdentifier("quartz_ore"))); // Have no idea why there is such a tag but go
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(BuiltInRegistries.BLOCK.getResourceKey(MIPipes.BLOCK_PIPE).get());
+        tag(ConventionalBlockTags.QUARTZ_ORES).add(BuiltInRegistries.BLOCK.getResourceKey(BuiltInRegistries.BLOCK.get(new MIIdentifier("quartz_ore"))).get()); // Have no idea why there is such a tag but go
                                                                                                         // add it
     }
 

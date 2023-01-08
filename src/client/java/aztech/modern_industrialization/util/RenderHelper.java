@@ -35,15 +35,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -76,6 +72,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.lwjgl.system.MemoryStack;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class RenderHelper {
     private static final Supplier<BakedQuad[]> OVERLAY_QUADS;
@@ -399,10 +398,12 @@ public class RenderHelper {
 
     public static void setupRenderHelper() {
 
+	/* FIXME 1.19.3 move to data gen
         ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register(
                 (atlas, registry) -> {
                     registry.register(LOCKED_TEXTURE_LOCATION);
                 });
+	*/
     }
 
 }

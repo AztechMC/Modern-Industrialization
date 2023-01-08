@@ -43,8 +43,10 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
@@ -58,6 +60,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 public class OrePart implements PartKeyProvider {
 
@@ -114,8 +117,9 @@ public class OrePart implements PartKeyProvider {
                             itemPath,
                             MIBlock.BlockDefinitionParams.of(STONE_MATERIAL)
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
-                                    .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
-                                            BlockLoot.createOreDrop(block, Registry.ITEM.get(new ResourceLocation(loot)))))
+				    // FIXME 1.19.3
+                                    /*.withLootTable((block, lootGenerator) -> lootGenerator.add(block,
+                                            BlockLootSubProvider.createOreDrop(block, BuiltInRegistries.ITEM.get(new ResourceLocation(loot)))))*/
                                     .addMoreTags(List.of(ConventionalBlockTags.ORES))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
@@ -144,23 +148,24 @@ public class OrePart implements PartKeyProvider {
                                     (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
 
                             var target = ImmutableList.of(OreConfiguration.target(
-                                    deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
+                                    new TagMatchTest(deepslate ? BlockTags.DEEPSLATE_ORE_REPLACEABLES : BlockTags.STONE_ORE_REPLACEABLES),
                                     oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
-                            var configuredOreGen = BuiltinRegistries.register(
-                                    BuiltinRegistries.CONFIGURED_FEATURE, oreGenId,
+			    // FIXME 1.19.3
+                            /*var configuredOreGen = Registry.register(
+                                    Registries.CONFIGURED_FEATURE, oreGenId,
                                     new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(target, oreParams.veinSize)));
 
                             Registry.register(
-                                    BuiltinRegistries.PLACED_FEATURE,
+                                    Registries.PLACED_FEATURE,
                                     oreGenId,
                                     new PlacedFeature(configuredOreGen,
                                             OrePlacements.commonOrePlacement(
                                                     oreParams.veinsPerChunk,
                                                     HeightRangePlacement.uniform(VerticalAnchor.bottom(),
-                                                            VerticalAnchor.absolute(oreParams.maxYLevel)))));
+                                                            VerticalAnchor.absolute(oreParams.maxYLevel)))));*/
 
-                            var featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, oreGenId);
+                            var featureKey = ResourceKey.create(Registries.PLACED_FEATURE, oreGenId);
                             BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
 
                         }

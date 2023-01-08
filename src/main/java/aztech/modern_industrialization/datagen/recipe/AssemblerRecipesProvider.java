@@ -29,10 +29,10 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import org.apache.commons.io.IOUtils;
@@ -40,17 +40,17 @@ import org.apache.commons.io.IOUtils;
 public class AssemblerRecipesProvider extends MIRecipesProvider {
     private static final Gson GSON = new Gson();
 
-    private final FabricDataGenerator dataGenerator;
+    private final FabricDataOutput output;
 
-    public AssemblerRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
-        this.dataGenerator = dataGenerator;
+    public AssemblerRecipesProvider(FabricDataOutput output) {
+        super(output);
+        this.output = output;
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
-        var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())))) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        var nonGeneratedResources = output.getOutputFolder().resolve("../../main/resources");
+        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new PathPackResources("", nonGeneratedResources, true)))) {
             var possibleTargets = manager.listResources("recipes", path -> path.getPath().endsWith(".json"));
             for (var entry : possibleTargets.entrySet()) {
                 var pathId = entry.getKey();

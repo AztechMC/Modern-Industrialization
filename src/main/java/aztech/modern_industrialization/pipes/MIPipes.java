@@ -52,6 +52,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
@@ -75,8 +76,8 @@ public class MIPipes {
     public static final Set<ResourceLocation> PIPE_MODEL_NAMES = new HashSet<>();
 
     public void setup() {
-        Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
-        BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
+        Registry.register(BuiltInRegistries.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
+        BLOCK_ENTITY_TYPE_PIPE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
 
         for (PipeColor color : PipeColor.values()) {

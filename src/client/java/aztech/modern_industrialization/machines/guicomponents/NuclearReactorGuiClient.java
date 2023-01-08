@@ -51,7 +51,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -96,7 +96,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
         Renderer.Mode currentMode = Renderer.Mode.NUCLEAR_FUEL;
         NeutronType neutronMode = BOTH;
 
-        ItemStack fuelStack = new ItemStack(Registry.ITEM.get(new MIIdentifier("uranium_fuel_rod")), 1);
+        ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.get(new MIIdentifier("uranium_fuel_rod")), 1);
 
         private final ResourceLocation COLORBAR = new MIIdentifier("textures/gui/colorbar.png");
 
@@ -421,13 +421,13 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                     (screen, button, matrices, mouseX, mouseY, delta) -> {
                         button.renderVanilla(matrices, mouseX, mouseY, delta);
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
-                            screen.renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                            screen.renderItemInGui(fuelStack, button.getX() + 1, button.getY() + 1);
                         } else if (currentMode == Renderer.Mode.EU_GENERATION) {
                             RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                            screen.blit(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
+                            screen.blit(matrices, button.getX() + 4, button.getY() + 2, 243, 1, 13, 17);
                         } else {
                             RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                            screen.blit(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
+                            screen.blit(matrices, button.getX(), button.getY(), 124 + currentMode.index * 20, 0, 20, 20);
                         }
                         if (button.isHoveredOrFocused()) {
                             button.renderToolTip(matrices, mouseX, mouseY);
@@ -445,15 +445,16 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                         RenderSystem.setShaderTexture(0, NeutronInteractionCategory.TEXTURE_ATLAS);
 
                         if (neutronMode == FAST) {
-                            screen.blit(matrices, button.x + 2, button.y + 2, 0, 240, 16, 16);
+                            screen.blit(matrices, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16);
                         } else if (neutronMode == NeutronType.THERMAL) {
-                            screen.blit(matrices, button.x + 2, button.y + 2, 160, 240, 16, 16);
+                            screen.blit(matrices, button.getX() + 2, button.getY() + 2, 160, 240, 16, 16);
                         } else if (neutronMode == BOTH) {
-                            screen.blit(matrices, button.x + 2, button.y + 2, 80, 240, 16, 16);
+                            screen.blit(matrices, button.getX() + 2, button.getY() + 2, 80, 240, 16, 16);
                         }
 
                         if (button.isHoveredOrFocused()) {
-                            button.renderToolTip(matrices, mouseX, mouseY);
+			    // FIXME 1.19.3
+                            //button.renderToolTip(matrices, mouseX, mouseY);
                         }
                     }, this::drawNeutronButton);
         }

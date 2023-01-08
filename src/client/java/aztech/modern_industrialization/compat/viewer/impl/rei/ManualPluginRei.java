@@ -32,13 +32,13 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
 public class ManualPluginRei implements REIClientPlugin {
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        for (Item item : Registry.ITEM) {
+        for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof DieselToolItem) {
                 if (item.builtInRegistryHolder().is(ConventionalItemTags.AXES)) {
                     registry.addWorkstations(BuiltinPlugin.STRIPPING, EntryStacks.of(item));

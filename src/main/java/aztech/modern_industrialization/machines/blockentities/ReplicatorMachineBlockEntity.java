@@ -46,7 +46,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -58,7 +58,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    public static final TagKey<Item> BLACKLISTED = TagKey.create(Registry.ITEM.key(), new MIIdentifier("replicator_blacklist"));
+    public static final TagKey<Item> BLACKLISTED = TagKey.create(BuiltInRegistries.ITEM.key(), new MIIdentifier("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 

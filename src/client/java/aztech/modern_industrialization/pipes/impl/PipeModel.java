@@ -30,7 +30,6 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.*;
 import java.util.function.Function;
@@ -62,6 +61,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.joml.Vector3f;
 
 /**
  * The models of a pipe block. It can handle up to three different pipe types.

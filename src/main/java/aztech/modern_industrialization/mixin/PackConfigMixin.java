@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.resource.GeneratedFolderPackResources;
+import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
@@ -42,7 +42,7 @@ public class PackConfigMixin {
         if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
             var mutableList = new ArrayList<>(resourcePacks);
             var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
-            mutableList.add(new GeneratedFolderPackResources(generatedDirectory.toFile(), PackType.SERVER_DATA));
+            mutableList.add(new GeneratedPathPackResources(generatedDirectory, PackType.SERVER_DATA));
             return mutableList;
         } else {
             return resourcePacks;

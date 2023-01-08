@@ -29,8 +29,8 @@ import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.SmithingRecipeJson;
 import java.util.Set;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.core.Registry;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 
@@ -39,18 +39,18 @@ public class SteelUpgradeProvider extends MIRecipesProvider {
     private static final String[] WITH_UPGRADE = { "compressor", "macerator", "cutting_machine", "water_pump", "mixer", "furnace", "boiler" };
     private static final Set<String> NO_UNPACKER = Set.of("furnace", "boiler");
 
-    public SteelUpgradeProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public SteelUpgradeProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
 
-        Item upgrade = Registry.ITEM.get(new MIIdentifier("steel_upgrade"));
+        Item upgrade = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_upgrade"));
 
         for (String machine : WITH_UPGRADE) {
-            Item bronze = Registry.ITEM.get(new MIIdentifier("bronze_" + machine));
-            Item steel = Registry.ITEM.get(new MIIdentifier("steel_" + machine));
+            Item bronze = BuiltInRegistries.ITEM.get(new MIIdentifier("bronze_" + machine));
+            Item steel = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_" + machine));
 
             SmithingRecipeJson recipe = new SmithingRecipeJson(bronze, upgrade, steel);
             recipe.offerTo(consumer, "upgrade/smithing/steel/" + machine);

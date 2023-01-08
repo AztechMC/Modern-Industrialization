@@ -28,6 +28,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -49,18 +50,18 @@ public class PlayerStatistics {
 
     PlayerStatistics(UUID uuid, CompoundTag nbt) {
         this.uuid = uuid;
-        readNbt(Registry.ITEM, usedItems, nbt.getCompound("usedItems"));
-        readNbt(Registry.ITEM, producedItems, nbt.getCompound("producedItems"));
-        readNbt(Registry.FLUID, usedFluids, nbt.getCompound("usedFluids"));
-        readNbt(Registry.FLUID, producedFluids, nbt.getCompound("producedFluids"));
+        readNbt(BuiltInRegistries.ITEM, usedItems, nbt.getCompound("usedItems"));
+        readNbt(BuiltInRegistries.ITEM, producedItems, nbt.getCompound("producedItems"));
+        readNbt(BuiltInRegistries.FLUID, usedFluids, nbt.getCompound("usedFluids"));
+        readNbt(BuiltInRegistries.FLUID, producedFluids, nbt.getCompound("producedFluids"));
     }
 
     public CompoundTag toTag() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put("usedItems", toNbt(Registry.ITEM, usedItems));
-        nbt.put("producedItems", toNbt(Registry.ITEM, producedItems));
-        nbt.put("usedFluids", toNbt(Registry.FLUID, usedFluids));
-        nbt.put("producedFluids", toNbt(Registry.FLUID, producedFluids));
+        nbt.put("usedItems", toNbt(BuiltInRegistries.ITEM, usedItems));
+        nbt.put("producedItems", toNbt(BuiltInRegistries.ITEM, producedItems));
+        nbt.put("usedFluids", toNbt(BuiltInRegistries.FLUID, usedFluids));
+        nbt.put("producedFluids", toNbt(BuiltInRegistries.FLUID, producedFluids));
         return nbt;
     }
 

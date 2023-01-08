@@ -48,7 +48,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Comparator;
 import java.util.Map;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -58,6 +58,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.inventory.MenuType;
@@ -79,8 +80,7 @@ public class ModernIndustrialization {
     public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.METAL).build();
     public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
-    public static final CreativeModeTab ITEM_GROUP = FabricItemGroupBuilder.build(new ResourceLocation(MOD_ID, "general"),
-            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
+    public static final CreativeModeTab ITEM_GROUP = FabricItemGroup.builder(new ResourceLocation(MOD_ID, "general")).icon(() -> new ItemStack(BuiltInRegistries.ITEM.get(new MIIdentifier("forge_hammer")))).build();
 
     // ScreenHandlerType
     public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
@@ -129,22 +129,22 @@ public class ModernIndustrialization {
 
     private static void setupItems() {
         MIItem.ITEMS.entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().sortOrder)).forEach(entry -> {
-            Registry.register(Registry.ITEM, entry.getKey(), entry.getValue().asItem());
+            Registry.register(BuiltInRegistries.ITEM, entry.getKey(), entry.getValue().asItem());
             entry.getValue().onRegister();
         });
     }
 
     private static void setupBlocks() {
         for (Map.Entry<ResourceLocation, BlockDefinition<?>> entry : MIBlock.BLOCKS.entrySet()) {
-            Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().asBlock());
+            Registry.register(BuiltInRegistries.BLOCK, entry.getKey(), entry.getValue().asBlock());
             entry.getValue().onRegister();
         }
     }
 
     private static void setupFluids() {
         for (Map.Entry<ResourceLocation, FluidDefinition> entry : MIFluids.FLUIDS.entrySet()) {
-            Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
-            Registry.register(Registry.FLUID, entry.getKey(), entry.getValue().asFluid());
+            Registry.register(BuiltInRegistries.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
+            Registry.register(BuiltInRegistries.FLUID, entry.getKey(), entry.getValue().asFluid());
         }
 
         if (MIConfig.getConfig().colorWaterLava) {
@@ -170,7 +170,7 @@ public class ModernIndustrialization {
     }
 
     private static void addFuel(String id, int burnTicks) {
-        Item item = Registry.ITEM.get(new MIIdentifier(id));
+        Item item = BuiltInRegistries.ITEM.get(new MIIdentifier(id));
         if (item == Items.AIR) {
             throw new IllegalArgumentException("Couldn't find item " + id);
         }

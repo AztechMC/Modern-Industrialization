@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
@@ -139,7 +139,7 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
         } else {
             PriorityQueue<InformationEntry> informationEntries = new PriorityQueue<>();
 
-            for (Fluid f : Registry.FLUID) {
+            for (Fluid f : BuiltInRegistries.FLUID) {
                 if (this.acceptedFluid.test(f)) {
                     informationEntries.add(
                             new InformationEntry(this.fluidEUperMb.applyAsLong(f), f));

@@ -34,8 +34,8 @@ import net.minecraft.util.Mth;
 class PriorityButton extends Button {
     private final int u;
 
-    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, OnTooltip tooltipSupplier) {
-        super(x, y, width, 12, Component.literal(message), onPress, tooltipSupplier);
+    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress) {
+        super(x, y, width, 12, Component.literal(message), onPress, Button.DEFAULT_NARRATION);
         this.u = u;
     }
 
@@ -49,12 +49,13 @@ class PriorityButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        blit(matrices, this.x, this.y, u, v, this.width, this.height);
+        blit(matrices, this.getX(), this.getY(), u, v, this.width, this.height);
         int j = this.active ? 16777215 : 10526880;
-        drawCenteredString(matrices, textRenderer, getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2,
+        drawCenteredString(matrices, textRenderer, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
                 j | Mth.ceil(this.alpha * 255.0F) << 24);
         if (this.isHoveredOrFocused()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
+            // FIXME 1.19.3
+            //this.renderToolTip(matrices, mouseX, mouseY);
         }
     }
 }

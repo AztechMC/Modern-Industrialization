@@ -31,8 +31,8 @@ import net.minecraft.network.chat.Component;
 class ConnectionTypeButton extends Button {
     private final ConnectionTypeInterface connectionType;
 
-    public ConnectionTypeButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, ConnectionTypeInterface connectionType) {
-        super(x, y, 20, 20, null, onPress, tooltipSupplier);
+    public ConnectionTypeButton(int x, int y, OnPress onPress, ConnectionTypeInterface connectionType) {
+        super(x, y, 20, 20, null, onPress, Button.DEFAULT_NARRATION);
         this.connectionType = connectionType;
     }
 

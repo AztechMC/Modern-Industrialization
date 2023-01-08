@@ -47,7 +47,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelLocationUtils;
@@ -136,7 +136,7 @@ public class MIBlock {
             BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
-            BiConsumer<Block, BlockLoot> lootTableGenerator,
+            BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
         BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, itemModelGenerator,
@@ -193,7 +193,7 @@ public class MIBlock {
         public BiConsumer<Block, BlockModelGenerators> modelGenerator;
         public BiConsumer<Item, ItemModelGenerators> itemModelGenerator = (item, gen) -> {
         };
-        public BiConsumer<Block, BlockLoot> lootTableGenerator;
+        public BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
         public SortOrder sortOrder = SortOrder.BLOCKS_OTHERS;
 
@@ -204,7 +204,7 @@ public class MIBlock {
                 Function<BlockBehaviour.Properties, T> ctor,
                 BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor,
                 BiConsumer<Block, BlockModelGenerators> modelGenerator,
-                BiConsumer<Block, BlockLoot> lootTableGenerator,
+                BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
                 List<TagKey<Block>> tags) {
             super(properties);
             this.ctor = ctor;
@@ -312,7 +312,7 @@ public class MIBlock {
             });
         }
 
-        public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLoot> lootTableGenerator) {
+        public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLootSubProvider> lootTableGenerator) {
             this.lootTableGenerator = lootTableGenerator;
             return this;
         }

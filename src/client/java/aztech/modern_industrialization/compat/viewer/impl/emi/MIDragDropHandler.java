@@ -136,7 +136,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
     }
 
     private static Rect2i getWidgetBounds(AbstractWidget cw) {
-        return new Rect2i(cw.x, cw.y, cw.getWidth(), cw.getHeight());
+        return new Rect2i(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight());
     }
 
     private static Rect2i getSlotBounds(Slot slot, MIHandledScreen<?> screen) {

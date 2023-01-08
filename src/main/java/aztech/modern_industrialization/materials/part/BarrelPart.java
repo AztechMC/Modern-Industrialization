@@ -39,6 +39,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -86,7 +87,7 @@ public class BarrelPart implements PartKeyProvider {
                     BarrelItem item = (BarrelItem) blockDefinition.asItem();
 
                     // noinspection unchecked,rawtypes
-                    bet.setValue((BlockEntityType) Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                    bet.setValue((BlockEntityType) Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, itemId,
                             FabricBlockEntityTypeBuilder.create(
                                     block.factory::newBlockEntity, block).build(null)));
 

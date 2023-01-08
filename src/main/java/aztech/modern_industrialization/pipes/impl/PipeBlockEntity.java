@@ -46,6 +46,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
@@ -416,7 +417,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     @Override
     public void load(CompoundTag tag) {
-        camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(tag.getCompound("camouflage")) : null;
+        camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage")) : null;
 
         if (!tag.contains("pipes")) {
             pipes.clear();

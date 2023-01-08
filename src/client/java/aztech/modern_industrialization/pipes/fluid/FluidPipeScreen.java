@@ -110,8 +110,8 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private class NetworkFluidButton extends Button implements ReiDraggable {
         private final FluidPipeInterface iface;
 
-        public NetworkFluidButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, FluidPipeInterface iface) {
-            super(x, y, 16, 16, null, onPress, tooltipSupplier);
+        public NetworkFluidButton(int x, int y, OnPress onPress, FluidPipeInterface iface) {
+            super(x, y, 16, 16, null, onPress, Button.DEFAULT_NARRATION);
             this.iface = iface;
         }
 
@@ -119,22 +119,23 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
             // Render fluid slot
             RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            blit(matrices, x - 1, y - 1, 18, 0, 18, 18);
+            blit(matrices, getX() - 1, getY() - 1, 18, 0, 18, 18);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isBlank()) {
-                RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), x, y);
+                RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), getX(), getY());
             }
             // Render the white hover effect
             if (isHoveredOrFocused()) {
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
-                this.fillGradient(matrices, x, y, x + 16, y + 16, -2130706433, -2130706433);
+                this.fillGradient(matrices, getX(), getY(), getX() + 16, getY() + 16, -2130706433, -2130706433);
                 RenderSystem.colorMask(true, true, true, true);
                 RenderSystem.enableDepthTest();
             }
             // Render the tooltip
             if (isHoveredOrFocused()) {
-                renderToolTip(matrices, mouseX, mouseY);
+		// FIXME 1.19.3
+                //renderToolTip(matrices, mouseX, mouseY);
             }
         }
 

@@ -26,12 +26,12 @@ package aztech.modern_industrialization.items.client;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import org.joml.Matrix4f;
 
 public record ClientConfigCardTooltip(ConfigCardItem.TooltipData data) implements ClientTooltipComponent {
     @Override

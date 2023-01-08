@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.ItemLike;
 
 public class ShapelessRecipeJson extends RecipeJson {
@@ -46,11 +47,11 @@ public class ShapelessRecipeJson extends RecipeJson {
     }
 
     public ShapelessRecipeJson(ItemLike result, int count) {
-        this(Registry.ITEM.getKey(result.asItem()).toString(), count);
+        this(BuiltInRegistries.ITEM.getKey(result.asItem()).toString(), count);
     }
 
     public ShapelessRecipeJson(ItemLike result) {
-        this(Registry.ITEM.getKey(result.asItem()).toString(), 1);
+        this(BuiltInRegistries.ITEM.getKey(result.asItem()).toString(), 1);
     }
 
     public ShapelessRecipeJson addIngredient(Ingredient ingredient) {
@@ -60,7 +61,7 @@ public class ShapelessRecipeJson extends RecipeJson {
 
     public ShapelessRecipeJson addIngredient(ItemLike item) {
         Ingredient ingredient = new Ingredient();
-        ingredient.item = Registry.ITEM.getKey(item.asItem()).toString();
+        ingredient.item = BuiltInRegistries.ITEM.getKey(item.asItem()).toString();
         return addIngredient(ingredient);
     }
 

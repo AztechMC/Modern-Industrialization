@@ -32,6 +32,7 @@ import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -116,7 +117,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     @Override
     protected Registry<Item> getRegistry() {
-        return Registry.ITEM;
+        return BuiltInRegistries.ITEM;
     }
 
     @Override

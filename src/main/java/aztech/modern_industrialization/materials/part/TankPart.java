@@ -39,6 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.TextureMapping;
@@ -53,7 +54,7 @@ public class TankPart implements PartKeyProvider {
 
     public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
         var textureSlot = TextureSlot.create("0");
-        var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + Registry.BLOCK.getKey(block).getPath()));
+        var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath()));
         gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
     };
 
@@ -99,7 +100,7 @@ public class TankPart implements PartKeyProvider {
                     TagsToGenerate.generateTag(MITags.TANKS, item, "Tanks");
 
                     // noinspection unchecked,rawtypes
-                    bet.setValue((BlockEntityType) Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                    bet.setValue((BlockEntityType) Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, itemId,
                             FabricBlockEntityTypeBuilder.create(
                                     block.factory::newBlockEntity, block).build(null)));
                     // Fluid API

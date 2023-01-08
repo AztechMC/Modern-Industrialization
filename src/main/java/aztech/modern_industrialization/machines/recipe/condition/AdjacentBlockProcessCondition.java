@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.google.gson.JsonObject;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -78,7 +78,7 @@ public class AdjacentBlockProcessCondition implements MachineProcessCondition {
         @Override
         public AdjacentBlockProcessCondition fromJson(JsonObject json) {
             var blockId = new ResourceLocation(GsonHelper.getAsString(json, "block"));
-            var block = Registry.BLOCK.getOptional(blockId).orElseThrow(() -> new IllegalArgumentException("Invalid block: " + blockId));
+            var block = BuiltInRegistries.BLOCK.getOptional(blockId).orElseThrow(() -> new IllegalArgumentException("Invalid block: " + blockId));
             var pos = GsonHelper.getAsString(json, "position");
             return new AdjacentBlockProcessCondition(block, pos);
         }
@@ -86,7 +86,7 @@ public class AdjacentBlockProcessCondition implements MachineProcessCondition {
         @Override
         public JsonObject toJson(AdjacentBlockProcessCondition condition) {
             var obj = new JsonObject();
-            obj.addProperty("block", Registry.BLOCK.getKey(condition.block).toString());
+            obj.addProperty("block", BuiltInRegistries.BLOCK.getKey(condition.block).toString());
             obj.addProperty("position", condition.relativePosition.toString());
             return obj;
         }

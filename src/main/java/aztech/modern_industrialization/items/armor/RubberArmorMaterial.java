@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -56,7 +56,7 @@ public enum RubberArmorMaterial implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(Registry.ITEM.get(new MIIdentifier("rubber_sheet")));
+        return Ingredient.of(BuiltInRegistries.ITEM.get(new MIIdentifier("rubber_sheet")));
     }
 
     @Override

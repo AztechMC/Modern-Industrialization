@@ -32,18 +32,18 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.common.base.Preconditions;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.core.Registry;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluid;
 
 public class PetrochemRecipesProvider extends MIRecipesProvider {
-    public PetrochemRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public PetrochemRecipesProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         generateDistillation(consumer, 12, 200, f(CRUDE_OIL, 1000),
                 f(SULFURIC_LIGHT_FUEL, 500),
                 f(SULFURIC_HEAVY_FUEL, 200),
@@ -90,7 +90,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
      * Generate both the full distillation tower recipe, and each distillery recipe.
      */
     private void generateDistillation(Consumer<FinishedRecipe> consumer, int eu, int duration, FluidEntry input, FluidEntry... outputs) {
-        String basePath = "petrochem/distillation/" + Registry.FLUID.getKey(input.fluid).getPath() + "_";
+        String basePath = "petrochem/distillation/" + BuiltInRegistries.FLUID.getKey(input.fluid).getPath() + "_";
 
         // Full recipe
         var full = MIRecipeJson.create(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
@@ -113,8 +113,8 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
      * Generate the sulfuric -> purified fluid chemical reactor recipe.
      */
     private void generateSulfuricPurification(Consumer<FinishedRecipe> consumer, Fluid purifiedFluid) {
-        String baseName = Registry.FLUID.getKey(purifiedFluid).getPath();
-        Fluid sulfuricFluid = Registry.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
+        String baseName = BuiltInRegistries.FLUID.getKey(purifiedFluid).getPath();
+        Fluid sulfuricFluid = BuiltInRegistries.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
         Preconditions.checkArgument(sulfuricFluid instanceof MIFluid);
 
         MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
@@ -128,7 +128,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
     }
 
     private void generatePolymerization(Consumer<FinishedRecipe> consumer, Fluid input, Fluid output) {
-        String baseNameInput = Registry.FLUID.getKey(input).getPath();
+        String baseNameInput = BuiltInRegistries.FLUID.getKey(input).getPath();
 
         for (var kind : PolymerizationKind.values()) {
             MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
@@ -148,7 +148,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
                 .addFluidInput(input, 1000)
                 .addFluidInput(STEAM, 100)
                 .addFluidOutput(output, 1000)
-                .offerTo(consumer, "petrochem/steam_cracking/" + Registry.FLUID.getKey(input.asFluid()).getPath());
+                .offerTo(consumer, "petrochem/steam_cracking/" + BuiltInRegistries.FLUID.getKey(input.asFluid()).getPath());
     }
 
     private static FluidEntry f(Fluid fluid, int amount) {

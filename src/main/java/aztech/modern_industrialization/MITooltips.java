@@ -46,6 +46,7 @@ import java.util.stream.Stream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -283,11 +284,11 @@ public class MITooltips {
     }
 
     private static void add(ItemLike itemLike, String... englishTooltipsLine) {
-        add((item) -> itemLike.asItem() == item, Registry.ITEM.getKey(itemLike.asItem()).getPath(), englishTooltipsLine);
+        add((item) -> itemLike.asItem() == item, BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath(), englishTooltipsLine);
     }
 
     private static void add(String itemId, String... englishTooltipsLine) {
-        add(Registry.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
+        add(BuiltInRegistries.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
     }
 
     static {

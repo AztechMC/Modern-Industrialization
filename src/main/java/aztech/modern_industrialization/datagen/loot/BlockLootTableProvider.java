@@ -27,17 +27,20 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.resources.ResourceLocation;
+import java.util.function.BiConsumer;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-    public BlockLootTableProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public BlockLootTableProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override
-    protected void generateBlockLootTables() {
+    public void generate() {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
             if (blockDefinition.lootTableGenerator != null) {
                 blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
@@ -52,5 +55,9 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         for (var fluid : MIFluids.FLUIDS.values()) {
             excludeFromStrictValidation(fluid.fluidBlock);
         }
+    }
+
+    @Override
+    public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
     }
 }

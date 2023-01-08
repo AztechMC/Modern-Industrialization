@@ -44,10 +44,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.*;
 
 @SuppressWarnings("unused")
@@ -178,7 +180,8 @@ public final class MIItem {
             BiConsumer<Item, ItemModelGenerators> modelGenerator,
             SortOrder sortOrder) {
 
-        T item = ctor.apply((FabricItemSettings) new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP));
+        T item = ctor.apply((FabricItemSettings) new FabricItemSettings());
+        ItemGroupEvents.modifyEntriesEvent(ModernIndustrialization.ITEM_GROUP).register(entries -> entries.accept(item));
         ItemDefinition<T> definition = new ItemDefinition<>(englishName, path, item, modelGenerator, sortOrder);
 
         if (ITEMS.put(definition.getId(), definition) != null) {

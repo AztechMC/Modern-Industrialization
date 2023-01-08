@@ -47,13 +47,11 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.resources.AssetIndex;
 import net.minecraft.client.resources.ClientPackSource;
-import net.minecraft.client.resources.DefaultClientPackResources;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
@@ -70,11 +68,11 @@ public record TexturesProvider(FabricDataGenerator dataGenerator, boolean runtim
                     container.getMetadata().getName(), container, null, PackType.CLIENT_RESOURCES, ResourcePackActivationType.ALWAYS_ENABLED);
         } else {
             var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources").toFile();
-            miResources = new FolderPackResources(nonGeneratedResources);
+            miResources = new PathPackResources(nonGeneratedResources);
         }
 
         var packs = List.of(
-                new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")),
+                Minecraft.getInstance().getVanillaPackResources(),
                 miResources);
         try (var fallbackProvider = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, packs)) {
             generateTextures(cache, fallbackProvider);
@@ -88,7 +86,7 @@ public record TexturesProvider(FabricDataGenerator dataGenerator, boolean runtim
         // - user-provided resource packs
         // - MI and MC jar textures
         var generatedResources = dataGenerator.getOutputFolder().toFile();
-        List<PackResources> generatedPack = List.of(new FolderPackResources(generatedResources));
+        List<PackResources> generatedPack = List.of(new PathPackResources(generatedResources));
 
         try (var outputPack = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, generatedPack)) {
             MITextures.offerTextures(

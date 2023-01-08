@@ -25,8 +25,7 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
@@ -42,6 +41,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
@@ -93,7 +93,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 matrices.pushPose();
                 Font textRenderer = Minecraft.getInstance().font;
                 matrices.translate(0.5, 1.14, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
                 matrices.translate(0, 0.15, -0.505);
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 
@@ -113,12 +113,12 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
                 matrices.pushPose();
                 matrices.translate(0.5, 0, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees(-i * 90F));
                 matrices.scale(0.5F, 0.5F, 0.5F);
                 matrices.translate(0, 1.125, 1.01);
 
-                matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
-                matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+                matrices.mulPoseMatrix((new Matrix4f()).scaling(1, 1, 0.01f));
+                matrices.last().normal().mul(Axis.XN.rotationDegrees(45f));
 
                 Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
                         OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
@@ -127,7 +127,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
                 matrices.pushPose();
                 matrices.translate(0.5, 0.5, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
                 matrices.translate(0, 0.0875, -0.505);
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 

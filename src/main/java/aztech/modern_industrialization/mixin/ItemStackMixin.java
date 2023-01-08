@@ -26,6 +26,7 @@ package aztech.modern_industrialization.mixin;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -52,7 +53,7 @@ public abstract class ItemStackMixin {
             for (Reference2IntMap.Entry<Enchantment> entry : enchantments.reference2IntEntrySet()) {
                 Enchantment enchantment = entry.getKey();
                 int level = entry.getIntValue();
-                String id = Registry.ENCHANTMENT.getKey(enchantment).toString();
+                String id = BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString();
 
                 boolean replacedAny = false;
 
@@ -68,7 +69,7 @@ public abstract class ItemStackMixin {
 
                 if (!replacedAny) {
                     CompoundTag tag = new CompoundTag();
-                    tag.putString("id", Registry.ENCHANTMENT.getKey(enchantment).toString());
+                    tag.putString("id", BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString());
                     tag.putInt("lvl", level);
                     resultCopy.add(tag);
                 }

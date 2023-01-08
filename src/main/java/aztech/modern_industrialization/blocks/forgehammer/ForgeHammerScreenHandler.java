@@ -28,7 +28,7 @@ import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.*;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -168,7 +168,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
 
                 if (recipeInput.matches(input.getItem()) && recipeInput.amount <= input.getItem().getCount()) {
-                    ResourceLocation idOutput = Registry.ITEM.getKey(recipe.itemOutputs.get(0).item);
+                    ResourceLocation idOutput = BuiltInRegistries.ITEM.getKey(recipe.itemOutputs.get(0).item);
                     if ((recipe.eu != 0) && (!tool.getItem().isEmpty())) {
                         recipeMap.put(idOutput, recipe);
                     } else if (recipe.eu == 0 && !recipeMap.containsKey(idOutput)) {

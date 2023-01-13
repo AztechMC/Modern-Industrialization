@@ -48,3 +48,29 @@ MIMaterialEvents.addMaterials(event => {
     });
 });
 ```
+
+### Using already defined items as parts
+
+If you want a material for which items (from either vanilla or other mod) already exist, you can use the `addExternalPart` method
+
+```javascript
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial("Obsidian", "obsidian", 0x332938, builder => {
+        builder.addParts("ingot", "nugget", "dust", "tiny_dust",  "plate", "double_ingot", "large_plate")
+            .addExternalPart("block", "minecraft:obsidian") // this will use the vanilla obsidian block as the 'block' part in every recipes
+            .defaultRecipes();
+    });
+});
+
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial("Wood", "wood", 0x40321D, builder => {
+        builder.addParts("nugget", "dust", "tiny_dust", "plate", "double_ingot", "large_plate")
+            .addExternalPart("ingot", "minecraft:oak_log", "#minecraft:logs")
+            // the method can take a third argument to specify the tag to use in recipes input (musts start with an '#').
+            //  Be careful that the item must be in the tag, otherwise the recipe will not work
+            // (To avoid conflicts bewteen mods, tags are not used in vanilla recipe types (crafting, smelting, etc.))
+            .defaultRecipes();
+    });
+});
+
+```

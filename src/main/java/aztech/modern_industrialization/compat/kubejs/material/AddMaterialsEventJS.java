@@ -25,6 +25,8 @@ package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.MaterialRegistry;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.part.PartKey;
 import aztech.modern_industrialization.materials.part.PartTemplate;
 import aztech.modern_industrialization.materials.property.ColorampParameters;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
@@ -59,6 +61,15 @@ public class AddMaterialsEventJS extends EventJS {
                 materialBuilder.addParts(creator.regularPart(s));
             }
             return this;
+        }
+
+        public MaterialBuilderJSWrapper addExternalPart(String part, String id, String tag) {
+            materialBuilder.addMaterialItemParts(MaterialItemPart.external(new PartKey(part), tag, id));
+            return this;
+        }
+
+        public MaterialBuilderJSWrapper addExternalPart(String part, String id) {
+            return addExternalPart(part, id, id);
         }
 
         public MaterialBuilderJSWrapper barrel(int stackCapacity) {

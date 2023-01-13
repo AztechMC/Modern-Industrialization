@@ -38,9 +38,13 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
      * External parts are already registered and already have a texture,
      * but they're in the material system for recipe generation.
      */
-    static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {
-        return new MaterialItemPartImpl(part.key(), taggedItemId, itemId, ctx -> {
+    static MaterialItemPart external(PartKey key, String taggedItemId, String itemId) {
+        return new MaterialItemPartImpl(key, taggedItemId, itemId, ctx -> {
         }, new TextureGenParams.NoTexture());
+    }
+
+    static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {
+        return external(part.key(), taggedItemId, itemId);
     }
 
     /**

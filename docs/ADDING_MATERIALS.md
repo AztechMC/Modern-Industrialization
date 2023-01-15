@@ -1,5 +1,5 @@
-# Adding Machines
-To add machines, you will need to use a startup script and the events in `MIMaterialEvents`
+# Adding Materials
+To add materials, you will need to use a startup script and the events in `MIMaterialEvents`
 
 ## Material System
 

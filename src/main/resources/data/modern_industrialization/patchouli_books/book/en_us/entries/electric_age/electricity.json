@@ -18,7 +18,7 @@
     },
     {
       "type": "text",
-      "text": "To transfer more energy, you need to either create multiple pipe networks or use Transformers. As you would expect, an X to Y Transformer will connect to Y cables on its output side and to X cables on its 5 other sides."
+      "text": "To transfer more energy, you need to either create multiple pipe networks or use Transformers.$(br2)A low tier to high tier Transformer (for example LV to MV) has 5 inputs and 1 output. A high tier to low tier (for example MV to LV) Transformer has 1 input and 5 outputs."
     },
     {
       "type": "crafting",

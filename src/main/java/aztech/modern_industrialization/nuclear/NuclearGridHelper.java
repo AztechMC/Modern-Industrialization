@@ -149,51 +149,57 @@ public class NuclearGridHelper {
         }
 
         // HEAT
-        double[][] temperatureOut = new double[sizeX][sizeY];
-        double[][] temperatureDelta = new double[sizeX][sizeY];
 
-        for (int step = 0; step < 3; step++) {
-            // step 0: compute temperatureOut = dT * coeff
-            // step 1: compute temperatureDelta, clamping as necessary
-            // step 2: set temperature
-            for (int i = 0; i < sizeX; i++) {
-                for (int j = 0; j < sizeY; j++) {
+        final int NUMERICAL_SUBSTEP = 10;
 
-                    Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-                    if (maybeTile.isPresent()) {
+        for (int substep = 0; substep < NUMERICAL_SUBSTEP; substep++) {
+            double[][] temperatureOut = new double[sizeX][sizeY];
+            double[][] temperatureDelta = new double[sizeX][sizeY];
 
-                        INuclearTile tile = maybeTile.get();
-                        double temperatureA = tile.getTemperature();
-                        if (step == 2) {
-                            tile.setTemperature(temperatureA + temperatureDelta[i][j]);
-                        } else {
-                            if (step == 1) {
-                                // clamp to avoid reaching < 0 temperatures
-                                temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
-                            }
-                            for (int k = 0; k < 4; k++) {
-                                int i2 = i + dX[k];
-                                int j2 = j + dY[k];
+            for (int step = 0; step < 3; step++) {
+                // step 0: compute temperatureOut = dT * coeff
+                // step 1: compute temperatureDelta, clamping as necessary
+                // step 2: set temperature
+                for (int i = 0; i < sizeX; i++) {
+                    for (int j = 0; j < sizeY; j++) {
 
-                                Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(i2, j2);
+                        Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
+                        if (maybeTile.isPresent()) {
 
-                                if (maybeSecondTile.isPresent()) {
-                                    INuclearTile secondTile = maybeSecondTile.get();
-                                    double temperatureB = secondTile.getTemperature();
-                                    double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff() + secondTile.getHeatTransferCoeff());
-                                    if (temperatureA > temperatureB) {
+                            INuclearTile tile = maybeTile.get();
+                            double temperatureA = tile.getTemperature();
+                            if (step == 2) {
+                                tile.setTemperature(temperatureA + temperatureDelta[i][j]);
+                            } else {
+                                if (step == 1) {
+                                    // clamp to avoid reaching < 0 temperatures
+                                    temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
+                                }
+                                for (int k = 0; k < 4; k++) {
+                                    int i2 = i + dX[k];
+                                    int j2 = j + dY[k];
+
+                                    Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(i2, j2);
+
+                                    if (maybeSecondTile.isPresent()) {
+                                        INuclearTile secondTile = maybeSecondTile.get();
+                                        double temperatureB = secondTile.getTemperature();
+                                        double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff() + secondTile.getHeatTransferCoeff())
+                                                / NUMERICAL_SUBSTEP;
+                                        if (temperatureA > temperatureB) {
+                                            if (step == 0) {
+                                                temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
+                                            } else {
+                                                double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
+                                                temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
+                                            }
+                                        }
+                                    } else {
+                                        double temperatureB = 0;
+                                        double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff()) / NUMERICAL_SUBSTEP;
                                         if (step == 0) {
                                             temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
-                                        } else {
-                                            double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
-                                            temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
                                         }
-                                    }
-                                } else {
-                                    double temperatureB = 0;
-                                    double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff());
-                                    if (step == 0) {
-                                        temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
                                     }
                                 }
                             }

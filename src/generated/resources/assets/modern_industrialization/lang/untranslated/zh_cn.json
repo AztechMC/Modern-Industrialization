@@ -1,5 +1,5 @@
 {
-  "__summary": "1004 ok, 644 missing, 0 unused",
+  "__summary": "1004 ok, 645 missing, 0 unused",
   "advancements.modern_industrialization.advanced_upgrade": "机器再加速",
   "advancements.modern_industrialization.advanced_upgrade.description": "制作进阶升级",
   "advancements.modern_industrialization.analog_circuit": "RLC电路",
@@ -1427,6 +1427,7 @@
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "禁用燃料EU工具提示",
   "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "禁用物品Tag工具提示",
   "text.autoconfig.modern_industrialization.option.enableAe2Integration": "启用应用能源2联动（如果可用）",
+  "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "[UNTRANSLATED] Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly. (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "启用不受支持的危险的调试命令",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "手持接口仓时在多方块结构中显示有效位置",

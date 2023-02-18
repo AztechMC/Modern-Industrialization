@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
@@ -59,6 +60,10 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     @Override
     public void render(@NotNull BlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
             int light, int overlay) {
+
+        if (!MIConfig.getConfig().enableBarrelContentRendering) {
+            return;
+        }
 
         BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
         var state = barrelBlockEntity.getBlockState();

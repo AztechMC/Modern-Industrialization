@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 344 missing, 2 unused",
+  "__summary": "1304 ok, 345 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1427,6 +1427,7 @@
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "Отключить отображение ЭЕ-топлива в подсказках",
   "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "Отключить отображение Тега предмета в подсказках",
   "text.autoconfig.modern_industrialization.option.enableAe2Integration": "Включить интеграцию AE2, в случае необходимости (Необходим перезапуск)",
+  "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "Включить двунаправленную энергию, совместимую с энергией Tech Reborn. Мы рекомендуем оставить это на false только в том случае, если другие моды были сбалансированы в соответствии.",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "Включить НЕПОДДЕРЖИВАЮШИЕ и к тому же ОПАСНЫЕ отладочные команды.",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "Показывать допустимые расположения в многоблоках в тех случаях, когда удерживаешь шлюз",

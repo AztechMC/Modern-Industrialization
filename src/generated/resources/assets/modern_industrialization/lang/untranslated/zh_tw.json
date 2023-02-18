@@ -1,5 +1,5 @@
 {
-  "__summary": "410 ok, 1238 missing, 274 unused",
+  "__summary": "410 ok, 1239 missing, 274 unused",
   "advancements.modern_industrialization.advanced_upgrade": "[UNTRANSLATED] Machine Speedup-Speedup",
   "advancements.modern_industrialization.advanced_upgrade.description": "[UNTRANSLATED] Craft a Advanced Upgrade",
   "advancements.modern_industrialization.analog_circuit": "[UNTRANSLATED] RLC Circuits",
@@ -1625,6 +1625,7 @@
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "[UNTRANSLATED] Disable display of Fuel EU in tooltips",
   "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "[UNTRANSLATED] Disable display of Item Tag in tooltips",
   "text.autoconfig.modern_industrialization.option.enableAe2Integration": "[UNTRANSLATED] Enable the AE2 integration, if present (Restart needed)",
+  "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "[UNTRANSLATED] Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly. (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "[UNTRANSLATED] Enable UNSUPPORTED and DANGEROUS debug commands",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "[UNTRANSLATED] Show valid positions in multiblocks when holding a hatch",

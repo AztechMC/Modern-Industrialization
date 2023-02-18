@@ -57,6 +57,8 @@ public class MIConfig implements ConfigData {
     public boolean newVersionMessage = true;
     @EnglishTranslation(value = "Show valid positions in multiblocks when holding a hatch")
     public boolean enableHatchPlacementOverlay = true;
+    @EnglishTranslation(value = "Enable rendering of barrel content (item icon, item amount, and item name)")
+    public boolean enableBarrelContentRendering = true;
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Color Water and Lava (Restart needed)")
     public boolean colorWaterLava = true;

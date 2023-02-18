@@ -1,5 +1,5 @@
 {
-  "__summary": "1000 ok, 648 missing, 368 unused",
+  "__summary": "1000 ok, 649 missing, 368 unused",
   "advancements.modern_industrialization.advanced_upgrade": "기계 빠르게-빠르게",
   "advancements.modern_industrialization.advanced_upgrade.description": "발전된 업그레이드를 제작하세요",
   "advancements.modern_industrialization.analog_circuit": "RLC 회로",
@@ -1635,6 +1635,7 @@
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "연료 EU 툴팁 비활성화",
   "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "아이템 태그 툴팁 비활성화",
   "text.autoconfig.modern_industrialization.option.enableAe2Integration": "[UNTRANSLATED] Enable the AE2 integration, if present (Restart needed)",
+  "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "[UNTRANSLATED] Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly. (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "디버그 명령 활성화(매우 위험함)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "해치를 들고 있을 때, 멀티블록의 유효 위치 보이기",

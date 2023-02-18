@@ -21,20 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.waila.client.component;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mcp.mobius.waila.api.ITooltipComponent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
-public class MIWailaPlugin implements IWailaPlugin {
+public class CenteredTextComponent implements ITooltipComponent {
+    private final Component text;
+
+    public CenteredTextComponent(Component text) {
+        this.text = text;
+    }
+
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
+    public int getWidth() {
+        return 100;
+    }
 
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    @Override
+    public int getHeight() {
+        return Minecraft.getInstance().font.lineHeight;
+    }
+
+    @Override
+    public void render(PoseStack matrices, int x, int y, float delta) {
+        int offset = (getWidth() - Minecraft.getInstance().font.width(text)) / 2;
+        Minecraft.getInstance().font.draw(matrices, text, x + offset, y, 0xFFAAAAAA);
     }
 }

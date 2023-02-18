@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.component;
+package aztech.modern_industrialization.compat.waila.client.component;
 
 import static net.minecraft.client.gui.GuiComponent.fill;
 

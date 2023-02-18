@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.waila.client;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.compat.waila.component.BarComponent;
-import aztech.modern_industrialization.compat.waila.component.CenteredTextComponent;
+import aztech.modern_industrialization.compat.waila.client.component.BarComponent;
+import aztech.modern_industrialization.compat.waila.client.component.CenteredTextComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;

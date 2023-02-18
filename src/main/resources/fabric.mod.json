@@ -68,10 +68,6 @@
     "megane": "<7"
   },
   "custom": {
-    "waila:plugins": {
-      "id": "modern_industrialization:plugin",
-      "initializer": "aztech.modern_industrialization.compat.waila.MIWailaPlugin"
-    },
     "megane:modules": [
       "aztech.modern_industrialization.compat.megane.MIMeganeModule"
     ],

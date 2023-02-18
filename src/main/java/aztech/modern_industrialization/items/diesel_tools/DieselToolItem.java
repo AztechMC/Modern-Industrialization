@@ -110,7 +110,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
         if (isSupportedBlock(stack, state)) {
             return getMiningSpeedMultiplier(stack);
         }
-        return 0;
+        return 1;
     }
 
     private float getMiningSpeedMultiplier(ItemStack stack) {

@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PCP",
+    "GHG",
+    "ccc"
+  ],
+  "key" : {
+  "H" : { "item" : "modern_industrialization:basic_machine_hull"},
+    "P": { "item" : "modern_industrialization:pump"},
+    "G": { "tag" : "c:tin_gears"},
+    "c" : {"item" : "modern_industrialization:tin_cable"},
+    "C" : {"item" : "modern_industrialization:analog_circuit"}
+
+},
+  "result": {
+    "item": "modern_industrialization:starter_diesel_generator"
+  }
+}

@@ -27,7 +27,6 @@ import static net.minecraft.client.gui.GuiComponent.blit;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
-import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

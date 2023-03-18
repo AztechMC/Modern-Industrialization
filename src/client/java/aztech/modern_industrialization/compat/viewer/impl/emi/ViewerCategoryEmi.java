@@ -95,7 +95,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 var ing = new IngredientBuilder(0, 0, false);
                 ing.item(item);
                 ing.isVisible = false;
-                ing.isInTree = false;
                 outputs.add(ing);
             }
         });
@@ -119,9 +118,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         List<IngredientBuilder> catalysts = inputs.stream().filter(b -> b.isCatalyst).toList();
         inputs.removeIf(b -> b.isCatalyst);
 
-        boolean inTree = !inputs.isEmpty() && !outputs.isEmpty() && inputs.stream().allMatch(b -> b.isInTree)
-                && outputs.stream().allMatch(b -> b.isInTree);
-        return new ViewerRecipe(recipe, convertInputs(inputs), convertInputs(catalysts), convertOutputs(outputs), inTree);
+        return new ViewerRecipe(recipe, convertInputs(inputs), convertInputs(catalysts), convertOutputs(outputs));
     }
 
     private static List<EmiIngredient> convertInputs(List<IngredientBuilder> list) {
@@ -141,7 +138,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         private boolean isFluid = false;
         private boolean hasBackground = true;
         private boolean isVisible = true;
-        private boolean isInTree = true;
         private boolean isCatalyst = false;
 
         IngredientBuilder(int x, int y, boolean input) {
@@ -163,7 +159,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             } else {
                 throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
             }
-            isInTree = false;
             return this;
         }
 
@@ -177,14 +172,10 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         }
 
         private void processProbability(float probability) {
-            var tooltip = ViewerUtil.getProbabilityTooltip(probability, input);
-            if (tooltip != null) {
-                this.tooltip = List.of(tooltip);
-            }
             if (probability == 0) {
                 markCatalyst();
-            } else if (probability != 1) {
-                isInTree = false;
+            } else {
+                ing.setChance(probability);
             }
         }
 
@@ -220,14 +211,12 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         private final List<EmiIngredient> inputs;
         private final List<EmiIngredient> catalysts;
         private final List<EmiStack> outputs;
-        private final boolean inTree;
 
-        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiIngredient> catalysts, List<EmiStack> outputs, boolean inTree) {
+        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiIngredient> catalysts, List<EmiStack> outputs) {
             this.recipe = recipe;
             this.inputs = inputs;
             this.catalysts = catalysts;
             this.outputs = outputs;
-            this.inTree = inTree;
         }
 
         @Override
@@ -349,11 +338,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                     processIngredient(this, widgets, output, false);
                 }
             }
-        }
-
-        @Override
-        public boolean supportsRecipeTree() {
-            return inTree;
         }
     }
 

@@ -475,7 +475,7 @@ if (System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")){
         versionName = "Modern Industrialization v${version}"
         delegate.changelog = changelog
         versionType = releaseChannel
-        uploadFile = remapJar.archiveFile
+        file = remapJar.archiveFile
         gameVersions = ["1.19.2"]
         loaders = ["fabric"]
         dependencies {

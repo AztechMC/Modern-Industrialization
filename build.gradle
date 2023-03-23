@@ -478,7 +478,6 @@ if (System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")){
         uploadFile = remapJar
         gameVersions = ["1.19.2"]
         loaders = ["fabric"]
-        autoAddDependsOn = false
         dependencies {
             required.project "fabric-api"
         }

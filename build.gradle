@@ -467,7 +467,6 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
 if (System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")){
     modrinth {
         token = System.getenv("MODRINTH_API_KEY")

@@ -26,7 +26,7 @@ jobs:
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
-        run: ./gradlew publishModrinth
+        run: ./gradlew modrinth
       - name: Upload to Curseforge
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}

@@ -22,16 +22,16 @@ jobs:
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
         run: ./gradlew build
-      - name: Upload to Curseforge
-        env:
-          MI_VERSION: ${{ github.event.release.tag_name }}
-          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
-        run: ./gradlew curseforge405388
       - name: Upload to Modrinth
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
         run: ./gradlew publishModrinth
+      - name: Upload to Curseforge
+        env:
+          MI_VERSION: ${{ github.event.release.tag_name }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: ./gradlew curseforge405388
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

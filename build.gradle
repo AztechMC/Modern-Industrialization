@@ -467,19 +467,21 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
     }
 }
 
-if (System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")){
-    modrinth {
-        token = System.getenv("MODRINTH_API_KEY")
-        projectId = project.modrinth_project
-        versionNumber = version
-        versionName = "Modern Industrialization v${version}"
-        delegate.changelog = changelog
-        versionType = releaseChannel
-        uploadFile = remapJar
-        gameVersions = ["1.19.2"]
-        loaders = ["fabric"]
-        dependencies {
-            required.project "fabric-api"
-        }
+
+modrinth {
+    token = System.getenv("MODRINTH_API_KEY")
+    projectId = project.modrinth_project
+    versionNumber = version
+    versionName = "Modern Industrialization v${version}"
+    delegate.changelog = changelog
+    versionType = releaseChannel
+    uploadFile = remapJar
+    gameVersions = ["1.19.2"]
+    loaders = ["fabric"]
+    dependencies {
+        required.project "fabric-api"
     }
+}
+tasks.modrinth.onlyIf {
+    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
 }

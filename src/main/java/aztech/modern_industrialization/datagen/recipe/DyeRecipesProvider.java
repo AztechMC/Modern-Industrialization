@@ -98,7 +98,7 @@ public class DyeRecipesProvider extends MIRecipesProvider {
 
             // shulker Box
             MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:shulker_box", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
+                    .addItemInput("#c:shulker_boxes", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
                     .offerTo(consumer, pathPrefix + "mixer/shulker_box");
 
             // bed
@@ -114,7 +114,7 @@ public class DyeRecipesProvider extends MIRecipesProvider {
 
             // carpet
             MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#minecraft:carpets", 8).addItemOutput("minecraft:" + color.getName() + "_carpet", 8)
+                    .addItemInput("#minecraft:wool_carpets", 8).addItemOutput("minecraft:" + color.getName() + "_carpet", 8)
                     .offerTo(consumer, pathPrefix + "mixer/carpet");
 
             // terracotta

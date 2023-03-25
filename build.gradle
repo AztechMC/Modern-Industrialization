@@ -483,5 +483,5 @@ modrinth {
     }
 }
 tasks.modrinth.onlyIf {
-    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
+    System.getenv("MODRINTH_API_KEY") // && !version.endsWith("-SNAPSHOT")
 }

@@ -482,6 +482,6 @@ modrinth {
         required.project "fabric-api"
     }
 }
-// tasks.modrinth.onlyIf {
-//     System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
-// }
+tasks.modrinth.onlyIf {
+    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
+}

@@ -480,8 +480,17 @@ modrinth {
     loaders = ["fabric"]
     dependencies {
         required.project "fabric-api"
+        required.project "cloth-config"
+        optional.project "wthit"
+        optional.project "megane"
+        optional.project "emi"
+        optional.project "jei"
+        optional.project "rei"
+        embedded.project "no-indium"
+        embedded.project "patchouli"
+        // add "pal" when its on modrinth
     }
 }
 tasks.modrinth.onlyIf {
-    System.getenv("MODRINTH_API_KEY") // && !version.endsWith("-SNAPSHOT")
+    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
 }

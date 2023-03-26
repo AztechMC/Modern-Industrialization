@@ -488,7 +488,7 @@ modrinth {
         optional.project "rei"
         embedded.project "no-indium"
         embedded.project "patchouli"
-        // add "pal" when its on modrinth
+        // add "pal" (PlayerAbilityLib) when its on modrinth
     }
 }
 tasks.modrinth.onlyIf {

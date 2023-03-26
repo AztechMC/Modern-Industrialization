@@ -39,7 +39,7 @@ public class SodiumCompat {
         MethodHandle handle = null;
         try {
             handle = MethodHandles.lookup().findStatic(
-                    Class.forName("net.caffeinemc.sodium.render.texture.SpriteUtil"),
+                    Class.forName("me.jellysquid.mods.sodium.client.render.texture.SpriteUtil"),
                     "markSpriteActive",
                     MethodType.methodType(void.class, TextureAtlasSprite.class));
             ModernIndustrialization.LOGGER.info("Loaded Modern Industrialization Sodium active sprite compat.");

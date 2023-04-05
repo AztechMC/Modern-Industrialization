@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 348 missing, 2 unused",
+  "__summary": "1304 ok, 349 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1611,6 +1611,7 @@
   "text.modern_industrialization.Progress": "Progresso : %s",
   "text.modern_industrialization.PutMotorToUpgrade": "Coloque qualquer motor para melhorar a velocidade do Tubo de Items",
   "text.modern_industrialization.RemAbsorption": "Absorção Restante : %d / %d ",
+  "text.modern_industrialization.RequiresBiome": "[UNTRANSLATED] Requires biome: %s",
   "text.modern_industrialization.RequiresBlockBehind": "[UNTRANSLATED] Requires block behind machine: %s",
   "text.modern_industrialization.RequiresBlockBelow": "[UNTRANSLATED] Requires block below machine: %s",
   "text.modern_industrialization.RequiresDimension": "[UNTRANSLATED] Requires dimension: %s",

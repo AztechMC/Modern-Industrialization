@@ -199,6 +199,7 @@ public enum MIText {
     NotConsumed("Not consumed"),
     Progress("Progress : %s"),
     RemAbsorption("Remaining Absorption : %d / %d "),
+    RequiresBiome("Requires biome: %s"),
     RequiresBlockBelow("Requires block below machine: %s"),
     RequiresBlockBehind("Requires block behind machine: %s"),
     RequiresDimension("Requires dimension: %s"),

@@ -1,5 +1,5 @@
 {
-  "__summary": "1001 ok, 651 missing, 367 unused",
+  "__summary": "1001 ok, 652 missing, 367 unused",
   "advancements.modern_industrialization.advanced_upgrade": "기계 빠르게-빠르게",
   "advancements.modern_industrialization.advanced_upgrade.description": "발전된 업그레이드를 제작하세요",
   "advancements.modern_industrialization.analog_circuit": "RLC 회로",
@@ -1819,6 +1819,7 @@
   "text.modern_industrialization.Progress": "[UNTRANSLATED] Progress : %s",
   "text.modern_industrialization.PutMotorToUpgrade": "[UNTRANSLATED] Put any Motor here to improve Item Pipe Speed",
   "text.modern_industrialization.RemAbsorption": "[UNTRANSLATED] Remaining Absorption : %d / %d ",
+  "text.modern_industrialization.RequiresBiome": "[UNTRANSLATED] Requires biome: %s",
   "text.modern_industrialization.RequiresBlockBehind": "[UNTRANSLATED] Requires block behind machine: %s",
   "text.modern_industrialization.RequiresBlockBelow": "[UNTRANSLATED] Requires block below machine: %s",
   "text.modern_industrialization.RequiresDimension": "[UNTRANSLATED] Requires dimension: %s",

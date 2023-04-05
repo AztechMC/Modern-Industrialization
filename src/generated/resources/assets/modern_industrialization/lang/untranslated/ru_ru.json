@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 348 missing, 2 unused",
+  "__summary": "1304 ok, 349 missing, 2 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1611,6 +1611,7 @@
   "text.modern_industrialization.Progress": "Прогресс: %s",
   "text.modern_industrialization.PutMotorToUpgrade": "Положи сюда какой-нибудь Мотор, чтобы улучшить Скорость предметной трубы",
   "text.modern_industrialization.RemAbsorption": "Осталось поглощения: %d / %d",
+  "text.modern_industrialization.RequiresBiome": "[UNTRANSLATED] Requires biome: %s",
   "text.modern_industrialization.RequiresBlockBehind": "[UNTRANSLATED] Requires block behind machine: %s",
   "text.modern_industrialization.RequiresBlockBelow": "[UNTRANSLATED] Requires block below machine: %s",
   "text.modern_industrialization.RequiresDimension": "[UNTRANSLATED] Requires dimension: %s",

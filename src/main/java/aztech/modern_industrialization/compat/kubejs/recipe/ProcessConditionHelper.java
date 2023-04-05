@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
 import aztech.modern_industrialization.machines.recipe.condition.AdjacentBlockProcessCondition;
+import aztech.modern_industrialization.machines.recipe.condition.BiomeProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.DimensionProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import net.minecraft.resources.ResourceLocation;
@@ -38,5 +39,9 @@ public interface ProcessConditionHelper {
 
     default ProcessConditionHelper adjacentBlock(Block block, String relativePosition) {
         return processCondition(new AdjacentBlockProcessCondition(block, relativePosition));
+    }
+
+    default ProcessConditionHelper biome(ResourceLocation biome) {
+        return processCondition(new BiomeProcessCondition(biome));
     }
 }

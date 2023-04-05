@@ -1608,6 +1608,7 @@
   "text.modern_industrialization.Progress": "Progress : %s",
   "text.modern_industrialization.PutMotorToUpgrade": "Put any Motor here to improve Item Pipe Speed",
   "text.modern_industrialization.RemAbsorption": "Remaining Absorption : %d / %d ",
+  "text.modern_industrialization.RequiresBiome": "Requires biome: %s",
   "text.modern_industrialization.RequiresBlockBehind": "Requires block behind machine: %s",
   "text.modern_industrialization.RequiresBlockBelow": "Requires block below machine: %s",
   "text.modern_industrialization.RequiresDimension": "Requires dimension: %s",

@@ -21,31 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.misc.runtime_datagen;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.resource.GeneratedFolderPackResources;
-import java.util.ArrayList;
-import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.WorldLoader;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(WorldLoader.PackConfig.class)
-public class PackConfigMixin {
-    @ModifyVariable(method = "createResourceManager", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/server/packs/repository/PackRepository.openAllSelected ()Ljava/util/List;"), index = 2)
-    private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
-        if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
-            var mutableList = new ArrayList<>(resourcePacks);
-            var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
-            mutableList.add(new GeneratedFolderPackResources(generatedDirectory.toFile(), PackType.SERVER_DATA));
-            return mutableList;
-        } else {
-            return resourcePacks;
-        }
+public class RuntimeResourcesHelper {
+    public static final ThreadLocal<Object> IS_CREATING_SERVER_RELOAD_PACK = new ThreadLocal<>();
+
+    public static PackResources createPack(PackType packType) {
+        var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
+        return new GeneratedFolderPackResources(generatedDirectory.toFile(), packType);
     }
 }

@@ -60,25 +60,27 @@ The following parameters need to be provided, in order:
 
 Here is an example, where we add a circuit assembler that looks very much like a normal assembler:
 ```js
-event.craftingSingleBlock(
-    /* GENERAL PARAMETERS FIRST */
-    // English name, internal name, recipe type (see above), list of tiers (can be bronze/steel/electric)
-    "Circuit Assembler", "circuit_assembler", CIRCUIT_ASSEMBLER, ["bronze", "steel", "electric"],
-    /* GUI CONFIGURATION */
-    // Background height (or -1 for default value), progress bar, efficiency bar, energy bar
-    186, event.progressBar(105, 45, "circuit"), event.efficiencyBar(48, 86), event.energyBar(14, 44),
-    /* SLOT CONFIGURATION */
-    // Number of slots: item inputs, item outputs, fluid inputs, fluid outputs
-    9, 3, 0, 0,
-    // Capacity for fluid slots (unused here)
-    16,
-    // Slot positions: items and fluids.
-    // Explanation: 3x3 grid of item slots starting at position (42, 27), then 1x3 grid of item slots starting at position (139, 27).
-    items => items.addSlots(42, 27, 3, 3).addSlots(139, 27, 1, 3), fluids => {},
-    /* MODEL CONFIGURATION */
-    // front overlay?, top overlay?, side overlay?
-    true, true, false,
-);
+MIMachineEvents.registerMachines(event => {
+  event.craftingSingleBlock(
+      /* GENERAL PARAMETERS FIRST */
+      // English name, internal name, recipe type (see above), list of tiers (can be bronze/steel/electric)
+      "Circuit Assembler", "circuit_assembler", CIRCUIT_ASSEMBLER, ["bronze", "steel", "electric"],
+      /* GUI CONFIGURATION */
+      // Background height (or -1 for default value), progress bar, efficiency bar, energy bar
+      186, event.progressBar(105, 45, "circuit"), event.efficiencyBar(48, 86), event.energyBar(14, 44),
+      /* SLOT CONFIGURATION */
+      // Number of slots: item inputs, item outputs, fluid inputs, fluid outputs
+      9, 3, 0, 0,
+      // Capacity for fluid slots (unused here)
+      16,
+      // Slot positions: items and fluids.
+      // Explanation: 3x3 grid of item slots starting at position (42, 27), then 1x3 grid of item slots starting at position (139, 27).
+      items => items.addSlots(42, 27, 3, 3).addSlots(139, 27, 1, 3), fluids => {},
+      /* MODEL CONFIGURATION */
+      // front overlay?, top overlay?, side overlay?
+      true, true, false,
+  );
+})
 ```
 
 ## Adding an electric multiblock crafting machine

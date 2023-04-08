@@ -21,31 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.mixin.runtime_resources;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.resource.GeneratedFolderPackResources;
-import java.util.ArrayList;
-import java.util.List;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeResourcesHelper;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ReloadableResourceManager.class)
-public abstract class ReloadableResourceManagerMixin {
-    @ModifyVariable(method = "createReload", at = @At("HEAD"), index = 4, argsOnly = true)
-    private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
+@Mixin(MinecraftServer.class)
+public class MinecraftServerMixin {
+    @Inject(at = @At("HEAD"), method = "method_29437")
+    private void injectReloadResources(RegistryAccess.Frozen frozen, ImmutableList<?> list, CallbackInfoReturnable<?> cir) {
         if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
-            var mutableList = new ArrayList<>(resourcePacks);
-            var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
-            mutableList.add(new GeneratedFolderPackResources(generatedDirectory.toFile(), PackType.CLIENT_RESOURCES));
-            return mutableList;
-        } else {
-            return resourcePacks;
+            RuntimeResourcesHelper.IS_CREATING_SERVER_RELOAD_PACK.set(Boolean.TRUE);
         }
     }
 }

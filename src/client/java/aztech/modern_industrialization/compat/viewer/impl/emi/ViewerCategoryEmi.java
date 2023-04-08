@@ -77,21 +77,21 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         wrapped.buildLayout(recipe, new ViewerCategory.LayoutBuilder() {
             @Override
             public ViewerCategory.SlotBuilder inputSlot(int x, int y) {
-                var ing = new IngredientBuilder(x, y, true);
+                var ing = new IngredientBuilder(x, y);
                 inputs.add(ing);
                 return ing;
             }
 
             @Override
             public ViewerCategory.SlotBuilder outputSlot(int x, int y) {
-                var ing = new IngredientBuilder(x, y, false);
+                var ing = new IngredientBuilder(x, y);
                 outputs.add(ing);
                 return ing;
             }
 
             @Override
             public void invisibleOutput(ItemStack item) {
-                var ing = new IngredientBuilder(0, 0, false);
+                var ing = new IngredientBuilder(0, 0);
                 ing.item(item);
                 ing.isVisible = false;
                 outputs.add(ing);
@@ -131,18 +131,15 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
     private static class IngredientBuilder implements ViewerCategory.SlotBuilder {
         private final int x, y;
-        private final boolean input;
         private EmiIngredient ing = EmiStack.EMPTY;
-        private List<Component> tooltip = List.of();
         private boolean isFluid = false;
         private boolean hasBackground = true;
         private boolean isVisible = true;
         private boolean isCatalyst = false;
 
-        IngredientBuilder(int x, int y, boolean input) {
+        IngredientBuilder(int x, int y) {
             this.x = x;
             this.y = y;
-            this.input = input;
         }
 
         @Override
@@ -364,9 +361,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         }
         if (ing.isCatalyst) {
             slot.catalyst(true);
-        }
-        for (var component : ing.tooltip) {
-            slot.appendTooltip(component);
         }
     }
 }

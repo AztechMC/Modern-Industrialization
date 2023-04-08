@@ -31,7 +31,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 
 public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public MIBlockTagProvider(FabricDataGenerator dataGenerator) {
@@ -47,8 +49,12 @@ public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         }
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE);
+        tag(ConventionalBlockTags.MOVEMENT_RESTRICTED).add(MIPipes.BLOCK_PIPE);
         tag(ConventionalBlockTags.QUARTZ_ORES).add(Registry.BLOCK.get(new MIIdentifier("quartz_ore"))); // Have no idea why there is such a tag but go
                                                                                                         // add it
+
+        // Why is this not in Carrier? :(
+        tag(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation("carrier", "blacklist"))).addTag(ConventionalBlockTags.MOVEMENT_RESTRICTED);
     }
 
 }

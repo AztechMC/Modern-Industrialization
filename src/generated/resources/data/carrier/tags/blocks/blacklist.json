@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#c:must_not_be_moved"
+    "#c:movement_restricted"
   ]
 }

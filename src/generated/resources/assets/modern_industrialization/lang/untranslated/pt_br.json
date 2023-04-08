@@ -1,5 +1,5 @@
 {
-  "__summary": "1304 ok, 349 missing, 2 unused",
+  "__summary": "1303 ok, 350 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1449,7 +1449,8 @@
   "text.modern_industrialization.AcceptLowAndHighPressure": "Aceita %s, %s, %s e %s",
   "text.modern_industrialization.AcceptLowOrHighPressure": "Aceita apenas %s e %s",
   "text.modern_industrialization.AcceptSingleFluid": "Consume %s e produz %s por mb",
-  "text.modern_industrialization.AcceptsCasings": "Mude a carcaça para conectar cabos de tiers mais altos.",
+  "text.modern_industrialization.AcceptsCasings": "[UNUSED, PLEASE REMOVE] Mude a carcaça para conectar cabos de tiers mais altos.",
+  "text.modern_industrialization.AcceptsMachineHull": "[UNTRANSLATED] Change machine hull to connect higher tier cables.",
   "text.modern_industrialization.AcceptsSteam": "Aceita Vapor (1 mb \u003d 1 EU)",
   "text.modern_industrialization.AcceptsSteamToo": "Também aceita Vapor (1 mb \u003d 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "Adicione melhorias para aumentar o processamento máximo EU/t.",

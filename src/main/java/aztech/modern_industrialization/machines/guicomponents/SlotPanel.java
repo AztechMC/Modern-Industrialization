@@ -127,7 +127,7 @@ public class SlotPanel {
                 return CasingComponent.blockCasing.containsKey(block.getBlock());
             }
             return false;
-        }, 18, 80, MIText.AcceptsCasings),
+        }, 18, 80, MIText.AcceptsMachineHull),
         ;
 
         public final SlotGroup group;

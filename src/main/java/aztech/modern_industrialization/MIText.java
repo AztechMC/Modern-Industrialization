@@ -33,7 +33,7 @@ public enum MIText {
             aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP.getRecipeFolderName(),
             "modern_industrialization"),
     AbsorptionProbability("Absorption Probability"),
-    AcceptsCasings("Change casing to connect higher tier cables."),
+    AcceptsMachineHull("Change machine hull to connect higher tier cables."),
     AcceptsSteam("Accepts Steam (1 mb = 1 EU)"),
     AcceptsSteamToo("Also Accepts Steam (1 mb = 1 EU)"),
     AcceptsUpgrades("Add upgrades to increase max processing EU/t."),

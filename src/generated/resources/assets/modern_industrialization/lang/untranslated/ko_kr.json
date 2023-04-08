@@ -1658,7 +1658,7 @@
   "text.modern_industrialization.AcceptLowAndHighPressure": "[UNTRANSLATED] Accepts %s, %s, %s and %s",
   "text.modern_industrialization.AcceptLowOrHighPressure": "[UNTRANSLATED] Only accepts %s and %s",
   "text.modern_industrialization.AcceptSingleFluid": "[UNTRANSLATED] Consumes %s and produces %s per mb",
-  "text.modern_industrialization.AcceptsCasings": "[UNTRANSLATED] Change casing to connect higher tier cables.",
+  "text.modern_industrialization.AcceptsMachineHull": "[UNTRANSLATED] Change machine hull to connect higher tier cables.",
   "text.modern_industrialization.AcceptsSteam": "[UNTRANSLATED] Accepts Steam (1 mb \u003d 1 EU)",
   "text.modern_industrialization.AcceptsSteamToo": "[UNTRANSLATED] Also Accepts Steam (1 mb \u003d 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "[UNTRANSLATED] Add upgrades to increase max processing EU/t.",

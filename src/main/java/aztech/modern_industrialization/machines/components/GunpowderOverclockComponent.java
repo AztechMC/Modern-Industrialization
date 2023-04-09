@@ -37,9 +37,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class GunpowderOverclockComponent implements IComponent {
+public class GunpowderOverclockComponent implements IOverclockComponent {
 
-    public int overclockGunpowderTick;
+    private int overclockGunpowderTick;
 
     @Override
     public void writeNbt(CompoundTag tag) {
@@ -50,6 +50,8 @@ public class GunpowderOverclockComponent implements IComponent {
     public void readNbt(CompoundTag tag) {
         overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
     }
+
+    public int getTicks() { return overclockGunpowderTick; }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
@@ -68,8 +70,12 @@ public class GunpowderOverclockComponent implements IComponent {
         return InteractionResult.PASS;
     }
 
-    public boolean isOverclocked() {
-        return overclockGunpowderTick > 0;
+    public long getRecipeEu(int eu) {
+        if (overclockGunpowderTick > 0) {
+            return eu * 2L;
+        } else {
+            return eu;
+        }
     }
 
     public void tick(MachineBlockEntity be) {

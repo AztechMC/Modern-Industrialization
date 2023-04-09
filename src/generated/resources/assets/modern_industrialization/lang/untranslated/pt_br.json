@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 350 missing, 3 unused",
+  "__summary": "1303 ok, 351 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1596,6 +1596,7 @@
   "text.modern_industrialization.OreGenerationTooltipVeinSize": "%d minérios por aglomerado",
   "text.modern_industrialization.OreGenerationTooltipY": "Camada Y %d a %d",
   "text.modern_industrialization.OreNotGenerated": "Não é gerado mas pode ser obtido com a Mineradora",
+  "text.modern_industrialization.OverclockMachine": "[UNTRANSLATED] Use %s to %fx this machine speed for %d ticks",
   "text.modern_industrialization.PipeConnectionHelp": "Clique para mudar",
   "text.modern_industrialization.PipeConnectionIO": "I/O",
   "text.modern_industrialization.PipeConnectionIn": "IN",

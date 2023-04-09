@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.List;
 import net.minecraft.core.particles.ParticleTypes;
@@ -51,7 +50,9 @@ public class GunpowderOverclockComponent implements IOverclockComponent {
         overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
     }
 
-    public int getTicks() { return overclockGunpowderTick; }
+    public int getTicks() {
+        return overclockGunpowderTick;
+    }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);

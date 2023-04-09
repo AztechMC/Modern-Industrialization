@@ -29,17 +29,19 @@ import aztech.modern_industrialization.machines.components.IOverclockComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
-
 import java.util.ArrayList;
 import java.util.function.Consumer;
+import net.minecraft.resources.ResourceLocation;
 
 public class ExtraMachineConfig {
 
     public static class CraftingSingleBlock {
         private final SingleBlockCraftingMachines.Config config;
 
-        public CraftingSingleBlock(SingleBlockCraftingMachines.Config config) { this.config = config; }
+        public CraftingSingleBlock(SingleBlockCraftingMachines.Config config) {
+            this.config = config;
+        }
+
         public CraftingSingleBlock steamCustomOverclock(double multiplier, JsonObject object) {
             var catalysts = new ArrayList<CustomOverclockComponent.Catalyst>();
 
@@ -50,9 +52,11 @@ public class ExtraMachineConfig {
             return this;
         }
     }
+
     public static class CraftingMultiBlock {
         public IOverclockComponent steamOverclockComponent = new GunpowderOverclockComponent();
-        public Consumer<MultiblockMachines.Rei> reiConfig = rei -> { };
+        public Consumer<MultiblockMachines.Rei> reiConfig = rei -> {
+        };
 
         public CraftingMultiBlock steamCustomOverclock(double multiplier, JsonObject object) {
             var catalysts = new ArrayList<CustomOverclockComponent.Catalyst>();

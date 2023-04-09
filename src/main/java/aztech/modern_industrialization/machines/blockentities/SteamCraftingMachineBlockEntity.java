@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.IOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;

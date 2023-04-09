@@ -26,6 +26,8 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -35,9 +37,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CustomOverclockComponent implements IOverclockComponent {
 
@@ -110,9 +109,11 @@ public class CustomOverclockComponent implements IOverclockComponent {
         for (Catalyst catalyst : catalysts) {
             Component catalystName;
             if (Registry.BLOCK.containsKey(catalyst.resourceLocation)) {
-                catalystName = Component.translatable("block.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
+                catalystName = Component
+                        .translatable("block.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
             } else if (Registry.ITEM.containsKey(catalyst.resourceLocation)) {
-                catalystName = Component.translatable("item.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
+                catalystName = Component
+                        .translatable("item.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
             } else {
                 throw new RuntimeException("Invalid block or item as catalyst: " + catalyst.resourceLocation);
             }

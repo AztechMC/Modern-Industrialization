@@ -193,7 +193,8 @@ public final class SingleBlockCraftingMachines {
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             String id = prefix + "_" + machine;
 
-            var overclockComponent = (extraConfig.steamOverclockComponent != null) ? extraConfig.steamOverclockComponent : new GunpowderOverclockComponent();
+            var overclockComponent = (extraConfig.steamOverclockComponent != null) ? extraConfig.steamOverclockComponent
+                    : new GunpowderOverclockComponent();
 
             MachineRegistrationHelper.registerMachine(englishPrefix + englishName, id,
                     bet -> new SteamCraftingMachineBlockEntity(bet, type,

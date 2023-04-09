@@ -25,17 +25,20 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.List;
-
 public interface IOverclockComponent extends IComponent {
     int getTicks();
+
     InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand);
+
     void tick(MachineBlockEntity be);
+
     List<Component> getTooltips();
+
     long getRecipeEu(int eu);
 }

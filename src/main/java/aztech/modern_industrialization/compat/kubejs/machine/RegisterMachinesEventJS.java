@@ -73,7 +73,8 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
 
         craftingSingleBlock(englishName, internalName, recipeType, tiers, backgroundHeight, progressBar, efficiencyBar, energyBar,
                 itemInputs, itemOutputs, fluidInputs, fluidOutputs, bucketCapacity, itemSlotPositions, fluidSlotPositions,
-                frontOverlay, topOverlay, sideOverlay, config -> { });
+                frontOverlay, topOverlay, sideOverlay, config -> {
+                });
     }
 
     public void craftingSingleBlock(
@@ -127,7 +128,8 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         simpleElectricCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
-                config -> {});
+                config -> {
+                });
     }
 
     public void simpleElectricCraftingMultiBlock(
@@ -165,7 +167,8 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         simpleSteamCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
-                config -> {});
+                config -> {
+                });
     }
 
     public void simpleSteamCraftingMultiBlock(

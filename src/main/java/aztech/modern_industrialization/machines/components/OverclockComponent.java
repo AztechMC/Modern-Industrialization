@@ -58,6 +58,11 @@ public class OverclockComponent implements IComponent {
     @Override
     public void readNbt(CompoundTag tag) {
         overclockTicks = tag.getInt("overclockTicks");
+
+        // TODO 1.20: Remove upgrade code
+        if (tag.contains("overclockGunpowderTick")) {
+            overclockTicks = tag.getInt("overclockGunpowderTick");
+        }
     }
 
     public int getTicks() {

@@ -78,7 +78,7 @@ MIMachineEvents.registerMachines(event => {
       items => items.addSlots(42, 27, 3, 3).addSlots(139, 27, 1, 3), fluids => {},
       /* MODEL CONFIGURATION */
       // front overlay?, top overlay?, side overlay?
-      true, true, false
+      true, true, false,
   );
 })
 ```
@@ -153,7 +153,7 @@ Here is an example creating an electric pyrolyse oven:
         fluidInputs => fluidInputs.addSlot(36, 35), fluidOutputs => fluidOutputs.addSlot(122, 35),
         /* MODEL CONFIGUATION */
         // casing of the controller, overlay folder, front overlay?, top overlay?, side overlay?
-        "heatproof_machine_casing", "pyrolyse_overlays", true, false, false
+        "heatproof_machine_casing", "pyrolyse_overlays", true, false, false,
     );
 })
 ```
@@ -195,6 +195,7 @@ Methods that config exposes:
   * Use `steamCustomOverclock(1, {})` to disable the default gunpowder overclocking behavior.
 * `reiExtra(rei => {})`
   * Allows extra / advanced REI configuration. Methods can be chained.
+  * Default for steam machines sets `steam(true)` and calls nothing for electric.
   * `reiExtra(rei => rei.workstations('pyrolyse_oven', 'steam_quarry'))`
     * Groups or omits other machines into the workstations part of REI regardless of recipe type.
   * `reiExtra(rei => rei.steam(false))`

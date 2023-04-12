@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +39,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class CustomOverclockComponent implements IOverclockComponent {
+public class OverclockComponent implements IComponent {
 
     private int overclockTicks;
     private double overclockMultiplier;
     private List<Catalyst> catalysts;
 
-    public CustomOverclockComponent(double multiplier, List<Catalyst> catalysts) {
+    public OverclockComponent(double multiplier, List<Catalyst> catalysts) {
         this.overclockMultiplier = multiplier;
         this.catalysts = catalysts;
     }
@@ -131,6 +132,11 @@ public class CustomOverclockComponent implements IOverclockComponent {
         } else {
             return eu;
         }
+    }
+
+    public static OverclockComponent createDefaultGunpowderOverclock() {
+        return new OverclockComponent(2D,
+                List.of(new OverclockComponent.Catalyst(new ResourceLocation("minecraft:gunpowder"), 120 * 20)));
     }
 
     public static class Catalyst {

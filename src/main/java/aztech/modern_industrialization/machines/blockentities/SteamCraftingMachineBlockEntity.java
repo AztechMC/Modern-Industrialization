@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.IOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -43,10 +43,10 @@ import net.minecraft.world.entity.player.Player;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
 
-    private final IOverclockComponent overclockComponent;
+    private final OverclockComponent overclockComponent;
 
     public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,
-            ProgressBar.Parameters progressBarParams, MachineTier tier, IOverclockComponent overclockComponent) {
+            ProgressBar.Parameters progressBarParams, MachineTier tier, OverclockComponent overclockComponent) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         this.overclockComponent = overclockComponent;
 

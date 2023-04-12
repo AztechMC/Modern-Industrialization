@@ -33,9 +33,8 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.ElectricCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.SteamCraftingMachineBlockEntity;
-import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
-import aztech.modern_industrialization.machines.components.IOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -193,14 +192,11 @@ public final class SingleBlockCraftingMachines {
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             String id = prefix + "_" + machine;
 
-            var overclockComponent = (extraConfig.steamOverclockComponent != null) ? extraConfig.steamOverclockComponent
-                    : new GunpowderOverclockComponent();
-
             MachineRegistrationHelper.registerMachine(englishPrefix + englishName, id,
                     bet -> new SteamCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, steamBuckets,
                                     ioBucketCapacity),
-                            builtGuiParams, progressBarParams, tier, overclockComponent),
+                            builtGuiParams, progressBarParams, tier, extraConfig.steamOverclockComponent),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
@@ -320,6 +316,6 @@ public final class SingleBlockCraftingMachines {
     }
 
     public static class Config {
-        public IOverclockComponent steamOverclockComponent;
+        public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
     }
 }

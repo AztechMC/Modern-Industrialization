@@ -151,7 +151,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
                 bep -> new ElectricCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType),
-                config.reiConfig);
+                config.reiConfigs);
     }
 
     public void simpleSteamCraftingMultiBlock(
@@ -184,17 +184,17 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             Consumer<ExtraMachineConfig.CraftingMultiBlock> extraConfig) {
 
         var config = new ExtraMachineConfig.CraftingMultiBlock();
-        config.reiConfig = rei -> rei.steam(true);
+        config.reiConfigs.add(rei -> rei.steam(true));
         extraConfig.accept(config);
 
         simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
                 bep -> new SteamCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType, config.steamOverclockComponent),
-                config.reiConfig);
+                config.reiConfigs);
     }
 
-    public void simpleMultiBlock(
+    private void simpleMultiBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
@@ -204,7 +204,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             // model
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
             // machine entity and rei configuration
-            Function<BEP, MachineBlockEntity> factory, Consumer<MultiblockMachines.Rei> reiConfig) {
+            Function<BEP, MachineBlockEntity> factory, List<Consumer<MultiblockMachines.Rei>> reiConfigs) {
 
         var controllerCasing = MachineCasings.get(controllerCasingName);
 
@@ -214,7 +214,9 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         var rei = new MultiblockMachines.Rei(englishName, internalName, recipeType, progressBar)
                 .items(itemInputPositions::accept, itemOutputPositions::accept)
                 .fluids(fluidInputPositions::accept, fluidOutputPositions::accept);
-        reiConfig.accept(rei);
+        for (var reiConfig : reiConfigs) {
+            reiConfig.accept(rei);
+        }
         rei.register();
 
         ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);

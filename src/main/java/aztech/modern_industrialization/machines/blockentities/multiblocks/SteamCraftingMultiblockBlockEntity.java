@@ -25,8 +25,8 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.components.IOverclockComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -45,10 +45,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
 
-    private final IOverclockComponent overclockComponent;
+    private final OverclockComponent overclockComponent;
 
     public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
-            IOverclockComponent overclockComponent) {
+            OverclockComponent overclockComponent) {
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
         this.overclockComponent = overclockComponent;

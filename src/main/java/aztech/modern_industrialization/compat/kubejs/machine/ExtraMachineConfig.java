@@ -23,9 +23,7 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import aztech.modern_industrialization.machines.components.CustomOverclockComponent;
-import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
-import aztech.modern_industrialization.machines.components.IOverclockComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import com.google.gson.JsonObject;
@@ -43,33 +41,32 @@ public class ExtraMachineConfig {
         }
 
         public CraftingSingleBlock steamCustomOverclock(double multiplier, JsonObject object) {
-            var catalysts = new ArrayList<CustomOverclockComponent.Catalyst>();
+            var catalysts = new ArrayList<OverclockComponent.Catalyst>();
 
             for (var entry : object.entrySet()) {
-                catalysts.add(new CustomOverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
+                catalysts.add(new OverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
             }
-            config.steamOverclockComponent = new CustomOverclockComponent(multiplier, catalysts);
+            config.steamOverclockComponent = new OverclockComponent(multiplier, catalysts);
             return this;
         }
     }
 
     public static class CraftingMultiBlock {
-        public IOverclockComponent steamOverclockComponent = new GunpowderOverclockComponent();
-        public Consumer<MultiblockMachines.Rei> reiConfig = rei -> {
-        };
+        public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
+        public ArrayList<Consumer<MultiblockMachines.Rei>> reiConfigs = new ArrayList<Consumer<MultiblockMachines.Rei>>();
 
         public CraftingMultiBlock steamCustomOverclock(double multiplier, JsonObject object) {
-            var catalysts = new ArrayList<CustomOverclockComponent.Catalyst>();
+            var catalysts = new ArrayList<OverclockComponent.Catalyst>();
 
             for (var entry : object.entrySet()) {
-                catalysts.add(new CustomOverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
+                catalysts.add(new OverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
             }
-            steamOverclockComponent = new CustomOverclockComponent(multiplier, catalysts);
+            steamOverclockComponent = new OverclockComponent(multiplier, catalysts);
             return this;
         }
 
         public CraftingMultiBlock reiExtra(Consumer<MultiblockMachines.Rei> consumer) {
-            reiConfig = consumer;
+            reiConfigs.add(consumer);
             return this;
         }
     }

@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,28 +41,44 @@ public class ExtraMachineConfig {
             this.config = config;
         }
 
-        public CraftingSingleBlock steamCustomOverclock(double multiplier, JsonObject object) {
+        public CraftingSingleBlock steamCustomOverclock(JsonObject object) {
             var catalysts = new ArrayList<OverclockComponent.Catalyst>();
 
             for (var entry : object.entrySet()) {
-                catalysts.add(new OverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
+                var catalystName = entry.getKey();
+                var parameters = entry.getValue().getAsJsonObject();
+                if (!parameters.has("multiplier")) {
+                    throw new RuntimeException(String.format("Expected multiplier key in object for catalyst %s", catalystName));
+                } else if (!parameters.has("ticks")) {
+                    throw new RuntimeException(String.format("Expected ticks key in object for catalyst %s", catalystName));
+                }
+                catalysts.add(new OverclockComponent.Catalyst(parameters.get("multiplier").getAsDouble(),
+                        new ResourceLocation(catalystName), parameters.get("ticks").getAsInt()));
             }
-            config.steamOverclockComponent = new OverclockComponent(multiplier, catalysts);
+            config.steamOverclockComponent = new OverclockComponent(catalysts);
             return this;
         }
     }
 
     public static class CraftingMultiBlock {
         public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
-        public ArrayList<Consumer<MultiblockMachines.Rei>> reiConfigs = new ArrayList<Consumer<MultiblockMachines.Rei>>();
+        public List<Consumer<MultiblockMachines.Rei>> reiConfigs = new ArrayList<>();
 
-        public CraftingMultiBlock steamCustomOverclock(double multiplier, JsonObject object) {
+        public CraftingMultiBlock steamCustomOverclock(JsonObject object) {
             var catalysts = new ArrayList<OverclockComponent.Catalyst>();
 
             for (var entry : object.entrySet()) {
-                catalysts.add(new OverclockComponent.Catalyst(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt()));
+                var catalystName = entry.getKey();
+                var parameters = entry.getValue().getAsJsonObject();
+                if (!parameters.has("multiplier")) {
+                    throw new RuntimeException(String.format("Expected multiplier key in object for catalyst %s", catalystName));
+                } else if (!parameters.has("ticks")) {
+                    throw new RuntimeException(String.format("Expected ticks key in object for catalyst %s", catalystName));
+                }
+                catalysts.add(new OverclockComponent.Catalyst(parameters.get("multiplier").getAsDouble(),
+                        new ResourceLocation(catalystName), parameters.get("ticks").getAsInt()));
             }
-            steamOverclockComponent = new OverclockComponent(multiplier, catalysts);
+            steamOverclockComponent = new OverclockComponent(catalysts);
             return this;
         }
 

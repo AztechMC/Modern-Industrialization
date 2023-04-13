@@ -87,10 +87,21 @@ If bronze or steel is in the list of tiers, the machine behavior defaults to all
 Example:
 ```
 // steamCustomOverclock(Speed multiplier, Map of item or block to duration in ticks) 
-config => config.steamCustomOverclock(3, {"minecraft:redstone": 400, "minecraft:redstone_block": 3600 })
+config => config.steamCustomOverclock({
+  "minecraft:redstone": {
+      multiplier: 3,
+      ticks: 400
+  },
+  "minecraft:redstone_block": {
+      multiplier: 3,
+      ticks: 3600
+  }
+})
 ```
 This example adds a 3x speed multiplier to the steam variations when you right click it with either redstone or a redstone block.
 Using redstone increases the timer by 400 ticks (20 seconds). Using a redstone block increases the timer by 3600 ticks (180 seconds).
+If the multipliers on the items are the same the ticks become additive otherwise the highest multiplier is consumed first before ticking a lower multiplier.
+Use `config.steamCustomOverclock({})` to disable the default gunpowder overclocking behavior.
 
 ## Adding a multiblock crafting machine
 There are two types of multiblock crafting machines: steam and electric.
@@ -189,19 +200,42 @@ Both steam and electric have an optional config function parameter that can be a
 })
 ```
 Methods that config exposes:
-* `steamCustomOverclock(1.5, {"minecraft:redstone": 400, "minecraft:redstone_block": 3600})`
-  * Only on steam multiblocks, allows changing the overclock amount and duration for the given items or blocks.
-  * This example adds a 1.5x speed multiplier for 400 ticks when redstone is applied or 3600 ticks for a redstone block.
-  * Use `steamCustomOverclock(1, {})` to disable the default gunpowder overclocking behavior.
-* `reiExtra(rei => {})`
-  * Allows extra / advanced REI configuration. Methods can be chained.
-  * Default for steam machines sets `steam(true)` and calls nothing for electric.
-  * `reiExtra(rei => rei.workstations('pyrolyse_oven', 'steam_quarry'))`
-    * Groups or omits other machines into the workstations part of REI regardless of recipe type.
-  * `reiExtra(rei => rei.steam(false))`
-    * True to display the machine as steam only, false to show as both electric and steam.
-  * `reiExtra(rei => rei.extraTest(recipe => recipe.eu > 4))`
-    * Filters out showing REI recipes that don't match the test criteria.
+
+### `config.steamCustomOverclock()`
+* Only on steam multiblocks, allows changing the overclock amount and duration for the given items or blocks.
+* Use `steamCustomOverclock({})` to disable the default gunpowder overclocking behavior.
+* If multiple items are contributing to the machines overclock, the highest multiplier is processed first.
+* Items with the same multiplier value have their ticks summed together
+
+Example:
+This example adds a 3x speed multiplier for 400 ticks when redstone is applied or 3600 ticks for a redstone block.
+If the player adds glowstone dust they get a 6x speed multiplier for 200 ticks.
+```js
+config.steamCustomOverclock({
+    "minecraft:redstone": {
+        multiplier: 3,
+        ticks: 400
+    },
+    "minecraft:redstone_block": {
+        multiplier: 3,
+        ticks: 3600
+    },
+    "minecraft:glowstone_dust": {
+        multiplier: 6,
+        ticks: 200
+    }
+})
+```
+
+### `config.reiExtra(rei => {})`
+* Allows extra / advanced REI configuration. Methods can be chained.
+* Default for steam machines sets `steam(true)` and calls nothing for electric.
+* `reiExtra(rei => rei.workstations('pyrolyse_oven', 'steam_quarry'))`
+  * Groups or omits other machines into the workstations part of REI regardless of recipe type.
+* `reiExtra(rei => rei.steam(false))`
+  * True to display the machine as steam only, false to show as both electric and steam.
+* `reiExtra(rei => rei.extraTest(recipe => recipe.eu > 4))`
+  * Filters out showing REI recipes that don't match the test criteria.
 
 ## Adding new casing types
 See [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of machine models and what casings are.

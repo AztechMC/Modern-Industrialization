@@ -27,8 +27,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -41,32 +40,43 @@ import net.minecraft.world.item.ItemStack;
 
 public class OverclockComponent implements IComponent {
 
-    private int overclockTicks;
-    private double overclockMultiplier;
     private List<Catalyst> catalysts;
 
-    public OverclockComponent(double multiplier, List<Catalyst> catalysts) {
-        this.overclockMultiplier = multiplier;
+    private NavigableMap<Double, MutableTickCount> TickMap = new TreeMap<>();
+
+    public OverclockComponent(List<Catalyst> catalysts) {
         this.catalysts = catalysts;
     }
 
     @Override
     public void writeNbt(CompoundTag tag) {
-        tag.putInt("overclockTicks", overclockTicks);
+        for (var entry : TickMap.entrySet()) {
+            var multiplierKey = String.format("overclock%.2f", entry.getKey().doubleValue());
+            tag.putInt(multiplierKey, entry.getValue().value);
+        }
     }
 
     @Override
     public void readNbt(CompoundTag tag) {
-        overclockTicks = tag.getInt("overclockTicks");
+        for (Catalyst catalyst : catalysts) {
+            var multiplierKey = String.format("overclock%.2f", catalyst.multiplier.doubleValue());
+            if (tag.contains(multiplierKey) && !TickMap.containsKey(catalyst.multiplier)) {
+                TickMap.put(catalyst.multiplier, new MutableTickCount(tag.getInt(multiplierKey)));
+            }
+        }
 
         // TODO 1.20: Remove upgrade code
         if (tag.contains("overclockGunpowderTick")) {
-            overclockTicks = tag.getInt("overclockGunpowderTick");
+            TickMap.put(Double.valueOf(2D), new MutableTickCount(tag.getInt("overclockGunpowderTick")));
         }
     }
 
     public int getTicks() {
-        return overclockTicks;
+        var lastEntry = TickMap.lastEntry();
+        if (lastEntry != null) {
+            return lastEntry.getValue().value;
+        }
+        return 0;
     }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
@@ -78,7 +88,14 @@ public class OverclockComponent implements IComponent {
                 if (!player.isCreative()) {
                     stackInHand.shrink(1);
                 }
-                overclockTicks += catalyst.ticks;
+
+                if (TickMap.containsKey(catalyst.multiplier)) {
+                    var overclockTicks = TickMap.get(catalyst.multiplier);
+                    overclockTicks.value += catalyst.ticks;
+                } else {
+                    TickMap.put(catalyst.multiplier, new MutableTickCount(catalyst.ticks));
+                }
+
                 be.setChanged();
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
@@ -91,20 +108,24 @@ public class OverclockComponent implements IComponent {
     }
 
     public void tick(MachineBlockEntity be) {
-        overclockTicks--;
-        if (overclockTicks < 0) {
-            overclockTicks = 0;
-        } else if (overclockTicks > 0) {
-            if (be.getLevel().isClientSide()) {
-                for (int iter = 0; iter < 3; iter++) {
-                    var random = be.getLevel().getRandom();
-                    double d = be.getBlockPos().getX() + 0.5D;
-                    double e = be.getBlockPos().getY();
-                    double f = be.getBlockPos().getZ() + 0.5D;
-                    double i = random.nextDouble() * 0.6D - 0.3D;
-                    double k = random.nextDouble() * 0.6D - 0.3D;
-                    be.getLevel().addParticle(ParticleTypes.SMOKE, d + i, e + 1.05, f + k, 0.15 * (random.nextDouble() - 0.5), 0.15D,
-                            0.15 * (random.nextDouble() - 0.5));
+        var lastEntry = TickMap.lastEntry();
+        if (lastEntry != null) {
+            var overclockTicks = lastEntry.getValue();
+            overclockTicks.value--;
+            if (overclockTicks.value <= 0) {
+                TickMap.remove(lastEntry.getKey());
+            } else {
+                if (be.getLevel().isClientSide()) {
+                    for (int iter = 0; iter < 3; iter++) {
+                        var random = be.getLevel().getRandom();
+                        double d = be.getBlockPos().getX() + 0.5D;
+                        double e = be.getBlockPos().getY();
+                        double f = be.getBlockPos().getZ() + 0.5D;
+                        double i = random.nextDouble() * 0.6D - 0.3D;
+                        double k = random.nextDouble() * 0.6D - 0.3D;
+                        be.getLevel().addParticle(ParticleTypes.SMOKE, d + i, e + 1.05, f + k, 0.15 * (random.nextDouble() - 0.5), 0.15D,
+                                0.15 * (random.nextDouble() - 0.5));
+                    }
                 }
             }
         }
@@ -124,7 +145,7 @@ public class OverclockComponent implements IComponent {
                 throw new RuntimeException("Invalid block or item as catalyst: " + catalyst.resourceLocation);
             }
 
-            var multiplierText = Component.literal("" + overclockMultiplier).setStyle(MITooltips.NUMBER_TEXT);
+            var multiplierText = Component.literal("" + catalyst.multiplier).setStyle(MITooltips.NUMBER_TEXT);
             var tickText = Component.literal("" + catalyst.ticks).setStyle(MITooltips.NUMBER_TEXT);
             tooltips.add(MIText.OverclockMachine.text(catalystName, multiplierText, tickText));
         }
@@ -132,25 +153,37 @@ public class OverclockComponent implements IComponent {
     }
 
     public long getRecipeEu(int eu) {
-        if (overclockTicks > 0) {
-            return Math.round(overclockMultiplier * eu);
+        var lastEntry = TickMap.lastEntry();
+        if (lastEntry != null && lastEntry.getValue().value > 0) {
+            return Math.round(lastEntry.getKey().doubleValue() * eu);
         } else {
             return eu;
         }
     }
 
     public static OverclockComponent createDefaultGunpowderOverclock() {
-        return new OverclockComponent(2D,
-                List.of(new OverclockComponent.Catalyst(new ResourceLocation("minecraft:gunpowder"), 120 * 20)));
+        return new OverclockComponent(
+                List.of(new OverclockComponent.Catalyst(2D, new ResourceLocation("minecraft:gunpowder"), 120 * 20)));
     }
 
     public static class Catalyst {
         public final ResourceLocation resourceLocation;
         public final int ticks;
+        public final Double multiplier;
 
-        public Catalyst(ResourceLocation location, int ticks) {
+        public Catalyst(double multiplier, ResourceLocation location, int ticks) {
+            this.multiplier = Double.valueOf(multiplier);
             this.resourceLocation = location;
             this.ticks = ticks;
         }
     }
+
+    private static class MutableTickCount {
+        public int value;
+
+        public MutableTickCount(int value) {
+            this.value = value;
+        }
+    }
+
 }

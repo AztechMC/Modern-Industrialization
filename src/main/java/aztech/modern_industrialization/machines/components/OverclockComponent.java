@@ -40,9 +40,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class OverclockComponent implements IComponent {
 
-    private List<Catalyst> catalysts;
+    private final List<Catalyst> catalysts;
 
-    private NavigableMap<Double, MutableTickCount> TickMap = new TreeMap<>();
+    private final NavigableMap<Double, MutableTickCount> tickMap = new TreeMap<>();
 
     public OverclockComponent(List<Catalyst> catalysts) {
         this.catalysts = catalysts;
@@ -50,7 +50,7 @@ public class OverclockComponent implements IComponent {
 
     @Override
     public void writeNbt(CompoundTag tag) {
-        for (var entry : TickMap.entrySet()) {
+        for (var entry : tickMap.entrySet()) {
             var multiplierKey = String.format("overclock%.2f", entry.getKey().doubleValue());
             tag.putInt(multiplierKey, entry.getValue().value);
         }
@@ -59,20 +59,20 @@ public class OverclockComponent implements IComponent {
     @Override
     public void readNbt(CompoundTag tag) {
         for (Catalyst catalyst : catalysts) {
-            var multiplierKey = String.format("overclock%.2f", catalyst.multiplier.doubleValue());
-            if (tag.contains(multiplierKey) && !TickMap.containsKey(catalyst.multiplier)) {
-                TickMap.put(catalyst.multiplier, new MutableTickCount(tag.getInt(multiplierKey)));
+            var multiplierKey = String.format("overclock%.2f", catalyst.multiplier);
+            if (tag.contains(multiplierKey) && !tickMap.containsKey(catalyst.multiplier)) {
+                tickMap.put(catalyst.multiplier, new MutableTickCount(tag.getInt(multiplierKey)));
             }
         }
 
         // TODO 1.20: Remove upgrade code
         if (tag.contains("overclockGunpowderTick")) {
-            TickMap.put(Double.valueOf(2D), new MutableTickCount(tag.getInt("overclockGunpowderTick")));
+            tickMap.put(2D, new MutableTickCount(tag.getInt("overclockGunpowderTick")));
         }
     }
 
     public int getTicks() {
-        var lastEntry = TickMap.lastEntry();
+        var lastEntry = tickMap.lastEntry();
         if (lastEntry != null) {
             return lastEntry.getValue().value;
         }
@@ -89,11 +89,11 @@ public class OverclockComponent implements IComponent {
                     stackInHand.shrink(1);
                 }
 
-                if (TickMap.containsKey(catalyst.multiplier)) {
-                    var overclockTicks = TickMap.get(catalyst.multiplier);
+                if (tickMap.containsKey(catalyst.multiplier)) {
+                    var overclockTicks = tickMap.get(catalyst.multiplier);
                     overclockTicks.value += catalyst.ticks;
                 } else {
-                    TickMap.put(catalyst.multiplier, new MutableTickCount(catalyst.ticks));
+                    tickMap.put(catalyst.multiplier, new MutableTickCount(catalyst.ticks));
                 }
 
                 be.setChanged();
@@ -108,12 +108,12 @@ public class OverclockComponent implements IComponent {
     }
 
     public void tick(MachineBlockEntity be) {
-        var lastEntry = TickMap.lastEntry();
+        var lastEntry = tickMap.lastEntry();
         if (lastEntry != null) {
             var overclockTicks = lastEntry.getValue();
             overclockTicks.value--;
             if (overclockTicks.value <= 0) {
-                TickMap.remove(lastEntry.getKey());
+                tickMap.remove(lastEntry.getKey());
             } else {
                 if (be.getLevel().isClientSide()) {
                     for (int iter = 0; iter < 3; iter++) {
@@ -134,26 +134,16 @@ public class OverclockComponent implements IComponent {
     public List<Component> getTooltips() {
         var tooltips = new ArrayList<Component>();
         for (Catalyst catalyst : catalysts) {
-            Component catalystName;
-            if (Registry.BLOCK.containsKey(catalyst.resourceLocation)) {
-                catalystName = Component
-                        .translatable("block.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
-            } else if (Registry.ITEM.containsKey(catalyst.resourceLocation)) {
-                catalystName = Component
-                        .translatable("item.%s.%s".formatted(catalyst.resourceLocation.getNamespace(), catalyst.resourceLocation.getPath()));
-            } else {
-                throw new RuntimeException("Invalid block or item as catalyst: " + catalyst.resourceLocation);
-            }
 
-            var multiplierText = Component.literal("" + catalyst.multiplier).setStyle(MITooltips.NUMBER_TEXT);
-            var tickText = Component.literal("" + catalyst.ticks).setStyle(MITooltips.NUMBER_TEXT);
-            tooltips.add(MIText.OverclockMachine.text(catalystName, multiplierText, tickText));
+            var catalystItem = Registry.ITEM.get(catalyst.resourceLocation);
+            tooltips.add(MITooltips.line(MIText.OverclockMachine).arg(catalystItem, MITooltips.ITEM_PARSER).arg(catalyst.multiplier)
+                    .arg(catalyst.ticks).build());
         }
         return tooltips;
     }
 
     public long getRecipeEu(int eu) {
-        var lastEntry = TickMap.lastEntry();
+        var lastEntry = tickMap.lastEntry();
         if (lastEntry != null && lastEntry.getValue().value > 0) {
             return Math.round(lastEntry.getKey().doubleValue() * eu);
         } else {
@@ -166,16 +156,7 @@ public class OverclockComponent implements IComponent {
                 List.of(new OverclockComponent.Catalyst(2D, new ResourceLocation("minecraft:gunpowder"), 120 * 20)));
     }
 
-    public static class Catalyst {
-        public final ResourceLocation resourceLocation;
-        public final int ticks;
-        public final Double multiplier;
-
-        public Catalyst(double multiplier, ResourceLocation location, int ticks) {
-            this.multiplier = Double.valueOf(multiplier);
-            this.resourceLocation = location;
-            this.ticks = ticks;
-        }
+    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {
     }
 
     private static class MutableTickCount {

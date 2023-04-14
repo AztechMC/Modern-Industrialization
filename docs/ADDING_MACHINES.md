@@ -82,24 +82,28 @@ MIMachineEvents.registerMachines(event => {
   );
 })
 ```
+### Overclocking
 If bronze or steel is in the list of tiers, the machine behavior defaults to allow gunpowder to double the speed of the machine. You can change this behavior by adding a config lambda to the end.
 
 Example:
-```
-// steamCustomOverclock(Speed multiplier, Map of item or block to duration in ticks) 
-config => config.steamCustomOverclock({
-  "minecraft:redstone": {
-      multiplier: 3,
-      ticks: 400
-  },
-  "minecraft:redstone_block": {
-      multiplier: 3,
-      ticks: 3600
-  }
+```js
+config.steamCustomOverclock({
+    "minecraft:redstone": {
+        multiplier: 3,
+        ticks: 400
+    },
+    "minecraft:redstone_block": {
+        multiplier: 3,
+        ticks: 3600
+    },
+    "minecraft:glowstone_dust": {
+        multiplier: 6,
+        ticks: 200
+    }
 })
 ```
-This example adds a 3x speed multiplier to the steam variations when you right click it with either redstone or a redstone block.
-Using redstone increases the timer by 400 ticks (20 seconds). Using a redstone block increases the timer by 3600 ticks (180 seconds).
+This example adds a 3x speed multiplier for 400 ticks when redstone is applied or 3600 ticks for a redstone block.
+If the player adds glowstone dust they get a 6x speed multiplier for 200 ticks.
 If the multipliers on the items are the same the ticks become additive otherwise the highest multiplier is consumed first before ticking a lower multiplier.
 Use `config.steamCustomOverclock({})` to disable the default gunpowder overclocking behavior.
 
@@ -203,29 +207,9 @@ Methods that config exposes:
 
 ### `config.steamCustomOverclock()`
 * Only on steam multiblocks, allows changing the overclock amount and duration for the given items or blocks.
-* Use `steamCustomOverclock({})` to disable the default gunpowder overclocking behavior.
-* If multiple items are contributing to the machines overclock, the highest multiplier is processed first.
-* Items with the same multiplier value have their ticks summed together
+* Same as single block [overclocking](#overclocking).
 
-Example:
-This example adds a 3x speed multiplier for 400 ticks when redstone is applied or 3600 ticks for a redstone block.
-If the player adds glowstone dust they get a 6x speed multiplier for 200 ticks.
-```js
-config.steamCustomOverclock({
-    "minecraft:redstone": {
-        multiplier: 3,
-        ticks: 400
-    },
-    "minecraft:redstone_block": {
-        multiplier: 3,
-        ticks: 3600
-    },
-    "minecraft:glowstone_dust": {
-        multiplier: 6,
-        ticks: 200
-    }
-})
-```
+
 
 ### `config.reiExtra(rei => {})`
 * Allows extra / advanced REI configuration. Methods can be chained.

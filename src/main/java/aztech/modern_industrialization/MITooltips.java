@@ -169,6 +169,10 @@ public class MITooltips {
         return state.getBlock().getName().withStyle(NUMBER_TEXT);
     };
 
+    public static final Parser<Item> ITEM_PARSER = state -> {
+        return state.getDefaultInstance().getDisplayName();
+    };
+
     // Tooltips
 
     public static final TooltipAttachment CABLES = TooltipAttachment

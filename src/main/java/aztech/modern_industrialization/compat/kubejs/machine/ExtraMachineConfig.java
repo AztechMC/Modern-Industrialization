@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 public class ExtraMachineConfig {
 
@@ -42,20 +43,7 @@ public class ExtraMachineConfig {
         }
 
         public CraftingSingleBlock steamCustomOverclock(JsonObject object) {
-            var catalysts = new ArrayList<OverclockComponent.Catalyst>();
-
-            for (var entry : object.entrySet()) {
-                var catalystName = entry.getKey();
-                var parameters = entry.getValue().getAsJsonObject();
-                if (!parameters.has("multiplier")) {
-                    throw new RuntimeException(String.format("Expected multiplier key in object for catalyst %s", catalystName));
-                } else if (!parameters.has("ticks")) {
-                    throw new RuntimeException(String.format("Expected ticks key in object for catalyst %s", catalystName));
-                }
-                catalysts.add(new OverclockComponent.Catalyst(parameters.get("multiplier").getAsDouble(),
-                        new ResourceLocation(catalystName), parameters.get("ticks").getAsInt()));
-            }
-            config.steamOverclockComponent = new OverclockComponent(catalysts);
+            config.steamOverclockComponent = parseOverclockFromObject(object);
             return this;
         }
     }
@@ -65,20 +53,7 @@ public class ExtraMachineConfig {
         public List<Consumer<MultiblockMachines.Rei>> reiConfigs = new ArrayList<>();
 
         public CraftingMultiBlock steamCustomOverclock(JsonObject object) {
-            var catalysts = new ArrayList<OverclockComponent.Catalyst>();
-
-            for (var entry : object.entrySet()) {
-                var catalystName = entry.getKey();
-                var parameters = entry.getValue().getAsJsonObject();
-                if (!parameters.has("multiplier")) {
-                    throw new RuntimeException(String.format("Expected multiplier key in object for catalyst %s", catalystName));
-                } else if (!parameters.has("ticks")) {
-                    throw new RuntimeException(String.format("Expected ticks key in object for catalyst %s", catalystName));
-                }
-                catalysts.add(new OverclockComponent.Catalyst(parameters.get("multiplier").getAsDouble(),
-                        new ResourceLocation(catalystName), parameters.get("ticks").getAsInt()));
-            }
-            steamOverclockComponent = new OverclockComponent(catalysts);
+            steamOverclockComponent = parseOverclockFromObject(object);
             return this;
         }
 
@@ -86,5 +61,21 @@ public class ExtraMachineConfig {
             reiConfigs.add(consumer);
             return this;
         }
+    }
+
+    private static OverclockComponent parseOverclockFromObject(JsonObject object) {
+        var catalysts = new ArrayList<OverclockComponent.Catalyst>();
+
+        for (var entry : object.entrySet()) {
+            var catalystName = entry.getKey();
+
+            var parameters = entry.getValue().getAsJsonObject();
+            var multiplier = GsonHelper.getAsDouble(parameters, "multiplier");
+            var ticks = GsonHelper.getAsInt(parameters, "ticks");
+
+            catalysts.add(new OverclockComponent.Catalyst(multiplier, new ResourceLocation(catalystName), ticks));
+        }
+
+        return new OverclockComponent(catalysts);
     }
 }

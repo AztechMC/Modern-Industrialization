@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
@@ -41,20 +42,65 @@ import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
+import com.google.common.base.Preconditions;
 import java.util.*;
+import java.util.stream.Collectors;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
 public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
 
+    public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
+    }
+
+    public static final List<Tier> tiers;
+    public static final Map<ResourceLocation, Tier> tiersByCoil;
     private static final ShapeTemplate[] shapeTemplates;
+
+    static {
+        // Register tiers
+        List<Tier> registrationTiers = new ArrayList<>();
+
+        registrationTiers.add(new Tier(new MIIdentifier("cupronickel_coil"), 32, " (Cupronickel Tier)"));
+        registrationTiers.add(new Tier(new MIIdentifier("kanthal_coil"), 128, " (Kanthal Tier)"));
+        KubeJSProxy.instance.fireAddEbfTiersEvent(tier -> {
+            Preconditions.checkArgument(tier.maxBaseEu > 4, "EBF tier EU/t must be greater than 4.");
+            for (var t : registrationTiers) {
+                if (t.coilBlockId.equals(tier.coilBlockId)) {
+                    throw new IllegalArgumentException("EBF tier with coil " + tier.coilBlockId + " is already registered.");
+                }
+            }
+            registrationTiers.add(tier);
+        });
+        registrationTiers.sort(Comparator.comparingLong(Tier::maxBaseEu));
+
+        tiers = Collections.unmodifiableList(registrationTiers);
+        tiersByCoil = tiers.stream().collect(Collectors.toMap(Tier::coilBlockId, t -> t));
+
+        // Build shapes
+        shapeTemplates = new ShapeTemplate[tiers.size()];
+
+        for (int i = 0; i < tiers.size(); ++i) {
+            var tier = tiers.get(i);
+            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("heatproof_machine_casing")).asBlock());
+            SimpleMember coilsBlocks = SimpleMember.forBlockId(tier.coilBlockId());
+            HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
+            ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
+                    .add3by3(0, invarCasings, false, ebfHatches)
+                    .add3by3(1, coilsBlocks, true, null)
+                    .add3by3(2, coilsBlocks, true, null)
+                    .add3by3(3, invarCasings, false, ebfHatches)
+                    .build();
+            shapeTemplates[i] = ebfShape;
+        }
+    }
 
     public ElectricBlastFurnaceBlockEntity(BEP bep) {
         super(bep, "electric_blast_furnace", new OrientationComponent.Params(false, false, false), shapeTemplates);
@@ -133,7 +179,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
         public boolean banRecipe(MachineRecipe recipe) {
             int index = activeShape.getActiveShapeIndex();
-            return (recipe.eu > getMaxRecipeEu()) || (recipe.eu > coilsMaxBaseEU.get(coils.get(index)));
+            return (recipe.eu > getMaxRecipeEu()) || (recipe.eu > tiers.get(index).maxBaseEu);
         }
 
         @Override
@@ -161,35 +207,6 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
     public static void registerReiShapes() {
         for (ShapeTemplate shapeTemplate : shapeTemplates) {
             ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", shapeTemplate);
-        }
-    }
-
-    public static final ArrayList<String> coilNames = new ArrayList<>();
-    public static final ArrayList<String> coilEnglishNames = new ArrayList<>();
-    public static final ArrayList<Block> coils = new ArrayList<>();
-    public static final Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
-
-    static {
-        coilNames.add("cupronickel_coil");
-        coilNames.add("kanthal_coil");
-        for (String coilName : coilNames) {
-            coils.add(MIBlock.BLOCKS.get(new MIIdentifier(coilName)).asBlock());
-        }
-        coilEnglishNames.add(" (Cupronickel Tier)");
-        coilEnglishNames.add(" (Kanthal Tier)");
-        coilsMaxBaseEU.put(coils.get(0), 32L);
-        coilsMaxBaseEU.put(coils.get(1), 128L);
-
-        shapeTemplates = new ShapeTemplate[coils.size()];
-
-        // Build shapes
-        for (int i = 0; i < coils.size(); ++i) {
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("heatproof_machine_casing")).asBlock());
-            SimpleMember coilsBlocks = SimpleMember.forBlock(coils.get(i));
-            HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
-            ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
-                    .add3by3(1, coilsBlocks, true, null).add3by3(2, coilsBlocks, true, null).add3by3(3, invarCasings, false, ebfHatches).build();
-            shapeTemplates[i] = ebfShape;
         }
     }
 }

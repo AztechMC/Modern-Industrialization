@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import java.util.function.Consumer;
 
 public class KubeJSProxy {
     public static KubeJSProxy instance = new KubeJSProxy();
@@ -45,5 +47,8 @@ public class KubeJSProxy {
 
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
             SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
+    }
+
+    public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
     }
 }

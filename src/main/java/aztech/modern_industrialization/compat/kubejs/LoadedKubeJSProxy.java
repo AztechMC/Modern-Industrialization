@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
+import aztech.modern_industrialization.compat.kubejs.machine.AddEbfTiersEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.AddMultiblockSlotsEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterCasingsEventJS;
@@ -33,6 +34,8 @@ import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEv
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import java.util.function.Consumer;
 
 public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
@@ -65,5 +68,10 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
             SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
         var event = new AddMultiblockSlotsEventJS(itemInputs, itemOutputs, fluidInputs, fluidOutputs);
         MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(category, event, true);
+    }
+
+    @Override
+    public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
+        MIMachineKubeJSEvents.ADD_EBF_TIERS.post(new AddEbfTiersEventJS(tierConsumer));
     }
 }

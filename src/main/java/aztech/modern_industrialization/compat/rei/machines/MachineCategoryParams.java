@@ -29,6 +29,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import net.minecraft.resources.ResourceLocation;
 
 public class MachineCategoryParams {
     public final String englishName;
@@ -41,7 +42,7 @@ public class MachineCategoryParams {
     public final Predicate<MachineRecipe> recipePredicate;
     public final boolean isMultiblock;
     public final SteamMode steamMode;
-    public final List<String> workstations = new ArrayList<>();
+    public final List<ResourceLocation> workstations = new ArrayList<>();
 
     public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
             SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,

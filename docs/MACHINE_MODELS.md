@@ -4,7 +4,7 @@ Each machine model in MI consists of two parts:
 - A set of overlays: extra textures applied on some sides.
 
 ## Casing models
-The top, side and bottom textures of a casing must be `modern_industrialization:textures/casing/<casing name>/{top,side,bottom}.png`.
+The top, side and bottom textures of a casing must be `modern_industrialization:textures/block/casings/<casing name>/{top,side,bottom}.png`.
 The textures are loaded automatically for all registered casings, hence there is no JSON model for casings.
 
 ## Machine models

@@ -170,7 +170,7 @@ public class MITooltips {
     };
 
     public static final Parser<Item> ITEM_PARSER = state -> {
-        return state.getDefaultInstance().getDisplayName();
+        return state.getDefaultInstance().getHoverName();
     };
 
     // Tooltips

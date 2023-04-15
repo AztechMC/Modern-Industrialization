@@ -82,10 +82,37 @@ MIMachineEvents.registerMachines(event => {
   );
 })
 ```
+### Overclocking
+If bronze or steel is in the list of tiers, the machine behavior defaults to allow gunpowder to double the speed of the machine. You can change this behavior by adding a config lambda to the end.
 
-## Adding an electric multiblock crafting machine
-These are the standard electric multiblock machines, such as the pressurizer, the electric quarry, etc...
+Example:
+```js
+config.steamCustomOverclock({
+    "minecraft:redstone": {
+        multiplier: 3,
+        ticks: 400
+    },
+    "minecraft:redstone_block": {
+        multiplier: 3,
+        ticks: 3600
+    },
+    "minecraft:glowstone_dust": {
+        multiplier: 6,
+        ticks: 200
+    }
+})
+```
+This example adds a 3x speed multiplier for 400 ticks when redstone is applied or 3600 ticks for a redstone block.
+If the player adds glowstone dust they get a 6x speed multiplier for 200 ticks.
+If the multipliers on the items are the same the ticks become additive otherwise the highest multiplier is consumed first before ticking a lower multiplier.
+Use `config.steamCustomOverclock({})` to disable the default gunpowder overclocking behavior.
 
+## Adding a multiblock crafting machine
+There are two types of multiblock crafting machines: steam and electric.
+* Steam multiblock machines include the coke oven, steam blast furnace, steam quarry, etc...
+* Electric multiblock machines include the pressurizer, the electric quarry, etc...
+
+### Create the shape
 The registration of multiblock crafting machines is similar to that of singleblock crafting machines.
 The main difference is that the shape of the multiblock has to be specified.
 Here are a few explanations about the shape system:
@@ -98,7 +125,7 @@ Here are a few explanations about the shape system:
   - Positive `y` is for blocks above the controller, negative `y` for blocks below.
   - Positive `z` is for blocks behind the controller, negative `z` for blocks in front of it.
 
-Here is an example, where we add a pyrolyse oven multiblock:
+Here is an example of how to create the shape for a pyrolyse oven multiblock:
 ```js
 MIMachineEvents.registerMachines(event => {
     const pyrolyseHatch = event.hatchOf("item_input", "item_output", "fluid_input", "fluid_output", "energy_input");
@@ -119,7 +146,16 @@ MIMachineEvents.registerMachines(event => {
         }
     }
     const pyrolyseShape = pyrolyseShapeBuilder.build();
+    
+    // register multiblock as steam or electric next...
+```
+### Register as steam or electric
+Both steam and electric methods take the same parameters
+* Use `event.simpleSteamCraftingMultiBlock` function to register a steam multiblock.
+* Use `event.simpleElectricCraftingMultiBlock` function to register an electric multiblock.
 
+Here is an example creating an electric pyrolyse oven:
+```js
     event.simpleElectricCraftingMultiBlock(
         /* GENERAL PARAMETERS */
         // English name, internal name, recipe type, multiblock shape
@@ -145,6 +181,45 @@ Hence, we need 2 textures for the controller to render correctly:
 With KubeJS, the texture can go in the following folders respectively:
 - `kubejs/assets/modern_industrialization/textures/blocks/machines/pyrolyse_overlays/overlay_front.png`.
 - `kubejs/assets/modern_industrialization/textures/blocks/machines/pyrolyse_overlays/overlay_front_active.png`.
+
+### Extra multiblock configuration options
+Both steam and electric have an optional config function parameter that can be added to the end for further customization. 
+```
+    event.simpleSteamCraftingMultiBlock(
+        /* GENERAL PARAMETERS */
+        // English name, internal name, recipe type, multiblock shape
+        "Pyrolyse Oven", "pyrolyse_oven", PYROLYSE_OVEN, pyrolyseShape,
+        /* REI DISPLAY CONFIGURATION */
+        // REI progress bar
+        event.progressBar(77, 33, "arrow"),
+        // REI item inputs, item outputs, fluid inputs, fluid outputs
+        itemInputs => itemInputs.addSlots(56, 35, 1, 2), itemOutputs => itemOutputs.addSlot(102, 35),
+        fluidInputs => fluidInputs.addSlot(36, 35), fluidOutputs => fluidOutputs.addSlot(122, 35),
+        /* MODEL CONFIGUATION */
+        // casing of the controller, overlay folder, front overlay?, top overlay?, side overlay?
+        "heatproof_machine_casing", "pyrolyse_overlays", true, false, false,
+        /* OPTIONAL CONFIGURATION */
+        config => {}
+    );
+})
+```
+Methods that config exposes:
+
+### `config.steamCustomOverclock()`
+* Only on steam multiblocks, allows changing the overclock amount and duration for the given items or blocks.
+* Same as single block [overclocking](#overclocking).
+
+
+
+### `config.reiExtra(rei => {})`
+* Allows extra / advanced REI configuration. Methods can be chained.
+* Default for steam machines sets `steam(true)` and calls nothing for electric.
+* `reiExtra(rei => rei.workstations('pyrolyse_oven', 'steam_quarry'))`
+  * Groups or omits other machines into the workstations part of REI regardless of recipe type.
+* `reiExtra(rei => rei.steam(false))`
+  * True to display the machine as steam only, false to show as both electric and steam.
+* `reiExtra(rei => rei.extraTest(recipe => recipe.eu > 4))`
+  * Filters out showing REI recipes that don't match the test criteria.
 
 ## Adding new casing types
 See [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of machine models and what casings are.

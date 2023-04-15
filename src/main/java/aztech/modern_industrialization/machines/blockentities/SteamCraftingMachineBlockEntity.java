@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -43,17 +43,17 @@ import net.minecraft.world.entity.player.Player;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
 
-    private final GunpowderOverclockComponent gunpowderOverclock;
+    private final OverclockComponent overclockComponent;
 
     public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,
-            ProgressBar.Parameters progressBarParams, MachineTier tier) {
+            ProgressBar.Parameters progressBarParams, MachineTier tier, OverclockComponent overclockComponent) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
-        gunpowderOverclock = new GunpowderOverclockComponent();
+        this.overclockComponent = overclockComponent;
 
         GunpowderOverclockGui.Parameters gunpowderOverclockGuiParams = new GunpowderOverclockGui.Parameters(progressBarParams.renderX,
                 progressBarParams.renderY + 20);
-        registerGuiComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, () -> gunpowderOverclock.overclockGunpowderTick));
-        this.registerComponents(gunpowderOverclock);
+        registerGuiComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, () -> overclockComponent.getTicks()));
+        this.registerComponents(overclockComponent);
     }
 
     @Override
@@ -73,38 +73,28 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
         InteractionResult result = super.onUse(player, hand, face);
         if (!result.consumesAction()) {
-            return gunpowderOverclock.onUse(this, player, hand);
+            return overclockComponent.onUse(this, player, hand);
         }
         return result;
     }
 
     @Override
     public long getMaxRecipeEu() {
-        if (gunpowderOverclock.isOverclocked()) {
-            return tier.getMaxEu() * 2L;
-        } else {
-            return tier.getMaxEu();
-        }
-
+        return overclockComponent.getRecipeEu(tier.getMaxEu());
     }
 
     @Override
     public long getBaseRecipeEu() {
-        if (gunpowderOverclock.isOverclocked()) {
-            return tier.getBaseEu() * 2L;
-        } else {
-            return tier.getBaseEu();
-        }
-
+        return overclockComponent.getRecipeEu(tier.getBaseEu());
     }
 
     public void tick() {
         super.tick();
-        gunpowderOverclock.tick(this);
+        overclockComponent.tick(this);
     }
 
     @Override
     public List<Component> getTooltips() {
-        return gunpowderOverclock.getTooltips();
+        return overclockComponent.getTooltips();
     }
 }

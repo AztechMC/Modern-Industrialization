@@ -36,6 +36,7 @@ import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
 import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -112,7 +113,7 @@ public class MultiblockMachines {
         HatchFlags cokeOvenHatches = new HatchFlags.Builder().with(ITEM_INPUT).with(ITEM_OUTPUT).with(FLUID_INPUT).with(FLUID_OUTPUT).build();
         ShapeTemplate cokeOvenShape = new ShapeTemplate.Builder(MachineCasings.BRICKS).add3by3Levels(-1, 1, bricks, cokeOvenHatches).build();
         COKE_OVEN = MachineRegistrationHelper.registerMachine("Coke Oven", "coke_oven",
-                bet -> new SteamCraftingMultiblockBlockEntity(bet, "coke_oven", cokeOvenShape, MIMachineRecipeTypes.COKE_OVEN));
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "coke_oven", cokeOvenShape, MIMachineRecipeTypes.COKE_OVEN, OverclockComponent.createDefaultGunpowderOverclock()));
         ReiMachineRecipes.registerMultiblockShape("coke_oven", cokeOvenShape);
     }
 
@@ -121,7 +122,7 @@ public class MultiblockMachines {
         HatchFlags sbfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT).build();
         ShapeTemplate sbfShape = new ShapeTemplate.Builder(MachineCasings.FIREBRICKS).add3by3Levels(-1, 2, fireclayBricks, sbfHatches).build();
         STEAM_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("Steam Blast Furnace", "steam_blast_furnace",
-                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE));
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE, OverclockComponent.createDefaultGunpowderOverclock()));
         ReiMachineRecipes.registerMultiblockShape("steam_blast_furnace", sbfShape);
     }
 
@@ -227,7 +228,7 @@ public class MultiblockMachines {
         STEAM_QUARRY = MachineRegistrationHelper.registerMachine(
                 "Steam Quarry",
                 "steam_quarry",
-                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_quarry", quarryShape, MIMachineRecipeTypes.QUARRY));
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_quarry", quarryShape, MIMachineRecipeTypes.QUARRY, OverclockComponent.createDefaultGunpowderOverclock()));
         ReiMachineRecipes.registerMultiblockShape("steam_quarry", quarryShape);
         ELECTRIC_QUARRY = MachineRegistrationHelper.registerMachine(
                 "Electric Quarry",
@@ -372,7 +373,7 @@ public class MultiblockMachines {
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
     }
 
-    private static void heathExchanger() {
+    private static void heatExchanger() {
         ShapeTemplate.Builder heatExchangerShapeBuilder = new ShapeTemplate.Builder(MachineCasings.STAINLESS_STEEL_PIPE);
         for (int z = 0; z < 5; z++) {
             for (int x = -1; x <= 1; x++) {
@@ -597,7 +598,7 @@ public class MultiblockMachines {
         distillationTower();
         largeDieselGenerator();
         largeSteamTurbine();
-        heathExchanger();
+        heatExchanger();
         pressurizer();
         implosionCompressor();
         nuclearReactor();

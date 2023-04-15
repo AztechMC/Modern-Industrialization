@@ -1,5 +1,5 @@
 {
-  "__summary": "411 ok, 1242 missing, 273 unused",
+  "__summary": "411 ok, 1243 missing, 273 unused",
   "advancements.modern_industrialization.advanced_upgrade": "[UNTRANSLATED] Machine Speedup-Speedup",
   "advancements.modern_industrialization.advanced_upgrade.description": "[UNTRANSLATED] Craft a Advanced Upgrade",
   "advancements.modern_industrialization.analog_circuit": "[UNTRANSLATED] RLC Circuits",
@@ -1800,6 +1800,7 @@
   "text.modern_industrialization.OreGenerationTooltipVeinSize": "[UNTRANSLATED] %d ores per vein",
   "text.modern_industrialization.OreGenerationTooltipY": "[UNTRANSLATED] Y level %d to %d",
   "text.modern_industrialization.OreNotGenerated": "[UNTRANSLATED] Not Generated but can be obtained with the Quarry",
+  "text.modern_industrialization.OverclockMachine": "[UNTRANSLATED] Use %s to %fx this machine speed for %d ticks",
   "text.modern_industrialization.PipeConnectionHelp": "[UNTRANSLATED] Click/Shift-Click to change",
   "text.modern_industrialization.PipeConnectionIO": "[UNTRANSLATED] I/O",
   "text.modern_industrialization.PipeConnectionIn": "[UNTRANSLATED] IN",

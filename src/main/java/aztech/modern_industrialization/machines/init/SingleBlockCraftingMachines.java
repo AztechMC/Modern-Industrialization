@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.ElectricCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.SteamCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -160,6 +161,18 @@ public final class SingleBlockCraftingMachines {
             RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams, Consumer<SlotPositions.Builder> itemPositions,
             Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers,
             int ioBucketCapacity) {
+        registerMachineTiers(englishName, machine, type, itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
+                guiParams, progressBarParams, efficiencyBarParams, energyBarParams, itemPositions, fluidPositions, frontOverlay,
+                topOverlay, sideOverlay, tiers, ioBucketCapacity, new Config());
+    }
+
+    public static void registerMachineTiers(String englishName, String machine, MachineRecipeType type, int itemInputCount, int itemOutputCount,
+            int fluidInputCount,
+            int fluidOutputCount, Consumer<MachineGuiParameters.Builder> guiParams, ProgressBar.Parameters progressBarParams,
+            RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams, Consumer<SlotPositions.Builder> itemPositions,
+            Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers,
+            int ioBucketCapacity, Config extraConfig) {
+
         for (int i = 0; i < 2; ++i) {
             if (i == 0 && (tiers & TIER_BRONZE) == 0) {
                 continue;
@@ -183,7 +196,7 @@ public final class SingleBlockCraftingMachines {
                     bet -> new SteamCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, steamBuckets,
                                     ioBucketCapacity),
-                            builtGuiParams, progressBarParams, tier),
+                            builtGuiParams, progressBarParams, tier, extraConfig.steamOverclockComponent),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
@@ -300,5 +313,9 @@ public final class SingleBlockCraftingMachines {
     }
 
     private SingleBlockCraftingMachines() {
+    }
+
+    public static class Config {
+        public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
     }
 }

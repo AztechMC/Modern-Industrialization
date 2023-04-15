@@ -27,7 +27,10 @@ import static aztech.modern_industrialization.machines.init.SingleBlockCraftingM
 
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -41,6 +44,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import dev.latvian.mods.kubejs.event.EventJS;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHelper {
     public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
@@ -66,6 +70,30 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             Consumer<SlotPositions.Builder> itemSlotPositions, Consumer<SlotPositions.Builder> fluidSlotPositions,
             // model
             boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+
+        craftingSingleBlock(englishName, internalName, recipeType, tiers, backgroundHeight, progressBar, efficiencyBar, energyBar,
+                itemInputs, itemOutputs, fluidInputs, fluidOutputs, bucketCapacity, itemSlotPositions, fluidSlotPositions,
+                frontOverlay, topOverlay, sideOverlay, config -> {
+                });
+    }
+
+    public void craftingSingleBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, List<String> tiers,
+            // gui
+            int backgroundHeight, // can be -1 to use default
+            ProgressBar.Parameters progressBar, RecipeEfficiencyBar.Parameters efficiencyBar, EnergyBar.Parameters energyBar,
+            // slots
+            int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs, int bucketCapacity,
+            Consumer<SlotPositions.Builder> itemSlotPositions, Consumer<SlotPositions.Builder> fluidSlotPositions,
+            // model
+            boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+            // Optional config
+            Consumer<ExtraMachineConfig.CraftingSingleBlock> extraConfig) {
+
+        var config = new SingleBlockCraftingMachines.Config();
+        extraConfig.accept(new ExtraMachineConfig.CraftingSingleBlock(config));
+
         int tiersMask = 0;
         for (String tier : tiers) {
             tiersMask |= switch (tier) {
@@ -84,7 +112,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 guiParams, progressBar, efficiencyBar, energyBar,
                 itemSlotPositions, fluidSlotPositions,
                 frontOverlay, topOverlay, sideOverlay,
-                tiersMask, bucketCapacity);
+                tiersMask, bucketCapacity, config);
     }
 
     public void simpleElectricCraftingMultiBlock(
@@ -97,16 +125,100 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             // model
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
 
+        simpleElectricCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+                itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
+                controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
+                config -> {
+                });
+    }
+
+    public void simpleElectricCraftingMultiBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
+            // REI parameters
+            ProgressBar.Parameters progressBar,
+            Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
+            Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+            // Optional config
+            Consumer<ExtraMachineConfig.CraftingMultiBlock> extraConfig) {
+
+        var config = new ExtraMachineConfig.CraftingMultiBlock();
+        extraConfig.accept(config);
+
+        simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+                itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
+                controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
+                bep -> new ElectricCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType),
+                config.reiConfigs);
+    }
+
+    public void simpleSteamCraftingMultiBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
+            // REI parameters
+            ProgressBar.Parameters progressBar,
+            Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
+            Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+
+        simpleSteamCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+                itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
+                controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
+                config -> {
+                });
+    }
+
+    public void simpleSteamCraftingMultiBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
+            // REI parameters
+            ProgressBar.Parameters progressBar,
+            Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
+            Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+            // optional config
+            Consumer<ExtraMachineConfig.CraftingMultiBlock> extraConfig) {
+
+        var config = new ExtraMachineConfig.CraftingMultiBlock();
+        config.reiConfigs.add(rei -> rei.steam(true));
+        extraConfig.accept(config);
+
+        simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+                itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
+                controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
+                bep -> new SteamCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType, config.steamOverclockComponent),
+                config.reiConfigs);
+    }
+
+    private void simpleMultiBlock(
+            // general
+            String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
+            // REI parameters
+            ProgressBar.Parameters progressBar,
+            Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
+            Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+            // machine entity and rei configuration
+            Function<BEP, MachineBlockEntity> factory, List<Consumer<MultiblockMachines.Rei>> reiConfigs) {
+
         var controllerCasing = MachineCasings.get(controllerCasingName);
 
-        MachineRegistrationHelper.registerMachine(
-                englishName, internalName,
-                bet -> new ElectricCraftingMultiblockBlockEntity(bet, internalName, multiblockShape, recipeType));
+        MachineRegistrationHelper.registerMachine(englishName, internalName, factory);
         MachineRegistrationHelper.addMachineModel(internalName, overlayFolder, controllerCasing, frontOverlay, topOverlay, sideOverlay);
-        new MultiblockMachines.Rei(englishName, internalName, recipeType, progressBar)
+
+        var rei = new MultiblockMachines.Rei(englishName, internalName, recipeType, progressBar)
                 .items(itemInputPositions::accept, itemOutputPositions::accept)
-                .fluids(fluidInputPositions::accept, fluidOutputPositions::accept)
-                .register();
+                .fluids(fluidInputPositions::accept, fluidOutputPositions::accept);
+        for (var reiConfig : reiConfigs) {
+            reiConfig.accept(rei);
+        }
+        rei.register();
+
         ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);
     }
 }

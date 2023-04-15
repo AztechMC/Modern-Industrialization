@@ -182,6 +182,7 @@ public enum MIText {
     OreGenerationTooltipVeinSize("%d ores per vein"),
     OreGenerationTooltipY("Y level %d to %d"),
     OreNotGenerated("Not Generated but can be obtained with the Quarry"),
+    OverclockMachine("Use %s to %fx this machine speed for %d ticks"),
     PipeConnectionIn("IN"),
     PipeConnectionIO("I/O"),
     PipeConnectionOut("OUT"),

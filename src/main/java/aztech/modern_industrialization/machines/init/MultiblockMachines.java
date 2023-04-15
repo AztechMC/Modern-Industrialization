@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -710,22 +712,24 @@ public class MultiblockMachines {
 
     private static void registerEbfReiCategories() {
         // Register REI categories
-        for (int i = 0; i < ElectricBlastFurnaceBlockEntity.coils.size(); ++i) {
-            long previousMax = i == 0 ? 4 : ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(ElectricBlastFurnaceBlockEntity.coils.get(i - 1));
-            long currentMax = ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(ElectricBlastFurnaceBlockEntity.coils.get(i));
-            List<String> workstations = new ArrayList<>();
-            workstations.add("electric_blast_furnace");
-            for (int j = i; j < ElectricBlastFurnaceBlockEntity.coils.size(); ++j) {
-                workstations.add(ElectricBlastFurnaceBlockEntity.coilNames.get(j));
-            }
+        for (int i = 0; i < ElectricBlastFurnaceBlockEntity.tiers.size(); ++i) {
+            var tier = ElectricBlastFurnaceBlockEntity.tiers.get(i);
+            long previousMax = i == 0 ? 4 : ElectricBlastFurnaceBlockEntity.tiers.get(i - 1).maxBaseEu();
+            long currentMax = tier.maxBaseEu();
 
-            new Rei("EBF" + ElectricBlastFurnaceBlockEntity.coilEnglishNames.get(i), "electric_blast_furnace_" + i,
+            var extraWorkstations = IntStream.range(i, ElectricBlastFurnaceBlockEntity.tiers.size())
+                    .mapToObj(j -> ElectricBlastFurnaceBlockEntity.tiers.get(j).coilBlockId())
+                    .toArray(ResourceLocation[]::new);
+
+            new Rei("EBF" + tier.englishName(), "electric_blast_furnace_" + tier.coilBlockId().getPath(),
                     MIMachineRecipeTypes.BLAST_FURNACE,
                     new ProgressBar.Parameters(77, 33, "arrow"))
                             .items(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlot(102, 35))
                             .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                             .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax)
-                            .workstations(workstations.toArray(new String[0])).register();
+                            .workstations("electric_blast_furnace")
+                            .extraWorkstations(extraWorkstations)
+                            .register();
         }
     }
 
@@ -734,7 +738,10 @@ public class MultiblockMachines {
         private final String category;
         private final MachineRecipeType recipeType;
         private final ProgressBar.Parameters progressBarParams;
+        // machines in the MI namespace
         private final List<String> workstations;
+        // extra workstations to be displayed in viewers, can be any item id
+        private final List<ResourceLocation> extraWorkstations;
         private Predicate<MachineRecipe> extraTest = recipe -> true;
         private SlotPositions.Builder itemInputs = new SlotPositions.Builder();
         private SlotPositions.Builder itemOutputs = new SlotPositions.Builder();
@@ -748,6 +755,7 @@ public class MultiblockMachines {
             this.recipeType = recipeType;
             this.progressBarParams = progressBarParams;
             this.workstations = new ArrayList<>();
+            this.extraWorkstations = new ArrayList<>();
             workstations.add(category);
         }
 
@@ -774,6 +782,12 @@ public class MultiblockMachines {
             return this;
         }
 
+        public Rei extraWorkstations(ResourceLocation... extraWorkstations) {
+            this.extraWorkstations.clear();
+            this.extraWorkstations.addAll(Arrays.asList(extraWorkstations));
+            return this;
+        }
+
         public Rei steam(boolean steamOnly) {
             this.steamMode = steamOnly ? SteamMode.STEAM_ONLY : SteamMode.BOTH;
             return this;
@@ -787,9 +801,12 @@ public class MultiblockMachines {
                     itemInputs.build(), itemOutputs.build(), fluidInputs.build(), fluidOutputs.build(),
                     progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
             for (String workstation : workstations) {
-                ReiMachineRecipes.registerWorkstation(category, workstation);
+                ReiMachineRecipes.registerWorkstation(category, new MIIdentifier(workstation));
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, ReiMachineRecipes.MachineScreenPredicate.MULTIBLOCK);
                 ReiMachineRecipes.registerMachineClickArea(workstation, CRAFTING_GUI);
+            }
+            for (ResourceLocation extraWorkstation : extraWorkstations) {
+                ReiMachineRecipes.registerWorkstation(category, extraWorkstation);
             }
         }
     }

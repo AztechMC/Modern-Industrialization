@@ -1,6 +1,22 @@
 # Adding Machines
 To add machines, you will need to use a startup script and the events in `MIMachineEvents`.
 
+## Adding new tiers for the Electric Blast Furnace
+MI supports adding new EBF tiers from KubeJS using the `addEbfTiers` event. The two builtin tiers cannot be removed however.
+
+For each tier, call `event.add` with:
+- The ID of the coil block, used inside of the shape. Can be any block that also has an item.
+- The maximum allowed EU/t of the recipe. This is the maximum EU/t that the coil can handle.
+- The English name for display in REI. MI will automatically add `EBF` before the English name inside of REI.
+
+Here is an example that adds gold blocks as an EBF coil with a maximum EU/t of 64:
+```js
+MIMachineEvents.addEbfTiers(event => {
+    // ID of the coil block, max EU/t, English name
+    event.add("minecraft:gold_block", 64, " (Gold Tier)");
+})
+```
+
 ## Registering a recipe type
 Recipe types can be added by KubeJS.
 Generally you will want to store them in a variable to use them later.

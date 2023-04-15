@@ -55,7 +55,7 @@ public class ReiMachineRecipes {
         }
     }
 
-    public static void registerWorkstation(String machine, String item) {
+    public static void registerWorkstation(String machine, ResourceLocation item) {
         MachineCategoryParams params = categories.get(machine);
         if (params == null) {
             throw new NullPointerException("Machine params may not be null for machine " + machine);

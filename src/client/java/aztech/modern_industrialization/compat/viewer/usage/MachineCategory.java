@@ -53,6 +53,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
@@ -82,15 +83,15 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
     private MachineCategory(MachineCategoryParams params, int width, int height) {
         super(MachineRecipe.class, new MIIdentifier(params.category),
                 Component.translatable("rei_categories.modern_industrialization." + params.category),
-                Registry.ITEM.get(new MIIdentifier(params.workstations.get(0))).getDefaultInstance(), width, height);
+                Registry.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
 
         this.params = params;
     }
 
     @Override
     public void buildWorkstations(WorkstationConsumer consumer) {
-        for (String workstation : params.workstations) {
-            consumer.accept(workstation);
+        for (ResourceLocation workstation : params.workstations) {
+            consumer.accept(Registry.ITEM.get(workstation));
         }
     }
 

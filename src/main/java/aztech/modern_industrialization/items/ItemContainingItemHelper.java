@@ -68,7 +68,15 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         }
 
         var barrelStorage = GenericItemStorage.of(barrelLike, this);
-        SimpleContainer otherInv = new SimpleContainer(otherStack.getValue().copy());
+        SimpleContainer otherInv = new SimpleContainer(otherStack.getValue().copy()) {
+            @Override
+            public void setItem(int slot, ItemStack stack) {
+                // Override vanilla clamping to max stack size.
+                // This fixes interactions with stacks greater than their max size,
+                // for example when interacting in Dank Storage GUIs.
+                this.items.set(slot, stack);
+            }
+        };
         var otherInvStorage = InventoryStorage.of(otherInv, null);
 
         if (StorageUtil.move(otherInvStorage, barrelStorage, (iv) -> true, Long.MAX_VALUE, null) > 0

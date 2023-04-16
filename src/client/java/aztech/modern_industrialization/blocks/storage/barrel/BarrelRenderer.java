@@ -28,27 +28,24 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.NotNull;
 
-public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
+public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
 
-    public static void register(BlockEntityType<?> type, int itemNameColor) {
-        BlockEntityRendererRegistry.register(type,
-                (BlockEntityRendererProvider<BlockEntity>) (context) -> new BarrelRenderer(itemNameColor));
+    public static void register(BlockEntityType<? extends BarrelBlockEntity> type, int itemNameColor) {
+        BlockEntityRenderers.register(type, context -> new BarrelRenderer(itemNameColor));
     }
 
     private final int itemNameColor;
@@ -58,30 +55,29 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     }
 
     @Override
-    public void render(@NotNull BlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
+    public void render(@NotNull BarrelBlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
             int light, int overlay) {
+
+        if (entity.isLocked()) {
+            RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);
+        }
 
         if (!MIConfig.getConfig().enableBarrelContentRendering) {
             return;
         }
 
-        BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
-        var state = barrelBlockEntity.getBlockState();
-        var pos = barrelBlockEntity.getBlockPos();
+        var state = entity.getBlockState();
+        var pos = entity.getBlockPos();
 
-        ItemVariant item = barrelBlockEntity.getResource();
-
-        if (barrelBlockEntity.isLocked()) {
-            RenderHelper.drawLockedTexture(barrelBlockEntity, matrices, vertexConsumers);
-        }
+        ItemVariant item = entity.getResource();
 
         if (!item.isBlank()) {
 
             String amount;
-            if (barrelBlockEntity.behaviour.isCreative()) {
+            if (entity.behaviour.isCreative()) {
                 amount = "∞";
             } else {
-                amount = String.valueOf(barrelBlockEntity.getAmount());
+                amount = String.valueOf(entity.getAmount());
             }
 
             ItemStack toRender = item.toStack();
@@ -89,8 +85,8 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
             for (int i = 0; i < 4; i++) {
                 var direction = Direction.from2DDataValue(i);
                 // Note: level can be null from builtin item renderer
-                if (barrelBlockEntity.getLevel() != null
-                        && !Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
+                if (entity.getLevel() != null
+                        && !Block.shouldRenderFace(state, entity.getLevel(), pos, direction, pos.relative(direction))) {
                     continue;
                 }
 

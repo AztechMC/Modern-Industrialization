@@ -27,11 +27,18 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity> {
+    public static void register(BlockEntityType<? extends AbstractTankBlockEntity> type, int lockIconColor) {
+        BlockEntityRenderers.register(type, context -> new TankRenderer(lockIconColor));
+    }
 
-    public TankRenderer(BlockEntityRendererProvider.Context context) {
+    private final int lockIconColor;
+
+    private TankRenderer(int lockIconColor) {
+        this.lockIconColor = lockIconColor;
     }
 
     @Override
@@ -54,7 +61,7 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
         }
 
         if (tank.isLocked()) {
-            RenderHelper.drawLockedTexture(tank, matrices, vertexConsumers);
+            RenderHelper.drawLockedTexture(tank, matrices, vertexConsumers, lockIconColor);
         }
     }
 }

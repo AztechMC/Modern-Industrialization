@@ -24,12 +24,18 @@
 package aztech.modern_industrialization.stats;
 
 import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
+import aztech.modern_industrialization.proxy.CommonProxy;
+import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -43,6 +49,9 @@ public class PlayerStatistics {
     private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
     private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
 
+    // Items produced while the player was offline... this is used to award vanilla stats when the player comes back online.
+    private final Reference2LongMap<Item> pendingCraftedStats = new Reference2LongOpenHashMap<>();
+
     PlayerStatistics(UUID uuid) {
         this.uuid = uuid;
     }
@@ -53,6 +62,7 @@ public class PlayerStatistics {
         readNbt(Registry.ITEM, producedItems, nbt.getCompound("producedItems"));
         readNbt(Registry.FLUID, usedFluids, nbt.getCompound("usedFluids"));
         readNbt(Registry.FLUID, producedFluids, nbt.getCompound("producedFluids"));
+        pendingReadNbt(pendingCraftedStats, nbt.getCompound("pendingCraftedStats"));
     }
 
     public CompoundTag toTag() {
@@ -61,6 +71,7 @@ public class PlayerStatistics {
         nbt.put("producedItems", toNbt(Registry.ITEM, producedItems));
         nbt.put("usedFluids", toNbt(Registry.FLUID, usedFluids));
         nbt.put("producedFluids", toNbt(Registry.FLUID, producedFluids));
+        nbt.put("pendingCraftedStats", pendingToNbt(pendingCraftedStats));
         return nbt;
     }
 
@@ -74,6 +85,14 @@ public class PlayerStatistics {
 
         if (uuid != null) {
             FTBQuestsFacade.INSTANCE.addCompleted(uuid, item, amount);
+
+            var player = CommonProxy.getCurrentServer().getPlayerList().getPlayer(uuid);
+
+            if (player != null) {
+                player.awardStat(Stats.ITEM_CRAFTED.get(what.asItem()), Ints.saturatedCast(amount));
+            } else {
+                pendingCraftedStats.mergeLong(what.asItem(), amount, Long::sum);
+            }
         }
     }
 
@@ -83,6 +102,16 @@ public class PlayerStatistics {
 
     public void addProducedFluids(Fluid what, long amount) {
         producedFluids.computeIfAbsent(what, i -> new StatisticValue()).add(amount);
+    }
+
+    public void onPlayerJoin(ServerPlayer player) {
+        if (!pendingCraftedStats.isEmpty()) {
+            for (var entry : pendingCraftedStats.reference2LongEntrySet()) {
+                player.awardStat(Stats.ITEM_CRAFTED.get(entry.getKey()), Ints.saturatedCast(entry.getLongValue()));
+            }
+
+            pendingCraftedStats.clear();
+        }
     }
 
     private static <T> void readNbt(Registry<T> registry, Map<T, StatisticValue> map, CompoundTag tag) {
@@ -101,6 +130,26 @@ public class PlayerStatistics {
         CompoundTag tag = new CompoundTag();
         for (var entry : map.entrySet()) {
             tag.put(registry.getKey(entry.getKey()).toString(), entry.getValue().toNbt());
+        }
+        return tag;
+    }
+
+    private static void pendingReadNbt(Reference2LongMap<Item> map, CompoundTag tag) {
+        for (var key : tag.getAllKeys()) {
+            try {
+                var val = Registry.ITEM.get(new ResourceLocation(key));
+                if (val != Items.AIR) {
+                    map.put(val, tag.getLong(key));
+                }
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private static CompoundTag pendingToNbt(Reference2LongMap<Item> map) {
+        CompoundTag tag = new CompoundTag();
+        for (var entry : map.reference2LongEntrySet()) {
+            tag.putLong(Registry.ITEM.getKey(entry.getKey()).toString(), entry.getLongValue());
         }
         return tag;
     }

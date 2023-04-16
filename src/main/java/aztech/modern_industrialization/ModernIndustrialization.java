@@ -46,6 +46,7 @@ import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import java.util.Comparator;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -114,6 +115,10 @@ public class ModernIndustrialization {
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             MIKeyMap.clear(handler.player);
+        });
+        ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> {
+            var player = handler.getPlayer();
+            PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
         });
         GuidebookEvents.init();
 

@@ -73,6 +73,10 @@ public class CommonProxy {
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> currentServer = null);
     }
 
+    public static MinecraftServer getCurrentServer() {
+        return currentServer;
+    }
+
     /**
      * Try to find a suitable user.
      */

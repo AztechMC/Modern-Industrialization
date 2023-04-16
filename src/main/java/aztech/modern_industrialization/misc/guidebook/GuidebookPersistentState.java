@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.misc.guidebook;
 
+import aztech.modern_industrialization.util.MISavedData;
 import java.util.*;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
@@ -31,9 +32,8 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.saveddata.SavedData;
 
-public class GuidebookPersistentState extends SavedData {
+public class GuidebookPersistentState extends MISavedData {
     private static final String NAME = "modern_industrialization_guidebook";
     private final Set<String> receivedPlayers;
 

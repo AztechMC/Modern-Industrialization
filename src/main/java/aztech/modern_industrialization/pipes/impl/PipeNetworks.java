@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.util.MISavedData;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -33,10 +34,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
-public class PipeNetworks extends SavedData {
+public class PipeNetworks extends MISavedData {
     private static final String NAME = "modern_industrialization_pipe_networks";
     private final Map<PipeNetworkType, PipeNetworkManager> managers;
     private final Map<Long, List<Runnable>> loadPipesByChunk = new HashMap<>();

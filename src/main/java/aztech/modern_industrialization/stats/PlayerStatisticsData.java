@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.stats;
 
+import aztech.modern_industrialization.util.MISavedData;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,9 +32,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.saveddata.SavedData;
 
-public class PlayerStatisticsData extends SavedData {
+public class PlayerStatisticsData extends MISavedData {
     private final Map<UUID, PlayerStatistics> stats = new HashMap<>();
 
     private PlayerStatisticsData(CompoundTag tag) {

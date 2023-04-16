@@ -108,7 +108,7 @@ public class CommonProxy {
     }
 
     public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
-            BlockEntityType<AbstractTankBlockEntity> blockEntityType) {
+            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
     }
 
     public void registerPartBarrelClient(Block barrelBlock, Item barrelItem, String materialName, String itemPath,

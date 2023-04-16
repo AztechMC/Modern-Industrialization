@@ -37,7 +37,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -99,9 +98,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
-            BlockEntityType<AbstractTankBlockEntity> blockEntityType) {
+            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
         BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
-        BlockEntityRendererRegistry.register(blockEntityType, TankRenderer::new);
+        TankRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
         BuiltinItemRendererRegistry.INSTANCE.register(tankItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
     }
 

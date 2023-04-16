@@ -342,13 +342,16 @@ public class RenderHelper {
         RenderSystem.disableBlend();
     }
 
-    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers) {
+    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
         VertexConsumer vc = vertexConsumers.getBuffer(RenderType.cutout());
         var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
         // draw the sprite on each face
 
         var pos = entity.getBlockPos();
         var state = entity.getBlockState();
+        float r = (colorRgb >> 16 & 255) / 255.0F;
+        float g = (colorRgb >> 8 & 255) / 255.0F;
+        float b = (colorRgb & 255) / 255.0F;
 
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         for (Direction direction : Direction.values()) {
@@ -366,7 +369,7 @@ public class RenderHelper {
 
             vc.putBulkData(matrices.last(),
                     emitter.toBakedQuad(0, sprite, false),
-                    1, 1, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                    r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 

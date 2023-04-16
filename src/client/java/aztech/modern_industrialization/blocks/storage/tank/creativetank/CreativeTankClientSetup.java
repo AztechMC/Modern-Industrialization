@@ -25,23 +25,19 @@ package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIBlockEntityTypes;
-import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 @Environment(EnvType.CLIENT)
 public class CreativeTankClientSetup {
     public static void setupClient() {
         BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.cutout());
-        BlockEntityRendererRegistry.register(MIBlockEntityTypes.CREATIVE_TANK,
-                (BlockEntityRendererProvider<AbstractTankBlockEntity>) TankRenderer::new);
+        TankRenderer.register(MIBlockEntityTypes.CREATIVE_TANK, 0x000000);
         BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_TANK_BLOCK, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
     }
 }

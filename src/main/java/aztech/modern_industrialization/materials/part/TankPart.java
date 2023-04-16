@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MITags;
@@ -91,7 +93,7 @@ public class TankPart implements PartKeyProvider {
                                     .withModel(MODEL_GENERATOR)
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
-                                    .sortOrder(SortOrder.TANKS.and(partContext.getMaterialName())));
+                                    .sortOrder(SortOrder.TANKS.and(bucketCapacity)));
 
                     TankBlock block = blockDefinition.asBlock();
                     TankItem item = (TankItem) blockDefinition.asItem();
@@ -106,7 +108,8 @@ public class TankPart implements PartKeyProvider {
                     FluidStorage.SIDED.registerSelf(bet.getValue());
                     item.registerItemApi();
 
-                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue());
+                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
+                            partContext.get(COLORAMP).getMeanRGB());
                 });
 
         if (maybePathOverridden != null) {

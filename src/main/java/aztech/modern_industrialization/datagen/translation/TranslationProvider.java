@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -114,6 +115,10 @@ public final class TranslationProvider implements DataProvider {
 
         for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
             addTranslation(entry.getKey(), entry.getValue());
+        }
+
+        for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
+            addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
         }
     }
 

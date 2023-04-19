@@ -7,13 +7,13 @@ MI supports adding new EBF tiers from KubeJS using the `addEbfTiers` event. The 
 For each tier, call `event.add` with:
 - The ID of the coil block, used inside of the shape. Can be any block that also has an item.
 - The maximum allowed EU/t of the recipe. This is the maximum EU/t that the coil can handle.
-- The English name for display in REI. MI will automatically add `EBF` before the English name inside of REI.
+- The English name for display in the EBF shape selector and in REI. MI will automatically wrap that in `EBF (... Tier)` for REI.
 
 Here is an example that adds gold blocks as an EBF coil with a maximum EU/t of 64:
 ```js
 MIMachineEvents.addEbfTiers(event => {
     // ID of the coil block, max EU/t, English name
-    event.add("minecraft:gold_block", 64, " (Gold Tier)");
+    event.add("minecraft:gold_block", 64, "Gold");
 })
 ```
 

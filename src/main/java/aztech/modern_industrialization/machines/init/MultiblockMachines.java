@@ -721,7 +721,7 @@ public class MultiblockMachines {
                     .mapToObj(j -> ElectricBlastFurnaceBlockEntity.tiers.get(j).coilBlockId())
                     .toArray(ResourceLocation[]::new);
 
-            new Rei("EBF" + tier.englishName(), "electric_blast_furnace_" + tier.coilBlockId().getPath(),
+            new Rei("EBF (%s Tier)".formatted(tier.englishName()), "electric_blast_furnace_" + tier.coilBlockId().getPath(),
                     MIMachineRecipeTypes.BLAST_FURNACE,
                     new ProgressBar.Parameters(77, 33, "arrow"))
                             .items(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlot(102, 35))

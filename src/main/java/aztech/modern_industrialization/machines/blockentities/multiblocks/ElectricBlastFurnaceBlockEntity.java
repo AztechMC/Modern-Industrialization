@@ -27,7 +27,6 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -46,6 +45,7 @@ import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -58,6 +58,13 @@ import org.jetbrains.annotations.Nullable;
 public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
 
     public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
+        public String getTranslationKey() {
+            return "ebf_tier.modern_industrialization." + coilBlockId.getPath();
+        }
+
+        public Component getDisplayName() {
+            return Component.translatable(getTranslationKey());
+        }
     }
 
     public static final List<Tier> tiers;
@@ -68,13 +75,20 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         // Register tiers
         List<Tier> registrationTiers = new ArrayList<>();
 
-        registrationTiers.add(new Tier(new MIIdentifier("cupronickel_coil"), 32, " (Cupronickel Tier)"));
-        registrationTiers.add(new Tier(new MIIdentifier("kanthal_coil"), 128, " (Kanthal Tier)"));
+        registrationTiers.add(new Tier(new MIIdentifier("cupronickel_coil"), 32, "Cupronickel"));
+        registrationTiers.add(new Tier(new MIIdentifier("kanthal_coil"), 128, "Kanthal"));
         KubeJSProxy.instance.fireAddEbfTiersEvent(tier -> {
             Preconditions.checkArgument(tier.maxBaseEu > 4, "EBF tier EU/t must be greater than 4.");
             for (var t : registrationTiers) {
                 if (t.coilBlockId.equals(tier.coilBlockId)) {
                     throw new IllegalArgumentException("EBF tier with coil " + tier.coilBlockId + " is already registered.");
+                }
+                if (t.coilBlockId.getPath().equals(tier.coilBlockId.getPath())) {
+                    throw new IllegalArgumentException(
+                            "EBF tier with coil " + tier.coilBlockId + " has the same path as an already registered tier.");
+                }
+                if (t.maxBaseEu == tier.maxBaseEu) {
+                    throw new IllegalArgumentException("EBF tier with max " + tier.maxBaseEu + " EU/t is already registered.");
                 }
             }
             registrationTiers.add(tier);
@@ -108,6 +122,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         this.registerComponents(upgrades);
         registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
 
+        var tierComponents = tiers.stream().map(Tier::getDisplayName).toList();
+
         registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override
             public void handleClick(int clickedLine, int delta) {
@@ -118,7 +134,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
             public int getCurrentIndex(int line) {
                 return activeShape.getActiveShapeIndex();
             }
-        }, new ShapeSelection.LineInfo(2, List.of(MIText.ShapeTextCupronickel.text(), MIText.ShapeTextKanthal.text()), true)));
+        }, new ShapeSelection.LineInfo(tiers.size(), tierComponents, true)));
     }
 
     @Override

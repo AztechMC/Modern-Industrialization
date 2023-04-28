@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:centrifuge",
   "eu": 16,
-  "duration": 600,
+  "duration": 400,
   "item_inputs": {
     "tag": "c:coal_dusts",
     "amount": 1

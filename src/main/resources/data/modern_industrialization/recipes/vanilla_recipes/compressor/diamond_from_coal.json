@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:compressor",
+  "eu": 4,
+  "duration": 6000,
+  "item_inputs": {
+    "item": "minecraft:coal_block",
+    "amount": 16
+  },
+  "item_outputs": {
+    "item": "minecraft:diamond",
+    "amount": 1
+  }
+}

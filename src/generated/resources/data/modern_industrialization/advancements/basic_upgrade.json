@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:analog_circuit",
+  "parent": "modern_industrialization:chemical_reactor",
   "criteria": {
     "checkInv": {
       "conditions": {

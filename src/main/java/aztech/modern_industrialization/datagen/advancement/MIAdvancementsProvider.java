@@ -109,7 +109,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var quantumCircuit = createBasic(consumer, "quantum_circuit", mixedIngotIridium, FrameType.GOAL, "Mobius Strip Eigenvalues", "Craft a Quantum Circuit");
         var fusionReactor = createBasic(consumer, "fusion_reactor", quantumCircuit, FrameType.CHALLENGE, "Enslaved Star Core", "Craft a Fusion Reactor to produce insane amount of energy");
         var plasmaTurbine = createBasic(consumer, "plasma_turbine", fusionReactor, "Better than Nuclear Fission", "Craft a Plasma Turbine to transform Helium Plasma into energy");
-        var basicUpgrade = createBasic(consumer, "basic_upgrade", analogCircuit, FrameType.GOAL, "Machine Speedup", "Craft a Basic Upgrade to increase the maximum speed of an electric recipe");
+        var basicUpgrade = createBasic(consumer, "basic_upgrade", chemicalReactor, FrameType.GOAL, "Machine Speedup", "Craft a Basic Upgrade to increase the maximum speed of an electric recipe");
         var advancedUpgrade = createBasic(consumer, "advanced_upgrade", electronicCircuit, "Machine Speedup-Speedup", "Craft a Advanced Upgrade");
         var turboUpgrade = createBasic(consumer, "turbo_upgrade", digitalCircuit, "Gotta go Fast", "Craft a Turbo Upgrade");
         var highlyAdvancedUpgrade = createBasic(consumer, "highly_advanced_upgrade", processingUnit, "I'm speed", "Craft an Highly Advanced Upgrade");

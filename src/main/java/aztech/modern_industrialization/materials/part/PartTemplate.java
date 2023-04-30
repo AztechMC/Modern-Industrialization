@@ -113,22 +113,34 @@ public class PartTemplate implements PartKeyProvider {
         return sb.toString();
     }
 
-    public PartTemplate asBlock(SortOrder sortOrder, TextureGenParams textureGenParams, float hardness, float resistance, int miningLevel) {
+    public PartTemplate asBlock(SortOrder sortOrder, TextureGenParams textureGenParams, float hardness, float resistance, int miningLevel,
+            boolean doAllowSpawn) {
         Register blockRegister = (partContext, part, itemPath, itemId, itemTag, itemEnglishName) -> {
 
+            var blockParams = MIBlock.BlockDefinitionParams.of()
+                    .clearTags()
+                    .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
+                    .sortOrder(sortOrder.and(partContext.getMaterialName()))
+                    .destroyTime(hardness)
+                    .explosionResistance(resistance);
+
+            if (!doAllowSpawn) {
+                blockParams.isValidSpawn((p1, p2, p3, p4) -> false);
+            }
+
             var blockDefinition = MIBlock.block(
-                    itemEnglishName, itemPath,
-                    MIBlock.BlockDefinitionParams.of()
-                            .clearTags()
-                            .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
-                            .sortOrder(sortOrder.and(partContext.getMaterialName()))
-                            .destroyTime(hardness)
-                            .explosionResistance(resistance));
+                    itemEnglishName, itemPath, blockParams
+
+            );
 
             setupTag(partContext, part, itemTag, blockDefinition.asItem());
 
         };
         return new PartTemplate(englishNameFormatter, partKey, blockRegister, textureGenParams, itemPathFormatter);
+    }
+
+    public PartTemplate asBlock(SortOrder sortOrder, TextureGenParams textureGenParams, float hardness, float resistance, int miningLevel) {
+        return asBlock(sortOrder, textureGenParams, hardness, resistance, miningLevel, true);
     }
 
     public PartTemplate asColumnBlock(SortOrder sortOrder) {

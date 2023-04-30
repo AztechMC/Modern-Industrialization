@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:unpacker",
+  "duration": 400,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:superconductor_coil"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:superconductor_cable"
+    }
+  ]
+}

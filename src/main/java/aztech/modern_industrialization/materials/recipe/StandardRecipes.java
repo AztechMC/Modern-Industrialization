@@ -131,6 +131,8 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#c:nuclear_alloy_plates", 2)
                 .addPartInput(FUEL_ROD_DOUBLE, 2)
                 .addPartOutput(FUEL_ROD_QUAD, 1);
+        // UNPACKER
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, "coil").addTaggedPartInput(COIL, 1).addPartOutput(CABLE, 8);
 
         // WIREMILL
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);

@@ -377,7 +377,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.COLORAMP, new ColorampParameters.GradientMap(0x6a76bc))
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER))
-                        .addParts(ORE.ofAll(16, 5, 64, MaterialOreSet.IRON)).addParts(RAW_METAL.ofAll(MaterialRawSet.IRON))
+                        .addParts(ORE.ofAll(32, 8, 64, MaterialOreSet.IRON)).addParts(RAW_METAL.ofAll(MaterialRawSet.IRON))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal"));
 
         BATTERY_ALLOY = MaterialRegistry.addMaterial(new MaterialBuilder("Battery Alloy", "battery_alloy")

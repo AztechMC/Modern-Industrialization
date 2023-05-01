@@ -23,22 +23,22 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import net.minecraft.world.item.Item;
 
 public class NuclearItem {
 
+    public static Item SMALL_HEAT_EXCHANGER;
+    public static Item LARGE_HEAT_EXCHANGER;
+
     public static void init() {
-        ModernIndustrialization.LOGGER.info("Setting up Nuclear Items");
+        SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
+                "Small Heat Exchanger",
+                "small_heat_exchanger", 2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                INeutronBehaviour.NO_INTERACTION);
+        LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
+                "Large Heat Exchanger",
+                "large_heat_exchanger", 1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                INeutronBehaviour.NO_INTERACTION);
     }
 
-    public static final Item SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
-            "Small Heat Exchanger",
-            "small_heat_exchanger", 2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION,
-            INeutronBehaviour.NO_INTERACTION);
-
-    public static final Item LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
-            "Large Heat Exchanger",
-            "large_heat_exchanger", 1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION,
-            INeutronBehaviour.NO_INTERACTION);
 }

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBu
 import java.util.*;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.FinishedRecipe;
+import org.jetbrains.annotations.Nullable;
 
 public final class MaterialBuilder {
 
@@ -186,8 +187,14 @@ public final class MaterialBuilder {
             }
         }
 
+        @Nullable
         public MaterialItemPart getPart(PartKeyProvider part) {
             return partsMap.get(part.key());
+        }
+
+        public boolean hasInternalPart(PartKeyProvider partKey) {
+            var part = getPart(partKey);
+            return part != null && part.isInternal();
         }
 
         public String getMaterialName() {

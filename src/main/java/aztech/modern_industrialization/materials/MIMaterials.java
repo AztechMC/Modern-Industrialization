@@ -148,15 +148,7 @@ public class MIMaterials {
         if (nugget) {
             res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
         }
-        res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
-                .cancelRecipes("craft/raw_metal_block_from_raw_metal", "craft/raw_metal_from_raw_metal_block")
-                .cancelRecipes("smelting/ore_to_ingot_smelting", "smelting/ore_to_ingot_blasting")
-                .cancelRecipes("smelting/ore_deepslate_to_ingot_smelting", "smelting/ore_deepslate_to_ingot_blasting")
-                .cancelRecipes("smelting/raw_metal_to_ingot_smelting", "smelting/raw_metal_to_ingot_blasting");
-        if (nugget) {
-            res.cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot");
-        }
+        res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply);
 
         return res;
     }
@@ -172,9 +164,7 @@ public class MIMaterials {
                 .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
                 .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
 
-        res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
-                .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting")
-                .cancelRecipes("smelting/ore_deepslate_to_gem_smelting", "smelting/ore_deepslate_to_gem_blasting");
+        res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
 
         if (compressor) {
             res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
@@ -261,8 +251,8 @@ public class MIMaterials {
                         .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed")
-                        .cancelRecipes("craft/block_from_dust", "craft/dust_from_block"));
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .cancelRecipes("macerator/ore_to_crushed"));
 
         QUARTZ = MaterialRegistry
                 .addMaterial(new MaterialBuilder("Quartz", "quartz")

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 
 public class DyeRecipesProvider extends MIRecipesProvider {
@@ -119,7 +120,7 @@ public class DyeRecipesProvider extends MIRecipesProvider {
 
             // terracotta
             MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:terracottas", 8).addItemOutput("minecraft:" + color.getName() + "_terracotta", 8)
+                    .addItemInput(ItemTags.TERRACOTTA, 8).addItemOutput("minecraft:" + color.getName() + "_terracotta", 8)
                     .offerTo(consumer, pathPrefix + "mixer/terracotta");
 
             // glass pane cutting

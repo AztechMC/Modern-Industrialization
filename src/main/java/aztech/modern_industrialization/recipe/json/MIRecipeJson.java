@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -128,6 +129,10 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
         MIFluidOutputProbability(double probability) {
             this.probability = probability;
         }
+    }
+
+    public T addItemInput(TagKey<Item> tag, int amount) {
+        return addItemInput("#" + tag.location().toString(), amount);
     }
 
     public T addItemInput(String maybeTag, int amount) {

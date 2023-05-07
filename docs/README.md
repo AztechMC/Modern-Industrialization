@@ -1,6 +1,6 @@
 # Developer-facing Documentation
 This is the Modern Industrialization documentation aimed at mod pack or resource pack developers.
-If you are a player, consult the guidebook and the Discord server for help.
+For questions, please ask on the `#dev-talk` channel on the Discord server.
 
 ## Customizing machine models
 Refer to [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of how the machine model format works.

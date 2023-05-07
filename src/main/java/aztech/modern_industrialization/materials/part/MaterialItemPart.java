@@ -40,7 +40,7 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
      */
     static MaterialItemPart external(PartKey key, String taggedItemId, String itemId) {
         return new MaterialItemPartImpl(key, taggedItemId, itemId, ctx -> {
-        }, new TextureGenParams.NoTexture());
+        }, new TextureGenParams.NoTexture(), false);
     }
 
     static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {
@@ -63,7 +63,7 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
 
         return new MaterialItemPartImpl(part.key(), itemId, itemId, ctx -> {
             MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(ctx.getMaterialName()));
-        }, new TextureGenParams.NoTexture());
+        }, new TextureGenParams.NoTexture(), true);
     }
 
     /**
@@ -91,4 +91,6 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
      * Return texture generation parameters. Return {@link TextureGenParams.NoTexture} if no texture is required.
      */
     TextureGenParams getTextureGenParams();
+
+    boolean isInternal();
 }

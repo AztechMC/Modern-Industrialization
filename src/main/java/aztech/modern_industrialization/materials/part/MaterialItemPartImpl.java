@@ -35,14 +35,16 @@ final class MaterialItemPartImpl implements MaterialItemPart {
     private final String itemId;
     private final Consumer<MaterialBuilder.PartContext> registration;
     private final TextureGenParams textureGenParams;
+    private final boolean internal;
 
     MaterialItemPartImpl(PartKey key, String taggedItemId, String itemId,
-            Consumer<MaterialBuilder.PartContext> registration, TextureGenParams textureGenParams) {
+            Consumer<MaterialBuilder.PartContext> registration, TextureGenParams textureGenParams, boolean internal) {
         this.key = key;
         this.taggedItemId = taggedItemId;
         this.itemId = itemId;
         this.registration = registration;
         this.textureGenParams = textureGenParams;
+        this.internal = internal;
     }
 
     @Override
@@ -68,5 +70,10 @@ final class MaterialItemPartImpl implements MaterialItemPart {
     @Override
     public TextureGenParams getTextureGenParams() {
         return textureGenParams;
+    }
+
+    @Override
+    public boolean isInternal() {
+        return internal;
     }
 }

@@ -41,6 +41,7 @@ import com.mojang.blaze3d.platform.NativeImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -63,19 +64,24 @@ public record TexturesProvider(FabricDataGenerator dataGenerator, boolean runtim
 
     @Override
     public void run(CachedOutput cache) {
-        PackResources miResources;
+        var packs = new ArrayList<PackResources>();
+
+        packs.add(new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")));
+
         if (runtimeDatagen) {
+            // MI jar
             ModContainer container = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-            miResources = ModNioResourcePack.create(new ResourceLocation("fabric", container.getMetadata().getId()),
-                    container.getMetadata().getName(), container, null, PackType.CLIENT_RESOURCES, ResourcePackActivationType.ALWAYS_ENABLED);
+            packs.add(ModNioResourcePack.create(new ResourceLocation("fabric", container.getMetadata().getId()),
+                    container.getMetadata().getName(), container, null, PackType.CLIENT_RESOURCES, ResourcePackActivationType.ALWAYS_ENABLED));
+
+            // extra_datagen_resources folder
+            var extra = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization").resolve("extra_datagen_resources");
+            packs.add(new FolderPackResources(extra.toFile()));
         } else {
             var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources").toFile();
-            miResources = new FolderPackResources(nonGeneratedResources);
+            packs.add(new FolderPackResources(nonGeneratedResources));
         }
 
-        var packs = List.of(
-                new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")),
-                miResources);
         try (var fallbackProvider = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, packs)) {
             generateTextures(cache, fallbackProvider);
         }

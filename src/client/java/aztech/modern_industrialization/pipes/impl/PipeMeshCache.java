@@ -26,6 +26,9 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -52,12 +55,22 @@ public class PipeMeshCache implements PipeRenderer {
      * 2, 3 for straight, short bend, far short bend and long bend. Then it is 4, 5,
      * 6, 7 for conflict handling.
      */
-    private final Mesh[][][][] connectionMeshes;
+    private final ConcurrentMap<ConnectionMeshKey, Mesh> connectionMeshes = new ConcurrentHashMap<>(128, 0.5f);
+    private final Function<ConnectionMeshKey, Mesh> connectionMeshBuilder;
+
+    private record ConnectionMeshKey(int endpointType, int logicalSlot, int directionId, int renderType) {
+    }
+
     /**
      * The meshes for the center connector. Indexed by: [logicalSlot][bitmask]. The
      * bitmask stores for which direction there is a connection.
      */
-    private final Mesh[][] centerMeshes;
+    private final ConcurrentMap<CenterMeshKey, Mesh> centerMeshes = new ConcurrentHashMap<>(128, 0.5f);
+    private final Function<CenterMeshKey, Mesh> centerMeshBuilder;
+
+    private record CenterMeshKey(int logicalSlot, int bitmask) {
+    }
+
     /**
      * Custom material for the fluids.
      */
@@ -69,59 +82,59 @@ public class PipeMeshCache implements PipeRenderer {
      * @param innerQuads Whether to add inner quads, e.g. for fluid rendering.
      */
     public PipeMeshCache(Function<Material, TextureAtlasSprite> textureGetter, Material[] spriteIds, boolean innerQuads) {
-        connectionMeshes = new Mesh[spriteIds.length][3][6][8];
-        centerMeshes = new Mesh[3][1 << 6];
+        Renderer renderer = Objects.requireNonNull(RendererAccess.INSTANCE.getRenderer());
 
         // Build the connection cache
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        for (int i = 0; i < spriteIds.length; ++i) {
+        connectionMeshBuilder = key -> {
+            int i = key.endpointType;
+            int logicalSlot = key.logicalSlot;
+            Direction direction = Direction.from3DDataValue(key.directionId);
+            int j = key.renderType;
+
             TextureAtlasSprite sprite = textureGetter.apply(spriteIds[i]);
-            for (int logicalSlot = 0; logicalSlot < 3; ++logicalSlot) {
-                for (Direction direction : Direction.values()) {
-                    for (int j = 0; j < 8; ++j) {
-                        MeshBuilder meshBuilder = renderer.meshBuilder();
-                        PipeMeshBuilder pmb;
-                        if (innerQuads) {
-                            pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction,
-                                    sprite);
-                        } else {
-                            pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-                        }
-                        boolean reduced = j >= 4;
-                        boolean end = i != 0;
-                        int renderType = j % 4;
-                        if (renderType == 0) {
-                            pmb.straightLine(reduced, end);
-                        } else if (renderType == 1) {
-                            pmb.shortBend(reduced, end);
-                        } else if (renderType == 2) {
-                            pmb.farShortBend(reduced, end);
-                        } else {
-                            pmb.longBend(reduced, end);
-                        }
-                        connectionMeshes[i][logicalSlot][direction.get3DDataValue()][j] = meshBuilder.build();
-                    }
-                }
+
+            MeshBuilder meshBuilder = renderer.meshBuilder();
+            PipeMeshBuilder pmb;
+            if (innerQuads) {
+                pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
+            } else {
+                pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
             }
-        }
+            boolean reduced = j >= 4;
+            boolean end = i != 0;
+            int renderType = j % 4;
+            if (renderType == 0) {
+                pmb.straightLine(reduced, end);
+            } else if (renderType == 1) {
+                pmb.shortBend(reduced, end);
+            } else if (renderType == 2) {
+                pmb.farShortBend(reduced, end);
+            } else {
+                pmb.longBend(reduced, end);
+            }
+
+            return meshBuilder.build();
+        };
 
         // Build the center cache
         TextureAtlasSprite sprite = textureGetter.apply(spriteIds[0]);
-        for (int logicalSlot = 0; logicalSlot < 3; ++logicalSlot) {
-            for (int mask = 0; mask < (1 << 6); ++mask) {
-                MeshBuilder meshBuilder = renderer.meshBuilder();
-                for (Direction direction : Direction.values()) {
-                    PipeMeshBuilder pmb;
-                    if (innerQuads) {
-                        pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-                    } else {
-                        pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-                    }
-                    pmb.noConnection(mask);
+        centerMeshBuilder = key -> {
+            int logicalSlot = key.logicalSlot;
+            int mask = key.bitmask;
+
+            MeshBuilder meshBuilder = renderer.meshBuilder();
+            for (Direction direction : Direction.values()) {
+                PipeMeshBuilder pmb;
+                if (innerQuads) {
+                    pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
+                } else {
+                    pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
                 }
-                centerMeshes[logicalSlot][mask] = meshBuilder.build();
+                pmb.noConnection(mask);
             }
-        }
+
+            return meshBuilder.build();
+        };
 
         fluidMaterial = renderer.materialFinder().blendMode(0, BlendMode.SOLID).emissive(0, true).disableAo(0, true).find();
     }
@@ -187,29 +200,18 @@ public class PipeMeshCache implements PipeRenderer {
                 if (connectionsInDirection[initialDirections[i].get3DDataValue()] > 1) {
                     renderType += 4; // Conflict handling
                 }
-                Mesh mesh = connectionMeshes[endpointType.getId()][logicalSlot][i][renderType];
+                Mesh mesh = connectionMeshes.computeIfAbsent(new ConnectionMeshKey(endpointType.getId(), logicalSlot, i, renderType),
+                        connectionMeshBuilder);
                 ctx.meshConsumer().accept(mesh);
             }
         }
 
         // Render the center connector
-        ctx.meshConsumer().accept(centerMeshes[logicalSlot][directionsMask]);
+        ctx.meshConsumer().accept(centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder));
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
             ctx.popTransform();
         }
-    }
-
-    public Mesh[][][][] getConnectionMeshes() {
-        return connectionMeshes;
-    }
-
-    public Mesh[][] getCenterMeshes() {
-        return centerMeshes;
-    }
-
-    public RenderMaterial getFluidMaterial() {
-        return fluidMaterial;
     }
 }

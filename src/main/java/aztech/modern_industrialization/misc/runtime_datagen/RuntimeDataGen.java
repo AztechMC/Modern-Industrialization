@@ -47,6 +47,18 @@ public class RuntimeDataGen {
 
     private static void runInner(Consumer<FabricDataGenerator> config) throws Exception {
         var miFolder = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization");
+
+        // Create some relevant texture folders because I'm sure some people will forget it
+        var datagenOverridesFolder = miFolder.resolve("extra_datagen_resources");
+        Files.createDirectories(datagenOverridesFolder
+                .resolve("assets")
+                .resolve("modern_industrialization")
+                .resolve("textures"));
+        Files.createDirectories(datagenOverridesFolder
+                .resolve("assets")
+                .resolve("modern_industrialization")
+                .resolve("datagen_texture_overrides"));
+
         var dataOutput = miFolder.resolve("runtime_datagen");
 
         ModernIndustrialization.LOGGER.info("Starting MI runtime data generation");

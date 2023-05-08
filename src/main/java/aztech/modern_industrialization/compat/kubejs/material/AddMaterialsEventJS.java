@@ -28,7 +28,6 @@ import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKey;
 import aztech.modern_industrialization.materials.part.PartTemplate;
-import aztech.modern_industrialization.materials.property.ColorampParameters;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
@@ -52,8 +51,7 @@ public class AddMaterialsEventJS extends EventJS {
         final private PartJsonCreator creator = new PartJsonCreator();
 
         public MaterialBuilderJSWrapper(String englishName, String materialName, int color) {
-            this.materialBuilder = new MaterialBuilder(englishName, materialName).set(MaterialProperty.COLORAMP,
-                    new ColorampParameters.Uniform(color));
+            this.materialBuilder = new MaterialBuilder(englishName, materialName).set(MaterialProperty.MEAN_RGB, color);
         }
 
         public MaterialBuilderJSWrapper addParts(String... name) {

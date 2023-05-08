@@ -51,7 +51,7 @@ public class MaterialProperty<T> {
     /**
      * Defines the color to use for the material.
      */
-    public static final MaterialProperty<ColorampParameters> COLORAMP = new MaterialProperty<>("coloramp", new ColorampParameters.Unspecified());
+    public static final MaterialProperty<Integer> MEAN_RGB = new MaterialProperty<>("mean_rgb", 0);
     /**
      * The hardness influences the speed of some recipes.
      */

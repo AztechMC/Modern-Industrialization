@@ -38,7 +38,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -135,13 +134,5 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
         tag(key("c:quartz_ores")).add(Items.NETHER_QUARTZ_ORE);
 
         tag(key("c:wooden_barrels")).add(Items.BARREL);
-
-        ResourceLocation terracottas = new ResourceLocation("c", "terracottas");
-        tag(key(terracottas)).add(Items.TERRACOTTA);
-
-        for (DyeColor color : DyeColor.values()) {
-            tag(key(terracottas)).add(Registry.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_terracotta")));
-            tag(key(terracottas)).add(Registry.ITEM.get(new ResourceLocation("minecraft:" + color.getName() + "_glazed_terracotta")));
-        }
     }
 }

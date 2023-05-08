@@ -40,9 +40,9 @@ import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.util.InGameMouseScrollCallback;
 import aztech.modern_industrialization.util.RenderHelper;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -132,16 +132,16 @@ public class MIPipesClient {
             @Override
             public Collection<Material> getSpriteDependencies() {
                 return sprites.stream().map(
-                        n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/" + n)))
+                        n -> new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/" + n)))
                         .collect(Collectors.toList());
             }
 
             @Override
             public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
-                net.minecraft.client.resources.model.Material[] ids = sprites.stream()
-                        .map(n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS,
+                Material[] ids = sprites.stream()
+                        .map(n -> new Material(InventoryMenu.BLOCK_ATLAS,
                                 new MIIdentifier("block/pipes/" + n)))
-                        .toArray(net.minecraft.client.resources.model.Material[]::new);
+                        .toArray(Material[]::new);
                 return new PipeMeshCache(textureGetter, ids, innerQuads);
             }
         };
@@ -153,7 +153,8 @@ public class MIPipesClient {
             Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
     private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
 
-    public static final List<PipeRenderer.Factory> RENDERERS = new ArrayList<>();
+    // Use a set to avoid loading the same renderer multiple times
+    public static final Collection<PipeRenderer.Factory> RENDERERS = new LinkedHashSet<>();
 
     private void registerRenderers() {
         for (var type : PipeNetworkType.getTypes().values()) {

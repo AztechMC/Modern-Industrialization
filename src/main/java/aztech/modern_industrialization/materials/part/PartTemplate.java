@@ -210,7 +210,7 @@ public class PartTemplate implements PartKeyProvider {
 
         return new MaterialItemPartImpl(partKey, itemTag, itemId, ctx -> {
             register.register(ctx, partKey, itemPath, itemId, itemTag, itemEnglishName);
-        }, this.textureGenParams);
+        }, this.textureGenParams, true);
     }
 
     @Override

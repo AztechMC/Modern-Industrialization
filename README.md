@@ -4,6 +4,10 @@ Have machines generate and process all your resources while you are flying aroun
 dream of! Of course, there is a long way to go before getting there. Can you do it?_
 
 More information and downloads on CurseForge: https://www.curseforge.com/minecraft/mc-mods/modern-industrialization.
+Or Modrinth if you prefer: https://modrinth.com/mod/modern-industrialization.
+
+## Modpack developer information
+Please refer to the [Developer-facing Documentation](docs/README.md) for more information.
 
 ## Filing bug reports
 Feel free to open an issue for bug reports!

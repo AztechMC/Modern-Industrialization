@@ -1,6 +1,6 @@
 # Developer-facing Documentation
 This is the Modern Industrialization documentation aimed at mod pack or resource pack developers.
-If you are a player, consult the guidebook and the Discord server for help.
+For questions, please ask on the `#dev-talk` channel on the Discord server.
 
 ## Customizing machine models
 Refer to [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of how the machine model format works.
@@ -26,6 +26,27 @@ MI can generate most of these resources for you if you ask it to.
 - Make sure that `loadRuntimeGeneratedResources` is set to `true` in the config file.
   - This will make sure that MI will automatically load the resources generated in the previous step.
 - Profit!
+
+#### More info regarding runtime datagen
+Runtime datagen works by running the data generators during the end of MI startup.
+- It uses `modern_industrialization/runtime_datagen` to produce all the files that are automatically generated.
+  - These files include loot tables, most recipes, or material textures, for example.
+- The files that are **different** from those in the jar then get copied to `modern_industrialization/generated_resources`.
+- Finally, MI injects a hidden data and resource pack with maximum priority to load these resources into the game.
+
+Runtime datagen will only use the resources from the MI jar and the base vanilla assets.
+**It will not use any resource pack, as it runs too early.**
+
+However, files can be placed in the `modern_industrialization/extra_datagen_resources` folder if they are needed during datagen,
+and they take precedence over the files in the MI jar.
+At the moment, this only works for textures.
+Here are some examples to get you started:
+- Placing a texture in `modern_industrialization/extra_datagen_resources/assets/modern_industrialization/textures/materialsets/common/plate.png`
+  will change the texture of most plates.
+- The `datagen_texture_overrides` exists to manually override textures produced by datagen, for example specific material textures.
+  Placing a texture in `modern_industrialization/extra_datagen_resources/assets/modern_industrialization/datagen_texture_overrides/item/aluminum_plate.png`
+  will change the texture of the aluminum plate only.
+- Refer to the contents of the MI .jar for more details on the file structure.
 
 ### Adding new machines
 Refer to [ADDING_MACHINES.md](ADDING_MACHINES.md) for more information on how to add machines via KubeJS.

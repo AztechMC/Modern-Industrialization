@@ -25,46 +25,63 @@ package aztech.modern_industrialization.textures.coloramp;
 
 import static aztech.modern_industrialization.textures.TextureHelper.*;
 
-import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.property.ColorampParameters;
+import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import com.mojang.blaze3d.platform.NativeImage;
-import org.jetbrains.annotations.Nullable;
+import java.io.IOException;
 
-public interface Coloramp {
+public class Coloramp implements IColoramp {
 
-    public int getRGB(double luminance);
+    private final int[] colors = new int[256];
+    private final int meanRGB;
 
-    public int getMeanRGB();
+    public Coloramp(TextureManager mtm, int meanRGB, String name) {
+        this.meanRGB = meanRGB;
 
-    @Nullable
-    static Coloramp of(TextureManager mtm, ColorampParameters parameters, Material material) {
-        if (parameters instanceof ColorampParameters.Unspecified) {
-            return null;
-        } else if (parameters instanceof ColorampParameters.Uniform uniform) {
-            return new DefaultColoramp(uniform.rgb());
-        } else if (parameters instanceof ColorampParameters.Bakable bakable) {
-            return new BakableTargetColoramp(mtm, bakable.meanRGB(), bakable.from(), bakable.target());
-        } else if (parameters instanceof ColorampParameters.GradientMap gradientMap) {
-            return new GradientMapColoramp(mtm, gradientMap.meanRGB(), material.name);
-        } else {
-            throw new IllegalArgumentException("Unkown coloramp parameter class: " + parameters.getClass().getSimpleName());
-        }
-    }
+        var gradientMapPath = "modern_industrialization:textures/gradient_maps/" + name + ".png";
 
-    default NativeImage bakeAsImage() {
-        NativeImage image = new NativeImage(256, 256, true);
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
-                double luminance = (i) / 255.0;
-                int rgb = getRGB(luminance);
-                int r = getRrgb(rgb);
-                int g = getGrgb(rgb);
-                int b = getBrgb(rgb);
-                image.setPixelRGBA(i, j, fromArgb(255, r, g, b));
+        if (mtm.hasAsset(gradientMapPath)) {
+            try (NativeImage gradientMap = mtm.getAssetAsTexture(gradientMapPath)) {
+                for (int i = 0; i < 256; i++) {
+                    int color = gradientMap.getPixelRGBA(i, 0);
+                    int r = getR(color);
+                    int g = getG(color);
+                    int b = getB(color);
+                    colors[i] = r << 16 | g << 8 | b;
+
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+        } else {
+            fillUniform();
         }
-        return image;
     }
 
+    public Coloramp(int meanRGB) {
+        this.meanRGB = meanRGB;
+        fillUniform();
+    }
+
+    private void fillUniform() {
+        // Use uniform coloramp
+        int meanR = TextureHelper.getRrgb(meanRGB);
+        int meanG = TextureHelper.getGrgb(meanRGB);
+        int meanB = TextureHelper.getBrgb(meanRGB);
+
+        for (int i = 0; i < 256; ++i) {
+            colors[i] = TextureHelper.toRGB(meanR * i / 255, meanG * i / 255, meanB * i / 255);
+        }
+    }
+
+    @Override
+    public int getRGB(double luminance) {
+        int i = (int) (luminance * 255);
+        return colors[i];
+    }
+
+    @Override
+    public int getMeanRGB() {
+        return meanRGB;
+    }
 }

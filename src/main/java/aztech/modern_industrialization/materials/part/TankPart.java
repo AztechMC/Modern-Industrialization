@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
@@ -109,7 +109,7 @@ public class TankPart implements PartKeyProvider {
                     item.registerItemApi();
 
                     CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
-                            partContext.get(COLORAMP).getMeanRGB());
+                            partContext.get(MEAN_RGB));
                 });
 
         if (maybePathOverridden != null) {

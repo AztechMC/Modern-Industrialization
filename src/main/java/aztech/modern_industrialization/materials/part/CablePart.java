@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -35,7 +35,7 @@ public class CablePart implements PartKeyProvider {
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> MIPipes.INSTANCE
                         .registerCableType(
                                 englishName,
-                                partContext.getMaterialName(), partContext.get(COLORAMP).getMeanRGB() | 0xff000000, tier));
+                                partContext.getMaterialName(), partContext.get(MEAN_RGB) | 0xff000000, tier));
     }
 
     @Override

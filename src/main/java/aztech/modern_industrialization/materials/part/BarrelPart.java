@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.COLORAMP;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MITags;
@@ -93,7 +93,7 @@ public class BarrelPart implements PartKeyProvider {
                     ItemStorage.SIDED.registerSelf(bet.getValue());
 
                     CommonProxy.INSTANCE.registerPartBarrelClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
-                            partContext.get(COLORAMP).getMeanRGB());
+                            partContext.get(MEAN_RGB));
                 });
         if (maybeOverriddenPath != null) {
             template = template.withCustomPath(maybeOverriddenPath);

@@ -23,43 +23,30 @@
  */
 package aztech.modern_industrialization.textures.coloramp;
 
-import static aztech.modern_industrialization.textures.TextureHelper.*;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.awt.*;
 
-import aztech.modern_industrialization.textures.TextureManager;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
+public class DepletedColoramp implements IColoramp {
 
-public class GradientMapColoramp implements Coloramp {
+    private final IColoramp coloramp;
 
-    private final int[] colors = new int[256];
-    private final int meanRGB;
-
-    public GradientMapColoramp(TextureManager mtm, int meanRGB, String name) {
-        this.meanRGB = meanRGB;
-        try {
-            NativeImage gradientMap = mtm.getAssetAsTexture("modern_industrialization:textures/gradient_maps/" + name + ".png");
-            for (int i = 0; i < 256; i++) {
-                int color = gradientMap.getPixelRGBA(i, 0);
-                int r = getR(color);
-                int g = getG(color);
-                int b = getB(color);
-                colors[i] = r << 16 | g << 8 | b;
-
-            }
-            gradientMap.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public DepletedColoramp(IColoramp coloramp) {
+        this.coloramp = coloramp;
     }
 
     @Override
     public int getRGB(double luminance) {
-        int i = (int) (luminance * 255);
-        return colors[i];
+        float[] hsbval = new float[3];
+        int rgb = coloramp.getRGB(luminance);
+        Color.RGBtoHSB(TextureHelper.getRrgb(rgb), TextureHelper.getGrgb(rgb), TextureHelper.getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], 0.2f * hsbval[0], 0.5f * hsbval[2]);
     }
 
     @Override
     public int getMeanRGB() {
-        return meanRGB;
+        float[] hsbval = new float[3];
+        int rgb = coloramp.getMeanRGB();
+        Color.RGBtoHSB(TextureHelper.getRrgb(rgb), TextureHelper.getGrgb(rgb), TextureHelper.getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], 0.2f * hsbval[0], 0.5f * hsbval[2]);
     }
 }

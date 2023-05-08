@@ -23,25 +23,29 @@
  */
 package aztech.modern_industrialization.textures.coloramp;
 
-import aztech.modern_industrialization.textures.TextureHelper;
+import static aztech.modern_industrialization.textures.TextureHelper.*;
 
-public class ColorampHue implements Coloramp {
+import com.mojang.blaze3d.platform.NativeImage;
 
-    private final Coloramp coloramp;
-    private final float hue;
+public interface IColoramp {
 
-    public ColorampHue(float hue, Coloramp coloramp) {
-        this.coloramp = coloramp;
-        this.hue = hue;
+    public int getRGB(double luminance);
+
+    public int getMeanRGB();
+
+    default NativeImage bakeAsImage() {
+        NativeImage image = new NativeImage(256, 256, true);
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                double luminance = (i) / 255.0;
+                int rgb = getRGB(luminance);
+                int r = getRrgb(rgb);
+                int g = getGrgb(rgb);
+                int b = getBrgb(rgb);
+                image.setPixelRGBA(i, j, fromArgb(255, r, g, b));
+            }
+        }
+        return image;
     }
 
-    @Override
-    public int getRGB(double luminance) {
-        return TextureHelper.setHue(coloramp.getRGB(luminance), hue);
-    }
-
-    @Override
-    public int getMeanRGB() {
-        return TextureHelper.setHue(coloramp.getMeanRGB(), hue);
-    }
 }

@@ -30,9 +30,9 @@ import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
-import aztech.modern_industrialization.textures.coloramp.Coloramp;
-import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
+import aztech.modern_industrialization.textures.coloramp.DepletedColoramp;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
+import aztech.modern_industrialization.textures.coloramp.IColoramp;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -42,7 +42,7 @@ import net.minecraft.resources.ResourceLocation;
  * All the per-part texture processing logic.
  */
 class PartTextureGenerator {
-    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
+    static void processPart(IColoramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         var gen = new PartTextureGenerator(coloramp, mtm, material, part);
 
         try {
@@ -52,13 +52,13 @@ class PartTextureGenerator {
         }
     }
 
-    private final Coloramp coloramp;
+    private final IColoramp coloramp;
     private final TextureManager mtm;
     private final Material material;
     private final String materialName;
     private final String itemPath;
 
-    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
+    private PartTextureGenerator(IColoramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         this.coloramp = coloramp;
         this.mtm = mtm;
         this.material = material;
@@ -133,7 +133,7 @@ class PartTextureGenerator {
     private void processDepletedNuclear() {
         MITextures.generateItemPartTexture(mtm,
                 NuclearFuelPart.Type.SIMPLE.key, "common", itemPath, false,
-                new ColorampDepleted(coloramp));
+                new DepletedColoramp(coloramp));
     }
 
     private void processDoubleIngot(PartKeyProvider part) {

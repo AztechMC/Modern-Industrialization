@@ -43,7 +43,7 @@ public class HatchRecipesProvider extends MIRecipesProvider {
 
         String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced", "quantum" };
         String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium", "" };
-        String[] cables = { "", "", "tin", "electrum", "aluminum", "platinum", "superconductor" };
+        String[] cables = { "", "", "tin", "electrum", "aluminum", "annealed_copper", "superconductor" };
         String[] voltage = { "", "", "lv", "mv", "hv", "ev", "superconductor" };
 
         for (int i = 0; i < casings.length; i++) {

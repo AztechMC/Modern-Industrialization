@@ -249,3 +249,6 @@ MIMachineEvents.registerCasings(event => {
     event.register("my_fancy_casing", "my_other_casing");
 })
 ```
+
+**This only registers the casing for use in a machine model, but does not create a casing block.
+To add casings, use either KubeJS custom blocks or the material system.**

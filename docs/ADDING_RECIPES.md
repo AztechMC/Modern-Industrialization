@@ -81,10 +81,10 @@ Here is an example to add a fluid output slot to all 3 blast furnace categories:
 MIMachineEvents.addMultiblockSlots("steam_blast_furnace", event => {
     event.fluidOutputs.addSlot(122, 53);
 })
-MIMachineEvents.addMultiblockSlots("electric_blast_furnace_0", event => {
+MIMachineEvents.addMultiblockSlots("electric_blast_furnace_cupronickel_coil", event => {
     event.fluidOutputs.addSlot(122, 53);
 })
-MIMachineEvents.addMultiblockSlots("electric_blast_furnace_1", event => {
+MIMachineEvents.addMultiblockSlots("electric_blast_furnace_kanthal_coil", event => {
     event.fluidOutputs.addSlot(122, 53);
 })
 ```

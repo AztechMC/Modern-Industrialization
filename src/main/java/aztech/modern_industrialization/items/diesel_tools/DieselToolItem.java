@@ -219,10 +219,10 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                 }
             }
             if (stack.is(ConventionalItemTags.HOES)) {
-                Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = (Pair) HoeItem.TILLABLES.get(state.getBlock());
+                Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = HoeItem.TILLABLES.get(state.getBlock());
                 if (pair != null) {
-                    Predicate<UseOnContext> predicate = (Predicate) pair.getFirst();
-                    Consumer<UseOnContext> consumer = (Consumer) pair.getSecond();
+                    Predicate<UseOnContext> predicate = pair.getFirst();
+                    Consumer<UseOnContext> consumer = pair.getSecond();
                     if (predicate.test(context)) {
                         w.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                         if (!w.isClientSide) {

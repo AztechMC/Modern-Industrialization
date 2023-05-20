@@ -25,39 +25,45 @@ package aztech.modern_industrialization.api;
 
 import aztech.modern_industrialization.definition.FluidLike;
 import java.util.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class FluidFuelRegistry {
-    private static final Map<Fluid, Integer> fluidEus = new HashMap<>();
+    private static final Map<ResourceLocation, Integer> fluidEus = new HashMap<>();
 
     public static void register(FluidLike fluid, int eu) {
         register(fluid.asFluid(), eu);
     }
 
     public static void register(Fluid fluid, int eu) {
-        if (eu <= 0) {
-            throw new RuntimeException("Fluids must have a positive eu amount!");
-        }
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new RuntimeException("May not register a null or empty fluid!");
         }
-        if (fluidEus.containsKey(fluid)) {
+        register(Registry.FLUID.getKey(fluid), eu);
+    }
+
+    public static void register(ResourceLocation fluidId, int eu) {
+        if (eu <= 0) {
+            throw new RuntimeException("Fluids must have a positive eu amount!");
+        }
+        if (fluidEus.containsKey(fluidId)) {
             throw new RuntimeException("May not re-register a fluid fuel!");
         }
-        fluidEus.put(fluid, eu);
+        fluidEus.put(fluidId, eu);
     }
 
     /**
      * Get the burn time of a fluid, or 0 if the fluid is not a registered fuel.
      */
     public static int getEu(Fluid fluid) {
-        return fluidEus.getOrDefault(fluid, 0);
+        return fluidEus.getOrDefault(Registry.FLUID.getKey(fluid), 0);
     }
 
     public static List<Fluid> getRegisteredFluids() {
-        List<Fluid> fluids = new ArrayList<>(fluidEus.keySet());
-        fluids.sort(Comparator.comparing(fluidEus::get));
-        return fluids;
+        List<ResourceLocation> fluidIds = new ArrayList<>(fluidEus.keySet());
+        fluidIds.sort(Comparator.comparing(fluidEus::get));
+        return fluidIds.stream().map(Registry.FLUID::get).filter(fluid -> fluid != Fluids.EMPTY).toList();
     }
 }

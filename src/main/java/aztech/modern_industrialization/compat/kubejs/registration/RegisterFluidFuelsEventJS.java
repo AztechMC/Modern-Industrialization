@@ -21,41 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
-import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Consumer;
+import aztech.modern_industrialization.api.FluidFuelRegistry;
+import dev.latvian.mods.kubejs.event.EventJS;
+import net.minecraft.resources.ResourceLocation;
 
-public class KubeJSProxy {
-    public static KubeJSProxy instance = new KubeJSProxy();
-
-    public void fireAddMaterialsEvent() {
-    }
-
-    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
-    }
-
-    public void fireRegisterFluidsEvent() {
-    }
-
-    public void fireRegisterFluidFuelsEvent() {
-    }
-
-    public void fireRegisterRecipeTypesEvent() {
-    }
-
-    public void fireRegisterMachineCasingsEvent() {
-    }
-
-    public void fireRegisterMachinesEvent() {
-    }
-
-    public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
-            SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
-    }
-
-    public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
+public class RegisterFluidFuelsEventJS extends EventJS {
+    public void register(ResourceLocation fluid, int eu) {
+        FluidFuelRegistry.register(fluid, eu);
     }
 }

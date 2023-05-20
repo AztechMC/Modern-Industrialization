@@ -210,6 +210,7 @@ public class ModernIndustrialization {
         FluidFuelRegistry.register(MIFluids.BIODIESEL, 250);
         FluidFuelRegistry.register(MIFluids.DIESEL, 400);
         FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 800);
+        KubeJSProxy.instance.fireRegisterFluidFuelsEvent();
     }
 
     private static void setupWrench() {

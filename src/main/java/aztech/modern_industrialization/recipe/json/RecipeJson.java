@@ -35,16 +35,8 @@ import net.minecraft.resources.ResourceLocation;
 public class RecipeJson {
     public static Gson GSON = new Gson();
 
-    public final String toJson() {
-        return GSON.toJson(this);
-    }
-
     public final JsonObject toJsonObject() {
         return GSON.toJsonTree(this).getAsJsonObject();
-    }
-
-    public final byte[] toBytes() {
-        return toJson().getBytes();
     }
 
     public final void offerTo(Consumer<FinishedRecipe> exporter, String recipeId) {

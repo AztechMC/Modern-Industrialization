@@ -31,16 +31,23 @@ import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEve
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterRecipeTypesEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import java.util.function.Consumer;
 
 public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireAddMaterialsEvent() {
         MIMaterialKubeJSEvents.ADD_MATERIALS.post(new AddMaterialsEventJS());
+    }
+
+    @Override
+    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
+        MIMaterialKubeJSEvents.MODIFY_MATERIAL.post(materialBuilder.getMaterialName(), new ModifyMaterialEventJS(materialBuilder));
     }
 
     @Override

@@ -21,34 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials;
+package aztech.modern_industrialization.compat.kubejs.material;
 
-import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import aztech.modern_industrialization.materials.MaterialBuilder;
+import dev.latvian.mods.kubejs.event.EventJS;
 
-public class MaterialRegistry {
-    static final Map<String, Material> MATERIALS = new TreeMap<>();
+public class ModifyMaterialEventJS extends EventJS {
+    public final MaterialBuilderJSWrapper builder;
+    public final String name;
 
-    public static Material addMaterial(MaterialBuilder materialBuilder) {
-        KubeJSProxy.instance.fireModifyMaterialEvent(materialBuilder);
-
-        Material material = materialBuilder.build();
-        if (MATERIALS.put(material.name, material) != null) {
-            throw new IllegalStateException("Duplicate registration of material " + material.name);
-        }
-        return material;
-    }
-
-    public static Material getMaterial(String name) {
-        Material material = MATERIALS.get(name);
-        Objects.requireNonNull(material);
-        return material;
-    }
-
-    public static Map<String, Material> getMaterials() {
-        return Collections.unmodifiableMap(MATERIALS);
+    public ModifyMaterialEventJS(MaterialBuilder materialBuilder) {
+        this.builder = new MaterialBuilderJSWrapper(materialBuilder);
+        this.name = materialBuilder.getMaterialName();
     }
 }

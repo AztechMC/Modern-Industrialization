@@ -88,6 +88,16 @@ public interface SimpleMember {
     }
 
     static SimpleMember verticalChain() {
-        return forBlockState(Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
+        return new SimpleMember() {
+            @Override
+            public boolean matchesState(BlockState state) {
+                return state.is(Blocks.CHAIN) && state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y;
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+            }
+        };
     }
 }

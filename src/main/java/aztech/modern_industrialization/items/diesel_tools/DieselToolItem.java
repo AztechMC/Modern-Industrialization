@@ -32,10 +32,13 @@ import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -53,14 +56,7 @@ import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Vanishable;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -210,7 +206,8 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                     }
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
-            } else if (stack.is(ConventionalItemTags.SHOVELS)) {
+            }
+            if (stack.is(ConventionalItemTags.SHOVELS)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);
@@ -221,6 +218,25 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
             }
+            if (stack.is(ConventionalItemTags.HOES)) {
+                Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = (Pair) HoeItem.TILLABLES.get(state.getBlock());
+                if (pair != null) {
+                    Predicate<UseOnContext> predicate = (Predicate) pair.getFirst();
+                    Consumer<UseOnContext> consumer = (Consumer) pair.getSecond();
+                    if (predicate.test(context)) {
+                        w.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        if (!w.isClientSide) {
+                            consumer.accept(context);
+                            if (player != null) {
+                                FluidFuelItemHelper.decrement(stack);
+                            }
+                        }
+
+                        return InteractionResult.sidedSuccess(w.isClientSide);
+                    }
+                }
+            }
+
         }
         return super.useOn(context);
     }

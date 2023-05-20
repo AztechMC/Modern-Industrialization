@@ -73,8 +73,7 @@ MIRecipeEvents.customCondition(event => {
     event.register("odd_x_pos", // ID of the condition
             // condition itself, receives the machine context and the recipe that is being checked
             (context, recipe) => {
-                // (two modulo operations are needed to correctly handle negative X coordinates, don't worry about it)
-                return (context.getBlockEntity().getBlockPos().getX() % 2 + 2) % 2 === 1;
+                return context.getBlockEntity().getBlockPos().getX() % 2 !== 0;
             },
             // description for REI-like mods
             Text.of("Must be placed on an odd X position"));

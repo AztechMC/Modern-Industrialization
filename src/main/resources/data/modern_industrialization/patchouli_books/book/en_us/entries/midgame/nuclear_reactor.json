@@ -11,6 +11,11 @@
 
     {
       "type": "text",
+      "text": "To produce power using the Nuclear Reactor, you need to place some form of Water in a Nuclear Fluid Hatch. It will turn into Steam that can then be used to produce power, possibly by running it through a Heat Exchanger first.$(br2)The Nuclear Reactor is also the only way to produce some materials such as Plutonium.$(br2)Finally, it can produce fluids used for nuclear fusion: Deuterium and Tritium."
+    },
+
+    {
+      "type": "text",
       "text": "How it works under the hood can be a bit overwhelming, despite the following pages trying to explain it. Nevertheless, you don't need to understand the details to be able to design a powerful reactor.$(br2)We recommend that you experiment with various designs in creative mode until you find one that suits you."
     },
 

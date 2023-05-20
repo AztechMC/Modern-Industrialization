@@ -45,7 +45,7 @@ public class MIBlockEntityTypes {
     public static BlockEntityType<CreativeStorageUnitBlockEntity> CREATIVE_STORAGE_UNIT;
 
     public static void init() {
-        CREATIVE_TANK = register(MIBlock.CREATIVE_TANK_BLOCK, CreativeTankBlockEntity::new);
+        CREATIVE_TANK = register(MIBlock.CREATIVE_TANK, CreativeTankBlockEntity::new);
         CREATIVE_STORAGE_UNIT = register(MIBlock.CREATIVE_STORAGE_UNIT, CreativeStorageUnitBlockEntity::new);
         CREATIVE_BARREL = register(MIBlock.CREATIVE_BARREL, CreativeBarrelBlockEntity::new);
 

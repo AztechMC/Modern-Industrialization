@@ -91,7 +91,7 @@ public class MIBlock {
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
-    public static final BlockDefinition<TankBlock> CREATIVE_TANK_BLOCK = block(
+    public static final BlockDefinition<TankBlock> CREATIVE_TANK = block(
             "Creative Tank",
             "creative_tank",
             BlockDefinitionParams.of()
@@ -99,8 +99,7 @@ public class MIBlock {
                     .withBlockItemConstructor(TankItem::new)
                     .withModel(TankPart.MODEL_GENERATOR)
                     .withBlockEntityRendererItemModel()
-                    .noLootTable().clearTags()
-                    .noOcclusion(),
+                    .noLootTable(),
             TankBlock.class
     ).withBlockRegistrationEvent(
             (block, item) -> ((TankItem) item).registerItemApi());
@@ -110,12 +109,11 @@ public class MIBlock {
             "Creative Barrel",
             "creative_barrel",
             BlockDefinitionParams.of()
-                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockConstructor((p) -> new BarrelBlock(CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
                     .withBlockItemConstructor(BarrelItem::new)
                     .withModel(TexturedModel.COLUMN)
                     .withBlockEntityRendererItemModel()
-                    .noLootTable().clearTags()
-                    .noOcclusion(),
+                    .noLootTable(),
             BarrelBlock.class
     );
 

@@ -42,9 +42,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
 
     public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
-        super(FabricBlockSettings.of(Material.METAL)
-                .destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN),
-                factory, behaviour);
+        super(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
     }
 
     public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {

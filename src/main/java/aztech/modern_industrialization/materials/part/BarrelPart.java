@@ -74,7 +74,7 @@ public class BarrelPart implements PartKeyProvider {
                             englishName,
                             itemPath,
                             MIBlock.BlockDefinitionParams.of()
-                                    .withBlockConstructor(s -> new BarrelBlock(s, factory, barrelStorageBehaviour))
+                                    .withBlockConstructor(s -> new BarrelBlock(factory, barrelStorageBehaviour))
                                     .withBlockItemConstructor(BarrelItem::new)
                                     .withModel(TexturedModel.COLUMN)
                                     .withBlockEntityRendererItemModel()

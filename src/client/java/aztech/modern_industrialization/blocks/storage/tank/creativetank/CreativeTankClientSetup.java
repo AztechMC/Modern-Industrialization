@@ -36,8 +36,8 @@ import net.minecraft.client.renderer.RenderType;
 @Environment(EnvType.CLIENT)
 public class CreativeTankClientSetup {
     public static void setupClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK.asBlock(), RenderType.cutout());
         TankRenderer.register(MIBlockEntityTypes.CREATIVE_TANK, 0x000000);
-        BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_TANK_BLOCK, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+        BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_TANK, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
     }
 }

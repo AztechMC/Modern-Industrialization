@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.waila.client;
 
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
@@ -34,5 +35,8 @@ public class MIWailaClientPlugin implements IWailaPlugin {
         PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
         r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
         r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+
+        OverclockComponentProvider overclockComponentProvider = new OverclockComponentProvider();
+        r.addComponent(overclockComponentProvider, TooltipPosition.BODY, MachineBlockEntity.class);
     }
 }

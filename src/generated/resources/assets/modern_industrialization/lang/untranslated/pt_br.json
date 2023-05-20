@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 351 missing, 3 unused",
+  "__summary": "1303 ok, 353 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1512,6 +1512,7 @@
   "text.modern_industrialization.DoubleFluidFuelEfficiency": "Eficiência Dupla! (EU x2 por combustível usado)",
   "text.modern_industrialization.DurabilityCost": "Durabilidade Usada : %d",
   "text.modern_industrialization.EbfMaxEu": "Permite receitas do AFE de até %d EU/t",
+  "text.modern_industrialization.Efficiency": "[UNTRANSLATED] Efficiency",
   "text.modern_industrialization.EfficiencyDefaultMessage": "Nenhuma receita ativara para fazer overclock",
   "text.modern_industrialization.EfficiencyEu": "Consumo atual : %d EU/t",
   "text.modern_industrialization.EfficiencyFactor": "Overclock : x%s",
@@ -1528,6 +1529,7 @@
   "text.modern_industrialization.EuInDieselGenerator": "EU por mb : %d",
   "text.modern_industrialization.EuMaxed": "%s / %s %sEU",
   "text.modern_industrialization.EuT": "%s%s EU/t",
+  "text.modern_industrialization.EuTOverclocked": "[UNTRANSLATED] Overclock × %s | %s EU/t",
   "text.modern_industrialization.FastNeutron": "Nêutron Rápido",
   "text.modern_industrialization.FastNeutronEnergy": "Energia de Nêutron Rápido",
   "text.modern_industrialization.FastNeutronFraction": "Fração de Nêutrons Rápidos Espalhados",

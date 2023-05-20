@@ -349,7 +349,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         }
     }
 
-    private static double getEfficiencyOverclock(int efficiencyTicks) {
+    public static double getEfficiencyOverclock(int efficiencyTicks) {
         return Math.pow(2.0, efficiencyTicks / 32.0);
     }
 

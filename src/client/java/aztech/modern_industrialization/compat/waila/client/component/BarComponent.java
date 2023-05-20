@@ -75,7 +75,7 @@ public class BarComponent implements ITooltipComponent {
 
     private final String valString;
 
-    public BarComponent(int color, double stored, double max, String unit, boolean verbose) {
+    public BarComponent(int color, double stored, double max, String unit, boolean verbose, boolean castToInt) {
         this.color = color;
         this.stored = stored;
         this.max = max;
@@ -84,17 +84,29 @@ public class BarComponent implements ITooltipComponent {
         if (stored < 0 || stored == Double.MAX_VALUE) {
             storedString = "∞";
         } else {
-            storedString = verbose ? String.valueOf(stored) : MeganeUtils.suffix((long) stored);
+            if (castToInt) {
+                storedString = verbose ? String.valueOf((int) stored) : MeganeUtils.suffix((long) stored);
+            } else {
+                storedString = verbose ? String.valueOf(stored) : MeganeUtils.suffix((long) stored);
+            }
         }
 
         String maxString;
         if (max <= 0 || max == Double.MAX_VALUE) {
             maxString = "∞";
         } else {
-            maxString = verbose ? String.valueOf(max) : MeganeUtils.suffix((long) max);
+            if (castToInt) {
+                maxString = verbose ? String.valueOf((int) max) : MeganeUtils.suffix((long) max);
+            } else {
+                maxString = verbose ? String.valueOf(max) : MeganeUtils.suffix((long) max);
+            }
         }
 
         valString = storedString + "/" + maxString + (unit.isEmpty() ? "" : " " + unit);
+    }
+
+    public BarComponent(int color, double stored, double max, String unit, boolean verbose) {
+        this(color, stored, max, unit, verbose, false);
     }
 
     @Override

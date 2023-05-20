@@ -23,15 +23,26 @@
  */
 package aztech.modern_industrialization.compat.waila.server;
 
+import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
+import aztech.modern_industrialization.machines.components.CrafterComponent;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
+import mcp.mobius.waila.api.IServerDataProvider;
+import net.minecraft.nbt.CompoundTag;
 
-public class MIWailaServerPlugin implements IWailaPlugin {
+public class OverclockComponentProvider implements IServerDataProvider<MachineBlockEntity> {
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-        r.addBlockData(new OverclockComponentProvider(), MachineBlockEntity.class);
+    public void appendServerData(CompoundTag data, IServerAccessor<MachineBlockEntity> accessor, IPluginConfig config) {
+
+        if (accessor.getTarget() instanceof CrafterComponentHolder crafterComponentHolder) {
+
+            CrafterComponent crafterComponent = crafterComponentHolder.getCrafterComponent();
+            if (crafterComponent.hasActiveRecipe() && crafterComponent.getMaxEfficiencyTicks() > 0) {
+                data.putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
+                data.putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
+                data.putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
+            }
+        }
     }
 }

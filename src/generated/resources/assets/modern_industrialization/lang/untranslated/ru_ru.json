@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 351 missing, 3 unused",
+  "__summary": "1303 ok, 353 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -1512,6 +1512,7 @@
   "text.modern_industrialization.DoubleFluidFuelEfficiency": "Удвоенная эффективность! (ЭЕ x2 за использованное топливо)",
   "text.modern_industrialization.DurabilityCost": "Расход прочности: %d",
   "text.modern_industrialization.EbfMaxEu": "Позволяет рецепты ЭДП до %d ЭЕ/такт",
+  "text.modern_industrialization.Efficiency": "[UNTRANSLATED] Efficiency",
   "text.modern_industrialization.EfficiencyDefaultMessage": "Нет активных рецептов для разгона",
   "text.modern_industrialization.EfficiencyEu": "Текущее потребление: %d ЭЕ/такт",
   "text.modern_industrialization.EfficiencyFactor": "Разгон: х%s",
@@ -1528,6 +1529,7 @@
   "text.modern_industrialization.EuInDieselGenerator": "ЭЕ в мв: %d",
   "text.modern_industrialization.EuMaxed": "%s / %s %sЭЕ",
   "text.modern_industrialization.EuT": "%s%s ЭЕ/такт",
+  "text.modern_industrialization.EuTOverclocked": "[UNTRANSLATED] Overclock × %s | %s EU/t",
   "text.modern_industrialization.FastNeutron": "Быстрый нейтрон",
   "text.modern_industrialization.FastNeutronEnergy": "Энергия быстрых нейронов",
   "text.modern_industrialization.FastNeutronFraction": "Осколок быстрого рассеянного нейтрона",

@@ -1,5 +1,5 @@
 {
-  "__summary": "1004 ok, 650 missing, 0 unused",
+  "__summary": "1004 ok, 652 missing, 0 unused",
   "advancements.modern_industrialization.advanced_upgrade": "机器再加速",
   "advancements.modern_industrialization.advanced_upgrade.description": "制作进阶升级",
   "advancements.modern_industrialization.analog_circuit": "RLC电路",
@@ -1510,6 +1510,7 @@
   "text.modern_industrialization.DoubleFluidFuelEfficiency": "[UNTRANSLATED] Double efficiency! (EU x2 per fuel used)",
   "text.modern_industrialization.DurabilityCost": "[UNTRANSLATED] Durability Cost : %d",
   "text.modern_industrialization.EbfMaxEu": "[UNTRANSLATED] Allows EBF recipes up to %d EU/t",
+  "text.modern_industrialization.Efficiency": "[UNTRANSLATED] Efficiency",
   "text.modern_industrialization.EfficiencyDefaultMessage": "[UNTRANSLATED] No active recipe to overclock",
   "text.modern_industrialization.EfficiencyEu": "[UNTRANSLATED] Current consumption : %d EU/t",
   "text.modern_industrialization.EfficiencyFactor": "[UNTRANSLATED] Overclock : x%s",
@@ -1526,6 +1527,7 @@
   "text.modern_industrialization.EuInDieselGenerator": "[UNTRANSLATED] EU per mb : %d",
   "text.modern_industrialization.EuMaxed": "[UNTRANSLATED] %s / %s %sEU",
   "text.modern_industrialization.EuT": "[UNTRANSLATED] %s%s EU/t",
+  "text.modern_industrialization.EuTOverclocked": "[UNTRANSLATED] Overclock × %s | %s EU/t",
   "text.modern_industrialization.FastNeutron": "[UNTRANSLATED] Fast Neutron",
   "text.modern_industrialization.FastNeutronEnergy": "[UNTRANSLATED] Fast Neutron Energy",
   "text.modern_industrialization.FastNeutronFraction": "[UNTRANSLATED] Fast Scattered Neutron Fraction",

@@ -178,17 +178,17 @@ public class SteamDrillItem
 
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
-        useFuel(stack);
+        useFuel(stack, miner);
         return true;
     }
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        useFuel(stack);
+        useFuel(stack, attacker);
         return true;
     }
 
-    private void useFuel(ItemStack stack) {
+    private void useFuel(ItemStack stack, @Nullable LivingEntity entity) {
         CompoundTag tag = stack.getTag();
         if (tag != null && tag.getInt("water") > 0) {
             if (tag.getInt("burnTicks") == 0) {
@@ -196,6 +196,12 @@ public class SteamDrillItem
                 tag = stack.getOrCreateTag(); // consumeFuel might cause the tag to change
                 tag.putInt("burnTicks", burnTicks);
                 tag.putInt("maxBurnTicks", burnTicks);
+
+                if (burnTicks > 0 && entity != null) {
+                    // Play cool sound
+                    entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.FIRE_AMBIENT, SoundSource.PLAYERS, 1.0f,
+                            1.0f);
+                }
             }
         }
     }

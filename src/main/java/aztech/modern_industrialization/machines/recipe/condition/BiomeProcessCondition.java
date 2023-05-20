@@ -67,7 +67,7 @@ public class BiomeProcessCondition implements MachineProcessCondition {
         }
 
         @Override
-        public JsonObject toJson(BiomeProcessCondition condition) {
+        public JsonObject toJson(BiomeProcessCondition condition, boolean syncToClient) {
             var obj = new JsonObject();
             obj.addProperty("biome", condition.biome.location().toString());
             return obj;

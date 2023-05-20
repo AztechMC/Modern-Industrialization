@@ -60,6 +60,36 @@ ServerEvents.recipes(event => {
 })
 ```
 
+## Custom process conditions
+You can also add your own process conditions by writing KubeJS checks directly, they can be slow so don't use too many of them.
+
+First, we need to register the condition and its description using the `MIRecipeEvents.customConditions` event.
+The description is mandatory and will be used in the display of the recipe in REI.
+Then, we can use it in the recipe. Here is a full example:
+
+```js
+// Add "odd_x_pos" condition that requires the machine to be in an odd X position
+MIRecipeEvents.customCondition(event => {
+    event.register("odd_x_pos", // ID of the condition
+            // condition itself, receives the machine context and the recipe that is being checked
+            (context, recipe) => {
+                // (two modulo operations are needed to correctly handle negative X coordinates, don't worry about it)
+                return (context.getBlockEntity().getBlockPos().getX() % 2 + 2) % 2 === 1;
+            },
+            // description for REI-like mods
+            Text.of("Must be placed on an odd X position"));
+});
+
+// Add recipe that uses the condition, see above
+ServerEvents.recipes(event => {
+    event.recipes.modern_industrialization.compressor(2, 200)
+        .itemIn("dirt")
+        .itemOut("diamond")
+        // Use custom condition defined above
+        .customCondition("odd_x_pos")
+});
+```
+
 ## Adding multiblock slots
 Multiblock machines always have an unlimited number of input and output slots
 (provided the recipe type allows the relevant input/output types).

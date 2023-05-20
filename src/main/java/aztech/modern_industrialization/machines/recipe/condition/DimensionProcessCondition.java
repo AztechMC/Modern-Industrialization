@@ -67,7 +67,7 @@ public class DimensionProcessCondition implements MachineProcessCondition {
         }
 
         @Override
-        public JsonObject toJson(DimensionProcessCondition condition) {
+        public JsonObject toJson(DimensionProcessCondition condition, boolean syncToClient) {
             var obj = new JsonObject();
             obj.addProperty("dimension", condition.dimension.location().toString());
             return obj;

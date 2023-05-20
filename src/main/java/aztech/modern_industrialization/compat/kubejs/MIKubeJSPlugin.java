@@ -26,9 +26,11 @@ package aztech.modern_industrialization.compat.kubejs;
 import aztech.modern_industrialization.MIStartup;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeJS;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.condition.CustomProcessCondition;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.*;
 
@@ -41,6 +43,7 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
     public void registerEvents() {
         MIMachineKubeJSEvents.EVENT_GROUP.register();
         MIMaterialKubeJSEvents.EVENT_GROUP.register();
+        MIRecipeKubeJSEvents.EVENT_GROUP.register();
         MIRegistrationKubeJSEvents.EVENT_GROUP.register();
     }
 
@@ -55,5 +58,8 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
         for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
             event.register(mrt.getId(), MachineRecipeJS::new);
         }
+
+        // A bit ugly, oh well
+        CustomProcessCondition.gather();
     }
 }

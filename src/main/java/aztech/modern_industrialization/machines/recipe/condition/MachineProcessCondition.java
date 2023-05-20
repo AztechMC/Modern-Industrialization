@@ -40,7 +40,7 @@ public interface MachineProcessCondition {
 
     @ApiStatus.NonExtendable
     default JsonObject toJson() {
-        var obj = ((Serializer) getSerializer()).toJson(this);
+        var obj = ((Serializer) getSerializer()).toJson(this, false);
         obj.addProperty("id", MachineProcessConditions.getId(getSerializer()).toString());
         return obj;
     }
@@ -56,6 +56,9 @@ public interface MachineProcessCondition {
     interface Serializer<T extends MachineProcessCondition> {
         T fromJson(JsonObject json);
 
-        JsonObject toJson(T condition);
+        /**
+         * @param syncToClient False if writing to datapack, true if writing to client.
+         */
+        JsonObject toJson(T condition, boolean syncToClient);
     }
 }

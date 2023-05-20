@@ -84,7 +84,7 @@ public class AdjacentBlockProcessCondition implements MachineProcessCondition {
         }
 
         @Override
-        public JsonObject toJson(AdjacentBlockProcessCondition condition) {
+        public JsonObject toJson(AdjacentBlockProcessCondition condition, boolean syncToClient) {
             var obj = new JsonObject();
             obj.addProperty("block", Registry.BLOCK.getKey(condition.block).toString());
             obj.addProperty("position", condition.relativePosition.toString());

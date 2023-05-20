@@ -381,7 +381,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         writeList(buf, recipe.conditions, (b, cond) -> {
             var serializer = cond.getSerializer();
             buf.writeResourceLocation(MachineProcessConditions.getId(serializer));
-            buf.writeUtf(serializer.toJson(cast(cond)).toString());
+            buf.writeUtf(serializer.toJson(cast(cond), true).toString());
         });
     }
 

@@ -33,6 +33,8 @@ import aztech.modern_industrialization.compat.kubejs.machine.RegisterUpgradesEve
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
+import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEventJS;
+import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
@@ -92,5 +94,10 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
         MIMachineKubeJSEvents.ADD_EBF_TIERS.post(new AddEbfTiersEventJS(tierConsumer));
+    }
+
+    @Override
+    public void fireCustomConditionEvent() {
+        MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(new CustomConditionEventJS());
     }
 }

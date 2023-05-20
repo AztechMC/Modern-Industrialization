@@ -23,30 +23,15 @@
  */
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
-import aztech.modern_industrialization.machines.recipe.condition.AdjacentBlockProcessCondition;
-import aztech.modern_industrialization.machines.recipe.condition.BiomeProcessCondition;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.CustomProcessCondition;
-import aztech.modern_industrialization.machines.recipe.condition.DimensionProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
+import dev.latvian.mods.kubejs.event.EventJS;
+import java.util.function.BiPredicate;
+import net.minecraft.network.chat.Component;
 
-public interface ProcessConditionHelper {
-    ProcessConditionHelper processCondition(MachineProcessCondition condition);
-
-    default ProcessConditionHelper dimension(ResourceLocation dimension) {
-        return processCondition(new DimensionProcessCondition(dimension));
-    }
-
-    default ProcessConditionHelper adjacentBlock(Block block, String relativePosition) {
-        return processCondition(new AdjacentBlockProcessCondition(block, relativePosition));
-    }
-
-    default ProcessConditionHelper biome(ResourceLocation biome) {
-        return processCondition(new BiomeProcessCondition(biome));
-    }
-
-    default ProcessConditionHelper customCondition(String id) {
-        return processCondition(new CustomProcessCondition(id));
+public class CustomConditionEventJS extends EventJS {
+    public void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, Component... description) {
+        CustomProcessCondition.register(id, predicate, description);
     }
 }

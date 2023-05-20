@@ -295,17 +295,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                         matrices.translate(x, y, 0);
                         matrices.scale((float) w / 16, (float) h / 16, 0);
 
-                        {
-                            PoseStack modelViewStack = RenderSystem.getModelViewStack();
-                            modelViewStack.pushPose();
-                            {
-                                modelViewStack.mulPoseMatrix(matrices.last().pose());
-                                stack.render(matrices, 0, 0, delta);
-                            }
-                            modelViewStack.popPose();
-                            // Restore model-view matrix now that the item has been rendered
-                            RenderSystem.applyModelViewMatrix();
-                        }
+                        stack.render(matrices, 0, 0, delta);
 
                         matrices.popPose();
                     });

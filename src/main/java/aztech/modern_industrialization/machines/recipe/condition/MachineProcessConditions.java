@@ -53,5 +53,6 @@ public final class MachineProcessConditions {
         register(new MIIdentifier("dimension"), DimensionProcessCondition.SERIALIZER);
         register(new MIIdentifier("adjacent_block"), AdjacentBlockProcessCondition.SERIALIZER);
         register(new MIIdentifier("biome"), BiomeProcessCondition.SERIALIZER);
+        register(new MIIdentifier("custom"), CustomProcessCondition.SERIALIZER);
     }
 }

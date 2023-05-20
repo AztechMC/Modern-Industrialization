@@ -61,4 +61,7 @@ public class KubeJSProxy {
 
     public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
     }
+
+    public void fireCustomConditionEvent() {
+    }
 }

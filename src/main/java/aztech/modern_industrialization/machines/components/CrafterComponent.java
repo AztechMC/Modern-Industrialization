@@ -658,5 +658,19 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
             AbstractConfigurableStack.playerLockNoOverride(output.fluid, this.inventory.getFluidOutputs());
         }
+
+        // LOCK ITEMS
+        if (recipe.itemInputs.size() > 0 || recipe.itemOutputs.size() > 0) {
+            lockAll(this.inventory.getItemInputs());
+            lockAll(this.inventory.getItemOutputs());
+        }
+    }
+
+    private static void lockAll(List<? extends AbstractConfigurableStack<?, ?>> stacks) {
+        for (var stack : stacks) {
+            if (stack.isEmpty() && stack.getLockedInstance() == null) {
+                stack.togglePlayerLock();
+            }
+        }
     }
 }

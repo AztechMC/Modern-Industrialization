@@ -16,8 +16,14 @@ Here is an example script that adds a new `Zinc` material:
 MIMaterialEvents.addMaterials(event => {
     event.createMaterial("Zinc", "zinc", 0xd68b7a, // english name, internal name, and material color in hex
         builder => {
-        builder.addParts("ingot", "nugget", "dust", "tiny_dust", "rod", "gear", "ring", "blade", "rotor", "coil", "plate", "bolt", "large_plate")
-            // addParts adds the simple parts to the material ie, the one already defined in MI and that don't need more parameters 
+        builder
+            .hardness("soft") // hardness controls the speed of some recipes, can be "soft", "average", "hard", "very_hard" (default is "average")
+            .materialSet("shiny") // controls the texture set used by the material, can be "metallic", "shiny", "stone", "dull" (default is "metallic")
+            // addParts adds the simple parts to the material ie, the one already defined in MI and that don't need more parameters
+            .addParts("ingot", "nugget", "dust", "tiny_dust", "rod", "gear", "ring", "blade", "rotor", "coil", "plate", "bolt", "large_plate")
+            // add a part that doesn't exist in MI
+            // template texture goes in modern_industrialization/extra_datagen_resources/assets/modern_industrialization/textures/materialsets/common/long_rod.png
+            .customRegularPart("Long Rod", "long_rod")
             .barrel("Super Barrel", "super_barrel", 69) // add a barrel with 69 stacks capacity and custom english name and path (both optional)
             .tank("Super Tank", "super_tank", 42) // add a tank same as above but for buckets capacity
             .block("copper") // add a simple block with the "copper" texture (found in "textures/materialsets/blocks") 
@@ -49,6 +55,8 @@ MIMaterialEvents.addMaterials(event => {
 });
 ```
 
+<!-- TODO: add gem example -->
+
 ### Using already defined items as parts
 
 If you want a material for which items (from either vanilla or other mod) already exist, you can use the `addExternalPart` method
@@ -73,4 +81,30 @@ MIMaterialEvents.addMaterials(event => {
     });
 });
 
+```
+
+## Modify a Material
+
+Most of the syntax is shared with adding a material once you get access to the material builder.
+For example, here is how to add a diamond tank:
+```js
+// Material name to only modify that specific material
+MIMaterialEvents.modifyMaterial("diamond", event => {
+    event.builder
+        // Call any builder function, see above
+        .tank(64)
+})
+```
+
+## Modify ALL Materials
+
+Don't specify a material name in the `modifyMaterial` event registration to modify all materials.
+For example, here is how to add a small gear to all materials:
+```js
+// No material name to modify all materials
+MIMaterialEvents.modifyMaterial(event => {
+    event.builder
+        // Add a custom small gear part to ALL materials, see above
+        .customRegularPart("Small Gear", "small_gear")
+})
 ```

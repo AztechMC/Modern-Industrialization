@@ -25,9 +25,11 @@ package aztech.modern_industrialization.compat.kubejs.material;
 
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
+import dev.latvian.mods.kubejs.event.Extra;
 
 public interface MIMaterialKubeJSEvents {
     EventGroup EVENT_GROUP = EventGroup.of("MIMaterialEvents");
 
     EventHandler ADD_MATERIALS = EVENT_GROUP.startup("addMaterials", () -> AddMaterialsEventJS.class);
+    EventHandler MODIFY_MATERIAL = EVENT_GROUP.startup("modifyMaterial", () -> ModifyMaterialEventJS.class).extra(Extra.STRING);
 }

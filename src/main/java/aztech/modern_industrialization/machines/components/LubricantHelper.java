@@ -50,24 +50,13 @@ public class LubricantHelper {
                 if (handIo != null) {
                     try (Transaction tx = Transaction.openOuter()) {
                         long extracted = handIo.extract(MIFluids.LUBRICANT.variant(), (long) rem * dropPerTick, tx);
-                        if (extracted % dropPerTick == 0) {
+                        long addedTicks = (extracted + dropPerTick - 1) / dropPerTick;
+
+                        if (addedTicks > 0) {
                             player.playNotifySound(FluidVariantAttributes.getFillSound(MIFluids.LUBRICANT.variant()), SoundSource.BLOCKS, 1, 1);
-                            crafter.increaseEfficiencyTicks((int) (extracted / dropPerTick));
+                            crafter.increaseEfficiencyTicks((int) addedTicks);
                             tx.commit();
                             return InteractionResult.SUCCESS;
-                        } else if (extracted > dropPerTick) {
-                            tx.close();
-                            long attempt = dropPerTick * (extracted / dropPerTick);
-                            try (Transaction txVoid = Transaction.openOuter()) {
-                                long extractedVoid = handIo.extract(MIFluids.LUBRICANT.variant(), attempt, txVoid);
-                                if (extractedVoid > 0) {
-                                    player.playNotifySound(FluidVariantAttributes.getFillSound(MIFluids.LUBRICANT.variant()), SoundSource.BLOCKS, 1,
-                                            1);
-                                    crafter.increaseEfficiencyTicks((int) (extractedVoid / dropPerTick));
-                                    txVoid.commit();
-                                    return InteractionResult.SUCCESS;
-                                }
-                            }
                         }
                     }
                 }

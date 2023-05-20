@@ -103,11 +103,11 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
 
         for (ConfigurableFluidStack stack : fluidInputs) {
             Fluid fluid = stack.getResource().getFluid();
-            if (acceptedFluid.test(fluid) && stack.getAmount() >= 81) {
+            if (acceptedFluid.test(fluid) && stack.getAmount() > 0) {
                 long fuelEu = fluidEUperMb.applyAsLong(fluid);
-                long mbConsumedMax = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount() / 81);
-                euProduced += mbConsumedMax * fuelEu;
-                stack.decrement(mbConsumedMax * 81);
+                long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu * 81, stack.getAmount());
+                euProduced += usedDroplets * fuelEu / 81;
+                stack.decrement(usedDroplets);
 
                 if (euProduced >= maxEuProduced) {
                     euBuffer += euProduced - maxEuProduced;

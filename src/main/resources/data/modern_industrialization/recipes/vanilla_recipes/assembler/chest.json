@@ -1,0 +1,22 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "minecraft:planks",
+      "amount": 8
+    },
+    {
+      "item": "minecraft:chest",
+      "amount": 1,
+      "probability": 0
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:chest",
+      "amount": 2
+    }
+  ]
+}

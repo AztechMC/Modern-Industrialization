@@ -17,6 +17,18 @@ MIMachineEvents.addEbfTiers(event => {
 })
 ```
 
+## Adding electric machine upgrades
+You can add electric machine upgrades using KubeJS.
+This will allow them to be used in all the electric machines to increase the maximum EU that the machine can handle.
+
+Example:
+```js
+MIMachineEvents.registerUpgrades(event => {
+  // id of the upgrade item, number of added EU per upgrade
+  event.register("minecraft:diamond", 42);
+});
+```
+
 ## Registering a recipe type
 Recipe types can be added by KubeJS.
 Generally you will want to store them in a variable to use them later.

@@ -45,6 +45,7 @@ public class FluidFuelRegistry {
     }
 
     public static void register(ResourceLocation fluidId, int eu) {
+        Objects.requireNonNull(fluidId);
         if (eu <= 0) {
             throw new RuntimeException("Fluids must have a positive eu amount!");
         }

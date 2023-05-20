@@ -119,8 +119,7 @@ public class SlotPanel {
     }
 
     public enum SlotType {
-        UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.UPGRADES.containsKey(stack.getItem()), 0, 80,
-                MIText.AcceptsUpgrades),
+        UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.getExtraEu(stack.getItem()) > 0, 0, 80, MIText.AcceptsUpgrades),
         // Assumes that the default casing is always the LV casing for now
         CASINGS(SlotGroup.CASING, 1, stack -> {
             if (stack.getItem() instanceof BlockItem block && block != MIBlock.BASIC_MACHINE_HULL.asItem()) {

@@ -24,28 +24,56 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 public class UpgradeComponent implements IComponent.ServerOnly {
 
     private ItemStack itemStack = ItemStack.EMPTY;
-    public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
+    private final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
+
+    public static long getExtraEu(ItemLike item) {
+        return UPGRADES.getOrDefault(Registry.ITEM.getKey(item.asItem()), 0L);
+    }
+
+    public static void registerUpgrade(ItemLike item, long extraEu) {
+        registerUpgrade(Registry.ITEM.getKey(item.asItem()), extraEu);
+    }
+
+    public static void registerUpgrade(ResourceLocation itemId, long extraEu) {
+        Objects.requireNonNull(itemId);
+
+        if (extraEu <= 0) {
+            throw new IllegalArgumentException("extraEu must be positive");
+        }
+
+        if (UPGRADES.containsKey(itemId)) {
+            throw new IllegalArgumentException("Upgrade already registered:" + itemId);
+        }
+
+        UPGRADES.put(itemId, extraEu);
+    }
 
     static {
-        UPGRADES.put(MIItem.BASIC_UPGRADE.asItem(), 2L);
-        UPGRADES.put(MIItem.ADVANCED_UPGRADE.asItem(), 8L);
-        UPGRADES.put(MIItem.TURBO_UPGRADE.asItem(), 32L);
-        UPGRADES.put(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
-        UPGRADES.put(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
+        registerUpgrade(MIItem.BASIC_UPGRADE.asItem(), 2L);
+        registerUpgrade(MIItem.ADVANCED_UPGRADE.asItem(), 8L);
+        registerUpgrade(MIItem.TURBO_UPGRADE.asItem(), 32L);
+        registerUpgrade(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
+        registerUpgrade(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
+
+        KubeJSProxy.instance.fireRegisterUpgradesEvent();
     }
 
     @Override
@@ -63,7 +91,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (stackInHand.isEmpty()) {
             return InteractionResult.PASS;
         }
-        if (UPGRADES.containsKey(stackInHand.getItem())) {
+        if (UpgradeComponent.getExtraEu(stackInHand.getItem()) > 0) {
             boolean changed = false;
             if (itemStack.isEmpty()) {
                 itemStack = stackInHand.copy();
@@ -98,7 +126,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (itemStack.isEmpty()) {
             return 0;
         } else {
-            return itemStack.getCount() * UPGRADES.get(itemStack.getItem());
+            return itemStack.getCount() * UpgradeComponent.getExtraEu(itemStack.getItem());
         }
     }
 

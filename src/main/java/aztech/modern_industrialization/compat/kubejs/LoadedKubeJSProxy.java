@@ -29,6 +29,7 @@ import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEven
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterCasingsEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterRecipeTypesEventJS;
+import aztech.modern_industrialization.compat.kubejs.machine.RegisterUpgradesEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
@@ -74,6 +75,11 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireRegisterMachinesEvent() {
         MIMachineKubeJSEvents.REGISTER_MACHINES.post(new RegisterMachinesEventJS());
+    }
+
+    @Override
+    public void fireRegisterUpgradesEvent() {
+        MIMachineKubeJSEvents.REGISTER_UPGRADES.post(new RegisterUpgradesEventJS());
     }
 
     @Override

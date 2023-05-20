@@ -235,13 +235,13 @@ public class MITooltips {
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(SpeedUpgrade.UPGRADES::containsKey,
             (itemStack) -> new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(itemStack.getItem())).build());
 
-    public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultiline(UpgradeComponent.UPGRADES::containsKey, (itemStack) -> {
+    public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultiline(item -> UpgradeComponent.getExtraEu(item) > 0, (itemStack) -> {
         List<Component> lines = new LinkedList<>();
-        lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+        lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
 
         if (itemStack.getCount() > 1) {
             lines.add(new Line(MIText.MachineUpgradeStack)
-                    .arg(itemStack.getCount() * UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+                    .arg(itemStack.getCount() * UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
         }
         return lines;
     });

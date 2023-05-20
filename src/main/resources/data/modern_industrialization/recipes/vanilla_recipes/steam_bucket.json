@@ -1,4 +1,16 @@
-{"type":"minecraft:smelting",
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:not",
+      "value": {
+        "condition": "fabric:all_mods_loaded",
+        "values": [
+          "dehydration"
+        ]
+      }
+    }
+  ],
+  "type":"minecraft:smelting",
   "cookingtime":500,
   "experience":0,
   "ingredient":{

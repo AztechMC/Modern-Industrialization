@@ -48,10 +48,10 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
     private final OverclockComponent overclockComponent;
 
     public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
-            OverclockComponent overclockComponent) {
+            List<OverclockComponent.Catalyst> overclockCatalysts) {
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
-        this.overclockComponent = overclockComponent;
+        this.overclockComponent = new OverclockComponent(overclockCatalysts);
         this.recipeType = recipeType;
         this.registerComponents(overclockComponent);
     }

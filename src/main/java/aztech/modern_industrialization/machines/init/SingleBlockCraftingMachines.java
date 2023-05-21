@@ -197,7 +197,7 @@ public final class SingleBlockCraftingMachines {
                     bet -> new SteamCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, steamBuckets,
                                     ioBucketCapacity),
-                            builtGuiParams, progressBarParams, tier, extraConfig.steamOverclockComponent),
+                            builtGuiParams, progressBarParams, tier, extraConfig.steamOverclockCatalysts),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
@@ -317,6 +317,6 @@ public final class SingleBlockCraftingMachines {
     }
 
     public static class Config {
-        public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
+        public List<OverclockComponent.Catalyst> steamOverclockCatalysts = OverclockComponent.getDefaultCatalysts();
     }
 }

@@ -26,6 +26,7 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
+import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
@@ -38,20 +39,26 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.*;
-import net.minecraft.world.item.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
+import team.reborn.energy.api.base.SimpleEnergyItem;
 
 @SuppressWarnings("unused")
 public class MITooltips {
@@ -91,14 +98,16 @@ public class MITooltips {
         if (item != null) {
             boolean hasPrintRequiredShift = false;
             for (var tooltip : TOOLTIPS) {
-                if (tooltip.addTooltip.test(item)) {
-                    if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
-                        lines.addAll(tooltip.tooltipLines.apply(stack));
-                    } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
+                Optional<List<? extends Component>> maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
+                if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
+                    maybeComponents.ifPresent(lines::addAll);
+                } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
+                    if (maybeComponents.isPresent()) {
                         lines.add(MIText.TooltipsShiftRequired.text().setStyle(DEFAULT_STYLE));
                         hasPrintRequiredShift = true;
                     }
                 }
+
             }
         }
     }
@@ -142,6 +151,17 @@ public class MITooltips {
         }
     };
 
+    public record NumberWithMax(Number number, Number max) {
+    }
+
+    public static final Parser<NumberWithMax> EU_MAXED_PARSER = new Parser<>() {
+        @Override
+        public Component parse(NumberWithMax numberWithMax) {
+            MutableComponent component = TextHelper.getEuTextMaxed(numberWithMax.number, numberWithMax.max);
+            return component.withStyle(NUMBER_TEXT);
+        }
+    };
+
     public static final Parser<Fluid> FLUID_PARSER = new Parser<>() {
         @Override
         public Component parse(Fluid fluid) {
@@ -175,84 +195,148 @@ public class MITooltips {
 
     // Tooltips
 
-    public static final TooltipAttachment CABLES = TooltipAttachment
-            .of((item) -> item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe), itemStack -> {
-                var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
-                return new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build();
+    public static final TooltipAttachment BATTERIES = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (PortableStorageUnit.CAPACITY_PER_BATTERY.containsKey(item)) {
+                    var capacity = PortableStorageUnit.CAPACITY_PER_BATTERY.get(itemStack.getItem());
+                    return Optional.of(new Line(MIText.BatteryInStorageUnit).arg(capacity, EU_PARSER).build());
+                } else {
+                    return Optional.empty();
+                }
+            });
+
+    public static final TooltipAttachment CABLES = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe)) {
+                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
+                    return Optional.of(new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
+                } else {
+                    return Optional.empty();
+                }
             });
 
     public static final TooltipAttachment COILS = TooltipAttachment.of(
-            (item) -> item instanceof BlockItem blockItem
-                    && ElectricBlastFurnaceBlockEntity.tiersByCoil.containsKey(Registry.BLOCK.getKey(blockItem.getBlock())),
-            (itemStack) -> {
-                long eu = ElectricBlastFurnaceBlockEntity.tiersByCoil.get(Registry.BLOCK.getKey(((BlockItem) itemStack.getItem()).getBlock()))
-                        .maxBaseEu();
-                return new Line(MIText.EbfMaxEu).arg(eu).build();
+            (itemStack, item) -> {
+                if (item instanceof BlockItem blockItem
+                        && ElectricBlastFurnaceBlockEntity.tiersByCoil.containsKey(Registry.BLOCK.getKey(blockItem.getBlock()))) {
+                    long eu = ElectricBlastFurnaceBlockEntity.tiersByCoil.get(Registry.BLOCK.getKey(((BlockItem) itemStack.getItem()).getBlock()))
+                            .maxBaseEu();
+                    return Optional.of(new Line(MIText.EbfMaxEu).arg(eu).build());
+                } else {
+                    return Optional.empty();
+                }
             });
 
-    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment
-            .of((item) -> item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem(),
-                    (itemStack) -> new Line(MIText.AllowCreativeFligth).build())
-            .noShiftRequired();
+    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem()) {
+                    return Optional.of(new Line(MIText.AllowCreativeFligth).build());
+                } else {
+                    return Optional.empty();
+                }
+            }).noShiftRequired();
+
+    public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (item instanceof SimpleEnergyItem energyStorageItem
+                        && Registry.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                    SimpleEnergyItem simpleEnergyItem = (SimpleEnergyItem) itemStack.getItem();
+                    long capacity = simpleEnergyItem.getEnergyCapacity(itemStack);
+                    if (capacity > 0) {
+                        return Optional.of(new Line(MIText.EnergyStored)
+                                .arg(new NumberWithMax(simpleEnergyItem.getStoredEnergy(itemStack), capacity), EU_MAXED_PARSER).build());
+                    }
+                }
+                return Optional.empty();
+            }).noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),
             new Line(MIText.LubricantTooltip).arg(LubricantHelper.mbPerTick));
 
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
 
-    public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultiline(
-            (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock
-                    && !machineBlock.getBlockEntityInstance().getTooltips().isEmpty(),
-            (itemStack) -> (((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).getBlockEntityInstance()).getTooltips());
+    public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock
+                        && !machineBlock.getBlockEntityInstance().getTooltips().isEmpty()) {
+                    return Optional.of((((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).getBlockEntityInstance()).getTooltips());
 
-    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(item -> item.asItem() instanceof NuclearAbsorbable, (itemStack) -> {
-        List<Component> tooltips = new LinkedList<>();
-        long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
-        tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs).arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
-        if (itemStack.getItem() instanceof NuclearFuel fuel) {
-            long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
-            tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
-        }
-        return tooltips;
-    });
-
-    public static final TooltipAttachment ORES = TooltipAttachment
-            .ofMultiline((item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock, (itemStack) -> {
-                OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
-                List<Component> lines = new LinkedList<>();
-                MIConfig config = MIConfig.getConfig();
-
-                if (config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName) && oreBlock.params.generate) {
-                    lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
-                    lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
-                    lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
                 } else {
-                    lines.add(new Line(MIText.OreNotGenerated).build());
+                    return Optional.empty();
                 }
-                return lines;
             });
 
-    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(SpeedUpgrade.UPGRADES::containsKey,
-            (itemStack) -> new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(itemStack.getItem())).build());
+    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof NuclearAbsorbable) {
+                    List<Component> tooltips = new LinkedList<>();
+                    long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
+                    tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs)
+                            .arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
+                    if (itemStack.getItem() instanceof NuclearFuel fuel) {
+                        long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
+                        tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+                    }
+                    return Optional.of(tooltips);
+                } else {
+                    return Optional.empty();
+                }
+            });
 
-    public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultiline(item -> UpgradeComponent.getExtraEu(item) > 0, (itemStack) -> {
-        List<Component> lines = new LinkedList<>();
-        lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+    public static final TooltipAttachment ORES = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock) {
+                    OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
+                    List<Component> lines = new LinkedList<>();
+                    MIConfig config = MIConfig.getConfig();
 
-        if (itemStack.getCount() > 1) {
-            lines.add(new Line(MIText.MachineUpgradeStack)
-                    .arg(itemStack.getCount() * UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
-        }
-        return lines;
-    });
+                    if (config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName) && oreBlock.params.generate) {
+                        lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
+                        lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
+                        lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
+                    } else {
+                        lines.add(new Line(MIText.OreNotGenerated).build());
+                    }
+                    return Optional.of(lines);
+                } else {
+                    return Optional.empty();
+                }
+            });
 
-    public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultiline(MIItem.STEAM_MINING_DRILL,
+    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (SpeedUpgrade.UPGRADES.containsKey(item)) {
+                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(item)).build());
+                } else {
+                    return Optional.empty();
+                }
+
+            });
+
+    public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (UpgradeComponent.getExtraEu(item) > 0) {
+
+                    List<Component> lines = new LinkedList<>();
+                    lines.add(new Line(MIText.MachineUpgrade).arg(UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+
+                    if (itemStack.getCount() > 1) {
+                        lines.add(new Line(MIText.MachineUpgradeStack)
+                                .arg(itemStack.getCount() * UpgradeComponent.getExtraEu(itemStack.getItem()), EU_PER_TICK_PARSER).build());
+                    }
+                    return Optional.of(lines);
+                } else {
+                    return Optional.empty();
+                }
+            });
+
+    public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
             MIText.SteamDrillWaterHelp,
             MIText.SteamDrillFuelHelp,
             MIText.SteamDrillProfit,
             MIText.SteamDrillToggle);
 
-    public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultiline(MIItem.CONFIG_CARD,
+    public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
             MIText.ConfigCardHelpCamouflage1,
             MIText.ConfigCardHelpCamouflage2,
             MIText.ConfigCardHelpCamouflage3,
@@ -284,8 +368,13 @@ public class MITooltips {
             TOOLTIPS_ENGLISH_TRANSLATION.put(translationKey[i], englishTooltipsLine[i]);
         }
 
-        MITooltips.TooltipAttachment.ofMultiline(attachTo::test, itemStack -> Arrays.stream(translationKey)
-                .map(s -> Component.translatable(s).withStyle(MITooltips.DEFAULT_STYLE)).collect(Collectors.toList()));
+        MITooltips.TooltipAttachment.ofMultilines((itemStack, item) -> {
+            if (attachTo.test(item)) {
+                return Optional.of(Arrays.stream(translationKey).map(Component::translatable).collect(Collectors.toList()));
+            } else {
+                return Optional.empty();
+            }
+        });
     }
 
     private static void add(ItemLike itemLike, String... englishTooltipsLine) {
@@ -316,43 +405,44 @@ public class MITooltips {
 
     public static class TooltipAttachment implements Comparable<TooltipAttachment> {
 
-        public final Predicate<Item> addTooltip;
-        public final Function<ItemStack, List<? extends Component>> tooltipLines;
+        public final BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines;
         public boolean requiresShift = true;
         public int priority = 0;
-
-        public static TooltipAttachment ofMultiline(Predicate<Item> addTooltip, Function<ItemStack, List<? extends Component>> tooltipLines) {
-            return new TooltipAttachment(addTooltip, tooltipLines);
-        }
-
-        public static TooltipAttachment ofMultiline(ItemLike itemLike, Function<ItemStack, List<? extends Component>> tooltips) {
-            return new TooltipAttachment((item) -> item == itemLike.asItem(), tooltips);
-        }
-
-        public static TooltipAttachment ofMultiline(ItemLike itemLike, MIText... tooltipLines) {
-            Preconditions.checkArgument(tooltipLines.length > 0);
-            var tooltip = Stream.of(tooltipLines).map(t -> new Line(t).build()).toList();
-            return new TooltipAttachment(item -> item == itemLike.asItem(), stack -> tooltip);
-        }
-
-        public static TooltipAttachment of(Predicate<Item> addTooltip, Function<ItemStack, ? extends Component> tooltips) {
-            return ofMultiline(addTooltip, (item -> List.of(tooltips.apply(item))));
-        }
-
-        public static TooltipAttachment of(ItemLike itemLike, Function<ItemStack, Component> tooltips) {
-            return ofMultiline(itemLike, (item -> List.of(tooltips.apply(item))));
-        }
 
         public static TooltipAttachment of(ItemLike itemLike, MIText text) {
             return of(itemLike, new Line(text));
         }
 
         public static TooltipAttachment of(ItemLike itemLike, Line line) {
-            return of(itemLike, (item) -> line.build());
+
+            return new TooltipAttachment(
+                    (itemStack, item) -> itemStack.getItem() == itemLike.asItem() ? Optional.of(List.of(line.build())) : Optional.empty());
         }
 
-        private TooltipAttachment(Predicate<Item> addTooltip, Function<ItemStack, List<? extends Component>> tooltipLines) {
-            this.addTooltip = addTooltip;
+        public static TooltipAttachment of(BiFunction<ItemStack, Item, Optional<? extends Component>> tooltipLines) {
+
+            return new TooltipAttachment((itemStack, item) -> tooltipLines.apply(itemStack, item).map(List::of));
+        }
+
+        public static TooltipAttachment ofMultilines(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {
+            return new TooltipAttachment(tooltipLines);
+        }
+
+        public static TooltipAttachment ofMultilines(ItemLike itemLike, List<? extends Component> tooltipLines) {
+            return new TooltipAttachment((itemStack, item) -> {
+                if (itemStack.getItem() == itemLike.asItem()) {
+                    return Optional.of(tooltipLines);
+                } else {
+                    return Optional.empty();
+                }
+            });
+        }
+
+        public static TooltipAttachment ofMultilines(ItemLike itemLike, MIText... tooltipLines) {
+            return ofMultilines(itemLike, Arrays.stream(tooltipLines).map(MIText::text).collect(Collectors.toList()));
+        }
+
+        private TooltipAttachment(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {
             this.tooltipLines = tooltipLines;
             MITooltips.TOOLTIPS.add(this);
         }

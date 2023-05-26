@@ -40,8 +40,6 @@ import net.minecraft.world.item.ItemStack;
  */
 public interface ContainerItem<T extends TransferVariant<?>> {
 
-    T getBlankResource();
-
     T getResource(ItemStack stack);
 
     void setResourceNoClean(ItemStack stack, T resource);

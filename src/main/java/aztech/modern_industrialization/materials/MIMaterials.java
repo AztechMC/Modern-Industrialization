@@ -246,7 +246,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.MEAN_RGB, 0xd20000)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
+                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
                         .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
@@ -431,7 +431,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.MEAN_RGB, 0x071CB8)
                         .set(MaterialProperty.HARDNESS, SOFT).addParts(TINY_DUST, DUST).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
-                        .addParts(BATTERY).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+                        .addParts(BATTERY.of(CableTier.HV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         SALT = MaterialRegistry.addMaterial(new MaterialBuilder("Salt", "salt")
                 .set(MaterialProperty.MAIN_PART, DUST)
@@ -469,7 +469,7 @@ public class MIMaterials {
                 .set(MaterialProperty.MEAN_RGB, 0x3C3C50)
                 .set(MaterialProperty.HARDNESS, SOFT)
                 .addParts(ITEM_PURE_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(N_DOPED_PLATE, P_DOPED_PLATE).addParts(PLATE, DOUBLE_INGOT, BATTERY)
+                .addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(N_DOPED_PLATE, P_DOPED_PLATE).addParts(PLATE, DOUBLE_INGOT, BATTERY.of(CableTier.MV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         STAINLESS_STEEL = MaterialRegistry.addMaterial(new MaterialBuilder("Stainless Steel", "stainless_steel")
@@ -597,7 +597,7 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, SHINY)
                 .set(MaterialProperty.MEAN_RGB, 0xd701e7)
                 .set(MaterialProperty.HARDNESS, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
-                .addParts(ITEM_PURE_METAL).addParts(BATTERY).addRecipes(StandardRecipes::apply)
+                .addParts(ITEM_PURE_METAL).addParts(BATTERY.of(CableTier.SUPERCONDUCTOR)).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
         PLATINUM = MaterialRegistry.addMaterial(
@@ -658,7 +658,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0x967224)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY)
+                        .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY.of(CableTier.EV))
                         .addParts(
                                 new PartTemplate("Control Rod", FUEL_ROD.key)
                                         .withRegister((partContext, part, itemPath1, itemId, itemTag, englishName) -> NuclearAbsorbable

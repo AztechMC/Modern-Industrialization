@@ -104,8 +104,4 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
         return handleOtherStackedOnMe(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
 
-    @Override
-    public ItemVariant getBlankResource() {
-        return ItemVariant.blank();
-    }
 }

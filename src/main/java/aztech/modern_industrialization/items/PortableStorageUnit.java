@@ -1,0 +1,129 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package aztech.modern_industrialization.items;
+
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import team.reborn.energy.api.base.SimpleEnergyItem;
+
+public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemContainingItemHelper {
+
+    public static Map<Item, Long> CAPACITY_PER_BATTERY = new HashMap<>();
+
+    private final int CAPACITY = 10000;
+
+    public PortableStorageUnit(Properties properties) {
+        super(properties.stacksTo(1));
+    }
+
+    public void setResourceNoClean(ItemStack stack, ItemVariant item) {
+        ItemContainingItemHelper.super.setResourceNoClean(stack, item);
+        this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
+    }
+
+    public void setAmountNoClean(ItemStack stack, long amount) {
+        ItemContainingItemHelper.super.setAmountNoClean(stack, amount);
+        this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
+    }
+
+    @Override
+    public long getEnergyCapacity(ItemStack stack) {
+        if (this.isEmpty(stack)) {
+            return 0;
+        } else {
+            return CAPACITY_PER_BATTERY.get(this.getResource(stack).getItem()) * this.getAmount(stack);
+        }
+    }
+
+    @Override
+    public long getEnergyMaxInput(ItemStack stack) {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public long getEnergyMaxOutput(ItemStack stack) {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public StorageBehaviour<ItemVariant> getBehaviour() {
+
+        return new StorageBehaviour<>() {
+            @Override
+            public long getCapacityForResource(ItemVariant resource) {
+                return CAPACITY;
+            }
+
+            public boolean canInsert(ItemVariant maybeBattery) {
+                return CAPACITY_PER_BATTERY.containsKey(maybeBattery.getItem());
+            }
+        };
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
+        return handleStackedOnOther(stackBarrel, slot, clickType, player);
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack otherStack, Slot slot, ClickAction clickType, Player player,
+            SlotAccess cursorStackReference) {
+        return handleOtherStackedOnMe(stack, otherStack, slot, clickType, player, cursorStackReference);
+    }
+
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        if (!isEmpty(stack)) {
+            return Optional.of(new BarrelTooltipData(getResource(stack), getAmount(stack),
+                    CAPACITY, false));
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getEnergyCapacity(stack) > 0;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        if (getEnergyCapacity(stack) > 0) {
+            return (int) Math.round(getStoredEnergy(stack) / (double) getEnergyCapacity(stack) * 13);
+        } else {
+            return 0;
+        }
+    }
+
+}

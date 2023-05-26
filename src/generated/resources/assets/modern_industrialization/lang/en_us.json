@@ -1561,7 +1561,7 @@
   "text.modern_industrialization.MachineUpgradeStack": "Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Can produce up to %s",
   "text.modern_industrialization.MaxEuProductionSteam": "Can produce up to %s worth of %s",
-  "text.modern_industrialization.MaxTemp": "Max Temperature : %d C°",
+  "text.modern_industrialization.MaxTemp": "Max Temperature : %d °C",
   "text.modern_industrialization.ModernIndustrialization": "Modern Industrialization",
   "text.modern_industrialization.MultiblockMaterials": "Multiblock Materials",
   "text.modern_industrialization.MultiblockShapeInvalid": "Shape Invalid",

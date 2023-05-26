@@ -42,6 +42,7 @@ public class OverclockComponentProvider implements IServerDataProvider<MachineBl
                 data.putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
                 data.putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
                 data.putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
+                data.putLong("currentRecipeEu", crafterComponent.getCurrentRecipeEu());
             }
         }
     }

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.compat.waila.client;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.waila.client.component.BarComponent;
-import aztech.modern_industrialization.machines.components.CrafterComponent;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -40,14 +39,15 @@ public class OverclockComponentProvider implements IBlockComponentProvider {
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
 
         CompoundTag tag = accessor.getServerData();
-        if (tag.contains("efficiencyTicks") && tag.contains("maxEfficiencyTicks") && tag.contains("baseRecipeEu")) {
+        if (tag.contains("efficiencyTicks") && tag.contains("maxEfficiencyTicks") && tag.contains("baseRecipeEu")
+                && tag.contains("currentRecipeEu")) {
 
             int efficiencyTicks = tag.getInt("efficiencyTicks");
             int maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
             long baseRecipeEu = tag.getLong("baseRecipeEu");
+            long currentEu = tag.getLong("currentRecipeEu");
 
-            double mult = CrafterComponent.getEfficiencyOverclock(efficiencyTicks);
-            long currentEu = (long) (Math.floor(mult * baseRecipeEu));
+            double mult = (double) currentEu / baseRecipeEu;
 
             tooltip.addLine(
                     new PairComponent(

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.blockentities.hatches.LargeTankHatch;
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.FluidStorageComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -109,7 +110,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("steel_machine_casing")).asBlock());
         SimpleMember glass = SimpleMember.forBlock(Blocks.GLASS);
-        HatchFlags hatchFlags = new HatchFlags.Builder().build();
+        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.LARGE_TANK).build();
 
         for (int x = -sizeX / 2; x <= sizeX / 2; x++) {
             for (int y = -1; y < sizeY - 1; y++) {
@@ -255,7 +256,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
     }
 
-    public void onMatchSuccessful() {
+    private void onMatchSuccessful() {
         int index = activeShape.getActiveShapeIndex();
         int sizeX = X_SIZES[getXComponent(index)];
         int sizeY = Y_SIZES[getYComponent(index)];
@@ -263,6 +264,16 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int volume = sizeX * sizeY * sizeZ;
         long capacity = (long) volume * BUCKET_PER_STRUCTURE_BLOCK * FluidConstants.BUCKET; // 64 Bucket / Block
         fluidStorage.setCapacity(capacity);
+
+        for (var hatch : shapeMatcher.getMatchedHatches()) {
+            if (hatch instanceof LargeTankHatch tankHatch) {
+                tankHatch.setController(this);
+            }
+        }
+    }
+
+    public Storage<FluidVariant> getStorage() {
+        return fluidStorage.getFluidStorage();
     }
 
     public FluidVariant getFluid() {

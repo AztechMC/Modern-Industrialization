@@ -32,6 +32,7 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.hatches.EnergyHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.ItemHatch;
+import aztech.modern_industrialization.machines.blockentities.hatches.LargeTankHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -68,6 +69,9 @@ public class MultiblockHatches {
 
         MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
         MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
+
+        MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
+        MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
     }
 
     private static void registerItemHatches(

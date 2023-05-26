@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 353 missing, 3 unused",
+  "__summary": "1303 ok, 355 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Станочное ускорение-разгон",
   "advancements.modern_industrialization.advanced_upgrade.description": "Создай усовершенствованную модернизацию",
   "advancements.modern_industrialization.analog_circuit": "РИК-микросхемы",
@@ -289,6 +289,7 @@
   "block.modern_industrialization.large_steam_boiler": "Большой паровой котёл",
   "block.modern_industrialization.large_steam_turbine": "Большая паровая турбина",
   "block.modern_industrialization.large_tank": "Большая цистерна",
+  "block.modern_industrialization.large_tank_hatch": "[UNTRANSLATED] Large Tank Hatch",
   "block.modern_industrialization.le_mox_block": "Низкообогащённый МОКС-блок",
   "block.modern_industrialization.le_uranium_block": "Низкообогащённый урановый блок",
   "block.modern_industrialization.lead_block": "Свинцовый блок",
@@ -1592,6 +1593,7 @@
   "text.modern_industrialization.NewVersion": "Новая версия Modern Industrialization (%s) доступна по %s !",
   "text.modern_industrialization.NoEmi": "[UNTRANSLATED] WARNING: To play with Modern Industrialization, we STRONGLY RECOMMEND using EMI (Item and Recipe Viewer). Otherwise you won't be able to view the recipes in-game, and you will not be able to deal with conflicting machine recipes. Just Enough Items and Roughly Enough Items are also supported. This message can be disabled in the config.",
   "text.modern_industrialization.NoJei": "[UNUSED, PLEASE REMOVE] ПРЕДУПРЕЖДЕНИЕ: Чтобы играть в Modern Industrialization, НАСТОЯТЕЛЬНО РЕКОМЕНДУЕТСЯ либо установить Just Enough Items либо Roughly Enough Items. Иначе ты не сможешь просматривать рецепты в игре, и к тому же ты не сможешь разобраться с конфликтующими рецептами станков. Это сообщение может быть отключено в настройках.",
+  "text.modern_industrialization.NoLargeTank": "[UNTRANSLATED] Not linked to a Large Tank",
   "text.modern_industrialization.NoToolRequired": "Нет необходимого инструмента",
   "text.modern_industrialization.NotConsumed": "Not consumed",
   "text.modern_industrialization.NuclearFuelEfficiencyTooltip": "%s produced for %s of fuel consumed",

@@ -1,5 +1,5 @@
 {
-  "__summary": "411 ok, 1245 missing, 273 unused",
+  "__summary": "411 ok, 1247 missing, 273 unused",
   "advancements.modern_industrialization.advanced_upgrade": "[UNTRANSLATED] Machine Speedup-Speedup",
   "advancements.modern_industrialization.advanced_upgrade.description": "[UNTRANSLATED] Craft a Advanced Upgrade",
   "advancements.modern_industrialization.analog_circuit": "[UNTRANSLATED] RLC Circuits",
@@ -321,6 +321,7 @@
   "block.modern_industrialization.large_steam_boiler": "大型蒸汽鍋爐",
   "block.modern_industrialization.large_steam_turbine": "[UNTRANSLATED] Large Steam Turbine",
   "block.modern_industrialization.large_tank": "[UNTRANSLATED] Large Tank",
+  "block.modern_industrialization.large_tank_hatch": "[UNTRANSLATED] Large Tank Hatch",
   "block.modern_industrialization.le_mox_block": "[UNTRANSLATED] Block of LE Mox",
   "block.modern_industrialization.le_uranium_block": "[UNTRANSLATED] Block of LE Uranium",
   "block.modern_industrialization.lead_block": "鉛塊",
@@ -1796,6 +1797,7 @@
   "text.modern_industrialization.NeutronsRate": "[UNTRANSLATED] %s neutrons/t",
   "text.modern_industrialization.NewVersion": "[UNTRANSLATED] A new version of Modern Industrialization (%s) is available on %s !",
   "text.modern_industrialization.NoEmi": "[UNTRANSLATED] WARNING: To play with Modern Industrialization, we STRONGLY RECOMMEND using EMI (Item and Recipe Viewer). Otherwise you won't be able to view the recipes in-game, and you will not be able to deal with conflicting machine recipes. Just Enough Items and Roughly Enough Items are also supported. This message can be disabled in the config.",
+  "text.modern_industrialization.NoLargeTank": "[UNTRANSLATED] Not linked to a Large Tank",
   "text.modern_industrialization.NoToolRequired": "[UNTRANSLATED] No Tool Required",
   "text.modern_industrialization.NotConsumed": "[UNTRANSLATED] Not consumed",
   "text.modern_industrialization.NuclearFuelEfficiencyTooltip": "[UNTRANSLATED] %s produced for %s of fuel consumed",

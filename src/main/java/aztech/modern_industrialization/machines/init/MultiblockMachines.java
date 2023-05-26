@@ -240,46 +240,23 @@ public class MultiblockMachines {
     }
 
     private static void oilDrillingRig() {
-        ShapeTemplate.Builder oilDrillingRigShapeBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("steel_machine_casing")).asBlock());
         SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("steel_machine_casing_pipe")).asBlock());
         SimpleMember chain = SimpleMember.verticalChain();
         HatchFlags hatchFlags = new HatchFlags.Builder().with(ITEM_INPUT).with(FLUID_OUTPUT).with(ENERGY_INPUT).build();
-        // pillars
-        for (int y = -4; y <= -2; ++y) {
-            oilDrillingRigShapeBuilder.add(-2, y, -1, steelCasing, null);
-            oilDrillingRigShapeBuilder.add(2, y, -1, steelCasing, null);
-            oilDrillingRigShapeBuilder.add(-2, y, 3, steelCasing, null);
-            oilDrillingRigShapeBuilder.add(2, y, 3, steelCasing, null);
-        }
-        // platform
-        for (int x = -2; x <= 2; ++x) {
-            for (int z = -1; z <= 3; ++z) {
-                if (x == 2 || x == -2 || z == -1 || z == 3) {
-                    oilDrillingRigShapeBuilder.add(x, -1, z, steelCasing, null);
-                }
-            }
-        }
-        // chains and pipe casings
-        for (int y = -4; y <= 4; ++y) {
-            oilDrillingRigShapeBuilder.add(-1, y, 1, chain, null);
-            oilDrillingRigShapeBuilder.add(1, y, 1, chain, null);
-            if (y >= -1) {
-                oilDrillingRigShapeBuilder.add(0, y, 1, steelPipe, null);
-            }
-        }
-        // top
-        for (int x = -2; x <= 2; ++x) {
-            oilDrillingRigShapeBuilder.add(x, 5, 1, steelCasing, null);
-        }
-        // hatches
-        oilDrillingRigShapeBuilder.add(-1, 0, 0, steelCasing, hatchFlags);
-        oilDrillingRigShapeBuilder.add(1, 0, 0, steelCasing, hatchFlags);
-        oilDrillingRigShapeBuilder.add(-1, 0, 2, steelCasing, hatchFlags);
-        oilDrillingRigShapeBuilder.add(0, 0, 2, steelCasing, hatchFlags);
-        oilDrillingRigShapeBuilder.add(1, 0, 2, steelCasing, hatchFlags);
 
-        ShapeTemplate oilDrillingRigShape = oilDrillingRigShapeBuilder.build();
+        ShapeTemplate oilDrillingRigShape = new ShapeTemplate.LayeredBuilder(MachineCasings.STEEL, new String[][] {
+                { "C   C", "C   C", "C   C", "CCCCC", "     ", "     ", "     ", "     ", "     ", "     " },
+                { "     ", "     ", "     ", "C   C", " HHH ", "     ", "     ", "     ", "     ", "     " },
+                { " o o ", " o o ", " o o ", "CoPoC", " oPo ", " oPo ", " oPo ", " oPo ", " oPo ", "CCCCC" },
+                { "     ", "     ", "     ", "C   C", " H#H ", "     ", "     ", "     ", "     ", "     " },
+                { "C   C", "C   C", "C   C", "CCCCC", "     ", "     ", "     " , "     ", "     ", "     "},
+        })
+                .key('C', steelCasing, null)
+                .key('o', chain, null)
+                .key('P', steelPipe, null)
+                .key('H', steelCasing, hatchFlags)
+                .build();
 
         OIL_DRILLING_RIG = MachineRegistrationHelper.registerMachine(
                 "Oil Drilling Rig",

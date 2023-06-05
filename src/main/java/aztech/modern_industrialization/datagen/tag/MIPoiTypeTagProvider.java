@@ -38,7 +38,8 @@ public class MIPoiTypeTagProvider extends FabricTagProvider<PoiType> {
 
     @Override
     protected void generateTags() {
-        if (MIConfig.getConfig().disableMIVillagers) return;
+        if (MIConfig.getConfig().disableMIVillagers)
+            return;
 
         tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(MIVillager.POI_TYPE);
     }

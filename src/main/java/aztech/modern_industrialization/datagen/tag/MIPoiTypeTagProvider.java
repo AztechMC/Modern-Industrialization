@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.datagen.tag;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIVillager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -38,9 +37,6 @@ public class MIPoiTypeTagProvider extends FabricTagProvider<PoiType> {
 
     @Override
     protected void generateTags() {
-        if (MIConfig.getConfig().disableMIVillagers)
-            return;
-
         tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(MIVillager.POI_TYPE);
     }
 }

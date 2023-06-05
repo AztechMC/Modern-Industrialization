@@ -50,6 +50,9 @@ public class MIVillager {
     public static void init() {
         Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
 
+        if (MIConfig.getConfig().removeIndustrialistTrades)
+            return;
+
         sellItemsToVillager(1, MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM).asItem(), 15,
                 16, 2);
         buyItemsFromVillager(1, MIMaterials.FIRE_CLAY.getPart(MIParts.INGOT), 2, 6, 2);

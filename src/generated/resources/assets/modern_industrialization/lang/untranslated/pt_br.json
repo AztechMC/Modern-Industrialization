@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 355 missing, 3 unused",
+  "__summary": "1303 ok, 356 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1442,6 +1442,7 @@
   "text.autoconfig.modern_industrialization.option.generateOres": "Geração de Minérios Ativada (Requer Reinício)",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "Mostrar quando uma nova versão está disponível",
+  "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "Dar Guia ao Renascer",
   "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "Dar guia no primeiro nascer",
   "text.autoconfig.modern_industrialization.title": "Menu do Modern Industrialization",

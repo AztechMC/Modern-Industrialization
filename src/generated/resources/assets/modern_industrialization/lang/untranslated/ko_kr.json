@@ -1,5 +1,5 @@
 {
-  "__summary": "1001 ok, 657 missing, 367 unused",
+  "__summary": "1001 ok, 658 missing, 367 unused",
   "advancements.modern_industrialization.advanced_upgrade": "기계 빠르게-빠르게",
   "advancements.modern_industrialization.advanced_upgrade.description": "발전된 업그레이드를 제작하세요",
   "advancements.modern_industrialization.analog_circuit": "RLC 회로",
@@ -1648,6 +1648,7 @@
   "text.autoconfig.modern_industrialization.option.generateOres": "광석 생성 활성화 (재시작 필요)",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "새로운 버전 알림 받기",
+  "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.replicatorBlacklist": "[UNUSED, PLEASE REMOVE] 복제기 블랙리스트",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "리스폰 시 가이드북 지급",
   "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "첫 스폰 시 가이드북 지급",

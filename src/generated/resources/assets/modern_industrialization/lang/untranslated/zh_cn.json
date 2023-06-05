@@ -1,5 +1,5 @@
 {
-  "__summary": "1004 ok, 654 missing, 0 unused",
+  "__summary": "1004 ok, 655 missing, 0 unused",
   "advancements.modern_industrialization.advanced_upgrade": "机器再加速",
   "advancements.modern_industrialization.advanced_upgrade.description": "制作进阶升级",
   "advancements.modern_industrialization.analog_circuit": "RLC电路",
@@ -1441,6 +1441,7 @@
   "text.autoconfig.modern_industrialization.option.generateOres": "启用全部矿物生成（需要重新启动）",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "有新版本可用时显示",
+  "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "重生时给予指南",
   "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "初次加入时给予指南",
   "text.autoconfig.modern_industrialization.title": "现代工业化配置",

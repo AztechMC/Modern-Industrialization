@@ -1,5 +1,5 @@
 {
-  "__summary": "411 ok, 1247 missing, 273 unused",
+  "__summary": "411 ok, 1248 missing, 273 unused",
   "advancements.modern_industrialization.advanced_upgrade": "[UNTRANSLATED] Machine Speedup-Speedup",
   "advancements.modern_industrialization.advanced_upgrade.description": "[UNTRANSLATED] Craft a Advanced Upgrade",
   "advancements.modern_industrialization.analog_circuit": "[UNTRANSLATED] RLC Circuits",
@@ -1648,6 +1648,7 @@
   "text.autoconfig.modern_industrialization.option.ores.generateSalt": "[UNUSED, PLEASE REMOVE] 生成鹽礦",
   "text.autoconfig.modern_industrialization.option.ores.generateSilver": "[UNUSED, PLEASE REMOVE] 生成銀礦",
   "text.autoconfig.modern_industrialization.option.ores.generateTin": "[UNUSED, PLEASE REMOVE] 生成錫礦",
+  "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "[UNTRANSLATED] Grant Guidebook at Respawn",
   "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "[UNTRANSLATED] Grant Guidebook at Spawn",
   "text.autoconfig.modern_industrialization.title": "現代工業化配置",

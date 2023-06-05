@@ -48,9 +48,9 @@ public class MIVillager {
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_TOOLSMITH);
 
     public static void init() {
-        if (MIConfig.getConfig().disableMIVillagers) {
-            return;
-        }
+        if (MIConfig.getConfig().disableMIVillagers) return;
+
+
         Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
 
         sellItemsToVillager(1, MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM).asItem(), 15,

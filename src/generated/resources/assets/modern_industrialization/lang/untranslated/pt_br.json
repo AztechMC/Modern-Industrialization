@@ -1,5 +1,5 @@
 {
-  "__summary": "1303 ok, 355 missing, 3 unused",
+  "__summary": "1303 ok, 356 missing, 3 unused",
   "advancements.modern_industrialization.advanced_upgrade": "Aceleração²",
   "advancements.modern_industrialization.advanced_upgrade.description": "Fabrique uma Melhoria Avançada",
   "advancements.modern_industrialization.analog_circuit": "Circuitos RLC",
@@ -1432,6 +1432,7 @@
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "[UNTRANSLATED] Run MI runtime datagen on startup (Restart needed)",
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "Desativar exibição de geração EU de combustíveis em tooltips",
   "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "Desativar exibição da Tag de Itens em tooltips",
+  "text.autoconfig.modern_industrialization.option.disableMIVillagers": "[UNTRANSLATED] Disables the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableAe2Integration": "Ativar integração com AE2, se presente (requer reinício)",
   "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "Ativar compatibilidade de energia bi-direcional com o Tech Reborn Energy. Recomendamos deixar isso como 'false' a não ser que os outros mods tenham sido balanceados de acordo.",

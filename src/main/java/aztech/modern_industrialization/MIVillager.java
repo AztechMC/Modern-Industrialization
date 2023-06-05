@@ -41,13 +41,16 @@ import net.minecraft.world.level.ItemLike;
 public class MIVillager {
     public static final ResourceLocation ID = new MIIdentifier("industrialist");
 
-    public static final PoiType POI_TYPE = PointOfInterestHelper.register(ID, 1, 1, MIBlock.FORGE_HAMMER.asBlock());
+    public static final PoiType POI_TYPE = (MIConfig.getConfig().disableMIVillagers) ? null : PointOfInterestHelper.register(ID, 1, 1, MIBlock.FORGE_HAMMER.asBlock());
     public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registry.POINT_OF_INTEREST_TYPE_REGISTRY, ID);
 
     public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_TOOLSMITH);
 
     public static void init() {
+        if (MIConfig.getConfig().disableMIVillagers) {
+            return;
+        }
         Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
 
         sellItemsToVillager(1, MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM).asItem(), 15,

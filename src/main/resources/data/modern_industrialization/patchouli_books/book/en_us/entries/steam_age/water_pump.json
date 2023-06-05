@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "You may have been wondering if perhaps there was a way to insert water into the boiler automatically? There is! That's exactly what the water pump does. Surround it horizontally with water blocks, and it will start producing water for 1 EU/t.$(br)It will automatically transfer water to the adjacent blocks."
+      "text": "You may have been wondering if perhaps there was a way to insert water into the boiler automatically? There is! That's exactly what the water pump does. Surround it horizontally with water blocks, and it will start producing water for 1 EU/t.$(br)It will automatically transfer water to the machine on its output side."
     },
     {
       "type": "crafting",

@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PipeColorProvider implements BlockColor {
     @Override
     public int getColor(BlockState state, BlockAndTintGetter world, BlockPos pos, int tintIndex) {
-        if (world.getBlockEntity(pos) instanceof PipeBlockEntity) {
+        if (world != null && pos != null && world.getBlockEntity(pos) instanceof PipeBlockEntity) {
             PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
             if (entity == null)
                 return -1;

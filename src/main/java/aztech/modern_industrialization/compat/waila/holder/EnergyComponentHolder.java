@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.holder;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.machines.components.CrafterComponent;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
 
-public interface CrafterComponentHolder {
-    CrafterComponent getCrafterComponent();
+public interface EnergyComponentHolder {
+    EnergyComponent getEnergyComponent();
 }

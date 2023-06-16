@@ -23,26 +23,24 @@
  */
 package aztech.modern_industrialization.compat.waila.server;
 
-import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
+import mcp.mobius.waila.api.IDataProvider;
+import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerAccessor;
-import mcp.mobius.waila.api.IServerDataProvider;
-import net.minecraft.nbt.CompoundTag;
 
-public class OverclockComponentProvider implements IServerDataProvider<MachineBlockEntity> {
+public class OverclockComponentProvider implements IDataProvider<MachineBlockEntity> {
     @Override
-    public void appendServerData(CompoundTag data, IServerAccessor<MachineBlockEntity> accessor, IPluginConfig config) {
-
+    public void appendData(IDataWriter data, IServerAccessor<MachineBlockEntity> accessor, IPluginConfig config) {
         if (accessor.getTarget() instanceof CrafterComponentHolder crafterComponentHolder) {
-
             CrafterComponent crafterComponent = crafterComponentHolder.getCrafterComponent();
             if (crafterComponent.hasActiveRecipe() && crafterComponent.getMaxEfficiencyTicks() > 0) {
-                data.putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
-                data.putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
-                data.putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
-                data.putLong("currentRecipeEu", crafterComponent.getCurrentRecipeEu());
+                data.raw().putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
+                data.raw().putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
+                data.raw().putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
+                data.raw().putLong("currentRecipeEu", crafterComponent.getCurrentRecipeEu());
             }
         }
     }

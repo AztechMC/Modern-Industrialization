@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.compat.waila.client;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.compat.waila.client.component.BarComponent;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.component.BarComponent;
 import mcp.mobius.waila.api.component.PairComponent;
 import mcp.mobius.waila.api.component.WrappedComponent;
 import net.minecraft.nbt.CompoundTag;
@@ -37,8 +37,7 @@ public class OverclockComponentProvider implements IBlockComponentProvider {
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
-
-        CompoundTag tag = accessor.getServerData();
+        CompoundTag tag = accessor.getData().raw();
         if (tag.contains("efficiencyTicks") && tag.contains("maxEfficiencyTicks") && tag.contains("baseRecipeEu")
                 && tag.contains("currentRecipeEu")) {
 
@@ -49,14 +48,13 @@ public class OverclockComponentProvider implements IBlockComponentProvider {
 
             double mult = (double) currentEu / baseRecipeEu;
 
-            tooltip.addLine(
-                    new PairComponent(
-                            new WrappedComponent(MIText.Efficiency.text()),
-                            new BarComponent(0x61c928, efficiencyTicks, maxEfficiencyTicks, "", false, true)));
-            tooltip.addLine(
-                    new WrappedComponent(MIText.EuTOverclocked.text(
-                            String.format("%.1f", mult),
-                            String.format("%d", currentEu))));
+            tooltip.addLine(new PairComponent(
+                    new WrappedComponent(MIText.Efficiency.text()),
+                    new BarComponent(MIWailaClientPlugin.ratio(efficiencyTicks, maxEfficiencyTicks), 0xFF61C928,
+                            MIWailaClientPlugin.fraction(efficiencyTicks, maxEfficiencyTicks))));
+
+            tooltip.addLine(new WrappedComponent(MIText.EuTOverclocked.text(
+                    String.format("%.1f", mult), String.format("%d", currentEu))));
         }
     }
 }

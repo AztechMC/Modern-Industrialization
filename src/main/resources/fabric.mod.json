@@ -65,12 +65,9 @@
   "breaks": {
     "optifabric": "*",
     "universalcomponents": "*",
-    "megane": "<7"
+    "wthit": "<5.17"
   },
   "custom": {
-    "megane:modules": [
-      "aztech.modern_industrialization.compat.megane.MIMeganeModule"
-    ],
     "requires_renderer": true
   }
 }

@@ -24,10 +24,12 @@
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.compat.waila.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.components.FluidStorageComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
@@ -41,7 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
-public class LargeTankHatch extends HatchBlockEntity {
+public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComponentHolder {
     private final MIInventory inventory = new MIInventory(List.of(), List.of(), SlotPositions.empty(), SlotPositions.empty());
 
     @Nullable
@@ -79,6 +81,11 @@ public class LargeTankHatch extends HatchBlockEntity {
     public void unlink() {
         super.unlink();
         controller = null;
+    }
+
+    @Override
+    public @Nullable FluidStorageComponent getFluidStorageComponent() {
+        return controller == null ? null : controller.getFluidStorageComponent();
     }
 
     public void setController(LargeTankMultiblockBlockEntity controller) {

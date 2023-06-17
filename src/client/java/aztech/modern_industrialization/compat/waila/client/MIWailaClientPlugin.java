@@ -33,9 +33,11 @@ import mcp.mobius.waila.api.WailaHelper;
 import mcp.mobius.waila.api.data.EnergyData;
 
 public class MIWailaClientPlugin implements IWailaPlugin {
+    public static final int ENERGY_COLOR = 0xFFB70000;
+
     @Override
     public void register(IRegistrar r) {
-        EnergyData.describe(ModernIndustrialization.MOD_ID).color(0xB70000).unit("EU");
+        EnergyData.describe(ModernIndustrialization.MOD_ID).color(ENERGY_COLOR).unit("EU");
 
         PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
         r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);

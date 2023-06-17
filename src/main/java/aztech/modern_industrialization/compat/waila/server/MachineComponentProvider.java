@@ -26,6 +26,7 @@ package aztech.modern_industrialization.compat.waila.server;
 import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.compat.waila.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.compat.waila.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.compat.waila.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -83,6 +84,13 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                     addFluids(fluidData, inputs);
                     addFluids(fluidData, outputs);
                     res.add(fluidData);
+                }
+            } else if (machine instanceof FluidStorageComponentHolder holder) {
+                var component = holder.getFluidStorageComponent();
+
+                if (component != null) {
+                    var fluid = component.getFluid();
+                    res.add(FluidData.of(1).add(fluid.getFluid(), fluid.getNbt(), component.getAmount(), component.getCapacity()));
                 }
             } else {
                 var stacks = machine.getInventory().getFluidStacks();

@@ -140,7 +140,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 // Total EU
                 tooltip.addLine(new PairComponent(
                         new WrappedComponent(MIText.NetworkEnergy.text()),
-                        new BarComponent(MIWailaClientPlugin.ratio(stored, capacity), 0xFF710C00,
+                        new BarComponent(MIWailaClientPlugin.ratio(stored, capacity), MIWailaClientPlugin.ENERGY_COLOR,
                                 MIWailaClientPlugin.fraction(stored, capacity) + " EU")));
 
                 // Voltage tier
@@ -154,7 +154,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 tooltip.addLine(new PairComponent(
                         new WrappedComponent(MIText.NetworkTransfer.text()),
                         new BarComponent(
-                                MIWailaClientPlugin.ratio(transfer, maxTransfer), 0xFF710C00,
+                                MIWailaClientPlugin.ratio(transfer, maxTransfer), MIWailaClientPlugin.ENERGY_COLOR,
                                 MIWailaClientPlugin.fraction(transfer, maxTransfer) + " EU/t")));
             }
 

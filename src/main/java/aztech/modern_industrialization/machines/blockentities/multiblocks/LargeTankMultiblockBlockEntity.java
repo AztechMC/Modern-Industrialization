@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.compat.waila.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.LargeTankHatch;
@@ -54,7 +55,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
-        implements Tickable {
+        implements Tickable, FluidStorageComponentHolder {
 
     private static final int[] X_SIZES = new int[] { 3, 5, 7 };
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
@@ -207,6 +208,11 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     @Override
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
+    }
+
+    @Override
+    public FluidStorageComponent getFluidStorageComponent() {
+        return fluidStorage;
     }
 
     @Override

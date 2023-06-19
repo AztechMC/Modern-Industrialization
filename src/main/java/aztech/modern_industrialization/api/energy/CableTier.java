@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIText;
+
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -34,8 +36,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A single tier of cables.
  */
-public interface CableTier extends Comparable<CableTier> {
-    SortedSet<CableTier> TIERS = new TreeSet<>();
+public interface CableTier {
+    SortedSet<CableTier> TIERS = new TreeSet<>(Comparator.comparingLong(CableTier::eu));
 
     /**
      * Gets a table tier by internal name.

@@ -35,8 +35,4 @@ record CableTierImpl(
         long eu,
         long maxTransfer,
         MutableComponent englishTextComponent) implements CableTier {
-    @Override
-    public int compareTo(@NotNull CableTier o) {
-        return Long.compare(eu, o.eu());
-    }
 }

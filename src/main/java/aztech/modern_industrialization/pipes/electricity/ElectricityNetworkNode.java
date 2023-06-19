@@ -147,7 +147,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
 
     // Used in the Waila plugin
     private long getMaxTransfer() {
-        return ((ElectricityNetwork) network).tier.getMaxTransfer();
+        return ((ElectricityNetwork) network).tier.maxTransfer();
     }
 
     public InGameInfo collectNetworkInfo() {

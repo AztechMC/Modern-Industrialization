@@ -24,62 +24,64 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIText;
-import net.minecraft.network.chat.Component;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.annotation.Nullable;
+import net.minecraft.network.chat.MutableComponent;
 
-public enum CableTier {
-    LV("LV", "lv", 32, MIText.CableTierLV),
-    MV("MV", "mv", 32 * 4, MIText.CableTierMV),
-    HV("HV", "hv", 32 * 4 * 8, MIText.CableTierHV),
-    EV("EV", "ev", 32 * 4 * 8 * 8, MIText.CableTierEV),
-    SUPERCONDUCTOR("Superconductor", "superconductor", 128000000, MIText.CableTierSuperconductor);
+/**
+ * A single tier of cables.
+ */
+public interface CableTier extends Comparable<CableTier> {
+    SortedSet<CableTier> TIERS = new TreeSet<>();
 
-    public final String englishName;
-    public final String name;
-    public final long eu;
-
-    public final String translationKey;
-    public final Component englishNameComponent;
-
-    CableTier(String englishName, String name, long eu, MIText englishNameComponent) {
-        this.englishName = englishName;
-        this.name = name;
-        this.eu = eu;
-        this.translationKey = "text.modern_industrialization.cable_tier_" + name;
-        this.englishNameComponent = englishNameComponent.text();
-    }
-
-    public static CableTier getByName(String tier) {
-        for (CableTier cableTier : values()) {
-            if (cableTier.name.equals(tier)) {
-                return cableTier;
-            }
+    /**
+     * Gets a table tier by internal name.
+     *
+     * @param name The internal name of the tier, e.g. 'LV'.
+     * @return If it exists, the added cable tier; otherwise, <code>null</code>.
+     */
+    static @Nullable CableTier getByName(String name) {
+        for (var tier : TIERS) {
+            if (Objects.equals(tier.name(), name))
+                return tier;
         }
+
         return null;
     }
+
+    static CableTier create(String name, String englishName, long eu, MutableComponent text) {
+        return new CableTierImpl(name, englishName, eu, eu * 8, text);
+    }
+
+    static CableTier create(String name, String englishName, long eu, long maxTransfer, MutableComponent text) {
+        return new CableTierImpl(name, englishName, eu, maxTransfer, text);
+    }
+
+    CableTier LV = create("lv", "LV", 32, MIText.CableTierLV.text());
+    CableTier MV = create("mv", "MV", 32 * 4, MIText.CableTierMV.text());
+    CableTier HV = create("hv", "HV", 32 * 4 * 8, MIText.CableTierHV.text());
+    CableTier EV = create("ev", "EV", 32 * 4 * 8 * 8, MIText.CableTierEV.text());
+    CableTier SUPERCONDUCTOR = create("superconductor", "SUPERCONDUCTOR", 128_000_000, MIText.CableTierSuperconductor.text());
+
+    /** The internal name for this tier. */
+    String name();
+
+    /** The English localised name for this tier. */
+    String englishName();
+
+    // TODO: kill this brutally
+    /** The English text component for this tier. */
+    MutableComponent englishTextComponent();
+
+    long eu();
 
     /**
      * @return The total EU/t transferred by this tier of network. The same number
      *         is also the internal storage of every node.
      */
-    public long getMaxTransfer() {
-        return eu * 8;
-    }
-
-    public long getEu() {
-        return eu;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public static final CableTier getTier(String name) {
-        for (CableTier tier : CableTier.values()) {
-            if (tier.name.equals(name)) {
-                return tier;
-            }
-        }
-        return null;
+    default long maxTransfer() {
+        return eu() * 8;
     }
 }

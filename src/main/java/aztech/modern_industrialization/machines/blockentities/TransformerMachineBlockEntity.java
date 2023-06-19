@@ -29,14 +29,20 @@ import aztech.modern_industrialization.machines.BEP;
 public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEntity {
 
     public TransformerMachineBlockEntity(BEP bep, CableTier from, CableTier to) {
-        super(bep, from, to, getTransformerName(from, to), 200 * Math.min(from.eu, to.eu), from.eu < to.eu);
+        super(
+                bep,
+                from,
+                to,
+                getTransformerName(from, to),
+                200 * Math.min(from.eu(), to.eu()),
+                from.eu() < to.eu());
     }
 
     public static String getTransformerName(CableTier from, CableTier to) {
-        return from.name + "_" + to.name + "_transformer";
+        return from.name() + "_" + to.name() + "_transformer";
     }
 
     public static String getTransformerEnglishName(CableTier from, CableTier to) {
-        return from.englishName + " to " + to.englishName + " Transformer";
+        return from.englishName() + " to " + to.englishName() + " Transformer";
     }
 }

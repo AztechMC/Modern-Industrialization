@@ -63,17 +63,16 @@ public class CasingComponent implements IComponent {
     public CasingComponent(CableTier defaultCasing) {
         this.defaultCasing = defaultCasing;
         this.tierCasing = defaultCasing;
-
     }
 
     @Override
     public void writeNbt(CompoundTag tag) {
-        tag.putString("casing", tierCasing.name);
+        tag.putString("casing", tierCasing.name());
     }
 
     @Override
     public void readNbt(CompoundTag tag) {
-        tierCasing = CableTier.getTier(tag.getString("casing"));
+        tierCasing = CableTier.getByName(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;
         }
@@ -82,12 +81,12 @@ public class CasingComponent implements IComponent {
 
     @Override
     public void writeClientNbt(CompoundTag tag) {
-        tag.putString("casing", tierCasing.name);
+        tag.putString("casing", tierCasing.name());
     }
 
     @Override
     public void readClientNbt(CompoundTag tag) {
-        tierCasing = CableTier.getTier(tag.getString("casing"));
+        tierCasing = CableTier.getByName(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;
         }
@@ -174,6 +173,6 @@ public class CasingComponent implements IComponent {
     }
 
     public long getEuCapacity() {
-        return tierCasing.getEu() * 100;
+        return tierCasing.eu() * 100;
     }
 }

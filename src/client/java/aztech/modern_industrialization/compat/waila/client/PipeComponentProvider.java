@@ -142,7 +142,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 tooltip.addLine(new PairComponent(
                         new WrappedComponent(MIText.NetworkTier.text()),
                         new CenteredTextComponent(
-                                MIPipes.ELECTRICITY_PIPE_TIER.get(MIPipes.INSTANCE.getPipeItem(shape.type)).englishNameComponent
+                                MIPipes.ELECTRICITY_PIPE_TIER.get(MIPipes.INSTANCE.getPipeItem(shape.type)).englishTextComponent()
                                         .copy().withStyle(MITooltips.NUMBER_TEXT))));
 
                 // EU/t

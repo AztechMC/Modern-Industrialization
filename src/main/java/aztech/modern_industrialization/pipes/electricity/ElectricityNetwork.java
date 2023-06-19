@@ -61,13 +61,13 @@ public class ElectricityNetwork extends PipeNetwork {
         storages.removeIf(s -> !s.canConnect(tier));
 
         // Do the transfer
-        long networkCapacity = loadedNodeCount * tier.getMaxTransfer();
+        long networkCapacity = loadedNodeCount * tier.maxTransfer();
         try (var tx = Transaction.openOuter()) {
-            long extractMaxAmount = Math.min(tier.getMaxTransfer(), networkCapacity - networkAmount);
+            long extractMaxAmount = Math.min(tier.maxTransfer(), networkCapacity - networkAmount);
             long extracted = transferForTargets(MIEnergyStorage::extract, storages, extractMaxAmount, tx);
             networkAmount += extracted;
 
-            long insertMaxAmount = Math.min(tier.getMaxTransfer(), networkAmount);
+            long insertMaxAmount = Math.min(tier.maxTransfer(), networkAmount);
             long inserted = transferForTargets(MIEnergyStorage::insert, storages, insertMaxAmount, tx);
             networkAmount -= inserted;
 

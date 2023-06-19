@@ -23,43 +23,20 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import org.jetbrains.annotations.ApiStatus;
-import team.reborn.energy.api.EnergyStorage;
+import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
-public interface MIEnergyStorage extends EnergyStorage {
-    boolean canConnect(CableTier cableTier);
-
-    /**
-     * Overload of {@link #canConnect(CableTier)} that's easier to access by reflection.
-     */
-    @ApiStatus.NonExtendable
-    default boolean canConnect(String cableTier) {
-        var tier = CableTier.getByName(cableTier);
-        return canConnect(tier);
-    }
-
-    interface NoExtract extends MIEnergyStorage {
-        @Override
-        default boolean supportsExtraction() {
-            return false;
-        }
-
-        @Override
-        default long extract(long maxAmount, TransactionContext transaction) {
-            return 0;
-        }
-    }
-
-    interface NoInsert extends MIEnergyStorage {
-        @Override
-        default boolean supportsInsertion() {
-            return false;
-        }
-
-        @Override
-        default long insert(long maxAmount, TransactionContext transaction) {
-            return 0;
-        }
+/**
+ * Record-based implementation of a CableTier. Use the utility functions on the interface instead.
+ */
+record CableTierImpl(
+        String name,
+        String englishName,
+        long eu,
+        long maxTransfer,
+        MutableComponent englishTextComponent) implements CableTier {
+    @Override
+    public int compareTo(@NotNull CableTier o) {
+        return Long.compare(eu, o.eu());
     }
 }

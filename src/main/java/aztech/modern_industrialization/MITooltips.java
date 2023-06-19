@@ -178,7 +178,7 @@ public class MITooltips {
     public static final TooltipAttachment CABLES = TooltipAttachment
             .of((item) -> item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe), itemStack -> {
                 var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
-                return new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build();
+                return new Line(MIText.EuCable).arg(tier.englishName()).arg(tier.maxTransfer(), EU_PER_TICK_PARSER).build();
             });
 
     public static final TooltipAttachment COILS = TooltipAttachment.of(

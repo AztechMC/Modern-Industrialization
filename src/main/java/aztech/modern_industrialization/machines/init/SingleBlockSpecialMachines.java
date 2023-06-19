@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machines.init;
 
+import static aztech.modern_industrialization.machines.init.MachineRegistrationHelper.*;
+
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -35,109 +37,163 @@ public class SingleBlockSpecialMachines {
 
     public static void init() {
 
-        MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
+        registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
-        MachineRegistrationHelper.registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
+        registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
 
         // TODO: register water pumps in REI?
-        MachineRegistrationHelper.registerMachine("Bronze Water Pump", "bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
+        registerMachine("Bronze Water Pump", "bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("Steel Water Pump", "steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
+        registerMachine("Steel Water Pump", "steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("Electric Water Pump", "electric_water_pump", ElectricWaterPumpBlockEntity::new,
+        registerMachine("Electric Water Pump", "electric_water_pump", ElectricWaterPumpBlockEntity::new,
                 MachineBlockEntity::registerFluidApi,
                 ElectricWaterPumpBlockEntity::registerEnergyApi);
 
-        registerTransformers();
-        registerSteamTurbines(32, 128, 512);
-        registerEUStorage();
+        registerTransformer(CableTier.LV, CableTier.MV);
+        registerTransformer(CableTier.MV, CableTier.HV);
+        registerTransformer(CableTier.HV, CableTier.EV);
+        registerTransformer(CableTier.EV, CableTier.SUPERCONDUCTOR);
 
-        MachineRegistrationHelper.registerMachine("Starter Diesel Generator", "starter_diesel_generator",
+        registerSteamTurbine(CableTier.LV, 32, 1600);
+        registerSteamTurbine(CableTier.MV, 128, 3200);
+        registerSteamTurbine(CableTier.HV, 512, 6400);
+
+        registerEnergyStorage(CableTier.LV);
+        registerEnergyStorage(CableTier.MV);
+        registerEnergyStorage(CableTier.HV);
+        registerEnergyStorage(CableTier.EV);
+        registerEnergyStorage(CableTier.SUPERCONDUCTOR);
+
+        registerMachine("Starter Diesel Generator", "starter_diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "starter_diesel_generator", CableTier.LV, 4000, 16000,
                         FluidConsumerComponent.ofFluidFuels(64)),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.registerMachine("Diesel Generator", "diesel_generator",
+        registerMachine("Diesel Generator", "diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000,
                         FluidConsumerComponent.ofFluidFuels(256)),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.registerMachine("Turbo Diesel Generator", "turbo_diesel_generator",
+        registerMachine("Turbo Diesel Generator", "turbo_diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "turbo_diesel_generator", CableTier.HV, 60000, 64000,
                         FluidConsumerComponent.ofFluidFuels(1024)),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,
+        registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
 
-        MachineRegistrationHelper.registerMachine("Configurable Tank", "configurable_tank", ConfigurableTankMachineBlockEntity::new,
+        registerMachine("Configurable Tank", "configurable_tank", ConfigurableTankMachineBlockEntity::new,
                 MachineBlockEntity::registerFluidApi);
 
-        MachineRegistrationHelper.registerMachine("Replicator", "replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
+        registerMachine("Replicator", "replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
                 MachineBlockEntity::registerItemApi);
 
-        MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
-        MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
-        MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
-        MachineRegistrationHelper.addMachineModel("starter_diesel_generator", "diesel_generator", MachineCasings.LV, true, true, true);
-        MachineRegistrationHelper.addMachineModel("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
-        MachineRegistrationHelper.addMachineModel("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
-        MachineRegistrationHelper.addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
-        MachineRegistrationHelper.addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
-        MachineRegistrationHelper.addMachineModel("replicator", "replicator", MachineCasings.SUPERCONDUCTOR, true, false, true, true);
-    }
-
-    private static void registerTransformers() {
-        CableTier[] tiers = CableTier.values();
-        for (int i = 0; i < tiers.length - 1; i++) {
-            final CableTier low = tiers[i];
-            final CableTier up = tiers[i + 1];
-
-            String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
-            String lowToUpName = TransformerMachineBlockEntity.getTransformerEnglishName(low, up);
-            MachineRegistrationHelper.registerMachine(lowToUpName, lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
-
-            String upToLow = TransformerMachineBlockEntity.getTransformerName(up, low);
-            String upToLowName = TransformerMachineBlockEntity.getTransformerEnglishName(up, low);
-            MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
-
-            MachineRegistrationHelper.addMachineModel(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
-            MachineRegistrationHelper.addMachineModel(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
-        }
+        addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
+        addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
+        addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
+        addMachineModel("starter_diesel_generator", "diesel_generator", MachineCasings.LV, true, true, true);
+        addMachineModel("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
+        addMachineModel("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
+        addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
+        addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
+        addMachineModel("replicator", "replicator", MachineCasings.SUPERCONDUCTOR, true, false, true, true);
     }
 
     public static MachineCasing getTransformerCasingFromTier(CableTier from, CableTier to) {
-        return MachineCasings.casingFromCableTier(from.eu > to.eu ? to : from);
+        return MachineCasings.casingFromCableTier(from.eu() > to.eu() ? to : from);
     }
 
-    private static void registerSteamTurbines(int... maxConsumption) {
-        for (int i = 0; i < maxConsumption.length; i++) {
-            CableTier tier = CableTier.values()[i];
-            String id = tier.name + "_steam_turbine";
-            String englishName = tier.englishName + " Steam Turbine";
-            final int eu = maxConsumption[i];
-            final int fluidCapacity = 16000 * (1 << i);
-            MachineRegistrationHelper.registerMachine(englishName, id,
-                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
-                            MIFluids.STEAM.asFluid(), 1),
-                    MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
+    /**
+     * Registers a new transformer block for the provided tiers.
+     *
+     * @param base The base tier to transform from.
+     * @param up   The tier to transform upto, or down from.
+     */
+    private static void registerTransformer(CableTier base, CableTier up) {
+        String baseToHigherId = TransformerMachineBlockEntity.getTransformerName(base, up);
+        String higherToBaseId = TransformerMachineBlockEntity.getTransformerName(up, base);
 
-            MachineRegistrationHelper.addMachineModel(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
-        }
+        registerMachine(
+                TransformerMachineBlockEntity.getTransformerEnglishName(base, up),
+                baseToHigherId,
+                bep -> new TransformerMachineBlockEntity(bep, base, up),
+                AbstractStorageMachineBlockEntity::registerEnergyApi);
+
+        registerMachine(
+                TransformerMachineBlockEntity.getTransformerEnglishName(up, base),
+                higherToBaseId,
+                bep -> new TransformerMachineBlockEntity(bep, up, base),
+                AbstractStorageMachineBlockEntity::registerEnergyApi);
+
+        addMachineModel(
+                baseToHigherId,
+                "transformer",
+                getTransformerCasingFromTier(base, up),
+                true, true, true, false);
+
+        addMachineModel(
+                higherToBaseId,
+                "transformer",
+                getTransformerCasingFromTier(base, up),
+                true, true, true, false);
     }
 
-    private static void registerEUStorage() {
-        for (CableTier tier : CableTier.values()) {
-            String id = tier.name + "_storage_unit";
-            String englishName = tier.englishName + " Storage Unit";
-            MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
+    // TODO: Should maxConsumption and fluidCapacity be based automatically off of tier?
+    /**
+     * Registers a new steam turbine block for the provided tier.
+     *
+     * @param tier           The CableTier this turbine uses.
+     * @param maxConsumption The maximum EU this turbine can output.
+     * @param fluidCapacity  The maximum fluid capacity of this turbine, in droplets.
+     */
+    private static void registerSteamTurbine(
+            CableTier tier,
+            int maxConsumption,
+            int fluidCapacity) {
+        var machineId = tier.name() + "_steam_turbine";
+        var machineEnglishName = tier.englishName() + " Steam Turbine";
 
-            MachineRegistrationHelper.addMachineModel(id, "electric_storage", MachineCasings.casingFromCableTier(tier), true, false, true, false);
-        }
+        registerMachine(
+                machineEnglishName,
+                machineId,
+                bep -> new EnergyFromFluidMachineBlockEntity(
+                        bep,
+                        machineId,
+                        tier,
+                        maxConsumption * 100L,
+                        fluidCapacity,
+                        maxConsumption,
+                        MIFluids.STEAM.asFluid(),
+                        1),
+                MachineBlockEntity::registerFluidApi,
+                EnergyFromFluidMachineBlockEntity::registerEnergyApi);
+
+        addMachineModel(
+                machineId,
+                "steam_turbine",
+                MachineCasings.casingFromCableTier(tier),
+                true, false, false);
     }
 
+    /**
+     * Registers an EU energy storage machine for the specified tier.
+     */
+    private static void registerEnergyStorage(CableTier tier) {
+        var id = tier.name() + "_storage_unit";
+        var englishName = tier.englishName() + " Storage Unit";
+
+        registerMachine(
+                englishName,
+                id,
+                bep -> new StorageMachineBlockEntity(bep, tier, id, 60 * 5 * 20 * tier.eu()),
+                AbstractStorageMachineBlockEntity::registerEnergyApi);
+
+        addMachineModel(
+                id,
+                "electric_storage",
+                MachineCasings.casingFromCableTier(tier),
+                true, false, true, false);
+    }
 }

@@ -27,8 +27,9 @@ import aztech.modern_industrialization.MIText;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import javax.annotation.Nullable;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A single tier of cables.
@@ -42,7 +43,7 @@ public interface CableTier extends Comparable<CableTier> {
      * @param name The internal name of the tier, e.g. 'LV'.
      * @return If it exists, the added cable tier; otherwise, <code>null</code>.
      */
-    static @Nullable CableTier getByName(String name) {
+    static @Nullable CableTier getByName(@NotNull String name) {
         for (var tier : TIERS) {
             if (Objects.equals(tier.name(), name))
                 return tier;

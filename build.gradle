@@ -1,10 +1,10 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.2.7'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
-    id 'io.github.juuxel.loom-quiltflower' version '1.8.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
 }
 
 apply plugin: 'java-library'
@@ -188,11 +188,11 @@ dependencies {
     }
 
     if (project.runtime_itemlist_mod == "emi") {
-        modImplementation("dev.emi:emi:${project.emi_version}+${project.emi_minecraft_version}") {
+        modImplementation("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
-        modCompileOnly("dev.emi:emi:${project.emi_version}+${project.emi_minecraft_version}") {
+        modCompileOnly("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     }
@@ -229,6 +229,7 @@ dependencies {
 
     include modApi("teamreborn:energy:${project.tr_energy_version}") {
         exclude(group: "net.fabricmc.fabric-api")
+        exclude group: "net.fabricmc", module: "fabric-loader"
     }
 
     include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
@@ -268,16 +269,28 @@ dependencies {
     }
 }
 
+configurations {
+    // due to a change in newer loom, loader isn't remapped
+    // except some mods pull in an older version of loader that *is* remapped
+    // so it has to be excluded explicitly.
+
+    modRuntimeOnly.exclude group: "net.fabricmc", module: "fabric-loader"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+
+    withSourcesJar()
+}
+
 processResources {
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
-}
-
-loom {
-    splitEnvironmentSourceSets()
 }
 
 sourceSets {
@@ -293,6 +306,8 @@ sourceSets {
 }
 
 loom {
+    splitEnvironmentSourceSets()
+
     accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
     mods {
         moderndynamics {
@@ -331,14 +346,6 @@ tasks.withType(JavaCompile).configureEach {
 
     // Minecraft 1.17 (21w19a) upwards uses Java 16.
     it.options.release = 17
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
 }
 
 jar {
@@ -392,7 +399,7 @@ import com.google.gson.GsonBuilder
 
 final class JsonOrderStep {
     private JsonOrderStep() {}
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create()
 
     static FormatterStep create() {
         return FormatterStep.create(
@@ -401,20 +408,20 @@ final class JsonOrderStep {
                 {
                     new FormatterFunc() {
                         String apply(String input) {
-                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class);
-                            String sortedJson = GSON.toJson(jsonMap);
-                            String prettyPrinted = sortedJson.replace('\\u0027', '\'');
-                            return prettyPrinted + "\n";
+                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class)
+                            String sortedJson = GSON.toJson(jsonMap)
+                            String prettyPrinted = sortedJson.replace('\\u0027', '\'')
+                            return prettyPrinted + "\n"
                         }
                     }
                 },
-        );
+        )
     }
 
     private static final class State implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L
 
-        private final int formatVersion = 1;
+        private final int formatVersion = 1
     }
 }
 

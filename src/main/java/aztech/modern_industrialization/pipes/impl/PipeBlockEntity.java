@@ -62,6 +62,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -637,5 +638,45 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
                 Shapes.box(0, connectorSideStart, connectorSideStart, connectorDepth, connectorSideEnd, connectorSideEnd),
                 Shapes.box(1 - connectorDepth, connectorSideStart, connectorSideStart, 1, connectorSideEnd, connectorSideEnd),
         };
+    }
+
+    /**
+     * Function to validate that pipe shapes never intersect. Quite slow, for debugging use only.
+     */
+    private static void validateShapes() {
+        int intersectingConfigurations = 0;
+        int nonIntersectingConfigurations = 0;
+
+        PipeEndpointType[][] endpoints = new PipeEndpointType[3][6];
+
+        int maxMask = 1 << 18;
+        for (int mask = 0; mask < maxMask; mask++) {
+            VoxelShape[] shapes = new VoxelShape[] { Shapes.empty(), Shapes.empty(), Shapes.empty() };
+
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 6; ++j) {
+                    boolean hasConnection = (mask & (1 << (i * 6 + j))) != 0;
+                    endpoints[i][j] = hasConnection ? PipeEndpointType.PIPE : null;
+
+                    int renderType = PipeShapeBuilder.getRenderType(i, Direction.from3DDataValue(j), endpoints);
+                    if (renderType != 0) {
+                        shapes[i] = Shapes.or(shapes[i], SHAPE_CACHE[i][j][renderType]);
+                    }
+                }
+            }
+
+            if (Shapes.joinIsNotEmpty(shapes[0], shapes[1], BooleanOp.AND) || Shapes.joinIsNotEmpty(shapes[0], shapes[2], BooleanOp.AND)
+                    || Shapes.joinIsNotEmpty(shapes[1], shapes[2], BooleanOp.AND)) {
+                // Print mask for intersecting configuration
+                System.out.println("Intersecting configuration: " + Integer.toBinaryString(mask));
+                intersectingConfigurations++;
+                return;
+            } else {
+                nonIntersectingConfigurations++;
+            }
+        }
+
+        System.out.printf("Intersecting configurations: %d, non-intersecting configurations: %d\n", intersectingConfigurations,
+                nonIntersectingConfigurations);
     }
 }

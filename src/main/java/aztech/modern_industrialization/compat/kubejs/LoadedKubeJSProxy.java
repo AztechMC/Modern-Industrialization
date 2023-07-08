@@ -41,63 +41,65 @@ import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluids
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import java.util.function.Consumer;
 
 public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireAddMaterialsEvent() {
-        MIMaterialKubeJSEvents.ADD_MATERIALS.post(new AddMaterialsEventJS());
+        MIMaterialKubeJSEvents.ADD_MATERIALS.post(ScriptType.STARTUP, new AddMaterialsEventJS());
     }
 
     @Override
     public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
-        MIMaterialKubeJSEvents.MODIFY_MATERIAL.post(materialBuilder.getMaterialName(), new ModifyMaterialEventJS(materialBuilder));
+        MIMaterialKubeJSEvents.MODIFY_MATERIAL.post(ScriptType.STARTUP, materialBuilder.getMaterialName(),
+                new ModifyMaterialEventJS(materialBuilder));
     }
 
     @Override
     public void fireRegisterFluidsEvent() {
-        MIRegistrationKubeJSEvents.REGISTER_FLUIDS.post(new RegisterFluidsEventJS());
+        MIRegistrationKubeJSEvents.REGISTER_FLUIDS.post(ScriptType.STARTUP, new RegisterFluidsEventJS());
     }
 
     @Override
     public void fireRegisterFluidFuelsEvent() {
-        MIRegistrationKubeJSEvents.REGISTER_FLUID_FUELS.post(new RegisterFluidFuelsEventJS());
+        MIRegistrationKubeJSEvents.REGISTER_FLUID_FUELS.post(ScriptType.STARTUP, new RegisterFluidFuelsEventJS());
     }
 
     @Override
     public void fireRegisterRecipeTypesEvent() {
-        MIMachineKubeJSEvents.REGISTER_RECIPE_TYPES.post(new RegisterRecipeTypesEventJS());
+        MIMachineKubeJSEvents.REGISTER_RECIPE_TYPES.post(ScriptType.STARTUP, new RegisterRecipeTypesEventJS());
     }
 
     @Override
     public void fireRegisterMachineCasingsEvent() {
-        MIMachineKubeJSEvents.REGISTER_CASINGS.post(new RegisterCasingsEventJS());
+        MIMachineKubeJSEvents.REGISTER_CASINGS.post(ScriptType.STARTUP, new RegisterCasingsEventJS());
     }
 
     @Override
     public void fireRegisterMachinesEvent() {
-        MIMachineKubeJSEvents.REGISTER_MACHINES.post(new RegisterMachinesEventJS());
+        MIMachineKubeJSEvents.REGISTER_MACHINES.post(ScriptType.STARTUP, new RegisterMachinesEventJS());
     }
 
     @Override
     public void fireRegisterUpgradesEvent() {
-        MIMachineKubeJSEvents.REGISTER_UPGRADES.post(new RegisterUpgradesEventJS());
+        MIMachineKubeJSEvents.REGISTER_UPGRADES.post(ScriptType.STARTUP, new RegisterUpgradesEventJS());
     }
 
     @Override
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
             SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
         var event = new AddMultiblockSlotsEventJS(itemInputs, itemOutputs, fluidInputs, fluidOutputs);
-        MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(category, event, true);
+        MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(ScriptType.STARTUP, category, event);
     }
 
     @Override
     public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
-        MIMachineKubeJSEvents.ADD_EBF_TIERS.post(new AddEbfTiersEventJS(tierConsumer));
+        MIMachineKubeJSEvents.ADD_EBF_TIERS.post(ScriptType.STARTUP, new AddEbfTiersEventJS(tierConsumer));
     }
 
     @Override
     public void fireCustomConditionEvent() {
-        MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(new CustomConditionEventJS());
+        MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(ScriptType.SERVER, new CustomConditionEventJS());
     }
 }

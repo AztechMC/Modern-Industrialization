@@ -217,7 +217,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("dev.latvian.mods:kubejs-fabric:1902.6.0-build.114") {
+    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 

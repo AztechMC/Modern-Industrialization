@@ -251,7 +251,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         }
     }
 
-    private static MachineRecipe.ItemInput readItemInput(JsonObject json) {
+    public static MachineRecipe.ItemInput readItemInput(JsonObject json) {
         int amount = 1;
         if (json.has("amount")) {
             amount = readNonNegativeInt(json, "amount");

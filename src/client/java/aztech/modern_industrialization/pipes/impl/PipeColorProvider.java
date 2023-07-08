@@ -23,25 +23,24 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import java.util.concurrent.ThreadLocalRandom;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeColorProvider implements BlockColor {
     @Override
-    public int getColor(BlockState state, BlockAndTintGetter world, BlockPos pos, int tintIndex) {
-        if (world != null && pos != null && world.getBlockEntity(pos) instanceof PipeBlockEntity) {
-            PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-            if (entity == null)
-                return -1;
-            int n = entity.connections.size();
+    public int getColor(BlockState state, @Nullable BlockAndTintGetter world, @Nullable BlockPos pos, int tintIndex) {
+        if (pos != null && world instanceof RenderAttachedBlockView renderView
+                && renderView.getBlockEntityRenderAttachment(pos) instanceof PipeBlockEntity.RenderAttachment attachment) {
+            int n = attachment.types().length;
             if (n == 0)
                 return -1;
             int i = ThreadLocalRandom.current().nextInt(n);
-            return entity.connections.keySet().stream().toArray(PipeNetworkType[]::new)[i].getColor();
+            return attachment.types()[i].getColor();
         }
         return -1;
     }

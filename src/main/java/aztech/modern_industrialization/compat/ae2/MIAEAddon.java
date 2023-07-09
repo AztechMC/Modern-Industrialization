@@ -93,7 +93,7 @@ public class MIAEAddon {
                 prop -> new PipeItem(prop, type, new MENetworkData()), SortOrder.PIPES);
         var item = itemDef.asItem();
         MIPipes.INSTANCE.register(type, item);
-        MIPipes.PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        MIPipes.ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.ME_WIRES, item, "ME Wires");
     }
 }

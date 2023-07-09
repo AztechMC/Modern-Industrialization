@@ -23,30 +23,38 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.client.model.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
+import com.mojang.datafixers.util.Pair;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class PipeModelProvider implements ModelResourceProvider {
-    public static final ResourceLocation BLOCK_MODEL = new MIIdentifier("block/pipe");
-
-    private final PipeItemUnbakedModel itemModel = new PipeItemUnbakedModel();
+/**
+ * Proxies to the normal pipe model at bake time, to avoid duplicating the baked model.
+ */
+public class PipeItemUnbakedModel implements UnbakedModel {
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+        return List.of();
+    }
 
     @Override
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        return List.of();
+    }
+
     @Nullable
-    public UnbakedModel loadModelResource(ResourceLocation identifier, ModelProviderContext modelProviderContext) {
-        if (BLOCK_MODEL.equals(identifier)) {
-            return new PipeUnbakedModel();
-        }
-
-        if (MIPipes.ITEM_PIPE_MODELS.contains(identifier)) {
-            return itemModel;
-        }
-
-        return null;
+    @Override
+    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform,
+            ResourceLocation location) {
+        return modelBakery.bake(PipeModelProvider.BLOCK_MODEL, transform);
     }
 }

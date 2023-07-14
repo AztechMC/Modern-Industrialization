@@ -21,24 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.nuclear;
+package aztech.modern_industrialization.machines.components;
 
-import java.util.Optional;
+public class NuclearEfficiencyHistoryComponent extends IntegerHistoryComponent {
+    public NuclearEfficiencyHistoryComponent() {
+        super(new String[] { "euProduction", "euFuelConsumption" }, 300);
+    }
 
-public interface INuclearGrid {
+    public void registerEuFuelConsumption(double eu) {
+        addValue("euFuelConsumption", (int) eu);
+    }
 
-    int getSizeX();
-
-    int getSizeY();
-
-    Optional<INuclearTile> getNuclearTile(int x, int y);
-
-    void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape);
-
-    void registerNeutronCreation(int neutronNumber, NeutronType type);
-
-    void registerEuFuelConsumption(double eu);
-
-    void registerEuProduction(double eu);
-
+    public void registerEuProduction(double eu) {
+        addValue("euProduction", (int) eu);
+    }
 }

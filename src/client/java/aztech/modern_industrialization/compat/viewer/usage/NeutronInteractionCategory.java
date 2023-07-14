@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
+import aztech.modern_industrialization.nuclear.FluidNuclearComponents;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.NeutronInteraction;
@@ -92,7 +93,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
         for (Fluid fluid : Registry.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
-                INuclearComponent<?> component = INuclearComponent.of(variant);
+                INuclearComponent<?> component = FluidNuclearComponents.of(variant);
                 if (component != null) {
                     consumer.accept(new Recipe(component, CategoryType.FAST_NEUTRON_INTERACTION));
                     consumer.accept(new Recipe(component, CategoryType.THERMAL_NEUTRON_INTERACTION));

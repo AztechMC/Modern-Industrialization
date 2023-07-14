@@ -23,22 +23,37 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import net.minecraft.world.item.Item;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
+import org.jetbrains.annotations.Nullable;
 
-public class NuclearItem {
+public final class NuclearGrid {
+    private final int sizeX;
+    private final int sizeY;
+    private final @Nullable NuclearHatch[][] hatchesGrid;
 
-    public static Item SMALL_HEAT_EXCHANGER;
-    public static Item LARGE_HEAT_EXCHANGER;
-
-    public static void init() {
-        SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
-                "Small Heat Exchanger",
-                "small_heat_exchanger", 2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION,
-                INeutronBehaviour.NO_INTERACTION);
-        LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
-                "Large Heat Exchanger",
-                "large_heat_exchanger", 1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION,
-                INeutronBehaviour.NO_INTERACTION);
+    public NuclearGrid(int sizeX, int sizeY, @Nullable NuclearHatch[][] hatchesGrid) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.hatchesGrid = hatchesGrid;
     }
 
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    // TODO: remove optional
+    @Nullable
+    public INuclearTile getNuclearTile(int x, int y) {
+        return hatchesGrid[x][y];
+    }
+
+    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
+    }
+
+    public void registerNeutronCreation(int neutronNumber, NeutronType type) {
+    }
 }

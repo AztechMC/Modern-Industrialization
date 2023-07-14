@@ -43,7 +43,6 @@ import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventList
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
-import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;

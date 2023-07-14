@@ -50,6 +50,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.Nullable;
 
 public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
@@ -137,7 +138,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     @Override
     public double getHeatTransferCoeff() {
-        return Math.max(NuclearConstant.BASE_HEAT_CONDUCTION + (getComponent().isPresent() ? getComponent().get().getHeatConduction() : 0), 0);
+        @Nullable
+        INuclearComponent<?> component = getComponent();
+
+        return Math.max(NuclearConstant.BASE_HEAT_CONDUCTION + (component != null ? component.getHeatConduction() : 0), 0);
     }
 
     @Override
@@ -196,7 +200,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
-    public int neutronGenerationTick(INuclearGrid grid) {
+    public int neutronGenerationTick(NuclearEfficiencyHistoryComponent efficiencyHistory) {
         double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH);
         int neutronsProduced = 0;
 
@@ -214,7 +218,8 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 var rand = this.level.getRandom();
 
                 if (abs instanceof NuclearFuel fuel) {
-                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand, grid);
+                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand,
+                            efficiencyHistory);
                 } else {
                     abs.simulateAbsorption(meanNeutron, stack, rand);
                 }
@@ -258,27 +263,28 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     public void fluidNeutronProductTick(int neutron, boolean simul) {
         if (isFluid) {
-            Optional<INuclearComponent> maybeComponent = this.getComponent();
-            if (maybeComponent.isPresent()) {
+            @Nullable
+            INuclearComponent<FluidVariant> component = (INuclearComponent<FluidVariant>) this.getComponent();
 
-                INuclearComponent<FluidVariant> component = maybeComponent.get();
+            if (component == null) {
+                return;
+            }
 
-                int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getLevel().getRandom());
+            int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getLevel().getRandom());
 
-                if (simul) {
-                    actualRecipe = neutron;
-                }
+            if (simul) {
+                actualRecipe = neutron;
+            }
 
-                if (simul || actualRecipe > 0) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
-                                AbstractConfigurableStack::canPipesInsert);
-                        this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
-                                AbstractConfigurableStack::canPipesExtract, true);
+            if (simul || actualRecipe > 0) {
+                try (Transaction tx = Transaction.openOuter()) {
+                    long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
+                            AbstractConfigurableStack::canPipesInsert);
+                    this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
+                            AbstractConfigurableStack::canPipesExtract, true);
 
-                        if (!simul) {
-                            tx.commit();
-                        }
+                    if (!simul) {
+                        tx.commit();
                     }
                 }
             }
@@ -287,27 +293,32 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     private void checkComponentMaxTemperature() {
         if (!isFluid) {
-            this.getComponent().ifPresent((component) -> {
+            @Nullable
+            INuclearComponent<?> component = this.getComponent();
+
+            if (component != null) {
                 if (component.getMaxTemperature() < this.getTemperature()) {
                     this.inventory.getItemStacks().get(0).empty();
                 }
-            });
+            }
         }
     }
 
-    public void nuclearTick(INuclearGrid grid) {
+    @Override
+    public void nuclearTick(NuclearEfficiencyHistoryComponent efficiencyHistory) {
         neutronHistory.tick();
         fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getLevel().getRandom()), false);
 
         if (isFluid) {
             double euProduced = ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
                     inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
-            grid.registerEuProduction(euProduced);
+            efficiencyHistory.registerEuProduction(euProduced);
         }
 
         checkComponentMaxTemperature();
     }
 
+    @Override
     public void absorbNeutrons(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {
@@ -318,6 +329,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     }
 
+    @Override
     public void addNeutronsToFlux(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {

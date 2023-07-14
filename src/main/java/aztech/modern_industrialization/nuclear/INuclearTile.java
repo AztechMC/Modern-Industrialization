@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import java.util.Optional;
 
 public interface INuclearTile extends INuclearTileData {
@@ -32,12 +33,8 @@ public interface INuclearTile extends INuclearTileData {
     void putHeat(double eu);
 
     default Optional<NuclearFuel> getFuel() {
-        Optional<INuclearComponent> nuclearComponent = getComponent();
-        if (nuclearComponent.isPresent()) {
-            INuclearComponent component = nuclearComponent.get();
-            if (component instanceof NuclearFuel) {
-                return Optional.of((NuclearFuel) component);
-            }
+        if (getComponent() instanceof NuclearFuel fuel) {
+            return Optional.of(fuel);
         }
         return Optional.empty();
     }
@@ -46,8 +43,8 @@ public interface INuclearTile extends INuclearTileData {
 
     void addNeutronsToFlux(int neutronNumber, NeutronType type);
 
-    int neutronGenerationTick(INuclearGrid grid);
+    int neutronGenerationTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
 
-    void nuclearTick(INuclearGrid grid);
+    void nuclearTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
 
 }

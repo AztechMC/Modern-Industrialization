@@ -96,7 +96,6 @@ public class ModernIndustrialization {
         MultiblockHatches.init();
         MultiblockMachines.init();
         KubeJSProxy.instance.fireRegisterMachinesEvent();
-        NuclearItem.init();
         MIPipes.INSTANCE.setup();
         setupFluids();
         setupItems();

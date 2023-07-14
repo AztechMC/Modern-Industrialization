@@ -164,8 +164,9 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
                 }
             }
-            return new NuclearReactorGui.Data(true, size, size, tilesData, efficiencyHistory.getAverage("euProduction"),
-                    efficiencyHistory.getAverage("euFuelConsumption"));
+            return new NuclearReactorGui.Data(true, size, size, tilesData,
+                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
+                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
         };
     }
 

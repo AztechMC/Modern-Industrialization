@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import static aztech.modern_industrialization.machines.components.NeutronHistoryComponent.Type.*;
 import static net.minecraft.core.Direction.UP;
 
 import aztech.modern_industrialization.MIFluids;
@@ -196,7 +197,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void putHeat(double eu) {
         Preconditions.checkArgument(eu >= 0);
         setTemperature(getTemperature() + eu / NuclearConstant.EU_PER_DEGREE);
-        neutronHistory.addValue("euGeneration", (int) eu);
+        neutronHistory.addValue(euGeneration, (int) eu);
     }
 
     @Override
@@ -250,7 +251,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
             }
 
-            neutronHistory.addValue("neutronGeneration", neutronsProduced);
+            neutronHistory.addValue(neutronGeneration, neutronsProduced);
             return neutronsProduced;
         } else {
             return 0;
@@ -322,9 +323,9 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void absorbNeutrons(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {
-            neutronHistory.addValue("fastNeutronReceived", neutronNumber);
+            neutronHistory.addValue(fastNeutronReceived, neutronNumber);
         } else {
-            neutronHistory.addValue("thermalNeutronReceived", neutronNumber);
+            neutronHistory.addValue(thermalNeutronReceived, neutronNumber);
         }
 
     }
@@ -333,9 +334,9 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void addNeutronsToFlux(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {
-            neutronHistory.addValue("fastNeutronFlux", neutronNumber);
+            neutronHistory.addValue(fastNeutronFlux, neutronNumber);
         } else {
-            neutronHistory.addValue("thermalNeutronFlux", neutronNumber);
+            neutronHistory.addValue(thermalNeutronFlux, neutronNumber);
         }
     }
 

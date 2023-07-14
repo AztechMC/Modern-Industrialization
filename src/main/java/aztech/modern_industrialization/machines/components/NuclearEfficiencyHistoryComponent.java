@@ -23,16 +23,22 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-public class NuclearEfficiencyHistoryComponent extends IntegerHistoryComponent {
+public class NuclearEfficiencyHistoryComponent extends IntegerHistoryComponent<NuclearEfficiencyHistoryComponent.Type> {
+    // lowerCamelCase names are used to have that as the serialized form.
+    public enum Type {
+        euProduction,
+        euFuelConsumption
+    }
+
     public NuclearEfficiencyHistoryComponent() {
-        super(new String[] { "euProduction", "euFuelConsumption" }, 300);
+        super(Type.class, 300);
     }
 
     public void registerEuFuelConsumption(double eu) {
-        addValue("euFuelConsumption", (int) eu);
+        addValue(Type.euFuelConsumption, (int) eu);
     }
 
     public void registerEuProduction(double eu) {
-        addValue("euProduction", (int) eu);
+        addValue(Type.euProduction, (int) eu);
     }
 }

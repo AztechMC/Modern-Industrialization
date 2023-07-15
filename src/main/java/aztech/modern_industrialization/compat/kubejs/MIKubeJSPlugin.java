@@ -58,8 +58,10 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
         for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
             event.register(mrt.getId(), MachineRecipeSchema.SCHEMA);
         }
+    }
 
-        // A bit ugly, oh well
-        CustomProcessCondition.gather();
+    @Override
+    public void onServerReload() {
+        CustomProcessCondition.onReload();
     }
 }

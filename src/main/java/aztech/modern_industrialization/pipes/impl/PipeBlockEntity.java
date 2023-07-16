@@ -107,20 +107,18 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     boolean stateReplaced = false;
 
     public void loadPipes() {
-        if (level.isClientSide)
+        if (level.isClientSide || unloadedPipes.size() == 0)
             return;
 
-        boolean changed = false;
         for (Tuple<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
             PipeNetworks.get((ServerLevel) level).getManager(unloaded.getA()).nodeLoaded(unloaded.getB(), worldPosition);
             pipes.add(unloaded.getB());
-            unloaded.getB().updateConnections(level, worldPosition);
-            changed = true;
         }
         unloadedPipes.clear();
-        if (changed) {
-            onConnectionsChanged();
-        }
+
+        // Defer connection update to after the pipes are loaded, because updating the connections might trigger a neighbor update,
+        // which would cause a nested loadPipes() call, leading to a concurrent modification exception.
+        updateConnections();
     }
 
     public PipeBlockEntity(BlockPos pos, BlockState state) {

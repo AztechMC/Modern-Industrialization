@@ -41,7 +41,6 @@ import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluids
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import dev.latvian.mods.kubejs.script.ScriptType;
 import java.util.function.Consumer;
 
 public class LoadedKubeJSProxy extends KubeJSProxy {

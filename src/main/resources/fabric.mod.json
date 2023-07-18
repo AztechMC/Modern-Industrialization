@@ -65,7 +65,8 @@
   "breaks": {
     "optifabric": "*",
     "universalcomponents": "*",
-    "megane": "<7"
+    "megane": "<7",
+    "kubejs": "<1902.6.1-build.300"
   },
   "custom": {
     "megane:modules": [

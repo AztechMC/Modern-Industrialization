@@ -99,6 +99,6 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
 
     @Override
     public void fireCustomConditionEvent() {
-        MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(ScriptType.SERVER, new CustomConditionEventJS());
+        MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(new CustomConditionEventJS());
     }
 }

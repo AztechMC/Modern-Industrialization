@@ -21,14 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.recipe;
+package aztech.modern_industrialization.machines.components;
 
-class ProbabilityValue<T> {
-    T value;
-    final float probability;
+public class NuclearEfficiencyHistoryComponent extends IntegerHistoryComponent<NuclearEfficiencyHistoryComponent.Type> {
+    // lowerCamelCase names are used to have that as the serialized form.
+    public enum Type {
+        euProduction,
+        euFuelConsumption
+    }
 
-    ProbabilityValue(T value, float probability) {
-        this.value = value;
-        this.probability = probability;
+    public NuclearEfficiencyHistoryComponent() {
+        super(Type.class, 300);
+    }
+
+    public void registerEuFuelConsumption(double eu) {
+        addValue(Type.euFuelConsumption, (int) eu);
+    }
+
+    public void registerEuProduction(double eu) {
+        addValue(Type.euProduction, (int) eu);
     }
 }

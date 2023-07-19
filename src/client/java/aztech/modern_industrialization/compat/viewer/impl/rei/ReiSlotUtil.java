@@ -29,13 +29,13 @@ import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 public class ReiSlotUtil {
     private ReiSlotUtil() {

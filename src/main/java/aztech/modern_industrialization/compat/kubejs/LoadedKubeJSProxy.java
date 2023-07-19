@@ -51,7 +51,7 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
 
     @Override
     public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
-        MIMaterialKubeJSEvents.MODIFY_MATERIAL.post(materialBuilder.getMaterialName(), new ModifyMaterialEventJS(materialBuilder));
+        MIMaterialKubeJSEvents.MODIFY_MATERIAL.post(new ModifyMaterialEventJS(materialBuilder), materialBuilder.getMaterialName());
     }
 
     @Override
@@ -88,7 +88,7 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
             SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
         var event = new AddMultiblockSlotsEventJS(itemInputs, itemOutputs, fluidInputs, fluidOutputs);
-        MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(category, event, true);
+        MIMachineKubeJSEvents.ADD_MULTIBLOCK_SLOTS.post(event, category);
     }
 
     @Override

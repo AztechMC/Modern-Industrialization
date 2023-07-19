@@ -25,8 +25,9 @@ package aztech.modern_industrialization.nuclear;
 
 import static aztech.modern_industrialization.nuclear.NeutronFate.*;
 
-import java.util.Optional;
+import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import java.util.Random;
+import org.jetbrains.annotations.Nullable;
 
 public class NuclearGridHelper {
 
@@ -35,10 +36,9 @@ public class NuclearGridHelper {
 
     private static final Random rand = new Random();
 
-    private static final int MAX_STEP = 100;
     private static final int MAX_SPLIT = 30;
 
-    public static boolean simulate(INuclearGrid grid) {
+    public static boolean simulate(NuclearGrid grid, NuclearEfficiencyHistoryComponent efficiencyHistory) {
 
         int sizeX = grid.getSizeX();
         int sizeY = grid.getSizeY();
@@ -51,104 +51,108 @@ public class NuclearGridHelper {
                 final int x = i;
                 final int y = j;
 
-                Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-
-                if (maybeTile.isPresent()) {
-                    INuclearTile tile = maybeTile.get();
-                    Optional<NuclearFuel> maybeFuel = tile.getFuel();
-                    int neutronNumberPrime = tile.neutronGenerationTick(grid);
-
-                    if (neutronNumberPrime > 0) {
-                        if (maybeFuel.isEmpty()) {
-                            throw new IllegalStateException("Neutron generated without fuel");
-                        }
-                        hasFuel = true;
-                        NuclearFuel fuel = maybeFuel.get();
-
-                        tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration / fuel.neutronMultiplicationFactor);
-
-                        int split = Math.min(neutronNumberPrime, MAX_SPLIT);
-                        int neutronNumberPerSplit = neutronNumberPrime / split;
-
-                        for (int k = 0; k < split + 1; k++) {
-
-                            int neutronNumber = (k < split) ? neutronNumberPerSplit : neutronNumberPrime % split;
-
-                            if (neutronNumber > 0) {
-                                NeutronType type = NeutronType.FAST;
-                                grid.registerNeutronCreation(neutronNumber, type);
-
-                                int dir = rand.nextInt(4);
-                                int step = 0;
-                                int posX = x;
-                                int posY = y;
-
-                                while (step < MAX_STEP) {
-                                    step++;
-
-                                    Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(posX, posY);
-
-                                    if (maybeSecondTile.isPresent()) {
-
-                                        INuclearTile secondTile = maybeSecondTile.get();
-                                        secondTile.addNeutronsToFlux(neutronNumber, type);
-
-                                        if (secondTile.getComponent().isPresent()) {
-                                            INuclearComponent component = secondTile.getComponent().get();
-                                            double interactionProba = component.getNeutronBehaviour().interactionTotalProbability(type);
-
-                                            if (rand.nextDouble() < interactionProba) {
-
-                                                double interactionSelector = rand.nextDouble();
-
-                                                double probaAbsorption = component.getNeutronBehaviour().interactionRelativeProbability(type,
-                                                        NeutronInteraction.ABSORPTION);
-
-                                                if (interactionSelector <= probaAbsorption) {
-                                                    secondTile.absorbNeutrons(neutronNumber, type);
-
-                                                    if (type == NeutronType.FAST) {
-                                                        secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
-                                                    }
-
-                                                    if (secondTile.getFuel().isPresent()) {
-                                                        grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
-                                                    } else {
-                                                        grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
-                                                    }
-
-                                                    break;
-                                                } else {
-                                                    dir = rand.nextInt(4);
-
-                                                    if (type == NeutronType.FAST
-                                                            && rand.nextDouble() < component.getNeutronBehaviour().neutronSlowingProbability()) {
-                                                        type = NeutronType.THERMAL;
-                                                        secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                    } else {
-                                        grid.registerNeutronFate(neutronNumber, type, ESCAPE);
-                                        break;
-                                    }
-
-                                    posX += dX[dir];
-                                    posY += dY[dir];
-                                }
-                            }
-                        }
-
-                    }
+                @Nullable
+                INuclearTile tile = grid.getNuclearTile(i, j);
+                if (tile == null) {
+                    continue;
                 }
 
-            }
+                int neutronNumberPrime = tile.neutronGenerationTick(efficiencyHistory);
+                if (neutronNumberPrime == 0) {
+                    continue;
+                }
 
+                hasFuel = true;
+                NuclearFuel fuel = tile.getFuel().orElseThrow(() -> new IllegalStateException("Neutron generated without fuel"));
+
+                tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration / fuel.neutronMultiplicationFactor);
+
+                int split = Math.min(neutronNumberPrime, MAX_SPLIT);
+                int neutronNumberPerSplit = neutronNumberPrime / split;
+
+                for (int k = 0; k < split + 1; k++) {
+
+                    int neutronNumber = (k < split) ? neutronNumberPerSplit : neutronNumberPrime % split;
+
+                    if (neutronNumber > 0) {
+                        NeutronType type = NeutronType.FAST;
+                        grid.registerNeutronCreation(neutronNumber, type);
+
+                        int dir = rand.nextInt(4);
+                        int posX = x;
+                        int posY = y;
+
+                        // Loop until we exit the grid
+                        while (true) {
+                            @Nullable
+                            INuclearTile secondTile = grid.getNuclearTile(posX, posY);
+
+                            if (secondTile == null) {
+                                grid.registerNeutronFate(neutronNumber, type, ESCAPE);
+                                break;
+                            }
+
+                            secondTile.addNeutronsToFlux(neutronNumber, type);
+
+                            @Nullable
+                            INuclearComponent<?> component = secondTile.getComponent();
+                            if (component != null) {
+                                double interactionProba = component.getNeutronBehaviour().interactionTotalProbability(type);
+
+                                if (rand.nextDouble() < interactionProba) {
+
+                                    double interactionSelector = rand.nextDouble();
+
+                                    double probaAbsorption = component.getNeutronBehaviour().interactionRelativeProbability(type,
+                                            NeutronInteraction.ABSORPTION);
+
+                                    if (interactionSelector <= probaAbsorption) {
+                                        secondTile.absorbNeutrons(neutronNumber, type);
+
+                                        if (type == NeutronType.FAST) {
+                                            secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                        }
+
+                                        if (secondTile.getFuel().isPresent()) {
+                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
+                                        } else {
+                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
+                                        }
+
+                                        break;
+                                    } else {
+                                        dir = rand.nextInt(4);
+
+                                        if (type == NeutronType.FAST
+                                                && rand.nextDouble() < component.getNeutronBehaviour().neutronSlowingProbability()) {
+                                            type = NeutronType.THERMAL;
+                                            secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                        }
+                                    }
+                                }
+                            }
+
+                            posX += dX[dir];
+                            posY += dY[dir];
+                        }
+                    }
+                }
+            }
         }
 
         // HEAT
+
+        // Cache heat transfer coefficients
+        double heatTransferCoeff[][] = new double[grid.getSizeX()][grid.getSizeY()];
+        for (int i = 0; i < sizeX; ++i) {
+            for (int j = 0; j < sizeY; ++j) {
+                @Nullable
+                INuclearTile tile = grid.getNuclearTile(i, j);
+                if (tile != null) {
+                    heatTransferCoeff[i][j] = tile.getHeatTransferCoeff();
+                }
+            }
+        }
 
         final int NUMERICAL_SUBSTEP = 10;
 
@@ -162,44 +166,46 @@ public class NuclearGridHelper {
                 // step 2: set temperature
                 for (int i = 0; i < sizeX; i++) {
                     for (int j = 0; j < sizeY; j++) {
+                        @Nullable
+                        INuclearTile tile = grid.getNuclearTile(i, j);
+                        if (tile == null) {
+                            continue;
+                        }
 
-                        Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-                        if (maybeTile.isPresent()) {
+                        double temperatureA = tile.getTemperature();
+                        if (step == 2) {
+                            tile.setTemperature(temperatureA + temperatureDelta[i][j]);
+                        } else {
+                            double coeffA = heatTransferCoeff[i][j];
 
-                            INuclearTile tile = maybeTile.get();
-                            double temperatureA = tile.getTemperature();
-                            if (step == 2) {
-                                tile.setTemperature(temperatureA + temperatureDelta[i][j]);
-                            } else {
-                                if (step == 1) {
-                                    // clamp to avoid reaching < 0 temperatures
-                                    temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
-                                }
-                                for (int k = 0; k < 4; k++) {
-                                    int i2 = i + dX[k];
-                                    int j2 = j + dY[k];
+                            if (step == 1) {
+                                // clamp to avoid reaching < 0 temperatures
+                                temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
+                            }
+                            for (int k = 0; k < 4; k++) {
+                                int i2 = i + dX[k];
+                                int j2 = j + dY[k];
 
-                                    Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(i2, j2);
+                                @Nullable
+                                INuclearTile secondTile = grid.getNuclearTile(i2, j2);
 
-                                    if (maybeSecondTile.isPresent()) {
-                                        INuclearTile secondTile = maybeSecondTile.get();
-                                        double temperatureB = secondTile.getTemperature();
-                                        double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff() + secondTile.getHeatTransferCoeff())
-                                                / NUMERICAL_SUBSTEP;
-                                        if (temperatureA > temperatureB) {
-                                            if (step == 0) {
-                                                temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
-                                            } else {
-                                                double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
-                                                temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
-                                            }
-                                        }
-                                    } else {
-                                        double temperatureB = 0;
-                                        double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff()) / NUMERICAL_SUBSTEP;
+                                if (secondTile != null) {
+                                    double temperatureB = secondTile.getTemperature();
+                                    double coeffB = heatTransferCoeff[i2][j2];
+                                    double coeffTransfer = 0.5 * (coeffA + coeffB) / NUMERICAL_SUBSTEP;
+                                    if (temperatureA > temperatureB) {
                                         if (step == 0) {
                                             temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
+                                        } else {
+                                            double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
+                                            temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
                                         }
+                                    }
+                                } else {
+                                    double temperatureB = 0;
+                                    double coeffTransfer = 0.5 * coeffA / NUMERICAL_SUBSTEP;
+                                    if (step == 0) {
+                                        temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
                                     }
                                 }
                             }
@@ -211,10 +217,11 @@ public class NuclearGridHelper {
 
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
-                Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-                if (maybeTile.isPresent()) {
-                    INuclearTile tile = maybeTile.get();
-                    tile.nuclearTick(grid);
+                @Nullable
+                INuclearTile maybeTile = grid.getNuclearTile(i, j);
+
+                if (maybeTile != null) {
+                    maybeTile.nuclearTick(efficiencyHistory);
                 }
             }
         }

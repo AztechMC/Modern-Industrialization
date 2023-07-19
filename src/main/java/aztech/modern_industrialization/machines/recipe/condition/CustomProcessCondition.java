@@ -40,7 +40,7 @@ public class CustomProcessCondition implements MachineProcessCondition {
 
     static final Map<String, Definition> definitions = new HashMap<>();
 
-    public static void gather() {
+    public static void onReload() {
         definitions.clear();
 
         KubeJSProxy.instance.fireCustomConditionEvent();

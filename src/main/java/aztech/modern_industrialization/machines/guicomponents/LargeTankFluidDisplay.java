@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class FluidGUIComponent {
+public class LargeTankFluidDisplay {
 
     public static class Server implements GuiComponent.Server<Data> {
 
@@ -66,7 +66,7 @@ public class FluidGUIComponent {
 
         @Override
         public ResourceLocation getId() {
-            return GuiComponents.FLUID_STORAGE_GUI;
+            return GuiComponents.LARGE_TANK_FLUID_DISPLAY;
         }
     }
 

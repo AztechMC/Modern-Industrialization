@@ -65,7 +65,8 @@
   "breaks": {
     "optifabric": "*",
     "universalcomponents": "*",
-    "wthit": "<5.17"
+    "wthit": "<5.17",
+    "kubejs": "<1902.6.1-build.300"
   },
   "custom": {
     "requires_renderer": true

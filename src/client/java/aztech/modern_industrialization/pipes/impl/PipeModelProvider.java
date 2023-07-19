@@ -24,23 +24,29 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
-import java.util.HashSet;
-import java.util.Set;
+import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeModelProvider implements ModelResourceProvider {
-    private static final PipeModel PIPE_MODEL = new PipeModel();
-    public static Set<ResourceLocation> modelNames = new HashSet<>();
+    public static final ResourceLocation BLOCK_MODEL = new MIIdentifier("block/pipe");
+
+    private final PipeItemUnbakedModel itemModel = new PipeItemUnbakedModel();
 
     @Override
+    @Nullable
     public UnbakedModel loadModelResource(ResourceLocation identifier, ModelProviderContext modelProviderContext) {
-        return modelNames.contains(identifier) ? PIPE_MODEL : null;
-    }
+        if (BLOCK_MODEL.equals(identifier)) {
+            return new PipeUnbakedModel();
+        }
 
-    static {
-        modelNames.add(new MIIdentifier("block/pipe"));
+        if (MIPipes.ITEM_PIPE_MODELS.contains(identifier)) {
+            return itemModel;
+        }
+
+        return null;
     }
 }

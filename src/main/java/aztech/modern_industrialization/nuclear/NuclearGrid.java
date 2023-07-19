@@ -23,22 +23,37 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import java.util.Optional;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
+import org.jetbrains.annotations.Nullable;
 
-public interface INuclearGrid {
+public final class NuclearGrid {
+    private final int sizeX;
+    private final int sizeY;
+    private final @Nullable NuclearHatch[][] hatchesGrid;
 
-    int getSizeX();
+    public NuclearGrid(int sizeX, int sizeY, @Nullable NuclearHatch[][] hatchesGrid) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.hatchesGrid = hatchesGrid;
+    }
 
-    int getSizeY();
+    public int getSizeX() {
+        return sizeX;
+    }
 
-    Optional<INuclearTile> getNuclearTile(int x, int y);
+    public int getSizeY() {
+        return sizeY;
+    }
 
-    void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape);
+    // TODO: remove optional
+    @Nullable
+    public INuclearTile getNuclearTile(int x, int y) {
+        return hatchesGrid[x][y];
+    }
 
-    void registerNeutronCreation(int neutronNumber, NeutronType type);
+    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
+    }
 
-    void registerEuFuelConsumption(double eu);
-
-    void registerEuProduction(double eu);
-
+    public void registerNeutronCreation(int neutronNumber, NeutronType type) {
+    }
 }

@@ -123,7 +123,6 @@ public class MIPipesClient {
             return true;
         });
 
-        PipeModelProvider.modelNames.addAll(MIPipes.PIPE_MODEL_NAMES);
         BlockRenderLayerMap.INSTANCE.putBlock(MIPipes.BLOCK_PIPE, RenderType.cutout());
     }
 

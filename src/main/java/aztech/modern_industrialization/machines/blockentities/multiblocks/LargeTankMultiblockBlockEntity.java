@@ -35,7 +35,7 @@ import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.FluidStorageComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machines.guicomponents.FluidGUIComponent;
+import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplay;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -61,7 +61,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
     private static final int[] Z_SIZES = new int[] { 3, 4, 5, 6, 7 };
 
-    public static final int BUCKET_PER_STRUCTURE_BLOCK = 64;
+    public static final long BUCKET_PER_STRUCTURE_BLOCK = 64;
 
     private static int getXComponent(int shapeIndex) {
         return shapeIndex / 25;
@@ -150,7 +150,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private final ActiveShapeComponent activeShape;
     private final FluidStorageComponent fluidStorage;
 
-    private FluidGUIComponent.Data oldFluidData;
+    private LargeTankFluidDisplay.Data oldFluidData;
 
     public LargeTankMultiblockBlockEntity(BEP bep) {
 
@@ -160,7 +160,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         fluidStorage = new FluidStorageComponent();
 
         this.registerComponents(activeShape, fluidStorage);
-        this.registerGuiComponent(new FluidGUIComponent.Server(this::getFluidData));
 
         this.registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override
@@ -195,10 +194,12 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
             }
         }, createLineInfo(X_SIZES, MIText.ShapeTextWidth), createLineInfo(Y_SIZES, MIText.ShapeTextHeight),
                 createLineInfo(Z_SIZES, MIText.ShapeTextDepth)));
+        // Must be after shape selection because we render text in the selection panel
+        this.registerGuiComponent(new LargeTankFluidDisplay.Server(this::getFluidData));
     }
 
-    public FluidGUIComponent.Data getFluidData() {
-        return new FluidGUIComponent.Data(fluidStorage.getFluid(), fluidStorage.getAmount(), fluidStorage.getCapacity());
+    public LargeTankFluidDisplay.Data getFluidData() {
+        return new LargeTankFluidDisplay.Data(fluidStorage.getFluid(), fluidStorage.getAmount(), fluidStorage.getCapacity());
     }
 
     public MIInventory getInventory() {
@@ -262,13 +263,17 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
     }
 
+    public static long getCapacityFromComponents(int xIndex, int yIndex, int zIndex) {
+        int sizeX = X_SIZES[xIndex];
+        int sizeY = Y_SIZES[yIndex];
+        int sizeZ = Z_SIZES[zIndex];
+        int volume = sizeX * sizeY * sizeZ;
+        return volume * BUCKET_PER_STRUCTURE_BLOCK * FluidConstants.BUCKET;
+    }
+
     private void onMatchSuccessful() {
         int index = activeShape.getActiveShapeIndex();
-        int sizeX = X_SIZES[getXComponent(index)];
-        int sizeY = Y_SIZES[getYComponent(index)];
-        int sizeZ = Z_SIZES[getZComponent(index)];
-        int volume = sizeX * sizeY * sizeZ;
-        long capacity = (long) volume * BUCKET_PER_STRUCTURE_BLOCK * FluidConstants.BUCKET; // 64 Bucket / Block
+        long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
         fluidStorage.setCapacity(capacity);
 
         for (var hatch : shapeMatcher.getMatchedHatches()) {

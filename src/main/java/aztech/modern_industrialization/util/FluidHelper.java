@@ -62,9 +62,13 @@ public class FluidHelper {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
             return Component.literal(text + " mB");
         } else {
-            var amountUnit = TextHelper.getAmount((double) amount / FluidConstants.BUCKET);
-            return Component.literal(amountUnit.digit() + " " + amountUnit.unit() + "B");
+            return getFluidAmountLarge(amount);
         }
+    }
+
+    public static MutableComponent getFluidAmountLarge(long amount) {
+        var amountUnit = TextHelper.getAmount((double) amount / FluidConstants.BUCKET);
+        return Component.literal(amountUnit.digit() + " " + amountUnit.unit() + "B");
     }
 
     public static int getColorMinLuminance(int color) {

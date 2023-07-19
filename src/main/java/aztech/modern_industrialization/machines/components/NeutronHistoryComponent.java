@@ -28,18 +28,26 @@ import static aztech.modern_industrialization.nuclear.NeutronType.THERMAL;
 
 import aztech.modern_industrialization.nuclear.NeutronType;
 
-public class NeutronHistoryComponent extends IntegerHistoryComponent {
+public class NeutronHistoryComponent extends IntegerHistoryComponent<NeutronHistoryComponent.Type> {
+    // lowerCamelCase names are used to have that as the serialized form.
+    public enum Type {
+        fastNeutronReceived,
+        fastNeutronFlux,
+        thermalNeutronReceived,
+        thermalNeutronFlux,
+        neutronGeneration,
+        euGeneration
+    }
 
     public NeutronHistoryComponent() {
-        super(new String[] { "fastNeutronReceived", "fastNeutronFlux", "thermalNeutronReceived", "thermalNeutronFlux", "neutronGeneration",
-                "euGeneration" }, 100);
+        super(Type.class, 100);
     }
 
     public double getAverageReceived(NeutronType type) {
         if (type == FAST) {
-            return getAverage("fastNeutronReceived");
+            return getAverage(Type.fastNeutronReceived);
         } else if (type == THERMAL) {
-            return getAverage("thermalNeutronReceived");
+            return getAverage(Type.thermalNeutronReceived);
         } else if (type == NeutronType.BOTH) {
             return getAverageReceived(FAST) + getAverageReceived(THERMAL);
         } else {
@@ -49,9 +57,9 @@ public class NeutronHistoryComponent extends IntegerHistoryComponent {
 
     public double getAverageFlux(NeutronType type) {
         if (type == FAST) {
-            return getAverage("fastNeutronFlux");
+            return getAverage(Type.fastNeutronFlux);
         } else if (type == THERMAL) {
-            return getAverage("thermalNeutronFlux");
+            return getAverage(Type.thermalNeutronFlux);
         } else if (type == NeutronType.BOTH) {
             return getAverageFlux(FAST) + getAverageFlux(THERMAL);
         } else {
@@ -60,11 +68,11 @@ public class NeutronHistoryComponent extends IntegerHistoryComponent {
     }
 
     public double getAverageGeneration() {
-        return getAverage("neutronGeneration");
+        return getAverage(Type.neutronGeneration);
     }
 
     public double getAverageEuGeneration() {
-        return getAverage("euGeneration");
+        return getAverage(Type.euGeneration);
     }
 
 }

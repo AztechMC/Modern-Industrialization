@@ -59,7 +59,7 @@ public class FuelBurningComponent implements IComponent {
      * recipe = 2 EU/t for 10 seconds, EU_PER_BURN_TICK/2 is the efficiency
      * multiplier.
      */
-    public static final int EU_PER_BURN_TICK = 20;
+    public static final long EU_PER_BURN_TICK = 20;
 
     /**
      * Buffer of EU that was burnt already, and is awaiting to be turned into heat.

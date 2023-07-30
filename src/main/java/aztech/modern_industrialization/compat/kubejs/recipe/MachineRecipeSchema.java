@@ -215,5 +215,18 @@ public final class MachineRecipeSchema {
                 return 1.0f;
             }
         }
+
+        @Override
+        public JsonElement writeOutputItem(OutputItem value) {
+            var json = new JsonObject();
+            json.addProperty("item", value.item.kjs$getId());
+            json.addProperty("amount", value.item.getCount());
+
+            if (value.hasChance()) {
+                json.addProperty("probability", value.getChance());
+            }
+
+            return json;
+        }
     }
 }

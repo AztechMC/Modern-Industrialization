@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -41,7 +42,7 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
-        EnergyListComponentHolder {
+        EnergyListComponentHolder, MultiblockInventoryComponentHolder {
 
     public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
             FluidConsumerComponent fluidConsumer) {
@@ -73,6 +74,11 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     @Override
     public List<EnergyComponent> getEnergyComponents() {
         return energyOutputs;
+    }
+
+    @Override
+    public MultiblockInventoryComponent getMultiblockInventoryComponent() {
+        return inventory;
     }
 
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {

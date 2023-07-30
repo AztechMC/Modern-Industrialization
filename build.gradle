@@ -30,7 +30,11 @@ repositories {
     }
     // for WTHIT
     maven {
-        url 'https://maven.bai.lol'
+        url "https://maven2.bai.lol"
+        content {
+            includeGroup "lol.bai"
+            includeGroup "mcp.mobius.waila"
+        }
     }
     // for AE2 and JEI
     maven {
@@ -209,9 +213,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
+    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
+    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"
 
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -238,21 +242,6 @@ dependencies {
 
     // Include No Indium? https://github.com/Luligabi1/NoIndium
     include "me.luligabi:NoIndium:${project.no_indium_version}"
-
-
-    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "mcp.mobius.waila")
-    }
-
-    modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "mcp.mobius.waila")
-    }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
@@ -453,7 +442,6 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 requiredDependency "fabric-api"
                 requiredDependency "cloth-config"
                 optionalDependency "wthit"
-                optionalDependency "megane"
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
@@ -489,7 +477,6 @@ modrinth {
         required.project "fabric-api"
         required.project "cloth-config"
         optional.project "wthit"
-        optional.project "megane"
         optional.project "emi"
         optional.project "jei"
         optional.project "rei"

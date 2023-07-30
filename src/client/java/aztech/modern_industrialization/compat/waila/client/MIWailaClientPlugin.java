@@ -23,20 +23,35 @@
  */
 package aztech.modern_industrialization.compat.waila.client;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
+import mcp.mobius.waila.api.WailaHelper;
+import mcp.mobius.waila.api.data.EnergyData;
 
 public class MIWailaClientPlugin implements IWailaPlugin {
+    public static final int ENERGY_COLOR = 0xFFB70000;
+
     @Override
     public void register(IRegistrar r) {
+        EnergyData.describe(ModernIndustrialization.MOD_ID).color(ENERGY_COLOR).unit("EU");
+
         PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
         r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
         r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
 
         OverclockComponentProvider overclockComponentProvider = new OverclockComponentProvider();
         r.addComponent(overclockComponentProvider, TooltipPosition.BODY, MachineBlockEntity.class);
+    }
+
+    static float ratio(double current, double max) {
+        return (float) (current / max);
+    }
+
+    static String fraction(double current, double max) {
+        return WailaHelper.suffix((long) current) + "/" + WailaHelper.suffix((long) max);
     }
 }

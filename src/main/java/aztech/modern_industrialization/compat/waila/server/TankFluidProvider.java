@@ -21,31 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.server;
 
+import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
-import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
+import mcp.mobius.waila.api.IDataProvider;
+import mcp.mobius.waila.api.IDataWriter;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
+import mcp.mobius.waila.api.data.FluidData;
 
-public class CreativeTankFluidProvider extends FluidProvider<CreativeTankBlockEntity> {
+public class TankFluidProvider implements IDataProvider<AbstractTankBlockEntity> {
     @Override
-    public int getSlotCount() {
-        return 1;
-    }
+    public void appendData(IDataWriter data, IServerAccessor<AbstractTankBlockEntity> accessor, IPluginConfig config) {
+        data.add(FluidData.class, res -> {
+            var tank = accessor.getTarget();
+            var variant = tank.getResource();
+            double stored;
+            double capacity;
 
-    @Override
-    public @Nullable Fluid getFluid(int slot) {
-        return getObject().getResource().getFluid();
-    }
+            if (tank instanceof CreativeTankBlockEntity) {
+                stored = Double.POSITIVE_INFINITY;
+                capacity = Double.POSITIVE_INFINITY;
+            } else {
+                stored = tank.getAmount() / 81.0;
+                capacity = tank.getCapacity() / 81.0;
+            }
 
-    @Override
-    public double getStored(int slot) {
-        return -1;
-    }
-
-    @Override
-    public double getMax(int slot) {
-        return -1;
+            res.add(FluidData.of(1).add(variant.getFluid(), variant.getNbt(), stored, capacity));
+        });
     }
 }

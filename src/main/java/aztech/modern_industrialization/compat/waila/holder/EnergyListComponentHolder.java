@@ -21,33 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.blocks.storage.tank.TankBlockEntity;
-import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
+import java.util.List;
 
-public class TankFluidProvider extends FluidProvider<TankBlockEntity> {
-
-    @Override
-    public int getSlotCount() {
-        return 1;
-    }
-
-    @Override
-    public @Nullable Fluid getFluid(int slot) {
-        return getObject().getResource().getFluid();
-    }
-
-    @Override
-    public double getStored(int slot) {
-        return droplets(getObject().getAmount());
-    }
-
-    @Override
-    public double getMax(int slot) {
-        return droplets(getObject().getCapacity());
-    }
-
+public interface EnergyListComponentHolder {
+    List<EnergyComponent> getEnergyComponents();
 }

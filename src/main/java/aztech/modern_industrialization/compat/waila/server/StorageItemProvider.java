@@ -21,10 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.holder;
+package aztech.modern_industrialization.compat.waila.server;
 
-import aztech.modern_industrialization.machines.components.EnergyComponent;
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
+import com.google.common.primitives.Ints;
+import mcp.mobius.waila.api.IDataProvider;
+import mcp.mobius.waila.api.IDataWriter;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
+import mcp.mobius.waila.api.data.ItemData;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
-public interface EnergyComponentHolder {
-    EnergyComponent getEnergyComponent();
+@SuppressWarnings("rawtypes")
+public class StorageItemProvider implements IDataProvider<AbstractStorageBlockEntity> {
+    @Override
+    public void appendData(IDataWriter data, IServerAccessor<AbstractStorageBlockEntity> accessor, IPluginConfig config) {
+        data.add(ItemData.class, res -> {
+            var storage = accessor.getTarget();
+
+            if (storage.getResource() instanceof ItemVariant variant) {
+                res.add(ItemData.of(config).add(variant.toStack(Ints.saturatedCast(storage.getAmount()))));
+            }
+
+            res.block();
+        });
+    }
 }

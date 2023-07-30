@@ -26,6 +26,7 @@ package aztech.modern_industrialization.nuclear;
 import static aztech.modern_industrialization.nuclear.NeutronFate.*;
 
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
+import java.util.Optional;
 import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,13 +58,15 @@ public class NuclearGridHelper {
                     continue;
                 }
 
+                // Get fuel before the generation tick, because the fuel might be consumed!
+                Optional<NuclearFuel> maybeFuel = tile.getFuel();
                 int neutronNumberPrime = tile.neutronGenerationTick(efficiencyHistory);
                 if (neutronNumberPrime == 0) {
                     continue;
                 }
 
                 hasFuel = true;
-                NuclearFuel fuel = tile.getFuel().orElseThrow(() -> new IllegalStateException("Neutron generated without fuel"));
+                NuclearFuel fuel = maybeFuel.orElseThrow(() -> new IllegalStateException("Neutron generated without fuel"));
 
                 tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration / fuel.neutronMultiplicationFactor);
 

@@ -104,7 +104,7 @@ public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
             int[] valuesArray = histories.get(key);
 
             // Update average
-            averages[i] += (double) (updatingValues[i] - valuesArray[0]) / tickHistorySize;
+            averages[i] += (double) (updatingValues[i] - valuesArray[tickHistorySize - 1]) / tickHistorySize;
 
             // Shift values by 1 and add updating value at the beginning.
             System.arraycopy(valuesArray, 0, valuesArray, 1, tickHistorySize - 1);

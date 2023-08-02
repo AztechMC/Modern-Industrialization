@@ -44,11 +44,11 @@ public class TankFluidProvider implements IDataProvider<AbstractTankBlockEntity>
                 stored = Double.POSITIVE_INFINITY;
                 capacity = Double.POSITIVE_INFINITY;
             } else {
-                stored = tank.getAmount() / 81.0;
-                capacity = tank.getCapacity() / 81.0;
+                stored = tank.getAmount();
+                capacity = tank.getCapacity();
             }
 
-            res.add(FluidData.of(1).add(variant.getFluid(), variant.getNbt(), stored, capacity));
+            res.add(FluidData.of(FluidData.Unit.DROPLETS).add(variant.getFluid(), variant.getNbt(), stored, capacity));
         });
     }
 }

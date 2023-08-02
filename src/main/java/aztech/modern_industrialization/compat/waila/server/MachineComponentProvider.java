@@ -80,7 +80,7 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                 var outputs = component.getFluidOutputs();
 
                 if (!inputs.isEmpty() || !outputs.isEmpty()) {
-                    var fluidData = FluidData.of(FluidData.Unit.DROPLETS,inputs.size() + outputs.size());
+                    var fluidData = FluidData.of(FluidData.Unit.DROPLETS, inputs.size() + outputs.size());
                     addFluids(fluidData, inputs);
                     addFluids(fluidData, outputs);
                     res.add(fluidData);

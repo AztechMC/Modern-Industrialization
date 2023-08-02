@@ -80,7 +80,7 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                 var outputs = component.getFluidOutputs();
 
                 if (!inputs.isEmpty() || !outputs.isEmpty()) {
-                    var fluidData = FluidData.of(inputs.size() + outputs.size());
+                    var fluidData = FluidData.of(FluidData.Unit.DROPLETS,inputs.size() + outputs.size());
                     addFluids(fluidData, inputs);
                     addFluids(fluidData, outputs);
                     res.add(fluidData);
@@ -90,11 +90,12 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
 
                 if (component != null) {
                     var fluid = component.getFluid();
-                    res.add(FluidData.of(1).add(fluid.getFluid(), fluid.getNbt(), component.getAmount(), component.getCapacity()));
+                    res.add(FluidData.of(FluidData.Unit.DROPLETS)
+                            .add(fluid.getFluid(), fluid.getNbt(), component.getAmount(), component.getCapacity()));
                 }
             } else {
                 var stacks = machine.getInventory().getFluidStacks();
-                var fluidData = FluidData.of(stacks.size());
+                var fluidData = FluidData.of(FluidData.Unit.DROPLETS, stacks.size());
                 addFluids(fluidData, stacks);
                 res.add(fluidData);
             }

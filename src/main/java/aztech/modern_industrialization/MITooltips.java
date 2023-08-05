@@ -122,6 +122,12 @@ public class MITooltips {
                 return FLUID_PARSER.parse(f.asFluid());
             }
 
+            if (o instanceof Item) {
+                return ITEM_PARSER.parse((Item) o);
+            } else if (o instanceof ItemLike) {
+                return ITEM_PARSER.parse(((ItemLike) o).asItem());
+            }
+
             return Component.literal(String.valueOf(o)).withStyle(style);
         }
     };

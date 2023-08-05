@@ -165,42 +165,47 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
                 this.maxEuProduction,
                 MITooltips.EU_PER_TICK_PARSER).build());
 
-        if (this.fluidEUProductionMap.isStandardFuels()) {
-            returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
-        } else {
-            var informationEntries = this.fluidEUProductionMap.getAllAcceptedWithEU();
-            if (informationEntries.size() == 1) {
-                var entry = informationEntries.iterator().next();
-                returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
-                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-            } else if (informationEntries.size() > 1) {
-                returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
-                for (var entry : informationEntries) {
-                    returnList.add(
-                            new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
-                                    .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-                }
-            }
+        if (this.fluidEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
+            if (this.fluidEUProductionMap.isStandardFuels()) {
+                returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
+            } else {
+                var informationEntries = this.fluidEUProductionMap.getAllAcceptedWithEU();
 
+                if (informationEntries.size() == 1) {
+                    var entry = informationEntries.iterator().next();
+                    returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
+                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                } else if (informationEntries.size() > 1) {
+                    returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
+                    for (var entry : informationEntries) {
+                        returnList.add(
+                                new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
+                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                    }
+                }
+
+            }
         }
 
-        if (this.itemEUProductionMap.isStandardFuels()) {
-            returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
-        } else {
-            var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
-            if (informationEntries.size() == 1) {
-                var entry = informationEntries.iterator().next();
-                returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
-                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+        if (this.itemEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
+            if (this.itemEUProductionMap.isStandardFuels()) {
+                returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
             } else {
-                returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
-                for (var entry : informationEntries) {
-                    returnList.add(
-                            new MITooltips.Line(MIText.AcceptFollowingItemEntry)
-                                    .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
+                if (informationEntries.size() == 1) {
+                    var entry = informationEntries.iterator().next();
+                    returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
+                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                } else {
+                    returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
+                    for (var entry : informationEntries) {
+                        returnList.add(
+                                new MITooltips.Line(MIText.AcceptFollowingItemEntry)
+                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                    }
                 }
-            }
 
+            }
         }
 
         return returnList;

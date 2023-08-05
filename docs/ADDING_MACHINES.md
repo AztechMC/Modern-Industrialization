@@ -371,4 +371,3 @@ builder.addFluid("minecraft:lava", 10) // This will make the generator accept la
 builder.addItem("minecraft:coal", 100).addFluid("minecraft:lava", 10); 
 // will automatically add the correct input slot in the machine inventory
 ```
-

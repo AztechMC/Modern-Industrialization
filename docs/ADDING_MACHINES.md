@@ -329,3 +329,46 @@ MIMachineEvents.registerCasings(event => {
 
 **This only registers the casing for use in a machine model, but does not create a casing block.
 To add casings, use either KubeJS custom blocks or the material system.**
+
+
+## Adding a single block generator
+
+A single block generator is a block that generates energy at a constant rate from consuming fluids or item, like the diesel generator or the steam turbine.
+The registration is similar to a single block crafting machine but will take different parameters.
+
+For example, 
+```js
+MIMachineEvents.registerMachines(event => {
+    event.simpleEnergyFromFluidOrItemSingleBlock(
+        "EV Diesel Generator", // the generator english name
+        "ev_diesel_generator", // its internal name/id
+        "ev", // the cable tier it can connect to (eg: lv, mv, hv, ev, superconductor)
+        8912, // its maximum energy generation rate (eu/tick)
+        50000, // its internal energy storage (eu)
+        128000, // its fluid storage (mB), this is optional if it doesn't consume fluids (default is 0)
+        builder => {
+            builder.withFluidFuels() // the builder is used to specify which kind of fuel it will accept and 
+            // how much energy it will generate from it. (See below)
+        }, 
+            // ---- SAME AS FOR A SINGLE BLOCK CRAFTING MACHINE ----
+        "ev",  // the casing 
+        "diesel_generator", // the folder of the model
+            // front overlay?, top overlay?, side overlay?
+        true, true, true
+    )
+});
+```
+The builder accepts the following methods (which can be chained):
+
+```js
+
+builder.withFluidFuels() // This will make the generator accept any fluid fuels with their standard EU/mb value
+builder.withItemFuels() // This will make the generator any combustible items. The EU/item is 20 x the number of burning ticks.
+builder.addItem("minecraft:coal", 100) // This will make the generator accept coal and generate 100 EU/item
+builder.addFluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb
+
+// multiple fuels can be added ex:
+builder.addItem("minecraft:coal", 100).addFluid("minecraft:lava", 10); 
+// will automatically add the correct input slot in the machine inventory
+```
+

@@ -21,29 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import java.util.List;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
 
-public class MultiblockItemProvider extends AbstractConfigurableItemProvider<MultiblockInventoryComponentHolder> {
-    private List<ConfigurableItemStack> inputs;
-    private List<ConfigurableItemStack> outputs;
-
-    @Override
-    protected void init() {
-        this.inputs = getObject().getMultiblockInventoryComponent().getItemInputs();
-        this.outputs = getObject().getMultiblockInventoryComponent().getItemOutputs();
-    }
-
-    @Override
-    public int getSlotCount() {
-        return inputs.size() + outputs.size();
-    }
-
-    @Override
-    protected ConfigurableItemStack getConfigurableStack(int slot) {
-        return slot < inputs.size() ? inputs.get(slot) : outputs.get(slot - inputs.size());
-    }
+public interface EnergyComponentHolder {
+    EnergyComponent getEnergyComponent();
 }

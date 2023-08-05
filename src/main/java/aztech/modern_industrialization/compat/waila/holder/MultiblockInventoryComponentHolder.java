@@ -21,31 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
-import com.google.common.primitives.Ints;
-import lol.bai.megane.api.provider.ItemProvider;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import aztech.modern_industrialization.machines.components.MultiblockInventoryComponent;
 
-@SuppressWarnings("rawtypes")
-public class StorageItemProvider extends ItemProvider<AbstractStorageBlockEntity> {
-    @Override
-    public boolean hasItems() {
-        return getObject().getResource() instanceof ItemVariant;
-    }
-
-    @Override
-    public int getSlotCount() {
-        return 1;
-    }
-
-    @Override
-    public @NotNull ItemStack getStack(int slot) {
-        return getObject().isEmpty() || getObject().isResourceBlank()
-                ? ItemStack.EMPTY
-                : ((ItemVariant) getObject().getResource()).toStack(Ints.saturatedCast(getObject().getAmount()));
-    }
+public interface MultiblockInventoryComponentHolder {
+    MultiblockInventoryComponent getMultiblockInventoryComponent();
 }

@@ -21,25 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import lol.bai.megane.api.provider.EnergyProvider;
+import aztech.modern_industrialization.machines.components.FluidStorageComponent;
+import org.jetbrains.annotations.Nullable;
 
-public class ComponentListEnergyProvider extends EnergyProvider<EnergyListComponentHolder> {
-    @Override
-    public boolean hasEnergy() {
-        return !getObject().getEnergyComponents().isEmpty();
-    }
-
-    @Override
-    public long getStored() {
-        return getObject().getEnergyComponents().stream().mapToLong(EnergyComponent::getEu).sum();
-    }
-
-    @Override
-    public long getMax() {
-        return getObject().getEnergyComponents().stream().mapToLong(EnergyComponent::getCapacity).sum();
-    }
+public interface FluidStorageComponentHolder {
+    @Nullable
+    FluidStorageComponent getFluidStorageComponent();
 }

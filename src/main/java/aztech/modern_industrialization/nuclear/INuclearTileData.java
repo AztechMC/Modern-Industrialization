@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.Nullable;
 
 public interface INuclearTileData {
 
@@ -49,21 +50,22 @@ public interface INuclearTileData {
 
     boolean isFluid();
 
-    default Optional<INuclearComponent> getComponent() {
-        TransferVariant variant = getVariant();
+    @Nullable
+    default INuclearComponent<?> getComponent() {
+        TransferVariant<?> variant = getVariant();
 
         if (variant instanceof ItemVariant resource) {
-            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent) {
-                return Optional.of((INuclearComponent) resource.getItem());
+            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent<?>comp) {
+                return comp;
             }
 
         } else if (variant instanceof FluidVariant resource) {
             if (!resource.isBlank() && getVariantAmount() > 0) {
-                return Optional.ofNullable(INuclearComponent.of(resource));
+                return FluidNuclearComponents.of(resource);
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     static void write(Optional<INuclearTileData> maybeData, FriendlyByteBuf buf) {

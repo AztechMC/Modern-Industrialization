@@ -21,20 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.compat.waila.holder;
 
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import com.google.common.primitives.Ints;
-import lol.bai.megane.api.provider.ItemProvider;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import aztech.modern_industrialization.machines.components.CrafterComponent;
 
-public abstract class AbstractConfigurableItemProvider<T> extends ItemProvider<T> {
-    protected abstract ConfigurableItemStack getConfigurableStack(int slot);
-
-    @Override
-    public @NotNull ItemStack getStack(int slot) {
-        ConfigurableItemStack stack = getConfigurableStack(slot);
-        return stack.getResource().toStack(Ints.saturatedCast(stack.getAmount()));
-    }
+public interface CrafterComponentHolder {
+    CrafterComponent getCrafterComponent();
 }

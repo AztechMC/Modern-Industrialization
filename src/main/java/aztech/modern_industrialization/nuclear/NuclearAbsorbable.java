@@ -25,7 +25,6 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
-import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -43,8 +42,11 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     public void setRemainingDesintegrations(ItemStack stack, int value) {
-        Preconditions.checkArgument(value >= 0 & value <= desintegrationMax,
-                String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
+        if (value < 0 || value > desintegrationMax) {
+            throw new IllegalArgumentException(
+                    String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
+        }
+
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("desRem", value);
     }

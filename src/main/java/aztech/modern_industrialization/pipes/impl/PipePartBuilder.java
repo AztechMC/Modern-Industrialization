@@ -246,14 +246,12 @@ abstract class PipePartBuilder {
             if (logicalSlot == 1) {
                 // short bend
                 if (connSlot == 0) {
-                    // same as below
-                    return direction == EAST ? 3 : 2;
+                    return 2;
                 }
             } else if (logicalSlot == 2) {
                 if (connSlot == 0) {
-                    // short bend, but far if the direction is west to avoid collisions in some
-                    // cases.
-                    return direction == WEST ? 3 : 2;
+                    // short bend, but far if the direction is negative to avoid collisions in some cases.
+                    return direction.getAxisDirection() == AxisDirection.NEGATIVE ? 3 : 2;
                 } else if (connSlot == 1) {
                     // long bend
                     return 4;

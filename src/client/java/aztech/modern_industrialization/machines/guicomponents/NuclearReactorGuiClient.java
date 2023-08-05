@@ -32,6 +32,7 @@ import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHat
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.INuclearTileData;
 import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -56,6 +57,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class NuclearReactorGuiClient implements GuiComponentClient {
 
@@ -142,7 +144,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                                 helper.blit(matrices, px, py, 0, 0, 18, 18);
                             }
 
-                            TransferVariant variant = tile.get().getVariant();
+                            TransferVariant<?> variant = tile.get().getVariant();
                             long variantAmount = tile.get().getVariantAmount();
 
                             if (variantAmount > 0 & !variant.isBlank()) {
@@ -241,7 +243,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                     Optional<INuclearTileData> tile = data.tilesData()[index];
                     if (tile.isPresent()) {
                         INuclearTileData tileData = tile.get();
-                        TransferVariant variant = tileData.getVariant();
+                        TransferVariant<?> variant = tileData.getVariant();
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
                             long variantAmount = tile.get().getVariantAmount();
                             if (variantAmount > 0 & !variant.isBlank()) {
@@ -331,12 +333,12 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                             }
 
                             if (currentMode == Renderer.Mode.NEUTRON_GENERATION) {
-                                if (tileData.getComponent().isPresent()) {
-                                    if (tileData.getComponent().get() instanceof NuclearFuel fuel) {
-                                        double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());
-                                        tooltips.add(MIText.ThermalEfficiency.text(String.format("%.1f", efficiencyFactor * 100))
-                                                .setStyle(TextHelper.YELLOW));
-                                    }
+                                @Nullable
+                                INuclearComponent<?> component = tileData.getComponent();
+                                if (component instanceof NuclearFuel fuel) {
+                                    double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());
+                                    tooltips.add(MIText.ThermalEfficiency.text(String.format("%.1f", efficiencyFactor * 100))
+                                            .setStyle(TextHelper.YELLOW));
                                 }
                             }
 
@@ -359,7 +361,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                     Component tooltip = MIText.NuclearFuelEfficiencyTooltip.text(euProduction, euFuelConsumption);
 
                     screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
-                    return;
                 }
             }
         }

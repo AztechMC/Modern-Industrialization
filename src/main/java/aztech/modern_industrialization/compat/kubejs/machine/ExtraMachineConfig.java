@@ -43,17 +43,17 @@ public class ExtraMachineConfig {
         }
 
         public CraftingSingleBlock steamCustomOverclock(JsonObject object) {
-            config.steamOverclockComponent = parseOverclockFromObject(object);
+            config.steamOverclockCatalysts = parseOverclockFromObject(object);
             return this;
         }
     }
 
     public static class CraftingMultiBlock {
-        public OverclockComponent steamOverclockComponent = OverclockComponent.createDefaultGunpowderOverclock();
+        public List<OverclockComponent.Catalyst> steamOverclockCatalysts = OverclockComponent.getDefaultCatalysts();
         public List<Consumer<MultiblockMachines.Rei>> reiConfigs = new ArrayList<>();
 
         public CraftingMultiBlock steamCustomOverclock(JsonObject object) {
-            steamOverclockComponent = parseOverclockFromObject(object);
+            steamOverclockCatalysts = parseOverclockFromObject(object);
             return this;
         }
 
@@ -63,7 +63,7 @@ public class ExtraMachineConfig {
         }
     }
 
-    private static OverclockComponent parseOverclockFromObject(JsonObject object) {
+    private static List<OverclockComponent.Catalyst> parseOverclockFromObject(JsonObject object) {
         var catalysts = new ArrayList<OverclockComponent.Catalyst>();
 
         for (var entry : object.entrySet()) {
@@ -76,6 +76,6 @@ public class ExtraMachineConfig {
             catalysts.add(new OverclockComponent.Catalyst(multiplier, new ResourceLocation(catalystName), ticks));
         }
 
-        return new OverclockComponent(catalysts);
+        return catalysts;
     }
 }

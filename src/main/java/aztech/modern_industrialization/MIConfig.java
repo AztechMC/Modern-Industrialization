@@ -79,6 +79,9 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Additionally load resources in modern_industrialization/generated_resources")
     public boolean loadRuntimeGeneratedResources = true;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Removes trades from the Industrialist villager (Restart needed)")
+    public boolean removeIndustrialistTrades = false;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

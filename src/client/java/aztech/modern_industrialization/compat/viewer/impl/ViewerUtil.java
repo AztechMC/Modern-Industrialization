@@ -26,9 +26,9 @@ package aztech.modern_industrialization.compat.viewer.impl;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import java.text.DecimalFormat;
-import javax.annotation.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.Nullable;
 
 public class ViewerUtil {
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");

@@ -156,6 +156,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         return InteractionResult.PASS;
     }
 
+    public void openMenu(Player player) {
+        player.openMenu(this);
+    }
+
     protected abstract MachineModelClientData getModelData();
 
     @MustBeInvokedByOverriders

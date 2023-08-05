@@ -31,8 +31,8 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
-import aztech.modern_industrialization.machines.components.IntegerHistoryComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
+import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
@@ -58,10 +58,10 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     private final ActiveShapeComponent activeShape;
     private final IsActiveComponent isActive;
-    private final IntegerHistoryComponent efficiencyHistory;
+    private final NuclearEfficiencyHistoryComponent efficiencyHistory;
     private ShapeMatcher shapeMatcher;
 
-    private INuclearGrid nuclearGrid;
+    private NuclearGrid nuclearGrid;
     private Supplier<NuclearReactorGui.Data> dataSupplier;
 
     public NuclearReactorMultiblockBlockEntity(BEP bep) {
@@ -69,7 +69,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
-        efficiencyHistory = new IntegerHistoryComponent(new String[] { "euProduction", "euFuelConsumption" }, 300);
+        efficiencyHistory = new NuclearEfficiencyHistoryComponent();
         isActive = new IsActiveComponent();
         registerComponents(activeShape, isActive, efficiencyHistory);
         this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData));
@@ -112,7 +112,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (!level.isClientSide) {
             link();
             if (shapeValid.shapeValid) {
-                isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid), this);
+                isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid, efficiencyHistory), this);
                 efficiencyHistory.tick();
             } else {
                 isActive.updateActive(false, this);
@@ -150,44 +150,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             hatchesGrid[x][y] = (NuclearHatch) hatch;
         }
 
-        nuclearGrid = new INuclearGrid() {
-
-            @Override
-            public int getSizeX() {
-                return size;
-            }
-
-            @Override
-            public int getSizeY() {
-                return size;
-            }
-
-            @Override
-            public Optional<INuclearTile> getNuclearTile(int x, int y) {
-                return Optional.ofNullable(hatchesGrid[x][y]);
-            }
-
-            @Override
-            public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
-            }
-
-            @Override
-            public void registerNeutronCreation(int neutronNumber, NeutronType type) {
-            }
-
-            @Override
-            public void registerEuFuelConsumption(double eu) {
-                efficiencyHistory.addValue("euFuelConsumption", (int) eu);
-
-            }
-
-            @Override
-            public void registerEuProduction(double eu) {
-                efficiencyHistory.addValue("euProduction", (int) eu);
-
-            }
-
-        };
+        nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
 
         dataSupplier = () -> {
             Optional<INuclearTileData>[] tilesData = new Optional[size * size];
@@ -201,8 +164,9 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
                 }
             }
-            return new NuclearReactorGui.Data(true, size, size, tilesData, efficiencyHistory.getAverage("euProduction"),
-                    efficiencyHistory.getAverage("euFuelConsumption"));
+            return new NuclearReactorGui.Data(true, size, size, tilesData,
+                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
+                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
         };
     }
 

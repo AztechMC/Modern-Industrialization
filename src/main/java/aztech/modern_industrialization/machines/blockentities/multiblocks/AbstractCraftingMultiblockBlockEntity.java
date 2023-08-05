@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
-import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.compat.waila.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;

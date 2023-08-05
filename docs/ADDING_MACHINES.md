@@ -153,6 +153,8 @@ Here are a few explanations about the shape system:
   - Positive `y` is for blocks above the controller, negative `y` for blocks below.
   - Positive `z` is for blocks behind the controller, negative `z` for blocks in front of it.
 
+**This is the low-level system, please read on for a nicer way to define multiblock shapes.**
+
 Here is an example of how to create the shape for a pyrolyse oven multiblock:
 ```js
 MIMachineEvents.registerMachines(event => {
@@ -177,6 +179,69 @@ MIMachineEvents.registerMachines(event => {
     
     // register multiblock as steam or electric next...
 ```
+
+### Simplified shape creation using layered shapes
+It is hard to write a shape using the previous method.
+MI offers an alternative way to build shapes using layer definitions, similarly to crafting recipes.
+
+The keys are arranged in such a way that each 2D group of characters represents a horizontal slice of the multiblock.
+Each key must be assigned a block and a set of hatches.
+The character `#` is used for the controller, and a space is used for air.
+
+```js
+MIMachineEvents.registerMachines(event => {
+    const pyrolyseHatch = event.hatchOf("item_input", "item_output", "fluid_input", "fluid_output", "energy_input");
+    const heatproofMember = event.memberOfBlock("modern_industrialization:heatproof_machine_casing");
+    const cupronickelCoilMember = event.memberOfBlock("modern_industrialization:cupronickel_coil");
+    const pyrolyseShape = event.layeredShape("heatproof_machine_casing", [
+        [ "HHH", "HHH", "HHH" ],
+        [ "CCC", "C C", "CCC" ],
+        [ "CCC", "C C", "CCC" ],
+        [ "HHH", "H#H", "HHH" ],
+    ])
+        .key("H", heatproofMember, pyrolyseHatch)
+        .key("C", cupronickelCoilMember, event.noHatch())
+        .build();
+
+    // register multiblock as steam or electric next...
+```
+
+In this example, the bottom layer (`y = -1`) of the shape is represented by
+```
+HHH
+CCC
+CCC
+HHH
+```
+Then the middle layer (`y = 0`) is
+```
+HHH
+C C
+C C
+H#H
+```
+Finally the top layer (`y = 1`) is
+```
+HHH
+CCC
+CCC
+HHH
+```
+
+Here is how the axes work in a single layer:
+```
+^
+| behind
+| the
+| controller
+|
+|
+|                    right
+|                    of the
+|                    controller
++ ----------------------------->
+```
+
 ### Register as steam or electric
 Both steam and electric methods take the same parameters
 * Use `event.simpleSteamCraftingMultiBlock` function to register a steam multiblock.

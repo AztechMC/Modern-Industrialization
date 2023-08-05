@@ -30,7 +30,7 @@ public final class GuiComponents {
     public static final ResourceLocation AUTO_EXTRACT = new MIIdentifier("auto_extract");
     public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
     public static final ResourceLocation ENERGY_BAR = new MIIdentifier("energy_bar");
-    public static final ResourceLocation FLUID_STORAGE_GUI = new MIIdentifier("fluid_storage_gui");
+    public static final ResourceLocation LARGE_TANK_FLUID_DISPLAY = new MIIdentifier("large_tank_fluid_display");
     public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
     public static final ResourceLocation NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
     public static final ResourceLocation PROGRESS_BAR = new MIIdentifier("progress_bar");

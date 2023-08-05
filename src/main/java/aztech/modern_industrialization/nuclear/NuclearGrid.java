@@ -21,33 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.blocks.storage.tank.TankBlockEntity;
-import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.world.level.material.Fluid;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import org.jetbrains.annotations.Nullable;
 
-public class TankFluidProvider extends FluidProvider<TankBlockEntity> {
+public final class NuclearGrid {
+    private final int sizeX;
+    private final int sizeY;
+    private final @Nullable NuclearHatch[][] hatchesGrid;
 
-    @Override
-    public int getSlotCount() {
-        return 1;
+    public NuclearGrid(int sizeX, int sizeY, @Nullable NuclearHatch[][] hatchesGrid) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
+        this.hatchesGrid = hatchesGrid;
     }
 
-    @Override
-    public @Nullable Fluid getFluid(int slot) {
-        return getObject().getResource().getFluid();
+    public int getSizeX() {
+        return sizeX;
     }
 
-    @Override
-    public double getStored(int slot) {
-        return droplets(getObject().getAmount());
+    public int getSizeY() {
+        return sizeY;
     }
 
-    @Override
-    public double getMax(int slot) {
-        return droplets(getObject().getCapacity());
+    // TODO: remove optional
+    @Nullable
+    public INuclearTile getNuclearTile(int x, int y) {
+        return hatchesGrid[x][y];
     }
 
+    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
+    }
+
+    public void registerNeutronCreation(int neutronNumber, NeutronType type) {
+    }
 }

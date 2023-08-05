@@ -21,14 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.recipe;
+package aztech.modern_industrialization.compat.waila.holder;
 
-class ProbabilityValue<T> {
-    T value;
-    final float probability;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
+import java.util.List;
 
-    ProbabilityValue(T value, float probability) {
-        this.value = value;
-        this.probability = probability;
-    }
+public interface EnergyListComponentHolder {
+    List<EnergyComponent> getEnergyComponents();
 }

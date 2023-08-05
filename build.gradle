@@ -1,10 +1,10 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.2.7'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
-    id 'io.github.juuxel.loom-quiltflower' version '1.8.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.10.0'
 }
 
 apply plugin: 'java-library'
@@ -30,7 +30,11 @@ repositories {
     }
     // for WTHIT
     maven {
-        url 'https://maven.bai.lol'
+        url "https://maven2.bai.lol"
+        content {
+            includeGroup "lol.bai"
+            includeGroup "mcp.mobius.waila"
+        }
     }
     // for AE2 and JEI
     maven {
@@ -114,7 +118,7 @@ repositories {
     // for PlayerAbilityLib
     maven {
         name = 'Ladysnake Mods'
-        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+        url = 'https://maven.ladysnake.org/releases'
         content {
             includeGroup 'io.github.ladysnake'
             includeGroupByRegex 'io\\.github\\.onyxstudios.*'
@@ -188,11 +192,11 @@ dependencies {
     }
 
     if (project.runtime_itemlist_mod == "emi") {
-        modImplementation("dev.emi:emi:${project.emi_version}+${project.emi_minecraft_version}") {
+        modImplementation("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
-        modCompileOnly("dev.emi:emi:${project.emi_version}+${project.emi_minecraft_version}") {
+        modCompileOnly("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     }
@@ -209,15 +213,15 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
+    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
+    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
+    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"
 
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("dev.latvian.mods:kubejs-fabric:1902.6.0-build.114") {
+    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -229,6 +233,7 @@ dependencies {
 
     include modApi("teamreborn:energy:${project.tr_energy_version}") {
         exclude(group: "net.fabricmc.fabric-api")
+        exclude group: "net.fabricmc", module: "fabric-loader"
     }
 
     include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
@@ -237,21 +242,6 @@ dependencies {
 
     // Include No Indium? https://github.com/Luligabi1/NoIndium
     include "me.luligabi:NoIndium:${project.no_indium_version}"
-
-
-    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "mcp.mobius.waila")
-    }
-
-    modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        exclude(group: "mcp.mobius.waila")
-    }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
@@ -268,16 +258,28 @@ dependencies {
     }
 }
 
+configurations {
+    // due to a change in newer loom, loader isn't remapped
+    // except some mods pull in an older version of loader that *is* remapped
+    // so it has to be excluded explicitly.
+
+    modRuntimeOnly.exclude group: "net.fabricmc", module: "fabric-loader"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+
+    withSourcesJar()
+}
+
 processResources {
     inputs.property "version", project.version
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
-}
-
-loom {
-    splitEnvironmentSourceSets()
 }
 
 sourceSets {
@@ -293,6 +295,8 @@ sourceSets {
 }
 
 loom {
+    splitEnvironmentSourceSets()
+
     accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
     mods {
         moderndynamics {
@@ -331,14 +335,6 @@ tasks.withType(JavaCompile).configureEach {
 
     // Minecraft 1.17 (21w19a) upwards uses Java 16.
     it.options.release = 17
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
 }
 
 jar {
@@ -392,7 +388,7 @@ import com.google.gson.GsonBuilder
 
 final class JsonOrderStep {
     private JsonOrderStep() {}
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create()
 
     static FormatterStep create() {
         return FormatterStep.create(
@@ -401,20 +397,20 @@ final class JsonOrderStep {
                 {
                     new FormatterFunc() {
                         String apply(String input) {
-                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class);
-                            String sortedJson = GSON.toJson(jsonMap);
-                            String prettyPrinted = sortedJson.replace('\\u0027', '\'');
-                            return prettyPrinted + "\n";
+                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class)
+                            String sortedJson = GSON.toJson(jsonMap)
+                            String prettyPrinted = sortedJson.replace('\\u0027', '\'')
+                            return prettyPrinted + "\n"
                         }
                     }
                 },
-        );
+        )
     }
 
     private static final class State implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L
 
-        private final int formatVersion = 1;
+        private final int formatVersion = 1
     }
 }
 
@@ -446,7 +442,6 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 requiredDependency "fabric-api"
                 requiredDependency "cloth-config"
                 optionalDependency "wthit"
-                optionalDependency "megane"
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
@@ -482,7 +477,6 @@ modrinth {
         required.project "fabric-api"
         required.project "cloth-config"
         optional.project "wthit"
-        optional.project "megane"
         optional.project "emi"
         optional.project "jei"
         optional.project "rei"

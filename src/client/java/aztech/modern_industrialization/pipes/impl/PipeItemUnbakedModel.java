@@ -21,40 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.provider;
+package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.machines.MachineBlockEntity;
+import com.mojang.datafixers.util.Pair;
+import java.util.Collection;
 import java.util.List;
-import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.world.level.material.Fluid;
+import java.util.Set;
+import java.util.function.Function;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineFluidProvider extends FluidProvider<MachineBlockEntity> {
-    private List<ConfigurableFluidStack> stacks;
-
+/**
+ * Proxies to the normal pipe model at bake time, to avoid duplicating the baked model.
+ */
+public class PipeItemUnbakedModel implements UnbakedModel {
     @Override
-    protected void init() {
-        this.stacks = getObject().getInventory().getFluidStacks();
+    public Collection<ResourceLocation> getDependencies() {
+        return List.of();
     }
 
     @Override
-    public int getSlotCount() {
-        return stacks.size();
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+        return List.of();
     }
 
+    @Nullable
     @Override
-    public @Nullable Fluid getFluid(int slot) {
-        return stacks.get(slot).getResource().getFluid();
-    }
-
-    @Override
-    public double getStored(int slot) {
-        return droplets(stacks.get(slot).getAmount());
-    }
-
-    @Override
-    public double getMax(int slot) {
-        return droplets(stacks.get(slot).getCapacity());
+    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform,
+            ResourceLocation location) {
+        return modelBakery.bake(PipeModelProvider.BLOCK_MODEL, transform);
     }
 }

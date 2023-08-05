@@ -21,10 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.megane.holder;
+package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.components.EnergyComponent;
+public class NuclearEfficiencyHistoryComponent extends IntegerHistoryComponent<NuclearEfficiencyHistoryComponent.Type> {
+    // lowerCamelCase names are used to have that as the serialized form.
+    public enum Type {
+        euProduction,
+        euFuelConsumption
+    }
 
-public interface EnergyComponentHolder {
-    EnergyComponent getEnergyComponent();
+    public NuclearEfficiencyHistoryComponent() {
+        super(Type.class, 300);
+    }
+
+    public void registerEuFuelConsumption(double eu) {
+        addValue(Type.euFuelConsumption, (int) eu);
+    }
+
+    public void registerEuProduction(double eu) {
+        addValue(Type.euProduction, (int) eu);
+    }
 }

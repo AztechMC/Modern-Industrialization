@@ -31,6 +31,10 @@ import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.minecraft.resources.ResourceLocation;
 
 public interface ShapeTemplateHelper {
+    default ShapeTemplate.LayeredBuilder layeredShape(String hatchCasing, String[][] layers) {
+        return new ShapeTemplate.LayeredBuilder(MachineCasings.get(hatchCasing), layers);
+    }
+
     default ShapeTemplate.Builder startShape(String hatchCasing) {
         return new ShapeTemplate.Builder(MachineCasings.get(hatchCasing));
     }

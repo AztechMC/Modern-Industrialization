@@ -23,65 +23,51 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The models of a pipe block. It can handle up to three different pipe types.
  * The block is divided in five slots of width SIDE, three for the main pipes
  * and two for connection handling.
  */
-public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
-    private static final ResourceLocation DEFAULT_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
-    private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = new MIIdentifier("part/me_wire_connector");
-    private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
-            new ResourceLocation("minecraft:block/iron_block"));
+public class PipeBakedModel implements BakedModel, FabricBakedModel {
+    private final TextureAtlasSprite particleSprite;
+    private final Map<PipeRenderer.Factory, PipeRenderer> renderers;
+    private final BakedModel[] meWireConnectors;
+    private final RenderMaterial translucentMaterial;
 
-    private TextureAtlasSprite particleSprite;
-    private final Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
-    private ItemTransforms modelTransformation;
-    private BakedModel[] meWireConnectors = null;
-
-    private RenderMaterial translucentMaterial;
-
-    public PipeModel() {
+    public PipeBakedModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers,
+            @Nullable BakedModel[] meWireConnectors, RenderMaterial translucentMaterial) {
+        this.particleSprite = particleSprite;
+        this.renderers = renderers;
+        this.meWireConnectors = meWireConnectors;
+        this.translucentMaterial = translucentMaterial;
     }
 
     @Override
@@ -257,60 +243,11 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public ItemTransforms getTransforms() {
-        return modelTransformation;
+        return ModelHelper.MODEL_TRANSFORM_BLOCK;
     }
 
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
-    }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        List<ResourceLocation> dependencies = new ArrayList<>();
-        dependencies.add(DEFAULT_BLOCK_MODEL);
-
-        if (MIConfig.loadAe2Compat()) {
-            dependencies.add(ME_WIRE_CONNECTOR_MODEL);
-        }
-
-        return dependencies;
-    }
-
-    @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        List<Material> materials = new ArrayList<>();
-
-        for (var type : PipeNetworkType.getTypes().values()) {
-            materials.addAll(PipeRenderer.get(type).getSpriteDependencies());
-        }
-
-        if (MIConfig.loadAe2Compat()) {
-            materials.addAll(unbakedModelGetter.apply(ME_WIRE_CONNECTOR_MODEL).getMaterials(unbakedModelGetter, unresolvedTextureReferences));
-        }
-
-        return materials;
-    }
-
-    @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
-            ResourceLocation modelId) {
-        particleSprite = textureGetter.apply(PARTICLE_SPRITE);
-        modelTransformation = ((BlockModel) loader.getModel(DEFAULT_BLOCK_MODEL)).getTransforms();
-
-        renderers.clear();
-        for (PipeRenderer.Factory rendererFactory : MIPipesClient.RENDERERS) {
-            renderers.put(rendererFactory, rendererFactory.create(textureGetter));
-        }
-
-        meWireConnectors = null;
-        if (MIConfig.loadAe2Compat()) {
-            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, loader);
-        }
-
-        translucentMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
-
-        return this;
     }
 }

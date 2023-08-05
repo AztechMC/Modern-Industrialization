@@ -43,6 +43,7 @@ public class FluidDefinition extends Definition implements FluidLike {
 
     public final MIFluidBlock fluidBlock;
     public final MIFluid fluid;
+    private final FluidVariant variant;
 
     public final int color;
     public final int opacity;
@@ -64,6 +65,7 @@ public class FluidDefinition extends Definition implements FluidLike {
                 id + "_bucket", s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
 
         fluid.setBucketItem(bucketItemDefinition.asItem());
+        this.variant = FluidVariant.of(fluid);
         this.fluidTexture = texture;
         this.opacity = opacity;
 
@@ -93,7 +95,7 @@ public class FluidDefinition extends Definition implements FluidLike {
     }
 
     public FluidVariant variant() {
-        return FluidVariant.of(this.asFluid());
+        return variant;
     }
 
 }

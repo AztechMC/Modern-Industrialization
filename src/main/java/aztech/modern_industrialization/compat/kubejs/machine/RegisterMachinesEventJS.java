@@ -190,7 +190,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
-                bep -> new SteamCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType, config.steamOverclockComponent),
+                bep -> new SteamCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType, config.steamOverclockCatalysts),
                 config.reiConfigs);
     }
 

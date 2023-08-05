@@ -10,16 +10,16 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:materials/bronze/craft/tank",
-      "text": "When placed in the world, you can right-click them with buckets or other tanks to transfer fluids.$(br2)Also, you can stack them if they have the same contents. How nifty!"
-    },
-    {
-      "type": "text",
-      "text": "If you break a barrel it will keep its stored contents, and you will get an item that you can interact with.$(br2)Left-click on a barrel item with an item to insert it into the barrel.$(br2)Left-click the barrel item on an empty slot to extract some items from it."
+      "text": "When placed in the world, you can right-click them with buckets or other tanks to transfer fluids.$(br2)Also, you can stack them in your inventory if they have the same contents. How nifty!"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:materials/bronze/craft/barrel",
-      "text": "You can't interact with barrels that are placed directly, but pipes and machines can just fine."
+      "text": "Left-click to give a stack to a placed barrel (shift to give as much as possible).$(br2)Right-click to take a stack from a placed barrel (shift to take only 1 item)."
+    },
+    {
+      "type": "text",
+      "text": "If you break a barrel it will keep its stored contents, and you will get an item that you can interact with.$(br2)Left-click on a barrel item with an item to insert it into the barrel.$(br2)Left-click the barrel item on an empty slot to extract some items from it."
     }
   ],
   "sortnum": 7

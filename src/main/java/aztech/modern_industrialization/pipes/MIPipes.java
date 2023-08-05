@@ -72,7 +72,7 @@ public class MIPipes {
     public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("fluid_pipe"), FluidPipeScreenHandler::new);
 
-    public static final Set<ResourceLocation> PIPE_MODEL_NAMES = new HashSet<>();
+    public static final Set<ResourceLocation> ITEM_PIPE_MODELS = new HashSet<>();
 
     public void setup() {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
@@ -108,7 +108,7 @@ public class MIPipes {
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())), SortOrder.PIPES);
         var item = itemDef.asItem();
         pipeItems.put(type, item);
-        PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, item, "Fluid Pipes");
     }
 
@@ -119,7 +119,7 @@ public class MIPipes {
                 SortOrder.PIPES);
         var item = itemDef.asItem();
         pipeItems.put(type, item);
-        PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, item, "Item Pipes");
     }
 
@@ -132,7 +132,7 @@ public class MIPipes {
         var item = itemDef.asItem();
         pipeItems.put(type, item);
         ELECTRICITY_PIPE_TIER.put(item, tier);
-        PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
+        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + cableId));
     }
 
     public void register(PipeNetworkType type, PipeItem item) {

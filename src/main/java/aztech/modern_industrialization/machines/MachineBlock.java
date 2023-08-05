@@ -73,13 +73,13 @@ public class MachineBlock extends Block implements TickableBlock {
             return InteractionResult.SUCCESS;
         } else {
             BlockEntity be = world.getBlockEntity(pos);
-            if (be instanceof MachineBlockEntity) {
-                InteractionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, MachineOverlay.findHitSide(hit));
+            if (be instanceof MachineBlockEntity machine) {
+                InteractionResult beResult = machine.onUse(player, hand, MachineOverlay.findHitSide(hit));
                 if (beResult.consumesAction()) {
                     world.blockUpdated(pos, Blocks.AIR);
                     return beResult;
                 } else {
-                    player.openMenu((MachineBlockEntity) be);
+                    machine.openMenu(player);
                 }
             }
             return InteractionResult.CONSUME;

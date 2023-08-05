@@ -31,7 +31,8 @@ public enum HatchType {
     ENERGY_INPUT(4),
     ENERGY_OUTPUT(5),
     NUCLEAR_ITEM(6),
-    NUCLEAR_FLUID(7);
+    NUCLEAR_FLUID(7),
+    LARGE_TANK(8);
 
     private final int id;
 

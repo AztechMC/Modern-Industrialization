@@ -371,3 +371,26 @@ builder.addFluid("minecraft:lava", 10) // This will make the generator accept la
 builder.addItem("minecraft:coal", 100).addFluid("minecraft:lava", 10); 
 // will automatically add the correct input slot in the machine inventory
 ```
+
+### Adding a Multlblock Generator
+
+The logic is the same as for a single block generator, but the registration method is different.
+```js
+MIMachineEvents.registerMachines(event => {
+     const largeSolidDieselGeneratorShape = //... Define your shape here as for any multiblock
+
+    event.simpleEnergyFromFluidOrItemMultiBlock(
+        "Large Solid Diesel Generator", // The english name
+        "large_solid_diesel_generator", // The internal name
+        largeSolidDieselGeneratorShape, // The multiblock shape
+        512, // Maximum energy generation rate (eu/tick)
+        builder => { // The builder (same as for a single block generator)
+            builder.withItemFuels().withFluid("modern_industrialization:synthetic_oil", 100);
+        },
+            // --- Standard model configuration --- //
+        "heatproof_machine_casing", // casing
+        "diesel_generator", // model folder
+        true, false, false // front overlay?, top overlay?, side overlay?
+    );
+});
+```

@@ -192,7 +192,7 @@ public class MITooltips {
 
     public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment
             .of((item) -> item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem(),
-                    (itemStack) -> new Line(MIText.AllowCreativeFligth).build())
+                    (itemStack) -> new Line(MIText.AllowCreativeFlight).build())
             .noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),

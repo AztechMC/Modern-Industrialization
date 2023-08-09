@@ -87,7 +87,9 @@ public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
     }
 
     public double getAverage(K key) {
-        return averages[key.ordinal()];
+        double ret = averages[key.ordinal()];
+        // Round to zero if very small - negative values might lead to problems.
+        return Math.abs(ret) < 1e-9 ? 0 : ret;
     }
 
     public void clear() {

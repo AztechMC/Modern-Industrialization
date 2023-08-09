@@ -10,7 +10,11 @@
   ],
   "item_outputs": [
     {
-      "amount": 67,
+      "amount": 64,
+      "item": "modern_industrialization:aluminum_tiny_dust"
+    },
+    {
+      "amount": 3,
       "item": "modern_industrialization:aluminum_tiny_dust"
     }
   ]

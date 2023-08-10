@@ -17,7 +17,11 @@
       },
       {
         "item": "modern_industrialization:uranium_238_tiny_dust",
-        "amount": 80
+        "amount": 64
+      },
+      {
+        "item": "modern_industrialization:uranium_238_tiny_dust",
+        "amount": 16
       }
     ],
 

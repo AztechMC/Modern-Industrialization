@@ -364,8 +364,8 @@ The builder accepts the following methods (which can be chained):
 
 builder.fluidFuels() // This will make the generator accept any fluid fuels with their standard EU/mb value (same fuels as the diesel generator)
 builder.furnaceFuels() // This will make the generator any combustible items. The EU/item is 20 x the number of burning ticks.
-builder.item("minecraft:coal", 100) // This will make the generator accept coal and generate 100 EU/item
-builder.fluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb
+builder.item("minecraft:coal", 100) // This will make the generator accept coal and generate 100 EU/item. Cannot be combined with furnaceFuels().
+builder.fluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb. Cannot be combined with fluidFuels().
 
 // multiple fuels can be added ex:
 builder.item("minecraft:coal", 100).fluid("minecraft:lava", 10); 

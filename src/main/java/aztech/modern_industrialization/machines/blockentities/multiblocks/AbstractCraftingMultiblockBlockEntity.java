@@ -49,7 +49,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.crafter = new CrafterComponent(this, inventory, getBehavior());
         this.isActive = new IsActiveComponent();
         registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter));
-        registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> allowNormalOperation));
+        registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> operatingState != OperatingState.NOT_MATCHED));
         registerComponents(activeShape, crafter, isActive);
     }
 
@@ -60,7 +60,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     @Nullable
     private ShapeMatcher shapeMatcher = null;
-    private boolean allowNormalOperation = false;
+    private OperatingState operatingState = OperatingState.NOT_MATCHED;
 
     protected final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
@@ -100,7 +100,13 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
             boolean newActive = false;
 
-            if (allowNormalOperation) {
+            if (operatingState == OperatingState.TRYING_TO_RESUME) {
+                if (crafter.tryContinueRecipe()) {
+                    operatingState = OperatingState.NORMAL_OPERATION;
+                }
+            }
+
+            if (operatingState == OperatingState.NORMAL_OPERATION) {
                 if (crafter.tickRecipe()) {
                     newActive = true;
                 }
@@ -123,7 +129,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
             shapeMatcher.registerListeners(level);
         }
         if (shapeMatcher.needsRematch()) {
-            allowNormalOperation = false;
+            operatingState = OperatingState.NOT_MATCHED;
             shapeValid.shapeValid = false;
             shapeMatcher.rematch(level);
 
@@ -132,12 +138,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
                 onSuccessfulMatch(shapeMatcher);
                 shapeValid.shapeValid = true;
-
-                // If there was an active recipe, we have to make sure the output fits, and lock
-                // the hatches.
-                if (crafter.tryContinueRecipe()) {
-                    allowNormalOperation = true;
-                }
+                operatingState = OperatingState.TRYING_TO_RESUME;
             }
 
             if (shapeValid.update()) {
@@ -153,5 +154,21 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
             shapeMatcher.unregisterListeners(level);
             shapeMatcher = null;
         }
+    }
+
+    private enum OperatingState {
+        /**
+         * Shape is not matched, don't do anything.
+         */
+        NOT_MATCHED,
+        /**
+         * Trying to resume a recipe but the output might not fit anymore.
+         * We wait until the output fits again before resuming normal operation.
+         */
+        TRYING_TO_RESUME,
+        /**
+         * Normal operation.
+         */
+        NORMAL_OPERATION
     }
 }

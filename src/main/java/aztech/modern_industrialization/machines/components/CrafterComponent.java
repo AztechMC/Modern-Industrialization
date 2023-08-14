@@ -156,6 +156,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     public void decreaseEfficiencyTicks() {
         efficiencyTicks = Math.max(efficiencyTicks - 1, 0);
+        clearActiveRecipeIfPossible();
     }
 
     public void increaseEfficiencyTicks(int increment) {
@@ -239,13 +240,16 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
         }
 
-        // If the recipe is done, allow starting another one when the efficiency reaches
-        // zero
+        // If the recipe is done, allow starting another one when the efficiency reaches zero
+        clearActiveRecipeIfPossible();
+
+        return isActive;
+    }
+
+    private void clearActiveRecipeIfPossible() {
         if (efficiencyTicks == 0 && usedEnergy == 0) {
             activeRecipe = null;
         }
-
-        return isActive;
     }
 
     /**

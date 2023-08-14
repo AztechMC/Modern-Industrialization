@@ -25,12 +25,16 @@ package aztech.modern_industrialization.compat.kubejs.machine;
 
 import static aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines.*;
 
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.GeneratorMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.GeneratorMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -45,8 +49,14 @@ import dev.latvian.mods.kubejs.event.EventJS;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
+@SuppressWarnings("unused")
 public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHelper {
+
     public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
         return new ProgressBar.Parameters(renderX, renderY, type);
     }
@@ -115,6 +125,19 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 tiersMask, bucketCapacity, config);
     }
 
+    private void simpleMultiBlock(
+            // general
+            String englishName, String internalName, ShapeTemplate multiblockShape,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+            // machine entity
+            Function<BEP, MachineBlockEntity> factory) {
+        var controllerCasing = MachineCasings.get(controllerCasingName);
+        MachineRegistrationHelper.registerMachine(englishName, internalName, factory);
+        MachineRegistrationHelper.addMachineModel(internalName, overlayFolder, controllerCasing, frontOverlay, topOverlay, sideOverlay);
+        ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);
+    }
+
     public void simpleElectricCraftingMultiBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
@@ -147,7 +170,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         var config = new ExtraMachineConfig.CraftingMultiBlock();
         extraConfig.accept(config);
 
-        simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+        simpleCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
                 bep -> new ElectricCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType),
@@ -187,14 +210,14 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         config.reiConfigs.add(rei -> rei.steam(true));
         extraConfig.accept(config);
 
-        simpleMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
+        simpleCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
                 bep -> new SteamCraftingMultiblockBlockEntity(bep, internalName, multiblockShape, recipeType, config.steamOverclockCatalysts),
                 config.reiConfigs);
     }
 
-    private void simpleMultiBlock(
+    private void simpleCraftingMultiBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
@@ -206,19 +229,123 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             // machine entity and rei configuration
             Function<BEP, MachineBlockEntity> factory, List<Consumer<MultiblockMachines.Rei>> reiConfigs) {
 
-        var controllerCasing = MachineCasings.get(controllerCasingName);
-
-        MachineRegistrationHelper.registerMachine(englishName, internalName, factory);
-        MachineRegistrationHelper.addMachineModel(internalName, overlayFolder, controllerCasing, frontOverlay, topOverlay, sideOverlay);
+        simpleMultiBlock(englishName, internalName, multiblockShape, controllerCasingName, overlayFolder, frontOverlay,
+                topOverlay, sideOverlay, factory);
 
         var rei = new MultiblockMachines.Rei(englishName, internalName, recipeType, progressBar)
-                .items(itemInputPositions::accept, itemOutputPositions::accept)
-                .fluids(fluidInputPositions::accept, fluidOutputPositions::accept);
+                .items(itemInputPositions, itemOutputPositions)
+                .fluids(fluidInputPositions, fluidOutputPositions);
         for (var reiConfig : reiConfigs) {
             reiConfig.accept(rei);
         }
         rei.register();
-
-        ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);
     }
+
+    public void simpleGeneratorSingleBlock(
+            // General,
+            String englishName, String internalName,
+            String cableTierName,
+            long maxEnergyProduction,
+            long energyCapacity,
+            long fluidStorageCapacity,
+            Consumer<FluidItemConsumerBuilder> builder,
+            String casingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+
+        var componentBuilder = new FluidItemConsumerBuilder(maxEnergyProduction);
+        builder.accept(componentBuilder);
+
+        MachineRegistrationHelper.registerMachine(
+                englishName, internalName,
+                bep -> new GeneratorMachineBlockEntity(bep,
+                        internalName,
+                        CableTier.getByName(cableTierName),
+                        energyCapacity,
+                        fluidStorageCapacity,
+                        componentBuilder.build()),
+                MachineBlockEntity::registerItemApi, MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
+
+        MachineRegistrationHelper.addMachineModel(
+                internalName, overlayFolder,
+                MachineCasings.get(casingName),
+                frontOverlay, topOverlay, sideOverlay);
+    }
+
+    public void simpleGeneratorSingleBlock(
+            // General,
+            String englishName,
+            String internalName,
+            String cableTierName,
+            long maxEnergyProduction,
+            long energyCapacity,
+            Consumer<FluidItemConsumerBuilder> builder,
+            String casingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+        simpleGeneratorSingleBlock(
+                englishName, internalName,
+                cableTierName,
+                maxEnergyProduction,
+                energyCapacity,
+                0,
+                builder,
+                casingName, overlayFolder, frontOverlay, topOverlay, sideOverlay);
+    }
+
+    public void simpleGeneratorMultiBlock(
+            // general
+            String englishName, String internalName, ShapeTemplate multiblockShape,
+            long maxEnergyProduction, Consumer<FluidItemConsumerBuilder> builder,
+            // model
+            String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+        var componentBuilder = new FluidItemConsumerBuilder(maxEnergyProduction);
+        builder.accept(componentBuilder);
+        Function<BEP, MachineBlockEntity> ctor = bep -> new GeneratorMultiblockBlockEntity(bep, internalName, multiblockShape,
+                componentBuilder.build());
+        simpleMultiBlock(englishName, internalName, multiblockShape, controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
+                ctor);
+    }
+
+    static class FluidItemConsumerBuilder {
+
+        long maxEnergyProduction;
+
+        FluidItemConsumerComponent.EuProductionMapBuilder<Item> itemEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
+                Registry.ITEM);
+
+        FluidItemConsumerComponent.EuProductionMapBuilder<Fluid> fluidEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
+                Registry.FLUID);
+
+        boolean doesAcceptAllFluidFuels = false;
+        boolean doesAcceptAllItemFuels = false;
+
+        public FluidItemConsumerBuilder(long maxEnergyProduction) {
+            this.maxEnergyProduction = maxEnergyProduction;
+        }
+
+        public FluidItemConsumerBuilder fluidFuels() {
+            doesAcceptAllFluidFuels = true;
+            return this;
+        }
+
+        public FluidItemConsumerBuilder furnaceFuels() {
+            doesAcceptAllItemFuels = true;
+            return this;
+        }
+
+        public FluidItemConsumerBuilder fluid(ResourceLocation fluidId, long euPerMb) {
+            fluidEuProductionMapBuilder.add(fluidId, euPerMb);
+            return this;
+        }
+
+        public FluidItemConsumerBuilder item(ResourceLocation itemId, long euPerItem) {
+            itemEuProductionMapBuilder.add(itemId, euPerItem);
+            return this;
+        }
+
+        public FluidItemConsumerComponent build() {
+            return new FluidItemConsumerComponent(
+                    maxEnergyProduction,
+                    doesAcceptAllItemFuels ? FluidItemConsumerComponent.itemFuels() : itemEuProductionMapBuilder.build(),
+                    doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build());
+        }
+    }
+
 }

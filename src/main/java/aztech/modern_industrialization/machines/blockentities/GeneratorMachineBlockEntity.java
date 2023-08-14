@@ -23,31 +23,35 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import static aztech.modern_industrialization.machines.components.FluidItemConsumerComponent.NumberOfFuel.*;
+
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.waila.holder.EnergyComponentHolder;
+import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
+import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
+import aztech.modern_industrialization.machines.components.IsActiveComponent;
+import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Fluid;
 
-public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
+public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
@@ -56,50 +60,100 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     protected EnergyComponent energy;
     protected IsActiveComponent isActiveComponent;
 
-    protected FluidConsumerComponent fluidConsumer;
+    protected FluidItemConsumerComponent fluidItemConsumer;
 
-    private EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            FluidConsumerComponent fluidConsumer, Fluid locked, boolean lockButton) {
-        super(bep, new MachineGuiParameters.Builder(name, lockButton).build(), new OrientationComponent.Params(true, false, false));
+    public GeneratorMachineBlockEntity(BEP bep,
+            String name,
+            CableTier outputTier,
+            long energyCapacity,
+            long fluidCapacity,
+            FluidItemConsumerComponent fluidItemConsumer) {
+
+        super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
+                new OrientationComponent.Params(true, false, false));
+
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(this, energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
+        this.isActiveComponent = new IsActiveComponent();
+        this.fluidItemConsumer = fluidItemConsumer;
+
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
-        this.isActiveComponent = new IsActiveComponent();
 
-        List<ConfigurableItemStack> itemStacks = new ArrayList<>();
-        SlotPositions itemPositions = SlotPositions.empty();
-
+        List<ConfigurableItemStack> itemStacks;
         List<ConfigurableFluidStack> fluidStacks;
-        if (locked == null) {
-            fluidStacks = Collections.singletonList(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
-        } else {
-            fluidStacks = Collections.singletonList(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity, locked));
+
+        SlotPositions itemPositions = SlotPositions.empty();
+        SlotPositions fluidPositions = SlotPositions.empty();
+
+        var numberOfFluid = fluidItemConsumer.fluidEUProductionMap.getNumberOfFuel();
+        var numberOfItem = fluidItemConsumer.itemEUProductionMap.getNumberOfFuel();
+
+        if (numberOfFluid == NONE
+                && numberOfItem == NONE) {
+            throw new IllegalArgumentException(
+                    String.format("GeneratorMachineBlockEntity %s must accept at least one item or fluid", name));
         }
 
-        this.fluidConsumer = fluidConsumer;
-        SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
+        if (numberOfItem != NONE) {
+            if (numberOfItem == MANY) {
+                itemStacks = List.of(ConfigurableItemStack.standardInputSlot());
+            } else {
+                itemStacks = List.of(ConfigurableItemStack.lockedInputSlot(
+                        fluidItemConsumer.itemEUProductionMap.getAllAccepted().iterator().next()));
+            }
+        } else {
+            itemStacks = Collections.emptyList();
+            itemPositions = SlotPositions.empty();
+            fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
+        }
+
+        if (numberOfFluid != NONE) {
+
+            if (fluidCapacity == 0) {
+                throw new IllegalArgumentException(
+                        String.format("GeneratorMachineBlockEntity %s must have a fluid capacity > 0 has it accepts fluids", name));
+            }
+
+            if (numberOfFluid == MANY) {
+                fluidStacks = List.of(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
+            } else {
+                fluidStacks = List.of(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity,
+                        fluidItemConsumer.fluidEUProductionMap.getAllAccepted().iterator().next()));
+            }
+
+            if (numberOfItem != NONE) {
+                itemPositions = new SlotPositions.Builder().addSlot(15, 38).build();
+                fluidPositions = new SlotPositions.Builder().addSlot(35, 38).build();
+            }
+
+        } else {
+            fluidStacks = Collections.emptyList();
+            fluidPositions = SlotPositions.empty();
+            itemPositions = new SlotPositions.Builder().addSlot(25, 38).build();
+        }
+
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
-        this.registerComponents(energy, isActiveComponent, inventory, fluidConsumer);
+        this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer);
 
     }
 
-    public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            FluidConsumerComponent fluidConsumer) {
-        this(bep, name, outputTier, energyCapacity, fluidCapacity, fluidConsumer, null, true);
-    }
-
-    public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long maxEnergyOutput, Fluid acceptedFluid, long fluidEUperMb) {
+    public GeneratorMachineBlockEntity(BEP bep,
+            String name,
+            CableTier outputTier,
+            long energyCapacity,
+            long fluidCapacity,
+            long maxEnergyOutput,
+            FluidDefinition acceptedFluid,
+            long fluidEUperMb) {
 
         this(bep, name, outputTier, energyCapacity, fluidCapacity,
-                FluidConsumerComponent.of(
+                FluidItemConsumerComponent.ofSingleFluid(
                         maxEnergyOutput,
                         acceptedFluid,
-                        fluidEUperMb),
-                acceptedFluid, false);
+                        fluidEUperMb));
     }
 
     @Override
@@ -120,8 +174,10 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         if (level == null || level.isClientSide)
             return;
 
-        ConfigurableFluidStack stack = inventory.getFluidStacks().get(0);
-        long euProduced = fluidConsumer.getEuProduction(Collections.singletonList(stack), energy.getRemainingCapacity());
+        long euProduced = fluidItemConsumer.getEuProduction(inventory.getFluidStacks(),
+                inventory.getItemStacks(),
+                energy.getRemainingCapacity());
+
         energy.insertEu(euProduced, Simulation.ACT);
         isActiveComponent.updateActive(0 != euProduced, this);
 
@@ -137,7 +193,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
-            EnergyFromFluidMachineBlockEntity abe = (EnergyFromFluidMachineBlockEntity) be;
+            GeneratorMachineBlockEntity abe = (GeneratorMachineBlockEntity) be;
             if (abe.orientation.outputDirection == direction) {
                 return abe.extractable;
             } else {
@@ -148,6 +204,6 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     @Override
     public List<Component> getTooltips() {
-        return fluidConsumer.getTooltips();
+        return fluidItemConsumer.getTooltips();
     }
 }

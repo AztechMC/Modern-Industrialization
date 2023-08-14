@@ -136,6 +136,12 @@ public class MITooltips {
                 return FLUID_PARSER.parse(f.asFluid());
             }
 
+            if (o instanceof Item) {
+                return ITEM_PARSER.parse((Item) o);
+            } else if (o instanceof ItemLike) {
+                return ITEM_PARSER.parse(((ItemLike) o).asItem());
+            }
+
             return Component.literal(String.valueOf(o)).withStyle(style);
         }
     };
@@ -235,7 +241,7 @@ public class MITooltips {
     public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
             (itemStack, item) -> {
                 if (item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem()) {
-                    return Optional.of(new Line(MIText.AllowCreativeFligth).build());
+                    return Optional.of(new Line(MIText.AllowCreativeFlight).build());
                 } else {
                     return Optional.empty();
                 }

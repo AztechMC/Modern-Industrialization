@@ -185,6 +185,10 @@ public final class StandardRecipes {
         if (tinyDustOutput % 9 == 0) {
             builder.addPartOutput(DUST, tinyDustOutput / 9);
         } else {
+            while (tinyDustOutput > 64) {
+                builder.addPartOutput(TINY_DUST, 64);
+                tinyDustOutput -= 64;
+            }
             builder.addPartOutput(TINY_DUST, tinyDustOutput);
         }
     }

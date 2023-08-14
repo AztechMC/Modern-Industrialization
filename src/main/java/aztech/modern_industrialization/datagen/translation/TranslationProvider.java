@@ -144,27 +144,20 @@ public final class TranslationProvider implements DataProvider {
                         TreeMap<String, String> manualTranslations = GSON.fromJson(Files.readString(path), TreeMap.class);
 
                         TreeMap<String, String> output = new TreeMap<>();
-                        int ok = 0, missing = 0, unused = 0;
 
                         for (var entry : translationPairs.entrySet()) {
                             if (!manualTranslations.containsKey(entry.getKey())) {
                                 output.put(entry.getKey(), "[UNTRANSLATED] " + entry.getValue());
-                                missing++;
                             }
                         }
 
                         for (var entry : manualTranslations.entrySet()) {
                             if (translationPairs.containsKey(entry.getKey())) {
                                 output.put(entry.getKey(), entry.getValue());
-                                ok++;
                             } else {
                                 output.put(entry.getKey(), "[UNUSED, PLEASE REMOVE] " + entry.getValue());
-                                unused++;
                             }
                         }
-
-                        String message = "%d ok, %d missing, %d unused".formatted(ok, missing, unused);
-                        output.put("__summary", message);
 
                         var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
                         customJsonSave(cache, GSON.toJsonTree(output), savePath);

@@ -41,11 +41,13 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
+public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         EnergyListComponentHolder, MultiblockInventoryComponentHolder {
 
-    public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
-            FluidConsumerComponent fluidConsumer) {
+    public GeneratorMultiblockBlockEntity(BEP bep,
+            String name,
+            ShapeTemplate shapeTemplate,
+            FluidItemConsumerComponent fluidConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(), new OrientationComponent.Params(false, false, false));
 
@@ -65,7 +67,7 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     private final MultiblockInventoryComponent inventory;
     private final IsActiveComponent isActiveComponent;
     private final List<EnergyComponent> energyOutputs = new ArrayList<>();
-    private final FluidConsumerComponent fluidConsumer;
+    private final FluidItemConsumerComponent fluidConsumer;
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
@@ -104,7 +106,9 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
         if (!level.isClientSide) {
             link();
             if (allowNormalOperation) {
-                long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(), insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
+                long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
+                        inventory.getItemInputs(),
+                        insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
                 insertEnergy(euProduced, Simulation.ACT);
                 isActiveComponent.updateActive(euProduced != 0, this);
             }

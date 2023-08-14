@@ -29,6 +29,7 @@ import aztech.modern_industrialization.util.WorldHelper;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworkManager {
+    private static final boolean DEBUG_CHECKS = FabricLoader.getInstance().isDevelopmentEnvironment();
+
     private final Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
     private final Map<BlockPos, Set<Direction>> links = new HashMap<>();
     private final Set<PipeNetwork> networks = new HashSet<>();
@@ -409,6 +412,10 @@ public class PipeNetworkManager {
      * Check all internal state coherence for debugging purposes.
      */
     public void checkStateCoherence() {
+        if (!DEBUG_CHECKS) {
+            return;
+        }
+
         customAssert(networkByBlock.keySet().equals(links.keySet()));
         for (Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
             customAssert(networks.contains(entry.getValue()));

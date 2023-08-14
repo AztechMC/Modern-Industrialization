@@ -176,7 +176,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
                     returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
                             .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
                 } else if (informationEntries.size() > 1) {
-                    returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
+                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
                     for (var entry : informationEntries) {
                         returnList.add(
                                 new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
@@ -197,7 +197,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
                     returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
                             .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
                 } else {
-                    returnList.add(new MITooltips.Line(MIText.AcceptFollowingVariant).build());
+                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
                     for (var entry : informationEntries) {
                         returnList.add(
                                 new MITooltips.Line(MIText.AcceptFollowingItemEntry)
@@ -267,7 +267,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
 
     public static class EuProductionMapBuilder<T> {
 
-        private final Map<String, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource location
+        private final Map<ResourceLocation, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource location
         private final DefaultedRegistry<T> registryAccess;
 
         public EuProductionMapBuilder(DefaultedRegistry<T> registryAccess) {
@@ -275,11 +275,6 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
         }
 
         public EuProductionMapBuilder<T> add(ResourceLocation resourceLocation,
-                long eu) {
-            return add(resourceLocation.toString(), eu);
-        }
-
-        public EuProductionMapBuilder<T> add(String resourceLocation,
                 long eu) {
             map.put(resourceLocation, eu);
             return this;
@@ -289,12 +284,12 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
             return new EUProductionMap<>() {
                 @Override
                 public long getEuProduction(T variant) {
-                    return map.getOrDefault(registryAccess.getKey(variant).toString(), 0L);
+                    return map.getOrDefault(registryAccess.getKey(variant), 0L);
                 }
 
                 @Override
                 public List<T> getAllAccepted() {
-                    return map.keySet().stream().map(ResourceLocation::new).map(registryAccess::get).collect(Collectors.toList());
+                    return map.keySet().stream().map(registryAccess::get).collect(Collectors.toList());
                 }
             };
         }

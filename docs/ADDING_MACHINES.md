@@ -339,15 +339,15 @@ The registration is similar to a single block crafting machine but will take dif
 For example, 
 ```js
 MIMachineEvents.registerMachines(event => {
-    event.simpleEnergyFromFluidOrItemSingleBlock(
+    event.simpleGeneratorSingleBlock(
         "EV Diesel Generator", // the generator english name
         "ev_diesel_generator", // its internal name/id
         "ev", // the cable tier it can connect to (eg: lv, mv, hv, ev, superconductor)
-        8912, // its maximum energy generation rate (eu/tick)
+        8192, // its maximum energy generation rate (eu/tick)
         50000, // its internal energy storage (eu)
         128000, // its fluid storage (mB), this is optional if it doesn't consume fluids (default is 0)
         builder => {
-            builder.withFluidFuels() // the builder is used to specify which kind of fuel it will accept and 
+            builder.fluidFuels() // the builder is used to specify which kind of fuel it will accept and 
             // how much energy it will generate from it. (See below)
         }, 
             // ---- SAME AS FOR A SINGLE BLOCK CRAFTING MACHINE ----
@@ -362,30 +362,30 @@ The builder accepts the following methods (which can be chained):
 
 ```js
 
-builder.withFluidFuels() // This will make the generator accept any fluid fuels with their standard EU/mb value
-builder.withItemFuels() // This will make the generator any combustible items. The EU/item is 20 x the number of burning ticks.
-builder.addItem("minecraft:coal", 100) // This will make the generator accept coal and generate 100 EU/item
-builder.addFluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb
+builder.fluidFuels() // This will make the generator accept any fluid fuels with their standard EU/mb value (same fuels as the diesel generator)
+builder.furnaceFuels() // This will make the generator any combustible items. The EU/item is 20 x the number of burning ticks.
+builder.item("minecraft:coal", 100) // This will make the generator accept coal and generate 100 EU/item
+builder.fluid("minecraft:lava", 10) // This will make the generator accept lava and generate 10 EU/mb
 
 // multiple fuels can be added ex:
-builder.addItem("minecraft:coal", 100).addFluid("minecraft:lava", 10); 
+builder.item("minecraft:coal", 100).fluid("minecraft:lava", 10); 
 // will automatically add the correct input slot in the machine inventory
 ```
 
-### Adding a Multlblock Generator
+### Adding a Multiblock Generator
 
 The logic is the same as for a single block generator, but the registration method is different.
 ```js
 MIMachineEvents.registerMachines(event => {
      const largeSolidDieselGeneratorShape = //... Define your shape here as for any multiblock
 
-    event.simpleEnergyFromFluidOrItemMultiBlock(
+    event.simpleGeneratorMultiBlock(
         "Large Solid Diesel Generator", // The english name
         "large_solid_diesel_generator", // The internal name
         largeSolidDieselGeneratorShape, // The multiblock shape
         512, // Maximum energy generation rate (eu/tick)
         builder => { // The builder (same as for a single block generator)
-            builder.withItemFuels().withFluid("modern_industrialization:synthetic_oil", 100);
+            builder.furnaceFuels().fluid("modern_industrialization:synthetic_oil", 100);
         },
             // --- Standard model configuration --- //
         "heatproof_machine_casing", // casing

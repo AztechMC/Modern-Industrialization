@@ -309,7 +309,7 @@ public class MultiblockMachines {
         LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine(
                 "Large Diesel Generator",
                 "large_diesel_generator", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator",
+                        new GeneratorMultiblockBlockEntity(bet, "large_diesel_generator",
                                 largeDieselGeneratorShape,
                                 FluidItemConsumerComponent.ofFluidFuels(16384)));
         ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
@@ -344,17 +344,14 @@ public class MultiblockMachines {
         LARGE_STEAM_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Large Steam Turbine",
                 "large_steam_turbine", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
+                        new GeneratorMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
                                 FluidItemConsumerComponent.ofFluid(16384,
-                                        new FluidItemConsumerComponent.EuProductionMapBuilder<>(Registry.FLUID).add(
-                                                MIFluids.STEAM.getId(), 1
-                                        ).add(
-                                                MIFluids.HIGH_PRESSURE_STEAM.getId(), 8
-                                        ).add(
-                                                MIFluids.HEAVY_WATER_STEAM.getId(), 1
-                                        ).add(
-                                                MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.getId(), 8
-                                        ).build()
+                                        new FluidItemConsumerComponent.EuProductionMapBuilder<>(Registry.FLUID)
+                                                .add(MIFluids.STEAM.getId(), 1)
+                                                .add(MIFluids.HIGH_PRESSURE_STEAM.getId(), 8)
+                                                .add(MIFluids.HEAVY_WATER_STEAM.getId(), 1)
+                                                .add(MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.getId(), 8)
+                                                .build()
                                 )
                                 ));
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
@@ -542,7 +539,7 @@ public class MultiblockMachines {
         PLASMA_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Plasma Turbine",
                 "plasma_turbine", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
+                        new GeneratorMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
                                 FluidItemConsumerComponent.ofSingleFluid(
                                         1 << 20,
                                         MIFluids.HELIUM_PLASMA,

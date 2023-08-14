@@ -41,13 +41,13 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
+public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         EnergyListComponentHolder, MultiblockInventoryComponentHolder {
 
-    public EnergyFromFluidMultiblockBlockEntity(BEP bep,
-            String name,
-            ShapeTemplate shapeTemplate,
-            FluidItemConsumerComponent fluidConsumer) {
+    public GeneratorMultiblockBlockEntity(BEP bep,
+                                          String name,
+                                          ShapeTemplate shapeTemplate,
+                                          FluidItemConsumerComponent fluidConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(), new OrientationComponent.Params(false, false, false));
 

@@ -54,20 +54,20 @@ public class SingleBlockSpecialMachines {
         registerEUStorage();
 
         MachineRegistrationHelper.registerMachine("Starter Diesel Generator", "starter_diesel_generator",
-                bet -> new EnergyFromFluidItemMachineBlockEntity(bet, "starter_diesel_generator",
+                bet -> new GeneratorMachineBlockEntity(bet, "starter_diesel_generator",
                         CableTier.LV, 4000, 16000,
                         FluidItemConsumerComponent.ofFluidFuels(64)),
-                MachineBlockEntity::registerFluidApi, EnergyFromFluidItemMachineBlockEntity::registerEnergyApi);
+                MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("Diesel Generator", "diesel_generator",
-                bet -> new EnergyFromFluidItemMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000,
+                bet -> new GeneratorMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000,
                         FluidItemConsumerComponent.ofFluidFuels(256)),
-                MachineBlockEntity::registerFluidApi, EnergyFromFluidItemMachineBlockEntity::registerEnergyApi);
+                MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("Turbo Diesel Generator", "turbo_diesel_generator",
-                bet -> new EnergyFromFluidItemMachineBlockEntity(bet, "turbo_diesel_generator", CableTier.HV, 60000, 64000,
+                bet -> new GeneratorMachineBlockEntity(bet, "turbo_diesel_generator", CableTier.HV, 60000, 64000,
                         FluidItemConsumerComponent.ofFluidFuels(1024)),
-                MachineBlockEntity::registerFluidApi, EnergyFromFluidItemMachineBlockEntity::registerEnergyApi);
+                MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
@@ -122,9 +122,9 @@ public class SingleBlockSpecialMachines {
             final int eu = maxConsumption[i];
             final int fluidCapacity = 16000 * (1 << i);
             MachineRegistrationHelper.registerMachine(englishName, id,
-                    bet -> new EnergyFromFluidItemMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
+                    bet -> new GeneratorMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
                             MIFluids.STEAM, 1),
-                    MachineBlockEntity::registerFluidApi, EnergyFromFluidItemMachineBlockEntity::registerEnergyApi);
+                    MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
             MachineRegistrationHelper.addMachineModel(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
         }

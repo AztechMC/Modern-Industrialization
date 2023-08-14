@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 
 /**
  * An item stack that can be configured.
@@ -79,6 +80,17 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
             stack.pipesInsert = true;
             stack.pipesExtract = true;
         }
+        return stack;
+    }
+
+    public static ConfigurableItemStack lockedInputSlot(Item item) {
+        ConfigurableItemStack stack = new ConfigurableItemStack();
+        stack.key = ItemVariant.of(item);
+        stack.lockedInstance = item;
+        stack.playerInsert = true;
+        stack.playerLockable = false;
+        stack.playerLocked = true;
+        stack.pipesInsert = true;
         return stack;
     }
 

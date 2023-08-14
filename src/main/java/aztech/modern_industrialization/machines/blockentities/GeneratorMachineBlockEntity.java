@@ -51,7 +51,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
+public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
@@ -62,12 +62,12 @@ public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity im
 
     protected FluidItemConsumerComponent fluidItemConsumer;
 
-    public EnergyFromFluidItemMachineBlockEntity(BEP bep,
-            String name,
-            CableTier outputTier,
-            long energyCapacity,
-            long fluidCapacity,
-            FluidItemConsumerComponent fluidItemConsumer) {
+    public GeneratorMachineBlockEntity(BEP bep,
+                                       String name,
+                                       CableTier outputTier,
+                                       long energyCapacity,
+                                       long fluidCapacity,
+                                       FluidItemConsumerComponent fluidItemConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
                 new OrientationComponent.Params(true, false, false));
@@ -93,12 +93,16 @@ public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity im
         if (numberOfFluid == NONE
                 && numberOfItem == NONE) {
             throw new IllegalArgumentException(
-                    String.format("EnergyFromFluidItemMachineBlockEntity %s must accept at least one item or fluid", name));
+                    String.format("GeneratorMachineBlockEntity %s must accept at least one item or fluid", name));
         }
 
         if (numberOfItem != NONE) {
-            itemStacks = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
-            // TODO : Add Locked Item Input Slot
+            if (numberOfItem == MANY) {
+                itemStacks = List.of(ConfigurableItemStack.standardInputSlot());
+            } else {
+                itemStacks = List.of(ConfigurableItemStack.lockedInputSlot(
+                        fluidItemConsumer.itemEUProductionMap.getAllAccepted().iterator().next()));
+            }
         } else {
             itemStacks = Collections.emptyList();
             itemPositions = SlotPositions.empty();
@@ -109,13 +113,13 @@ public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity im
 
             if (fluidCapacity == 0) {
                 throw new IllegalArgumentException(
-                        String.format("EnergyFromFluidItemMachineBlockEntity %s must have a fluid capacity > 0 has it accepts fluids", name));
+                        String.format("GeneratorMachineBlockEntity %s must have a fluid capacity > 0 has it accepts fluids", name));
             }
 
             if (numberOfFluid == MANY) {
-                fluidStacks = Collections.singletonList(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
+                fluidStacks = List.of(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
             } else {
-                fluidStacks = Collections.singletonList(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity,
+                fluidStacks = List.of(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity,
                         fluidItemConsumer.fluidEUProductionMap.getAllAccepted().iterator().next()));
             }
 
@@ -136,14 +140,14 @@ public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity im
 
     }
 
-    public EnergyFromFluidItemMachineBlockEntity(BEP bep,
-            String name,
-            CableTier outputTier,
-            long energyCapacity,
-            long fluidCapacity,
-            long maxEnergyOutput,
-            FluidDefinition acceptedFluid,
-            long fluidEUperMb) {
+    public GeneratorMachineBlockEntity(BEP bep,
+                                       String name,
+                                       CableTier outputTier,
+                                       long energyCapacity,
+                                       long fluidCapacity,
+                                       long maxEnergyOutput,
+                                       FluidDefinition acceptedFluid,
+                                       long fluidEUperMb) {
 
         this(bep, name, outputTier, energyCapacity, fluidCapacity,
                 FluidItemConsumerComponent.ofSingleFluid(
@@ -189,7 +193,7 @@ public class EnergyFromFluidItemMachineBlockEntity extends MachineBlockEntity im
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
-            EnergyFromFluidItemMachineBlockEntity abe = (EnergyFromFluidItemMachineBlockEntity) be;
+            GeneratorMachineBlockEntity abe = (GeneratorMachineBlockEntity) be;
             if (abe.orientation.outputDirection == direction) {
                 return abe.extractable;
             } else {

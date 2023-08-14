@@ -30,9 +30,9 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.EnergyFromFluidItemMachineBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.GeneratorMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.EnergyFromFluidMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.GeneratorMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -50,27 +50,25 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
+@SuppressWarnings("unused")
 public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHelper {
 
-    @SuppressWarnings("unused")
     public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
         return new ProgressBar.Parameters(renderX, renderY, type);
     }
 
-    @SuppressWarnings("unused")
     public RecipeEfficiencyBar.Parameters efficiencyBar(int renderX, int renderY) {
         return new RecipeEfficiencyBar.Parameters(renderX, renderY);
     }
 
-    @SuppressWarnings("unused")
     public EnergyBar.Parameters energyBar(int renderX, int renderY) {
         return new EnergyBar.Parameters(renderX, renderY);
     }
 
-    @SuppressWarnings("unused")
     public void craftingSingleBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, List<String> tiers,
@@ -140,7 +138,6 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         ReiMachineRecipes.registerMultiblockShape(internalName, multiblockShape);
     }
 
-    @SuppressWarnings("unused")
     public void simpleElectricCraftingMultiBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
@@ -180,7 +177,6 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 config.reiConfigs);
     }
 
-    @SuppressWarnings("unused")
     public void simpleSteamCraftingMultiBlock(
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
@@ -245,8 +241,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         rei.register();
     }
 
-    @SuppressWarnings("unused")
-    public void simpleEnergyFromFluidOrItemSingleBlock(
+    public void simpleGeneratorSingleBlock(
             // General,
             String englishName, String internalName,
             String cableTierName,
@@ -261,13 +256,13 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
 
         MachineRegistrationHelper.registerMachine(
                 englishName, internalName,
-                bep -> new EnergyFromFluidItemMachineBlockEntity(bep,
+                bep -> new GeneratorMachineBlockEntity(bep,
                         internalName,
                         CableTier.getByName(cableTierName),
                         energyCapacity,
                         fluidStorageCapacity,
                         componentBuilder.build()),
-                MachineBlockEntity::registerItemApi, MachineBlockEntity::registerFluidApi, EnergyFromFluidItemMachineBlockEntity::registerEnergyApi);
+                MachineBlockEntity::registerItemApi, MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.addMachineModel(
                 internalName, overlayFolder,
@@ -275,8 +270,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 frontOverlay, topOverlay, sideOverlay);
     }
 
-    @SuppressWarnings("unused")
-    public void simpleEnergyFromFluidOrItemSingleBlock(
+    public void simpleGeneratorSingleBlock(
             // General,
             String englishName,
             String internalName,
@@ -285,7 +279,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             long energyCapacity,
             Consumer<FluidItemConsumerBuilder> builder,
             String casingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-        simpleEnergyFromFluidOrItemSingleBlock(
+        simpleGeneratorSingleBlock(
                 englishName, internalName,
                 cableTierName,
                 maxEnergyProduction,
@@ -295,8 +289,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 casingName, overlayFolder, frontOverlay, topOverlay, sideOverlay);
     }
 
-    @SuppressWarnings("unused")
-    public void simpleEnergyFromFluidOrItemMultiBlock(
+    public void simpleGeneratorMultiBlock(
             // general
             String englishName, String internalName, ShapeTemplate multiblockShape,
             long maxEnergyProduction, Consumer<FluidItemConsumerBuilder> builder,
@@ -304,7 +297,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
         var componentBuilder = new FluidItemConsumerBuilder(maxEnergyProduction);
         builder.accept(componentBuilder);
-        Function<BEP, MachineBlockEntity> ctor = bep -> new EnergyFromFluidMultiblockBlockEntity(bep, internalName, multiblockShape,
+        Function<BEP, MachineBlockEntity> ctor = bep -> new GeneratorMultiblockBlockEntity(bep, internalName, multiblockShape,
                 componentBuilder.build());
         simpleMultiBlock(englishName, internalName, multiblockShape, controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
                 ctor);
@@ -327,26 +320,22 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
             this.maxEnergyProduction = maxEnergyProduction;
         }
 
-        @SuppressWarnings("unused")
-        public FluidItemConsumerBuilder withFluidFuels() {
+        public FluidItemConsumerBuilder fluidFuels() {
             doesAcceptAllFluidFuels = true;
             return this;
         }
 
-        @SuppressWarnings("unused")
-        public FluidItemConsumerBuilder withItemFuels() {
+        public FluidItemConsumerBuilder furnaceFuels() {
             doesAcceptAllItemFuels = true;
             return this;
         }
 
-        @SuppressWarnings("unused")
-        public FluidItemConsumerBuilder withFluid(String fluidId, long euPerMb) {
+        public FluidItemConsumerBuilder fluid(ResourceLocation fluidId, long euPerMb) {
             fluidEuProductionMapBuilder.add(fluidId, euPerMb);
             return this;
         }
 
-        @SuppressWarnings("unused")
-        public FluidItemConsumerBuilder withItem(String itemId, long euPerItem) {
+        public FluidItemConsumerBuilder item(ResourceLocation itemId, long euPerItem) {
             itemEuProductionMapBuilder.add(itemId, euPerItem);
             return this;
         }

@@ -90,6 +90,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
     default void setAmountNoClean(ItemStack stack, long amount) {
         if (!getBehaviour().isCreative()) {
             stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
+            onChange(stack);
         }
     }
 
@@ -109,6 +110,9 @@ public interface ContainerItem<T extends TransferVariant<?>> {
             return true;
         } else
             return getAmount(stack) == 0;
+    }
+
+    default void onChange(ItemStack stack) {
     }
 
     StorageBehaviour<T> getBehaviour();

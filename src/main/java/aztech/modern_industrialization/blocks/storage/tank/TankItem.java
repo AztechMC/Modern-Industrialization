@@ -62,6 +62,7 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     public void setResourceNoClean(ItemStack stack, FluidVariant resource) {
         CompoundTag tag = stack.getOrCreateTagElement("BlockEntityTag");
         NbtHelper.putFluid(tag, "fluid", resource);
+        onChange(stack);
     }
 
     @Override

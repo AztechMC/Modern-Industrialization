@@ -25,8 +25,8 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
-import java.util.HashMap;
-import java.util.Map;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.Optional;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.world.entity.SlotAccess;
@@ -40,21 +40,15 @@ import team.reborn.energy.api.base.SimpleEnergyItem;
 
 public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemContainingItemHelper {
 
-    public static Map<Item, Long> CAPACITY_PER_BATTERY = new HashMap<>();
-
-    private final int CAPACITY = 10000;
+    public static final Reference2LongMap<Item> CAPACITY_PER_BATTERY = new Reference2LongOpenHashMap<>();
+    private final static int MAX_BATTERY_COUNT = 10000;
 
     public PortableStorageUnit(Properties properties) {
         super(properties.stacksTo(1));
     }
 
-    public void setResourceNoClean(ItemStack stack, ItemVariant item) {
-        ItemContainingItemHelper.super.setResourceNoClean(stack, item);
-        this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
-    }
-
-    public void setAmountNoClean(ItemStack stack, long amount) {
-        ItemContainingItemHelper.super.setAmountNoClean(stack, amount);
+    @Override
+    public void onChange(ItemStack stack) {
         this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
     }
 
@@ -63,7 +57,7 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
         if (this.isEmpty(stack)) {
             return 0;
         } else {
-            return CAPACITY_PER_BATTERY.get(this.getResource(stack).getItem()) * this.getAmount(stack);
+            return CAPACITY_PER_BATTERY.getLong(this.getResource(stack).getItem()) * this.getAmount(stack);
         }
     }
 
@@ -83,7 +77,7 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
         return new StorageBehaviour<>() {
             @Override
             public long getCapacityForResource(ItemVariant resource) {
-                return CAPACITY;
+                return MAX_BATTERY_COUNT;
             }
 
             public boolean canInsert(ItemVariant maybeBattery) {
@@ -106,7 +100,7 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         if (!isEmpty(stack)) {
             return Optional.of(new BarrelTooltipData(getResource(stack), getAmount(stack),
-                    CAPACITY, false));
+                    MAX_BATTERY_COUNT, false));
         }
 
         return Optional.empty();

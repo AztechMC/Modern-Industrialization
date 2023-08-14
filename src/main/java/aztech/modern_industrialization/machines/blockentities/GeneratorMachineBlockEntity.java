@@ -63,11 +63,11 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     protected FluidItemConsumerComponent fluidItemConsumer;
 
     public GeneratorMachineBlockEntity(BEP bep,
-                                       String name,
-                                       CableTier outputTier,
-                                       long energyCapacity,
-                                       long fluidCapacity,
-                                       FluidItemConsumerComponent fluidItemConsumer) {
+            String name,
+            CableTier outputTier,
+            long energyCapacity,
+            long fluidCapacity,
+            FluidItemConsumerComponent fluidItemConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
                 new OrientationComponent.Params(true, false, false));
@@ -141,13 +141,13 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     }
 
     public GeneratorMachineBlockEntity(BEP bep,
-                                       String name,
-                                       CableTier outputTier,
-                                       long energyCapacity,
-                                       long fluidCapacity,
-                                       long maxEnergyOutput,
-                                       FluidDefinition acceptedFluid,
-                                       long fluidEUperMb) {
+            String name,
+            CableTier outputTier,
+            long energyCapacity,
+            long fluidCapacity,
+            long maxEnergyOutput,
+            FluidDefinition acceptedFluid,
+            long fluidEUperMb) {
 
         this(bep, name, outputTier, energyCapacity, fluidCapacity,
                 FluidItemConsumerComponent.ofSingleFluid(

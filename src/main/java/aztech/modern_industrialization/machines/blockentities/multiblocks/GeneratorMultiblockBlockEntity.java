@@ -45,9 +45,9 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
         EnergyListComponentHolder, MultiblockInventoryComponentHolder {
 
     public GeneratorMultiblockBlockEntity(BEP bep,
-                                          String name,
-                                          ShapeTemplate shapeTemplate,
-                                          FluidItemConsumerComponent fluidConsumer) {
+            String name,
+            ShapeTemplate shapeTemplate,
+            FluidItemConsumerComponent fluidConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(), new OrientationComponent.Params(false, false, false));
 

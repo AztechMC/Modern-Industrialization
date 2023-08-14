@@ -267,7 +267,8 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
 
     public static class EuProductionMapBuilder<T> {
 
-        private final Map<ResourceLocation, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource location
+        private final Map<ResourceLocation, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource
+                                                                         // location
         private final DefaultedRegistry<T> registryAccess;
 
         public EuProductionMapBuilder(DefaultedRegistry<T> registryAccess) {

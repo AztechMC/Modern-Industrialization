@@ -35,13 +35,15 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
-import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
+import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
 import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Rectangle;
@@ -51,10 +53,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Fluid;
 
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
@@ -307,9 +309,9 @@ public class MultiblockMachines {
         LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine(
                 "Large Diesel Generator",
                 "large_diesel_generator", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator",
+                        new GeneratorMultiblockBlockEntity(bet, "large_diesel_generator",
                                 largeDieselGeneratorShape,
-                                FluidConsumerComponent.ofFluidFuels(16384)));
+                                FluidItemConsumerComponent.ofFluidFuels(16384)));
         ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
     }
 
@@ -342,13 +344,16 @@ public class MultiblockMachines {
         LARGE_STEAM_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Large Steam Turbine",
                 "large_steam_turbine", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
-                                FluidConsumerComponent.of(16384,
-                                        (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
-                                                || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
-                                                || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
-                                        (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
-                                )));
+                        new GeneratorMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
+                                FluidItemConsumerComponent.ofFluid(16384,
+                                        new FluidItemConsumerComponent.EuProductionMapBuilder<>(Registry.FLUID)
+                                                .add(MIFluids.STEAM.getId(), 1)
+                                                .add(MIFluids.HIGH_PRESSURE_STEAM.getId(), 8)
+                                                .add(MIFluids.HEAVY_WATER_STEAM.getId(), 1)
+                                                .add(MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.getId(), 8)
+                                                .build()
+                                )
+                                ));
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
     }
 
@@ -363,7 +368,7 @@ public class MultiblockMachines {
                                 ((y == 1 || y == -1) && x == 0) ? energyInput : null);
                     } else {
                         if (z != 0 || x != 0 || y != 0) {
-                            HatchFlags flag = null;
+                            HatchFlags flag;
                             if (x == 0) {
                                 flag = new HatchFlags.Builder().with(z == 0 ? ITEM_INPUT : ITEM_OUTPUT).with(ENERGY_INPUT).build();
                             } else {
@@ -534,10 +539,10 @@ public class MultiblockMachines {
         PLASMA_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Plasma Turbine",
                 "plasma_turbine", bet ->
-                        new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
-                                FluidConsumerComponent.of(
+                        new GeneratorMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
+                                FluidItemConsumerComponent.ofSingleFluid(
                                         1 << 20,
-                                        MIFluids.HELIUM_PLASMA.asFluid(),
+                                        MIFluids.HELIUM_PLASMA,
                                         100000
                                 )));
         ReiMachineRecipes.registerMultiblockShape("plasma_turbine", plasmaTurbineShape);
@@ -720,10 +725,10 @@ public class MultiblockMachines {
         // extra workstations to be displayed in viewers, can be any item id
         private final List<ResourceLocation> extraWorkstations;
         private Predicate<MachineRecipe> extraTest = recipe -> true;
-        private SlotPositions.Builder itemInputs = new SlotPositions.Builder();
-        private SlotPositions.Builder itemOutputs = new SlotPositions.Builder();
-        private SlotPositions.Builder fluidInputs = new SlotPositions.Builder();
-        private SlotPositions.Builder fluidOutputs = new SlotPositions.Builder();
+        private final SlotPositions.Builder itemInputs = new SlotPositions.Builder();
+        private final SlotPositions.Builder itemOutputs = new SlotPositions.Builder();
+        private final SlotPositions.Builder fluidInputs = new SlotPositions.Builder();
+        private final SlotPositions.Builder fluidOutputs = new SlotPositions.Builder();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
 
         public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {

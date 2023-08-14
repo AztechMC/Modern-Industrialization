@@ -82,6 +82,17 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         return stack;
     }
 
+    public static ConfigurableItemStack lockedInputSlot(Item item) {
+        ConfigurableItemStack stack = new ConfigurableItemStack();
+        stack.key = ItemVariant.of(item);
+        stack.lockedInstance = item;
+        stack.playerInsert = true;
+        stack.playerLockable = false;
+        stack.playerLocked = true;
+        stack.pipesInsert = true;
+        return stack;
+    }
+
     public ConfigurableItemStack(ConfigurableItemStack other) {
         super(other);
         this.adjustedCapacity = other.adjustedCapacity;

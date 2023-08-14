@@ -74,6 +74,11 @@ class MaterialBuilderJSWrapper {
         return addExternalPart(part, id, id);
     }
 
+    public MaterialBuilderJSWrapper battery(long energyCapacity) {
+        materialBuilder.addParts(creator.batteryPart(energyCapacity));
+        return this;
+    }
+
     public MaterialBuilderJSWrapper barrel(int stackCapacity) {
         materialBuilder.addParts(creator.barrelPart(stackCapacity));
         return this;

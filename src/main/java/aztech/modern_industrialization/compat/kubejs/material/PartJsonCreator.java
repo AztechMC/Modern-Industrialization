@@ -45,6 +45,10 @@ public class PartJsonCreator {
         return new PartTemplate(englishName, name);
     }
 
+    public PartTemplate batteryPart(long energyCapacity) {
+        return MIParts.BATTERY.of(energyCapacity);
+    }
+
     public PartTemplate barrelPart(int stackCapacity) {
         return MIParts.BARREL.of(stackCapacity);
     }

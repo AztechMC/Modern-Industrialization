@@ -23,10 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.util.TextHelper;
 import io.github.ladysnake.pal.VanillaAbilities;
-import java.util.List;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -36,14 +33,12 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
-import team.reborn.energy.api.base.SimpleBatteryItem;
+import team.reborn.energy.api.base.SimpleEnergyItem;
 
-public class GraviChestPlateItem extends ArmorItem implements Wearable, ActivatableChestItem, SimpleBatteryItem {
+public class GraviChestPlateItem extends ArmorItem implements Wearable, ActivatableChestItem, SimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.EPIC));
     }
@@ -120,11 +115,6 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Activata
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
-        tooltip.add(TextHelper.getEuTextMaxed(getEnergy(stack), ENERGY_CAPACITY, true));
-    }
-
-    @Override
     public boolean isBarVisible(ItemStack stack) {
         return true;
     }
@@ -135,17 +125,17 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Activata
     }
 
     @Override
-    public long getEnergyCapacity() {
+    public long getEnergyCapacity(ItemStack stack) {
         return ENERGY_CAPACITY;
     }
 
     @Override
-    public long getEnergyMaxInput() {
+    public long getEnergyMaxInput(ItemStack stack) {
         return ENERGY_CAPACITY;
     }
 
     @Override
-    public long getEnergyMaxOutput() {
+    public long getEnergyMaxOutput(ItemStack stack) {
         return 0;
     }
 }

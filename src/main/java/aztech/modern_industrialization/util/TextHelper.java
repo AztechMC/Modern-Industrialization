@@ -83,7 +83,7 @@ public class TextHelper {
     }
 
     public static Amount getAmount(double amount) {
-        if (amount < 10000) {
+        if (amount < 100000) {
             return new Amount(getAmount(amount, 1), "");
         } else {
             int i = 0;
@@ -95,7 +95,7 @@ public class TextHelper {
     }
 
     public static MaxedAmount getMaxedAmount(double amount, double max) {
-        if (max < 10000) {
+        if (max < 100000) {
             return new MaxedAmount(getAmount(amount, 1), getAmount(max, 1), "");
         } else {
             int i = 0;
@@ -106,8 +106,21 @@ public class TextHelper {
         }
     }
 
+    public static MaxedAmount getMaxedAmountGeneric(Number amount, Number max) {
+        if (amount instanceof Long l && max instanceof Long m) {
+            return getMaxedAmount(l, m);
+        } else if (amount instanceof Integer i && max instanceof Integer m) {
+            return getMaxedAmount(i, m);
+        } else if (amount instanceof Double d && max instanceof Double m) {
+            return getMaxedAmount(d, m);
+        } else if (amount instanceof Float f && max instanceof Float m) {
+            return getMaxedAmount(f, m);
+        }
+        throw new IllegalArgumentException("Number " + amount + " or " + max + " is neither long, int, double or float");
+    }
+
     public static Amount getAmount(long amount) {
-        if (amount < 10000) {
+        if (amount < 100000) {
             return new Amount(String.valueOf(amount), "");
         } else {
             int i = 0;
@@ -119,7 +132,7 @@ public class TextHelper {
     }
 
     public static MaxedAmount getMaxedAmount(long amount, long max) {
-        if (max < 10000) {
+        if (max < 100000) {
             return new MaxedAmount(String.valueOf(amount), String.valueOf(max), "");
         } else {
             int i = 0;
@@ -130,8 +143,8 @@ public class TextHelper {
         }
     }
 
-    public static MutableComponent getEuTextMaxed(long eu, long max) {
-        var amount = getMaxedAmount(eu, max);
+    public static MutableComponent getEuTextMaxed(Number eu, Number max) {
+        var amount = getMaxedAmountGeneric(eu, max);
         return MIText.EuMaxed.text(amount.digit(), amount.maxDigit(), amount.unit());
     }
 
@@ -161,14 +174,6 @@ public class TextHelper {
 
     public static Component getEuTextTick(double eu, boolean style) {
         MutableComponent text = getEuTextTick(eu);
-        if (style) {
-            text.setStyle(TextHelper.NUMBER_TEXT);
-        }
-        return text;
-    }
-
-    public static MutableComponent getEuTextMaxed(long eu, long max, boolean style) {
-        MutableComponent text = getEuTextMaxed(eu, max);
         if (style) {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }

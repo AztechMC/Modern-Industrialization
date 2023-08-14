@@ -32,6 +32,7 @@ MIMaterialEvents.addMaterials(event => {
             // and 8.0 blast resistance (also optional, default is 6.0)
             .machineCasing(8.0) // same as above but for machine casings but the custom name and path are optional
             .pipeCasing(8.0) // add a pipe casing, only blast resistance can be specified
+            .battery(5000000) // add a battery with 5M EU capacity for the Portable Storage Unit
             .ore({ 
                 "generate": true, // does the ore generate in the world
                 "ore_set": "copper", // texture set, same principle as for blocks (found in "textures/materialsets/ores")

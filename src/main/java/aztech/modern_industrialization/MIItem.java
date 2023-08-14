@@ -25,13 +25,9 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.items.SortOrder.*;
 
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.definition.ItemDefinition;
-import aztech.modern_industrialization.items.ConfigCardItem;
-import aztech.modern_industrialization.items.FluidFuelItemHelper;
-import aztech.modern_industrialization.items.ForgeTool;
-import aztech.modern_industrialization.items.GuideBookItem;
-import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.items.SteamDrillItem;
+import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
@@ -53,6 +49,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import team.reborn.energy.api.base.SimpleEnergyItem;
 
 @SuppressWarnings("unused")
 public final class MIItem {
@@ -148,6 +145,9 @@ public final class MIItem {
             .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
     public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
             .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+
+    public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
+            .withItemRegistrationEvent(item -> EnergyApi.ITEM.registerForItems((stack, ctx) -> SimpleEnergyItem.createStorage(ctx, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item));
 
     // Armor
     public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s.maxCount(1)), ITEMS_OTHER);

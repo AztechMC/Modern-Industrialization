@@ -101,5 +101,6 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
     @Override
     default void setResourceNoClean(ItemStack stack, ItemVariant item) {
         stack.getOrCreateTagElement("BlockEntityTag").put("item", item.toNbt());
+        onChange(stack);
     }
 }

@@ -24,16 +24,21 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIIdentifier;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.DelegatingEnergyStorage;
+import team.reborn.energy.api.base.LimitingEnergyStorage;
 
 public class EnergyApi {
     public static final BlockApiLookup<MIEnergyStorage, Direction> SIDED = BlockApiLookup
-            .get(new ResourceLocation("modern_industrialization:sided_mi_energy_storage"), MIEnergyStorage.class, Direction.class);
+            .get(new MIIdentifier("sided_mi_energy_storage"), MIEnergyStorage.class, Direction.class);
+    public static final ItemApiLookup<EnergyStorage, ContainerItemContext> ITEM = ItemApiLookup
+            .get(new MIIdentifier("energy_storage"), EnergyStorage.class, ContainerItemContext.class);
 
     private static final ThreadLocal<Boolean> IN_COMPAT = ThreadLocal.withInitial(() -> false);
 
@@ -93,7 +98,6 @@ public class EnergyApi {
                     IN_COMPAT.set(false);
                 }
             });
-
             SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
                 if (IN_COMPAT.get()) {
                     return null;
@@ -107,10 +111,61 @@ public class EnergyApi {
                     IN_COMPAT.set(false);
                 }
             });
+
+            EnergyStorage.ITEM.registerFallback((stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    return ITEM.find(stack, ctx);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            });
+            ITEM.registerFallback((stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    return EnergyStorage.ITEM.find(stack, ctx);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            });
         } else {
             SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
                 EnergyStorage trStorage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
                 return trStorage == null || !trStorage.supportsInsertion() ? null : new InsertOnlyTrStorage(trStorage);
+            });
+            ITEM.registerFallback((stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    EnergyStorage trStorage = EnergyStorage.ITEM.find(stack, ctx);
+                    return trStorage == null || !trStorage.supportsInsertion() ? null : new LimitingEnergyStorage(trStorage, Long.MAX_VALUE, 0);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            });
+            EnergyStorage.ITEM.registerFallback((stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    EnergyStorage miStorage = ITEM.find(stack, ctx);
+                    return miStorage == null || !miStorage.supportsExtraction() ? null : new LimitingEnergyStorage(miStorage, 0, Long.MAX_VALUE);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
             });
         }
     }

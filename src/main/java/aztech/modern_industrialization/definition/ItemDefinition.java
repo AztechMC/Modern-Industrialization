@@ -37,7 +37,7 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
     public final SortOrder sortOrder;
 
     public final BiConsumer<Item, ItemModelGenerators> modelGenerator;
-    private Consumer<Item> onItemRegistrationEvent;
+    private Consumer<? super T> onItemRegistrationEvent;
 
     public ItemDefinition(String englishName, String id, T item,
             BiConsumer<Item, ItemModelGenerators> modelGenerator, SortOrder sortOrder) {
@@ -48,7 +48,7 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
         this.sortOrder = sortOrder;
     }
 
-    public ItemDefinition<T> withItemRegistrationEvent(Consumer<Item> onItemRegistrationEvent) {
+    public ItemDefinition<T> withItemRegistrationEvent(Consumer<? super T> onItemRegistrationEvent) {
         this.onItemRegistrationEvent = onItemRegistrationEvent;
         return this;
     }

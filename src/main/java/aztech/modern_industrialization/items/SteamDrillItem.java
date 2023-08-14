@@ -375,11 +375,6 @@ public class SteamDrillItem
     }
 
     @Override
-    public ItemVariant getBlankResource() {
-        return ItemVariant.blank();
-    }
-
-    @Override
     public StorageBehaviour<ItemVariant> getBehaviour() {
         return DRILL_BEHAVIOUR;
     }

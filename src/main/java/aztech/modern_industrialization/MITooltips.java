@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
@@ -43,6 +45,8 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
@@ -58,6 +62,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
+import team.reborn.energy.api.EnergyStorage;
 import team.reborn.energy.api.base.SimpleEnergyItem;
 
 @SuppressWarnings("unused")
@@ -238,13 +243,14 @@ public class MITooltips {
 
     public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (item instanceof SimpleEnergyItem energyStorageItem
-                        && Registry.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
-                    SimpleEnergyItem simpleEnergyItem = (SimpleEnergyItem) itemStack.getItem();
-                    long capacity = simpleEnergyItem.getEnergyCapacity(itemStack);
-                    if (capacity > 0) {
-                        return Optional.of(new Line(MIText.EnergyStored)
-                                .arg(new NumberWithMax(simpleEnergyItem.getStoredEnergy(itemStack), capacity), EU_MAXED_PARSER).build());
+                if (Registry.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                    var energyStorage = ContainerItemContext.withConstant(itemStack).find(EnergyApi.ITEM);
+                    if (energyStorage != null) {
+                        long capacity = energyStorage.getCapacity();
+                        if (capacity > 0) {
+                            return Optional.of(new Line(MIText.EnergyStored)
+                                    .arg(new NumberWithMax(energyStorage.getAmount(), capacity), EU_MAXED_PARSER).build());
+                        }
                     }
                 }
                 return Optional.empty();

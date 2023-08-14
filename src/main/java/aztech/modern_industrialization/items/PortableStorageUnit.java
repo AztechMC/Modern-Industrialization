@@ -38,7 +38,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import team.reborn.energy.api.base.SimpleEnergyItem;
 
-public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemContainingItemHelper {
+public class PortableStorageUnit extends Item implements ItemContainingItemHelper {
 
     public static final Reference2LongMap<Item> CAPACITY_PER_BATTERY = new Reference2LongOpenHashMap<>();
     private final static int MAX_BATTERY_COUNT = 10000;
@@ -52,7 +52,6 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
         this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
     }
 
-    @Override
     public long getEnergyCapacity(ItemStack stack) {
         if (this.isEmpty(stack)) {
             return 0;
@@ -61,12 +60,10 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
         }
     }
 
-    @Override
     public long getEnergyMaxInput(ItemStack stack) {
         return Long.MAX_VALUE;
     }
 
-    @Override
     public long getEnergyMaxOutput(ItemStack stack) {
         return Long.MAX_VALUE;
     }
@@ -120,4 +117,18 @@ public class PortableStorageUnit extends Item implements SimpleEnergyItem, ItemC
         }
     }
 
+    /**
+     * @return The energy stored in the stack. Count is ignored.
+     */
+    public long getStoredEnergy(ItemStack stack) {
+        return SimpleEnergyItem.getStoredEnergyUnchecked(stack);
+    }
+
+    /**
+     * Directly set the energy stored in the stack. Count is ignored.
+     * It's up to callers to ensure that the new amount is >= 0 and <= capacity.
+     */
+    public void setStoredEnergy(ItemStack stack, long newAmount) {
+        SimpleEnergyItem.setStoredEnergyUnchecked(stack, newAmount);
+    }
 }

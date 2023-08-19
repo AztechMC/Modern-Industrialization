@@ -189,6 +189,6 @@ public final class TranslationProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "Translation Provider";
+        return "Translations";
     }
 }

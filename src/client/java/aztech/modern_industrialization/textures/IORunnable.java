@@ -21,27 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen.dynreg;
+package aztech.modern_industrialization.textures;
 
-import java.util.concurrent.CompletableFuture;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import java.io.IOException;
 
-public class MIDynamicRegistriesProvider extends FabricDynamicRegistryProvider {
-    public MIDynamicRegistriesProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-        super(output, registriesFuture);
-    }
+@FunctionalInterface
+interface IORunnable {
+    void run() throws IOException;
 
-    @Override
-    protected void configure(HolderLookup.Provider registries, Entries entries) {
-        entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
-        entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
-    }
-
-    @Override
-    public String getName() {
-        return "Worldgen";
+    default void safeRun() {
+        try {
+            run();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

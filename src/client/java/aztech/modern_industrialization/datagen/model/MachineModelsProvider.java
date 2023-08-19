@@ -62,6 +62,6 @@ public class MachineModelsProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "Machine Models Provider";
+        return "Machine Models";
     }
 }

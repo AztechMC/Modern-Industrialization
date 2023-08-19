@@ -32,9 +32,11 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 public class MIDatagenClient {
     public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        pack.addProvider(MachineModelsProvider::new);
-        pack.addProvider(ModelProvider::new);
-        pack.addProvider(SpriteSourceProvider::new);
+        var aggregate = pack.addProvider(AggregateDataProvider.create("Client Resources"));
+
+        aggregate.addProvider(MachineModelsProvider::new);
+        aggregate.addProvider(ModelProvider::new);
+        aggregate.addProvider(SpriteSourceProvider::new);
 
         pack.addProvider((FabricDataOutput packOutput) -> new TexturesProvider(packOutput, runtimeDatagen));
     }

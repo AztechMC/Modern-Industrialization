@@ -27,10 +27,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
@@ -39,7 +41,7 @@ public class TextureManager {
     private final ResourceProvider rm;
     private final BiConsumer<NativeImage, String> textureWriter;
     private final BiConsumer<JsonElement, String> mcMetaWriter;
-    private final List<Runnable> endRunnables = new ArrayList<>();
+    private final Queue<IORunnable> endRunnables = new ConcurrentLinkedQueue<>();
 
     private final Gson GSON = new Gson();
 
@@ -103,14 +105,14 @@ public class TextureManager {
         mcMetaWriter.accept(GSON.toJsonTree(info), path);
     }
 
-    public void runAtEnd(Runnable runnable) {
+    public void runAtEnd(IORunnable runnable) {
         endRunnables.add(runnable);
     }
 
-    public void onEnd() {
-        for (Runnable runnable : endRunnables) {
-            runnable.run();
-        }
+    public CompletableFuture<?> doEndWork() {
+        var ret = CompletableFuture.allOf(
+                endRunnables.stream().map(r -> CompletableFuture.runAsync(r::safeRun, Util.backgroundExecutor())).toArray(CompletableFuture[]::new));
         endRunnables.clear();
+        return ret;
     }
 }

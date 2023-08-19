@@ -46,28 +46,32 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 public class MIDatagenServer {
     public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        pack.addProvider(PetrochemRecipesProvider::new);
-        pack.addProvider(PlankRecipesProvider::new);
-        pack.addProvider(HeatExchangerRecipesProvider::new);
-        pack.addProvider(HatchRecipesProvider::new);
-        pack.addProvider(AlloyRecipesProvider::new);
-        pack.addProvider(MaterialRecipesProvider::new);
-        pack.addProvider(DyeRecipesProvider::new);
-        pack.addProvider(AssemblerRecipesProvider::new);
-        pack.addProvider(CompatRecipesProvider::new);
-        pack.addProvider(SteelUpgradeProvider::new);
-        pack.addProvider(VanillaCompatRecipesProvider::new);
+        var aggregate = pack.addProvider(AggregateDataProvider.create("Server Data"));
 
-        pack.addProvider(BlockLootTableProvider::new);
+        aggregate.addProvider(PetrochemRecipesProvider::new);
+        aggregate.addProvider(PlankRecipesProvider::new);
+        aggregate.addProvider(HeatExchangerRecipesProvider::new);
+        aggregate.addProvider(HatchRecipesProvider::new);
+        aggregate.addProvider(AlloyRecipesProvider::new);
+        aggregate.addProvider(MaterialRecipesProvider::new);
+        aggregate.addProvider(DyeRecipesProvider::new);
+        aggregate.addProvider(AssemblerRecipesProvider::new);
+        aggregate.addProvider(CompatRecipesProvider::new);
+        aggregate.addProvider(SteelUpgradeProvider::new);
+        aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
-        pack.addProvider(MIDynamicRegistriesProvider::new);
+        aggregate.addProvider(BlockLootTableProvider::new);
 
-        pack.addProvider(MIBlockTagProvider::new);
-        pack.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
-        pack.addProvider(MIPoiTypeTagProvider::new);
+        aggregate.addProvider(MIDynamicRegistriesProvider::new);
+
+        aggregate.addProvider(MIBlockTagProvider::new);
+        aggregate.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
+        aggregate.addProvider(MIPoiTypeTagProvider::new);
 
         var translationProvider = new TranslationProvider((FabricDataOutput) pack.output, runtimeDatagen);
-        pack.addProvider((FabricDataOutput packOutput) -> new MIAdvancementsProvider(packOutput, translationProvider));
+        aggregate.addProvider((FabricDataOutput packOutput) -> new MIAdvancementsProvider(packOutput, translationProvider));
+
+        // Must either remain separate or be made to use futures to wait for dependencies!
         pack.addProvider((FabricDataOutput ignored) -> translationProvider);
     }
 }

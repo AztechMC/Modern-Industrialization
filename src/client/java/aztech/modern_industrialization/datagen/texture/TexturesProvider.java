@@ -63,37 +63,34 @@ public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatag
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        return CompletableFuture.supplyAsync(() -> {
-            var packs = new ArrayList<PackResources>();
+        var packs = new ArrayList<PackResources>();
 
-            packs.add(new VanillaPackResourcesBuilder().exposeNamespace("minecraft").pushJarResources().build());
+        packs.add(new VanillaPackResourcesBuilder().exposeNamespace("minecraft").pushJarResources().build());
 
-            if (runtimeDatagen) {
-                // MI jar
-                ModContainer container = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-                packs.add(ModNioResourcePack.create("mi:runtimedatagen", container, null, PackType.CLIENT_RESOURCES,
-                        ResourcePackActivationType.ALWAYS_ENABLED));
+        if (runtimeDatagen) {
+            // MI jar
+            ModContainer container = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
+            packs.add(ModNioResourcePack.create("mi:runtimedatagen", container, null, PackType.CLIENT_RESOURCES,
+                    ResourcePackActivationType.ALWAYS_ENABLED));
 
-                // extra_datagen_resources folder
-                var extra = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization").resolve("extra_datagen_resources");
-                packs.add(new FastPathPackResources("extra", extra, true));
-            } else {
-                var nonGeneratedResources = packOutput.getOutputFolder().resolve("../../main/resources");
-                packs.add(new FastPathPackResources("nonGen", nonGeneratedResources, true));
-            }
+            // extra_datagen_resources folder
+            var extra = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization").resolve("extra_datagen_resources");
+            packs.add(new FastPathPackResources("extra", extra, true));
+        } else {
+            var nonGeneratedResources = packOutput.getOutputFolder().resolve("../../main/resources");
+            packs.add(new FastPathPackResources("nonGen", nonGeneratedResources, true));
+        }
 
-            List<CompletableFuture<?>> futures = new ArrayList<>();
+        List<CompletableFuture<?>> jsonSaveFutures = new ArrayList<>();
+        var fallbackProvider = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, packs);
 
-            try (var fallbackProvider = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, packs)) {
-                generateTextures(cache, fallbackProvider, futures::add);
-            }
-
-            return futures;
-        }, Util.backgroundExecutor())
-                .thenComposeAsync(futures -> CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)), Util.backgroundExecutor());
+        return generateTextures(cache, fallbackProvider, jsonSaveFutures::add)
+                .whenComplete((result, throwable) -> fallbackProvider.close())
+                .thenRunAsync(() -> CompletableFuture.allOf(jsonSaveFutures.toArray(CompletableFuture[]::new)), Util.backgroundExecutor());
     }
 
-    private void generateTextures(CachedOutput cache, ResourceProvider fallbackResourceProvider, Consumer<CompletableFuture<?>> futureList) {
+    private CompletableFuture<?> generateTextures(CachedOutput cache, ResourceProvider fallbackResourceProvider,
+            Consumer<CompletableFuture<?>> futureList) {
         // This is the order for texture fetching:
         // - texture overrides (in the datagen output folder)
         // - generated textures (also in the output folder)
@@ -102,22 +99,21 @@ public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatag
         var generatedResources = packOutput.getOutputFolder();
         List<PackResources> generatedPack = List.of(new FastPathPackResources("gen", generatedResources, true));
 
-        try (var outputPack = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, generatedPack)) {
-            MITextures.offerTextures(
-                    (image, textureId) -> writeTexture(cache, image, textureId),
-                    (json, path) -> futureList.accept(customJsonSave(cache, json, path)),
-                    resourceLocation -> {
-                        // Generated first
-                        var generated = outputPack.getResource(resourceLocation);
-                        if (generated.isPresent()) {
-                            return generated;
-                        }
-                        return fallbackResourceProvider.getResource(resourceLocation);
-                    });
-        }
+        var outputPack = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, generatedPack);
+        return MITextures.offerTextures(
+                (image, textureId) -> writeTexture(cache, image, textureId),
+                (json, path) -> futureList.accept(customJsonSave(cache, json, path)),
+                resourceLocation -> {
+                    // Generated first
+                    var generated = outputPack.getResource(resourceLocation);
+                    if (generated.isPresent()) {
+                        return generated;
+                    }
+                    return fallbackResourceProvider.getResource(resourceLocation);
+                })
+                .whenComplete((result, throwable) -> outputPack.close());
     }
 
-    // Can't use futures for textures due to dependencies between textures, so let's use them for json only!
     private void writeTexture(CachedOutput cache, NativeImage image, String textureId) {
         try {
             var path = packOutput.getOutputFolder().resolve("assets").resolve(textureId.replace(':', '/'));
@@ -134,6 +130,6 @@ public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatag
 
     @Override
     public String getName() {
-        return "Machine Textures Provider";
+        return "Textures";
     }
 }

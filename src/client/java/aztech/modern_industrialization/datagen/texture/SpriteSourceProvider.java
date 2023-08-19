@@ -46,6 +46,6 @@ public class SpriteSourceProvider extends FabricCodecDataProvider<List<SpriteSou
 
     @Override
     public String getName() {
-        return "MI Sprite Sources";
+        return "Sprite Sources";
     }
 }

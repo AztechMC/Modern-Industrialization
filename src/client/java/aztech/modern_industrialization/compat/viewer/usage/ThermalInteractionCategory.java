@@ -35,12 +35,12 @@ import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
@@ -65,8 +65,8 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<Recipe> consumer) {
-        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             consumer.accept(new Recipe(component, CategoryType.THERMAL_PROPERTIES));
 
@@ -75,7 +75,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
             }
         });
 
-        for (Fluid fluid : Registry.FLUID) {
+        for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
                 INuclearComponent<?> component = FluidNuclearComponents.of(variant);
@@ -104,7 +104,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
                 @Override
                 public ItemVariant getVariant() {
-                    return ItemVariant.of(Registry.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
+                    return ItemVariant.of(BuiltInRegistries.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
                 }
             }, CategoryType.THERMAL_PROPERTIES));
         }
@@ -135,16 +135,15 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
             widgets.text(Component.literal(String.format("%d°C", nuclearComponent.tempLimitHigh)), width - 10, py, TextAlign.RIGHT, true, false,
                     null);
 
-            widgets.drawable(matrices -> {
+            widgets.drawable(guiGraphics -> {
                 var helper = Minecraft.getInstance().screen;
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 for (int i = 1; i < area.w() / 2; i++) {
-                    helper.blit(matrices, area.x() + i, area.y() + 4, 0, 255, 1, 1);
+                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, area.y() + 4, 0, 255, 1, 1);
                 }
                 for (int i = area.w() / 2; i < area.w() - 1; i++) {
                     double f = (i - area.w() / 2d) / (area.w() - area.w() / 2d);
                     int y = (int) ((1 - f) * (area.y() + 4) + f * (area.y() + area.h() - 14));
-                    helper.blit(matrices, area.x() + i, y, 0, 255, 1, 1);
+                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, y, 0, 255, 1, 1);
                 }
             });
 

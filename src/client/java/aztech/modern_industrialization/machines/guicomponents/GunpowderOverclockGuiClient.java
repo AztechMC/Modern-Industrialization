@@ -28,12 +28,9 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 
 public class GunpowderOverclockGuiClient implements GuiComponentClient {
     final GunpowderOverclockGui.Parameters params;
@@ -57,21 +54,18 @@ public class GunpowderOverclockGuiClient implements GuiComponentClient {
     public class Renderer implements ClientComponentRenderer {
 
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             if (remTick > 0) {
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 int px = x + params.renderX;
                 int py = y + params.renderY;
-                helper.blit(matrices, px, py, 0, 58, 20, 20);
+                guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 0, 58, 20, 20);
             }
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (remTick > 0) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                    List<Component> tooltip = new ArrayList<>();
-
                     int seconds = remTick / 20;
                     int hours = seconds / 3600;
                     int minutes = (seconds % 3600) / 60;
@@ -84,8 +78,7 @@ public class GunpowderOverclockGuiClient implements GuiComponentClient {
                         time = String.format("%d:%02d", minutes, seconds % 60);
                     }
 
-                    tooltip.add(MIText.GunpowderTime.text(time));
-                    screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                    guiGraphics.renderTooltip(font, MIText.GunpowderTime.text(time), cursorX, cursorY);
                 }
             }
         }

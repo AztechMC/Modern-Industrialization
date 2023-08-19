@@ -28,7 +28,7 @@ import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.*;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -71,7 +71,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.context = context;
         this.selectedRecipe = DataSlot.standalone();
         this.availableRecipes = new ArrayList<>();
-        this.world = playerInventory.player.level;
+        this.world = playerInventory.player.level();
         this.player = playerInventory.player;
 
         for (int i = 0; i < 3; i++) {
@@ -168,7 +168,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
 
                 if (recipeInput.matches(input.getItem()) && recipeInput.amount <= input.getItem().getCount()) {
-                    ResourceLocation idOutput = Registry.ITEM.getKey(recipe.itemOutputs.get(0).item);
+                    ResourceLocation idOutput = BuiltInRegistries.ITEM.getKey(recipe.itemOutputs.get(0).item);
                     if ((recipe.eu != 0) && (!tool.getItem().isEmpty())) {
                         recipeMap.put(idOutput, recipe);
                     } else if (recipe.eu == 0 && !recipeMap.containsKey(idOutput)) {
@@ -195,7 +195,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             MachineRecipe current = this.availableRecipes.get(getSelectedRecipe());
             if (current.eu == 0 || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
-                this.output.set(current.getResultItem());
+                this.output.set(current.getResultItem(world.registryAccess()));
             } else {
                 this.output.set(ItemStack.EMPTY);
             }
@@ -247,7 +247,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
             if (index == 38) {
-                item.onCraftedBy(itemStack2, player.level, player);
+                item.onCraftedBy(itemStack2, player.level(), player);
                 if (!this.moveItemStackTo(itemStack2, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -402,7 +402,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
             case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
             }
-            if (!ItemStack.isSame(oldOutput, output.getItem())) {
+            if (!ItemStack.matches(oldOutput, output.getItem())) {
                 didSomething = true;
             }
 

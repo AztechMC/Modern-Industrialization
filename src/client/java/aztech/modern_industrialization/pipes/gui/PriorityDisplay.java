@@ -23,21 +23,25 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import aztech.modern_industrialization.client.DynamicTooltip;
+import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
-class PriorityDisplay extends Button {
+class PriorityDisplay extends AbstractWidget {
     private final Supplier<Integer> priorityGetter;
     private final Font textRenderer;
 
-    public PriorityDisplay(int x, int y, int width, int height, Component message, OnTooltip tooltipSupplier, Supplier<Integer> priorityGetter,
+    public PriorityDisplay(int x, int y, int width, int height, Component message, Supplier<List<Component>> tooltipSupplier,
+            Supplier<Integer> priorityGetter,
             Font textRenderer) {
-        super(x, y, width, height, message, button -> {
-        }, tooltipSupplier);
+        super(x, y, width, height, message);
+        setTooltip(new DynamicTooltip(tooltipSupplier));
         this.priorityGetter = priorityGetter;
         this.textRenderer = textRenderer;
         this.active = false;
@@ -49,12 +53,13 @@ class PriorityDisplay extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+    }
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         FormattedCharSequence orderedText = getMessage().getVisualOrderText();
-        textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.width(orderedText) / 2),
-                (float) (this.y + (this.height - 8) / 2), 4210752);
-        if (this.isHoveredOrFocused()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
-        }
+        guiGraphics.drawString(textRenderer, orderedText, this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2,
+                this.getY() + (this.height - 8) / 2, 4210752, false);
     }
 }

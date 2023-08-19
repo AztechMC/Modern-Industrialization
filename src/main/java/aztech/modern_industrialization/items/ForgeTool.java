@@ -24,11 +24,10 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import java.util.Locale;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,10 +37,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public class ForgeTool extends TieredItem {
 
-    public static final TagKey<Item> TAG = TagKey.create(Registry.ITEM.key(), new MIIdentifier("forge_hammer_tools"));
+    public static final TagKey<Item> TAG = TagKey.create(BuiltInRegistries.ITEM.key(), new MIIdentifier("forge_hammer_tools"));
 
     public ForgeTool(Tier material, FabricItemSettings p) {
-        super(forgeHammerMaterial(material), p.stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
+        super(forgeHammerMaterial(material), p.stacksTo(1));
         TagsToGenerate.generateTag(TAG, this, "Forge Hammer Tools");
     }
 

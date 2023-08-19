@@ -26,7 +26,6 @@ package aztech.modern_industrialization.compat.viewer.impl.jei;
 import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
@@ -35,6 +34,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -65,8 +65,8 @@ class JeiSlotUtil {
     public static void overrideFluidRenderer(IRecipeSlotBuilder slot) {
         slot.setCustomRenderer(FabricTypes.FLUID_STACK, new IIngredientRenderer<>() {
             @Override
-            public void render(PoseStack stack, IJeiFluidIngredient ingredient) {
-                RenderHelper.drawFluidInGui(stack, getVariant(ingredient), 0, 0);
+            public void render(GuiGraphics guiGraphics, IJeiFluidIngredient ingredient) {
+                RenderHelper.drawFluidInGui(guiGraphics, getVariant(ingredient), 0, 0);
             }
 
             @Override

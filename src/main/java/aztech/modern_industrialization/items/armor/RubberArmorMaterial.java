@@ -24,10 +24,10 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -35,12 +35,12 @@ public enum RubberArmorMaterial implements ArmorMaterial {
     INSTANCE;
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlot slot) {
+    public int getDurabilityForType(ArmorItem.Type type) {
         return 400;
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlot slot) {
+    public int getDefenseForType(ArmorItem.Type type) {
         return 1;
     }
 
@@ -56,7 +56,7 @@ public enum RubberArmorMaterial implements ArmorMaterial {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.of(Registry.ITEM.get(new MIIdentifier("rubber_sheet")));
+        return Ingredient.of(BuiltInRegistries.ITEM.get(new MIIdentifier("rubber_sheet")));
     }
 
     @Override

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.google.gson.JsonObject;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +39,7 @@ public class BiomeProcessCondition implements MachineProcessCondition {
     private final ResourceKey<Biome> biome;
 
     public BiomeProcessCondition(ResourceLocation biome) {
-        this.biome = ResourceKey.create(Registry.BIOME_REGISTRY, biome);
+        this.biome = ResourceKey.create(Registries.BIOME, biome);
     }
 
     @Override

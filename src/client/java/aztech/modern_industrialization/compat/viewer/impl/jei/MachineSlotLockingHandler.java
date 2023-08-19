@@ -39,7 +39,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -105,7 +105,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
             return false;
         }
 
-        var item = Registry.ITEM.get(new MIIdentifier(blockId));
+        var item = BuiltInRegistries.ITEM.get(new MIIdentifier(blockId));
         return lookup.getItemStack().anyMatch(is -> is.is(item));
     }
 }

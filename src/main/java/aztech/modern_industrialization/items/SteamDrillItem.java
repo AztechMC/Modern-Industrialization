@@ -32,8 +32,8 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import draylar.magna.Magna;
-import draylar.magna.api.MagnaTool;
+import dev.draylar.magna.Magna;
+import dev.draylar.magna.api.MagnaTool;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
@@ -199,7 +199,7 @@ public class SteamDrillItem
 
                 if (burnTicks > 0 && entity != null) {
                     // Play cool sound
-                    entity.level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.FIRE_AMBIENT, SoundSource.PLAYERS, 1.0f,
+                    entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.FIRE_AMBIENT, SoundSource.PLAYERS, 1.0f,
                             1.0f);
                 }
             }
@@ -338,7 +338,7 @@ public class SteamDrillItem
     }
 
     private boolean tryFillWater(Player player, ItemStack barrelLike, ItemStack fillSource) {
-        var otherStorage = ContainerItemContext.withInitial(fillSource).find(FluidStorage.ITEM);
+        var otherStorage = ContainerItemContext.withConstant(fillSource).find(FluidStorage.ITEM);
 
         if (otherStorage != null) {
             long totalWater = 0;

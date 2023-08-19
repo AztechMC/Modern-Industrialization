@@ -29,10 +29,9 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class CraftingMultiblockGuiClient implements GuiComponentClient {
@@ -69,40 +68,42 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-
-        private final MIIdentifier texture = new MIIdentifier("textures/gui/container/multiblock_info.png");
+        private static final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/container/multiblock_info.png");
 
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
 
             Minecraft minecraftClient = Minecraft.getInstance();
-            RenderSystem.setShaderTexture(0, texture);
-            net.minecraft.client.gui.GuiComponent.blit(matrices, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
+            guiGraphics.blit(TEXTURE, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
                     CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
-            Font textRenderer = minecraftClient.font;
+            Font font = minecraftClient.font;
 
-            textRenderer.draw(matrices, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 9, y + 23,
-                    isShapeValid ? 0xFFFFFF : 0xFF0000);
+            guiGraphics.drawString(font, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 9, y + 23,
+                    isShapeValid ? 0xFFFFFF : 0xFF0000, false);
             if (isShapeValid) {
-                textRenderer.draw(matrices,
-
-                        hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9, y + 34, 0xFFFFFF);
+                // TODO: what is this weird check?
+                guiGraphics.drawString(font, hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9,
+                        y + 34, 0xFFFFFF, false);
                 if (hasActiveRecipe) {
 
                     int deltaY = 45;
 
-                    textRenderer.draw(matrices, MIText.Progress.text(String.format("%.1f", progress * 100) + " %"), x + 9, y + deltaY, 0xFFFFFF);
+                    guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", progress * 100) + " %"), x + 9, y + deltaY, 0xFFFFFF,
+                            false);
                     deltaY += 11;
 
                     if (efficiencyTicks != 0 || maxEfficiencyTicks != 0) {
-                        textRenderer.draw(matrices, MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks), x + 9, y + deltaY, 0xFFFFFF);
+                        guiGraphics.drawString(font, MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks), x + 9, y + deltaY, 0xFFFFFF,
+                                false);
                         deltaY += 11;
                     }
 
-                    textRenderer.draw(matrices, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(baseRecipeEu)), x + 9, y + deltaY, 0xFFFFFF);
+                    guiGraphics.drawString(font, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(baseRecipeEu)), x + 9, y + deltaY, 0xFFFFFF,
+                            false);
                     deltaY += 11;
 
-                    textRenderer.draw(matrices, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + deltaY, 0xFFFFFF);
+                    guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + deltaY, 0xFFFFFF,
+                            false);
                 }
             }
         }

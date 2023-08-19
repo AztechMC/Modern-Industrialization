@@ -40,7 +40,7 @@ public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
         Map<ResourceLocation, MachineRecipe> recipes = new HashMap<>();
 
         for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
-            MachineRecipe recipe = RecipeConversions.of(smeltingRecipe, this);
+            MachineRecipe recipe = RecipeConversions.of(smeltingRecipe, this, world.registryAccess());
             recipes.put(recipe.id, recipe);
         }
 

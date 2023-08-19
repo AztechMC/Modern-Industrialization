@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -271,7 +271,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
         ResourceLocation id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOptional(id).orElseThrow(() -> {
+        Fluid fluid = BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> {
             throw new IllegalArgumentException("Fluid " + id + " does not exist.");
         });
         int amount = readFluidAmount(json, "amount");
@@ -281,7 +281,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.ItemOutput readItemOutput(JsonObject json) {
         ResourceLocation id = readIdentifier(json, "item");
-        Item item = Registry.ITEM.getOptional(id).orElseThrow(() -> {
+        Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> {
             throw new IllegalArgumentException("Item " + id + " does not exist.");
         });
         int amount = 1;
@@ -294,7 +294,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.FluidOutput readFluidOutput(JsonObject json) {
         ResourceLocation id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOptional(id).orElseThrow(() -> {
+        Fluid fluid = BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> {
             throw new IllegalArgumentException("Fluid " + id + " does not exist.");
         });
         int amount = readFluidAmount(json, "amount");
@@ -342,9 +342,11 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         recipe.eu = buf.readVarInt();
         recipe.duration = buf.readVarInt();
         recipe.itemInputs = readList(buf, b -> new MachineRecipe.ItemInput(Ingredient.fromNetwork(b), b.readVarInt(), b.readFloat()));
-        recipe.fluidInputs = readList(buf, b -> new MachineRecipe.FluidInput(Registry.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
+        recipe.fluidInputs = readList(buf,
+                b -> new MachineRecipe.FluidInput(BuiltInRegistries.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
         recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byId(b.readVarInt()), b.readVarInt(), b.readFloat()));
-        recipe.fluidOutputs = readList(buf, b -> new MachineRecipe.FluidOutput(Registry.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
+        recipe.fluidOutputs = readList(buf,
+                b -> new MachineRecipe.FluidOutput(BuiltInRegistries.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
         recipe.conditions = readList(buf, b -> {
             var serializer = MachineProcessConditions.get(b.readResourceLocation());
             var json = b.readUtf();
@@ -364,7 +366,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             buf.writeFloat(i.probability);
         });
         writeList(buf, recipe.fluidInputs, (b, i) -> {
-            buf.writeVarInt(Registry.FLUID.getId(i.fluid));
+            buf.writeVarInt(BuiltInRegistries.FLUID.getId(i.fluid));
             buf.writeVarLong(i.amount);
             buf.writeFloat(i.probability);
         });
@@ -374,7 +376,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             buf.writeFloat(i.probability);
         });
         writeList(buf, recipe.fluidOutputs, (b, i) -> {
-            buf.writeVarInt(Registry.FLUID.getId(i.fluid));
+            buf.writeVarInt(BuiltInRegistries.FLUID.getId(i.fluid));
             buf.writeVarLong(i.amount);
             buf.writeFloat(i.probability);
         });

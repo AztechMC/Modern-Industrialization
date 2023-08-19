@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.misc.runtime_datagen;
 
-import aztech.modern_industrialization.resource.GeneratedFolderPackResources;
+import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
@@ -33,6 +33,6 @@ public class RuntimeResourcesHelper {
 
     public static PackResources createPack(PackType packType) {
         var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
-        return new GeneratedFolderPackResources(generatedDirectory.toFile(), packType);
+        return new GeneratedPathPackResources(generatedDirectory, packType);
     }
 }

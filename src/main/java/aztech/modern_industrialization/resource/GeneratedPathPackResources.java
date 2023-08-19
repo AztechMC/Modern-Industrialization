@@ -24,34 +24,34 @@
 package aztech.modern_industrialization.resource;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import net.minecraft.SharedConstants;
-import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.IoSupplier;
+import org.jetbrains.annotations.Nullable;
 
-public class GeneratedFolderPackResources extends FolderPackResources {
+public class GeneratedPathPackResources extends FastPathPackResources {
     private final PackType type;
 
-    public GeneratedFolderPackResources(File file, PackType type) {
-        super(file);
+    public GeneratedPathPackResources(Path root, PackType type) {
+        super("mi_generated_pack", root, true);
         this.type = type;
     }
 
+    @Nullable
     @Override
-    protected InputStream getResource(String resourcePath) throws IOException {
-        if ("pack.mcmeta".equals(resourcePath)) {
-            return new ByteArrayInputStream("""
+    public IoSupplier<InputStream> getRootResource(String... elements) {
+        if (elements.length == 1 && "pack.mcmeta".equals(elements[0])) {
+            return () -> new ByteArrayInputStream("""
                     {
                         "pack": {
                             "description": "Generated resources for Modern Industrialization",
                             "pack_format": %d
                         }
                     }
-                    """.formatted(type.getVersion(SharedConstants.getCurrentVersion())).getBytes());
-        } else {
-            return super.getResource(resourcePath);
+                    """.formatted(SharedConstants.getCurrentVersion().getPackVersion(type)).getBytes());
         }
+        return super.getRootResource(elements);
     }
 }

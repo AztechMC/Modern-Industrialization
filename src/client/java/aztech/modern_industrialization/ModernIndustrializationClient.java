@@ -52,7 +52,6 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighl
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipesClient;
-import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -80,7 +79,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
         setupScreens();
         MIFluidsRender.setupFluidRenders();
-        RenderHelper.setupRenderHelper();
         setupPackets();
         CreativeTankClientSetup.setupClient();
         CreativeBarrelClientSetup.setupClient();

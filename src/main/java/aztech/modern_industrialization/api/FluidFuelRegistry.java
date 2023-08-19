@@ -25,7 +25,7 @@ package aztech.modern_industrialization.api;
 
 import aztech.modern_industrialization.definition.FluidLike;
 import java.util.*;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -41,7 +41,7 @@ public class FluidFuelRegistry {
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new RuntimeException("May not register a null or empty fluid!");
         }
-        register(Registry.FLUID.getKey(fluid), eu);
+        register(BuiltInRegistries.FLUID.getKey(fluid), eu);
     }
 
     public static void register(ResourceLocation fluidId, int eu) {
@@ -59,12 +59,12 @@ public class FluidFuelRegistry {
      * Get the burn time of a fluid, or 0 if the fluid is not a registered fuel.
      */
     public static int getEu(Fluid fluid) {
-        return fluidEus.getOrDefault(Registry.FLUID.getKey(fluid), 0);
+        return fluidEus.getOrDefault(BuiltInRegistries.FLUID.getKey(fluid), 0);
     }
 
     public static List<Fluid> getRegisteredFluids() {
         List<ResourceLocation> fluidIds = new ArrayList<>(fluidEus.keySet());
         fluidIds.sort(Comparator.comparing(fluidEus::get));
-        return fluidIds.stream().map(Registry.FLUID::get).filter(fluid -> fluid != Fluids.EMPTY).toList();
+        return fluidIds.stream().map(BuiltInRegistries.FLUID::get).filter(fluid -> fluid != Fluids.EMPTY).toList();
     }
 }

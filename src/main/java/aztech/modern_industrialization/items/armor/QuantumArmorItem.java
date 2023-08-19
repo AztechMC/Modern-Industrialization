@@ -39,22 +39,21 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class QuantumArmorItem extends ArmorItem implements Wearable {
+public class QuantumArmorItem extends ArmorItem {
     public static final List<QuantumArmorItem> ITEMS = new ArrayList<>();
 
     private static final ArmorMaterial MATERIAL = new ArmorMaterial() {
         @Override
-        public int getDurabilityForSlot(EquipmentSlot slot) {
+        public int getDurabilityForType(Type type) {
             return 0;
         }
 
         @Override
-        public int getDefenseForSlot(EquipmentSlot slot) {
+        public int getDefenseForType(Type type) {
             return 0;
         }
 
@@ -94,9 +93,9 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
         }
     };
 
-    public QuantumArmorItem(EquipmentSlot slot, FabricItemSettings settings) {
+    public QuantumArmorItem(ArmorItem.Type type, FabricItemSettings settings) {
         // Can't be damaged!
-        super(MATERIAL, slot, settings.customDamage((is, amt, e, cb) -> 0));
+        super(MATERIAL, type, settings.customDamage((is, amt, e, cb) -> 0));
         ITEMS.add(this);
     }
 
@@ -108,7 +107,7 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag context) {
         list.add(Component.empty());
-        list.add(Component.translatable("item.modifiers." + getSlot().getName()).withStyle(ChatFormatting.GRAY));
+        list.add(Component.translatable("item.modifiers." + getType().getSlot().getName()).withStyle(ChatFormatting.GRAY));
         String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
         list.add(Component.translatable("attribute.modifier.plus.0", oneQuarterInfinity, Component.translatable("attribute.name.generic.armor"))
                 .withStyle(ChatFormatting.BLUE));

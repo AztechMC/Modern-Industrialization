@@ -26,14 +26,15 @@ package aztech.modern_industrialization.pipes.fluid;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.*;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -41,6 +42,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -70,7 +72,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
     private void addNetworkFluidButton() {
         addRenderableWidget(
-                new NetworkFluidButton(72 + this.leftPos, 20 + this.topPos, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
+                new NetworkFluidButton(72 + this.leftPos, 20 + this.topPos, widget -> updateNetworkFluid(), () -> {
                     List<Component> lines = new ArrayList<>();
                     lines.add(FluidHelper.getFluidName(menu.iface.getNetworkFluid(), false));
                     if (!menu.iface.getNetworkFluid().isBlank()) {
@@ -78,7 +80,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
                     } else {
                         lines.add(MIText.NetworkFluidHelpSet.text().setStyle(TextHelper.GRAY_TEXT));
                     }
-                    renderComponentTooltip(matrices, lines, mouseX, mouseY);
+                    return lines;
                 }, menu.iface));
     }
 
@@ -110,31 +112,27 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private class NetworkFluidButton extends Button implements ReiDraggable {
         private final FluidPipeInterface iface;
 
-        public NetworkFluidButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, FluidPipeInterface iface) {
-            super(x, y, 16, 16, null, onPress, tooltipSupplier);
+        public NetworkFluidButton(int x, int y, OnPress onPress, Supplier<List<Component>> tooltipSupplier, FluidPipeInterface iface) {
+            super(x, y, 16, 16, null, onPress, null);
+            setTooltip(new DynamicTooltip(tooltipSupplier));
             this.iface = iface;
         }
 
         @Override
-        public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             // Render fluid slot
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            blit(matrices, x - 1, y - 1, 18, 0, 18, 18);
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, getX() - 1, getY() - 1, 18, 0, 18, 18);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isBlank()) {
-                RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), x, y);
+                RenderHelper.drawFluidInGui(guiGraphics, iface.getNetworkFluid(), getX(), getY());
             }
             // Render the white hover effect
             if (isHoveredOrFocused()) {
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
-                this.fillGradient(matrices, x, y, x + 16, y + 16, -2130706433, -2130706433);
+                guiGraphics.fillGradient(getX(), getY(), getX() + 16, getY() + 16, -2130706433, -2130706433);
                 RenderSystem.colorMask(true, true, true, true);
                 RenderSystem.enableDepthTest();
-            }
-            // Render the tooltip
-            if (isHoveredOrFocused()) {
-                renderToolTip(matrices, mouseX, mouseY);
             }
         }
 

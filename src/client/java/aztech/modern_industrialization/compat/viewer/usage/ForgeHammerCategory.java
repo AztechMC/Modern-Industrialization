@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.Comparator;
 import java.util.function.Consumer;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -58,7 +59,7 @@ public class ForgeHammerCategory extends ViewerCategory<MachineRecipe> {
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<MachineRecipe> consumer) {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<MachineRecipe> consumer) {
         recipeManager.getAllRecipesFor(MIMachineRecipeTypes.FORGE_HAMMER)
                 .stream()
                 .sorted(Comparator.comparing(MachineRecipe::getId))

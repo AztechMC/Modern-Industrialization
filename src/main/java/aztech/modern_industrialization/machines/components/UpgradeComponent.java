@@ -30,7 +30,7 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -45,11 +45,11 @@ public class UpgradeComponent implements IComponent.ServerOnly {
     private final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
 
     public static long getExtraEu(ItemLike item) {
-        return UPGRADES.getOrDefault(Registry.ITEM.getKey(item.asItem()), 0L);
+        return UPGRADES.getOrDefault(BuiltInRegistries.ITEM.getKey(item.asItem()), 0L);
     }
 
     public static void registerUpgrade(ItemLike item, long extraEu) {
-        registerUpgrade(Registry.ITEM.getKey(item.asItem()), extraEu);
+        registerUpgrade(BuiltInRegistries.ITEM.getKey(item.asItem()), extraEu);
     }
 
     public static void registerUpgrade(ResourceLocation itemId, long extraEu) {

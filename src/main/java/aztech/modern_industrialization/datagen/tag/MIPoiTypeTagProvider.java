@@ -24,19 +24,21 @@
 package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MIVillager;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.PoiTypeTags;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 
 public class MIPoiTypeTagProvider extends FabricTagProvider<PoiType> {
-    public MIPoiTypeTagProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator, Registry.POINT_OF_INTEREST_TYPE);
+    public MIPoiTypeTagProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(packOutput, Registries.POINT_OF_INTEREST_TYPE, registriesFuture);
     }
 
     @Override
-    protected void generateTags() {
-        tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(MIVillager.POI_TYPE);
+    protected void addTags(HolderLookup.Provider provider) {
+        tag(PoiTypeTags.ACQUIRABLE_JOB_SITE).add(MIVillager.POI_KEY);
     }
 }

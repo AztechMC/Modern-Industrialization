@@ -49,15 +49,7 @@ public class MENetworkNode extends PipeNetworkNode {
 
     void updateNode() {
         if (this.mainNode == null && this.connections.size() > 0) {
-            this.mainNode = GridHelper.createManagedNode(this, new IGridNodeListener<>() {
-                @Override
-                public void onSecurityBreak(MENetworkNode nodeOwner, IGridNode node) {
-                    throw new UnsupportedOperationException("How did we get here?");
-                }
-
-                @Override
-                public void onSaveChanges(MENetworkNode nodeOwner, IGridNode node) {
-                }
+            this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {
             }).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
         }
         if (this.mainNode != null && this.connections.size() == 0) {

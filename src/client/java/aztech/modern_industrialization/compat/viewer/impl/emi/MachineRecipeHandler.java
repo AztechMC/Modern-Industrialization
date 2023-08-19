@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.Slot;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -120,7 +120,7 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
 
         category.wrapped.buildWorkstations(items -> {
             for (var item : items) {
-                if (Registry.ITEM.getKey(item.asItem()).equals(new MIIdentifier(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(new MIIdentifier(blockId))) {
                     hasWorkstation.setTrue();
                 }
             }

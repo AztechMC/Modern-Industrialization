@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -35,7 +36,6 @@ import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,8 +44,9 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -107,35 +108,29 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
     }
 
-    public void blitButton(Button button, PoseStack pose, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
-        blit(pose, button.x, button.y, baseU, baseV, button.getWidth(), button.getHeight());
+    public void blitButton(Button button, GuiGraphics guiGraphics, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV) {
+        guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), baseU, baseV, button.getWidth(), button.getHeight());
         if (button.isHoveredOrFocused()) {
-            blit(pose, button.x, button.y, selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
-            button.renderToolTip(pose, mouseX, mouseY);
+            guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
         }
     }
 
     /**
      * Helper method to draw a 20x20 button.
      */
-    public void blitButton(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
-        blitButton(button, pose, u, v, 60, 18, mouseX, mouseY);
+    public void blitButton(Button button, GuiGraphics guiGraphics, int u, int v) {
+        blitButton(button, guiGraphics, u, v, 60, 18);
     }
 
     /**
      * Helper method to draw a 12x12 button.
      */
-    public void blitButtonSmall(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
-        blitButton(button, pose, u, v, 138, 58, mouseX, mouseY);
+    public void blitButtonSmall(Button button, GuiGraphics guiGraphics, int u, int v) {
+        blitButton(button, guiGraphics, u, v, 138, 58);
     }
 
-    public void blitButtonNoHighlight(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
-        blit(pose, button.x, button.y, u, v, button.getWidth(), button.getHeight());
-        if (button.isHoveredOrFocused()) {
-            button.renderToolTip(pose, mouseX, mouseY);
-        }
+    public void blitButtonNoHighlight(Button button, GuiGraphics guiGraphics, int u, int v) {
+        guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), u, v, button.getWidth(), button.getHeight());
     }
 
     @Override
@@ -143,9 +138,9 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             Supplier<Boolean> isPressed) {
 
         return addRenderableWidget(new MachineButton(buttonX(), buttonY(), 20, 20, b -> pressAction.accept(menu.containerId),
-                (button, matrices, mouseX, mouseY) -> renderComponentTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY),
-                (screen, button, matrices, mouseX, mouseY, delta) -> {
-                    blitButton(button, matrices, u, isPressed.get() ? 38 : 18, mouseX, mouseY);
+                tooltipSupplier,
+                (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
+                    blitButton(button, guiGraphics, u, isPressed.get() ? 38 : 18);
                 }, () -> true));
 
     }
@@ -156,9 +151,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
         return addRenderableWidget(new MachineButton(posX + leftPos, posY + topPos, width, height, b -> {
             pressAction.accept(menu.containerId);
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderComponentTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
-        }, renderer, isButtonPresent));
+        }, tooltipSupplier, renderer, isButtonPresent));
     }
 
     private void addLockButton() {
@@ -193,7 +186,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     @Override
-    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         // Update button visibility
         for (var element : renderables) {
             if (element instanceof MachineButton machineButton) {
@@ -202,49 +195,47 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
 
         // Shadow around the GUI
-        renderBackground(matrices);
+        renderBackground(guiGraphics);
         RenderSystem.enableBlend();
         // Background
-        actualDrawBackground(matrices);
-        renderConfigurableSlotBackgrounds(matrices);
+        actualDrawBackground(guiGraphics);
+        renderConfigurableSlotBackgrounds(guiGraphics);
         // Locked items and fluids
-        renderFluidSlots(matrices, mouseX, mouseY);
-        renderLockedItems();
+        renderFluidSlots(guiGraphics, mouseX, mouseY);
+        renderLockedItems(guiGraphics);
         // Regular items and the foreground
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
         // Tooltips
-        renderConfigurableSlotTooltips(matrices, mouseX, mouseY);
+        renderConfigurableSlotTooltips(guiGraphics, mouseX, mouseY);
         for (ClientComponentRenderer renderer : renderers) {
-            renderer.renderTooltip(this, matrices, leftPos, topPos, mouseX, mouseY);
+            renderer.renderTooltip(this, font, guiGraphics, leftPos, topPos, mouseX, mouseY);
         }
     }
 
     // drawBackground() is called too late, so it's not used at all.
     // This function is used by our custom render() function when appropriate.
-    private void actualDrawBackground(PoseStack matrices) {
-        RenderSystem.setShaderTexture(0, BACKGROUND);
+    private void actualDrawBackground(GuiGraphics guiGraphics) {
         int bw = menu.guiParams.backgroundWidth;
         int bh = menu.guiParams.backgroundHeight;
-        blit(matrices, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4);
-        blit(matrices, leftPos, topPos, 0, 0, bw, 4);
+        guiGraphics.blit(BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4);
+        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, bw, 4);
 
         for (ClientComponentRenderer renderer : renderers) {
-            renderer.renderBackground(this, matrices, leftPos, topPos);
+            renderer.renderBackground(guiGraphics, leftPos, topPos);
         }
     }
 
-    private void renderConfigurableSlotBackgrounds(PoseStack matrices) {
-        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
+    private void renderConfigurableSlotBackgrounds(GuiGraphics guiGraphics) {
         for (Slot slot : this.menu.slots) {
             if (slot instanceof BackgroundRenderedSlot brs) {
                 int px = leftPos + slot.x - 1;
                 int py = topPos + slot.y - 1;
-                this.blit(matrices, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
+                guiGraphics.blit(SLOT_ATLAS, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
             }
         }
     }
 
-    private void renderFluidSlots(PoseStack matrices, int mouseX, int mouseY) {
+    private void renderFluidSlots(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         for (Slot slot : menu.slots) {
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                 int i = leftPos + slot.x;
@@ -253,14 +244,14 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                 FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
                 if (!renderedKey.isBlank()) {
-                    RenderHelper.drawFluidInGui(matrices, renderedKey, i, j);
+                    RenderHelper.drawFluidInGui(guiGraphics, renderedKey, i, j);
                 }
 
                 if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive()) {
                     this.hoveredSlot = slot;
                     RenderSystem.disableDepthTest();
                     RenderSystem.colorMask(true, true, true, false);
-                    this.fillGradient(matrices, i, j, i + 16, j + 16, -2130706433, -2130706433);
+                    guiGraphics.fillGradient(i, j, i + 16, j + 16, -2130706433, -2130706433);
                     RenderSystem.colorMask(true, true, true, true);
                     RenderSystem.enableDepthTest();
                 }
@@ -268,41 +259,21 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
     }
 
-    private void renderLockedItems() {
+    private void renderLockedItems(GuiGraphics guiGraphics) {
         for (Slot slot : this.menu.slots) {
             if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
                 ConfigurableItemStack itemStack = itemSlot.getConfStack();
                 if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
                     Item item = itemStack.getLockedInstance();
                     if (item != Items.AIR) {
-                        renderItemInGui(new ItemStack(item), slot.x + this.leftPos, slot.y + this.topPos, "0");
+                        RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x + this.leftPos, slot.y + this.topPos, "0");
                     }
                 }
             }
         }
     }
 
-    public void renderItemInGui(ItemStack itemStack, int x, int y) {
-        renderItemInGui(itemStack, x, y, null);
-    }
-
-    public void renderItemInGui(ItemStack itemStack, int x, int y, String countLabel) {
-        this.setBlitOffset(100);
-        this.itemRenderer.blitOffset = 100.0F;
-
-        RenderSystem.enableDepthTest();
-        this.itemRenderer.renderAndDecorateItem(this.minecraft.player, itemStack, x, y, 0);
-        this.itemRenderer.renderGuiItemDecorations(this.font, itemStack, x, y, countLabel);
-
-        this.itemRenderer.blitOffset = 0.0F;
-        this.setBlitOffset(0);
-    }
-
-    public ItemRenderer getItemRenderer() {
-        return this.itemRenderer;
-    }
-
-    private void renderConfigurableSlotTooltips(PoseStack matrices, int mouseX, int mouseY) {
+    private void renderConfigurableSlotTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Slot slot = hoveredSlot;
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
@@ -319,16 +290,16 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             } else if (stack.canPlayerExtract()) {
                 tooltip.add(MIText.FluidSlotOutput.text().setStyle(TextHelper.GRAY_TEXT));
             }
-            this.renderComponentTooltip(matrices, tooltip, mouseX, mouseY);
+            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
         } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot confSlot) {
-            renderConfigurableItemStackTooltip(matrices, confSlot.getConfStack(), mouseX, mouseY);
+            renderConfigurableItemStackTooltip(guiGraphics, confSlot.getConfStack(), mouseX, mouseY);
         } else if (slot != null && slot.hasItem()) {
             // regular tooltip
-            renderTooltip(matrices, slot.getItem(), mouseX, mouseY);
+            guiGraphics.renderTooltip(font, slot.getItem(), mouseX, mouseY);
         }
     }
 
-    private void renderConfigurableItemStackTooltip(PoseStack matrices, ConfigurableItemStack stack, int mouseX, int mouseY) {
+    private void renderConfigurableItemStackTooltip(GuiGraphics guiGraphics, ConfigurableItemStack stack, int mouseX, int mouseY) {
         ItemStack vanillaStack = stack.isEmpty() ? stack.getLockedInstance() == null ? ItemStack.EMPTY : new ItemStack(stack.getLockedInstance())
                 : stack.getResource().toStack((int) stack.getAmount());
         // Regular information
@@ -337,7 +308,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             textTooltip = new ArrayList<>();
             textTooltip.add(MIText.Empty.text());
         } else {
-            textTooltip = getTooltipFromItem(vanillaStack);
+            textTooltip = getTooltipFromItem(Minecraft.getInstance(), vanillaStack);
         }
         Optional<TooltipComponent> data = vanillaStack.getTooltipImage();
         // Append capacity
@@ -347,11 +318,11 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
         textTooltip.add(MIText.ConfigurableSlotCapacity.text(capacityText).setStyle(TextHelper.GRAY_TEXT));
         // Render
-        renderTooltip(matrices, textTooltip, data, mouseX, mouseY);
+        guiGraphics.renderTooltip(font, textTooltip, data, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
     }
 
     @Override
@@ -402,28 +373,27 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         final ClientComponentRenderer.CustomButtonRenderer renderer;
         final Supplier<Boolean> isPresent;
 
-        private MachineButton(int x, int y, int width, int height, OnPress onPress, OnTooltip tooltipSupplier,
+        private MachineButton(int x, int y, int width, int height, OnPress onPress, Supplier<List<Component>> tooltipSupplier,
                 ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isPresent) {
-            super(x, y, width, height, Component.empty(), onPress, (btn, mat, mouseX, mouseY) -> {
-                if (isPresent.get()) {
-                    tooltipSupplier.onTooltip(btn, mat, mouseX, mouseY);
-                }
-            });
+            super(x, y, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.setTooltip(new DynamicTooltip(tooltipSupplier));
             this.renderer = renderer;
             this.isPresent = isPresent;
         }
 
         @Override
-        public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            if (isPresent.get()) {
-                renderer.renderButton(MachineScreen.this, this, matrices, mouseX, mouseY, delta);
-            }
+        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            this.visible = isPresent.get();
+            super.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        public void renderVanilla(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            if (isPresent.get()) {
-                super.renderButton(matrices, mouseX, mouseY, delta);
-            }
+        @Override
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            renderer.renderButton(MachineScreen.this, this, guiGraphics, mouseX, mouseY, partialTick);
+        }
+
+        public void renderVanilla(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+            super.renderWidget(guiGraphics, mouseX, mouseY, delta);
         }
     }
 }

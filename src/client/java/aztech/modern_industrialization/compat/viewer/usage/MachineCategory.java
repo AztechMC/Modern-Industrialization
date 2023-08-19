@@ -40,7 +40,6 @@ import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -48,9 +47,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -83,7 +81,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
     private MachineCategory(MachineCategoryParams params, int width, int height) {
         super(MachineRecipe.class, new MIIdentifier(params.category),
                 Component.translatable("rei_categories.modern_industrialization." + params.category),
-                Registry.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
+                BuiltInRegistries.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
 
         this.params = params;
     }
@@ -91,12 +89,12 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
     @Override
     public void buildWorkstations(WorkstationConsumer consumer) {
         for (ResourceLocation workstation : params.workstations) {
-            consumer.accept(Registry.ITEM.get(workstation));
+            consumer.accept(BuiltInRegistries.ITEM.get(workstation));
         }
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<MachineRecipe> consumer) {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<MachineRecipe> consumer) {
         var machineRecipes = recipeManager.getRecipes().stream()
                 .filter(r -> r instanceof MachineRecipe)
                 .map(r -> (MachineRecipe) r)
@@ -113,13 +111,13 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
         case "bronze_furnace" -> {
             recipeManager.getAllRecipesFor(RecipeType.SMELTING)
                     .stream()
-                    .map(r -> RecipeConversions.of(r, MIMachineRecipeTypes.FURNACE))
+                    .map(r -> RecipeConversions.of(r, MIMachineRecipeTypes.FURNACE, registryAccess))
                     .forEach(consumer);
         }
         case "bronze_cutting_machine" -> {
             recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
                     .stream()
-                    .map(r -> RecipeConversions.of(r, MIMachineRecipeTypes.CUTTING_MACHINE))
+                    .map(r -> RecipeConversions.of(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
                     .forEach(consumer);
         }
         case "centrifuge" -> {
@@ -210,37 +208,34 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
 
     @Override
     public void buildWidgets(MachineRecipe recipe, WidgetList widgets) {
-        var helper = Objects.requireNonNull(Minecraft.getInstance().screen);
         var offset = getOffset();
 
         // Draw progress bar
         double recipeMillis = getSeconds(recipe) * 1000;
         widgets.drawable(matrices -> {
-            ProgressBarClient.renderProgress(helper, matrices, offset.x, offset.y, params.progressBarParams,
+            ProgressBarClient.renderProgress(matrices, offset.x, offset.y, params.progressBarParams,
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         });
 
         // Draw filled energy bar
-        widgets.drawable(matrices -> {
-            matrices.pushPose();
+        widgets.drawable(guiGraphics -> {
+            guiGraphics.pose().pushPose();
 
-            matrices.translate(5, 5, 0);
-            matrices.scale(0.5f, 0.5f, 0.5f);
+            guiGraphics.pose().translate(5, 5, 0);
+            guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
             switch (params.steamMode) {
             case BOTH -> {
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, -2, -2, 80, 18, 20, 20);
+                guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
             }
             case STEAM_ONLY -> {
-                RenderSystem.setShaderTexture(0, new MIIdentifier("textures/item/steam_bucket.png"));
-                GuiComponent.blit(matrices, 0, 0, helper.getBlitOffset(), 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(new MIIdentifier("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
             }
             case ELECTRIC_ONLY -> {
-                EnergyBarClient.Renderer.renderEnergy(helper, matrices, 0, 0, 1);
+                EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
             }
             }
 
-            matrices.popPose();
+            guiGraphics.pose().popPose();
         });
         widgets.text(
                 TextHelper.getEuTextTick(recipe.eu),
@@ -261,7 +256,7 @@ public class MachineCategory extends ViewerCategory<MachineRecipe> {
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
             ItemLike displayedItem;
             if (steelHatchRequired) {
-                displayedItem = Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+                displayedItem = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
             } else if (conditionsRequired) {
                 displayedItem = MIItem.WRENCH;
             } else {

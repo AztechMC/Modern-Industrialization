@@ -56,11 +56,6 @@ public abstract class HackySlot extends Slot {
     }
 
     @Override
-    public final void initialize(ItemStack itemStack) {
-        set(itemStack);
-    }
-
-    @Override
     public final void setChanged() {
         if (cachedReturnedStack != null) {
             set(cachedReturnedStack);

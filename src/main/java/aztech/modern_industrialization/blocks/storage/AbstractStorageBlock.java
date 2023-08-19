@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.blocks.storage;
 
-import java.util.Arrays;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -36,8 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
@@ -69,9 +67,8 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
-        LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-        return Arrays.asList(getStack(lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY)));
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        return List.of(getStack(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY)));
     }
 
     @Override

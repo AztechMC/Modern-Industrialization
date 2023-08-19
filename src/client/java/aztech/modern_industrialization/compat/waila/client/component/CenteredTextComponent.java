@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.compat.waila.client.component;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.mobius.waila.api.ITooltipComponent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class CenteredTextComponent implements ITooltipComponent {
@@ -46,8 +46,8 @@ public class CenteredTextComponent implements ITooltipComponent {
     }
 
     @Override
-    public void render(PoseStack matrices, int x, int y, float delta) {
+    public void render(GuiGraphics ctx, int x, int y, float delta) {
         int offset = (getWidth() - Minecraft.getInstance().font.width(text)) / 2;
-        Minecraft.getInstance().font.draw(matrices, text, x + offset, y, 0xFFAAAAAA);
+        ctx.drawString(Minecraft.getInstance().font, text, x + offset, y, 0xFFAAAAAA, false);
     }
 }

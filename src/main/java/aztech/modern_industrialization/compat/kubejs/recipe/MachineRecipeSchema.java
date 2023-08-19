@@ -41,7 +41,7 @@ import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -169,7 +169,7 @@ public final class MachineRecipeSchema {
             }
 
             var input = new JsonObject();
-            input.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+            input.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluid).toString());
             input.addProperty("amount", mbs);
             input.addProperty("probability", chance);
 
@@ -188,7 +188,7 @@ public final class MachineRecipeSchema {
             }
 
             var output = new JsonObject();
-            output.addProperty("fluid", Registry.FLUID.getKey(fluid).toString());
+            output.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluid).toString());
             output.addProperty("amount", mbs);
             output.addProperty("probability", chance);
 
@@ -219,7 +219,7 @@ public final class MachineRecipeSchema {
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
             var json = new JsonObject();
-            json.addProperty("item", value.item.kjs$getId());
+            json.addProperty("item", BuiltInRegistries.ITEM.getKey(value.item.getItem()).toString());
             json.addProperty("amount", value.item.getCount());
 
             if (value.hasChance()) {

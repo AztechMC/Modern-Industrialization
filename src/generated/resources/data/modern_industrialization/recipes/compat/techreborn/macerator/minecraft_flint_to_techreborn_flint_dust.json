@@ -1,7 +1,4 @@
 {
-  "type": "modern_industrialization:macerator",
-  "duration": 200,
-  "eu": 2,
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
@@ -10,6 +7,9 @@
       ]
     }
   ],
+  "type": "modern_industrialization:macerator",
+  "duration": 200,
+  "eu": 2,
   "item_inputs": [
     {
       "amount": 1,

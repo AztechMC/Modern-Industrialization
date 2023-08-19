@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -346,7 +346,7 @@ public class MultiblockMachines {
                 "large_steam_turbine", bet ->
                         new GeneratorMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
                                 FluidItemConsumerComponent.ofFluid(16384,
-                                        new FluidItemConsumerComponent.EuProductionMapBuilder<>(Registry.FLUID)
+                                        new FluidItemConsumerComponent.EuProductionMapBuilder<>(BuiltInRegistries.FLUID)
                                                 .add(MIFluids.STEAM.getId(), 1)
                                                 .add(MIFluids.HIGH_PRESSURE_STEAM.getId(), 8)
                                                 .add(MIFluids.HEAVY_WATER_STEAM.getId(), 1)

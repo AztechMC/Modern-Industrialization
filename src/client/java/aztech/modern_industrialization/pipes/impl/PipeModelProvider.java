@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
+import net.fabricmc.fabric.api.client.model.loading.v1.DelegatingUnbakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 public class PipeModelProvider implements ModelResourceProvider {
     public static final ResourceLocation BLOCK_MODEL = new MIIdentifier("block/pipe");
 
-    private final PipeItemUnbakedModel itemModel = new PipeItemUnbakedModel();
+    private final UnbakedModel itemModel = new DelegatingUnbakedModel(BLOCK_MODEL);
 
     @Override
     @Nullable

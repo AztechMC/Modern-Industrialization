@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.google.gson.JsonObject;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +40,7 @@ public class DimensionProcessCondition implements MachineProcessCondition {
     private final ResourceKey<Level> dimension;
 
     public DimensionProcessCondition(ResourceLocation dimension) {
-        this.dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, dimension);
+        this.dimension = ResourceKey.create(Registries.DIMENSION, dimension);
     }
 
     @Override

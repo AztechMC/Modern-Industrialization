@@ -67,7 +67,7 @@ public class MachineMenuServer extends MachineMenuCommon {
     @Override
     public boolean stillValid(Player player) {
         BlockPos pos = blockEntity.getBlockPos();
-        if (player.level.getBlockEntity(pos) != blockEntity) {
+        if (player.level().getBlockEntity(pos) != blockEntity) {
             return false;
         } else {
             return player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;

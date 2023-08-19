@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.ae2.pipe;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridHelper;
 import appeng.api.util.AEColor;
 import appeng.me.GridConnection;
@@ -65,13 +64,7 @@ public class MENetwork extends PipeNetwork {
 
                 // Connect to this network
                 if (data instanceof MENetworkData meData && meData.getMainNode().isReady()) {
-                    try {
-                        GridHelper.createGridConnection(meData.getMainNode().getNode(), aeManagedNode.getNode());
-                    } catch (FailedConnectionException e) {
-                        // Delete all the node's connections in that case, which also deletes the network node's IGridNode
-                        node.connections.clear();
-                        node.updateNode();
-                    }
+                    GridHelper.createConnection(meData.getMainNode().getNode(), aeManagedNode.getNode());
                 }
             }
         }
@@ -131,16 +124,7 @@ public class MENetwork extends PipeNetwork {
 
             if (!wasReady || !hasInternalConnection) {
                 // Connect to network's node
-                try {
-                    GridHelper.createGridConnection(mainNode.getNode(), node.mainNode.getNode());
-                } catch (FailedConnectionException e) {
-                    // Delete all the node's connections in that case, which also deletes the network node's IGridNode
-                    node.connections.clear();
-                    node.updateNode();
-                    world.blockEntityChanged(posNode.getPos()); // setChanged
-                    world.getChunkSource().blockChanged(posNode.getPos()); // mark for s2c update
-                    continue;
-                }
+                GridHelper.createConnection(mainNode.getNode(), node.mainNode.getNode());
             }
 
             var failedConnections = new HashSet<Direction>();
@@ -156,11 +140,7 @@ public class MENetwork extends PipeNetwork {
                     continue;
                 }
 
-                try {
-                    GridConnection.create(node.mainNode.getNode(), otherNode, missingConnection);
-                } catch (FailedConnectionException e) {
-                    failedConnections.add(missingConnection);
-                }
+                GridConnection.create(node.mainNode.getNode(), otherNode, missingConnection);
             }
 
             node.connections.removeAll(failedConnections);

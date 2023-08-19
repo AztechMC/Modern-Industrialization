@@ -26,17 +26,17 @@ package aztech.modern_industrialization.datagen.recipe;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 public class MaterialRecipesProvider extends MIRecipesProvider {
 
-    public MaterialRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public MaterialRecipesProvider(FabricDataOutput packOutput) {
+        super(packOutput);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         for (Material material : MaterialRegistry.getMaterials().values()) {
             material.registerRecipes.accept(consumer);
         }

@@ -23,10 +23,13 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.client.DynamicTooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -34,27 +37,24 @@ import net.minecraft.util.Mth;
 class PriorityButton extends Button {
     private final int u;
 
-    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, OnTooltip tooltipSupplier) {
-        super(x, y, width, 12, Component.literal(message), onPress, tooltipSupplier);
+    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
+        super(x, y, width, 12, Component.literal(message), onPress, null);
         this.u = u;
+        setTooltip(new DynamicTooltip(tooltipSupplier));
     }
 
     @Override
-    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         Minecraft minecraftClient = Minecraft.getInstance();
-        Font textRenderer = minecraftClient.font;
-        RenderSystem.setShaderTexture(0, PipeGuiHelper.BUTTON_TEXTURE);
+        Font font = minecraftClient.font;
         int v = this.isHoveredOrFocused() ? 40 + this.height : 40;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        blit(matrices, this.x, this.y, u, v, this.width, this.height);
+        guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
         int j = this.active ? 16777215 : 10526880;
-        drawCenteredString(matrices, textRenderer, getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2,
+        guiGraphics.drawCenteredString(font, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
                 j | Mth.ceil(this.alpha * 255.0F) << 24);
-        if (this.isHoveredOrFocused()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
-        }
     }
 }

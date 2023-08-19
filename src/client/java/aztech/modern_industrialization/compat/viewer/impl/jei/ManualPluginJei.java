@@ -63,7 +63,8 @@ public class ManualPluginJei implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGhostIngredientHandler((Class) MIHandledScreen.class, new MIGhostIngredientHandler());
-        registration.addGuiContainerHandler(MachineScreen.class, new MachineGuiContainerHandler(() -> jeiRuntime));
+        registration.addGuiContainerHandler(MachineScreen.class,
+                new MachineGuiContainerHandler(registration.getJeiHelpers().getIngredientManager(), () -> jeiRuntime));
     }
 
     @Override

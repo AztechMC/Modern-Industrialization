@@ -1,5 +1,4 @@
 {
-  "type": "indrev:compress",
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
@@ -8,6 +7,7 @@
       ]
     }
   ],
+  "type": "indrev:compress",
   "ingredients": [
     {
       "tag": "c:battery_alloy_plates"

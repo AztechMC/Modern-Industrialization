@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -48,11 +48,11 @@ public class NbtHelper {
     }
 
     public static Item getItem(CompoundTag tag, String key) {
-        return Registry.ITEM.get(new ResourceLocation(tag.getString(key)));
+        return BuiltInRegistries.ITEM.get(new ResourceLocation(tag.getString(key)));
     }
 
     public static void putItem(CompoundTag tag, String key, Item item) {
-        tag.putString(key, Registry.ITEM.getKey(item).toString());
+        tag.putString(key, BuiltInRegistries.ITEM.getKey(item).toString());
     }
 
     public static byte encodeDirections(Iterable<Direction> directions) {
@@ -128,7 +128,7 @@ public class NbtHelper {
             return FluidVariant.blank();
 
         if (tag.get(key) instanceof StringTag) {
-            return FluidVariant.of(Registry.FLUID.get(new ResourceLocation(tag.getString(key))));
+            return FluidVariant.of(BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString(key))));
         } else {
             CompoundTag compound = tag.getCompound(key);
             if (compound.contains("fk")) {
@@ -141,7 +141,7 @@ public class NbtHelper {
 
     private static Fluid readLbaTag(CompoundTag tag) {
         if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
-            return Registry.FLUID.get(new ResourceLocation(tag.getString("ObjName")));
+            return BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("ObjName")));
         } else {
             return Fluids.EMPTY;
         }

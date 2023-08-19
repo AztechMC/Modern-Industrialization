@@ -27,17 +27,17 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-    public BlockLootTableProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public BlockLootTableProvider(FabricDataOutput packOutput) {
+        super(packOutput);
     }
 
     @Override
-    protected void generateBlockLootTables() {
+    public void generate() {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
             if (blockDefinition.lootTableGenerator != null) {
                 blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);

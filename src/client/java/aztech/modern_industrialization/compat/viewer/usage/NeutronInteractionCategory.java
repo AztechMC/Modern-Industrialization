@@ -36,13 +36,11 @@ import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +57,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
     public NeutronInteractionCategory() {
         super(Recipe.class, new MIIdentifier("neutron_interaction"), MIText.NeutronInteraction.text(),
-                Registry.ITEM.get(new MIIdentifier("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
+                BuiltInRegistries.ITEM.get(new MIIdentifier("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
 
         this.centerX = width / 2;
         this.centerY = height / 2 - 5;
@@ -71,8 +69,8 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<Recipe> consumer) {
-        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             if (component.neutronBehaviour != INeutronBehaviour.NO_INTERACTION) {
                 consumer.accept(new Recipe(component, CategoryType.FAST_NEUTRON_INTERACTION));
@@ -90,7 +88,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
         });
 
-        for (Fluid fluid : Registry.FLUID) {
+        for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
                 INuclearComponent<?> component = FluidNuclearComponents.of(variant);
@@ -174,16 +172,13 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
             widgets.text(MIText.NeutronAbsorption.text(), this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
 
-            widgets.drawable(matrices -> {
-                var helper = Minecraft.getInstance().screen;
-                RenderSystem.setShaderTexture(0, PROGRESS_BAR);
+            widgets.drawable(guiGraphics -> {
                 int posX = centerX - 12;
                 int posY = centerY - 2;
 
-                GuiComponent.blit(matrices, posX, posY, helper.getBlitOffset(), 0, 0, 40, 20, 40, 40);
+                guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
 
-                GuiComponent.blit(matrices, posX, posY, helper.getBlitOffset(), 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20,
-                        40, 40);
+                guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
             });
 
             Component neutronNumberText;

@@ -28,7 +28,8 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -39,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RecipeConversions {
 
-    public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type) {
+    public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type, RegistryAccess registryAccess) {
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         ResourceLocation id = new ResourceLocation(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
         MachineRecipe recipe = new MachineRecipe(id, type);
@@ -47,12 +48,12 @@ public class RecipeConversions {
         recipe.duration = smeltingRecipe.getCookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
-        recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getResultItem().getItem(), 1, 1));
+        recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getResultItem(registryAccess).getItem(), 1, 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
     }
 
-    public static MachineRecipe of(StonecutterRecipe stonecuttingRecipe, MachineRecipeType type) {
+    public static MachineRecipe of(StonecutterRecipe stonecuttingRecipe, MachineRecipeType type, RegistryAccess registryAccess) {
         ResourceLocation id = new ResourceLocation(stonecuttingRecipe.getId().getNamespace(),
                 stonecuttingRecipe.getId().getPath() + "_exported_mi_cutting_machine");
         MachineRecipe recipe = new MachineRecipe(id, type);
@@ -62,7 +63,8 @@ public class RecipeConversions {
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT.asFluid(), 81, 1));
         recipe.itemOutputs = Collections
                 .singletonList(
-                        new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem().getItem(), stonecuttingRecipe.getResultItem().getCount(), 1));
+                        new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem(null).getItem(),
+                                stonecuttingRecipe.getResultItem(registryAccess).getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
     }
@@ -75,7 +77,7 @@ public class RecipeConversions {
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = new MIIdentifier(Registry.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            ResourceLocation id = new MIIdentifier(BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(id, MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;

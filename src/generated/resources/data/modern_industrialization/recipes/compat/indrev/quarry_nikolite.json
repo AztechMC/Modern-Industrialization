@@ -1,7 +1,4 @@
 {
-  "type": "modern_industrialization:quarry",
-  "duration": 600,
-  "eu": 16,
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
@@ -10,6 +7,9 @@
       ]
     }
   ],
+  "type": "modern_industrialization:quarry",
+  "duration": 600,
+  "eu": 16,
   "item_inputs": [
     {
       "amount": 1,

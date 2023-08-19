@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class MIMachineRecipeTypes {
@@ -86,8 +87,8 @@ public class MIMachineRecipeTypes {
 
     private static MachineRecipeType create(String name, Function<ResourceLocation, MachineRecipeType> ctor) {
         MachineRecipeType type = ctor.apply(new MIIdentifier(name));
-        Registry.register(Registry.RECIPE_SERIALIZER, type.getId(), type);
-        Registry.register(Registry.RECIPE_TYPE, type.getId(), type);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, type.getId(), type);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.getId(), type);
         recipeTypes.add(type);
         return type;
     }

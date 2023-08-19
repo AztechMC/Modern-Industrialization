@@ -30,10 +30,10 @@ import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.Rectangle;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -108,19 +108,18 @@ public class SlotPanelClient implements GuiComponentClient {
             }
 
             @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                RenderSystem.setShaderTexture(0, MachineScreen.BACKGROUND);
+            public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
                 var box = getBox(x, y);
 
                 int textureX = box.x() - x - box.w();
-                helper.blit(matrices, box.x(), box.y(), textureX, 0, box.w(), box.h() - 4);
-                helper.blit(matrices, box.x(), box.y() + box.h() - 4, textureX, 252, box.w(), 4);
+                guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y(), textureX, 0, box.w(), box.h() - 4);
+                guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, textureX, 252, box.w(), 4);
             }
 
             @Override
-            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (screen.getFocusedSlot() instanceof SlotTooltip st && !screen.getFocusedSlot().hasItem()) {
-                    screen.renderTooltip(matrices, st.getTooltip(), cursorX, cursorY);
+                    guiGraphics.renderTooltip(font, st.getTooltip(), cursorX, cursorY);
                 }
             }
         };

@@ -25,9 +25,10 @@ package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -73,24 +74,23 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
     }
 
     @Override
-    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
-        this.renderTooltip(matrices, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
-        this.renderBackground(matrices);
+    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+        this.renderBackground(guiGraphics);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, FORGE_HAMMER_GUI);
-        this.blit(matrices, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(FORGE_HAMMER_GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         int l = this.leftPos + X_OFFSET;
         int m = this.topPos + Y_OFFSET;
-        this.renderRecipeBackground(matrices, mouseX, mouseY, l, m);
-        this.renderRecipeIcons(l, m);
+        this.renderRecipeBackground(guiGraphics, mouseX, mouseY, l, m);
+        this.renderRecipeIcons(guiGraphics, l, m);
     }
 
-    private void renderRecipeIcons(int x, int y) {
+    private void renderRecipeIcons(GuiGraphics guiGraphics, int x, int y) {
         for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
 
             int k = x + i % 4 * 16;
@@ -101,13 +101,12 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
             int amount = handler.getAvailableRecipes().get(i).itemOutputs.get(0).amount;
 
             ItemStack stack = new ItemStack(item, amount);
-
-            this.minecraft.getItemRenderer().renderAndDecorateItem(stack, k, m);
+            RenderHelper.renderAndDecorateItem(guiGraphics, font, stack, k, m);
         }
 
     }
 
-    private void renderRecipeBackground(PoseStack matrices, int mouseX, int mouseY, int x, int y) {
+    private void renderRecipeBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
         for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
 
             int k = x + i % 4 * 16;
@@ -121,13 +120,13 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
                 n += 36;
             }
 
-            this.blit(matrices, k, m - 1, 0, n, 16, 18);
+            guiGraphics.blit(FORGE_HAMMER_GUI, k, m - 1, 0, n, 16, 18);
         }
 
     }
 
-    protected void renderTooltip(PoseStack matrices, int x, int y) {
-        super.renderTooltip(matrices, x, y);
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
         int x1 = this.leftPos + X_OFFSET;
         int y1 = this.topPos + Y_OFFSET;
 
@@ -139,8 +138,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
                 Item item = handler.getAvailableRecipes().get(l).itemOutputs.get(0).item;
                 int amount = handler.getAvailableRecipes().get(l).itemOutputs.get(0).amount;
                 ItemStack stack = new ItemStack(item, amount);
-
-                this.renderTooltip(matrices, stack, x, y);
+                guiGraphics.renderTooltip(font, stack, x, y);
             }
         }
 

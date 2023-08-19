@@ -31,6 +31,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
@@ -50,7 +51,7 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<Fluid> consumer) {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Fluid> consumer) {
         FluidFuelRegistry.getRegisteredFluids().forEach(consumer);
     }
 

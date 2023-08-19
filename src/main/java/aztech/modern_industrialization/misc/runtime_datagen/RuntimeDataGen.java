@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.misc.runtime_datagen;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,13 +32,18 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.Util;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.registries.VanillaRegistries;
 
 public class RuntimeDataGen {
-    public static void run(Consumer<FabricDataGenerator> config) {
+    public static void run(Consumer<FabricDataGenerator.Pack> config) {
         try {
             runInner(config);
         } catch (Exception ex) {
@@ -45,7 +51,7 @@ public class RuntimeDataGen {
         }
     }
 
-    private static void runInner(Consumer<FabricDataGenerator> config) throws Exception {
+    private static void runInner(Consumer<FabricDataGenerator.Pack> config) throws Exception {
         var miFolder = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization");
 
         // Create some relevant texture folders because I'm sure some people will forget it
@@ -64,8 +70,13 @@ public class RuntimeDataGen {
         ModernIndustrialization.LOGGER.info("Starting MI runtime data generation");
 
         var modContainer = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-        var gen = new FabricDataGenerator(dataOutput, modContainer, true);
-        config.accept(gen);
+        var registriesFuture = CompletableFuture.supplyAsync(() -> {
+            var vanillaBuilder = VanillaRegistries.BUILDER;
+            DynamicRegistryDatagen.run(vanillaBuilder);
+            return vanillaBuilder.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+        }, Util.backgroundExecutor());
+        var gen = new FabricDataGenerator(dataOutput, modContainer, true, registriesFuture);
+        config.accept(gen.createPack());
         gen.run();
 
         ModernIndustrialization.LOGGER.info("Starting MI runtime pack calculation");

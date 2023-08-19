@@ -49,7 +49,7 @@ import dev.latvian.mods.kubejs.event.EventJS;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -308,10 +308,10 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
         long maxEnergyProduction;
 
         FluidItemConsumerComponent.EuProductionMapBuilder<Item> itemEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
-                Registry.ITEM);
+                BuiltInRegistries.ITEM);
 
         FluidItemConsumerComponent.EuProductionMapBuilder<Fluid> fluidEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
-                Registry.FLUID);
+                BuiltInRegistries.FLUID);
 
         boolean doesAcceptAllFluidFuels = false;
         boolean doesAcceptAllItemFuels = false;

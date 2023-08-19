@@ -47,21 +47,22 @@ import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(2.0f));
+    public static final Block BLOCK_PIPE = new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
@@ -75,8 +76,8 @@ public class MIPipes {
     public static final Set<ResourceLocation> ITEM_PIPE_MODELS = new HashSet<>();
 
     public void setup() {
-        Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
-        BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
+        Registry.register(BuiltInRegistries.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
+        BLOCK_ENTITY_TYPE_PIPE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
 
         for (PipeColor color : PipeColor.values()) {

@@ -26,22 +26,18 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipesClient;
-import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
-import com.mojang.datafixers.util.Pair;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -59,37 +55,25 @@ public class PipeUnbakedModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        List<Material> materials = new ArrayList<>();
-
-        for (var type : PipeNetworkType.getTypes().values()) {
-            materials.addAll(PipeRenderer.get(type).getSpriteDependencies());
-        }
-
-        if (MIConfig.loadAe2Compat()) {
-            materials.addAll(unbakedModelGetter.apply(ME_WIRE_CONNECTOR_MODEL).getMaterials(unbakedModelGetter, unresolvedTextureReferences));
-        }
-
-        return materials;
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
     }
 
+    @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
-            ResourceLocation modelId) {
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
         Map<PipeRenderer.Factory, PipeRenderer> renderers = new IdentityHashMap<>();
         for (PipeRenderer.Factory rendererFactory : MIPipesClient.RENDERERS) {
-            renderers.put(rendererFactory, rendererFactory.create(textureGetter));
+            renderers.put(rendererFactory, rendererFactory.create(spriteGetter));
         }
 
         @Nullable
         BakedModel[] meWireConnectors = null;
         if (MIConfig.loadAe2Compat()) {
-            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, loader);
+            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker);
         }
 
         return new PipeBakedModel(
-                textureGetter.apply(PARTICLE_SPRITE),
+                spriteGetter.apply(PARTICLE_SPRITE),
                 renderers,
                 meWireConnectors,
                 RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find());

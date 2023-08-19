@@ -30,7 +30,6 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -38,12 +37,13 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
 
     public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
-        super(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
     }
 
     public static void setupBarrelEvents() {

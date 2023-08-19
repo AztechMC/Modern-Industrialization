@@ -26,17 +26,18 @@ package aztech.modern_industrialization.pipes.item;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -63,7 +64,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             buf.writeInt(menu.containerId);
             buf.writeBoolean(newWhitelist);
             ClientPlayNetworking.send(PipePackets.SET_ITEM_WHITELIST, buf);
-        }, (button, matrices, mouseX, mouseY) -> {
+        }, () -> {
             List<Component> lines = new ArrayList<>();
             if (menu.pipeInterface.isWhitelist()) {
                 lines.add(MIText.Whitelist.text());
@@ -72,7 +73,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
                 lines.add(MIText.Blacklist.text());
                 lines.add(MIText.ClickToToggleWhitelist.text().setStyle(SECONDARY_INFO));
             }
-            renderComponentTooltip(matrices, lines, mouseX, mouseY);
+            return lines;
         }));
         addConnectionTypeButton(148, 22, menu.pipeInterface);
         addPriorityWidgets(35, 72, menu.pipeInterface, "insert", 0);
@@ -83,24 +84,22 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
      * @reason Override the title to add a warning when the slot is empty
      */
     @Override
-    protected void renderLabels(PoseStack matrices, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         Component title = this.title;
         if (menu.pipeInterface.isWhitelist() && menu.pipeInterface.isFilterEmpty()) {
             title = title.copy().append(Component.literal(" "))
                     .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
-        this.font.draw(matrices, title, (float) this.titleLabelX, (float) this.titleLabelY, 0x404040);
-        this.font.draw(matrices, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 0x404040);
+        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, 0x404040, false);
+        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
     }
 
     @Override
-    protected void renderTooltip(PoseStack matrices, int x, int y) {
-        super.renderTooltip(matrices, x, y);
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+        super.renderTooltip(guiGraphics, x, y);
 
         if (this.hoveredSlot != null && this.hoveredSlot instanceof ItemPipeScreenHandler.UpgradeSlot && !this.hoveredSlot.hasItem()) {
-            this.renderTooltip(
-                    matrices,
-                    List.of(new MITooltips.Line(MIText.PutMotorToUpgrade).build()), Optional.empty(), x, y);
+            guiGraphics.renderTooltip(font, new MITooltips.Line(MIText.PutMotorToUpgrade).build(), x, y);
         }
 
     }
@@ -111,21 +110,18 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     private class WhitelistButton extends Button {
-        public WhitelistButton(int i, int j, OnPress onPress, OnTooltip tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, tooltipSupplier);
+        public WhitelistButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
+            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, null);
+            setTooltip(new DynamicTooltip(tooltipSupplier));
         }
 
         @Override
-        public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            RenderSystem.setShaderTexture(0, PipeGuiHelper.BUTTON_TEXTURE);
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             int u = menu.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHoveredOrFocused() ? 20 : 0;
 
             RenderSystem.enableDepthTest();
-            blit(matrices, this.x, this.y, u, v, this.width, this.height);
-            if (this.isHoveredOrFocused()) {
-                this.renderToolTip(matrices, mouseX, mouseY);
-            }
+            guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
         }
     }
 }

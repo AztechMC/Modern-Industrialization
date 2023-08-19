@@ -35,15 +35,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -54,6 +50,8 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -68,6 +66,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -75,6 +74,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
@@ -184,12 +187,12 @@ public class RenderHelper {
         }
     }
 
-    public static void drawFluidInGui(PoseStack ms, FluidVariant fluid, int i, int j) {
-        drawFluidInGui(ms, fluid, i, j, 16, 1);
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int i, int j) {
+        drawFluidInGui(guiGraphics, fluid, i, j, 16, 1);
         RenderSystem.enableDepthTest();
     }
 
-    public static void drawFluidInGui(PoseStack ms, FluidVariant fluid, float i, float j, int scale, float fractionUp) {
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, float i, float j, int scale, float fractionUp) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid);
@@ -215,7 +218,7 @@ public class RenderHelper {
         float v0 = v1 + (sprite.getV0() - v1) * fractionUp;
         float u1 = sprite.getU1();
 
-        Matrix4f model = ms.last().pose();
+        Matrix4f model = guiGraphics.pose().last().pose();
         bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).uv(u0, v1).endVertex();
         bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).uv(u1, v1).endVertex();
         bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).uv(u1, v0).endVertex();
@@ -247,7 +250,7 @@ public class RenderHelper {
         Vec3i vec3i = quad.getDirection().getNormal();
         Vector3f vec3f = new Vector3f((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
         Matrix4f matrix4f = matrixEntry.pose();
-        vec3f.transform(matrixEntry.normal());
+        vec3f.mul(matrixEntry.normal());
         int j = js.length / 8;
         MemoryStack memoryStack = MemoryStack.stackPush();
 
@@ -282,7 +285,7 @@ public class RenderHelper {
                 v = byteBuffer.getFloat(16);
                 w = byteBuffer.getFloat(20);
                 Vector4f vector4f = new Vector4f(f, g, h, 1.0F);
-                vector4f.transform(matrix4f);
+                vector4f.mul(matrix4f);
                 consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), r, s, t, alpha, v, w, overlay, light, vec3f.x(), vec3f.y(),
                         vec3f.z());
             }
@@ -329,7 +332,6 @@ public class RenderHelper {
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
 
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -338,7 +340,6 @@ public class RenderHelper {
         bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0.0F).color(g, h, k, f).endVertex();
         bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0.0F).color(g, h, k, f).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
-        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -400,12 +401,16 @@ public class RenderHelper {
         }
     }
 
-    public static void setupRenderHelper() {
-
-        ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register(
-                (atlas, registry) -> {
-                    registry.register(LOCKED_TEXTURE_LOCATION);
-                });
+    public static void renderAndDecorateItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
+        renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, x, y);
     }
 
+    public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+        renderAndDecorateItem(guiGraphics, font, stack, x, y, null);
+    }
+
+    public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, @Nullable String text) {
+        guiGraphics.renderItem(stack, x, y);
+        guiGraphics.renderItemDecorations(font, stack, x, y, text);
+    }
 }

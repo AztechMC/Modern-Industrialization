@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.core.DefaultedRegistry;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -75,7 +75,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     public static FluidItemConsumerComponent ofSingleFluid(long maxEuProduction,
             FluidDefinition acceptedFluid,
             long fluidEUperMb) {
-        return ofFluid(maxEuProduction, new EuProductionMapBuilder<>(Registry.FLUID).add(acceptedFluid.getId(), fluidEUperMb).build());
+        return ofFluid(maxEuProduction, new EuProductionMapBuilder<>(BuiltInRegistries.FLUID).add(acceptedFluid.getId(), fluidEUperMb).build());
     }
 
     public static FluidItemConsumerComponent ofFluidFuels(long maxEuProduction) {

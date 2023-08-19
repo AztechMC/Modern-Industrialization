@@ -29,9 +29,10 @@ import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
+import java.util.Optional;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -60,22 +61,21 @@ public class EnergyBarClient implements GuiComponentClient {
         public static final int WIDTH = 13;
         public static final int HEIGHT = 18;
 
-        public static void renderEnergy(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int px, int py, float fill) {
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            helper.blit(matrices, px, py, 230, 0, WIDTH, HEIGHT);
+        public static void renderEnergy(GuiGraphics guiGraphics, int px, int py, float fill) {
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 230, 0, WIDTH, HEIGHT);
             int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
             if (fill > 0.95)
                 fillPixels = HEIGHT;
-            helper.blit(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
         }
 
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-            renderEnergy(helper, matrices, x + params.renderX, y + params.renderY, (float) eu / maxEu);
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+            renderEnergy(guiGraphics, x + params.renderX, y + params.renderY, (float) eu / maxEu);
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 Component tooltip;
                 if (Screen.hasShiftDown()) {
@@ -84,7 +84,7 @@ public class EnergyBarClient implements GuiComponentClient {
                     TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
                     tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
                 }
-                screen.renderComponentTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
+                guiGraphics.renderTooltip(font, Collections.singletonList(tooltip), Optional.empty(), cursorX, cursorY);
             }
         }
     }

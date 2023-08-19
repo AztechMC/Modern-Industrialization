@@ -142,7 +142,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         emitter.spriteColor(0, -1, -1, -1, -1);
 
                         int color = handler.getColor(fluid, be.getLevel(),
-                                new BlockPos(be.getBlockPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
+                                BlockPos.containing(be.getBlockPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
                                         be.getBlockPos().getY() + originY + offset_u.getY() * u + offset_v.getY() * v,
                                         be.getBlockPos().getZ() + originZ + offset_u.getZ() * u + offset_v.getZ() * v));
                         float r = ((color >> 16) & 255) / 256f;

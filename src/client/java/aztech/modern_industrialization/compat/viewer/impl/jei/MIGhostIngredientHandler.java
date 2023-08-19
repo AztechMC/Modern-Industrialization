@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -45,7 +46,8 @@ import net.minecraft.world.item.ItemStack;
 
 class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScreen<?>> {
     @Override
-    public <I> List<Target<I>> getTargets(MIHandledScreen<?> gui, I ingredient, boolean doStart) {
+    public <I> List<Target<I>> getTargetsTyped(MIHandledScreen<?> gui, ITypedIngredient<I> typedIngredient, boolean doStart) {
+        var ingredient = typedIngredient.getIngredient();
         List<Target<I>> bounds = new ArrayList<>();
 
         FluidVariant fk = ingredient instanceof IJeiFluidIngredient fs ? FluidVariant.of(fs.getFluid(), fs.getTag().orElse(null)) : null;
@@ -138,7 +140,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
     }
 
     private static Rect2i getWidgetBounds(AbstractWidget cw) {
-        return new Rect2i(cw.x, cw.y, cw.getWidth(), cw.getHeight());
+        return new Rect2i(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight());
     }
 
     private static Rect2i getSlotTarget(Slot slot, MIHandledScreen<?> screen) {

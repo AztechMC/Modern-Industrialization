@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Consumer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +59,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, Consumer<Recipe> consumer) {
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         for (Tuple<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
             consumer.accept(new Recipe(entry.getA(), entry.getB()));
         }
@@ -85,9 +86,9 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         public final List<ItemStack> materials = new ArrayList<>();
 
         public Recipe(String controller, ShapeTemplate shapeTemplate) {
-            this.controller = Registry.ITEM.get(new MIIdentifier(controller)).getDefaultInstance();
+            this.controller = BuiltInRegistries.ITEM.get(new MIIdentifier(controller)).getDefaultInstance();
             this.materials.add(this.controller);
-            SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(Registry.ITEM::getKey));
+            SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {
                 BlockState state = entry.getValue().getPreviewState();

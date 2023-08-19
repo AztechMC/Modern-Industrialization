@@ -26,17 +26,17 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -94,7 +94,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
                 matrices.pushPose();
                 Font textRenderer = Minecraft.getInstance().font;
                 matrices.translate(0.5, 1.14, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
                 matrices.translate(0, 0.15, -0.505);
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 
@@ -105,8 +105,8 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
                 }
 
                 float xPosition = (float) (-textRenderer.width(itemName) / 2);
-                textRenderer.drawInBatch(itemName, xPosition, -4f + 40, itemNameColor, false, matrices.last().pose(), vertexConsumers, false, 0,
-                        RenderHelper.FULL_LIGHT);
+                textRenderer.drawInBatch(itemName, xPosition, -4f + 40, itemNameColor, false, matrices.last().pose(), vertexConsumers,
+                        Font.DisplayMode.NORMAL, 0, RenderHelper.FULL_LIGHT);
 
                 matrices.popPose();
 
@@ -114,27 +114,27 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
 
                 matrices.pushPose();
                 matrices.translate(0.5, 0, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees(-i * 90F));
                 matrices.scale(0.5F, 0.5F, 0.5F);
                 matrices.translate(0, 1.125, 1.01);
 
-                matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
-                matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+                matrices.last().pose().scale(1, 1, 0.01f);
+                matrices.last().normal().rotate(Mth.HALF_PI / 2, -1, 0, 0);
 
-                Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
-                        OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
+                Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemDisplayContext.GUI, RenderHelper.FULL_LIGHT,
+                        OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, entity.getLevel(), 0);
 
                 matrices.popPose();
 
                 matrices.pushPose();
                 matrices.translate(0.5, 0.5, 0.5);
-                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
                 matrices.translate(0, 0.0875, -0.505);
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 
                 xPosition = (float) (-textRenderer.width(amount) / 2);
-                textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers, false, 0,
-                        RenderHelper.FULL_LIGHT);
+                textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers,
+                        Font.DisplayMode.NORMAL, 0, RenderHelper.FULL_LIGHT);
 
                 matrices.popPose();
             }

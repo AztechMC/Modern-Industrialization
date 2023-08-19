@@ -6,20 +6,20 @@ accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDel
 # Used by the jetpack to prevent players from getting kicked
 accessible    field    net/minecraft/server/network/ServerGamePacketListenerImpl    aboveGroundTickCount    I
 
-# Used by datagen to instantiate the client builtin resource pack
-accessible    field    net/minecraft/client/resources/ClientPackSource    BUILT_IN    Lnet/minecraft/server/packs/metadata/pack/PackMetadataSection;
-
 # Use for Ore registration
 accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;
 
 # Used to access all chunks
 accessible    field    net/minecraft/server/level/ChunkMap updatingChunkMap Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;
 
-# Used by loot datagen
-accessible    field    net/minecraft/data/loot/BlockLoot    map    Ljava/util/Map;
-
 # Used by model datagen
 accessible  field   net/minecraft/data/models/ItemModelGenerators   output  Ljava/util/function/BiConsumer;
+
+# TODO: PR to fabric
+accessible field net/minecraft/data/DataGenerator$PackGenerator output Lnet/minecraft/data/PackOutput;
+
+# Used by runtime datagen
+accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
 
 # Access list of renderables in the screen
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;
@@ -36,4 +36,7 @@ accessible class net/minecraft/world/entity/npc/VillagerTrades$ItemsForEmeralds
 
 # Used to render pipe highlight
 accessible method net/minecraft/client/renderer/LevelRenderer renderShape (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V
+
+# Used for custom buttons
+accessible method net/minecraft/client/gui/components/Tooltip <init> (Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/Component;)V
 

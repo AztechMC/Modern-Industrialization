@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(WorldLoader.PackConfig.class)
 public class PackConfigMixin {
-    @ModifyVariable(method = "createResourceManager", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/server/packs/repository/PackRepository.openAllSelected ()Ljava/util/List;"), index = 2)
+    @ModifyVariable(method = "createResourceManager", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/server/packs/repository/PackRepository.openAllSelected ()Ljava/util/List;"), index = 3)
     private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
         if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
             var mutableList = new ArrayList<>(resourcePacks);

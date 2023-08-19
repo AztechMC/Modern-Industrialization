@@ -113,7 +113,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                     // Total fluid
                     tooltip.addLine(new PairComponent(
                             new WrappedComponent(MIText.NetworkAmount.text()),
-                            new SpriteBarComponent(MIWailaClientPlugin.ratio(stored, capacity), sprite.atlas().location(),
+                            new SpriteBarComponent(MIWailaClientPlugin.ratio(stored, capacity), sprite.atlasLocation(),
                                     sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), 16, 16, color,
                                     Component.literal(MIWailaClientPlugin.fraction(stored, capacity) + " mB"))));
 
@@ -125,7 +125,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                     // Transfer rate
                     tooltip.addLine(new PairComponent(
                             new WrappedComponent(MIText.NetworkTransfer.text()),
-                            new SpriteBarComponent(MIWailaClientPlugin.ratio(transfer, maxTransfer), sprite.atlas().location(),
+                            new SpriteBarComponent(MIWailaClientPlugin.ratio(transfer, maxTransfer), sprite.atlasLocation(),
                                     sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), 16, 16, color,
                                     Component.literal(MIWailaClientPlugin.fraction(transfer, maxTransfer) + " mB/t"))));
                 }

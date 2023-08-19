@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemStackHelper {
     public static boolean areEqualIgnoreCount(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameIgnoreDurability(s1, s2) && ItemStack.tagMatches(s1, s2);
+        return ItemStack.isSameItemSameTags(s1, s2);
     }
 
     /**

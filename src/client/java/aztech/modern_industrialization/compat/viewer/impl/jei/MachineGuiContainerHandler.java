@@ -34,11 +34,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.runtime.IClickableIngredient;
+import mezz.jei.api.runtime.IIngredientManager;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
@@ -46,7 +51,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
-record MachineGuiContainerHandler(Supplier<IJeiRuntime> jeiRuntime) implements IGuiContainerHandler<MachineScreen> {
+record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier<IJeiRuntime> jeiRuntime)
+        implements IGuiContainerHandler<MachineScreen> {
     @Override
     public List<Rect2i> getGuiExtraAreas(MachineScreen screen) {
         return screen.getExtraBoxes().stream().map(r -> new Rect2i(r.x(), r.y(), r.w(), r.h())).toList();
@@ -98,8 +104,16 @@ record MachineGuiContainerHandler(Supplier<IJeiRuntime> jeiRuntime) implements I
     }
 
     @Override
-    public @Nullable Object getIngredientUnderMouse(MachineScreen screen, double mouseX, double mouseY) {
+    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(MachineScreen screen, double mouseX, double mouseY) {
         Slot slot = screen.getFocusedSlot();
+        var maybeIngredient = getIngredientUnderMouse(slot);
+
+        return Optional.ofNullable(maybeIngredient)
+                .map(ingredientManager::createTypedIngredient)
+                .flatMap(ingredient -> ingredient.map(slotArea(screen, slot)));
+    }
+
+    public @Nullable Object getIngredientUnderMouse(Slot slot) {
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             var fluidHelper = jeiRuntime.get().getJeiHelpers().getPlatformFluidHelper();
 
@@ -124,6 +138,21 @@ record MachineGuiContainerHandler(Supplier<IJeiRuntime> jeiRuntime) implements I
             }
         }
         return null;
+    }
+
+    private static <T> Function<ITypedIngredient<T>, IClickableIngredient<T>> slotArea(MachineScreen screen, Slot slot) {
+        var area = new Rect2i(screen.x() + slot.x, screen.y() + slot.y, 16, 16);
+        return ing -> new IClickableIngredient<>() {
+            @Override
+            public ITypedIngredient<T> getTypedIngredient() {
+                return ing;
+            }
+
+            @Override
+            public Rect2i getArea() {
+                return area;
+            }
+        };
     }
 
     private static boolean contains(Rectangle rectangle, double x, double y) {

@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MIIdentifier;
-import com.mojang.datafixers.util.Pair;
 import java.util.*;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -38,7 +37,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
@@ -105,18 +104,15 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
     }
 
     @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Arrays.asList(spriteIds);
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @Nullable
     @Override
-    public @Nullable BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
-            ResourceLocation modelId) {
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
         for (int i = 0; i < 3; ++i) {
-            sprites[i] = textureGetter.apply(spriteIds[i]);
+            sprites[i] = spriteGetter.apply(spriteIds[i]);
         }
         this.sideSprite = sprites[1];
         MeshBuilder meshBuilder = RendererAccess.INSTANCE.getRenderer().meshBuilder();

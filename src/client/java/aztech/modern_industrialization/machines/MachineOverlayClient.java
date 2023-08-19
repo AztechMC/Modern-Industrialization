@@ -28,7 +28,6 @@ import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
@@ -42,6 +41,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class MachineOverlayClient {
     @SuppressWarnings("ConstantConditions")

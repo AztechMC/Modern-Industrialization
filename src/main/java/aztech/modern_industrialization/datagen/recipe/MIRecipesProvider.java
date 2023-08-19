@@ -24,13 +24,13 @@
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class MIRecipesProvider extends FabricRecipeProvider {
-    public MIRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public MIRecipesProvider(FabricDataOutput packOutput) {
+        super(packOutput);
     }
 
     protected static ResourceLocation id(String path) {

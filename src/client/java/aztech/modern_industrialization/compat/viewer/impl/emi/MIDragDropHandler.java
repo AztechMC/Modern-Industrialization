@@ -27,7 +27,6 @@ import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.util.Simulation;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -37,7 +36,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -98,7 +97,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
     }
 
     @Override
-    public void render(Screen screen, EmiIngredient ingredient, PoseStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(Screen screen, EmiIngredient ingredient, GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (!(screen instanceof MIHandledScreen<?>gui)) {
             return;
         }
@@ -131,12 +130,12 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         }
 
         for (var b : bounds) {
-            GuiComponent.fill(matrices, b.getX(), b.getY(), b.getX() + b.getWidth(), b.getY() + b.getHeight(), 0x8822BB33);
+            guiGraphics.fill(b.getX(), b.getY(), b.getX() + b.getWidth(), b.getY() + b.getHeight(), 0x8822BB33);
         }
     }
 
     private static Rect2i getWidgetBounds(AbstractWidget cw) {
-        return new Rect2i(cw.x, cw.y, cw.getWidth(), cw.getHeight());
+        return new Rect2i(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight());
     }
 
     private static Rect2i getSlotBounds(Slot slot, MIHandledScreen<?> screen) {

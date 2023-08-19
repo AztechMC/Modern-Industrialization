@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -52,16 +53,14 @@ import org.jetbrains.annotations.Nullable;
 public class MachineBakedModel implements BakedModel, FabricBakedModel {
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    private final ItemTransforms blockTransformation;
     public final RenderMaterial cutoutMaterial;
     private final MachineCasing baseCasing;
     private final TextureAtlasSprite[] defaultOverlays;
     private final Map<String, TextureAtlasSprite[]> tieredOverlays;
 
-    MachineBakedModel(ItemTransforms blockTransformation, RenderMaterial cutoutMaterial, MachineCasing baseCasing,
+    MachineBakedModel(RenderMaterial cutoutMaterial, MachineCasing baseCasing,
             TextureAtlasSprite[] defaultOverlays,
             Map<String, TextureAtlasSprite[]> tieredOverlays) {
-        this.blockTransformation = blockTransformation;
         this.cutoutMaterial = cutoutMaterial;
         this.baseCasing = baseCasing;
         this.defaultOverlays = defaultOverlays;
@@ -185,7 +184,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public ItemTransforms getTransforms() {
-        return blockTransformation;
+        return ModelHelper.MODEL_TRANSFORM_BLOCK;
     }
 
     @Override

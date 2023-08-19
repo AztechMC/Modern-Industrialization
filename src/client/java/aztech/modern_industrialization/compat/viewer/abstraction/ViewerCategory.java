@@ -25,13 +25,13 @@ package aztech.modern_industrialization.compat.viewer.abstraction;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.util.Rectangle;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +66,7 @@ public abstract class ViewerCategory<D> {
 
     public abstract void buildWorkstations(WorkstationConsumer consumer);
 
-    public abstract void buildRecipes(RecipeManager recipeManager, Consumer<D> consumer);
+    public abstract void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<D> consumer);
 
     /**
      * Add input and outputs items/fluids.
@@ -91,7 +91,7 @@ public abstract class ViewerCategory<D> {
 
         default void accept(String... itemPath) {// only items in the MI namespace!
             for (var item : itemPath) {
-                accept(Registry.ITEM.get(new MIIdentifier(item)));
+                accept(BuiltInRegistries.ITEM.get(new MIIdentifier(item)));
             }
         }
     }
@@ -134,12 +134,12 @@ public abstract class ViewerCategory<D> {
         void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height);
 
         default void rectangle(Rectangle rectangle, int fillColor) {
-            drawable(s -> {
-                GuiComponent.fill(s, rectangle.x(), rectangle.y(), rectangle.x() + rectangle.w(), rectangle.y() + rectangle.h(), fillColor);
+            drawable(guiGraphics -> {
+                guiGraphics.fill(rectangle.x(), rectangle.y(), rectangle.x() + rectangle.w(), rectangle.y() + rectangle.h(), fillColor);
             });
         }
 
-        void drawable(DrawableWidget widget);
+        void drawable(Consumer<GuiGraphics> widget);
 
         void item(double x, double y, double w, double h, ItemLike item);
 
@@ -150,10 +150,5 @@ public abstract class ViewerCategory<D> {
         LEFT,
         CENTER,
         RIGHT
-    }
-
-    @FunctionalInterface
-    public interface DrawableWidget {
-        void draw(PoseStack stack);
     }
 }

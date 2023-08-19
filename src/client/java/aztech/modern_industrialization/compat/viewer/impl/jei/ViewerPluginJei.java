@@ -70,9 +70,9 @@ public class ViewerPluginJei implements IModPlugin {
     }
 
     private static <D> void registerCategoryRecipes(IRecipeRegistration registration, ViewerCategoryJei<D> category) {
-        var recipeManager = Minecraft.getInstance().level.getRecipeManager();
+        var level = Minecraft.getInstance().level;
         List<D> recipes = new ArrayList<>();
-        category.wrapped.buildRecipes(recipeManager, recipes::add);
+        category.wrapped.buildRecipes(level.getRecipeManager(), level.registryAccess(), recipes::add);
         registration.addRecipes(category.recipeType, recipes);
     }
 

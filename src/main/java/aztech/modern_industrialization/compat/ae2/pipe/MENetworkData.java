@@ -32,15 +32,7 @@ public class MENetworkData extends PipeNetworkData {
     private final IManagedGridNode mainNode;
 
     public MENetworkData() {
-        this.mainNode = GridHelper.createManagedNode(this, new IGridNodeListener<>() {
-            @Override
-            public void onSecurityBreak(MENetworkData nodeOwner, IGridNode node) {
-                throw new UnsupportedOperationException("How did we get here?");
-            }
-
-            @Override
-            public void onSaveChanges(MENetworkData nodeOwner, IGridNode node) {
-            }
+        this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {
         })
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0);

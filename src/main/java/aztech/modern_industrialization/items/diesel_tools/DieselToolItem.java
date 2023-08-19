@@ -47,6 +47,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -196,7 +197,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
         BlockState state = w.getBlockState(pos);
         Player player = context.getPlayer();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
-            if (stack.is(ConventionalItemTags.AXES)) {
+            if (stack.is(ItemTags.AXES)) {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
                     w.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1, 1);
@@ -207,7 +208,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
             }
-            if (stack.is(ConventionalItemTags.SHOVELS)) {
+            if (stack.is(ItemTags.SHOVELS)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);
@@ -218,7 +219,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
             }
-            if (stack.is(ConventionalItemTags.HOES)) {
+            if (stack.is(ItemTags.HOES)) {
                 Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = HoeItem.TILLABLES.get(state.getBlock());
                 if (pair != null) {
                     Predicate<UseOnContext> predicate = pair.getFirst();
@@ -282,7 +283,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
 
         if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
             if (stack.is(ConventionalItemTags.SHEARS) && interactionTarget instanceof Shearable shearable) {
-                if (!interactionTarget.level.isClientSide && shearable.readyForShearing()) {
+                if (!interactionTarget.level().isClientSide && shearable.readyForShearing()) {
                     shearable.shear(SoundSource.PLAYERS);
                     interactionTarget.gameEvent(GameEvent.SHEAR, player);
                     return InteractionResult.SUCCESS;

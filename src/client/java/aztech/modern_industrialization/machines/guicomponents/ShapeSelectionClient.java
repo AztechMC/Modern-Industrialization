@@ -31,11 +31,11 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -114,22 +114,22 @@ public class ShapeSelectionClient implements GuiComponentClient {
                 // Left button
                 container.addButton(-panelWidth + borderSize + outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
                     ClientPlayNetworking.send(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.encodeChangeShape(syncId, iCopy, true));
-                }, List::of, (screen, button, matrices, mouseX, mouseY, delta) -> {
+                }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
                     if (currentData[iCopy] == 0) {
-                        screen.blitButtonNoHighlight(button, matrices, baseU, v + 12, mouseX, mouseY);
+                        screen.blitButtonNoHighlight(button, guiGraphics, baseU, v + 12);
                     } else {
-                        screen.blitButtonSmall(button, matrices, baseU, v, mouseX, mouseY);
+                        screen.blitButtonSmall(button, guiGraphics, baseU, v);
                     }
                 }, () -> isPanelOpen);
 
                 // Right button
                 container.addButton(-btnSize - outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
                     ClientPlayNetworking.send(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.encodeChangeShape(syncId, iCopy, false));
-                }, List::of, (screen, button, matrices, mouseX, mouseY, delta) -> {
+                }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
                     if (currentData[iCopy] == line.numValues() - 1) {
-                        screen.blitButtonNoHighlight(button, matrices, baseU + 12, v + 12, mouseX, mouseY);
+                        screen.blitButtonNoHighlight(button, guiGraphics, baseU + 12, v + 12);
                     } else {
-                        screen.blitButtonSmall(button, matrices, baseU + 12, v, mouseX, mouseY);
+                        screen.blitButtonSmall(button, guiGraphics, baseU + 12, v);
                     }
                 }, () -> isPanelOpen);
             }
@@ -137,16 +137,15 @@ public class ShapeSelectionClient implements GuiComponentClient {
             // Big button to open panel
             container.addButton(-24, 17, 20, 20, syncId -> isPanelOpen = !isPanelOpen,
                     () -> List.of(MIText.ShapeSelectionTitle.text(), MIText.ShapeSelectionDescription.text().setStyle(TextHelper.GRAY_TEXT)),
-                    (screen, button, matrices, mouseX, mouseY, delta) -> screen.blitButton(button, matrices, 138, 38, mouseX, mouseY));
+                    (screen, button, guiGraphics, mouseX, mouseY, delta) -> screen.blitButton(button, guiGraphics, 138, 38));
         }
 
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int leftPos, int topPos) {
-            RenderSystem.setShaderTexture(0, MachineScreen.BACKGROUND);
+        public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
             var box = getBox(leftPos, topPos);
 
-            helper.blit(matrices, box.x(), box.y(), 0, 0, box.w(), box.h() - 4);
-            helper.blit(matrices, box.x(), box.y() + box.h() - 4, 0, 252, box.w(), 4);
+            guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y(), 0, 0, box.w(), box.h() - 4);
+            guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, 0, 252, box.w(), 4);
 
             if (isPanelOpen) {
                 RenderSystem.disableDepthTest();
@@ -154,9 +153,10 @@ public class ShapeSelectionClient implements GuiComponentClient {
                     var line = lines[i];
                     var tooltip = line.translations().get(currentData[i]);
                     var width = Minecraft.getInstance().font.width(tooltip);
-                    Minecraft.getInstance().font.draw(matrices, tooltip,
-                            box.x() + borderSize + outerPadding + btnSize + innerPadding + (textMaxWidth - width) / 2f,
-                            topPos + getVerticalPos(i) + 2, 0x404040);
+                    guiGraphics.drawString(
+                            Minecraft.getInstance().font, tooltip,
+                            box.x() + borderSize + outerPadding + btnSize + innerPadding + (textMaxWidth - width) / 2,
+                            topPos + getVerticalPos(i) + 2, 0x404040, false);
                 }
                 RenderSystem.enableDepthTest();
             }

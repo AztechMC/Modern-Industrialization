@@ -23,13 +23,9 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import static net.minecraft.client.gui.GuiComponent.blit;
-
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -39,10 +35,12 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -58,10 +56,9 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     public ViewerCategoryEmi(ViewerCategory<D> category) {
         super(category.id, category.icon instanceof ViewerCategory.Icon.Stack stack ? EmiStack.of(stack.stack()) : new EmiRenderable() {
             @Override
-            public void render(PoseStack matrices, int x, int y, float delta) {
+            public void render(GuiGraphics guiGraphics, int x, int y, float delta) {
                 var texture = (ViewerCategory.Icon.Texture) category.icon;
-                RenderSystem.setShaderTexture(0, texture.loc());
-                blit(matrices, x - 1, y - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
+                guiGraphics.blit(texture.loc(), x - 1, y - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
             }
         });
 
@@ -100,7 +97,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     }
 
     public void registerRecipes(EmiRegistry registry) {
-        wrapped.buildRecipes(registry.getRecipeManager(), r -> registry.addRecipe(makeRecipe(r)));
+        wrapped.buildRecipes(registry.getRecipeManager(), Minecraft.getInstance().level.registryAccess(), r -> registry.addRecipe(makeRecipe(r)));
     }
 
     private ViewerRecipe makeRecipe(D recipe) {
@@ -281,23 +278,23 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 }
 
                 @Override
-                public void drawable(ViewerCategory.DrawableWidget widget) {
+                public void drawable(Consumer<GuiGraphics> widget) {
                     widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
-                        widget.draw(matrices);
+                        widget.accept(matrices);
                     });
                 }
 
                 @Override
                 public void item(double x, double y, double w, double h, ItemLike item) {
                     var stack = EmiStack.of(item);
-                    widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
-                        matrices.pushPose();
-                        matrices.translate(x, y, 0);
-                        matrices.scale((float) w / 16, (float) h / 16, 0);
+                    widgets.addDrawable(-4, -4, 0, 0, (guiGraphics, mouseX, mouseY, delta) -> {
+                        guiGraphics.pose().pushPose();
+                        guiGraphics.pose().translate(x, y, 0);
+                        guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
 
-                        stack.render(matrices, 0, 0, delta);
+                        stack.render(guiGraphics, 0, 0, delta);
 
-                        matrices.popPose();
+                        guiGraphics.pose().popPose();
                     });
                 }
 
@@ -328,9 +325,8 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     }
 
     private static void createFluidSlotBackground(WidgetHolder widgets, int x, int y) {
-        widgets.addDrawable(0, 0, 0, 0, (matrices, mouseX, mouseY, delta) -> {
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            Minecraft.getInstance().screen.blit(matrices, x - 1 - 4, y - 1 - 4, 18, 0, 18, 18);
+        widgets.addDrawable(0, 0, 0, 0, (guiGraphics, mouseX, mouseY, delta) -> {
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x - 1 - 4, y - 1 - 4, 18, 0, 18, 18);
         });
     }
 

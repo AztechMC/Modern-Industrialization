@@ -56,18 +56,17 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem, ActivatableChestItem {
+public class JetpackItem extends ArmorItem implements FabricElytraItem, ActivatableChestItem {
     public static final int CAPACITY = 8 * 81000;
 
     public JetpackItem(Properties settings) {
-        super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
@@ -78,12 +77,12 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
     private static ArmorMaterial buildMaterial() {
         return new ArmorMaterial() {
             @Override
-            public int getDurabilityForSlot(EquipmentSlot slot) {
+            public int getDurabilityForType(Type type) {
                 return 0;
             }
 
             @Override
-            public int getDefenseForSlot(EquipmentSlot slot) {
+            public int getDefenseForType(Type type) {
                 return 0;
             }
 
@@ -132,7 +131,7 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
     }
 
     private void tickArmor(ItemStack stack, Player player) {
-        if (isActivated(stack) && !player.isOnGround()) {
+        if (isActivated(stack) && !player.onGround()) {
             FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
@@ -157,7 +156,7 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
                             player.setDeltaMovement(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
                         }
                         // Reset fall distance (but not in elytra mode)
-                        if (!player.level.isClientSide()) {
+                        if (!player.level().isClientSide()) {
                             player.fallDistance = 0;
                         }
                     }

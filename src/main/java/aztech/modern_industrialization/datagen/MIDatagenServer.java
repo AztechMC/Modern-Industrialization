@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
+import aztech.modern_industrialization.datagen.dynreg.MIDynamicRegistriesProvider;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
@@ -41,29 +42,32 @@ import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 
 public class MIDatagenServer {
-    public static void configure(FabricDataGenerator gen, boolean runtimeDatagen) {
-        gen.addProvider(PetrochemRecipesProvider::new);
-        gen.addProvider(PlankRecipesProvider::new);
-        gen.addProvider(HeatExchangerRecipesProvider::new);
-        gen.addProvider(HatchRecipesProvider::new);
-        gen.addProvider(AlloyRecipesProvider::new);
-        gen.addProvider(MaterialRecipesProvider::new);
-        gen.addProvider(DyeRecipesProvider::new);
-        gen.addProvider(AssemblerRecipesProvider::new);
-        gen.addProvider(CompatRecipesProvider::new);
-        gen.addProvider(SteelUpgradeProvider::new);
-        gen.addProvider(VanillaCompatRecipesProvider::new);
+    public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
+        pack.addProvider(PetrochemRecipesProvider::new);
+        pack.addProvider(PlankRecipesProvider::new);
+        pack.addProvider(HeatExchangerRecipesProvider::new);
+        pack.addProvider(HatchRecipesProvider::new);
+        pack.addProvider(AlloyRecipesProvider::new);
+        pack.addProvider(MaterialRecipesProvider::new);
+        pack.addProvider(DyeRecipesProvider::new);
+        pack.addProvider(AssemblerRecipesProvider::new);
+        pack.addProvider(CompatRecipesProvider::new);
+        pack.addProvider(SteelUpgradeProvider::new);
+        pack.addProvider(VanillaCompatRecipesProvider::new);
 
-        gen.addProvider(BlockLootTableProvider::new);
+        pack.addProvider(BlockLootTableProvider::new);
 
-        gen.addProvider(MIBlockTagProvider::new);
-        gen.addProvider(new MIItemTagProvider(gen, runtimeDatagen));
-        gen.addProvider(MIPoiTypeTagProvider::new);
+        pack.addProvider(MIDynamicRegistriesProvider::new);
 
-        var translationProvider = new TranslationProvider(gen, runtimeDatagen);
-        gen.addProvider(new MIAdvancementsProvider(gen, translationProvider));
-        gen.addProvider(translationProvider);
+        pack.addProvider(MIBlockTagProvider::new);
+        pack.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
+        pack.addProvider(MIPoiTypeTagProvider::new);
+
+        var translationProvider = new TranslationProvider((FabricDataOutput) pack.output, runtimeDatagen);
+        pack.addProvider((FabricDataOutput packOutput) -> new MIAdvancementsProvider(packOutput, translationProvider));
+        pack.addProvider((FabricDataOutput ignored) -> translationProvider);
     }
 }

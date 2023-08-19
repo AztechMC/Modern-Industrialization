@@ -25,11 +25,11 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -38,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class HudRenderer {
-    public static void onRenderHud(PoseStack matrices, float delta) {
+    public static void onRenderHud(GuiGraphics guiGraphics, float delta) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
@@ -53,10 +53,10 @@ public class HudRenderer {
                     jetpackActiveComponent = MIText.JetpackDisabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
                     ;
                 }
-                mc.font.drawShadow(matrices, jetpackActiveComponent, 4, 4, 16383998);
+                guiGraphics.drawString(mc.font, jetpackActiveComponent, 4, 4, 16383998);
 
                 Component fillText = MIText.JetpackFill.text(FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
-                mc.font.drawShadow(matrices, fillText, 4, 14, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 14, 16383998);
             } else if (chest.getItem() instanceof GraviChestPlateItem gsp) {
                 boolean active = gsp.isActivated(chest);
 
@@ -70,10 +70,10 @@ public class HudRenderer {
                     ;
                 }
 
-                mc.font.drawShadow(matrices, gravichestplateActiveComponent, 4, 4, 16383998);
+                guiGraphics.drawString(mc.font, gravichestplateActiveComponent, 4, 4, 16383998);
                 Component fillText = MIText.EnergyFill.text(
                         gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
-                mc.font.drawShadow(matrices, fillText, 4, 14, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 14, 16383998);
             }
         }
     }

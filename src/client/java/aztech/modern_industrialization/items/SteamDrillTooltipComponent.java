@@ -26,13 +26,10 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.ItemStack;
 
 public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     final SteamDrillItem.SteamDrillTooltipData data;
@@ -52,16 +49,13 @@ public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font textRenderer, int x, int y, PoseStack matrices, ItemRenderer itemRenderer, int z) {
+    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
         // Slot background
-        RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-        GuiComponent.blit(matrices, x, y, 0, 0, 18, 18, 256, 256);
+        guiGraphics.blit(MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
         // Stack itself
-        ItemStack stack = data.variant().toStack((int) data.amount());
-        itemRenderer.renderAndDecorateItem(stack, x + 1, y + 1);
-        itemRenderer.renderGuiItemDecorations(textRenderer, stack, x + 1, y + 1);
+        RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
         // Burning flame next to the stack
         var progressParams = new ProgressBar.Parameters(0, 0, "furnace", true);
-        ProgressBarClient.renderProgress(0, matrices, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
+        ProgressBarClient.renderProgress(guiGraphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
     }
 }

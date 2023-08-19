@@ -30,6 +30,7 @@ import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -142,7 +143,7 @@ public class ConfigCardItem extends Item {
         var tag = stack.getTag();
         if (tag != null) {
             var coverTag = tag.getCompound(TAG_CAMOUFLAGE);
-            return NbtUtils.readBlockState(coverTag);
+            return NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), coverTag);
         } else {
             return Blocks.AIR.defaultBlockState();
         }

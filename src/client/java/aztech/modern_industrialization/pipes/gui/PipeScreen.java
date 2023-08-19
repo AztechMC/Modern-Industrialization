@@ -24,17 +24,19 @@
 package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -57,21 +59,20 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     protected abstract ResourceLocation getBackgroundTexture();
 
     @Override
-    protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
-        this.renderBackground(matrices);
+    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+        this.renderBackground(guiGraphics);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.setShaderTexture(0, getBackgroundTexture());
-        this.blit(matrices, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(getBackgroundTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
-        renderTooltip(matrices, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {
-        Button.OnTooltip tooltip = (button, matrices, mouseX, mouseY) -> {
+        Supplier<List<Component>> tooltip = () -> {
             List<Component> lines = new ArrayList<>();
 
             MIText priorityText = switch (tooltipType) {
@@ -90,7 +91,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
 
             lines.add(priorityText.text(priority.getPriority(channel)));
             lines.add(priorityTextHelp.text().setStyle(TextHelper.GRAY_TEXT));
-            renderComponentTooltip(matrices, lines, mouseX, mouseY);
+            return lines;
         };
         addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip);
         addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel, tooltip);
@@ -103,7 +104,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta, PriorityInterface priority,
-            int channel, Button.OnTooltip priorityTooltip) {
+            int channel, Supplier<List<Component>> priorityTooltip) {
         addRenderableWidget(new PriorityButton(x + this.leftPos, y + this.topPos, width, u, text, button -> {
             priority.incrementPriority(channel, delta);
             FriendlyByteBuf buf = PacketByteBufs.create();
@@ -140,23 +141,21 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     }
 
     protected void addConnectionTypeButton(int x, int y, ConnectionTypeInterface connectionType) {
-        addRenderableWidget(new ConnectionTypeButton(x + this.leftPos, y + this.topPos, widget -> {
-
+        addRenderableWidget(Button.builder(null, widget -> {
             int newType = connectionTypeNext(connectionType);
             connectionType.setConnectionType(newType);
             FriendlyByteBuf buf = PacketByteBufs.create();
             buf.writeInt(menu.containerId);
             buf.writeInt(newType);
             ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);
-        }, (button, matrices, mouseX, mouseY) -> {
+        }).bounds(x + this.leftPos, y + this.topPos, 20, 20).tooltip(new DynamicTooltip(() -> {
             List<Component> lines = new ArrayList<>();
             Component component = getConnectionTypeText(connectionType.getConnectionType());
 
             lines.add(component);
             lines.add(MIText.PipeConnectionHelp.text().setStyle(TextHelper.GRAY_TEXT));
-
-            renderComponentTooltip(matrices, lines, mouseX, mouseY);
-        }, connectionType));
+            return lines;
+        })).build());
     }
 
 }

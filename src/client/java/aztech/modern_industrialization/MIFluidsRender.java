@@ -28,8 +28,6 @@ import static aztech.modern_industrialization.MIFluids.FLUIDS;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.minecraft.world.inventory.InventoryMenu;
 
 public class MIFluidsRender {
 
@@ -38,11 +36,6 @@ public class MIFluidsRender {
         for (FluidDefinition fluid : FLUIDS.values()) {
 
             var textureLocation = new MIIdentifier(String.format("fluid/%s_still", fluid.path()));
-
-            ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register(
-                    (atlas, registry) -> {
-                        registry.register(textureLocation);
-                    });
 
             FluidRenderHandlerRegistry.INSTANCE.register(
                     fluid.asFluid(),

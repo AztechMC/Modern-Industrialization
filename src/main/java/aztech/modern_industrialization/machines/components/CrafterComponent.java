@@ -47,7 +47,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -619,7 +619,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             if (targetItem == null) {
                 // Find the first match that is an item from MI (useful for ingots for example)
                 for (Item item : input.getInputItems()) {
-                    ResourceLocation id = Registry.ITEM.getKey(item);
+                    ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
                     if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
                         targetItem = item;
                         break;

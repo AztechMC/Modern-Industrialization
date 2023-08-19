@@ -25,34 +25,39 @@ package aztech.modern_industrialization.datagen.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 
 public class MachineModelsProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    private final FabricDataGenerator gen;
+    private final FabricDataOutput pathOutput;
 
-    public MachineModelsProvider(FabricDataGenerator gen) {
-        this.gen = gen;
+    public MachineModelsProvider(FabricDataOutput pathOutput) {
+        this.pathOutput = pathOutput;
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
-        Path outputPath = gen.getOutputFolder();
-        Path nonGeneratedPath = gen.getOutputFolder().resolve("../../main/resources");
+    public CompletableFuture<?> run(CachedOutput cache) {
+        Path outputPath = pathOutput.getOutputFolder();
+        Path nonGeneratedPath = pathOutput.getOutputFolder().resolve("../../main/resources");
+        List<CompletableFuture<?>> futures = new ArrayList<>();
 
         for (var entry : MachineModelsToGenerate.PROPS.entrySet()) {
-            var modelPath = "assets/%s/models/machine/%s.json".formatted(gen.getModId(), entry.getKey());
+            var modelPath = "assets/%s/models/machine/%s.json".formatted(pathOutput.getModId(), entry.getKey());
             if (!Files.exists(nonGeneratedPath.resolve(modelPath))) {
                 // Only generate the model json if it doesn't exist in the non-generated assets.
-                DataProvider.saveStable(cache, GSON.toJsonTree(entry.getValue().toMachineJson()), outputPath.resolve(modelPath));
+                futures.add(DataProvider.saveStable(cache, GSON.toJsonTree(entry.getValue().toMachineJson()), outputPath.resolve(modelPath)));
             }
         }
+
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @Override

@@ -23,14 +23,23 @@
  */
 package aztech.modern_industrialization.datagen;
 
+import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.core.RegistrySetBuilder;
 
 public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
 
     @Override
-    public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
-        MIDatagenClient.configure(dataGenerator, false);
-        MIDatagenServer.configure(dataGenerator, false);
+    public void onInitializeDataGenerator(FabricDataGenerator gen) {
+        var pack = gen.createPack();
+
+        MIDatagenClient.configure(pack, false);
+        MIDatagenServer.configure(pack, false);
+    }
+
+    @Override
+    public void buildRegistry(RegistrySetBuilder registryBuilder) {
+        DynamicRegistryDatagen.run(registryBuilder);
     }
 }

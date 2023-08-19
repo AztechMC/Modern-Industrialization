@@ -30,10 +30,12 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Objects;
+import java.util.Optional;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class LargeTankFluidDisplayClient implements GuiComponentClient {
@@ -55,19 +57,18 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
             private static final int posX = 70, posY = 12;
 
             @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int leftPos, int topPos) {
+            public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
                 FluidVariant fluid = fluidData.fluid();
                 float fracFull = (float) fluidData.amount() / fluidData.capacity();
 
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, leftPos + posX, topPos + posY, 92, 38, 46, 62);
+                guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX, topPos + posY, 92, 38, 46, 62);
 
                 RenderSystem.disableBlend();
                 if (!fluid.isBlank()) {
                     for (int i = 0; i < 2; i++) {
                         for (int j = 0; j < 3; j++) {
                             float localFullness = Math.min(Math.max(3 * fracFull - (2 - j), 0), 1);
-                            RenderHelper.drawFluidInGui(matrices, fluid, leftPos + posX + 7 + i * 16,
+                            RenderHelper.drawFluidInGui(guiGraphics, fluid, leftPos + posX + 7 + i * 16,
                                     topPos + posY + 7 + j * 16 + (1 - localFullness) * 16, 16, localFullness);
                         }
                     }
@@ -75,7 +76,7 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
                 RenderSystem.enableBlend();
 
                 RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, leftPos + posX + 7, topPos + posY + 7, 60, 38, 32, 48);
+                guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX + 7, topPos + posY + 7, 60, 38, 32, 48);
 
                 // A bit hacky: draw the capacity corresponding to the shape in the shape selection GUI if it's open. ;)
                 var shapeSelection = machineScreen.getMenu().getComponent(ShapeSelectionClient.class);
@@ -87,15 +88,17 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
                             selectedShape[0], selectedShape[1], selectedShape[2]);
                     var capacityText = FluidHelper.getFluidAmountLarge(capacity);
 
-                    Minecraft.getInstance().font.draw(matrices, capacityText, shapePanelBox.x() + 14, shapePanelBox.y() + 14, 0x404040);
+                    guiGraphics.drawString(Minecraft.getInstance().font, capacityText, shapePanelBox.x() + 14, shapePanelBox.y() + 14, 0x404040,
+                            false);
                 }
             }
 
             @Override
-            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
-                    screen.renderComponentTooltip(matrices,
+                    guiGraphics.renderTooltip(font,
                             FluidHelper.getTooltipForFluidStorage(fluidData.fluid(), fluidData.amount(), fluidData.capacity()),
+                            Optional.empty(),
                             cursorX, cursorY);
                 }
             }

@@ -47,7 +47,7 @@ import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -225,8 +225,9 @@ public class MITooltips {
     public static final TooltipAttachment COILS = TooltipAttachment.of(
             (itemStack, item) -> {
                 if (item instanceof BlockItem blockItem
-                        && ElectricBlastFurnaceBlockEntity.tiersByCoil.containsKey(Registry.BLOCK.getKey(blockItem.getBlock()))) {
-                    long eu = ElectricBlastFurnaceBlockEntity.tiersByCoil.get(Registry.BLOCK.getKey(((BlockItem) itemStack.getItem()).getBlock()))
+                        && ElectricBlastFurnaceBlockEntity.tiersByCoil.containsKey(BuiltInRegistries.BLOCK.getKey(blockItem.getBlock()))) {
+                    long eu = ElectricBlastFurnaceBlockEntity.tiersByCoil
+                            .get(BuiltInRegistries.BLOCK.getKey(((BlockItem) itemStack.getItem()).getBlock()))
                             .maxBaseEu();
                     return Optional.of(new Line(MIText.EbfMaxEu).arg(eu).build());
                 } else {
@@ -245,7 +246,7 @@ public class MITooltips {
 
     public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (Registry.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
                     var energyStorage = ContainerItemContext.withConstant(itemStack).find(EnergyApi.ITEM);
                     if (energyStorage != null) {
                         long capacity = energyStorage.getCapacity();
@@ -386,11 +387,11 @@ public class MITooltips {
     }
 
     private static void add(ItemLike itemLike, String... englishTooltipsLine) {
-        add((item) -> itemLike.asItem() == item, Registry.ITEM.getKey(itemLike.asItem()).getPath(), englishTooltipsLine);
+        add((item) -> itemLike.asItem() == item, BuiltInRegistries.ITEM.getKey(itemLike.asItem()).getPath(), englishTooltipsLine);
     }
 
     private static void add(String itemId, String... englishTooltipsLine) {
-        add(Registry.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
+        add(BuiltInRegistries.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
     }
 
     static {

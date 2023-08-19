@@ -21,40 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.impl;
+package aztech.modern_industrialization.datagen.texture;
 
-import com.mojang.datafixers.util.Pair;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
+import java.util.function.BiConsumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
+import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.client.renderer.texture.atlas.SpriteSources;
+import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * Proxies to the normal pipe model at bake time, to avoid duplicating the baked model.
- */
-public class PipeItemUnbakedModel implements UnbakedModel {
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return List.of();
+public class SpriteSourceProvider extends FabricCodecDataProvider<List<SpriteSource>> {
+    public SpriteSourceProvider(FabricDataOutput packOutput) {
+        super(packOutput, PackOutput.Target.RESOURCE_PACK, "atlases", SpriteSources.FILE_CODEC);
     }
 
     @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return List.of();
+    protected void configure(BiConsumer<ResourceLocation, List<SpriteSource>> provider) {
+        provider.accept(new ResourceLocation("minecraft", "blocks"), List.of(
+                new DirectoryLister("fluid", "fluid/")));
     }
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState transform,
-            ResourceLocation location) {
-        return modelBakery.bake(PipeModelProvider.BLOCK_MODEL, transform);
+    public String getName() {
+        return "MI Sprite Sources";
     }
 }

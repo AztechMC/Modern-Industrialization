@@ -97,12 +97,12 @@ public class MIPipesClient {
 
         ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
             if (result instanceof BlockHitResult bhr) {
-                if (player.level.getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
+                if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
                     if (pipe.hasCamouflage()) {
                         return pipe.getCamouflageStack();
                     }
 
-                    var targetedPart = PipeBlock.getHitPart(player.level, bhr.getBlockPos(), bhr);
+                    var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
                     return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
                 }
             }

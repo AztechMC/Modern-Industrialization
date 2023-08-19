@@ -28,23 +28,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Pair;
 import java.io.BufferedReader;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -84,29 +79,20 @@ public class MachineUnbakedModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        var set = new HashSet<>(Arrays.asList(defaultOverlays));
-        for (var tierSprites : tieredOverlays.values()) {
-            set.addAll(Arrays.asList(tierSprites));
-        }
-        set.remove(null); // remove null (can happen if one of the textures is not specified)
-        return set;
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
     }
 
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
-            ResourceLocation modelId) {
-        var blockTransformation = ((BlockModel) loader.getModel(BASE_BLOCK_MODEL)).getTransforms();
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
         var cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
 
-        var defaultOverlays = loadSprites(textureGetter, this.defaultOverlays);
+        var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
         var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
-            tieredOverlays.put(entry.getKey(), loadSprites(textureGetter, entry.getValue()));
+            tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }
-        return new MachineBakedModel(blockTransformation, cutoutMaterial, baseCasing, defaultOverlays, tieredOverlays);
+        return new MachineBakedModel(cutoutMaterial, baseCasing, defaultOverlays, tieredOverlays);
     }
 
     private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, Material[] ids) {

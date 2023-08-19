@@ -117,7 +117,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
         var energyItem = ContainerItemContext.ofPlayerHand(player, hand).find(EnergyApi.ITEM);
         if (energyItem != null) {
-            if (!player.level.isClientSide()) {
+            if (!player.level().isClientSide()) {
                 boolean insertedSomething = false;
 
                 for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
@@ -150,7 +150,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(player.level.isClientSide());
+            return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
         return super.onUse(player, hand, face);
     }

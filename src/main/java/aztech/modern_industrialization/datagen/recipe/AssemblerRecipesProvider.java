@@ -29,28 +29,28 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import org.apache.commons.io.IOUtils;
 
 public class AssemblerRecipesProvider extends MIRecipesProvider {
     private static final Gson GSON = new Gson();
 
-    private final FabricDataGenerator dataGenerator;
+    private final FabricDataOutput packOutput;
 
-    public AssemblerRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
-        this.dataGenerator = dataGenerator;
+    public AssemblerRecipesProvider(FabricDataOutput packOutput) {
+        super(packOutput);
+        this.packOutput = packOutput;
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
-        var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())))) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        var nonGeneratedResources = packOutput.getOutputFolder().resolve("../../main/resources");
+        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new PathPackResources("ngr", nonGeneratedResources, true)))) {
             var possibleTargets = manager.listResources("recipes", path -> path.getPath().endsWith(".json"));
             for (var entry : possibleTargets.entrySet()) {
                 var pathId = entry.getKey();
@@ -84,7 +84,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
         if (json.result.count == 0) {
             json.result.count = 1;
         }
-        MIRecipeJson assemblerJson = json.exportToAssembler();
+        MIRecipeJson<?> assemblerJson = json.exportToAssembler();
         String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - "_asbl.json".length());
         assemblerJson.offerTo(consumer, "assembler_generated/" + outputSuffix);
     }

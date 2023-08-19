@@ -1,5 +1,4 @@
 {
-  "type": "techreborn:compressor",
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
@@ -8,6 +7,7 @@
       ]
     }
   ],
+  "type": "techreborn:compressor",
   "ingredients": [
     {
       "tag": "c:gold_plates"

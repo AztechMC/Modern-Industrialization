@@ -21,28 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.gui;
+package aztech.modern_industrialization.client;
 
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
-import net.minecraft.client.gui.components.Button;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
-class ConnectionTypeButton extends Button {
-    private final ConnectionTypeInterface connectionType;
+public class DynamicTooltip extends Tooltip {
+    private final Supplier<List<Component>> tooltipSupplier;
 
-    public ConnectionTypeButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, ConnectionTypeInterface connectionType) {
-        super(x, y, 20, 20, null, onPress, tooltipSupplier);
-        this.connectionType = connectionType;
+    public DynamicTooltip(Supplier<List<Component>> tooltipSupplier) {
+        super(null, null);
+        this.tooltipSupplier = tooltipSupplier;
     }
 
     @Override
-    public Component getMessage() {
-        return switch (connectionType.getConnectionType()) {
-        case 0 -> MIText.PipeConnectionIn.text();
-        case 1 -> MIText.PipeConnectionIO.text();
-        case 2 -> MIText.PipeConnectionOut.text();
-        default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
-        };
+    public List<FormattedCharSequence> toCharSequence(Minecraft minecraft) {
+        List<FormattedCharSequence> charSequences = new ArrayList<>();
+        for (var component : tooltipSupplier.get()) {
+            charSequences.addAll(Tooltip.splitTooltip(minecraft, component));
+        }
+        return charSequences;
     }
 }

@@ -29,11 +29,9 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 
 public class TemperatureBarClient implements GuiComponentClient {
     public final TemperatureBar.Parameters params;
@@ -60,26 +58,23 @@ public class TemperatureBarClient implements GuiComponentClient {
         private final int WIDTH = 100, HEIGHT = 2;
 
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-            RenderSystem.setShaderTexture(0, TEXTURE);
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             // background
-            net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2,
+            guiGraphics.blit(TEXTURE, x + params.renderX - 1, y + params.renderY - 1, 0, 2,
                     WIDTH + 2, HEIGHT + 2, 102, 6);
             int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
-            net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels,
+            guiGraphics.blit(TEXTURE, x + params.renderX, y + params.renderY, 0, 0, barPixels,
                     HEIGHT, 102, 6);
             RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            helper.blit(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
+            guiGraphics.blit(TEXTURE, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
 
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
-                List<Component> tooltip = new ArrayList<>();
-                tooltip.add(MIText.Temperature.text(temperature));
-                screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                guiGraphics.renderTooltip(font, MIText.Temperature.text(temperature), cursorX, cursorY);
             }
         }
     }

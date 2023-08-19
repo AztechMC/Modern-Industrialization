@@ -32,7 +32,7 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import java.util.function.Consumer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -90,7 +90,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder addInput(char key, ItemLike item) {
-        return addInput(key, Registry.ITEM.getKey(item.asItem()).toString());
+        return addInput(key, BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
     }
 
     public ShapedRecipeBuilder exportToAssembler(int eu, int duration) {

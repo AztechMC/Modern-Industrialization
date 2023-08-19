@@ -24,12 +24,13 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.util.FluidHelper;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 /**
  * Allows the transfer API to get the colored name of the fluid by calling fluid.getBlockState().getName().
@@ -38,7 +39,7 @@ public class MIFluidBlock extends Block {
     private final int color;
 
     public MIFluidBlock(int color) {
-        super(FabricBlockSettings.of(Material.WATER));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().pushReaction(PushReaction.DESTROY).liquid());
         this.color = FluidHelper.getColorMinLuminance(color);
     }
 

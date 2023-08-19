@@ -23,15 +23,12 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
-import static net.minecraft.client.gui.GuiComponent.blit;
-
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -46,6 +43,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -78,10 +76,9 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                     }
 
                     @Override
-                    public void draw(PoseStack poseStack, int xOffset, int yOffset) {
+                    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
                         var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
-                        RenderSystem.setShaderTexture(0, texture.loc());
-                        blit(poseStack, xOffset - 1, yOffset - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
+                        guiGraphics.blit(texture.loc(), xOffset - 1, yOffset - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
                     }
                 };
         this.itemSlot = helpers.getGuiHelper().getSlotDrawable();
@@ -192,8 +189,8 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
     }
 
     @Override
-    public void draw(D recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
-        stack.translate(-4, -4, 0);
+    public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        guiGraphics.pose().translate(-4, -4, 0);
 
         wrapped.buildWidgets(recipe, new ViewerCategory.WidgetList() {
             @Override
@@ -207,11 +204,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                 case RIGHT -> x - width;
                 };
 
-                if (shadow) {
-                    font.drawShadow(stack, text, alignedX, y, overrideColor ? 0xFF404040 : -1);
-                } else {
-                    font.draw(stack, text, alignedX, y, overrideColor ? 0xFF404040 : -1);
-                }
+                guiGraphics.drawString(font, text, (int) alignedX, (int) y, overrideColor ? 0xFF404040 : -1, shadow);
             }
 
             @Override
@@ -222,22 +215,22 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             @Override
             public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
                 IDrawableStatic drawable = helpers.getGuiHelper().createDrawable(loc, u, v, width, height);
-                drawable.draw(stack, x, y);
+                drawable.draw(guiGraphics, x, y);
             }
 
             @Override
-            public void drawable(ViewerCategory.DrawableWidget widget) {
-                widget.draw(stack);
+            public void drawable(Consumer<GuiGraphics> widget) {
+                widget.accept(guiGraphics);
             }
 
             @Override
             public void item(double x, double y, double w, double h, ItemLike item) {
-                stack.pushPose();
+                guiGraphics.pose().pushPose();
                 var drawable = helpers.getGuiHelper().createDrawableItemStack(item.asItem().getDefaultInstance());
-                stack.translate(x, y, 0);
-                stack.scale((float) w / 16, (float) h / 16, 0);
-                drawable.draw(stack);
-                stack.popPose();
+                guiGraphics.pose().translate(x, y, 0);
+                guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
+                drawable.draw(guiGraphics);
+                guiGraphics.pose().popPose();
             }
 
             @Override
@@ -275,7 +268,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             }
 
             @Override
-            public void drawable(ViewerCategory.DrawableWidget widget) {
+            public void drawable(Consumer<GuiGraphics> widget) {
             }
 
             @Override

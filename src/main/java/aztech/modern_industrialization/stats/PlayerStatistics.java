@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,19 +65,19 @@ public class PlayerStatistics {
 
     PlayerStatistics(PlayerStatisticsData data, UUID uuid, CompoundTag nbt) {
         this(data, uuid);
-        readNbt(Registry.ITEM, usedItems, nbt.getCompound("usedItems"));
-        readNbt(Registry.ITEM, producedItems, nbt.getCompound("producedItems"));
-        readNbt(Registry.FLUID, usedFluids, nbt.getCompound("usedFluids"));
-        readNbt(Registry.FLUID, producedFluids, nbt.getCompound("producedFluids"));
+        readNbt(BuiltInRegistries.ITEM, usedItems, nbt.getCompound("usedItems"));
+        readNbt(BuiltInRegistries.ITEM, producedItems, nbt.getCompound("producedItems"));
+        readNbt(BuiltInRegistries.FLUID, usedFluids, nbt.getCompound("usedFluids"));
+        readNbt(BuiltInRegistries.FLUID, producedFluids, nbt.getCompound("producedFluids"));
         pendingReadNbt(pendingCraftedStats, nbt.getCompound("pendingCraftedStats"));
     }
 
     public CompoundTag toTag() {
         CompoundTag nbt = new CompoundTag();
-        nbt.put("usedItems", toNbt(Registry.ITEM, usedItems));
-        nbt.put("producedItems", toNbt(Registry.ITEM, producedItems));
-        nbt.put("usedFluids", toNbt(Registry.FLUID, usedFluids));
-        nbt.put("producedFluids", toNbt(Registry.FLUID, producedFluids));
+        nbt.put("usedItems", toNbt(BuiltInRegistries.ITEM, usedItems));
+        nbt.put("producedItems", toNbt(BuiltInRegistries.ITEM, producedItems));
+        nbt.put("usedFluids", toNbt(BuiltInRegistries.FLUID, usedFluids));
+        nbt.put("producedFluids", toNbt(BuiltInRegistries.FLUID, producedFluids));
         nbt.put("pendingCraftedStats", pendingToNbt(pendingCraftedStats));
         return nbt;
     }
@@ -153,7 +154,7 @@ public class PlayerStatistics {
     private static void pendingReadNbt(Reference2LongMap<Item> map, CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
             try {
-                var val = Registry.ITEM.get(new ResourceLocation(key));
+                var val = BuiltInRegistries.ITEM.get(new ResourceLocation(key));
                 if (val != Items.AIR) {
                     map.put(val, tag.getLong(key));
                 }
@@ -165,7 +166,7 @@ public class PlayerStatistics {
     private static CompoundTag pendingToNbt(Reference2LongMap<Item> map) {
         CompoundTag tag = new CompoundTag();
         for (var entry : map.reference2LongEntrySet()) {
-            tag.putLong(Registry.ITEM.getKey(entry.getKey()).toString(), entry.getLongValue());
+            tag.putLong(BuiltInRegistries.ITEM.getKey(entry.getKey()).toString(), entry.getLongValue());
         }
         return tag;
     }

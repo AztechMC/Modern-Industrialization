@@ -28,8 +28,8 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -64,11 +64,6 @@ public class OverclockComponent implements IComponent {
                 tickMap.put(catalyst.multiplier, new MutableTickCount(tag.getInt(multiplierKey)));
             }
         }
-
-        // TODO 1.20: Remove upgrade code
-        if (tag.contains("overclockGunpowderTick")) {
-            tickMap.put(2D, new MutableTickCount(tag.getInt("overclockGunpowderTick")));
-        }
     }
 
     public int getTicks() {
@@ -81,7 +76,7 @@ public class OverclockComponent implements IComponent {
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
-        var resourceInHand = Registry.ITEM.getKey(stackInHand.getItem());
+        var resourceInHand = BuiltInRegistries.ITEM.getKey(stackInHand.getItem());
 
         for (Catalyst catalyst : catalysts) {
             if (resourceInHand.equals(catalyst.resourceLocation) && stackInHand.getCount() >= 1) {
@@ -135,7 +130,7 @@ public class OverclockComponent implements IComponent {
         var tooltips = new ArrayList<Component>();
         for (Catalyst catalyst : catalysts) {
 
-            var catalystItem = Registry.ITEM.get(catalyst.resourceLocation);
+            var catalystItem = BuiltInRegistries.ITEM.get(catalyst.resourceLocation);
             tooltips.add(MITooltips.line(MIText.OverclockMachine).arg(catalystItem, MITooltips.ITEM_PARSER).arg(catalyst.multiplier)
                     .arg(catalyst.ticks).build());
         }

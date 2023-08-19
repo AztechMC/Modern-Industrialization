@@ -41,7 +41,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import java.util.concurrent.CompletableFuture;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 
@@ -49,12 +51,12 @@ public final class TranslationProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
-    private final FabricDataGenerator gen;
+    private final FabricDataOutput packOutput;
     private final boolean runtimeDatagen;
     private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public TranslationProvider(FabricDataGenerator gen, boolean runtimeDatagen) {
-        this.gen = gen;
+    public TranslationProvider(FabricDataOutput packOutput, boolean runtimeDatagen) {
+        this.packOutput = packOutput;
         this.runtimeDatagen = runtimeDatagen;
     }
 
@@ -123,17 +125,27 @@ public final class TranslationProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput output) {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                innerRun(output);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }, Util.backgroundExecutor());
+    }
+
+    public void innerRun(CachedOutput cache) throws IOException {
         collectTranslationEntries();
 
-        customJsonSave(cache, GSON.toJsonTree(translationPairs), gen.getOutputFolder().resolve(OUTPUT_PATH));
+        customJsonSave(cache, GSON.toJsonTree(translationPairs), packOutput.getOutputFolder().resolve(OUTPUT_PATH));
 
         if (runtimeDatagen) {
             return;
         }
 
         // Inspect manual translations for other languages
-        Path manualTranslationsPath = gen.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
+        Path manualTranslationsPath = packOutput.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
         try (var paths = Files.walk(manualTranslationsPath, 1)) {
             paths.forEach(path -> {
                 try {
@@ -159,7 +171,7 @@ public final class TranslationProvider implements DataProvider {
                             }
                         }
 
-                        var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
+                        var savePath = packOutput.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
                         customJsonSave(cache, GSON.toJsonTree(output), savePath);
                     }
                 } catch (IOException e) {

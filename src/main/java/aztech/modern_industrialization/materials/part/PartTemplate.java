@@ -117,7 +117,7 @@ public class PartTemplate implements PartKeyProvider {
             boolean doAllowSpawn) {
         Register blockRegister = (partContext, part, itemPath, itemId, itemTag, itemEnglishName) -> {
 
-            var blockParams = MIBlock.BlockDefinitionParams.of()
+            var blockParams = MIBlock.BlockDefinitionParams.defaultStone()
                     .clearTags()
                     .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
                     .sortOrder(sortOrder.and(partContext.getMaterialName()))
@@ -149,7 +149,7 @@ public class PartTemplate implements PartKeyProvider {
             var blockDefinition = MIBlock.block(
                     itemEnglishName,
                     itemPath,
-                    MIBlock.BlockDefinitionParams.of()
+                    MIBlock.BlockDefinitionParams.defaultStone()
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))

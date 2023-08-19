@@ -42,7 +42,7 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -55,12 +55,12 @@ public class CompatRecipesProvider extends MIRecipesProvider {
     private String currentCompatModid;
     private ConditionJsonProvider[] conditions = null;
 
-    public CompatRecipesProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public CompatRecipesProvider(FabricDataOutput packOutput) {
+        super(packOutput);
     }
 
     @Override
-    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         this.consumer = consumer;
 
         startCompat("techreborn");

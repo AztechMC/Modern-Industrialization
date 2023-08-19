@@ -29,9 +29,7 @@ import net.minecraft.network.chat.MutableComponent;
 
 public enum MIText {
 
-    ModernIndustrialization("Modern Industrialization", "itemGroup." +
-            aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP.getRecipeFolderName(),
-            "modern_industrialization"),
+    ModernIndustrialization("Modern Industrialization"),
     AbsorptionProbability("Absorption Probability"),
     AcceptAnyFluidFuels("Consumes any Fluid Fuel (Check REI for EU/mb production)"),
     AcceptAnyItemFuels("Consumes any Furnace Fuel (Check Item tooltip for EU production)"),

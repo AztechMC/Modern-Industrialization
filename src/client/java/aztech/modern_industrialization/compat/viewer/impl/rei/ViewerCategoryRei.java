@@ -23,19 +23,15 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.rei;
 
-import static net.minecraft.client.gui.GuiComponent.blit;
-
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.AbstractRenderer;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
@@ -50,6 +46,8 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -68,13 +66,9 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         this.identifier = CategoryIdentifier.of(wrapped.id);
 
         this.icon = wrapped.icon instanceof ViewerCategory.Icon.Stack stack ? EntryStacks.of(stack.stack())
-                : new AbstractRenderer() {
-                    @Override
-                    public void render(PoseStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
-                        var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
-                        RenderSystem.setShaderTexture(0, texture.loc());
-                        blit(matrices, bounds.x - 1, bounds.y - 1, getZ(), texture.u(), texture.v(), 18, 18, 256, 256);
-                    }
+                : (guiGraphics, bounds, mouseX, mouseY, delta) -> {
+                    var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
+                    guiGraphics.blit(texture.loc(), bounds.x - 1, bounds.y - 1, texture.u(), texture.v(), 18, 18, 256, 256);
                 };
     }
 
@@ -104,7 +98,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
     }
 
     public void registerRecipes(DisplayRegistry registry) {
-        wrapped.buildRecipes(registry.getRecipeManager(), r -> registry.add(makeDisplay(r)));
+        wrapped.buildRecipes(registry.getRecipeManager(), Minecraft.getInstance().level.registryAccess(), r -> registry.add(makeDisplay(r)));
     }
 
     private void processLayout(D recipe, List<IngredientBuilder> inputs, List<IngredientBuilder> outputs) {
@@ -295,12 +289,12 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
             }
 
             @Override
-            public void drawable(ViewerCategory.DrawableWidget widget) {
-                widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-                    matrices.pushPose();
-                    matrices.translate(bounds.x, bounds.y, 0);
-                    widget.draw(matrices);
-                    matrices.popPose();
+            public void drawable(Consumer<GuiGraphics> widget) {
+                widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
+                    guiGraphics.pose().pushPose();
+                    guiGraphics.pose().translate(bounds.x, bounds.y, 0);
+                    widget.accept(guiGraphics);
+                    guiGraphics.pose().popPose();
                 }));
             }
 
@@ -315,7 +309,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
 
             @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
-                widgets.add(Widgets.createDrawableWidget((helper, matrices, reiMouseX, reiMouseY, delta) -> {
+                widgets.add(Widgets.createDrawableWidget((matrices, reiMouseX, reiMouseY, delta) -> {
                     int mouseX = reiMouseX - bounds.x;
                     int mouseY = reiMouseY - bounds.y;
                     if (mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h) {
@@ -344,9 +338,8 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
     }
 
     private static Widget createFluidSlotBackground(Point point) {
-        return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            helper.blit(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
+        return Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }
 

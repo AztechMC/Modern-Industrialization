@@ -29,11 +29,12 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -74,19 +75,16 @@ public class RecipeEfficiencyBarClient implements GuiComponentClient {
 
     public class Renderer implements ClientComponentRenderer {
         @Override
-        public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-            RenderSystem.setShaderTexture(0, TEXTURE);
-            net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2,
-                    WIDTH + 2, HEIGHT + 2, 102, 6);
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+            guiGraphics.blit(TEXTURE, x + params.renderX - 1, y + params.renderY - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
             if (hasActiveRecipe) {
                 int barPixels = (int) ((float) efficiencyTicks / maxEfficiencyTicks * WIDTH);
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels,
-                        HEIGHT, 102, 6);
+                guiGraphics.blit(TEXTURE, x + params.renderX, y + params.renderY, 0, 0, barPixels, HEIGHT, 102, 6);
             }
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 List<Component> tooltip = new ArrayList<>();
                 if (hasActiveRecipe) {
@@ -102,7 +100,7 @@ public class RecipeEfficiencyBarClient implements GuiComponentClient {
 
                 tooltip.add(MIText.EfficiencyMaxOverclock.text(maxRecipeEu));
 
-                screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
             }
         }
     }

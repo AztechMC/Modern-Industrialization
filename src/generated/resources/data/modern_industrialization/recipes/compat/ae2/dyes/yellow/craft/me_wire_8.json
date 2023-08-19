@@ -1,10 +1,10 @@
 {
-  "type": "minecraft:crafting_shaped",
   "fabric:load_conditions": [
     {
       "condition": "modern_industrialization:ae_compat_loaded"
     }
   ],
+  "type": "minecraft:crafting_shaped",
   "key": {
     "d": {
       "tag": "c:yellow_dyes"

@@ -1,7 +1,4 @@
 {
-  "type": "modern_industrialization:assembler",
-  "duration": 200,
-  "eu": 8,
   "fabric:load_conditions": [
     {
       "condition": "fabric:all_mods_loaded",
@@ -10,6 +7,9 @@
       ]
     }
   ],
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
   "fluid_inputs": [
     {
       "amount": 100,

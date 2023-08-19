@@ -33,25 +33,24 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import team.reborn.energy.api.base.SimpleEnergyItem;
 
-public class GraviChestPlateItem extends ArmorItem implements Wearable, ActivatableChestItem, SimpleEnergyItem {
+public class GraviChestPlateItem extends ArmorItem implements ActivatableChestItem, SimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
-        super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.EPIC));
+        super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.EPIC));
     }
 
     private static ArmorMaterial buildMaterial() {
         return new ArmorMaterial() {
             @Override
-            public int getDurabilityForSlot(EquipmentSlot slot) {
+            public int getDurabilityForType(Type type) {
                 return 0;
             }
 
             @Override
-            public int getDefenseForSlot(EquipmentSlot slot) {
+            public int getDefenseForType(Type type) {
                 return 0;
             }
 

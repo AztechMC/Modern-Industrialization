@@ -24,13 +24,13 @@
 package aztech.modern_industrialization.compat.modmenu;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,12 +50,11 @@ public class CustomBooleanListEntry extends BooleanListEntry {
                 : MIText.Disabled.text().setStyle(TextHelper.RED);
     }
 
-    public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered,
+    @Override
+    public void render(GuiGraphics guiGraphics, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered,
             float delta) {
-        super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        super.render(guiGraphics, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
         ItemStack stack = new ItemStack(item);
-        itemRenderer.renderAndDecorateFakeItem(stack, x - 20, y + 2);
-
+        RenderHelper.renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, x - 20, y + 20);
     }
 }

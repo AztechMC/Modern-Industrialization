@@ -108,7 +108,8 @@ public class DebugCommands {
             var manager = networks.getManager(type);
             if (manager.hasNode(pos)) {
                 manager.removeNode(pos);
-                src.sendSuccess(Component.literal("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+                src.sendSuccess(() -> Component.literal("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)),
+                        true);
             }
         }
 
@@ -125,10 +126,11 @@ public class DebugCommands {
         var manager = networks.getManager(type);
         if (!manager.hasNode(pos)) {
             manager.addNode(type.getNodeCtor().get(), pos, MIPipes.INSTANCE.getPipeItem(type).defaultData.clone());
-            src.sendSuccess(Component.literal("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+            src.sendSuccess(() -> Component.literal("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
         } else {
             src.sendSuccess(
-                    Component.literal("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
+                    () -> Component
+                            .literal("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
                     true);
         }
 

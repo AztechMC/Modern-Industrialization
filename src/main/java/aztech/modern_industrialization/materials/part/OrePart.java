@@ -26,7 +26,6 @@ package aztech.modern_industrialization.materials.part;
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MAIN_PART;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
@@ -34,9 +33,7 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
@@ -67,8 +64,6 @@ public class OrePart implements PartKeyProvider {
     public PartKey key() {
         return key;
     }
-
-    public final static Set<String> GENERATED_MATERIALS = new HashSet<>();
 
     public PartTemplate of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return of(new OrePartParams(UniformInt.of(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
@@ -132,40 +127,34 @@ public class OrePart implements PartKeyProvider {
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition.asItem(), partContext.getMaterialEnglishName() + " Ores");
                     TagsToGenerate.addTagToTag(tag, ConventionalItemTags.ORES.location().toString());
 
-                    MIConfig config = MIConfig.getConfig();
-
                     if (oreParams.generate) {
-                        GENERATED_MATERIALS.add(partContext.getMaterialName());
-                        // TODO 1.20: fix oregen
-                        if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
-                            DynamicRegistryDatagen.addAction(builder -> {
-                                ResourceLocation oreGenId = new MIIdentifier(
-                                        (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+                        ResourceLocation oreGenId = new MIIdentifier(
+                                (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
 
-                                var ruleTest = new TagMatchTest(deepslate ? BlockTags.DEEPSLATE_ORE_REPLACEABLES : BlockTags.STONE_ORE_REPLACEABLES);
+                        var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);
+                        var placedFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, oreGenId);
 
-                                var target = List.of(
-                                        OreConfiguration.target(ruleTest, oreBlockBlockDefinition.asBlock().defaultBlockState()));
+                        DynamicRegistryDatagen.addAction(builder -> {
+                            var ruleTest = new TagMatchTest(deepslate ? BlockTags.DEEPSLATE_ORE_REPLACEABLES : BlockTags.STONE_ORE_REPLACEABLES);
 
-                                var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);
-                                var placedFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, oreGenId);
+                            var target = List.of(
+                                    OreConfiguration.target(ruleTest, oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
-                                builder.add(Registries.CONFIGURED_FEATURE, context -> {
-                                    FeatureUtils.register(context, featureKey, Feature.ORE, new OreConfiguration(target, oreParams.veinSize));
-                                });
-
-                                builder.add(Registries.PLACED_FEATURE, context -> {
-                                    var holder = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(featureKey);
-                                    var placement = OrePlacements.commonOrePlacement(
-                                            oreParams.veinsPerChunk,
-                                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)));
-                                    PlacementUtils.register(context, placedFeatureKey, holder, placement);
-                                });
-
-                                BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
-                                        placedFeatureKey);
+                            builder.add(Registries.CONFIGURED_FEATURE, context -> {
+                                FeatureUtils.register(context, featureKey, Feature.ORE, new OreConfiguration(target, oreParams.veinSize));
                             });
-                        }
+
+                            builder.add(Registries.PLACED_FEATURE, context -> {
+                                var holder = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(featureKey);
+                                var placement = OrePlacements.commonOrePlacement(
+                                        oreParams.veinsPerChunk,
+                                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)));
+                                PlacementUtils.register(context, placedFeatureKey, holder, placement);
+                            });
+                        });
+
+                        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
+                                placedFeatureKey);
                     }
 
                 })

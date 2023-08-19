@@ -24,91 +24,11 @@
 package aztech.modern_industrialization.compat.modmenu;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.materials.part.OrePart;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
-import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
 public class MIMenu implements ModMenuApi {
-
-    private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
-
-    private static boolean hasOreGen(Material material) {
-        return OrePart.GENERATED_MATERIALS.contains(material.name);
-    }
-
-    private static String getOreTranslationKey(Material material) {
-        return getOreItem(material).getDescriptionId();
-    }
-
-    private static Item getOreItem(Material material) {
-        return BuiltInRegistries.ITEM.get(new ResourceLocation(material.getParts().get(MIParts.ORE.key).getItemId()));
-    }
-
-    private static boolean oreInList(List<String> list, Material material) {
-        return list.contains(material.name);
-    }
-
-    private static void setOreInList(List<String> list, Material material, boolean inList) {
-        if (inList) {
-            if (!list.contains(material.name)) {
-                list.add(material.name);
-            }
-        } else {
-            list.remove(material.name);
-        }
-    }
-
-    private static boolean oreNotInList(Field field, Object config, Material material) {
-        List<String> list;
-        try {
-            list = (List<String>) field.get(config);
-            return !oreInList(list, material);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    private static void setOreInList(Field field, Object config, Material material, boolean inList) {
-        List<String> list;
-        try {
-            list = (List<String>) field.get(config);
-            setOreInList(list, material, inList);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static {
-        GuiRegistry registry = AutoConfig.getGuiRegistry(MIConfig.class);
-        registry.registerAnnotationProvider(
-                (i13n, field, config, defaults,
-                        registry1) -> Collections.singletonList(ENTRY_BUILDER
-                                .startSubCategory(MIText.CustomOreGen.text(),
-                                        MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen)
-                                                .map(i -> new CustomBooleanListEntry(Component.translatable(getOreTranslationKey(i)),
-                                                        oreNotInList(field, config, i), () -> oreNotInList(field, config, i),
-                                                        bool -> setOreInList(field, config, i, !bool), getOreItem(i)))
-                                                .collect(Collectors.toList()))
-                                .build()),
-                OreConfigEntry.class);
-    }
-
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> AutoConfig.getConfigScreen(MIConfig.class, parent).get();

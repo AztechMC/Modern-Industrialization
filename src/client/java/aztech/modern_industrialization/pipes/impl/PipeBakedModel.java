@@ -115,7 +115,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
                         }
 
                         if (renderConnector) {
-                            renderContext.fallbackConsumer().accept(meWireConnectors[direction.get3DDataValue()]);
+                            meWireConnectors[direction.get3DDataValue()].emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
                         }
                     }
                 }
@@ -131,7 +131,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
                         quad.colorIndex(-1);
 
                         for (int vertex = 0; vertex < 4; ++vertex) {
-                            quad.spriteColor(vertex, 0, multiplyColor(color, quad.spriteColor(vertex, 0)));
+                            quad.color(vertex, multiplyColor(color, quad.color(vertex)));
                         }
                     }
 
@@ -139,7 +139,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
                         quad.material(translucentMaterial);
 
                         for (int vertex = 0; vertex < 4; ++vertex) {
-                            quad.spriteColor(vertex, 0, multiplyColor(0x9FFFFFFF, quad.spriteColor(vertex, 0)));
+                            quad.color(vertex, multiplyColor(0x9FFFFFFF, quad.color(vertex)));
                         }
                     }
 
@@ -147,7 +147,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
                 });
 
                 var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
-                ((FabricBakedModel) camouflageModel).emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
+                camouflageModel.emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
 
                 renderContext.popTransform();
             }
@@ -192,7 +192,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
     private static RenderContext.QuadTransform getColorTransform(int color) {
         return quad -> {
             if (quad.tag() == 0) {
-                quad.spriteColor(0, color, color, color, color);
+                quad.color(color, color, color, color);
             }
             return true;
         };

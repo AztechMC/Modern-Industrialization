@@ -299,17 +299,20 @@ public class MITooltips {
                     List<Component> lines = new LinkedList<>();
                     MIConfig config = MIConfig.getConfig();
 
-                    if (config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName) && oreBlock.params.generate) {
-                        lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
-                        lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
-                        lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
-                    } else {
-                        lines.add(new Line(MIText.OreNotGenerated).build());
+                    if (config.enableDefaultOreGenTooltips) {
+                        if (oreBlock.params.generate) {
+                            lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
+                            lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
+                            lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
+                        } else {
+                            lines.add(new Line(MIText.OreNotGenerated).build());
+                        }
+
+                        return Optional.of(lines);
                     }
-                    return Optional.of(lines);
-                } else {
-                    return Optional.empty();
                 }
+
+                return Optional.empty();
             });
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(

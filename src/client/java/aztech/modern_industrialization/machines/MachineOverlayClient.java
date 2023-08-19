@@ -76,7 +76,7 @@ public class MachineOverlayClient {
                         float r = 0;
                         float g = insideQuad ? 1 : 0;
                         float b = insideQuad ? 0 : 1;
-                        RenderHelper.quadWithAlpha(vc, wrc.matrixStack().last(), emitter.toBakedQuad(0, null, false), r, g, b, 0.3f, 0x7fffffff,
+                        RenderHelper.quadWithAlpha(vc, wrc.matrixStack().last(), emitter.toBakedQuad(null), r, g, b, 0.3f, 0x7fffffff,
                                 -2130706433);
                     }
                 }

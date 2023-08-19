@@ -31,7 +31,7 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public final class MachineRendering {
@@ -56,11 +56,11 @@ public final class MachineRendering {
         BlockEntityType type = blockEntity.getType();
 
         if (blockEntity instanceof LargeTankMultiblockBlockEntity) {
-            BlockEntityRendererRegistry.register(type, MultiblockTankBER::new);
+            BlockEntityRenderers.register(type, MultiblockTankBER::new);
         } else if (blockEntity instanceof MultiblockMachineBlockEntity) {
-            BlockEntityRendererRegistry.register(type, MultiblockMachineBER::new);
+            BlockEntityRenderers.register(type, MultiblockMachineBER::new);
         } else {
-            BlockEntityRendererRegistry.register(type, c -> new MachineBlockEntityRenderer(c));
+            BlockEntityRenderers.register(type, c -> new MachineBlockEntityRenderer(c));
         }
     }
 

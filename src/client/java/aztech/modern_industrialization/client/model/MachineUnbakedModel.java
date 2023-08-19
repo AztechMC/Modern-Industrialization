@@ -85,7 +85,7 @@ public class MachineUnbakedModel implements UnbakedModel {
     @Nullable
     @Override
     public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
-        var cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
+        var cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(BlendMode.CUTOUT_MIPPED).find();
 
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
         var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();

@@ -54,7 +54,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -62,6 +62,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -77,10 +78,10 @@ public class ModernIndustrialization {
     public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new MIIdentifier("general"));
 
     // ScreenHandlerType
-    public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
-            .registerExtended(new MIIdentifier("machine"), CommonProxy.INSTANCE::createClientMachineMenu);
-    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
-            .registerSimple(new MIIdentifier("forge_hammer"), ForgeHammerScreenHandler::new);
+    public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = Registry.register(BuiltInRegistries.MENU,
+            new MIIdentifier("machine"), new ExtendedScreenHandlerType<>(CommonProxy.INSTANCE::createClientMachineMenu));
+    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = Registry.register(BuiltInRegistries.MENU,
+            new MIIdentifier("forge_hammer"), new MenuType<>(ForgeHammerScreenHandler::new, FeatureFlags.VANILLA_SET));
 
     public static void initialize() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_KEY, FabricItemGroup.builder()

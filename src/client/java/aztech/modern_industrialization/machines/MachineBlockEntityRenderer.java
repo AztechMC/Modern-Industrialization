@@ -80,9 +80,9 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 emitter.material(model.cutoutMaterial);
                 emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.
                 emitter.cullFace(d);
-                emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-                emitter.spriteColor(0, -1, -1, -1, -1);
-                cachedQuads[cachedQuadIndex] = emitter.toBakedQuad(0, sprite, false);
+                emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+                emitter.color(-1, -1, -1, -1);
+                cachedQuads[cachedQuadIndex] = emitter.toBakedQuad(sprite);
             } else {
                 cachedQuads[cachedQuadIndex] = NO_QUAD;
             }

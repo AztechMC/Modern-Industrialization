@@ -120,8 +120,8 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         for (Direction direction : Direction.values()) {
             int spriteIdx = direction == Direction.UP ? 0 : direction == Direction.DOWN ? 2 : 1;
             emitter.square(direction, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-            emitter.spriteBake(0, sprites[spriteIdx], MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.spriteBake(sprites[spriteIdx], MutableQuadView.BAKE_LOCK_UV);
+            emitter.color(-1, -1, -1, -1);
             emitter.emit();
         }
         this.mesh = meshBuilder.build();

@@ -96,25 +96,25 @@ public class RenderHelper {
         OVERLAY_QUADS = Suppliers.memoize(() -> {
             var overlayQuads = new BakedQuad[24];
             Renderer r = RendererAccess.INSTANCE.getRenderer();
-            RenderMaterial material = r.materialFinder().blendMode(0, BlendMode.SOLID).find();
+            RenderMaterial material = r.materialFinder().blendMode(BlendMode.SOLID).find();
             for (Direction direction : Direction.values()) {
                 QuadEmitter emitter;
                 emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, 0, 1, W, 0);
                 emitter.material(material);
-                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(0, null, false);
+                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(null);
                 emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, 1 - W, 1, 1, 0);
                 emitter.material(material);
-                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(0, null, false);
+                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(null);
                 emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, W, W, 1 - W, 0);
                 emitter.material(material);
-                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(0, null, false);
+                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(null);
                 emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
                 emitter.material(material);
-                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(0, null, false);
+                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(null);
             }
             return overlayQuads;
         });
@@ -137,7 +137,7 @@ public class RenderHelper {
                 QuadEmitter emitter;
                 emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, 0, 1, 1, 0);
-                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(0, null, false);
+                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(null);
             }
             return cubeQuads;
         });
@@ -181,9 +181,9 @@ public class RenderHelper {
                 emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
             }
 
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            vc.putBulkData(ms.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.color(-1, -1, -1, -1);
+            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 
@@ -366,10 +366,10 @@ public class RenderHelper {
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
             emitter.square(direction, 1, 0, 0, 1, 1.015f);
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 
             vc.putBulkData(matrices.last(),
-                    emitter.toBakedQuad(0, sprite, false),
+                    emitter.toBakedQuad(sprite),
                     r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }

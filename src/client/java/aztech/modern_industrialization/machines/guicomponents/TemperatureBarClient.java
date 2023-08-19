@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,8 +64,7 @@ public class TemperatureBarClient implements GuiComponentClient {
             int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
             guiGraphics.blit(TEXTURE, x + params.renderX, y + params.renderY, 0, 0, barPixels,
                     HEIGHT, 102, 6);
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            guiGraphics.blit(TEXTURE, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
 
         }
 

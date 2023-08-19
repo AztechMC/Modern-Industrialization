@@ -23,10 +23,7 @@
  */
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.compat.modmenu.OreConfigEntry;
 import aztech.modern_industrialization.datagen.translation.EnglishTranslation;
-import java.util.Collections;
-import java.util.List;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -39,9 +36,6 @@ public class MIConfig implements ConfigData {
 
     @ConfigEntry.Gui.Excluded
     public static final transient String NAME = "modern_industrialization";
-
-    @OreConfigEntry
-    public List<String> blacklistedOres = Collections.emptyList();
 
     @EnglishTranslation(value = "Enable login message when EMI, JEI and REI are missing")
     public boolean enableNoEmiMessage = true;
@@ -70,9 +64,8 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")
     public boolean enableAe2Integration = true;
-    @ConfigEntry.Gui.RequiresRestart
-    @EnglishTranslation(value = "Ore Generation Enabled (Restart needed)")
-    public boolean generateOres = true;
+    @EnglishTranslation(value = "Enable the default ore generation tooltips. Set this to false if you change the ore features in a datapack.")
+    public boolean enableDefaultOreGenTooltips = true;
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Run MI runtime datagen on startup (Restart needed)")
     public boolean datagenOnStartup = false;

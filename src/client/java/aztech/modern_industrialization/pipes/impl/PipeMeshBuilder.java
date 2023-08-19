@@ -29,14 +29,15 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 public class PipeMeshBuilder extends PipePartBuilder {
     private static final RenderMaterial CUTOUT_MATERIAL = RendererAccess.INSTANCE.getRenderer().materialFinder()
-            .blendMode(0, BlendMode.CUTOUT)
-            .disableAo(0, true)
+            .blendMode(BlendMode.CUTOUT)
+            .ambientOcclusion(TriState.FALSE)
             .find();
 
     protected final QuadEmitter emitter;
@@ -100,7 +101,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
                 if (vertexPos.subtract(corners[j]).lengthSqr() < 1e-6) {
                     float realU = sprite.getU0() + spriteSizeU * (float) uvs[j].x();
                     float realV = sprite.getV0() + spriteSizeV * (float) uvs[j].y();
-                    emitter.sprite(i, 0, realU, realV);
+                    emitter.uv(i, realU, realV);
                 }
             }
         }

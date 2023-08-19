@@ -75,7 +75,6 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
                 }
                 RenderSystem.enableBlend();
 
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX + 7, topPos + posY + 7, 60, 38, 32, 48);
 
                 // A bit hacky: draw the capacity corresponding to the shape in the shape selection GUI if it's open. ;)

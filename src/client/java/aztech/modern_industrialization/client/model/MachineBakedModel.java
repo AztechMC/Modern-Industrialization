@@ -100,7 +100,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     private TextureAtlasSprite[] renderBase(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
         // Casing
-        renderContext.meshConsumer().accept(MachineCasingModel.get(casing).getMesh());
+        MachineCasingModel.get(casing).getMesh().outputTo(renderContext.getEmitter());
         // Machine overlays
         var sprites = getSprites(casing);
         QuadEmitter emitter = renderContext.getEmitter();
@@ -146,8 +146,8 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
             emitter.material(cutoutMaterial);
             emitter.square(d, 0, 0, 1, 1, -depth);
             emitter.cullFace(d);
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.color(-1, -1, -1, -1);
             emitter.emit();
         }
     }

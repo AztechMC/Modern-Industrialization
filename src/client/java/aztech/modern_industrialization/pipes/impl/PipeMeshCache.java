@@ -40,6 +40,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -136,7 +137,7 @@ public class PipeMeshCache implements PipeRenderer {
             return meshBuilder.build();
         };
 
-        fluidMaterial = renderer.materialFinder().blendMode(0, BlendMode.SOLID).emissive(0, true).disableAo(0, true).find();
+        fluidMaterial = renderer.materialFinder().blendMode(BlendMode.SOLID).emissive(true).ambientOcclusion(TriState.FALSE).find();
     }
 
     /**
@@ -179,8 +180,8 @@ public class PipeMeshCache implements PipeRenderer {
             ctx.pushTransform(quad -> {
                 if (quad.tag() == 1) {
                     if (still != null) {
-                        quad.spriteBake(0, still, MutableQuadView.BAKE_LOCK_UV);
-                        quad.spriteColor(0, color, color, color, color);
+                        quad.spriteBake(still, MutableQuadView.BAKE_LOCK_UV);
+                        quad.color(color, color, color, color);
                         quad.material(fluidMaterial);
                         return true;
                     } else {
@@ -202,12 +203,12 @@ public class PipeMeshCache implements PipeRenderer {
                 }
                 Mesh mesh = connectionMeshes.computeIfAbsent(new ConnectionMeshKey(endpointType.getId(), logicalSlot, i, renderType),
                         connectionMeshBuilder);
-                ctx.meshConsumer().accept(mesh);
+                mesh.outputTo(ctx.getEmitter());
             }
         }
 
         // Render the center connector
-        ctx.meshConsumer().accept(centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder));
+        centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder).outputTo(ctx.getEmitter());
 
         // Fluid handling logic
         if (customData.contains("fluid")) {

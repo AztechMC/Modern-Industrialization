@@ -138,8 +138,8 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         }
 
                         emitter.square(direction, 0, bottom, 1, top, 0);
-                        emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-                        emitter.spriteColor(0, -1, -1, -1, -1);
+                        emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+                        emitter.color(-1, -1, -1, -1);
 
                         int color = handler.getColor(fluid, be.getLevel(),
                                 BlockPos.containing(be.getBlockPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
@@ -149,7 +149,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         float g = ((color >> 8) & 255) / 256f;
                         float b = (color & 255) / 256f;
 
-                        vc.putBulkData(ms.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                        vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
 
                         ms.translate(offset_v.getX(), offset_v.getY(), offset_v.getZ());
                     }

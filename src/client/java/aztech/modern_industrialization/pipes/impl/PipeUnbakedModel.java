@@ -76,6 +76,6 @@ public class PipeUnbakedModel implements UnbakedModel {
                 spriteGetter.apply(PARTICLE_SPRITE),
                 renderers,
                 meWireConnectors,
-                RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find());
+                RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(BlendMode.TRANSLUCENT).find());
     }
 }

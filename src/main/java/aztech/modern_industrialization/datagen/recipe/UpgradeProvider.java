@@ -26,7 +26,8 @@ package aztech.modern_industrialization.datagen.recipe;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import aztech.modern_industrialization.recipe.json.SmithingRecipeJson;
+import aztech.modern_industrialization.recipe.json.ShapelessRecipeJson;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -34,37 +35,53 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 
-public class SteelUpgradeProvider extends MIRecipesProvider {
+public class UpgradeProvider extends MIRecipesProvider {
 
-    private static final String[] WITH_UPGRADE = { "compressor", "macerator", "cutting_machine", "water_pump", "mixer", "furnace", "boiler" };
-    private static final Set<String> NO_UNPACKER = Set.of("furnace", "boiler");
-
-    public SteelUpgradeProvider(FabricDataOutput packOutput) {
+    public UpgradeProvider(FabricDataOutput packOutput) {
         super(packOutput);
     }
 
     @Override
     public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        buildSteelUpgrades(consumer);
+        buildQuantumUpgrades(consumer);
+    }
 
+    private static final String[] STEEL_UPGRADE_MACHINES = { "compressor", "macerator", "cutting_machine", "water_pump", "mixer", "furnace",
+            "boiler" };
+    private static final Set<String> STEEL_NO_UNPACKER = Set.of("furnace", "boiler");
+
+    private void buildSteelUpgrades(Consumer<FinishedRecipe> consumer) {
         Item upgrade = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_upgrade"));
 
-        for (String machine : WITH_UPGRADE) {
+        for (String machine : STEEL_UPGRADE_MACHINES) {
             Item bronze = BuiltInRegistries.ITEM.get(new MIIdentifier("bronze_" + machine));
             Item steel = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_" + machine));
 
-            SmithingRecipeJson recipe = new SmithingRecipeJson(bronze, upgrade, steel);
-            recipe.offerTo(consumer, "upgrade/smithing/steel/" + machine);
+            var recipe = new ShapelessRecipeJson(steel, 1).addIngredient(bronze).addIngredient(upgrade);
+            recipe.offerTo(consumer, "upgrade/craft/steel/" + machine);
 
-            MIRecipeJson recipePacker = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput(bronze, 1)
+            MIRecipeJson<?> recipePacker = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput(bronze, 1)
                     .addItemInput(upgrade, 1).addItemOutput(steel, 1);
             recipePacker.offerTo(consumer, "upgrade/packer/steel/" + machine);
 
-            if (!NO_UNPACKER.contains(machine)) {
-                MIRecipeJson recipeUnpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
+            if (!STEEL_NO_UNPACKER.contains(machine)) {
+                MIRecipeJson<?> recipeUnpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
                         .addItemOutput(upgrade, 1).addItemInput(steel, 1);
                 recipeUnpacker.offerTo(consumer, "upgrade/unpacker/steel/" + machine);
             }
         }
+    }
 
+    private static final List<String> QUANTUM_ITEMS = List.of("helmet", "chestplate", "leggings", "boots", "sword");
+
+    private void buildQuantumUpgrades(Consumer<FinishedRecipe> consumer) {
+        for (var itemType : QUANTUM_ITEMS) {
+            MIRecipeJson<?> packerRecipe = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 1_000_000, 200)
+                    .addItemInput("minecraft:netherite_" + itemType, 1)
+                    .addItemInput("modern_industrialization:quantum_upgrade", 1)
+                    .addItemOutput("modern_industrialization:quantum_" + itemType, 1);
+            packerRecipe.offerTo(consumer, "upgrade/packer/quantum/" + itemType);
+        }
     }
 }

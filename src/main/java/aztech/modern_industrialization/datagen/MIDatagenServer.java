@@ -35,7 +35,7 @@ import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipesProvid
 import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.SteelUpgradeProvider;
+import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
@@ -57,7 +57,7 @@ public class MIDatagenServer {
         aggregate.addProvider(DyeRecipesProvider::new);
         aggregate.addProvider(AssemblerRecipesProvider::new);
         aggregate.addProvider(CompatRecipesProvider::new);
-        aggregate.addProvider(SteelUpgradeProvider::new);
+        aggregate.addProvider(UpgradeProvider::new);
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
         aggregate.addProvider(BlockLootTableProvider::new);

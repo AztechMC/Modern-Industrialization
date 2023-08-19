@@ -48,7 +48,7 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -68,10 +68,12 @@ public class MIPipes {
 
     public static final Map<PipeItem, CableTier> ELECTRICITY_PIPE_TIER = new HashMap<>();
 
-    public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
-            .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
-    public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = ScreenHandlerRegistry
-            .registerExtended(new MIIdentifier("fluid_pipe"), FluidPipeScreenHandler::new);
+    public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = Registry.register(BuiltInRegistries.MENU,
+            new MIIdentifier("item_pipe"),
+            new ExtendedScreenHandlerType<>(ItemPipeScreenHandler::new));
+    public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = Registry.register(BuiltInRegistries.MENU,
+            new MIIdentifier("fluid_pipe"),
+            new ExtendedScreenHandlerType<>(FluidPipeScreenHandler::new));
 
     public static final Set<ResourceLocation> ITEM_PIPE_MODELS = new HashSet<>();
 

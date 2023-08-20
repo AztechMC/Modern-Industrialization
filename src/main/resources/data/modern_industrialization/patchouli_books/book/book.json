@@ -5,5 +5,6 @@
   "model": "modern_industrialization:guidebook",
   "dont_generate_book": true,
   "custom_book_item": "modern_industrialization:guidebook",
-  "show_progress": false
+  "show_progress": false,
+  "use_resource_pack": true
 }

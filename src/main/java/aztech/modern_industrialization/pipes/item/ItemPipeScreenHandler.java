@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.api.ReiDraggable;
-import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;

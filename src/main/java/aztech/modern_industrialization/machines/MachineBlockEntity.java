@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.api.WrenchableBlockEntity;
+import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;

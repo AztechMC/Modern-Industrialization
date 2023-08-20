@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.compat.waila.holder.FluidStorageComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;

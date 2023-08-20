@@ -25,7 +25,12 @@ package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIText;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.ApiStatus;
 
+/**
+ * You can use the enum constants just fine but everything else might change when we add an API to register cable tiers!
+ */
+@ApiStatus.Experimental
 public enum CableTier {
     LV("LV", "lv", 32, MIText.CableTierLV),
     MV("MV", "mv", 32 * 4, MIText.CableTierMV),

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.compat.viewer;
 
 import aztech.modern_industrialization.util.Simulation;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;

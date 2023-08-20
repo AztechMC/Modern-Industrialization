@@ -31,8 +31,10 @@ copy the relevant file from that folder to the main language folder,
 and modify it to remove the erroring entries.
 
 ## Creating an addon for Modern Industrialization
-There is no public API. If you want one to be made, for example to add new types of pipes or machines,
-please come discuss the features you need on our Discord.
+Everything in the `aztechmc.modern_industrialization.api` package is the stable public API,
+which will not change during a major Minecraft version. (Unless stated otherwise in the documentation of the relevant files).
+
+If you need more things to be exposed please come discuss the features you need on our Discord.
 The link is on CurseForge.
 
 ## License

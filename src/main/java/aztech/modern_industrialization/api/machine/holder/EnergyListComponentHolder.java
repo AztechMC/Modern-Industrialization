@@ -21,16 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.machine.holder;
 
-import java.util.Set;
-import net.minecraft.world.item.Item;
+import aztech.modern_industrialization.api.machine.component.EnergyAccess;
+import java.util.List;
 
-public interface WhitelistedItemStorage {
-    boolean currentlyWhitelisted();
-
-    /**
-     * Write whitelisted items to the set.
-     */
-    void getWhitelistedItems(Set<Item> item);
+public interface EnergyListComponentHolder {
+    List<? extends EnergyAccess> getEnergyComponents();
 }

@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.api.machine.component.ItemAccess;
+import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ import net.minecraft.world.item.Items;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> {
+public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
 
     public ConfigurableItemStack() {
@@ -179,6 +180,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     public int getAdjustedCapacity() {
         return adjustedCapacity;
+    }
+
+    @Override
+    public ItemVariant getVariant() {
+        return getResource();
     }
 
     public class ConfigurableItemSlot extends HackySlot implements ReiDraggable, BackgroundRenderedSlot {

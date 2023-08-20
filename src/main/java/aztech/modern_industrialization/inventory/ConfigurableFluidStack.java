@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.api.machine.component.FluidAccess;
+import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.base.Preconditions;
@@ -50,7 +51,7 @@ import net.minecraft.world.level.material.Fluids;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidVariant> {
+public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidVariant> implements FluidAccess {
     private long capacity;
 
     public ConfigurableFluidStack(long capacity) {
@@ -192,6 +193,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         CompoundTag tag = super.toNbt();
         tag.putLong("capacity", capacity);
         return tag;
+    }
+
+    @Override
+    public FluidVariant getVariant() {
+        return getResource();
     }
 
     public class ConfigurableFluidSlot extends Slot implements ReiDraggable, BackgroundRenderedSlot {

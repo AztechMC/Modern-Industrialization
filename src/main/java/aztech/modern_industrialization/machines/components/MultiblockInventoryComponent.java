@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.api.machine.component.InventoryAccess;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ChangeListener;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
-public class MultiblockInventoryComponent implements CrafterComponent.Inventory {
+public class MultiblockInventoryComponent implements CrafterComponent.Inventory, InventoryAccess {
     private final List<ConfigurableItemStack> itemInputs = new ArrayList<>();
     private final List<ConfigurableItemStack> itemOutputs = new ArrayList<>();
     private final List<ConfigurableFluidStack> fluidInputs = new ArrayList<>();

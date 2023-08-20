@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.pipes.item;
+package aztech.modern_industrialization.api.pipe.item;
 
 import aztech.modern_industrialization.MIItem;
 import java.util.IdentityHashMap;

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.api.DynamicEnchantmentItem;
+import aztech.modern_industrialization.items.DynamicEnchantmentItem;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.items.diesel_tools;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.MIFluid;
+import aztech.modern_industrialization.items.DynamicEnchantmentItem;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;

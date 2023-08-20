@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.api.WrenchableBlockEntity;
+import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;

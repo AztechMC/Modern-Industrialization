@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
+import aztech.modern_industrialization.api.machine.component.EnergyAccess;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
@@ -35,7 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class EnergyComponent implements IComponent.ServerOnly {
+public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
     private long storedEu;
     private final Supplier<Long> capacity;
     private final BlockEntity blockEntity; // used to call setChanged()
@@ -67,10 +68,12 @@ public class EnergyComponent implements IComponent.ServerOnly {
         this.blockEntity = blockEntity;
     }
 
+    @Override
     public long getEu() {
         return Math.min(storedEu, capacity.get());
     }
 
+    @Override
     public long getCapacity() {
         return capacity.get();
     }

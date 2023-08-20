@@ -23,13 +23,14 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.machines.IComponent;
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.nbt.CompoundTag;
 
-public class FluidStorageComponent implements IComponent {
+public class FluidStorageComponent implements IComponent, FluidAccess {
 
     private long capacity;
 
@@ -49,6 +50,7 @@ public class FluidStorageComponent implements IComponent {
         return singleStorageVariant;
     }
 
+    @Override
     public long getCapacity() {
         return capacity;
     }
@@ -63,6 +65,7 @@ public class FluidStorageComponent implements IComponent {
         return singleStorageVariant.variant;
     }
 
+    @Override
     public long getAmount() {
         return singleStorageVariant.amount;
     }
@@ -79,5 +82,10 @@ public class FluidStorageComponent implements IComponent {
         singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"));
         singleStorageVariant.amount = tag.getLong("amount");
         capacity = tag.getLong("capacity");
+    }
+
+    @Override
+    public FluidVariant getVariant() {
+        return getFluid();
     }
 }

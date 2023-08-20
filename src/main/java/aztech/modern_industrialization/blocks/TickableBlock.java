@@ -21,10 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.holder;
+package aztech.modern_industrialization.blocks;
 
-import aztech.modern_industrialization.machines.components.MultiblockInventoryComponent;
+import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.util.Tickable;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-public interface MultiblockInventoryComponentHolder {
-    MultiblockInventoryComponent getMultiblockInventoryComponent();
+public interface TickableBlock extends EntityBlock {
+    @Override
+    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE)) {
+            // Pipes don't tick on the client.
+            return null;
+        }
+        return (w, p, s, be) -> {
+            if (be instanceof Tickable) {
+                ((Tickable) be).tick();
+            }
+        };
+    }
 }

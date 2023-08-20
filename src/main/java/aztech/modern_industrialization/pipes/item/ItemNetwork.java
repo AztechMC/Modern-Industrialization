@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.api.WhitelistedItemStorage;
+import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.StorageUtil2;

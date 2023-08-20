@@ -21,10 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.machine.component;
 
-import aztech.modern_industrialization.api.energy.CableTier;
+import java.util.List;
 
-public interface MachineCasingUpgrade {
-    CableTier cableTier();
+public interface InventoryAccess {
+    List<? extends FluidAccess> getFluidInputs();
+
+    List<? extends FluidAccess> getFluidOutputs();
+
+    List<? extends ItemAccess> getItemInputs();
+
+    List<? extends ItemAccess> getItemOutputs();
 }

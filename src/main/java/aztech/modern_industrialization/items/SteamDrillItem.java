@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;

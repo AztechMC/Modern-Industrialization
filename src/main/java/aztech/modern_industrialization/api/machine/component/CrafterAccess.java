@@ -21,14 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.machine.component;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ElytraItem;
-import net.minecraft.world.item.ItemStack;
+public interface CrafterAccess {
+    InventoryAccess getInventory();
 
-public interface IElytraItem {
-    default boolean allowElytraFlight(ItemStack stack, LivingEntity user) {
-        return ElytraItem.isFlyEnabled(stack);
-    }
+    boolean hasActiveRecipe();
+
+    float getProgress();
+
+    int getEfficiencyTicks();
+
+    int getMaxEfficiencyTicks();
+
+    long getBaseRecipeEu();
+
+    long getCurrentRecipeEu();
 }

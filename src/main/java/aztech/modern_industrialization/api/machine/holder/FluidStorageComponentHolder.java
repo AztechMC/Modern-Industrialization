@@ -21,23 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativestorageunit;
+package aztech.modern_industrialization.api.machine.holder;
 
-import aztech.modern_industrialization.blocks.TickableBlock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class CreativeStorageUnitBlock extends Block implements TickableBlock {
-    public CreativeStorageUnitBlock(Properties properties) {
-        super(properties);
-    }
-
+public interface FluidStorageComponentHolder {
     @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeStorageUnitBlockEntity(pos, state);
-    }
+    FluidAccess getFluidStorageComponent();
 }

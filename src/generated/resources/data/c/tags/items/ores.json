@@ -11,9 +11,9 @@
     "#c:tungsten_ores",
     "#c:titanium_ores",
     "#c:lignite_coal_ores",
+    "#c:monazite_ores",
     "#c:bauxite_ores",
     "#c:antimony_ores",
-    "#c:nickel_ores",
-    "#c:mozanite_ores"
+    "#c:nickel_ores"
   ]
 }

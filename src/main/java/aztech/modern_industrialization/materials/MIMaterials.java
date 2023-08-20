@@ -80,7 +80,7 @@ public class MIMaterials {
     public static final Material LE_URANIUM;
     public static final Material LIGNITE_COAL;
     public static final Material MANGANESE;
-    public static final Material MOZANITE;
+    public static final Material MONAZITE;
     public static final Material NEODYMIUM;
     public static final Material NICKEL;
     public static final Material NUCLEAR_ALLOY;
@@ -645,7 +645,7 @@ public class MIMaterials {
                         .cancelRecipes("assembler/tank")
                         .cancelRecipes("assembler/barrel"));
 
-        MOZANITE = MaterialRegistry.addMaterial(new MaterialBuilder("Mozanite", "mozanite")
+        MONAZITE = MaterialRegistry.addMaterial(new MaterialBuilder("Monazite", "monazite")
                 .set(MaterialProperty.MAIN_PART, DUST)
                 .set(MaterialProperty.SET, STONE)
                 .set(MaterialProperty.MEAN_RGB, 0x96248e)

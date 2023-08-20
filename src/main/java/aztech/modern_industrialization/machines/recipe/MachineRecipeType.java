@@ -175,7 +175,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             if (recipe.itemOutputs.size() != 1)
                 throw new IllegalArgumentException("Must have exactly one item output.");
             if (recipe.itemInputs.get(0).probability != 1.0f || recipe.itemOutputs.get(0).probability != 1.0f)
-                throw new IllegalArgumentException("Changed recipes are not supported for the forge hammer.");
+                throw new IllegalArgumentException("Chanced recipes are not supported for the forge hammer.");
         }
     }
 

@@ -41,6 +41,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -63,8 +65,17 @@ public class MachineRegistrationHelper {
         BlockDefinition<MachineBlock> blockDefinition = MIBlock.block(
                 englishName,
                 id,
-                MIBlock.BlockDefinitionParams.defaultStone().sortOrder(SortOrder.MACHINES).withBlockConstructor(
-                        (s) -> new MachineBlock(ctor, s)).noModel().isValidSpawn(MobSpawning.NO_SPAWN),
+                MIBlock.BlockDefinitionParams.defaultStone()
+                        .sortOrder(SortOrder.MACHINES)
+                        .withBlockConstructor((s) -> new MachineBlock(ctor, s))
+                        .withModel((block, gen) -> {
+                            // Item model is in code
+                            gen.skipAutoItemBlock(block);
+                            // Add a single block state definition mapping to the item model (which is a code model that we provide).
+                            gen.blockStateOutput.accept(
+                                    BlockModelGenerators.createSimpleBlock(block, ModelLocationUtils.getModelLocation(block.asItem())));
+                        })
+                        .isValidSpawn(MobSpawning.NO_SPAWN),
                 MachineBlock.class);
 
         Block block = blockDefinition.asBlock();

@@ -21,11 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.client.model;
+package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasingModel;
-import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

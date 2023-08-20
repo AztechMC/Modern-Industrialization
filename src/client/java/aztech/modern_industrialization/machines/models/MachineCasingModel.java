@@ -47,15 +47,12 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Auto-registers itself when created!
- */
 public class MachineCasingModel implements UnbakedModel, BakedModel {
     public static MachineCasingModel get(MachineCasing casing) {
         return (MachineCasingModel) casing.model;
     }
 
-    private ResourceLocation id;
+    ResourceLocation id;
     /**
      * <ol>
      * <li>Top texture</li>
@@ -75,19 +72,6 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
             spriteIds[i] = new Material(InventoryMenu.BLOCK_ATLAS,
                     new MIIdentifier("block/casings/" + folder + "/" + SIDES[i]));
         }
-
-        MachineModelProvider.register(id, this);
-        MachineModelProvider.loadManually(id);
-    }
-
-    public MachineCasingModel(ResourceLocation id, Mesh mesh, TextureAtlasSprite sideSprite) {
-        this.id = id;
-        this.mesh = mesh;
-        this.sideSprite = sideSprite;
-    }
-
-    public ResourceLocation getId() {
-        return id;
     }
 
     public Mesh getMesh() {
@@ -126,14 +110,6 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         }
         this.mesh = meshBuilder.build();
         return this;
-    }
-
-    public void setMesh(Mesh mesh) {
-        this.mesh = mesh;
-    }
-
-    public void setSideSprite(TextureAtlasSprite sideSprite) {
-        this.sideSprite = sideSprite;
     }
 
     public void setId(ResourceLocation id) {

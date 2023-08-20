@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
@@ -35,8 +36,8 @@ import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeColorProvider;
 import aztech.modern_industrialization.pipes.impl.PipeMeshCache;
-import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
+import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.util.InGameMouseScrollCallback;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -47,7 +48,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.DelegatingUnbakedModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -57,7 +59,9 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +73,25 @@ public class MIPipesClient {
     public static volatile boolean transparentCamouflage = false;
 
     public void setupClient() {
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new PipeModelProvider());
+        ModelLoadingPlugin.register(pluginCtx -> {
+            ResourceLocation blockModelLocation = new MIIdentifier("block/pipe");
+            UnbakedModel itemModel = new DelegatingUnbakedModel(blockModelLocation);
+
+            pluginCtx.resolveModel().register(ctx -> {
+                if (!ctx.id().getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                    return null;
+                }
+
+                if (ctx.id().equals(blockModelLocation)) {
+                    return new PipeUnbakedModel();
+                }
+                if (MIPipes.ITEM_PIPE_MODELS.contains(ctx.id())) {
+                    return itemModel;
+                }
+                return null;
+            });
+        });
+
         ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
         MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
         MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, FluidPipeScreen::new);

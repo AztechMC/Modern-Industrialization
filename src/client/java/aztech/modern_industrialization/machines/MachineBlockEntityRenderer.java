@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.client.model.MachineBakedModel;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
+import aztech.modern_industrialization.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import com.mojang.blaze3d.vertex.PoseStack;

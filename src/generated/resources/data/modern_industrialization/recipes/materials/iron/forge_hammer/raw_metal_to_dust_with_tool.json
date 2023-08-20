@@ -1,7 +1,6 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "duration": 0,
-  "eu": 30,
+  "hammer_damage": 30,
   "item_inputs": [
     {
       "amount": 3,

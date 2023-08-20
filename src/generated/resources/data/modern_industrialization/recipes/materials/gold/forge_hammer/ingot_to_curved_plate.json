@@ -1,7 +1,5 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "duration": 0,
-  "eu": 0,
   "item_inputs": [
     {
       "amount": 2,

@@ -45,7 +45,7 @@ public class MachineRecipe implements Recipe<Container> {
     final ResourceLocation id;
     final MachineRecipeType type;
 
-    public int eu;
+    public int eu; // Also used for forge hammer damage
     public int duration;
     public List<ItemInput> itemInputs;
     public List<FluidInput> fluidInputs;

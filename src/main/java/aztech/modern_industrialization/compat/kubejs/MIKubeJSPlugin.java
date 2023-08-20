@@ -56,7 +56,8 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-            event.register(mrt.getId(), MachineRecipeSchema.SCHEMA);
+            event.register(mrt.getId(),
+                    mrt == MIMachineRecipeTypes.FORGE_HAMMER ? MachineRecipeSchema.FORGE_HAMMER_SCHEMA : MachineRecipeSchema.SCHEMA);
         }
     }
 

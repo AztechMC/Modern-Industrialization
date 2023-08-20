@@ -25,6 +25,7 @@ package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
@@ -259,5 +260,19 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> extends RecipeJson {
 
     public T addFluidOutput(Fluid fluid, int amount, double probability) {
         return addFluidOutput(BuiltInRegistries.FLUID.getKey(fluid).toString(), amount, probability);
+    }
+
+    @Override
+    public JsonObject toJsonObject() {
+        var ret = super.toJsonObject();
+        if (type.equals("modern_industrialization:forge_hammer")) {
+            // Remove duration from forge hammer recipes and convert eu to hammer_damage if > 0
+            ret.remove("duration");
+            int dmg = ret.remove("eu").getAsInt();
+            if (dmg > 0) {
+                ret.addProperty("hammer_damage", dmg);
+            }
+        }
+        return ret;
     }
 }

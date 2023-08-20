@@ -121,9 +121,8 @@ public final class MachineRecipeSchema {
         }
     };
 
-    // Can't use positive integer because Forge Hammer allows 0
-    private static final RecipeKey<Integer> EU = NumberComponent.INT.key("eu");
-    private static final RecipeKey<Integer> DURATION = NumberComponent.INT.key("duration");
+    private static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).key("eu");
+    private static final RecipeKey<Integer> DURATION = NumberComponent.intRange(1, Integer.MAX_VALUE).key("duration");
     private static final RecipeKey<ChancedInputItem[]> ITEM_INPUTS = ITEM_INPUT.asArrayOrSelf().key("item_inputs");
     private static final RecipeKey<OutputItem[]> ITEM_OUTPUTS = ItemComponents.OUTPUT.asArrayOrSelf().key("item_outputs");
 
@@ -135,6 +134,15 @@ public final class MachineRecipeSchema {
             ITEM_INPUTS.optional(ty -> new ChancedInputItem[0]),
             ITEM_OUTPUTS.optional(ty -> new OutputItem[0]))
                     .constructor(EU, DURATION);
+
+    private static final RecipeKey<Integer> HAMMER_DAMAGE = NumberComponent.INT.key("hammer_damage").optional(0);
+    public static final RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
+            MachineRecipeJS.class,
+            MachineRecipeJS::new,
+            HAMMER_DAMAGE,
+            ITEM_INPUTS,
+            ITEM_OUTPUTS)
+                    .constructor(HAMMER_DAMAGE);
 
     private MachineRecipeSchema() {
     }

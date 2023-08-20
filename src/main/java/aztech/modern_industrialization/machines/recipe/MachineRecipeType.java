@@ -168,6 +168,15 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             throw new IllegalArgumentException("Must have at least one fluid or item input.");
         if (recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0)
             throw new IllegalArgumentException("Must have at least one fluid or item output.");
+
+        if (this == MIMachineRecipeTypes.FORGE_HAMMER) {
+            if (recipe.itemInputs.size() != 1)
+                throw new IllegalArgumentException("Must have exactly one item input.");
+            if (recipe.itemOutputs.size() != 1)
+                throw new IllegalArgumentException("Must have exactly one item output.");
+            if (recipe.itemInputs.get(0).probability != 1.0f || recipe.itemOutputs.get(0).probability != 1.0f)
+                throw new IllegalArgumentException("Changed recipes are not supported for the forge hammer.");
+        }
     }
 
     @Override
@@ -175,8 +184,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         MachineRecipe recipe = new MachineRecipe(id, this);
 
         if (this.id.equals(MIMachineRecipeTypes.FORGE_HAMMER.id)) {
-            recipe.eu = readNonNegativeInt(json, "eu");
-            recipe.duration = readNonNegativeInt(json, "duration");
+            recipe.eu = json.has("hammer_damage") ? readNonNegativeInt(json, "hammer_damage") : 0;
+            recipe.duration = 0;
         } else {
             recipe.eu = readPositiveInt(json, "eu");
             recipe.duration = readPositiveInt(json, "duration");

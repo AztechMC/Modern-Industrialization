@@ -35,7 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RecipeJson {
     public static Gson GSON = new Gson();
 
-    public final JsonObject toJsonObject() {
+    public JsonObject toJsonObject() {
         return GSON.toJsonTree(this).getAsJsonObject();
     }
 

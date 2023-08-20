@@ -1,12 +1,12 @@
 {
   "name": "Better Diesel",
   "category": "modern_industrialization:midgame",
-  "icon": "modern_industrialization:turbo_diesel_generator",
+  "icon": "modern_industrialization:hv_diesel_generator",
   "pages": [
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/turbo_diesel_generator_asbl",
-      "text": "Keep in mind you can use a Turbo Diesel Generator for compat HV power generation. As you might expect, it produces up to 1024 EU/t. Remember that you can find the amount of energy stored in every fuel with REI."
+      "recipe": "modern_industrialization:electric_age/machine/hv_diesel_generator_asbl",
+      "text": "Keep in mind you can use an HV Diesel Generator for compact HV power generation. As you might expect, it produces up to 1024 EU/t. Remember that you can find the amount of energy stored in every fuel with REI."
     },
     {
       "type": "crafting",

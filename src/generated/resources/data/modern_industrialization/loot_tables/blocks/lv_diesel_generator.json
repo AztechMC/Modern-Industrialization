@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "modern_industrialization:diesel_generator"
+          "name": "modern_industrialization:lv_diesel_generator"
         }
       ],
       "rolls": 1.0

@@ -25,7 +25,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_diesel_generator"
+      "item": "modern_industrialization:hv_diesel_generator"
     }
   ],
   "item_outputs": [

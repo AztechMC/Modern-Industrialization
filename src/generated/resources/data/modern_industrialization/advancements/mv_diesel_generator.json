@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "modern_industrialization:diesel_generator"
+              "modern_industrialization:mv_diesel_generator"
             ]
           }
         ]
@@ -17,16 +17,16 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancements.modern_industrialization.diesel_generator.description"
+      "translate": "advancements.modern_industrialization.mv_diesel_generator.description"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "modern_industrialization:diesel_generator"
+      "item": "modern_industrialization:mv_diesel_generator"
     },
     "show_toast": true,
     "title": {
-      "translate": "advancements.modern_industrialization.diesel_generator"
+      "translate": "advancements.modern_industrialization.mv_diesel_generator"
     }
   },
   "requirements": [

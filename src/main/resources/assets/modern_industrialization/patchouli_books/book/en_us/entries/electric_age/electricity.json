@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/steam_turbine_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/lv_steam_turbine_asbl",
       "text": "The Steam Turbine uses Steam to produce electricity. It converts every mb of Steam to 1 EU, up to 32 mb converted every tick."
     },
     {
@@ -14,8 +14,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/starter_diesel_generator_asbl",
-      "text": "The Starter Diesel Generator is an alternative to the Steam Turbine. It uses various fuels to produce electricity. For now, you can burn Creosote. (See REI for the list of burnable fuels)."
+      "recipe": "modern_industrialization:electric_age/machine/lv_diesel_generator_asbl",
+      "text": "The Diesel Generator is an alternative to the Steam Turbine. It uses various fuels to produce electricity. For now, you can burn Creosote. (See REI for the list of burnable fuels)."
     },
     {
       "type": "text",

@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:turbo_diesel_generator",
+  "parent": "modern_industrialization:hv_diesel_generator",
   "criteria": {
     "checkInv": {
       "conditions": {

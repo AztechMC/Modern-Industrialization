@@ -81,12 +81,12 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var oilDrillingRig = createBasic(consumer, "oil_drilling_rig", electronicCircuit, FrameType.GOAL, "Bringing Freedom To Your Country", "Craft an Oil Drilling Rig");
         var vacuumFreezer = createBasic(consumer, "vacuum_freezer", electronicCircuit, FrameType.GOAL, "Enslaved Winter", "Craft a Vacuum Freezer");
         var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electronicCircuit, FrameType.GOAL, "Better Than Wind Mills", "Craft an Advanced Steam Turbine");
-        var dieselGenerator = createBasic(consumer, "diesel_generator", distillery, "Fast and Furious", "Craft a Diesel Generator");
+        var dieselGenerator = createBasic(consumer, "mv_diesel_generator", distillery, "Fast and Furious", "Craft an MV Diesel Generator");
         var dieselJetpack = createBasic(consumer, "diesel_jetpack", distillery, FrameType.CHALLENGE, "Ely... We Meant Jetpack!", "Craft a Diesel Jetpack");
         var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, FrameType.CHALLENGE, "The Texas Chain Saw Massacre", "Craft a Diesel Chainsaw");
         var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", distillery, FrameType.CHALLENGE, "Through The Walls Of Ba Sing Se", "Craft a Diesel Mining Drill");
         var digitalCircuit = createBasic(consumer, "digital_circuit", distillery, "No need for Sodium anymore", "Craft a Digital Circuit");
-        var turboDieselGenerator = createBasic(consumer, "turbo_diesel_generator", dieselGenerator, "Fast and Furious 2 : Revenge", "Craft a Turbo Diesel Generator");
+        var turboDieselGenerator = createBasic(consumer, "hv_diesel_generator", dieselGenerator, "Fast and Furious 2 : Revenge", "Craft an HV Diesel Generator");
         var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator, "Fast and Furious 42 : Armageddon", "Craft a Large Diesel Generator");
         var hvSteamTurbine = createBasic(consumer, "hv_steam_turbine", mvSteamTurbine, "Better than Water Wheel", "Craft an HV Steam Turbine");
         var largeSteamTurbine = createBasic(consumer, "large_steam_turbine", hvSteamTurbine, "Enslaved Hurricane", "Craft a Large Steam Turbine");

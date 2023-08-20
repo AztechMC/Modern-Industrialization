@@ -21,12 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.inventory;
 
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
+import java.util.Set;
+import net.minecraft.world.item.Item;
 
-public interface WrenchableBlockEntity {
-    boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult);
+public interface WhitelistedItemStorage {
+    boolean currentlyWhitelisted();
+
+    /**
+     * Write whitelisted items to the set.
+     */
+    void getWhitelistedItems(Set<Item> item);
 }

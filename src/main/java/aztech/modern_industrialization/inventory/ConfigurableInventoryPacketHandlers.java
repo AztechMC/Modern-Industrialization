@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.util.Simulation;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

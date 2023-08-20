@@ -21,18 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.machine.holder;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
+import aztech.modern_industrialization.api.machine.component.CrafterAccess;
 
-/**
- * An item that can provide enchantments dynamically.
- */
-public interface DynamicEnchantmentItem {
-    /**
-     * Return current enchantments. Will override those that the stack already has.
-     */
-    Reference2IntMap<Enchantment> getEnchantments(ItemStack stack);
+public interface CrafterComponentHolder {
+    CrafterAccess getCrafterComponent();
 }

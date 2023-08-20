@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.api.TickableBlock;
+import aztech.modern_industrialization.blocks.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import java.util.HashMap;

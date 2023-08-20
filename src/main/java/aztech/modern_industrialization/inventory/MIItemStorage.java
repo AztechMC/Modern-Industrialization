@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.api.WhitelistedItemStorage;
 import java.util.List;
 import java.util.Set;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;

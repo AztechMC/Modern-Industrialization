@@ -24,7 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;

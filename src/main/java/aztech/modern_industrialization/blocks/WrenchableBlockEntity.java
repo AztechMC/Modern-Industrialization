@@ -21,23 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativestorageunit;
+package aztech.modern_industrialization.blocks;
 
-import aztech.modern_industrialization.blocks.TickableBlock;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 
-public class CreativeStorageUnitBlock extends Block implements TickableBlock {
-    public CreativeStorageUnitBlock(Properties properties) {
-        super(properties);
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeStorageUnitBlockEntity(pos, state);
-    }
+public interface WrenchableBlockEntity {
+    boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult);
 }

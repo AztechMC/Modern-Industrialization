@@ -28,7 +28,7 @@ import static aztech.modern_industrialization.machines.components.FluidItemConsu
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
-import aztech.modern_industrialization.compat.waila.holder.EnergyComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;

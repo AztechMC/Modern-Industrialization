@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.util.Simulation;
 import dev.emi.emi.api.EmiDragDropHandler;

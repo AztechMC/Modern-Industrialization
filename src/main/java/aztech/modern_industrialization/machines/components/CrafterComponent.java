@@ -27,6 +27,8 @@ import static aztech.modern_industrialization.util.Simulation.ACT;
 import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.api.machine.component.CrafterAccess;
+import aztech.modern_industrialization.api.machine.component.InventoryAccess;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -57,7 +59,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
-public class CrafterComponent implements IComponent.ServerOnly {
+public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     private final MachineProcessCondition.Context conditionContext;
 
     public CrafterComponent(MachineBlockEntity blockEntity, Inventory inventory, Behavior behavior) {
@@ -66,7 +68,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         this.conditionContext = () -> blockEntity;
     }
 
-    public interface Inventory {
+    public interface Inventory extends InventoryAccess {
         List<ConfigurableItemStack> getItemInputs();
 
         List<ConfigurableItemStack> getItemOutputs();
@@ -130,18 +132,22 @@ public class CrafterComponent implements IComponent.ServerOnly {
     private int lastInvHash = 0;
     private int lastForcedTick = 0;
 
+    @Override
     public float getProgress() {
         return (float) usedEnergy / recipeEnergy;
     }
 
+    @Override
     public int getEfficiencyTicks() {
         return efficiencyTicks;
     }
 
+    @Override
     public int getMaxEfficiencyTicks() {
         return maxEfficiencyTicks;
     }
 
+    @Override
     public boolean hasActiveRecipe() {
         return activeRecipe != null;
     }
@@ -163,11 +169,13 @@ public class CrafterComponent implements IComponent.ServerOnly {
         efficiencyTicks = Math.min(efficiencyTicks + increment, maxEfficiencyTicks);
     }
 
+    @Override
     public long getCurrentRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
         return recipeMaxEu;
     }
 
+    @Override
     public long getBaseRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
         return activeRecipe.eu;

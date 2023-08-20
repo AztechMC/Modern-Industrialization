@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.holder;
+package aztech.modern_industrialization.api.machine.holder;
 
-import aztech.modern_industrialization.machines.components.EnergyComponent;
+import aztech.modern_industrialization.api.machine.component.InventoryAccess;
 
-public interface EnergyComponentHolder {
-    EnergyComponent getEnergyComponent();
+public interface MultiblockInventoryComponentHolder {
+    InventoryAccess getMultiblockInventoryComponent();
 }

@@ -23,9 +23,8 @@
  */
 package aztech.modern_industrialization.compat.waila.server;
 
-import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.CrafterComponent;
 import mcp.mobius.waila.api.IDataProvider;
 import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -35,7 +34,7 @@ public class OverclockComponentProvider implements IDataProvider<MachineBlockEnt
     @Override
     public void appendData(IDataWriter data, IServerAccessor<MachineBlockEntity> accessor, IPluginConfig config) {
         if (accessor.getTarget() instanceof CrafterComponentHolder crafterComponentHolder) {
-            CrafterComponent crafterComponent = crafterComponentHolder.getCrafterComponent();
+            var crafterComponent = crafterComponentHolder.getCrafterComponent();
             if (crafterComponent.hasActiveRecipe() && crafterComponent.getMaxEfficiencyTicks() > 0) {
                 data.raw().putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
                 data.raw().putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());

@@ -21,12 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.holder;
+package aztech.modern_industrialization.api.machine.component;
 
-import aztech.modern_industrialization.machines.components.FluidStorageComponent;
-import org.jetbrains.annotations.Nullable;
+import com.google.common.primitives.Ints;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.world.item.ItemStack;
 
-public interface FluidStorageComponentHolder {
-    @Nullable
-    FluidStorageComponent getFluidStorageComponent();
+public interface ItemAccess {
+    ItemVariant getVariant();
+
+    long getAmount();
+
+    default ItemStack toStack() {
+        return getVariant().toStack(Ints.saturatedCast(getAmount()));
+    }
 }

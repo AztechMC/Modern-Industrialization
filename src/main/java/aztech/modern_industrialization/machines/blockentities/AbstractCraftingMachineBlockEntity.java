@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
-import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;

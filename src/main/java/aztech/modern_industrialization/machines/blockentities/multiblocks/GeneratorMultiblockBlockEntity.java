@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.compat.waila.holder.EnergyListComponentHolder;
-import aztech.modern_industrialization.compat.waila.holder.MultiblockInventoryComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;

@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.blocks.creativestorageunit;
 
 import aztech.modern_industrialization.MIBlockEntityTypes;
-import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
+import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.util.Tickable;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;

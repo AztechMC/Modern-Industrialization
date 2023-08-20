@@ -23,16 +23,14 @@
  */
 package aztech.modern_industrialization.compat.waila.server;
 
-import aztech.modern_industrialization.compat.waila.holder.CrafterComponentHolder;
-import aztech.modern_industrialization.compat.waila.holder.EnergyComponentHolder;
-import aztech.modern_industrialization.compat.waila.holder.EnergyListComponentHolder;
-import aztech.modern_industrialization.compat.waila.holder.FluidStorageComponentHolder;
-import aztech.modern_industrialization.compat.waila.holder.MultiblockInventoryComponentHolder;
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.api.machine.component.FluidAccess;
+import aztech.modern_industrialization.api.machine.component.ItemAccess;
+import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.FluidStorageComponentHolder;
+import aztech.modern_industrialization.api.machine.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import com.google.common.primitives.Ints;
 import java.util.List;
 import mcp.mobius.waila.api.IDataProvider;
 import mcp.mobius.waila.api.IDataWriter;
@@ -42,7 +40,6 @@ import mcp.mobius.waila.api.data.EnergyData;
 import mcp.mobius.waila.api.data.FluidData;
 import mcp.mobius.waila.api.data.ItemData;
 import mcp.mobius.waila.api.data.ProgressData;
-import net.minecraft.world.item.ItemStack;
 
 public class MachineComponentProvider implements IDataProvider<MachineBlockEntity> {
 
@@ -58,7 +55,7 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                     long stored = 0;
                     long capacity = 0;
 
-                    for (EnergyComponent component : components) {
+                    for (var component : components) {
                         stored += component.getEu();
                         capacity += component.getCapacity();
                     }
@@ -89,7 +86,7 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                 var component = holder.getFluidStorageComponent();
 
                 if (component != null) {
-                    var fluid = component.getFluid();
+                    var fluid = component.getVariant();
                     res.add(FluidData.of(FluidData.Unit.DROPLETS)
                             .add(fluid.getFluid(), fluid.getNbt(), component.getAmount(), component.getCapacity()));
                 }
@@ -133,12 +130,12 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
                     var inventory = component.getInventory();
                     var progressData = ProgressData.ratio(progress);
 
-                    for (ConfigurableItemStack stack : inventory.getItemInputs()) {
-                        progressData.input(toStack(stack));
+                    for (var stack : inventory.getItemInputs()) {
+                        progressData.input(stack.toStack());
                     }
 
-                    for (ConfigurableItemStack stack : inventory.getItemOutputs()) {
-                        progressData.output(toStack(stack));
+                    for (var stack : inventory.getItemOutputs()) {
+                        progressData.output(stack.toStack());
                     }
 
                     res.add(progressData);
@@ -149,22 +146,18 @@ public class MachineComponentProvider implements IDataProvider<MachineBlockEntit
         });
     }
 
-    private void addFluids(FluidData data, List<ConfigurableFluidStack> stacks) {
-        for (ConfigurableFluidStack stack : stacks) {
-            data.add(stack.getResource().getFluid(), stack.getResource().getNbt(), stack.getAmount(), stack.getCapacity());
+    private void addFluids(FluidData data, List<? extends FluidAccess> stacks) {
+        for (var stack : stacks) {
+            data.add(stack.getVariant().getFluid(), stack.getVariant().getNbt(), stack.getAmount(), stack.getCapacity());
         }
     }
 
-    private void addItems(ItemData data, List<ConfigurableItemStack> stacks) {
+    private void addItems(ItemData data, List<? extends ItemAccess> stacks) {
         data.ensureSpace(stacks.size());
 
-        for (ConfigurableItemStack stack : stacks) {
-            data.add(toStack(stack));
+        for (var stack : stacks) {
+            data.add(stack.toStack());
         }
-    }
-
-    private ItemStack toStack(ConfigurableItemStack stack) {
-        return stack.getResource().toStack(Ints.saturatedCast(stack.getAmount()));
     }
 
 }

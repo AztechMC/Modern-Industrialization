@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
@@ -37,7 +36,6 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -141,21 +139,21 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     }
 
     protected void addConnectionTypeButton(int x, int y, ConnectionTypeInterface connectionType) {
-        addRenderableWidget(Button.builder(null, widget -> {
+        addRenderableWidget(new ConnectionTypeButton(x + this.leftPos, y + this.topPos, widget -> {
             int newType = connectionTypeNext(connectionType);
             connectionType.setConnectionType(newType);
             FriendlyByteBuf buf = PacketByteBufs.create();
             buf.writeInt(menu.containerId);
             buf.writeInt(newType);
             ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);
-        }).bounds(x + this.leftPos, y + this.topPos, 20, 20).tooltip(new DynamicTooltip(() -> {
+        }, () -> {
             List<Component> lines = new ArrayList<>();
             Component component = getConnectionTypeText(connectionType.getConnectionType());
 
             lines.add(component);
             lines.add(MIText.PipeConnectionHelp.text().setStyle(TextHelper.GRAY_TEXT));
             return lines;
-        })).build());
+        }, connectionType));
     }
 
 }

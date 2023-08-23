@@ -113,7 +113,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         private final FluidPipeInterface iface;
 
         public NetworkFluidButton(int x, int y, OnPress onPress, Supplier<List<Component>> tooltipSupplier, FluidPipeInterface iface) {
-            super(x, y, 16, 16, null, onPress, null);
+            super(x, y, 16, 16, null, onPress, Button.DEFAULT_NARRATION);
             setTooltip(new DynamicTooltip(tooltipSupplier));
             this.iface = iface;
         }

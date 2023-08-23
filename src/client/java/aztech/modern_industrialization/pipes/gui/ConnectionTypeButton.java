@@ -23,38 +23,38 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
-import com.mojang.blaze3d.systems.RenderSystem;
+import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
-class PriorityButton extends Button {
-    private final int u;
+class ConnectionTypeButton extends Button {
+    private final ConnectionTypeInterface connectionType;
 
-    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
-        super(x, y, width, 12, Component.literal(message), onPress, Button.DEFAULT_NARRATION);
-        this.u = u;
+    public ConnectionTypeButton(int x, int y, OnPress onPress, Supplier<List<Component>> tooltipSupplier, ConnectionTypeInterface connectionType) {
+        super(x, y, 20, 20, null, onPress, Button.DEFAULT_NARRATION);
+        this.connectionType = connectionType;
         setTooltip(new DynamicTooltip(tooltipSupplier));
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        Minecraft minecraftClient = Minecraft.getInstance();
-        Font font = minecraftClient.font;
-        int v = this.isHoveredOrFocused() ? 40 + this.height : 40;
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
-        int j = this.active ? 16777215 : 10526880;
-        guiGraphics.drawCenteredString(font, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
-                j | Mth.ceil(this.alpha * 255.0F) << 24);
+    public Component getMessage() {
+        return switch (connectionType.getConnectionType()) {
+        case 0 -> MIText.PipeConnectionIn.text();
+        case 1 -> MIText.PipeConnectionIO.text();
+        case 2 -> MIText.PipeConnectionOut.text();
+        default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
+        };
+    }
+
+    // Text is a bit too large, so override to avoid the default 2 pixel margin for the "scrolling" effect
+    @Override
+    public void renderString(GuiGraphics guiGraphics, Font font, int color) {
+        renderScrollingString(guiGraphics, font, 0, color);
     }
 }

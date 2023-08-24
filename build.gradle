@@ -250,7 +250,11 @@ dependencies {
     }
 
     // TODO 1.20: FTB stuff
-    modCompileOnly("dev.ftb.mods:ftb-quests-fabric:${project.ftb_quests_version}") {
+//    modCompileOnly("dev.ftb.mods:ftb-quests-fabric:${project.ftb_quests_version}") {
+//        exclude(group: "net.fabricmc.fabric-api")
+//        exclude(group: "me.shedaniel")
+//    }
+    modImplementation("dev.ftb.mods:ftb-teams-fabric:${project.ftb_teams_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "me.shedaniel")
     }

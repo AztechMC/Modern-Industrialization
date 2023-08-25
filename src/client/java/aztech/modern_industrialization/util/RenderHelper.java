@@ -88,7 +88,7 @@ public class RenderHelper {
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
         for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
-            vc.putBulkData(ms.last(), overlayQuad, r, g, b, light, overlay);
+            putBulkData(vc, ms.last(), overlayQuad, r, g, b, light, overlay);
         }
     }
 
@@ -125,7 +125,7 @@ public class RenderHelper {
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
         for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
-            vc.putBulkData(ms.last(), cubeQuad, r, g, b, light, overlay);
+            putBulkData(vc, ms.last(), cubeQuad, r, g, b, light, overlay);
         }
     }
 
@@ -288,6 +288,79 @@ public class RenderHelper {
                 vector4f.mul(matrix4f);
                 consumer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), r, s, t, alpha, v, w, overlay, light, vec3f.x(), vec3f.y(),
                         vec3f.z());
+            }
+        } catch (Throwable var33) {
+            if (memoryStack != null) {
+                try {
+                    memoryStack.close();
+                } catch (Throwable var32) {
+                    var33.addSuppressed(var32);
+                }
+            }
+
+            throw var33;
+        }
+
+        if (memoryStack != null) {
+            memoryStack.close();
+        }
+
+    }
+
+    // Literally the exact same as VertexConsumer#putBulkData but copy/pasted, to avoid the null sprite tripping up Sodium in its mixin to mark
+    // sprites as active...
+    // Remove once fixed in Sodium
+    private static void putBulkData(VertexConsumer vc, PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue,
+            int combinedLight, int combinedOverlay) {
+        RenderHelper.putBulkData(vc, poseEntry, quad, new float[] { 1.0F, 1.0F, 1.0F, 1.0F }, red, green, blue,
+                new int[] { combinedLight, combinedLight, combinedLight, combinedLight }, combinedOverlay, false);
+    }
+
+    private static void putBulkData(VertexConsumer vc, PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
+            float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
+        float[] fs = new float[] { colorMuls[0], colorMuls[1], colorMuls[2], colorMuls[3] };
+        int[] is = new int[] { combinedLights[0], combinedLights[1], combinedLights[2], combinedLights[3] };
+        int[] js = quad.getVertices();
+        Vec3i vec3i = quad.getDirection().getNormal();
+        Matrix4f matrix4f = poseEntry.pose();
+        Vector3f vector3f = poseEntry.normal().transform(new Vector3f((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ()));
+        int j = js.length / 8;
+        MemoryStack memoryStack = MemoryStack.stackPush();
+
+        try {
+            ByteBuffer byteBuffer = memoryStack.malloc(DefaultVertexFormat.BLOCK.getVertexSize());
+            IntBuffer intBuffer = byteBuffer.asIntBuffer();
+
+            for (int k = 0; k < j; ++k) {
+                intBuffer.clear();
+                intBuffer.put(js, k * 8, 8);
+                float f = byteBuffer.getFloat(0);
+                float g = byteBuffer.getFloat(4);
+                float h = byteBuffer.getFloat(8);
+                float o;
+                float p;
+                float q;
+                float m;
+                float n;
+                if (mulColor) {
+                    float l = (float) (byteBuffer.get(12) & 255) / 255.0F;
+                    m = (float) (byteBuffer.get(13) & 255) / 255.0F;
+                    n = (float) (byteBuffer.get(14) & 255) / 255.0F;
+                    o = l * fs[k] * red;
+                    p = m * fs[k] * green;
+                    q = n * fs[k] * blue;
+                } else {
+                    o = fs[k] * red;
+                    p = fs[k] * green;
+                    q = fs[k] * blue;
+                }
+
+                int r = is[k];
+                m = byteBuffer.getFloat(16);
+                n = byteBuffer.getFloat(20);
+                Vector4f vector4f = matrix4f.transform(new Vector4f(f, g, h, 1.0F));
+                vc.vertex(vector4f.x(), vector4f.y(), vector4f.z(), o, p, q, 1.0F, m, n, combinedOverlay, r, vector3f.x(), vector3f.y(),
+                        vector3f.z());
             }
         } catch (Throwable var33) {
             if (memoryStack != null) {

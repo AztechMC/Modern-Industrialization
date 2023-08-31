@@ -45,11 +45,6 @@ public class MachineCasings {
     public static final MachineCasing HEATPROOF = create("heatproof_machine_casing");
     public static final MachineCasing STEEL = create("steel");
     public static final MachineCasing STEEL_CRATE = create("steel_crate");
-    public static final MachineCasing LV = create("lv");
-    public static final MachineCasing MV = create("mv");
-    public static final MachineCasing HV = create("hv");
-    public static final MachineCasing EV = create("ev");
-    public static final MachineCasing SUPERCONDUCTOR = create("superconductor");
     public static final MachineCasing TITANIUM = create("titanium");
     public static final MachineCasing TITANIUM_PIPE = create("titanium_machine_casing_pipe");
     public static final MachineCasing SOLID_TITANIUM = create("solid_titanium_machine_casing");
@@ -58,21 +53,6 @@ public class MachineCasings {
 
     static {
         KubeJSProxy.instance.fireRegisterMachineCasingsEvent();
-    }
-
-    public static MachineCasing casingFromCableTier(CableTier tier) {
-        if (tier == CableTier.LV) {
-            return LV;
-        } else if (tier == CableTier.MV) {
-            return MV;
-        } else if (tier == CableTier.HV) {
-            return HV;
-        } else if (tier == CableTier.EV) {
-            return EV;
-        } else if (tier == CableTier.SUPERCONDUCTOR) {
-            return SUPERCONDUCTOR;
-        }
-        return null;
     }
 
     public static MachineCasing create(String name) {

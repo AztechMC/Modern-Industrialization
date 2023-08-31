@@ -45,15 +45,15 @@ public class MultiblockHatches {
     public static void init() {
         registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
         registerItemHatches("Steel", "steel", MachineCasings.STEEL, 2, 1, 80, 30);
-        registerItemHatches("Advanced", "advanced", MachineCasings.MV, 2, 2, 71, 30);
-        registerItemHatches("Turbo", "turbo", MachineCasings.HV, 3, 3, 62, 21);
-        registerItemHatches("Highly Advanced", "highly_advanced", MachineCasings.EV, 3, 5, 44, 18);
+        registerItemHatches("Advanced", "advanced", CableTier.MV.casing, 2, 2, 71, 30);
+        registerItemHatches("Turbo", "turbo", CableTier.HV.casing, 3, 3, 62, 21);
+        registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3, 5, 44, 18);
 
         registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
         registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 8);
-        registerFluidHatches("Advanced", "advanced", MachineCasings.MV, 16);
-        registerFluidHatches("Turbo", "turbo", MachineCasings.HV, 32);
-        registerFluidHatches("Highly Advanced", "highly_advanced", MachineCasings.EV, 64);
+        registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 16);
+        registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 32);
+        registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 64);
 
         registerEnergyHatches(CableTier.LV);
         registerEnergyHatches(CableTier.MV);
@@ -124,7 +124,7 @@ public class MultiblockHatches {
             String englishName = tier.englishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
             MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
                     EnergyHatch::registerEnergyApi);
-            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", MachineCasings.casingFromCableTier(tier), true, false, true, false);
+            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);
         }
     }
 }

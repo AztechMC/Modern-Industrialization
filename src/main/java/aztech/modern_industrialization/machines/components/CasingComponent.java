@@ -166,7 +166,7 @@ public class CasingComponent implements IComponent {
     }
 
     public MachineCasing getCasing() {
-        return MachineCasings.casingFromCableTier(tierCasing);
+        return tierCasing.casing;
     }
 
     public boolean canInsertEu(CableTier tier) {

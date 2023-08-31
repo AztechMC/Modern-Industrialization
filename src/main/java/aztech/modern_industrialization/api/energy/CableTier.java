@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +46,6 @@ public final class CableTier implements Comparable<CableTier> {
     public static CableTier EV = new CableTier("EV", "ev", 32 * 4 * 8 * 8, MIText.CableTierEV);
     public static CableTier SUPERCONDUCTOR = new CableTier("Superconductor", "superconductor", 128000000, MIText.CableTierSuperconductor);
 
-
     // actual fields
     public final String englishName;
     public final String name;
@@ -53,12 +54,18 @@ public final class CableTier implements Comparable<CableTier> {
     public final String translationKey;
     private final Component englishNameComponent;
 
+    /**
+     * The {@link MachineCasing} that uses this cable tier.
+     */
+    public final MachineCasing casing;
+
     public CableTier(String englishName, String name, long eu, Component englishNameComponent) {
         this.englishName = englishName;
         this.name = name;
         this.eu = eu;
         this.translationKey = "text.modern_industrialization.cable_tier_" + name;
         this.englishNameComponent = englishNameComponent;
+        this.casing = MachineCasings.create(name);
     }
 
     // package private as nobody will need to pass an MIText externally?

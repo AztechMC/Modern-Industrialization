@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
@@ -97,7 +98,7 @@ public class MachineRegistrationHelper {
         } else if (tier.equals("steel")) {
             defaultCasing = MachineCasings.STEEL;
         } else if (tier.equals("electric")) {
-            defaultCasing = MachineCasings.LV;
+            defaultCasing = CableTier.LV.casing;
         } else {
             throw new RuntimeException("Invalid tier: " + tier);
         }

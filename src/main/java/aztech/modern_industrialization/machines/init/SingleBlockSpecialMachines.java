@@ -83,12 +83,12 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
         MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
         MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
-        MachineRegistrationHelper.addMachineModel("lv_diesel_generator", "diesel_generator", MachineCasings.LV, true, true, true);
-        MachineRegistrationHelper.addMachineModel("mv_diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
-        MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
+        MachineRegistrationHelper.addMachineModel("lv_diesel_generator", "diesel_generator", CableTier.LV.casing, true, true, true);
+        MachineRegistrationHelper.addMachineModel("mv_diesel_generator", "diesel_generator", CableTier.MV.casing, true, true, true);
+        MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", CableTier.HV.casing, true, true, true);
         MachineRegistrationHelper.addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
-        MachineRegistrationHelper.addMachineModel("replicator", "replicator", MachineCasings.SUPERCONDUCTOR, true, false, true, true);
+        MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.EV.casing, true, false, true, true);
     }
 
     private static void registerTransformers() {
@@ -113,7 +113,11 @@ public class SingleBlockSpecialMachines {
     }
 
     public static MachineCasing getTransformerCasingFromTier(CableTier from, CableTier to) {
-        return MachineCasings.casingFromCableTier(from.eu > to.eu ? to : from);
+        if (from.eu > to.eu) {
+            return from.casing;
+        } else {
+            return to.casing;
+        }
     }
 
     private static void registerSteamTurbines(int... maxConsumption) {
@@ -130,7 +134,7 @@ public class SingleBlockSpecialMachines {
                             MIFluids.STEAM, 1),
                     MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
-            MachineRegistrationHelper.addMachineModel(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
+            MachineRegistrationHelper.addMachineModel(id, "steam_turbine", tier.casing, true, false, false);
         }
     }
 
@@ -141,7 +145,7 @@ public class SingleBlockSpecialMachines {
             MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-            MachineRegistrationHelper.addMachineModel(id, "electric_storage", MachineCasings.casingFromCableTier(tier), true, false, true, false);
+            MachineRegistrationHelper.addMachineModel(id, "electric_storage", tier.casing, true, false, true, false);
         }
     }
 

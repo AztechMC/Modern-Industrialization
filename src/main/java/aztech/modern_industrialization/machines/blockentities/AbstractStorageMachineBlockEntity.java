@@ -91,7 +91,11 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     }
 
     public static MachineCasing getCasingFromTier(CableTier from, CableTier to) {
-        return MachineCasings.casingFromCableTier(from.eu > to.eu ? from : to);
+        if (from.eu > to.eu) {
+            return from.casing;
+        } else {
+            return to.casing;
+        }
     }
 
     @Override

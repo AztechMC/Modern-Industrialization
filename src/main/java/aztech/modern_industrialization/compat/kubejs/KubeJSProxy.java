@@ -64,4 +64,8 @@ public class KubeJSProxy {
 
     public void fireCustomConditionEvent() {
     }
+
+    public void fireCableTiersEvent() {
+
+    }
 }

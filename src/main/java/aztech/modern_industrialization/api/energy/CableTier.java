@@ -80,7 +80,6 @@ public final class CableTier implements Comparable<CableTier> {
         return englishNameComponent.copy();
     }
 
-
     /**
      * @return The total EU/t transferred by this tier of network. The same number
      *         is also the internal storage of every node.
@@ -103,7 +102,7 @@ public final class CableTier implements Comparable<CableTier> {
         return name;
     }
 
-    // "registry" of name -> instance, overwriteable.
+    // "registry" of name -> instance.
     private final static Map<String, CableTier> TIERS = new HashMap<>();
 
     /**

@@ -258,7 +258,7 @@ public class RegisterMachinesEventJS extends EventJS implements ShapeTemplateHel
                 englishName, internalName,
                 bep -> new GeneratorMachineBlockEntity(bep,
                         internalName,
-                        CableTier.getByName(cableTierName),
+                        CableTier.getTier(cableTierName),
                         energyCapacity,
                         fluidStorageCapacity,
                         componentBuilder.build()),

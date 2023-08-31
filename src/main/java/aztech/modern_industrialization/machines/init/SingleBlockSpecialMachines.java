@@ -31,6 +31,8 @@ import aztech.modern_industrialization.machines.components.FluidItemConsumerComp
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 
+import java.util.List;
+
 public class SingleBlockSpecialMachines {
 
     public static void init() {
@@ -90,10 +92,10 @@ public class SingleBlockSpecialMachines {
     }
 
     private static void registerTransformers() {
-        CableTier[] tiers = CableTier.values();
-        for (int i = 0; i < tiers.length - 1; i++) {
-            final CableTier low = tiers[i];
-            final CableTier up = tiers[i + 1];
+        List<CableTier> tiers = CableTier.allTiers();
+        for (int i = 0; i < tiers.size() - 1; i++) {
+            final CableTier low = tiers.get(i);
+            final CableTier up = tiers.get(i + 1);
 
             String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
             String lowToUpName = TransformerMachineBlockEntity.getTransformerEnglishName(low, up);
@@ -115,8 +117,10 @@ public class SingleBlockSpecialMachines {
     }
 
     private static void registerSteamTurbines(int... maxConsumption) {
+        List<CableTier> tiers = CableTier.allTiers();
+
         for (int i = 0; i < maxConsumption.length; i++) {
-            CableTier tier = CableTier.values()[i];
+            CableTier tier = tiers.get(i);
             String id = tier.name + "_steam_turbine";
             String englishName = tier.englishName + " Steam Turbine";
             final int eu = maxConsumption[i];
@@ -131,7 +135,7 @@ public class SingleBlockSpecialMachines {
     }
 
     private static void registerEUStorage() {
-        for (CableTier tier : CableTier.values()) {
+        for (CableTier tier : CableTier.allTiers()) {
             String id = tier.name + "_storage_unit";
             String englishName = tier.englishName + " Storage Unit";
             MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),

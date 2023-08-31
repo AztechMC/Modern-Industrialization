@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import java.util.HashMap;
 import java.util.Map;

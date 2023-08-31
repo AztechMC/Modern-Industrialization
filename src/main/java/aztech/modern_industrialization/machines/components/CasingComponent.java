@@ -28,7 +28,6 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;

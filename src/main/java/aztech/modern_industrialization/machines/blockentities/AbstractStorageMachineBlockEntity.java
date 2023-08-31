@@ -36,7 +36,6 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;

@@ -26,14 +26,13 @@ package aztech.modern_industrialization.api.energy;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A single tier of cable that can have a varying amount of energy pushed through it per tick.
@@ -125,7 +124,7 @@ public final class CableTier implements Comparable<CableTier> {
      * @param name The name of the tier, e.g. <code>LV</code>.
      * @return An instance of the cable tier with the provided name.
      */
-    @NotNull  // Should it be?
+    @NotNull // Should it be?
     public static CableTier getTier(String name) {
         CableTier existing = TIERS.get(name);
 

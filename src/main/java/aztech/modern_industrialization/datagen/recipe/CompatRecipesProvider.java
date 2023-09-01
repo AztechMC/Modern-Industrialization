@@ -228,7 +228,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         addCompatRecipe("dyes/decolor/craft/me_wire_8", new ShapedRecipeJson("modern_industrialization:me_wire", 8, "ppp", "pbp",
                 "ppp").addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:me_wires"));
         // decolor 1 me wire
-        addCompatRecipe("dyes/decolor/craft/me_wire_1", new ShapedRecipeJson("modern_industrialization:me_wire", 8, "pb")
+        addCompatRecipe("dyes/decolor/craft/me_wire_1", new ShapedRecipeJson("modern_industrialization:me_wire", 1, "pb")
                 .addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:me_wires"));
         // decolor 1 me wire with mixer
         addCompatRecipe("dyes/decolor/mixer/me_wire", MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100)

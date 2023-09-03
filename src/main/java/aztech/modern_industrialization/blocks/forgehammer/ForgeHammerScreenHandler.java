@@ -59,6 +59,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     private final ContainerLevelAccess context;
     private final Level world;
     private final Player player;
+    private long lastSoundTime = 0;
 
     private ItemStack inputStackCache = ItemStack.EMPTY, toolStackCache = ItemStack.EMPTY;
 
@@ -114,6 +115,14 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack stack) {
                 ForgeHammerScreenHandler.this.onCraft();
+                // Don't play the sound multiple times within the same tick
+                // Prevents the sound being played a lot when shift-clicking the output into your inventory
+                context.execute((world, pos) -> {
+                    if ((lastSoundTime + 1) < world.getGameTime()) {
+                        world.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
+                    lastSoundTime = world.getGameTime();
+                });
             }
         };
 

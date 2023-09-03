@@ -118,10 +118,10 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 // Don't play the sound multiple times within the same tick
                 // Prevents the sound being played a lot when shift-clicking the output into your inventory
                 context.execute((world, pos) -> {
-                    if ((lastSoundTime + 1) < world.getGameTime()) {
+                    if (lastSoundTime < world.getGameTime()) {
                         world.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        lastSoundTime = world.getGameTime();
                     }
-                    lastSoundTime = world.getGameTime();
                 });
             }
         };

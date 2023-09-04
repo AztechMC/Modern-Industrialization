@@ -219,12 +219,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        protected ItemStack getStack() {
+        protected ItemStack getRealStack() {
             return key.toStack((int) amount);
         }
 
         @Override
-        protected void setStack(ItemStack stack) {
+        protected void setRealStack(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
             notifyListeners();

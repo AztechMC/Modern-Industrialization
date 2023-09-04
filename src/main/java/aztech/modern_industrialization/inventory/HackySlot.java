@@ -40,18 +40,18 @@ public abstract class HackySlot extends Slot {
         super(new UnsupportedOperationInventory(), 0, x, y);
     }
 
-    protected abstract ItemStack getStack();
+    protected abstract ItemStack getRealStack();
 
-    protected abstract void setStack(ItemStack stack);
+    protected abstract void setRealStack(ItemStack stack);
 
     @Override
     public final ItemStack getItem() {
-        return cachedReturnedStack = getStack();
+        return cachedReturnedStack = getRealStack();
     }
 
     @Override
     public final void set(ItemStack stack) {
-        setStack(stack);
+        setRealStack(stack);
         cachedReturnedStack = stack;
     }
 
@@ -64,7 +64,7 @@ public abstract class HackySlot extends Slot {
 
     @Override
     public final ItemStack remove(int amount) {
-        var stack = getStack().copy();
+        var stack = getRealStack().copy();
         var ret = stack.split(amount);
         set(stack);
         cachedReturnedStack = null;

@@ -74,12 +74,12 @@ public class SlotPanel {
             int slotIndex = slotTypes.size();
             slotFactories.add(facade -> facade.addSlotToMenu(new HackySlot(getSlotX(machine.guiParams), getSlotY(slotIndex)) {
                 @Override
-                protected ItemStack getStack() {
+                protected ItemStack getRealStack() {
                     return getStack.get();
                 }
 
                 @Override
-                protected void setStack(ItemStack stack) {
+                protected void setRealStack(ItemStack stack) {
                     setStack.accept(machine, stack);
                 }
 

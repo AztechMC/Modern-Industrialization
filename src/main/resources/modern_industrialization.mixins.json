@@ -10,9 +10,9 @@
     "runtime_resources.ReloadableResourceManagerMixin",
     "ItemStackMixin",
     "InventoryMixin",
-    "WorldChunkMixin",
+    "MobMixin",
     "PlayerMixin",
-    "MobMixin"
+    "WorldChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

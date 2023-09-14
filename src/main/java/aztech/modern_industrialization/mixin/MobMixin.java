@@ -1,4 +1,3 @@
-
 /*
  * MIT License
  *
@@ -38,16 +37,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Mob.class)
-public abstract class MobMixin  {
-    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot slot);
+public abstract class MobMixin {
+    @Shadow
+    public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 
     @Redirect(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     public boolean hurt(Entity target, DamageSource damageSource, float value) {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof QuantumSword) {
             target.kill();
             return true;
-        }
-        else {
+        } else {
             return target.hurt(damageSource, value);
         }
     }
@@ -57,8 +56,7 @@ public abstract class MobMixin  {
         if (attribute == Attributes.ATTACK_DAMAGE && mob.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof QuantumSword) {
             // We just need this value to be positive
             return 1;
-        }
-        else {
+        } else {
             return mob.getAttributeValue(attribute);
         }
     }

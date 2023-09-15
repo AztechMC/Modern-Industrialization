@@ -44,7 +44,7 @@ public abstract class MobMixin {
     @Redirect(method = "doHurtTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     public boolean hurt(Entity target, DamageSource damageSource, float value) {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof QuantumSword) {
-            target.kill();
+            target.hurt(DamageSource.mobAttack((Mob) (Object) this).bypassArmor().bypassInvul(), Float.MAX_VALUE);
             return true;
         } else {
             return target.hurt(damageSource, value);

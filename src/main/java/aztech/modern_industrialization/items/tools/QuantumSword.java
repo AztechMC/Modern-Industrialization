@@ -27,6 +27,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public class QuantumSword extends Item {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        target.kill();
+        target.hurt(DamageSource.mobAttack(attacker).bypassArmor().bypassInvul(), Float.MAX_VALUE);
 
         // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
         // advancement

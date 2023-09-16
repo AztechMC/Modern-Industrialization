@@ -58,13 +58,11 @@ public class QuantumSword extends Item {
             if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().getItem() instanceof QuantumSword quantumSword) {
                 if (entity instanceof LivingEntity livingEntity) {
                     quantumSword.onHurtEnemy(player.getMainHandItem(), livingEntity, player);
-                }
-                else {
+                } else {
                     entity.kill();
                 }
                 return InteractionResult.SUCCESS;
-            }
-            else {
+            } else {
                 return InteractionResult.PASS;
             }
         });

@@ -43,7 +43,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 
@@ -75,11 +78,13 @@ public class ItemNetwork extends PipeNetwork {
             ItemNetworkNode itemNode = (ItemNetworkNode) entry.getNode();
             for (ItemNetworkNode.ItemConnection connection : itemNode.connections) {
                 if (connection.canExtract()) {
-                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.relative(connection.direction),
-                            connection.direction.getOpposite());
+                    var queryPos = pos.relative(connection.direction);
+                    var querySide = connection.direction.getOpposite();
+
+                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, queryPos, querySide);
 
                     if (source != null) {
-                        extractionTargets.add(new ExtractionTarget(connection, source));
+                        extractionTargets.add(new ExtractionTarget(connection, source, queryPos, querySide));
                     }
                 }
             }
@@ -99,8 +104,17 @@ public class ItemNetwork extends PipeNetwork {
                     insertTargets.remove(insertTargets.size() - 1);
                 }
 
-                lastMovedItems += StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough,
-                        target.connection.getMoves(), tx);
+                try {
+                    lastMovedItems += StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough,
+                            target.connection.getMoves(), tx);
+                } catch (Exception exception) {
+                    var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
+                    crashReport.addCategory("Block being extracted from:")
+                            .setDetail("Dimension", world.dimension())
+                            .setDetail("Position", target.queryPos)
+                            .setDetail("Accessed from side", target.querySide);
+                    throw new ReportedException(crashReport);
+                }
             }
             tx.commit();
         }
@@ -109,10 +123,14 @@ public class ItemNetwork extends PipeNetwork {
     private static class ExtractionTarget {
         private final ItemNetworkNode.ItemConnection connection;
         private final Storage<ItemVariant> storage;
+        private final BlockPos queryPos;
+        private final Direction querySide;
 
-        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> storage) {
+        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> storage, BlockPos queryPos, Direction querySide) {
             this.connection = connection;
             this.storage = storage;
+            this.queryPos = queryPos;
+            this.querySide = querySide;
         }
     }
 

@@ -1449,6 +1449,7 @@
   "text.autoconfig.modern_industrialization.option.enableNoJeiMessage": "[UNUSED, PLEASE REMOVE] Ativar mensagem de login quando JEI e REI não estão presentes",
   "text.autoconfig.modern_industrialization.option.generateOres": "Geração de Minérios Ativada (Requer Reinício)",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
+  "text.autoconfig.modern_industrialization.option.maxDistillationTowerHeight": "[UNTRANSLATED] Maximum height of the Distillation Tower multiblock (Restart needed)",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "Mostrar quando uma nova versão está disponível",
   "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "Dar Guia ao Renascer",

@@ -1655,6 +1655,7 @@
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "[UNTRANSLATED] Enable login message when EMI, JEI and REI are missing",
   "text.autoconfig.modern_industrialization.option.generateOres": "광석 생성 활성화 (재시작 필요)",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
+  "text.autoconfig.modern_industrialization.option.maxDistillationTowerHeight": "[UNTRANSLATED] Maximum height of the Distillation Tower multiblock (Restart needed)",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "새로운 버전 알림 받기",
   "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.replicatorBlacklist": "[UNUSED, PLEASE REMOVE] 복제기 블랙리스트",

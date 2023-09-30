@@ -1448,6 +1448,7 @@
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "[UNTRANSLATED] Enable login message when EMI, JEI and REI are missing",
   "text.autoconfig.modern_industrialization.option.generateOres": "启用全部矿物生成（需要重新启动）",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
+  "text.autoconfig.modern_industrialization.option.maxDistillationTowerHeight": "[UNTRANSLATED] Maximum height of the Distillation Tower multiblock (Restart needed)",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "有新版本可用时显示",
   "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "重生时给予指南",

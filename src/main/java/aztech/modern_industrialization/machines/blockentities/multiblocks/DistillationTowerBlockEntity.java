@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -52,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
 public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-    private static final int MAX_HEIGHT = 9;
+    private static final int MAX_HEIGHT = MIConfig.getConfig().maxDistillationTowerHeight;
     private static final ShapeTemplate[] shapeTemplates;
 
     public DistillationTowerBlockEntity(BEP bep) {

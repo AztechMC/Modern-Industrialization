@@ -82,6 +82,9 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Removes trades from the Industrialist villager (Restart needed)")
     public boolean removeIndustrialistTrades = false;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Maximum height of the Distillation Tower multiblock (Restart needed)")
+    public int maxDistillationTowerHeight = 9;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

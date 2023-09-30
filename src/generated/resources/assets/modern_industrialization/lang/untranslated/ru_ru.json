@@ -1449,6 +1449,7 @@
   "text.autoconfig.modern_industrialization.option.enableNoJeiMessage": "[UNUSED, PLEASE REMOVE] Включить сообщение при входе в игру в том случае, когда отсутствуют JEI и REI",
   "text.autoconfig.modern_industrialization.option.generateOres": "Включить генерацию руды (Необходим перезапуск)",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "[UNTRANSLATED] Additionally load resources in modern_industrialization/generated_resources",
+  "text.autoconfig.modern_industrialization.option.maxDistillationTowerHeight": "[UNTRANSLATED] Maximum height of the Distillation Tower multiblock (Restart needed)",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "Отобразить, когда доступна новая версия",
   "text.autoconfig.modern_industrialization.option.removeIndustrialistTrades": "[UNTRANSLATED] Removes trades from the Industrialist villager (Restart needed)",
   "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "Предоставить руководство при возрождении",

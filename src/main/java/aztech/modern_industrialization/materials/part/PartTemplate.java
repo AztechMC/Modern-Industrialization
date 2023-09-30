@@ -85,7 +85,13 @@ public class PartTemplate implements PartKeyProvider {
         // added to the tags
         for (PartKey partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item, getTagEnglishName(context, itemTag));
+                var generatedTag = itemTag.replaceFirst("#", "");
+                TagsToGenerate.generateTag(generatedTag, item, getTagEnglishName(context, itemTag));
+
+                var categoryTag = MIParts.CATEGORY_TAGS.get(partTagged.key());
+                if (categoryTag != null) {
+                    TagsToGenerate.addTagToTag(generatedTag, categoryTag.tag(), categoryTag.englishName());
+                }
             }
         }
     }

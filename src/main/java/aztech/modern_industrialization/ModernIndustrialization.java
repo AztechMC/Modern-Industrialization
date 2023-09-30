@@ -36,6 +36,7 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
+import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.init.*;
@@ -110,6 +111,7 @@ public class ModernIndustrialization {
         setupPackets();
         setupFuels();
         MIArmorEffects.init();
+        QuantumSword.init();
         setupWrench();
 
         ChunkEventListeners.init();

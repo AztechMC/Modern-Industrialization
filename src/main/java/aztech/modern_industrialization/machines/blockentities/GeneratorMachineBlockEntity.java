@@ -181,7 +181,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         energy.insertEu(euProduced, Simulation.ACT);
         isActiveComponent.updateActive(0 != euProduced, this);
 
-        EnergyHelper.autoOuput(this, orientation, outputTier, extractable);
+        EnergyHelper.autoOutput(this, orientation, outputTier, extractable);
 
         setChanged();
     }

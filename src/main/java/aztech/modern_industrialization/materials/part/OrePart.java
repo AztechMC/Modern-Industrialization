@@ -125,7 +125,7 @@ public class OrePart implements PartKeyProvider {
                     String tag = "c:" + partContext.getMaterialName() + "_ores";
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition.asItem(), partContext.getMaterialEnglishName() + " Ores");
-                    TagsToGenerate.addTagToTag(tag, ConventionalItemTags.ORES.location().toString());
+                    TagsToGenerate.addTagToTag(tag, ConventionalItemTags.ORES.location().toString(), "Ores");
 
                     if (oreParams.generate) {
                         ResourceLocation oreGenId = new MIIdentifier(

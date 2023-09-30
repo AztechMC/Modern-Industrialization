@@ -19,6 +19,8 @@ accessible  field   net/minecraft/data/models/ItemModelGenerators   output  Ljav
 accessible field net/minecraft/data/DataGenerator$PackGenerator output Lnet/minecraft/data/PackOutput;
 
 # Used by runtime datagen
+accessible class net/minecraft/core/RegistrySetBuilder$RegistryStub
+accessible field net/minecraft/core/RegistrySetBuilder entries Ljava/util/List;
 accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
 
 # Access list of renderables in the screen

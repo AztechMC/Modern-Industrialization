@@ -226,6 +226,8 @@ public class RenderHelper {
         BufferUploader.drawWithShader(bufferBuilder.end());
 
         RenderSystem.enableDepthTest();
+
+        SodiumCompat.markSpriteActive(sprite);
     }
 
     /**

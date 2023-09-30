@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.misc.runtime_datagen;
 
 import aztech.modern_industrialization.resource.GeneratedFolderPackResources;
+import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
@@ -34,5 +35,26 @@ public class RuntimeResourcesHelper {
     public static PackResources createPack(PackType packType) {
         var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
         return new GeneratedFolderPackResources(generatedDirectory.toFile(), packType);
+    }
+
+    public static void injectPack(PackType packType, List<PackResources> list) {
+        // Try to inject right after "Fabric Mods" pack
+        for (int i = 0; i < list.size(); ++i) {
+            var pack = list.get(i);
+            if (pack.getName().equals("Fabric Mods")) {
+                list.add(i + 1, createPack(packType));
+                return;
+            }
+        }
+        // No "Fabric Mods" pack - inject after vanilla pack
+        for (int i = 0; i < list.size(); ++i) {
+            var pack = list.get(i);
+            if (pack.getName().equals("Default")) {
+                list.add(i + 1, createPack(packType));
+                return;
+            }
+        }
+        // Otherwise inject at end
+        list.add(createPack(packType));
     }
 }

@@ -40,7 +40,7 @@ public abstract class ReloadableResourceManagerMixin {
     private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
         if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
             var mutableList = new ArrayList<>(resourcePacks);
-            mutableList.add(RuntimeResourcesHelper.createPack(PackType.CLIENT_RESOURCES));
+            RuntimeResourcesHelper.injectPack(PackType.CLIENT_RESOURCES, mutableList);
             return mutableList;
         } else {
             return resourcePacks;

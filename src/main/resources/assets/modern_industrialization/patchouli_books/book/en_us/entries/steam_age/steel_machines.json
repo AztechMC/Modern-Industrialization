@@ -12,14 +12,13 @@
       "recipe": "modern_industrialization:steam_age/steel/steel_upgrade_asbl",
       "text":  "To upgrade a bronze machine, craft a Steel Upgrade and apply it in a Smithing Table."
     },
-
     {
       "type": "text",
       "text": "Steel hatches have more capacity than bronze hatches, and a multiblock with at least one steel hatch will be upgraded to steel tier. This means that it will go twice as fast if its energy usage wouldn't exceed 4 EU/t.$(br2)A steel boiler will produce twice as much steam as a bronze one, that means up to 16 EU/t, and a steel water pump will produce twice as much water as its bronze counterpart, so up to 2 buckets / 5 seconds."
     },
     {
       "type": "text",
-      "text": "Steel tanks store up to 8 buckets.$(br2)Steel pipes are equivalent to other kinds of pipes, but you can combine them with other types of pipes on the same block, so they may be useful if you really need another distinct pipe network.$(br2)You can check all recipes in REI!"
+      "text": "Steel tanks store up to 8 buckets.$(br2)You can check all recipes in REI!"
     },
     {
       "type": "crafting",
@@ -35,6 +34,10 @@
       "type": "crafting",
       "recipe": "modern_industrialization:trash_can",
       "text": "With a few steel plates, you can now craft a very useful block!$(br2)The Automatic Trash Can will destroy any item or fluid that is piped into it!"
+    },
+    {
+      "type": "text",
+      "text": "Additionally, while holding the trash can over a machine's fluid tank, you can click to dump that tank into the trash can directly."
     }
   ],
   "sortnum": 11

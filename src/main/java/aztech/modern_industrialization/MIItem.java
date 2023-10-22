@@ -32,7 +32,6 @@ import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
-import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -141,10 +140,10 @@ public final class MIItem {
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 
-    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
-    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+    // public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
+    //         .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+    // public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
+    //         .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
 
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
             .withItemRegistrationEvent(item -> EnergyApi.ITEM.registerForItems((stack, ctx) -> SimpleEnergyItem.createStorage(ctx, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item));
@@ -203,7 +202,8 @@ public final class MIItem {
                 ModelTemplates.FLAT_ITEM), sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> item(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
                 ModelTemplates.FLAT_ITEM), sortOrder);
@@ -218,20 +218,25 @@ public final class MIItem {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor) {
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor) {
         return itemHandheld(englishName, path, ctor, ITEMS_OTHER);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, p -> ctor.apply(p.maxCount(1)), (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_HANDHELD_ITEM), sortOrder);
+        return MIItem.item(englishName, path, p -> ctor.apply(p.maxCount(1)),
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_HANDHELD_ITEM),
+                sortOrder);
     }
 
     private MIItem() {

@@ -38,16 +38,18 @@ import net.minecraft.world.level.material.Fluid;
 
 public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     public FluidFuelsCategory() {
-        super(Fluid.class, new MIIdentifier("fluid_fuels"), MIText.FluidFuels.text(), MIFluids.DIESEL.getBucket().getDefaultInstance(), 150, 35);
+        super(Fluid.class, new MIIdentifier("fluid_fuels"), MIText.FluidFuels.text(),
+                MIFluids.DIESEL.getBucket().getDefaultInstance(), 150, 35);
     }
 
     @Override
     public void buildWorkstations(WorkstationConsumer consumer) {
-        consumer.accept("lv_diesel_generator", "mv_diesel_generator", "hv_diesel_generator", "large_diesel_generator", "large_steam_boiler",
+        consumer.accept("lv_diesel_generator", "mv_diesel_generator", "hv_diesel_generator", "large_diesel_generator",
+                "large_steam_boiler",
                 "advanced_large_steam_boiler",
                 "high_pressure_large_steam_boiler",
                 "high_pressure_advanced_large_steam_boiler");
-        consumer.accept(MIItem.DIESEL_JETPACK, MIItem.DIESEL_CHAINSAW, MIItem.DIESEL_MINING_DRILL);
+        consumer.accept(MIItem.DIESEL_JETPACK);
     }
 
     @Override

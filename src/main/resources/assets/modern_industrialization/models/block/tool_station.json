@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "modern_industrialization:block/tool_station_bottom",
+    "east": "modern_industrialization:block/tool_station_side",
+    "north": "modern_industrialization:block/tool_station_front",
+    "particle": "modern_industrialization:block/tool_station_front",
+    "south": "modern_industrialization:block/tool_station_front",
+    "up": "minecraft:block/smithing_table_top",
+    "west": "modern_industrialization:block/tool_station_side"
+  }
+}

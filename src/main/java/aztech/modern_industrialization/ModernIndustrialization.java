@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.blocks.toolstation.ToolStationScreenHandler;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -76,13 +77,19 @@ public class ModernIndustrialization {
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
 
-    public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new MIIdentifier("general"));
+    public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB,
+            new MIIdentifier("general"));
 
     // ScreenHandlerType
     public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = Registry.register(BuiltInRegistries.MENU,
-            new MIIdentifier("machine"), new ExtendedScreenHandlerType<>(CommonProxy.INSTANCE::createClientMachineMenu));
-    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = Registry.register(BuiltInRegistries.MENU,
+            new MIIdentifier("machine"),
+            new ExtendedScreenHandlerType<>(CommonProxy.INSTANCE::createClientMachineMenu));
+    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = Registry.register(
+            BuiltInRegistries.MENU,
             new MIIdentifier("forge_hammer"), new MenuType<>(ForgeHammerScreenHandler::new, FeatureFlags.VANILLA_SET));
+    public static final MenuType<ToolStationScreenHandler> SCREEN_HANDLER_TOOL_STATION = Registry.register(
+            BuiltInRegistries.MENU,
+            new MIIdentifier("tool_station"), new MenuType<>(ToolStationScreenHandler::new, FeatureFlags.VANILLA_SET));
 
     public static void initialize() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_KEY, FabricItemGroup.builder()
@@ -115,7 +122,8 @@ public class ModernIndustrialization {
         setupWrench();
 
         ChunkEventListeners.init();
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD
+                .register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             MIKeyMap.clear(handler.player);
         });
@@ -169,10 +177,14 @@ public class ModernIndustrialization {
                 ConfigurableInventoryPacketHandlers.C2S.DO_SLOT_DRAGGING);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.ADJUST_SLOT_CAPACITY,
                 ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.ON_CHANGE_SHAPE);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE, MachinePackets.C2S.ON_FORGE_HAMMER_MOVE_RECIPE);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE,
+                MachinePackets.C2S.ON_CHANGE_SHAPE);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT,
+                MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE,
+                MachinePackets.C2S.ON_FORGE_HAMMER_MOVE_RECIPE);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS,
+                MachinePackets.C2S.ON_REI_LOCK_SLOTS);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }

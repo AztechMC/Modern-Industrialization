@@ -1,15 +1,15 @@
 {
   "type": "modern_industrialization:assembler",
   "duration": 200,
-  "eu": 8,
+  "eu": 2,
   "item_inputs": [
-    {
-      "amount": 4,
-      "tag": "c:diamond_dusts"
-    },
     {
       "amount": 1,
       "tag": "c:invar_gears"
+    },
+    {
+      "amount": 4,
+      "item": "modern_industrialization:diamond_dust"
     }
   ],
   "item_outputs": [

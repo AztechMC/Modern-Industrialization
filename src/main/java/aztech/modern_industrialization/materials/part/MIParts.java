@@ -47,16 +47,18 @@ public class MIParts {
             .withTexture(new TextureGenParams.DoubleIngot());
 
     public static final PartTemplate DRILL_HEAD = new PartTemplate("Drill Head", "drill_head");
+    public static final PartTemplate ROTARY_BLADE = new PartTemplate("Rotary Blade", "rotary_blade");
 
     public static final PartTemplate DRILL = new PartTemplate("Drill", "drill");
 
     public static final PartTemplate DUST = new PartTemplate("Dust", "dust");
     public static final PartTemplate FINE_WIRE = new PartTemplate("Fine Wire", "fine_wire");
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
-    public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
-        var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-        TagsToGenerate.generateTag("c:" + itemPath, item.asItem(), englishName + "s");
-    })
+    public static final PartTemplate GEM = new PartTemplate("%s", "gem")
+            .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
+                var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
+                TagsToGenerate.generateTag("c:" + itemPath, item.asItem(), englishName + "s");
+            })
             .withTexture(new TextureGenParams.Gem())
             .withCustomPath("%s", "%s");
 
@@ -67,8 +69,10 @@ public class MIParts {
     public static final PartTemplate INGOT = new PartTemplate("Ingot", "ingot");
     public static final PartTemplate LARGE_PLATE = new PartTemplate("Large Plate", "large_plate");
     public static final CasingPart MACHINE_CASING = new CasingPart("Machine Casing", "machine_casing");
-    public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("Pipe Machine Casing", "machine_casing_pipe");
-    public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
+    public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("Pipe Machine Casing",
+            "machine_casing_pipe");
+    public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing",
+            "machine_casing_special");
     public static final PartTemplate NUGGET = new PartTemplate("Nugget", "nugget");
     public static final OrePart ORE = new OrePart(false);
     public static final OrePart ORE_DEEPSLATE = new OrePart(true);
@@ -77,25 +81,30 @@ public class MIParts {
     public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);
     public static final PartTemplate RING = new PartTemplate("Ring", "ring");
     public static final PartTemplate ROD = new PartTemplate("Rod", "rod");
-    public static final PartTemplate ROD_MAGNETIC = new PartTemplate("Magnetic %s Rod", "rod_magnetic").withOverlay(ROD, "magnetic");
+    public static final PartTemplate ROD_MAGNETIC = new PartTemplate("Magnetic %s Rod", "rod_magnetic")
+            .withOverlay(ROD, "magnetic");
     public static final PartTemplate ROTOR = new PartTemplate("Rotor", "rotor");
     public static final TankPart TANK = new TankPart();
     public static final PartTemplate TINY_DUST = new PartTemplate("Tiny Dust", "tiny_dust");
     public static final PartTemplate WIRE = new PartTemplate("Wire", "wire");
-    public static final PartTemplate WIRE_MAGNETIC = new PartTemplate("Magnetic %s Wire", "wire_magnetic").withOverlay(WIRE, "magnetic");
+    public static final PartTemplate WIRE_MAGNETIC = new PartTemplate("Magnetic %s Wire", "wire_magnetic")
+            .withOverlay(WIRE, "magnetic");
 
     public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
     public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
     public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
     public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
 
-    public static final PartTemplate N_DOPED_PLATE = new PartTemplate("N-Doped %s Plate", "n_doped_plate").withOverlay(PLATE, "n_doped");
-    public static final PartTemplate P_DOPED_PLATE = new PartTemplate("P-Doped %s Plate", "p_doped_plate").withOverlay(PLATE, "p_doped");
+    public static final PartTemplate N_DOPED_PLATE = new PartTemplate("N-Doped %s Plate", "n_doped_plate")
+            .withOverlay(PLATE, "n_doped");
+    public static final PartTemplate P_DOPED_PLATE = new PartTemplate("P-Doped %s Plate", "p_doped_plate")
+            .withOverlay(PLATE, "p_doped");
 
     public static final PartTemplate[] ITEM_PURE_NON_METAL = new PartTemplate[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final PartTemplate[] ITEM_PURE_METAL = new PartTemplate[] { INGOT, NUGGET, TINY_DUST, DUST };
 
-    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
+    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE,
+            PLATE, TINY_DUST, RAW_METAL,
             RAW_METAL_BLOCK);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
@@ -111,7 +120,8 @@ public class MIParts {
     public record CategoryTag(String tag, String englishName) {
     }
 
-    public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
+    public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING,
+            MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
 
 }

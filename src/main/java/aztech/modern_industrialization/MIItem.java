@@ -101,7 +101,6 @@ public final class MIItem {
     public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_OTHER);
     public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_OTHER);
     public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_OTHER);
-    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_OTHER);
 
     // MV circuits
     public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_OTHER);

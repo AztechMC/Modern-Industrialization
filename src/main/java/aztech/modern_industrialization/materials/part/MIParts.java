@@ -48,6 +48,7 @@ public class MIParts {
 
     public static final PartTemplate DRILL_HEAD = new PartTemplate("Drill Head", "drill_head");
     public static final PartTemplate ROTARY_BLADE = new PartTemplate("Rotary Blade", "rotary_blade");
+    public static final PartTemplate TOOL_CASING = new PartTemplate("Tool Casing", "tool_casing");
 
     public static final PartTemplate DRILL = new PartTemplate("Drill", "drill");
 

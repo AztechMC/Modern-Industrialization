@@ -331,6 +331,7 @@ public class MIMaterials {
                         .addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of()).addParts(TANK.of(8)).addParts(BARREL.of(128))
                         .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
                         .addParts(ROTARY_BLADE)
+                        .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.STEEL_TOOL_CASING.getId().toString()))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 
         LIGNITE_COAL = MaterialRegistry.addMaterial(new MaterialBuilder("Lignite Coal", "lignite_coal")
@@ -353,6 +354,7 @@ public class MIMaterials {
                         .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.of("Frostproof Machine Casing", "frostproof_machine_casing")).addParts(TANK.of(16))
                         .addParts(BARREL.of(512)).addParts(CABLE.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
                         .addParts(ROTARY_BLADE)
+                        .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.ALUMINUM_TOOL_CASING.getId().toString()))
                         .addRecipes(SmeltingRecipes::applyBlastFurnace));
 
         BAUXITE = MaterialRegistry.addMaterial(new MaterialBuilder("Bauxite", "bauxite")
@@ -458,6 +460,7 @@ public class MIMaterials {
                         .addParts(MACHINE_CASING_SPECIAL.of("Solid Titanium Machine Casing", "solid_titanium_machine_casing")).addParts(ORE.of(MaterialOreSet.IRON))
                         .addParts(TANK.of(64)).addParts(BARREL.of(8192))
                         .addParts(ROTARY_BLADE)
+                        .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.TITANIUM_TOOL_CASING.getId().toString()))
                         .addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400)).cancelRecipes("macerator/raw_metal"));
 
@@ -492,6 +495,7 @@ public class MIMaterials {
                         "clean_stainless_steel_machine_casing"))
                 .addParts(ROD_MAGNETIC).addParts(TANK.of(32)).addParts(BARREL.of(4096))
                 .addParts(ROTARY_BLADE)
+                .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.STAINLESS_STEEL_TOOL_CASING.getId().toString()))
                 .addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("polarizer/rod_magnetic"));
 

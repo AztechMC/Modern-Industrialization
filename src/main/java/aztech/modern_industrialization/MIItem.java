@@ -32,6 +32,7 @@ import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
+import aztech.modern_industrialization.items.modular_tools.ModularToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -138,6 +139,11 @@ public final class MIItem {
     public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
+
+    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemHandheld("Steel Tool Casing", "steel_tool_casing", (p) -> new ModularToolItem(p));
+    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemHandheld("Aluminum Tool Casing", "aluminum_tool_casing", (p) -> new ModularToolItem(p));
+    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemHandheld("Stainless Steel Tool Casing", "stainless_steel_tool_casing", (p) -> new ModularToolItem(p));
+    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemHandheld("Titanium Tool Casing", "titanium_tool_casing", (p) -> new ModularToolItem(p));
 
     // public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
     //         .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));

@@ -93,9 +93,10 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR)
                 .addPart('b', BOLT)
                 .addPart('c', CURVED_PLATE).addPart('R', ROD).addTaggedPart('p', PLATE);
-
         new ShapedRecipeBuilder(ctx, ROTARY_BLADE, 1, "rotary_blade", " d ", "d#d", " d ")
                 .addTaggedPart('#', GEAR).addInput('d', MIMaterials.DIAMOND.getPart(DUST));
+        new ShapedRecipeBuilder(ctx, TOOL_CASING, 1, "tool_casing", "bpb", "c c", "bpb")
+                .addTaggedPart('b', BOLT).addTaggedPart('p', PLATE).addTaggedPart('c', CURVED_PLATE);
 
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);
@@ -114,6 +115,7 @@ public final class StandardRecipes {
         addMaceratorRecycling(ctx, BLADE, 5);
         addMaceratorRecycling(ctx, DRILL_HEAD, 7 * 9 + 4);
         addMaceratorRecycling(ctx, ROTARY_BLADE, 18);
+        addMaceratorRecycling(ctx, TOOL_CASING, 36);
         addMaceratorRecycling(ctx, WIRE, 4);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_crushed").addTaggedPartInput(ORE, 1)
@@ -200,6 +202,11 @@ public final class StandardRecipes {
                 .addTaggedPartInput(GEAR, 1)
                 .addItemInput(MIMaterials.DIAMOND.getPart(DUST), 4)
                 .addPartOutput(ROTARY_BLADE, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "tool_casing")
+                .addTaggedPartInput(PLATE, 2)
+                .addTaggedPartInput(CURVED_PLATE, 2)
+                .addFluidInput(MIFluids.SOLDERING_ALLOY, 100)
+                .addPartOutput(TOOL_CASING, 1);
 
         // HEAT EXCHANGER
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.HEAT_EXCHANGER, "hot_ingot", 8, 10)

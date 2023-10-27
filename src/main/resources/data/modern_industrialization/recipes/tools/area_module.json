@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    " b#",
+    "   "
+  ],
+  "key": {
+    "b": {
+      "item": "modern_industrialization:analog_circuit_board"
+    },
+    "#": {
+      "item": "modern_industrialization:copper_fine_wire"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:area_module"
+  }
+}

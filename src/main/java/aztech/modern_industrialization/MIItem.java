@@ -152,6 +152,19 @@ public final class MIItem {
     public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.maxCount(1)), ITEMS_OTHER);
     public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER).withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
 
+    // Modular Equipment Upgrades
+    public static final ItemDefinition<Item> AREA_MODULE = itemNoModel("Area Module", "area_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> FIRE_ASPECT_MODULE = itemNoModel("Fire Aspect Module", "fire_aspect_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> LOOTING_MODULE = itemNoModel("Looting Module", "looting_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> KNOCKBACK_MODULE = itemNoModel("Knockback Module", "knockback_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> SWEEPING_EDGE_MODULE = itemNoModel("Sweeping Edge Module", "sweeping_edge_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> SHARPNESS_MODULE = itemNoModel("Sharpness Module", "sharpness_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> SMITE_MODULE = itemNoModel("Smite Module", "smite_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> BANE_OF_ARTHROPODS_MODULE = itemNoModel("Bane of Arthropods Module", "bane_of_arthropods_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> EFFICIENCY_MODULE = itemNoModel("Efficiency Module", "efficiency_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> FORTUNE_MODULE = itemNoModel("Fortune Module", "fortune_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> SILK_TOUCH_MODULE = itemNoModel("Silk Touch Module", "silk_touch_module", p -> new Item(p.maxCount(1)), ITEMS_OTHER);
+
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER);
 
     public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new);

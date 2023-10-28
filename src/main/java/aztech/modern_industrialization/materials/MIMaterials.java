@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.item.modular_tools.ComponentTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.*;
@@ -178,7 +179,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xFFE650)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
-                        .addParts(DRILL_HEAD, DRILL))
+                        .addParts(DRILL_HEAD.simple(), DRILL))
         );
 
         IRON = MaterialRegistry.addMaterial(
@@ -199,7 +200,7 @@ public class MIMaterials {
                         .addParts(WIRE)
                         .addParts(FINE_WIRE)
                         .addParts(CABLE.of(CableTier.LV))
-                        .addParts(DRILL_HEAD, DRILL))
+                        .addParts(DRILL_HEAD.simple(), DRILL))
                 .cancelRecipes("macerator/ore_to_raw", "forge_hammer/ore_to_raw_metal",
                         "forge_hammer/ore_to_raw_metal_with_tool", "forge_hammer/ore_to_dust_with_tool"));
 
@@ -246,7 +247,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.MEAN_RGB, 0xd20000)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
+                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV, ComponentTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
                         .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
                         .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
@@ -306,7 +307,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xffcc00)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
+                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD.simple(), DRILL)
                         .addParts(BARREL.of(32)).addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of())
                         .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
@@ -327,10 +328,10 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, METALLIC)
                         .set(MaterialProperty.MEAN_RGB, 0x3f3f3f)
                         .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
+                        .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD.withModularComponent(ComponentTier.LV, 2, 6.0f, 6.0), DRILL)
                         .addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of()).addParts(TANK.of(8)).addParts(BARREL.of(128))
                         .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
-                        .addParts(ROTARY_BLADE)
+                        .addParts(ROTARY_BLADE.withModularComponent(ComponentTier.LV, 6.0f, 9.0))
                         .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.STEEL_TOOL_CASING.getId().toString()))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 
@@ -351,9 +352,9 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0x3fcaff)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(MACHINE_CASING.of("Advanced Machine Casing", "advanced_machine_casing"))
-                        .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.of("Frostproof Machine Casing", "frostproof_machine_casing")).addParts(TANK.of(16))
+                        .addParts(DRILL_HEAD.withModularComponent(ComponentTier.MV, 3, 8.0f, 7.0), DRILL).addParts(MACHINE_CASING_SPECIAL.of("Frostproof Machine Casing", "frostproof_machine_casing")).addParts(TANK.of(16))
                         .addParts(BARREL.of(512)).addParts(CABLE.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
-                        .addParts(ROTARY_BLADE)
+                        .addParts(ROTARY_BLADE.withModularComponent(ComponentTier.MV, 8.0f, 10.0))
                         .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.ALUMINUM_TOOL_CASING.getId().toString()))
                         .addRecipes(SmeltingRecipes::applyBlastFurnace));
 
@@ -396,7 +397,7 @@ public class MIMaterials {
                                                                 2),
                                                         NuclearConstant.DESINTEGRATION_BY_ROD * 2)))
                         .addParts(BLOCK.of(MaterialBlockSet.IRON))
-                        .addParts(ROTARY_BLADE)
+                        .addParts(ROTARY_BLADE.simple())
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         CUPRONICKEL = MaterialRegistry.addMaterial(new MaterialBuilder("Cupronickel", "cupronickel")
@@ -437,7 +438,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, STONE)
                         .set(MaterialProperty.MEAN_RGB, 0x071CB8)
                         .set(MaterialProperty.HARDNESS, SOFT).addParts(TINY_DUST, DUST).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
-                        .addParts(BATTERY.of(CableTier.HV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+                        .addParts(BATTERY.of(CableTier.HV, ComponentTier.HV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         SALT = MaterialRegistry.addMaterial(new MaterialBuilder("Salt", "salt")
                 .set(MaterialProperty.MAIN_PART, DUST)
@@ -456,10 +457,10 @@ public class MIMaterials {
                         .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER)).addParts(HOT_INGOT)
                         .addParts(MACHINE_CASING.of(
                                 "Highly Advanced Machine Casing",
-                                "highly_advanced_machine_casing")).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_PIPE.of())
+                                "highly_advanced_machine_casing")).addParts(DRILL_HEAD.withModularComponent(ComponentTier.EV, 5, 12.0f, 9.0), DRILL).addParts(MACHINE_CASING_PIPE.of())
                         .addParts(MACHINE_CASING_SPECIAL.of("Solid Titanium Machine Casing", "solid_titanium_machine_casing")).addParts(ORE.of(MaterialOreSet.IRON))
                         .addParts(TANK.of(64)).addParts(BARREL.of(8192))
-                        .addParts(ROTARY_BLADE)
+                        .addParts(ROTARY_BLADE.withModularComponent(ComponentTier.EV, 12.0f, 12.0))
                         .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.TITANIUM_TOOL_CASING.getId().toString()))
                         .addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400)).cancelRecipes("macerator/raw_metal"));
@@ -478,7 +479,7 @@ public class MIMaterials {
                 .set(MaterialProperty.MEAN_RGB, 0x3C3C50)
                 .set(MaterialProperty.HARDNESS, SOFT)
                 .addParts(ITEM_PURE_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(N_DOPED_PLATE, P_DOPED_PLATE).addParts(PLATE, DOUBLE_INGOT, BATTERY.of(CableTier.MV))
+                .addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(N_DOPED_PLATE, P_DOPED_PLATE).addParts(PLATE, DOUBLE_INGOT, BATTERY.of(CableTier.MV, ComponentTier.MV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         STAINLESS_STEEL = MaterialRegistry.addMaterial(new MaterialBuilder("Stainless Steel", "stainless_steel")
@@ -487,14 +488,14 @@ public class MIMaterials {
                 .set(MaterialProperty.HARDNESS, HARD)
                 .addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                .addParts(HOT_INGOT).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING.of(
+                .addParts(HOT_INGOT).addParts(DRILL_HEAD.withModularComponent(ComponentTier.HV, 4, 10.0f, 8.0), DRILL).addParts(MACHINE_CASING.of(
                         "Turbo Machine Casing",
                         "turbo_machine_casing"))
                 .addParts(MACHINE_CASING_PIPE.of()).addParts(MACHINE_CASING_SPECIAL.of(
                         "Clean Stainless Steel Machine Casing",
                         "clean_stainless_steel_machine_casing"))
                 .addParts(ROD_MAGNETIC).addParts(TANK.of(32)).addParts(BARREL.of(4096))
-                .addParts(ROTARY_BLADE)
+                .addParts(ROTARY_BLADE.withModularComponent(ComponentTier.HV, 10.0f, 11.0))
                 .addMaterialItemParts(MaterialItemPart.external(TOOL_CASING, MIItem.STAINLESS_STEEL_TOOL_CASING.getId().toString()))
                 .addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("polarizer/rod_magnetic"));
@@ -670,7 +671,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0x967224)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY.of(CableTier.EV))
+                        .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY.of(CableTier.EV, ComponentTier.EV))
                         .addParts(
                                 new PartTemplate("Control Rod", FUEL_ROD.key)
                                         .withRegister((partContext, part, itemPath1, itemId, itemTag, englishName) -> NuclearAbsorbable

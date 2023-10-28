@@ -231,6 +231,12 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
         ELECTRIC
     }
 
+    public static enum ToolType {
+        NONE,
+        DRILL,
+        CHAINSAW
+    }
+
     private static class StrippingAccess extends AxeItem {
         private StrippingAccess(Tier material, float attackDamage, float attackSpeed, Properties settings) {
             super(material, attackDamage, attackSpeed, settings);

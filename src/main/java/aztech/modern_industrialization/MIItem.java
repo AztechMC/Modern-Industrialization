@@ -158,14 +158,26 @@ public final class MIItem {
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 
-    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemHandheld("Steel Tool Casing", "steel_tool_casing", (p) -> new ModularToolItem(p))
-            .withItemRegistrationEvent(item -> CasingRegistry.register(item, new CasingProperties(ComponentTier.LV, 2)));
-    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemHandheld("Aluminum Tool Casing", "aluminum_tool_casing", (p) -> new ModularToolItem(p))
-            .withItemRegistrationEvent(item -> CasingRegistry.register(item, new CasingProperties(ComponentTier.MV, 3)));
-    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemHandheld("Stainless Steel Tool Casing", "stainless_steel_tool_casing", (p) -> new ModularToolItem(p))
-            .withItemRegistrationEvent(item -> CasingRegistry.register(item, new CasingProperties(ComponentTier.HV, 4)));
-    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemHandheld("Titanium Tool Casing", "titanium_tool_casing", (p) -> new ModularToolItem(p))
-            .withItemRegistrationEvent(item -> CasingRegistry.register(item, new CasingProperties(ComponentTier.EV, 5)));
+    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemHandheld("Steel Tool Casing", "steel_tool_casing", ModularToolItem::new)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.LV, 2));
+                // TODO: fluid and energy storage registration
+        });
+    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemHandheld("Aluminum Tool Casing", "aluminum_tool_casing", ModularToolItem::new)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.MV, 3));
+                // TODO: fluid and energy storage registration
+        });
+    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemHandheld("Stainless Steel Tool Casing", "stainless_steel_tool_casing", ModularToolItem::new)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.HV, 4));
+                // TODO: fluid and energy storage registration
+        });
+    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemHandheld("Titanium Tool Casing", "titanium_tool_casing", ModularToolItem::new)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.EV, 5));
+                // TODO: fluid and energy storage registration
+        });
 
     // public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
     //         .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
@@ -249,15 +261,19 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, Item::new,
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_ITEM),
+                sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> item(String englishName, String path,
             Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, ctor,
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_ITEM),
+                sortOrder);
     }
 
     public static ItemDefinition<Item> itemHandheld(String englishName, String path) {

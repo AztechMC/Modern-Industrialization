@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.modular_tools;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyConverterRegistry;
 import aztech.modern_industrialization.items.DynamicEnchantmentItem;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
@@ -31,13 +32,16 @@ import aztech.modern_industrialization.items.ItemHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -87,12 +91,14 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
 
     @Override
     public boolean isSuitableFor(ItemStack stack, BlockState state) {
+        // TODO: consider tool type
         int requiredLevel = MiningLevelManager.getRequiredMiningLevel(state);
         return requiredLevel <= toolLevel(stack) && hasEnoughEnergy(stack) && isSupportedBlock(stack, state);
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
+        // TODO: inline getMiningSpeedMultiplier
         if (isSupportedBlock(stack, state)) {
             return getMiningSpeedMultiplier(stack);
         }
@@ -101,6 +107,8 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+        // TODO: inline getAttackDamage
+
         if (slot == EquipmentSlot.MAINHAND && hasEnoughEnergy(stack)) {
             return ItemHelper.createToolModifiers(getAttackDamage(stack));
         }
@@ -119,6 +127,7 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
 
     @Override
     public int getBarWidth(ItemStack stack) {
+        // TODO: inline getDurabilityBarProgress
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
@@ -140,6 +149,52 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
         // TODO: add handling for shearing, depending on head
         return InteractionResult.PASS;
     }
+
+    public static void rebuildTool(ItemStack stack) {
+        Item energyConverter = getComponent(stack, "energyConverter");
+        Item energyStorage = getComponent(stack, "energyStorage");
+        Item head = getComponent(stack, "head");
+        List<Item> modules = getAddons(stack);
+
+        // clear current energy storage
+        SimpleEnergyItem.setStoredEnergyUnchecked(stack, 0);
+        FluidFuelItemHelper.setAmount(stack, 0);
+
+        // set new energy type
+        EnergyType converterType = EnergyConverterRegistry.getProperties(energyConverter)
+                .energyType();
+        EnergyType storageType = EnergyConverterRegistry.getProperties(energyStorage)
+                .energyType();
+        if (converterType == storageType) {
+            ModularToolItem.setEnergyType(stack, converterType);
+        } else {
+            ModularToolItem.setEnergyType(stack, EnergyType.NONE);
+        }
+    }
+
+    private static Item getComponent(ItemStack stack, String componentName) {
+        String componentId = stack.getTag().getString(componentName);
+        if (componentId.equals("")) {
+            return null;
+        }
+        return BuiltInRegistries.ITEM.get(new ResourceLocation(componentId));
+    }
+
+    private static List<Item> getAddons(ItemStack stack) {
+        List<Item> addons = new ArrayList<>(5);
+        CompoundTag addonsTag = stack.getTag().getCompound("addons");
+        for (int idx = 0; idx < addons.size(); ++idx) {
+            String addonId = addonsTag.getString(Integer.toString(idx));
+            if (addonId.equals("")) {
+                addons.set(idx, null);
+            } else {
+                addons.set(idx, BuiltInRegistries.ITEM.get(new ResourceLocation(addonId)));
+            }
+        }
+        return addons;
+    }
+
+    // ----------------------------------------------
 
     /**
      * get energy capacity, in EU or in mB, depending on energy storage module
@@ -223,6 +278,11 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
         } else {
             return EnergyType.values()[tag.getByte("energyType")];
         }
+    }
+
+    public static void setEnergyType(ItemStack stack, EnergyType energyType) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putByte("energyType", (byte) energyType.ordinal());
     }
 
     public static enum EnergyType {

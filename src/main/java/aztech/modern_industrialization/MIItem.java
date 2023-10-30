@@ -158,25 +158,25 @@ public final class MIItem {
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 
-    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemHandheld("Steel Tool Casing", "steel_tool_casing", ModularToolItem::new)
+    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemNoModel("Steel Tool Casing", "steel_tool_casing", ModularToolItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 CasingRegistry.register(item, new CasingProperties(ComponentTier.LV, 2));
                 FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
                 EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
         });
-    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemHandheld("Aluminum Tool Casing", "aluminum_tool_casing", ModularToolItem::new)
+    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemNoModel("Aluminum Tool Casing", "aluminum_tool_casing", ModularToolItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 CasingRegistry.register(item, new CasingProperties(ComponentTier.MV, 3));
                 FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
                 EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
         });
-    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemHandheld("Stainless Steel Tool Casing", "stainless_steel_tool_casing", ModularToolItem::new)
+    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemNoModel("Stainless Steel Tool Casing", "stainless_steel_tool_casing", ModularToolItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 CasingRegistry.register(item, new CasingProperties(ComponentTier.HV, 4));
                 FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
                 EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
         });
-    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemHandheld("Titanium Tool Casing", "titanium_tool_casing", ModularToolItem::new)
+    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemNoModel("Titanium Tool Casing", "titanium_tool_casing", ModularToolItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 CasingRegistry.register(item, new CasingProperties(ComponentTier.EV, 5));
                 FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);

@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "modern_industrialization:item/steel_tool_casing"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "modern_industrialization:item/steel_tool_casing_drill"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "modern_industrialization:item/steel_tool_casing_chainsaw"
+    }
+  ]
+}

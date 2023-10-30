@@ -330,6 +330,21 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
         // clear current energy storage
         SimpleEnergyItem.setStoredEnergyUnchecked(stack, 0);
         FluidFuelItemHelper.setAmount(stack, 0);
+
+        switch (getToolType(stack)) {
+        case DRILL: {
+            stack.getOrCreateTag().putInt("CustomModelData", 1);
+            break;
+        }
+        case CHAINSAW: {
+            stack.getOrCreateTag().putInt("CustomModelData", 2);
+            break;
+        }
+        default: {
+            stack.getOrCreateTag().putInt("CustomModelData", 0);
+            break;
+        }
+        }
     }
 
     private static Optional<ConverterProperties> getConverterProps(ItemStack stack) {

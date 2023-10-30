@@ -31,6 +31,10 @@
       "text": "All tools require an motor to convert their stored energy into useful work. This is either a motor (of any kind) for an electric tool or a pump (of any kind) for a liquid-fuelled tool."
     },
     {
+      "type": "text",
+      "text": "These have a maximum EU per operations they support - 1024 for basic components, 2048 for large components, 4096 for advanced components, and 8192 for large advanced components."
+    },
+    {
       "type": "spotlight",
       "item": {
         "item": "modern_industrialization:redstone_battery"
@@ -52,36 +56,57 @@
         "item": "modern_industrialization:area_module"
       },
       "title": "Modules",
-      "text": "You can optionally install upgrade modules to change your tool's properties, for example, adding a fortune or a silk touch module, or even an area module."
+      "text": "You can optionally install upgrade modules to change your tool's properties, for example, adding a fortune or a silk touch module, or even an area module. These increase energy consumption from the baseline of 32 EU/operation."
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/area_module",
-      "recipe2": "modern_industrialization:tools/fire_aspect_module"
+      "text": "Area modules increase the mining radius by one; you can install up to two of them, but they increase energy consumption by 9x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/fire_aspect_module",
+      "text": "Adds a level of Fire Aspect, stacks up to 2, and increases energy consumption by 1.5x"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/looting_module",
-      "recipe2": "modern_industrialization:tools/knockback_module"
+      "text": "Adds a level of Looting, stacks up to 3, and increases energy consumption by 2x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/knockback_module",
+      "text": "Adds a level of Knockback, stacks up to 2, and increases energy consumption by 1.25x"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/sweeping_edge_module",
-      "recipe2": "modern_industrialization:tools/sharpness_module"
+      "text": "Adds a level of Sweeping Edge, stacks up to 3, and increases energy consumption by 1.5x"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:tools/smite_module",
-      "recipe2": "modern_industrialization:tools/bane_of_arthropods_module"
+      "recipe": "modern_industrialization:tools/sharpness_module",
+      "recipe2": "modern_industrialization:tools/smite_module"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/bane_of_arthropods_module",
+      "text": "Adds a level of Sharpness, Smite, or Bane of Arthropods, stacks up to 5, and increases energy consumption by 1.25x"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/efficiency_module",
-      "recipe2": "modern_industrialization:tools/fortune_module"
+      "text": "Adds a level of Efficiency, stacks up to 5, and increases energy consumption by 1.25x"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:tools/silk_touch_module"
+      "recipe": "modern_industrialization:tools/fortune_module",
+      "text": "Adds a level of Fortune, stacks up to 3, and increases energy consumption by 2x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/silk_touch_module",
+      "text": "Adds Silk Touch (doesn't stack) and increases energy consumption by 2x"
     }
   ],
   "sortnum": 111

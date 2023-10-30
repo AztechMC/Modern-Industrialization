@@ -35,7 +35,7 @@ import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.items.modular_tools.ModularToolItem.EnergyType;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.EnergyType;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Optional;
 import java.util.function.BiConsumer;

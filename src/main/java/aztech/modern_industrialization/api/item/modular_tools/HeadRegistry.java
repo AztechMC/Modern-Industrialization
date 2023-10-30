@@ -1,6 +1,6 @@
 package aztech.modern_industrialization.api.item.modular_tools;
 
-import aztech.modern_industrialization.items.modular_tools.ModularToolItem.ToolType;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.ToolType;
 import java.util.IdentityHashMap;
 import java.util.Objects;
 import net.minecraft.world.item.Item;

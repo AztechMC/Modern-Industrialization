@@ -3,7 +3,7 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.api.item.modular_tools.ComponentTier;
 import aztech.modern_industrialization.api.item.modular_tools.HeadRegistry;
 import aztech.modern_industrialization.api.item.modular_tools.HeadRegistry.HeadProperties;
-import aztech.modern_industrialization.items.modular_tools.ModularToolItem.ToolType;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.ToolType;
 
 public class DrillHeadPart implements PartKeyProvider {
     @Override

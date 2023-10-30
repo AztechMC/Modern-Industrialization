@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items.modular_tools;
+package aztech.modern_industrialization.items.modulartools;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.item.modular_tools.EnergyConverterRegistry;

@@ -28,7 +28,7 @@ import aztech.modern_industrialization.api.item.modular_tools.ComponentTier;
 import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry;
 import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry.StorageProperties;
 import aztech.modern_industrialization.items.PortableStorageUnit;
-import aztech.modern_industrialization.items.modular_tools.ModularToolItem.EnergyType;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.EnergyType;
 
 public class BatteryPart implements PartKeyProvider {
 

@@ -30,7 +30,7 @@ import aztech.modern_industrialization.api.item.modular_tools.EnergyConverterReg
 import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry;
 import aztech.modern_industrialization.api.item.modular_tools.HeadRegistry;
 import aztech.modern_industrialization.api.item.modular_tools.ModuleRegistry;
-import aztech.modern_industrialization.items.modular_tools.ModularToolItem;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;

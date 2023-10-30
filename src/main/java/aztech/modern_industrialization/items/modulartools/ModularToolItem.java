@@ -149,10 +149,13 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
+        if (!hasEnoughEnergy(stack)) {
+            return 0.0f;
+        }
         if (isSupportedBlock(stack, state)) {
             return getHeadProps(stack).map(props -> props.miningSpeed()).orElse(0.0f);
         }
-        return 0.0f;
+        return 1.0f;
     }
 
     @Override
@@ -168,10 +171,6 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
         switch (getEnergyType(stack)) {
         case FLUID: {
             FluidFuelItemHelper.appendTooltip(stack, tooltip, getCapacity(stack) / 1000);
-            break;
-        }
-        case ELECTRIC: {
-            // TODO: report EU inside
             break;
         }
         default: {
@@ -282,6 +281,10 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
     @Override
     public Reference2IntMap<Enchantment> getEnchantments(ItemStack stack) {
         var map = new Reference2IntArrayMap<Enchantment>();
+        if (!hasEnoughEnergy(stack)) {
+            return map;
+        }
+
         for (var addon : getAddonProps(stack)) {
             if (addon.isPresent() && addon.get().getFirst().enchantment() != null) {
                 Enchantment enchantment = addon.get().getFirst().enchantment();
@@ -426,19 +429,22 @@ public class ModularToolItem extends Item implements Vanishable, DynamicEnchantm
      * nearest mB
      */
     private static void consumeEnergy(ItemStack stack) {
-        switch (getEnergyType(stack)) {
-        case FLUID: {
-            FluidFuelItemHelper.setAmount(stack, FluidFuelItemHelper.getAmount(stack) - 81 * getMbRequired(stack));
-            break;
-        }
-        case ELECTRIC: {
-            SimpleEnergyItem.setStoredEnergyUnchecked(stack,
-                    SimpleEnergyItem.getStoredEnergyUnchecked(stack) - getConsumedEnergy(stack));
-            break;
-        }
-        default: {
-            throw new IllegalStateException("Must have a known energy type to consume any energy");
-        }
+        if (hasEnoughEnergy(stack)) {
+            switch (getEnergyType(stack)) {
+            case FLUID: {
+                FluidFuelItemHelper.setAmount(stack,
+                        FluidFuelItemHelper.getAmount(stack) - 81 * getMbRequired(stack));
+                break;
+            }
+            case ELECTRIC: {
+                SimpleEnergyItem.setStoredEnergyUnchecked(stack,
+                        SimpleEnergyItem.getStoredEnergyUnchecked(stack) - getConsumedEnergy(stack));
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Must have a known energy type to consume any energy");
+            }
+            }
         }
     }
 

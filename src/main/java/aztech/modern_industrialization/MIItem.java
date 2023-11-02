@@ -200,8 +200,6 @@ public final class MIItem {
             .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.MOB_LOOTING, null, 2.0)));
     public static final ItemDefinition<Item> KNOCKBACK_MODULE = itemNoModel("Knockback Module", "knockback_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER)
             .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.KNOCKBACK, null, 1.25)));
-    public static final ItemDefinition<Item> SWEEPING_EDGE_MODULE = itemNoModel("Sweeping Edge Module", "sweeping_edge_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER)
-            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.SWEEPING_EDGE, null, 1.5)));
     public static final ItemDefinition<Item> SHARPNESS_MODULE = itemNoModel("Sharpness Module", "sharpness_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)
             .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.SHARPNESS, null, 1.25)));
     public static final ItemDefinition<Item> SMITE_MODULE = itemNoModel("Smite Module", "smite_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)

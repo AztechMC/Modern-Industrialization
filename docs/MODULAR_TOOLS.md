@@ -79,7 +79,7 @@ Modules are crafted by choosing the placement of fine copper wires around a circ
 - 11101000 = fire aspect
 - 11100100 = looting
 - 11100010 = knockback
-- 11100001 = sweeping edge
+- 11100001 = sweeping edge - temporarily disabled
 - 11011000 = sharpness
 - 11010100 = smite
 - 11010010 = bane of arthropods

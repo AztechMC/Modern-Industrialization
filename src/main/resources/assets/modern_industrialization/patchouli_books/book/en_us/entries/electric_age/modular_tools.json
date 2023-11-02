@@ -80,11 +80,6 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:tools/sweeping_edge_module",
-      "text": "Adds a level of Sweeping Edge, stacks up to 3, and increases energy consumption by 1.5x"
-    },
-    {
-      "type": "crafting",
       "recipe": "modern_industrialization:tools/sharpness_module",
       "recipe2": "modern_industrialization:tools/smite_module"
     },

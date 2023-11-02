@@ -28,6 +28,7 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandl
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
+import aztech.modern_industrialization.machines.guicomponents.ControlPanel;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -102,6 +103,20 @@ public class MachinePackets {
                 if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
                     ShapeSelection.Server shapeSelection = machineMenu.blockEntity.getComponent(GuiComponents.SHAPE_SELECTION);
                     shapeSelection.behavior.handleClick(shapeLine, clickedLeftButton ? -1 : +1);
+                }
+            });
+        };
+
+        public static final ResourceLocation CLICK_ON_CONTROL_BUTTON = new MIIdentifier("click_on_control_button");
+        public static final ServerPlayNetworking.PlayChannelHandler ON_CLICK_ON_CONTROL_BUTTON = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int buttonId = buf.readVarInt();
+            boolean clickedLeftButton = buf.readBoolean();
+            ms.execute(() -> {
+                AbstractContainerMenu menu = player.containerMenu;
+                if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
+                    ControlPanel.Server controlPanel = machineMenu.blockEntity.getComponent(GuiComponents.CONTROL_PANEL);
+                    controlPanel.onClickOnButton(buttonId, clickedLeftButton);
                 }
             });
         };

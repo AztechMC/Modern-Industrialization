@@ -45,6 +45,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
 public class SlotPanel {
+
     public static int getSlotX(MachineGuiParameters guiParameters) {
         return guiParameters.backgroundWidth + 6;
     }
@@ -54,6 +55,7 @@ public class SlotPanel {
     }
 
     public static class Server implements GuiComponent.ServerNoData {
+
         private final MachineBlockEntity machine;
         private final List<Consumer<GuiComponent.MenuFacade>> slotFactories = new ArrayList<>();
         private final List<SlotType> slotTypes = new ArrayList<>();

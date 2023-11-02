@@ -30,6 +30,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
+import aztech.modern_industrialization.machines.components.RedstoneStatusComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
@@ -82,12 +83,14 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public final OrientationComponent orientation;
     public final PlacedByComponent placedBy;
+    public final RedstoneStatusComponent redstoneStatus;
 
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
         this.orientation = new OrientationComponent(orientationParams);
         this.placedBy = new PlacedByComponent();
+        this.redstoneStatus = new RedstoneStatusComponent(false);
 
         registerComponents(orientation, placedBy);
     }
@@ -264,5 +267,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     protected int getComparatorOutput() {
         return 0;
+    }
+
+    public void registerRedstoneSignal(boolean isPowered) {
+        redstoneStatus.isPowered = isPowered;
     }
 }

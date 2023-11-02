@@ -170,6 +170,7 @@ public class ModernIndustrialization {
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE, MachinePackets.C2S.ON_FORGE_HAMMER_MOVE_RECIPE);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CLICK_ON_CONTROL_BUTTON, MachinePackets.C2S.ON_CLICK_ON_CONTROL_BUTTON);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
         CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }

@@ -359,6 +359,65 @@ public class ToolStationScreenHandler extends AbstractContainerMenu {
         return moved;
     }
 
+    @Override
+    protected boolean moveItemStackTo(ItemStack toMove, int startIndex, int endIndex, boolean reverseDirection) {
+        ItemStack target;
+        Slot slot;
+        boolean moved = false;
+        int slotIdx = startIndex;
+        if (reverseDirection) {
+            slotIdx = endIndex - 1;
+        }
+        if (toMove.isStackable()) {
+            while (!toMove.isEmpty() && (reverseDirection ? slotIdx >= startIndex : slotIdx < endIndex)) {
+                slot = this.slots.get(slotIdx);
+                target = slot.getItem();
+                if (!target.isEmpty() && ItemStack.isSameItemSameTags(toMove, target)) {
+                    int j = target.getCount() + toMove.getCount();
+                    if (j <= slot.getMaxStackSize(toMove)) {
+                        toMove.setCount(0);
+                        target.setCount(j);
+                        slot.setChanged();
+                        moved = true;
+                    } else if (target.getCount() < slot.getMaxStackSize(toMove)) {
+                        toMove.shrink(slot.getMaxStackSize(toMove) - target.getCount());
+                        target.setCount(slot.getMaxStackSize(toMove));
+                        slot.setChanged();
+                        moved = true;
+                    }
+                }
+                if (reverseDirection) {
+                    --slotIdx;
+                    continue;
+                }
+                ++slotIdx;
+            }
+        }
+        if (!toMove.isEmpty()) {
+            slotIdx = reverseDirection ? endIndex - 1 : startIndex;
+            while (reverseDirection ? slotIdx >= startIndex : slotIdx < endIndex) {
+                slot = this.slots.get(slotIdx);
+                target = slot.getItem();
+                if (target.isEmpty() && slot.mayPlace(toMove)) {
+                    if (toMove.getCount() > slot.getMaxStackSize()) {
+                        slot.setByPlayer(toMove.split(slot.getMaxStackSize()));
+                    } else {
+                        slot.setByPlayer(toMove.split(toMove.getCount()));
+                    }
+                    slot.setChanged();
+                    moved = true;
+                    break;
+                }
+                if (reverseDirection) {
+                    --slotIdx;
+                    continue;
+                }
+                ++slotIdx;
+            }
+        }
+        return moved;
+    }
+
     public void removed(Player player) {
         super.removed(player);
         this.context.execute((world, blockPos) -> {

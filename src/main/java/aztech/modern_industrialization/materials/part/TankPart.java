@@ -28,11 +28,14 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry.StorageProperties;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.EnergyType;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -56,8 +59,10 @@ public class TankPart implements PartKeyProvider {
 
     public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
         var textureSlot = TextureSlot.create("0");
-        var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath()));
-        gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
+        var mapping = TextureMapping.singleSlot(textureSlot,
+                new MIIdentifier("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath()));
+        gen.createTrivialBlock(block, mapping,
+                new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
     };
 
     @Override
@@ -73,7 +78,8 @@ public class TankPart implements PartKeyProvider {
         return of(new PartEnglishNameFormatter.Default("Tank"), bucketCapacity, null);
     }
 
-    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity, @Nullable String maybePathOverridden) {
+    public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity,
+            @Nullable String maybePathOverridden) {
         MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
@@ -109,8 +115,12 @@ public class TankPart implements PartKeyProvider {
                     FluidStorage.SIDED.registerSelf(bet.getValue());
                     item.registerItemApi();
 
-                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
+                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath,
+                            bet.getValue(),
                             partContext.get(MEAN_RGB));
+
+                    EnergyStorageRegistry.register(item,
+                            new StorageProperties(null, capacity * 1000, EnergyType.FLUID));
                 });
 
         if (maybePathOverridden != null) {

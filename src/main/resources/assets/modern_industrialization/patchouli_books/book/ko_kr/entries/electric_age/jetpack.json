@@ -12,16 +12,6 @@
       "type": "crafting",
       "recipe": "modern_industrialization:armor/rubber_helmet",
       "recipe2": "modern_industrialization:armor/rubber_boots"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/diesel_mining_drill",
-      "text": "디젤 채광 드릴이 있으면, 더 이상 삽과 곡괭이는 필요없습니다. 강력한 연료로 구동시켜서 속도를 최대한 높이세요!$(br2)웅크리고 우클릭해서 섬세한 손길 혹은 행운 3으로 사용할 수 있습니다."
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/diesel_chainsaw",
-      "text": "나무를 빠르게 벨 수 있습니다."
     }
   ],
   "sortnum": 109

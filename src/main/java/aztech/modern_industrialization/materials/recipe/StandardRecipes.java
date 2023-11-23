@@ -30,6 +30,7 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
@@ -48,40 +49,54 @@ public final class StandardRecipes {
         // CRAFTING
         add3By3Crafting(ctx, TINY_DUST, DUST, true);
         add3By3Crafting(ctx, NUGGET, INGOT, true);
-        add3By3Crafting(ctx, ctx.get(MAIN_PART), BLOCK, false); // Not in packer due to conflicts with double ingots.
+        add3By3Crafting(ctx, ctx.get(MAIN_PART), BLOCK, false); // Not in packer due to conflicts with double
+                                                                // ingots.
         add3By3Crafting(ctx, RAW_METAL, RAW_METAL_BLOCK, true);
 
-        new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
+        new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE)
+                .addTaggedPart('I', ROD)
                 .exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, ORE, 1, "deepslate_to_ore", "   ", " x ", "   ").addPart('x', ORE_DEEPSLATE);
+        new ShapedRecipeBuilder(ctx, ORE, 1, "deepslate_to_ore", "   ", " x ", "   ").addPart('x',
+                ORE_DEEPSLATE);
 
-        new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', CABLE).exportToAssembler();
+        new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', CABLE)
+                .exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE)
                 .exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
-                RING);
+        new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT)
+                .addTaggedPart('B', BLADE).addTaggedPart('R',
+                        RING);
 
-        new ShapedRecipeBuilder(ctx, GEAR, 1, "gear", "PbP", "bRb", "PbP").addTaggedPart('b', BOLT).addTaggedPart('P', PLATE).addTaggedPart('R',
-                RING);
+        new ShapedRecipeBuilder(ctx, GEAR, 1, "gear", "PbP", "bRb", "PbP").addTaggedPart('b', BOLT)
+                .addTaggedPart('P', PLATE).addTaggedPart('R',
+                        RING);
 
-        new ShapedRecipeBuilder(ctx, HAMMER, 1, "hammer", "ppp", "psp", " s ").addTaggedPart('p', LARGE_PLATE).addInput('s', Items.STICK);
+        new ShapedRecipeBuilder(ctx, HAMMER, 1, "hammer", "ppp", "psp", " s ").addTaggedPart('p', LARGE_PLATE)
+                .addInput('s', Items.STICK);
 
-        new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
+        new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT)
+                .addTaggedPart('R', ROD);
 
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
                 .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE)
+                .addInput('G', ConventionalItemTags.GLASS_BLOCKS)
                 .exportToAssembler();
         new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###")
                 .addTaggedPart('#', PLATE)
                 .addInput('b', "#c:wooden_barrels")
                 .exportToAssembler();
 
-        new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)
+        new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR)
+                .addPart('b', BOLT)
                 .addPart('c', CURVED_PLATE).addPart('R', ROD).addTaggedPart('p', PLATE);
+        new ShapedRecipeBuilder(ctx, ROTARY_BLADE, 1, "rotary_blade", " d ", "d#d", " d ")
+                .addTaggedPart('#', GEAR).addInput('d', MIMaterials.DIAMOND.getPart(DUST));
+        new ShapedRecipeBuilder(ctx, TOOL_CASING, 1, "tool_casing", "bpb", "c c", "bpb")
+                .addTaggedPart('b', BOLT).addTaggedPart('p', PLATE).addTaggedPart('c', CURVED_PLATE);
 
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);
@@ -99,22 +114,32 @@ public final class StandardRecipes {
         }
         addMaceratorRecycling(ctx, BLADE, 5);
         addMaceratorRecycling(ctx, DRILL_HEAD, 7 * 9 + 4);
+        addMaceratorRecycling(ctx, ROTARY_BLADE, 18);
+        addMaceratorRecycling(ctx, TOOL_CASING, 36);
         addMaceratorRecycling(ctx, WIRE, 4);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_crushed").addTaggedPartInput(ORE, 1)
+                .addPartOutput(CRUSHED_DUST, 3);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_raw").addTaggedPartInput(ORE, 1)
+                .addPartOutput(RAW_METAL, 3);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "crushed_dust", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
-                .addTaggedPartInput(CRUSHED_DUST, 1)
-                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "raw_metal", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
-                .addTaggedPartInput(RAW_METAL, 1)
-                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "crushed_dust", 2,
+                (int) (100 * ctx.get(HARDNESS).timeFactor))
+                        .addTaggedPartInput(CRUSHED_DUST, 1)
+                        .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "raw_metal", 2,
+                (int) (100 * ctx.get(HARDNESS).timeFactor))
+                        .addTaggedPartInput(RAW_METAL, 1)
+                        .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
         // COMPRESSOR
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "main").addTaggedPartInput(ctx.get(MAIN_PART), 1).addPartOutput(PLATE, 1);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "double_ingot").addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "ring").addTaggedPartInput(ROD, 1).addPartOutput(RING, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "main")
+                .addTaggedPartInput(ctx.get(MAIN_PART), 1).addPartOutput(PLATE, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "plate").addTaggedPartInput(PLATE, 1)
+                .addPartOutput(CURVED_PLATE, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "double_ingot")
+                .addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "ring").addTaggedPartInput(ROD, 1)
+                .addPartOutput(RING, 1);
         // CUTTING MACHINE
         addCuttingMachine(ctx, "main", ctx.get(MAIN_PART), ROD, 2);
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
@@ -123,27 +148,37 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "block").addTaggedPartInput(ctx.get(MAIN_PART), 9)
                 .addItemInput(MIItem.PACKER_BLOCK_TEMPLATE, 1, 0.0).addPartOutput(BLOCK, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "double_ingot").addTaggedPartInput(INGOT, 2)
-                .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
+                .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0)
+                .addPartOutput(DOUBLE_INGOT, 1);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2).addItemInput("#c:nuclear_alloy_plates", 1)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2)
+                .addItemInput("#c:nuclear_alloy_plates", 1)
                 .addPartOutput(FUEL_ROD_DOUBLE, 1);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#c:nuclear_alloy_plates", 2)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad")
+                .addItemInput("#c:nuclear_alloy_plates", 2)
                 .addPartInput(FUEL_ROD_DOUBLE, 2)
                 .addPartOutput(FUEL_ROD_QUAD, 1);
         // UNPACKER
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, "coil").addTaggedPartInput(COIL, 1).addPartOutput(CABLE, 8);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, "coil").addTaggedPartInput(COIL, 1)
+                .addPartOutput(CABLE, 8);
 
         // WIREMILL
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "wire").addTaggedPartInput(PLATE, 1)
+                .addPartOutput(WIRE, 2);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "fine_wire").addTaggedPartInput(WIRE, 1)
+                .addPartOutput(FINE_WIRE, 4);
         // EXTRA ASSEMBLER
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "rotor").addTaggedPartInput(BLADE, 4).addTaggedPartInput(RING, 1)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "rotor").addTaggedPartInput(BLADE, 4)
+                .addTaggedPartInput(RING, 1)
                 .addFluidInput(MIFluids.SOLDERING_ALLOY, 100).addPartOutput(ROTOR, 1);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "gear").addTaggedPartInput(PLATE, 4).addTaggedPartInput(RING, 1)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "gear").addTaggedPartInput(PLATE, 4)
+                .addTaggedPartInput(RING, 1)
                 .addFluidInput(MIFluids.SOLDERING_ALLOY, 100).addPartOutput(GEAR, 2);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "drill_head").addTaggedPartInput(PLATE, 1).addTaggedPartInput(CURVED_PLATE, 2)
-                .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addFluidInput(MIFluids.SOLDERING_ALLOY, 75)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "drill_head").addTaggedPartInput(PLATE, 1)
+                .addTaggedPartInput(CURVED_PLATE, 2)
+                .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2)
+                .addFluidInput(MIFluids.SOLDERING_ALLOY, 75)
                 .addPartOutput(DRILL_HEAD, 1);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_synthetic_rubber")
@@ -158,28 +193,45 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "fuel_rod", 16, 200)
                 .addItemInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
-                .addItemInput(MIItem.LARGE_MOTOR, 1).addItemInput(MIItem.ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)
+                .addItemInput(MIItem.LARGE_MOTOR, 1).addItemInput(MIItem.ROBOT_ARM, 2)
+                .addTaggedPartInput(ROD, 18)
                 .addFluidInput(MIFluids.SOLDERING_ALLOY, 500).addFluidInput(MIFluids.HELIUM, 100)
                 .addPartOutput(FUEL_ROD, 1);
 
-        // HEAT EXCHANGER
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.HEAT_EXCHANGER, "hot_ingot", 8, 10).addPartInput(HOT_INGOT, 1)
-                .addFluidInput(MIFluids.CRYOFLUID, 100)
-                .addPartOutput(INGOT, 1).addFluidOutput(MIFluids.ARGON, 65).addFluidOutput(MIFluids.HELIUM, 25);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "rotary_blade")
+                .addTaggedPartInput(GEAR, 1)
+                .addItemInput(MIMaterials.DIAMOND.getPart(DUST), 4)
+                .addPartOutput(ROTARY_BLADE, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "tool_casing")
+                .addTaggedPartInput(PLATE, 2)
+                .addTaggedPartInput(CURVED_PLATE, 2)
+                .addFluidInput(MIFluids.SOLDERING_ALLOY, 100)
+                .addPartOutput(TOOL_CASING, 1);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);
+        // HEAT EXCHANGER
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.HEAT_EXCHANGER, "hot_ingot", 8, 10)
+                .addPartInput(HOT_INGOT, 1)
+                .addFluidInput(MIFluids.CRYOFLUID, 100)
+                .addPartOutput(INGOT, 1).addFluidOutput(MIFluids.ARGON, 65)
+                .addFluidOutput(MIFluids.HELIUM, 25);
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "rod_magnetic", 8, 200)
+                .addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "wire_magnetic", 8, 200)
+                .addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);
         new SmeltingRecipeBuilder(ctx, ROD_MAGNETIC, ROD, 0.0, false);
         new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0, false);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.VACUUM_FREEZER, "hot_ingot", 32, 250).addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.VACUUM_FREEZER, "hot_ingot", 32, 250)
+                .addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
 
     }
 
     /**
      * Add a recycling recipe in the macerator.
      */
-    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, PartKeyProvider partInput, int tinyDustOutput) {
+    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, PartKeyProvider partInput,
+            int tinyDustOutput) {
         MIRecipeBuilder builder = new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, partInput);
         builder.addTaggedPartInput(partInput, 1);
         if (tinyDustOutput % 9 == 0) {
@@ -196,26 +248,32 @@ public final class StandardRecipes {
     /**
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
-    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, PartKeyProvider smallPart, PartKeyProvider bigPart, boolean packer) {
+    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, PartKeyProvider smallPart,
+            PartKeyProvider bigPart, boolean packer) {
         if (ctx.hasInternalPart(smallPart) || ctx.hasInternalPart(bigPart)) {
             // Don't add recipe if it's all external (vanilla already has it)
-            new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "yxx", "xxx", "xxx")
-                    .addPart('y', smallPart)
-                    .addTaggedPart('x', smallPart);
+            new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "yxx",
+                    "xxx", "xxx")
+                            .addPart('y', smallPart)
+                            .addTaggedPart('x', smallPart);
             new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart.key() + "_from_" + bigPart.key(), "x")
                     .addPart('x', bigPart);
         }
 
         if (packer) {
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
+            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, bigPart).addTaggedPartInput(smallPart, 9)
+                    .addPartOutput(bigPart, 1);
         }
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, smallPart).addTaggedPartInput(bigPart, 1).addPartOutput(smallPart, 9);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, smallPart).addTaggedPartInput(bigPart, 1)
+                .addPartOutput(smallPart, 9);
 
     }
 
-    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, PartKeyProvider inputPart, PartKeyProvider outputPart,
+    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, PartKeyProvider inputPart,
+            PartKeyProvider outputPart,
             int amount) {
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.CUTTING_MACHINE, name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.CUTTING_MACHINE, name).addTaggedPartInput(inputPart, 1)
+                .addPartOutput(outputPart, amount)
                 .addFluidInput("modern_industrialization:lubricant", 1);
     }
 

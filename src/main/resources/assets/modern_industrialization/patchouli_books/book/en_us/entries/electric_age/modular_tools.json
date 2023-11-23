@@ -1,0 +1,108 @@
+{
+  "name": "Modular Tools",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:steel_tool_casing",
+
+  "pages": [
+    {
+      "type": "text",
+      "text": "Electricity isn't just useful in machines - you can power customizable tools with it too!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/tool_station",
+      "text": "Unfortunately, you can't customize those tools in the field - you'll need a tool station to install, remove, or modify components of your tools. Be careful - the tool station will drain any energy or fuel stored in a tool when you make modifications."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:materials/steel/craft/tool_casing",
+      "text": "The tool casing is the foundation of any modular tool. It comes in steel (shown above), aluminum, stainless steel, and titanium versions.$(br2)You can also make these in assemblers to save on the bolts."
+    },
+    {
+      "type": "text",
+      "text": "Your tool casing determines the maximum tier of component you can install, and the number of upgrade modules. Steel casings support tier 1 components and up to two modules, aluminium casings support up to tier 2 and up to 3 modules, stainless steel casings support up to tier 3 and up to 4 modules, and titanium casings support up to tier 4 and up to 5 modules."
+    },
+    {
+      "type": "spotlight",
+      "item": {
+        "item": "modern_industrialization:motor"
+      },
+      "title": "Motors",
+      "text": "All tools require an motor to convert their stored energy into useful work. This is either a motor (of any kind) for an electric tool or a pump (of any kind) for a liquid-fuelled tool."
+    },
+    {
+      "type": "text",
+      "text": "These have a maximum EU per operations they support - 1024 for basic components, 2048 for large components, 4096 for advanced components, and 8192 for large advanced components."
+    },
+    {
+      "type": "spotlight",
+      "item": {
+        "item": "modern_industrialization:redstone_battery"
+      },
+      "title": "Energy Storage",
+      "text": "Your tool also requires some energy storage - either a single battery (except for plutonium batteries) for electric tools or any tank for liquid-fuelled tools.$(br2)As an exception to the usual tier system, you can install any tank in any casing."
+    },
+    {
+      "type": "spotlight",
+      "item": {
+        "item": "modern_industrialization:steel_drill_head"
+      },
+      "title": "Tool Head",
+      "text": "Finally, your tool's head determines the kind of tool it is - a drill head for a drill and a rotary blade for a chainsaw."
+    },
+    {
+      "type": "spotlight",
+      "item": {
+        "item": "modern_industrialization:area_module"
+      },
+      "title": "Modules",
+      "text": "You can optionally install upgrade modules to change your tool's properties, for example, adding a fortune or a silk touch module, or even an area module. These increase energy consumption from the baseline of 32 EU/operation."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/area_module",
+      "text": "Area modules increase the mining radius by one; you can install up to two of them, but they increase energy consumption by 9x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/fire_aspect_module",
+      "text": "Adds a level of Fire Aspect, stacks up to 2, and increases energy consumption by 1.5x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/looting_module",
+      "text": "Adds a level of Looting, stacks up to 3, and increases energy consumption by 2x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/knockback_module",
+      "text": "Adds a level of Knockback, stacks up to 2, and increases energy consumption by 1.25x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/sharpness_module",
+      "recipe2": "modern_industrialization:tools/smite_module"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/bane_of_arthropods_module",
+      "text": "Adds a level of Sharpness, Smite, or Bane of Arthropods, stacks up to 5, and increases energy consumption by 1.25x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/efficiency_module",
+      "text": "Adds a level of Efficiency, stacks up to 5, and increases energy consumption by 1.25x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/fortune_module",
+      "text": "Adds a level of Fortune, stacks up to 3, and increases energy consumption by 2x"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/silk_touch_module",
+      "text": "Adds Silk Touch (doesn't stack) and increases energy consumption by 2x"
+    }
+  ],
+  "sortnum": 111
+}

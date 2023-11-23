@@ -24,7 +24,11 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.item.modular_tools.ComponentTier;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyStorageRegistry.StorageProperties;
 import aztech.modern_industrialization.items.PortableStorageUnit;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.EnergyType;
 
 public class BatteryPart implements PartKeyProvider {
 
@@ -41,7 +45,21 @@ public class BatteryPart implements PartKeyProvider {
                 });
     }
 
+    public PartTemplate of(long batteryCapacity, ComponentTier componentTier) {
+        return new PartTemplate("Battery", "battery").withRegister(
+                (partContext, part, itemPath, itemId, itemTag, englishName) -> {
+                    var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
+                    PortableStorageUnit.CAPACITY_PER_BATTERY.put(item, batteryCapacity);
+                    EnergyStorageRegistry.register(item,
+                            new StorageProperties(componentTier, batteryCapacity, EnergyType.ELECTRIC));
+                });
+    }
+
     public PartTemplate of(CableTier tier) {
-        return of(60 * 20 * tier.getMaxTransfer());
+        return of(128 * tier.getMaxTransfer());
+    }
+
+    public PartTemplate of(CableTier tier, ComponentTier componentTier) {
+        return of(128 * tier.getMaxTransfer(), componentTier);
     }
 }

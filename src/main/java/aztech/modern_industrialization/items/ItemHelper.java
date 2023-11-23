@@ -35,7 +35,7 @@ public final class ItemHelper {
 
     public static Multimap<Attribute, AttributeModifier> createToolModifiers(double damage) {
         return ImmutableMultimap.of(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(TOOL_UUID, "MI Diesel Tool Item", damage, AttributeModifier.Operation.ADDITION));
+                new AttributeModifier(TOOL_UUID, "MI Modular Tool Item", damage, AttributeModifier.Operation.ADDITION));
     }
 
     private ItemHelper() {

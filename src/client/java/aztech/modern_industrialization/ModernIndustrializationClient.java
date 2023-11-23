@@ -28,6 +28,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.barrel.client.CreativeBarrelClientSetup;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankClientSetup;
+import aztech.modern_industrialization.blocks.toolstation.ToolStationScreen;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -119,6 +120,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 (MenuType<? extends MachineMenuClient>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
                 MachineScreen::new);
         MenuScreens.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
+        MenuScreens.register(ModernIndustrialization.SCREEN_HANDLER_TOOL_STATION, ToolStationScreen::new);
     }
 
     private void setupPackets() {
@@ -126,7 +128,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 ConfigurableInventoryS2CPacketHandlers.UPDATE_ITEM_SLOT);
         ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT,
                 ConfigurableInventoryS2CPacketHandlers.UPDATE_FLUID_SLOT);
-        ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, ClientMachinePackets.ON_COMPONENT_SYNC);
+        ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC,
+                ClientMachinePackets.ON_COMPONENT_SYNC);
     }
 
     private void setupTooltips() {
@@ -143,7 +146,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
                         if (fuelTime != null && fuelTime > 0) {
                             long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
-                            lines.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+                            lines.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER)
+                                    .build());
                         }
                     } catch (Exception e) {
                         ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);

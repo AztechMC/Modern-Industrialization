@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "tag": "c:steel_gears"
+    },
+    "d": {
+      "item": "modern_industrialization:diamond_dust"
+    }
+  },
+  "pattern": [
+    " d ",
+    "d#d",
+    " d "
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:steel_rotary_blade"
+  }
+}

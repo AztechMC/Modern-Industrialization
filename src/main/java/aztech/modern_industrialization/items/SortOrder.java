@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public final class SortOrder implements Comparable<SortOrder> {
     public static final SortOrder GUIDE_BOOK = new SortOrder();
     public static final SortOrder FORGE_HAMMER = new SortOrder();
+    public static final SortOrder TOOL_STATION = new SortOrder();
     public static final SortOrder HAMMER = new SortOrder();
     public static final SortOrder STEAM_TIER = new SortOrder();
     public static final SortOrder ITEMS_OTHER = new SortOrder();

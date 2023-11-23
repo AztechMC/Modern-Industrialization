@@ -83,8 +83,6 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electronicCircuit, FrameType.GOAL, "Better Than Wind Mills", "Craft an Advanced Steam Turbine");
         var dieselGenerator = createBasic(consumer, "mv_diesel_generator", distillery, "Fast and Furious", "Craft an MV Diesel Generator");
         var dieselJetpack = createBasic(consumer, "diesel_jetpack", distillery, FrameType.CHALLENGE, "Ely... We Meant Jetpack!", "Craft a Diesel Jetpack");
-        var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, FrameType.CHALLENGE, "The Texas Chain Saw Massacre", "Craft a Diesel Chainsaw");
-        var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", distillery, FrameType.CHALLENGE, "Through The Walls Of Ba Sing Se", "Craft a Diesel Mining Drill");
         var digitalCircuit = createBasic(consumer, "digital_circuit", distillery, "No need for Sodium anymore", "Craft a Digital Circuit");
         var turboDieselGenerator = createBasic(consumer, "hv_diesel_generator", dieselGenerator, "Fast and Furious 2 : Revenge", "Craft an HV Diesel Generator");
         var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator, "Fast and Furious 42 : Armageddon", "Craft a Large Diesel Generator");

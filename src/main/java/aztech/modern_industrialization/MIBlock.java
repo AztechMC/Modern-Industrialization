@@ -35,6 +35,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.toolstation.ToolStationBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
@@ -57,6 +58,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -72,6 +74,9 @@ public class MIBlock {
             BlockDefinitionParams.defaultStone().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER).noModel().destroyTime(6.0f).explosionResistance(1200)
                     .sound(SoundType.ANVIL),
             ForgeHammerBlock.class);
+    public static final BlockDefinition<ToolStationBlock> TOOL_STATION = block("Tool Station", "tool_station",
+            BlockDefinitionParams.copy(Blocks.SMITHING_TABLE).withBlockConstructor(ToolStationBlock::new).sortOrder(SortOrder.TOOL_STATION).noModel().clearTags().addMoreTags(List.of(BlockTags.MINEABLE_WITH_AXE)),
+            ToolStationBlock.class);
 
     // Bronze stuff
     public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
@@ -136,7 +141,8 @@ public class MIBlock {
             BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, itemModelGenerator,
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator,
+                itemModelGenerator,
                 lootTableGenerator, tags,
                 sortOrder);
         if (BLOCKS.put(definition.getId(), definition) != null) {
@@ -179,7 +185,8 @@ public class MIBlock {
                 englishName,
                 id,
                 BlockDefinitionParams.of(
-                        BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).ignitedByLava().instabreak().sound(SoundType.GRASS))
+                        BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).ignitedByLava().instabreak()
+                                .sound(SoundType.GRASS))
                         .clearTags().noModel());
 
         // TODO : Datagen model
@@ -219,11 +226,18 @@ public class MIBlock {
         }
 
         public static BlockDefinitionParams<Block> defaultStone() {
-            return of(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).requiresCorrectToolForDrops());
+            return of(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f)
+                    .requiresCorrectToolForDrops());
         }
 
-        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
-            return new BlockDefinitionParams<>(this, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
+        public static BlockDefinitionParams<Block> copy(BlockBehaviour block) {
+            return of(FabricBlockSettings.copy(block));
+        }
+
+        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(
+                Function<BlockBehaviour.Properties, U> ctor) {
+            return new BlockDefinitionParams<>(this, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator,
+                    this.lootTableGenerator, this.tags);
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
@@ -235,7 +249,8 @@ public class MIBlock {
                     this.tags);
         }
 
-        public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor) {
+        public BlockDefinitionParams<T> withBlockItemConstructor(
+                BiFunction<? super T, FabricItemSettings, BlockItem> blockItemCtor) {
             this.blockItemCtor = blockItemCtor;
             return this;
         }
@@ -261,7 +276,8 @@ public class MIBlock {
                 // Skip default item model
                 gen.skipAutoItemBlock(block);
             }).withItemModel((item, gen) -> {
-                // We need the builtin/entity parent and the proper transforms (copied from block/block.json from vanilla)
+                // We need the builtin/entity parent and the proper transforms (copied from
+                // block/block.json from vanilla)
                 gen.output.accept(ModelLocationUtils.getModelLocation(item), () -> {
                     var json = JsonParser.parseString("""
                             {

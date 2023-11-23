@@ -26,13 +26,22 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.item.modular_tools.CasingRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.CasingRegistry.CasingProperties;
+import aztech.modern_industrialization.api.item.modular_tools.ComponentTier;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyConverterRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.EnergyConverterRegistry.ConverterProperties;
+import aztech.modern_industrialization.api.item.modular_tools.ModuleRegistry;
+import aztech.modern_industrialization.api.item.modular_tools.ModuleRegistry.CustomModuleEffect;
+import aztech.modern_industrialization.api.item.modular_tools.ModuleRegistry.ModuleProperties;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
-import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem;
+import aztech.modern_industrialization.items.modulartools.ModularToolItem.EnergyType;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -48,6 +57,7 @@ import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantments;
 import team.reborn.energy.api.base.SimpleEnergyItem;
 
 @SuppressWarnings("unused")
@@ -71,15 +81,23 @@ public final class MIItem {
     public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)), STEAM_TIER);
 
     // Mechanical components: motors
-    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.LV, 1024, EnergyType.ELECTRIC)));
+    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.MV, 1024 * 2, EnergyType.ELECTRIC)));
+    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.HV, 1024 * 2 * 2, EnergyType.ELECTRIC)));
+    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.EV, 1024 * 2 * 2 * 2, EnergyType.ELECTRIC)));
     // Mechanical components: pumps
-    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_OTHER);
+    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.LV, 1024, EnergyType.FLUID)));
+    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.MV, 1024 * 2, EnergyType.FLUID)));
+    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.HV, 1024 * 2 * 2, EnergyType.FLUID)));
+    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> EnergyConverterRegistry.register(item, new ConverterProperties(ComponentTier.EV, 1024 * 2 * 2 * 2, EnergyType.FLUID)));
     // Mechanical components: others
     public static final ItemDefinition<Item> PISTON = item("Piston", "piston", ITEMS_OTHER);
     public static final ItemDefinition<Item> CONVEYOR = item("Conveyor", "conveyor", ITEMS_OTHER);
@@ -102,7 +120,6 @@ public final class MIItem {
     public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_OTHER);
     public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_OTHER);
     public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_OTHER);
-    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_OTHER);
 
     // MV circuits
     public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_OTHER);
@@ -141,10 +158,30 @@ public final class MIItem {
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 
-    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
-    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+    public static final ItemDefinition<ModularToolItem> STEEL_TOOL_CASING = itemNoModel("Steel Tool Casing", "steel_tool_casing", ModularToolItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.LV, 2));
+                FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
+                EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
+        });
+    public static final ItemDefinition<ModularToolItem> ALUMINUM_TOOL_CASING = itemNoModel("Aluminum Tool Casing", "aluminum_tool_casing", ModularToolItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.MV, 3));
+                FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
+                EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
+        });
+    public static final ItemDefinition<ModularToolItem> STAINLESS_STEEL_TOOL_CASING = itemNoModel("Stainless Steel Tool Casing", "stainless_steel_tool_casing", ModularToolItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.HV, 4));
+                FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
+                EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
+        });
+    public static final ItemDefinition<ModularToolItem> TITANIUM_TOOL_CASING = itemNoModel("Titanium Tool Casing", "titanium_tool_casing", ModularToolItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                CasingRegistry.register(item, new CasingProperties(ComponentTier.EV, 5));
+                FluidStorage.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.FluidStorage(ctx), item);
+                EnergyApi.ITEM.registerForItems((stack, ctx) -> new ModularToolItem.EnergyStorage(ctx), item);
+        });
 
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
             .withItemRegistrationEvent(item -> EnergyApi.ITEM.registerForItems((stack, ctx) -> SimpleEnergyItem.createStorage(ctx, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item));
@@ -153,6 +190,28 @@ public final class MIItem {
     public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, s.maxCount(1)), ITEMS_OTHER);
     public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.maxCount(1)), ITEMS_OTHER);
     public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER).withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
+
+    // Modular Equipment Upgrades
+    public static final ItemDefinition<Item> AREA_MODULE = itemNoModel("Area Module", "area_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(null, CustomModuleEffect.AREA, 9.0)));
+    public static final ItemDefinition<Item> FIRE_ASPECT_MODULE = itemNoModel("Fire Aspect Module", "fire_aspect_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.FIRE_ASPECT, null, 1.5)));
+    public static final ItemDefinition<Item> LOOTING_MODULE = itemNoModel("Looting Module", "looting_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.MOB_LOOTING, null, 2.0)));
+    public static final ItemDefinition<Item> KNOCKBACK_MODULE = itemNoModel("Knockback Module", "knockback_module", p -> new Item(p.maxCount(2)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.KNOCKBACK, null, 1.25)));
+    public static final ItemDefinition<Item> SHARPNESS_MODULE = itemNoModel("Sharpness Module", "sharpness_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.SHARPNESS, null, 1.25)));
+    public static final ItemDefinition<Item> SMITE_MODULE = itemNoModel("Smite Module", "smite_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.SMITE, null, 1.25)));
+    public static final ItemDefinition<Item> BANE_OF_ARTHROPODS_MODULE = itemNoModel("Bane of Arthropods Module", "bane_of_arthropods_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.BANE_OF_ARTHROPODS, null, 1.25)));
+    public static final ItemDefinition<Item> EFFICIENCY_MODULE = itemNoModel("Efficiency Module", "efficiency_module", p -> new Item(p.maxCount(5)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.BLOCK_EFFICIENCY, null, 1.25)));
+    public static final ItemDefinition<Item> FORTUNE_MODULE = itemNoModel("Fortune Module", "fortune_module", p -> new Item(p.maxCount(3)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.BLOCK_FORTUNE, null, 2.0)));
+    public static final ItemDefinition<Item> SILK_TOUCH_MODULE = itemNoModel("Silk Touch Module", "silk_touch_module", p -> new Item(p.maxCount(1)), ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> ModuleRegistry.register(item, new ModuleProperties(Enchantments.SILK_TOUCH, null, 2.0)));
 
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER);
 
@@ -199,14 +258,19 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, Item::new,
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_ITEM),
+                sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> item(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, ctor,
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_ITEM),
+                sortOrder);
     }
 
     public static ItemDefinition<Item> itemHandheld(String englishName, String path) {
@@ -218,20 +282,25 @@ public final class MIItem {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor) {
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor) {
         return itemHandheld(englishName, path, ctor, ITEMS_OTHER);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path,
+            Function<? super FabricItemSettings, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, p -> ctor.apply(p.maxCount(1)), (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_HANDHELD_ITEM), sortOrder);
+        return MIItem.item(englishName, path, p -> ctor.apply(p.maxCount(1)),
+                (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
+                        ModelTemplates.FLAT_HANDHELD_ITEM),
+                sortOrder);
     }
 
     private MIItem() {

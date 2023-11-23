@@ -159,8 +159,8 @@ public final class MachineRecipeSchema {
             return this;
         }
 
-        public MachineRecipeJS fluidIn(Fluid fluid, int amount) {
-            return fluidIn(fluid, amount, 1);
+        public MachineRecipeJS fluidIn(Fluid fluid, double mbs) {
+            return fluidIn(fluid, mbs, 1);
         }
 
         public MachineRecipeJS fluidIn(Fluid fluid, double mbs, float chance) {
@@ -178,8 +178,8 @@ public final class MachineRecipeSchema {
             return this;
         }
 
-        public MachineRecipeJS fluidOut(Fluid fluid, int amount) {
-            return fluidOut(fluid, amount, 1);
+        public MachineRecipeJS fluidOut(Fluid fluid, double mbs) {
+            return fluidOut(fluid, mbs, 1);
         }
 
         public MachineRecipeJS fluidOut(Fluid fluid, double mbs, float chance) {

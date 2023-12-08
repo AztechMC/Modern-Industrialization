@@ -52,20 +52,30 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
             MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
             RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
+        this.redstoneControl = new RedstoneControlComponent();
         this.casing = new CasingComponent(CableTier.LV);
         this.upgrades = new UpgradeComponent();
         this.energy = new EnergyComponent(this, casing::getEuCapacity);
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerGuiComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
-        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades).withCasing(casing));
-        this.registerComponents(casing, upgrades, energy);
+        registerGuiComponent(new SlotPanel.Server(this)
+                .withRedstoneControl(redstoneControl)
+                .withUpgrades(upgrades)
+                .withCasing(casing));
+        this.registerComponents(redstoneControl, casing, upgrades, energy);
     }
 
+    private final RedstoneControlComponent redstoneControl;
     private final CasingComponent casing;
     private final UpgradeComponent upgrades;
     private final EnergyComponent energy;
     private final MIEnergyStorage insertable;
+
+    @Override
+    public boolean isEnabled() {
+        return redstoneControl.doAllowNormalOperation(this);
+    }
 
     @Override
     public long consumeEu(long max, Simulation simulation) {
@@ -88,6 +98,9 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
         InteractionResult result = super.onUse(player, hand, face);
         if (!result.consumesAction()) {
+            result = redstoneControl.onUse(this, player, hand);
+        }
+        if (!result.consumesAction()) {
             result = casing.onUse(this, player, hand);
         }
         if (!result.consumesAction()) {
@@ -107,6 +120,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     @Override
     public List<ItemStack> dropExtra() {
         List<ItemStack> drops = super.dropExtra();
+        drops.add(redstoneControl.getDrop());
         drops.add(casing.getDrop());
         drops.add(upgrades.getDrop());
         return drops;

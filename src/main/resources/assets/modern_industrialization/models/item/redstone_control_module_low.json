@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "modern_industrialization:item/redstone_control_module_low"
+  }
+}

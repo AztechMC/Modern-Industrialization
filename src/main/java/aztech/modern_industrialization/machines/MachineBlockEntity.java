@@ -30,7 +30,6 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
-import aztech.modern_industrialization.machines.components.RedstoneStatusComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
@@ -40,6 +39,8 @@ import aztech.modern_industrialization.util.WorldHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -80,17 +81,20 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * Server-side only: true if the next call to sync() will trigger a remesh.
      */
     private boolean syncCausesRemesh = true;
+    /**
+     * Caches the current redstone status. Invalidated by {@link MachineBlock}.
+     * {@code null} if the current status is not known.
+     */
+    private Boolean hasRedstoneHighSignal = null;
 
     public final OrientationComponent orientation;
     public final PlacedByComponent placedBy;
-    public final RedstoneStatusComponent redstoneStatus;
 
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
         this.orientation = new OrientationComponent(orientationParams);
         this.placedBy = new PlacedByComponent();
-        this.redstoneStatus = new RedstoneStatusComponent(false);
 
         registerComponents(orientation, placedBy);
     }
@@ -119,6 +123,31 @@ public abstract class MachineBlockEntity extends FastBlockEntity
             }
         }
         throw new RuntimeException("Couldn't find component " + componentId);
+    }
+
+    @Nullable
+    private <T extends IComponent> T tryGetComponent(Class<T> clazz) {
+        for (var component : icomponents) {
+            if (clazz.isInstance(component)) {
+                return (T) component;
+            }
+        }
+        return null;
+    }
+
+    public <T extends IComponent> void ifComponentPresent(Class<T> clazz, Consumer<? super T> action) {
+        T component = tryGetComponent(clazz);
+        if (component != null) {
+            action.accept(component);
+        }
+    }
+
+    public <T extends IComponent, R> R mapComponentOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
+        T component = tryGetComponent(clazz);
+        if (component != null) {
+            return action.apply(component);
+        }
+        return defaultValue;
     }
 
     @Override
@@ -269,7 +298,14 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         return 0;
     }
 
-    public void registerRedstoneSignal(boolean isPowered) {
-        redstoneStatus.isPowered = isPowered;
+    public boolean hasRedstoneHighSignal() {
+        if (this.hasRedstoneHighSignal == null) {
+            refreshRedstoneStatus();
+        }
+        return this.hasRedstoneHighSignal;
+    }
+
+    void refreshRedstoneStatus() {
+        this.hasRedstoneHighSignal = level.hasNeighborSignal(worldPosition);
     }
 }

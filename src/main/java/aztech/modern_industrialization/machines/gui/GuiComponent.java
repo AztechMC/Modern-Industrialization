@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.inventory.SlotGroup;
-import java.util.stream.IntStream;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
@@ -76,42 +75,6 @@ public final class GuiComponent {
          * registered with {@code GuiComponentsClient#register}.
          */
         ResourceLocation getId();
-    }
-
-    public interface ServerIntegerList extends Server<int[]> {
-
-        int getIntegerAtIndex(int index);
-
-        int getIntegerListSize();
-
-        default int[] copyData() {
-            return IntStream.range(0, getIntegerListSize()).map(this::getIntegerAtIndex).toArray();
-        }
-
-        @Override
-        default boolean needsSync(int[] cachedData) {
-            for (int i = 0; i < getIntegerListSize(); ++i) {
-                if (cachedData[i] != getIntegerAtIndex(i)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        void writeAdditionalInitialData(FriendlyByteBuf buf);
-
-        default void writeInitialData(FriendlyByteBuf buf) {
-            buf.writeVarInt(getIntegerListSize());
-            writeAdditionalInitialData(buf);
-            writeCurrentData(buf);
-        }
-
-        default void writeCurrentData(FriendlyByteBuf buf) {
-            for (int i = 0; i < getIntegerListSize(); ++i) {
-                buf.writeVarInt(getIntegerAtIndex(i));
-            }
-        }
-
     }
 
     /**

@@ -24,12 +24,14 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.inventory.HackySlot;
 import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
+import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -45,7 +47,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
 public class SlotPanel {
-
     public static int getSlotX(MachineGuiParameters guiParameters) {
         return guiParameters.backgroundWidth + 6;
     }
@@ -55,13 +56,16 @@ public class SlotPanel {
     }
 
     public static class Server implements GuiComponent.ServerNoData {
-
         private final MachineBlockEntity machine;
         private final List<Consumer<GuiComponent.MenuFacade>> slotFactories = new ArrayList<>();
         private final List<SlotType> slotTypes = new ArrayList<>();
 
         public Server(MachineBlockEntity machine) {
             this.machine = machine;
+        }
+
+        public Server withRedstoneControl(RedstoneControlComponent redstoneControlComponent) {
+            return addSlot(SlotType.REDSTONE_MODULE, () -> redstoneControlComponent.getDrop().copy(), redstoneControlComponent::setStackServer);
         }
 
         public Server withUpgrades(UpgradeComponent upgradeComponent) {
@@ -121,6 +125,7 @@ public class SlotPanel {
     }
 
     public enum SlotType {
+        REDSTONE_MODULE(SlotGroup.REDSTONE_MODULE, 1, MIItem.REDSTONE_CONTROL_MODULE::is, 36, 80, MIText.AcceptsRedstoneControlModule),
         UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.getExtraEu(stack.getItem()) > 0, 0, 80, MIText.AcceptsUpgrades),
         // Assumes that the default casing is always the LV casing for now
         CASINGS(SlotGroup.CASING, 1, stack -> {

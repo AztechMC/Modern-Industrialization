@@ -40,22 +40,13 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-// TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
-public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
+public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
 
     public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
         public String getTranslationKey() {
@@ -120,7 +111,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         super(bep, "electric_blast_furnace", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
-        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl).withUpgrades(upgrades));
 
         var tierComponents = tiers.stream().map(Tier::getDisplayName).toList();
 
@@ -137,87 +128,26 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         }, new ShapeSelection.LineInfo(tiers.size(), tierComponents, true)));
     }
 
-    @Override
-    protected CrafterComponent.Behavior getBehavior() {
-        return new Behavior();
-    }
-
-    private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final UpgradeComponent upgrades;
 
     @Override
-    public List<EnergyComponent> getEnergyComponents() {
-        return energyInputs;
+    public MachineRecipeType recipeType() {
+        return MIMachineRecipeTypes.BLAST_FURNACE;
+    }
+
+    public boolean banRecipe(MachineRecipe recipe) {
+        int index = activeShape.getActiveShapeIndex();
+        return (recipe.eu > getMaxRecipeEu()) || (recipe.eu > tiers.get(index).maxBaseEu);
     }
 
     @Override
-    protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
-        energyInputs.clear();
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            hatch.appendEnergyInputs(energyInputs);
-        }
-    }
-
-    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
-        InteractionResult result = super.onUse(player, hand, face);
-        if (!result.consumesAction()) {
-            result = upgrades.onUse(this, player, hand);
-        }
-        if (!result.consumesAction()) {
-            result = LubricantHelper.onUse(this.crafter, player, hand);
-        }
-        return result;
+    public long getBaseRecipeEu() {
+        return MachineTier.MULTIBLOCK.getBaseEu();
     }
 
     @Override
-    public List<ItemStack> dropExtra() {
-        List<ItemStack> drops = super.dropExtra();
-        drops.add(upgrades.getDrop());
-        return drops;
-    }
-
-    private class Behavior implements CrafterComponent.Behavior {
-        @Override
-        public long consumeEu(long max, Simulation simulation) {
-            long total = 0;
-
-            for (EnergyComponent energyComponent : energyInputs) {
-                total += energyComponent.consumeEu(max - total, simulation);
-            }
-
-            return total;
-        }
-
-        @Override
-        public MachineRecipeType recipeType() {
-            return MIMachineRecipeTypes.BLAST_FURNACE;
-        }
-
-        public boolean banRecipe(MachineRecipe recipe) {
-            int index = activeShape.getActiveShapeIndex();
-            return (recipe.eu > getMaxRecipeEu()) || (recipe.eu > tiers.get(index).maxBaseEu);
-        }
-
-        @Override
-        public long getBaseRecipeEu() {
-            return MachineTier.MULTIBLOCK.getBaseEu();
-        }
-
-        @Override
-        public long getMaxRecipeEu() {
-            return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
-        }
-
-        @Override
-        public Level getCrafterWorld() {
-            return level;
-        }
-
-        @Override
-        @Nullable
-        public UUID getOwnerUuid() {
-            return placedBy.placerId;
-        }
+    public long getMaxRecipeEu() {
+        return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
     }
 
     public static void registerReiShapes() {

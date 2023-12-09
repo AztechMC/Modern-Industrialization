@@ -111,7 +111,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
         super(bep, "electric_blast_furnace", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl).withUpgrades(upgrades));
+        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl, upgrades));
 
         var tierComponents = tiers.stream().map(Tier::getDisplayName).toList();
 

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.inventory.HackySlot;
 import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
+import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
 import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
@@ -74,6 +75,19 @@ public class SlotPanel {
 
         public Server withCasing(CasingComponent casingComponent) {
             return addSlot(SlotType.CASINGS, () -> casingComponent.getDrop().copy(), casingComponent::setCasingServer);
+        }
+
+        public Server with(IComponent... components) {
+            for (IComponent component : components) {
+                if (component instanceof RedstoneControlComponent redstoneControlComponent) {
+                    withRedstoneControl(redstoneControlComponent);
+                } else if (component instanceof UpgradeComponent upgradeComponent) {
+                    withUpgrades(upgradeComponent);
+                } else if (component instanceof CasingComponent casingComponent) {
+                    withCasing(casingComponent);
+                }
+            }
+            return this;
         }
 
         private Server addSlot(SlotType type, Supplier<ItemStack> getStack, BiConsumer<MachineBlockEntity, ItemStack> setStack) {

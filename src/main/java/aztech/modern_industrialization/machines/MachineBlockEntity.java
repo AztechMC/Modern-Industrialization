@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -99,8 +100,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         registerComponents(orientation, placedBy);
     }
 
-    protected final void registerGuiComponent(GuiComponent.Server component) {
-        guiComponents.add(component);
+    protected final void registerGuiComponent(GuiComponent.Server... components) {
+        Collections.addAll(guiComponents, components);
     }
 
     protected final void registerComponents(IComponent... components) {
@@ -125,29 +126,32 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         throw new RuntimeException("Couldn't find component " + componentId);
     }
 
-    @Nullable
-    private <T extends IComponent> T tryGetComponent(Class<T> clazz) {
+    private <T> List<T> tryGetComponent(Class<T> clazz) {
+        List<T> components = new ArrayList<>();
         for (var component : icomponents) {
             if (clazz.isInstance(component)) {
-                return (T) component;
+                components.add((T) component);
             }
         }
-        return null;
+        return components;
     }
 
-    public <T extends IComponent> void ifComponentPresent(Class<T> clazz, Consumer<? super T> action) {
-        T component = tryGetComponent(clazz);
-        if (component != null) {
-            action.accept(component);
+    public final <T> void forComponentType(Class<T> clazz, Consumer<? super T> action) {
+        List<T> component = tryGetComponent(clazz);
+        for (T c : component) {
+            action.accept(c);
         }
     }
 
-    public <T extends IComponent, R> R mapComponentOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
-        T component = tryGetComponent(clazz);
-        if (component != null) {
-            return action.apply(component);
+    public <T, R> R mapComponentOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
+        List<T> components = tryGetComponent(clazz);
+        if (components.isEmpty()) {
+            return defaultValue;
+        } else if (components.size() == 1) {
+            return action.apply(components.get(0));
+        } else {
+            throw new RuntimeException("Multiple components of type " + clazz.getName() + " found");
         }
-        return defaultValue;
     }
 
     @Override
@@ -283,7 +287,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     public List<ItemStack> dropExtra() {
-        return new ArrayList<>();
+        List<ItemStack> drops = new ArrayList<>();
+        forComponentType(DropableComponent.class, u -> drops.add(u.getDrop()));
+        return drops;
     }
 
     public List<Component> getTooltips() {

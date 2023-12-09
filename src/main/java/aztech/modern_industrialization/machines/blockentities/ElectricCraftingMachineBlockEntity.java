@@ -38,12 +38,10 @@ import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
-import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity implements EnergyComponentHolder {
@@ -115,15 +113,6 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     @Override
     public long getMaxRecipeEu() {
         return tier.getMaxEu() + upgrades.getAddMaxEUPerTick();
-    }
-
-    @Override
-    public List<ItemStack> dropExtra() {
-        List<ItemStack> drops = super.dropExtra();
-        drops.add(redstoneControl.getDrop());
-        drops.add(casing.getDrop());
-        drops.add(upgrades.getDrop());
-        return drops;
     }
 
     @Override

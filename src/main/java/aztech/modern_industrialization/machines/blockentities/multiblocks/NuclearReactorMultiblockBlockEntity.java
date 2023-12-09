@@ -30,13 +30,11 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
-import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
-import aztech.modern_industrialization.machines.components.IsActiveComponent;
-import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
@@ -57,6 +55,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     private static final boolean[][][] gridLayout;
 
     private final ActiveShapeComponent activeShape;
+    private final RedstoneControlComponent redstoneControl;
     private final IsActiveComponent isActive;
     private final NuclearEfficiencyHistoryComponent efficiencyHistory;
     private ShapeMatcher shapeMatcher;
@@ -69,10 +68,11 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
-        efficiencyHistory = new NuclearEfficiencyHistoryComponent();
-        isActive = new IsActiveComponent();
-        registerComponents(activeShape, isActive, efficiencyHistory);
-        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData));
+        this.efficiencyHistory = new NuclearEfficiencyHistoryComponent();
+        this.isActive = new IsActiveComponent();
+        this.redstoneControl = new RedstoneControlComponent();
+        registerComponents(activeShape, isActive, efficiencyHistory, redstoneControl);
+        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData), new SlotPanel.Server(this).with(redstoneControl));
 
         registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override

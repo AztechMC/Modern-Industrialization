@@ -37,7 +37,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraft
         this.recipeType = recipeType;
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl).withUpgrades(upgrades));
+        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl, upgrades));
     }
 
     private final MachineRecipeType recipeType;

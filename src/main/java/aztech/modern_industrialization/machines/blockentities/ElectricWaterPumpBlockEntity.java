@@ -32,7 +32,9 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
+import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;
@@ -49,18 +51,28 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
         this.energy = new EnergyComponent(this, 3200);
         this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
-        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
-        this.registerComponents(energy);
-        this.registerComponents(inventory);
+        this.redstoneControl = new RedstoneControlComponent();
+
+        this.registerComponents(energy, inventory, redstoneControl);
+
+        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity),
+                new SlotPanel.Server(this).with(redstoneControl));
+
     }
 
     private final MIInventory inventory;
     private final EnergyComponent energy;
     private final MIEnergyStorage insertable;
+    private final RedstoneControlComponent redstoneControl;
 
     @Override
     protected long consumeEu(long max) {
-        return energy.consumeEu(max, Simulation.ACT);
+        if (redstoneControl.doAllowNormalOperation(
+                this)) {
+            return energy.consumeEu(max, Simulation.ACT);
+        } else {
+            return 0;
+        }
     }
 
     @Override

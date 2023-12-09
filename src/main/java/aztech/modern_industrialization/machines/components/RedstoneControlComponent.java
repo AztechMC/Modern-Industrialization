@@ -35,7 +35,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class RedstoneControlComponent implements IComponent.ServerOnly {
+public class RedstoneControlComponent implements IComponent.ServerOnly, DropableComponent {
 
     public static final ResourceLocation ID = new MIIdentifier("redstone_control");
 
@@ -76,6 +76,7 @@ public class RedstoneControlComponent implements IComponent.ServerOnly {
         return InteractionResult.PASS;
     }
 
+    @Override
     public ItemStack getDrop() {
         return controlModule;
     }

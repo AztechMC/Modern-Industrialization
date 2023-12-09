@@ -25,12 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.compat.waila.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.LubricantHelper;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
-import aztech.modern_industrialization.machines.components.UpgradeComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
@@ -42,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,22 +74,12 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         if (!result.consumesAction()) {
-            result = mapComponentOrDefault(UpgradeComponent.class, upgrade -> {
-                return upgrade.onUse(this, player, hand);
-            }, result);
+            result = mapComponentOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
         }
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);
         }
         return result;
-    }
-
-    @Override
-    public List<ItemStack> dropExtra() {
-        var drops = super.dropExtra();
-        ifComponentPresent(UpgradeComponent.class, upgrade -> drops.add(upgrade.getDrop()));
-        drops.add(redstoneControl.getDrop());
-        return drops;
     }
 
     @Override

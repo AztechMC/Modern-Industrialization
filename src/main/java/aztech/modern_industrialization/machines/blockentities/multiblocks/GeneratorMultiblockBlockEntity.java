@@ -29,6 +29,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -49,14 +50,18 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
             ShapeTemplate shapeTemplate,
             FluidItemConsumerComponent fluidConsumer) {
 
-        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(), new OrientationComponent.Params(false, false, false));
+        super(bep, new MachineGuiParameters.Builder(name, false)
+                .backgroundHeight(128).build(),
+                new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });
         this.inventory = new MultiblockInventoryComponent();
         this.isActiveComponent = new IsActiveComponent();
         this.fluidConsumer = fluidConsumer;
+        this.redstoneControl = new RedstoneControlComponent();
 
-        this.registerComponents(activeShape, isActiveComponent, fluidConsumer);
+        this.registerComponents(activeShape, isActiveComponent, fluidConsumer, redstoneControl);
+        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl));
     }
 
     @Nullable
@@ -66,6 +71,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private final ActiveShapeComponent activeShape;
     private final MultiblockInventoryComponent inventory;
     private final IsActiveComponent isActiveComponent;
+    private final RedstoneControlComponent redstoneControl;
     private final List<EnergyComponent> energyOutputs = new ArrayList<>();
     private final FluidItemConsumerComponent fluidConsumer;
 
@@ -106,11 +112,19 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
         if (!level.isClientSide) {
             link();
             if (allowNormalOperation) {
-                long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
-                        inventory.getItemInputs(),
-                        insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
-                insertEnergy(euProduced, Simulation.ACT);
-                isActiveComponent.updateActive(euProduced != 0, this);
+                if (this.redstoneControl.doAllowNormalOperation(this)) {
+                    if (redstoneControl.doAllowNormalOperation(this)) {
+                        long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
+                                inventory.getItemInputs(),
+                                insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
+                        insertEnergy(euProduced, Simulation.ACT);
+                        isActiveComponent.updateActive(euProduced != 0, this);
+                    } else {
+                        isActiveComponent.updateActive(false, this);
+                    }
+                } else {
+                    isActiveComponent.updateActive(false, this);
+                }
             }
             setChanged();
         }

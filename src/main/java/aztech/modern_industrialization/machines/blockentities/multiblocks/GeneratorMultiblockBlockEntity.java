@@ -61,7 +61,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
         this.redstoneControl = new RedstoneControlComponent();
 
         this.registerComponents(activeShape, isActiveComponent, fluidConsumer, redstoneControl);
-        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl));
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
     }
 
     @Nullable

@@ -77,7 +77,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
         registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
         registerGuiComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
-        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl));
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 

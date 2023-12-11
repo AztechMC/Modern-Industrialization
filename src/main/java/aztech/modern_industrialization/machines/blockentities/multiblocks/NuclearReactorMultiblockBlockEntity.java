@@ -72,7 +72,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         this.isActive = new IsActiveComponent();
         this.redstoneControl = new RedstoneControlComponent();
         registerComponents(activeShape, isActive, efficiencyHistory, redstoneControl);
-        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData), new SlotPanel.Server(this).with(redstoneControl));
+        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData), new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
         registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override
@@ -112,7 +112,11 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (!level.isClientSide) {
             link();
             if (shapeValid.shapeValid) {
-                isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid, efficiencyHistory), this);
+                if (redstoneControl.doAllowNormalOperation(this)) {
+                    isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid, efficiencyHistory), this);
+                } else {
+                    isActive.updateActive(false, this);
+                }
                 efficiencyHistory.tick();
             } else {
                 isActive.updateActive(false, this);

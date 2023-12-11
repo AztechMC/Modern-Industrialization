@@ -137,7 +137,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer, redstoneControl);
-        this.registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl));
+        this.registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 

@@ -48,7 +48,9 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
         super(bep, "distillation_tower", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
-        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl, upgrades));
+        registerGuiComponent(new SlotPanel.Server(this)
+                .withRedstoneControl(redstoneControl)
+                .withUpgrades(upgrades));
 
         registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override

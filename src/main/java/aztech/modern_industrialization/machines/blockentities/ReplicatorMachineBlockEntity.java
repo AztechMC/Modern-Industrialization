@@ -98,7 +98,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
         registerGuiComponent(new AutoExtract.Server(orientation, false));
-        registerGuiComponent(new SlotPanel.Server(this).with(redstoneControl));
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 

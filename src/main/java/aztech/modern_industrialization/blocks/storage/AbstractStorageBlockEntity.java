@@ -118,15 +118,14 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         return !behaviour.isCreative();
     }
 
-    @Override
-    public long insert(T resource, long maxAmount, TransactionContext transaction) {
+    public long insert(T resource, long maxAmount, TransactionContext transaction, boolean ignoreLock) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
         if (behaviour.isCreative()) {
             return 0;
         }
 
-        if ((this.resource.isBlank() && !this.isLocked()) || this.resource.equals(resource)) {
+        if ((this.resource.isBlank() && (ignoreLock || !this.isLocked())) || this.resource.equals(resource)) {
             long inserted = Math.min(maxAmount, behaviour.getCapacityForResource(resource) - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);
@@ -136,6 +135,11 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             return inserted;
         }
         return 0;
+    }
+
+    @Override
+    public long insert(T resource, long maxAmount, TransactionContext transaction) {
+        return insert(resource, maxAmount, transaction, false);
     }
 
     @Override
@@ -226,6 +230,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             if (!isLocked && amount == 0) {
                 resource = getBlankResource();
             }
+            setChanged();
         }
     }
 

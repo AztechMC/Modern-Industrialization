@@ -1445,6 +1445,7 @@
   "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "渲染桶的内容物（物品图标、数量、名称）",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "通过Tech Reborn Energy实现双向能源兼容性。我们建议将其保留为false，除非其他模组已相应平衡。（需要重新启动）",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "启用不受支持的危险的调试命令",
+  "text.autoconfig.modern_industrialization.option.enableFtbQuestsIntegration": "[UNTRANSLATED] Enable the FTB Quests integration, if present (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "手持接口仓时在多方块结构中显示有效位置",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "若没有按装EMI、JEI、REI，在登录时发送通知",
   "text.autoconfig.modern_industrialization.option.generateOres": "启用全部矿物生成（需要重新启动）",

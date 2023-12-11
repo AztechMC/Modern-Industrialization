@@ -1642,6 +1642,7 @@
   "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "[UNTRANSLATED] Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly. (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "[UNTRANSLATED] Enable UNSUPPORTED and DANGEROUS debug commands",
+  "text.autoconfig.modern_industrialization.option.enableFtbQuestsIntegration": "[UNTRANSLATED] Enable the FTB Quests integration, if present (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "[UNTRANSLATED] Show valid positions in multiblocks when holding a hatch",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "[UNTRANSLATED] Enable login message when EMI, JEI and REI are missing",
   "text.autoconfig.modern_industrialization.option.generateOres": "啟用全部礦物生成",

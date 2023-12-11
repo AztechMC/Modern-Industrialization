@@ -1445,6 +1445,7 @@
   "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "Ativar compatibilidade de energia bi-direcional com o Tech Reborn Energy. Recomendamos deixar isso como 'false' a não ser que os outros mods tenham sido balanceados de acordo.",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "Ativar comandos de depuração PERIGOSOS e SEM SUPORTE",
+  "text.autoconfig.modern_industrialization.option.enableFtbQuestsIntegration": "[UNTRANSLATED] Enable the FTB Quests integration, if present (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "Mostrar posições válidas nos multiblocos enquanto segura uma escotilha",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "[UNTRANSLATED] Enable login message when EMI, JEI and REI are missing",
   "text.autoconfig.modern_industrialization.option.enableNoJeiMessage": "[UNUSED, PLEASE REMOVE] Ativar mensagem de login quando JEI e REI não estão presentes",

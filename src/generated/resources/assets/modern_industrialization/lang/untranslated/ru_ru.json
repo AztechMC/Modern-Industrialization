@@ -1445,6 +1445,7 @@
   "text.autoconfig.modern_industrialization.option.enableBarrelContentRendering": "[UNTRANSLATED] Enable rendering of barrel content (item icon, item amount, and item name)",
   "text.autoconfig.modern_industrialization.option.enableBidirectionalEnergyCompat": "Включить двунаправленную энергию, совместимую с энергией Tech Reborn. Мы рекомендуем оставить это на false только в том случае, если другие моды были сбалансированы в соответствии.",
   "text.autoconfig.modern_industrialization.option.enableDebugCommands": "Включить НЕПОДДЕРЖИВАЮШИЕ и к тому же ОПАСНЫЕ отладочные команды.",
+  "text.autoconfig.modern_industrialization.option.enableFtbQuestsIntegration": "[UNTRANSLATED] Enable the FTB Quests integration, if present (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "Показывать допустимые расположения в многоблоках в тех случаях, когда удерживаешь шлюз",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "[UNTRANSLATED] Enable login message when EMI, JEI and REI are missing",
   "text.autoconfig.modern_industrialization.option.enableNoJeiMessage": "[UNUSED, PLEASE REMOVE] Включить сообщение при входе в игру в том случае, когда отсутствуют JEI и REI",

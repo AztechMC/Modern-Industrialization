@@ -71,6 +71,9 @@ public class MIConfig implements ConfigData {
     @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")
     public boolean enableAe2Integration = true;
     @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Enable the FTB Quests integration, if present (Restart needed)")
+    public boolean enableFtbQuestsIntegration = true;
+    @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Ore Generation Enabled (Restart needed)")
     public boolean generateOres = true;
     @ConfigEntry.Gui.RequiresRestart

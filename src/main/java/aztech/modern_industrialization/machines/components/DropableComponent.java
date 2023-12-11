@@ -21,14 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.inventory;
+package aztech.modern_industrialization.machines.components;
 
-/**
- * Used to handle shift-click for groups of slots.
- */
-public enum SlotGroup {
-    CONFIGURABLE_STACKS,
-    UPGRADES,
-    CASING,
-    REDSTONE_MODULE,
+import net.minecraft.world.item.ItemStack;
+
+public interface DropableComponent {
+
+    ItemStack getDrop();
+
 }

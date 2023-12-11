@@ -39,7 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-public class UpgradeComponent implements IComponent.ServerOnly {
+public class UpgradeComponent implements IComponent.ServerOnly, DropableComponent {
 
     private ItemStack itemStack = ItemStack.EMPTY;
     private final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
@@ -130,6 +130,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         }
     }
 
+    @Override
     public ItemStack getDrop() {
         return itemStack;
     }

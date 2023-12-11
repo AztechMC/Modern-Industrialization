@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -46,6 +47,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
     private final IsActiveComponent isActiveComponent;
+    private final RedstoneControlComponent redstoneControl;
 
     private final MultiblockInventoryComponent inventory;
 
@@ -57,23 +59,25 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     public SteamBoilerMultiblockBlockEntity(BEP bep, ShapeTemplate shapeTemplate, String name, long maxEuProduction, boolean highPressure) {
         super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(false, false, false));
 
-        isActiveComponent = new IsActiveComponent();
+        this.highPressure = highPressure;
+
+        this.isActiveComponent = new IsActiveComponent();
         this.shapeTemplate = shapeTemplate;
         this.inventory = new MultiblockInventoryComponent();
+        this.redstoneControl = new RedstoneControlComponent();
+
+        this.steamHeater = new SteamHeaterComponent(2500, maxEuProduction,
+                maxEuProduction / 32, !highPressure, highPressure, true);
+        this.fuelBurning = new FuelBurningComponent(steamHeater, 2);
+
+        this.registerComponents(isActiveComponent, steamHeater, fuelBurning, redstoneControl);
 
         ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 30, "furnace", true);
         TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, 2500);
 
-        steamHeater = new SteamHeaterComponent(2500, maxEuProduction,
-                maxEuProduction / 32, !highPressure, highPressure, true);
-        fuelBurning = new FuelBurningComponent(steamHeater, 2);
-
         registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
         registerGuiComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
-
-        this.highPressure = highPressure;
-
-        this.registerComponents(isActiveComponent, steamHeater, fuelBurning);
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 
@@ -127,9 +131,13 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
             link();
 
             if (shapeValid.shapeValid) {
-                steamHeater.tick(inventory.getFluidInputs(), inventory.getFluidOutputs());
-                fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs());
-                this.isActiveComponent.updateActive(fuelBurning.isBurning(), this);
+                if (redstoneControl.doAllowNormalOperation(this)) {
+                    steamHeater.tick(inventory.getFluidInputs(), inventory.getFluidOutputs());
+                    fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs());
+                    this.isActiveComponent.updateActive(fuelBurning.isBurning(), this);
+                } else {
+                    this.isActiveComponent.updateActive(false, this);
+                }
             } else {
                 fuelBurning.disable();
                 steamHeater.decreaseTemperature(1);

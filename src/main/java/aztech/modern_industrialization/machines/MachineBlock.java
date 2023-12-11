@@ -134,4 +134,18 @@ public class MachineBlock extends Block implements TickableBlock {
         }
         return 0;
     }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine) {
+            machine.refreshRedstoneStatus();
+        }
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine) {
+            machine.refreshRedstoneStatus();
+        }
+    }
 }

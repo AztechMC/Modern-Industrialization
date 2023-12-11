@@ -36,12 +36,10 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
-import aztech.modern_industrialization.machines.components.IsActiveComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
@@ -55,6 +53,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
+    private final RedstoneControlComponent redstoneControl;
 
     protected final MIInventory inventory;
     protected EnergyComponent energy;
@@ -77,6 +76,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
         this.isActiveComponent = new IsActiveComponent();
         this.fluidItemConsumer = fluidItemConsumer;
+        this.redstoneControl = new RedstoneControlComponent();
 
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
@@ -136,7 +136,8 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
-        this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer);
+        this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer, redstoneControl);
+        this.registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 
@@ -174,15 +175,17 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         if (level == null || level.isClientSide)
             return;
 
-        long euProduced = fluidItemConsumer.getEuProduction(inventory.getFluidStacks(),
-                inventory.getItemStacks(),
-                energy.getRemainingCapacity());
+        if (!redstoneControl.doAllowNormalOperation(this)) {
+            isActiveComponent.updateActive(false, this);
+        } else {
+            long euProduced = fluidItemConsumer.getEuProduction(inventory.getFluidStacks(),
+                    inventory.getItemStacks(),
+                    energy.getRemainingCapacity());
 
-        energy.insertEu(euProduced, Simulation.ACT);
-        isActiveComponent.updateActive(0 != euProduced, this);
-
+            energy.insertEu(euProduced, Simulation.ACT);
+            isActiveComponent.updateActive(0 != euProduced, this);
+        }
         EnergyHelper.autoOutput(this, orientation, outputTier, extractable);
-
         setChanged();
     }
 

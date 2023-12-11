@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen.tag;
 
 import appeng.api.features.P2PTunnelAttunement;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
@@ -85,7 +86,7 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
         }
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
-                .add(Items.BUNDLE)
+                .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
                 .forceAddTag(ConventionalItemTags.SHULKER_BOXES)
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);

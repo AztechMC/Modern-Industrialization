@@ -199,4 +199,9 @@ class MaterialBuilderJSWrapper {
         return this;
     }
 
+    public MaterialBuilderJSWrapper controlRod(String name, int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        materialBuilder.addParts(creator.controlRodPart(name, maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba, scatteringType, size));
+        return this;
+    }
+
 }

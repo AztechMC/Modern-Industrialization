@@ -28,11 +28,16 @@ import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
+import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 import net.minecraft.util.valueproviders.UniformInt;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+
+import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
 
 public class PartJsonCreator {
 
@@ -155,12 +160,24 @@ public class PartJsonCreator {
     }
 
     public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
-        return MIParts.FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
+        return FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
 
     }
 
     public List<PartTemplate> fuelRodPart(NuclearConstant.IsotopeFuelParams a, NuclearConstant.IsotopeFuelParams b, double factor) {
-        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(a, b, factor));
+        return FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(a, b, factor));
+
+    }
+
+    public PartTemplate controlRodPart(String name, int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        return new PartTemplate("Control Rod", FUEL_ROD.key)
+                .withRegister((partContext, part, itemPath1, itemId, itemTag, itemEnglishName) -> NuclearAbsorbable
+                        .of(name + " Control Rod", itemPath1, maxTemperature, heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                INeutronBehaviour.of(scatteringType,
+                                        new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba), size),
+                                NuclearConstant.DESINTEGRATION_BY_ROD))
+                .withCustomPath("%s_control_rod");
+
 
     }
 }

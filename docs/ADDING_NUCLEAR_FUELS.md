@@ -36,8 +36,8 @@ The example below illustrates how a fuel rod can be created from the U238 and Pu
 ``` javascript
 [...]
 .fuelRod(
-   U238,       // First nuclear constant
-   Pu239,      // Second nuclear constant
+   U238,       // First parameters
+   Pu239,      // Second parameters
    0.11111),   // Factor
 [...]
 ```

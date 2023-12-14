@@ -2,7 +2,9 @@
 To add fission fuel rods and control rods, you will need to use a startup script and the events in `MIMaterialEvents`
 Fuel rods and control rods are parts that can be added to a new or preexisting material.
 
-## Add fuel rods
+Isotope Fuel Parameters and Isotope Parameters can also be added. They need a startup script and the events in `NuclearConstantEvents`
+
+## Add a fuel rod
 Here is an example script that adds a new `LE Americium MOX` material that has fuel rods.
 For a full tutorial on how to add new materials, refer to `ADDING_MATERIALS.md`
 
@@ -32,24 +34,50 @@ The resulting parameters will be `r * a + (1 - b) * b`, where `r` is the factor,
 The example below illustrates how a fuel rod can be created from the U238 and Pu239 parameters. This generates the same parameters as LE MOX fuel.
 
 ``` javascript
-            [...]
-            .fuelRod(
-                    U238,       // First nuclear constant
-                    Pu239,      // Second nuclear constant
-                    0.11111),   // Factor
-            [...]
+[...]
+.fuelRod(
+   U238,       // First nuclear constant
+   Pu239,      // Second nuclear constant
+   0.11111),   // Factor
+[...]
 ```
 
 Alternatively, you can use preexisting isotope fuel parameters:
 
 ``` javascript
-            [...]
-            // MI adds the following entries: U235, U238, Pu239, U, LEU, HEU, LE_MOX and HE_MOX
-            .fuelRod('LE_MOX'), 
-            [...]
+[...]
+// MI adds the following entries: U235, U238, Pu239, U, LEU, HEU, LE_MOX and HE_MOX
+.fuelRod('LE_MOX'), 
+[...]
 ```
 
-## Add control rods
+If you want to, you can create your own isotope fuel parameters and then add them to a control rod.
+You will need to use a startup script and the events in `NuclearConstantEvents`:
+
+``` javascript
+NuclearConstantEvents.createIsotopeParams(event => {
+
+    event.createIsotopeFuelParams(
+        'americium',   // Parameters name
+        0.9,           // Thermal absorption probability
+        0.35,          // Thermal scattering
+        3500,          // Max temperature
+        1200,          // Temperature limit (low)
+        3200,          // Temperature limit (high)
+        11,            // Neutron multiplication
+        0.7);          // Direct energy factor
+
+});
+```
+
+Then, you can add your new parameters to a fuel rod:
+``` javascript
+[...]
+.fuelRod('americium'), 
+[...]
+```
+
+## Add a control rod
 Here is an example script that adds a new `Boron` material that has a control rod:
 
 ```javascript
@@ -76,18 +104,18 @@ MIMaterialEvents.addMaterials(event => {
 
 You can also use preexisting isotope parameters:
 ``` javascript
-            [...]
-            // // MI adds the following entries: hydrogen, deuterium, cadmium, carbon and invar
-            // You still need to add the max temperature, heat conduction, scattering type and size
-            .controlRod(1900, 0.5, 'HEAVY', 'cadmium', 1),
-            [...]
+[...]
+// MI adds the following entries: hydrogen, deuterium, cadmium, carbon and invar
+// You still need to add the max temperature, heat conduction, scattering type and size
+.controlRod(1900, 0.5, 'HEAVY', 'cadmium', 1),
+[...]
 ```
 
 If you want to, you can create your own isotope parameters and then add them to a control rod.
 You will need to use a startup script and the events in `NuclearConstantEvents`:
 
 ``` javascript
-    NuclearConstantEvents.createIsotopeParams(event => {
+NuclearConstantEvents.createIsotopeParams(event => {
 
     event.createIsotopeParams(
          'boron',  // Parameter name
@@ -101,8 +129,8 @@ You will need to use a startup script and the events in `NuclearConstantEvents`:
 
 Then, you can add them to your control rod:
 ``` javascript
-            [...]
-            // You still need to add the max temperature, heat conduction, scattering type and size
-            .controlRod(1900, 0.5, 'HEAVY', 'boron', 1),
-            [...]
+[...]
+// You still need to add the max temperature, heat conduction, scattering type and size
+.controlRod(1900, 0.5, 'HEAVY', 'boron', 1),
+[...]
 ```

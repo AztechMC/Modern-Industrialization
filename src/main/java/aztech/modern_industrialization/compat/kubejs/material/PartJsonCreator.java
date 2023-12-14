@@ -169,14 +169,8 @@ public class PartJsonCreator {
 
     }
 
-    public PartTemplate controlRodPart(String name, int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
-        return new PartTemplate("Control Rod", FUEL_ROD.key)
-                .withRegister((partContext, part, itemPath1, itemId, itemTag, itemEnglishName) -> NuclearAbsorbable
-                        .of(name + " Control Rod", itemPath1, maxTemperature, heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                INeutronBehaviour.of(scatteringType,
-                                        new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba), size),
-                                NuclearConstant.DESINTEGRATION_BY_ROD))
-                .withCustomPath("%s_control_rod");
+    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba, scatteringType, size);
 
 
     }

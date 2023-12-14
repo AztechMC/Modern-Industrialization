@@ -26,6 +26,7 @@ package aztech.modern_industrialization.compat.kubejs;
 import aztech.modern_industrialization.MIStartup;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.nuclear.NuclearConstantKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeSchema;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
@@ -45,6 +46,7 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
         MIMaterialKubeJSEvents.EVENT_GROUP.register();
         MIRecipeKubeJSEvents.EVENT_GROUP.register();
         MIRegistrationKubeJSEvents.EVENT_GROUP.register();
+        NuclearConstantKubeJSEvents.EVENT_GROUP.register();
     }
 
     @Override

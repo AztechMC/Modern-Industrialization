@@ -659,7 +659,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0x967224)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY.of(CableTier.EV))
-                        .addParts(CONTROL_ROD.of(1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION, NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM, 1))
+                        .addParts(CONTROL_ROD.of(1900, 0.5, NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM, 1))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         NEODYMIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Neodymium", "neodymium")

@@ -23,10 +23,15 @@
  */
 package aztech.modern_industrialization.compat.kubejs.material;
 
+import static aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeFuelParamsEventJS.getIsotopeFuelParams;
+import static aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeParamsEventJS.getIsotopeParams;
 import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.materials.part.*;
+import aztech.modern_industrialization.materials.part.MIParts;
+import aztech.modern_industrialization.materials.part.OrePart;
+import aztech.modern_industrialization.materials.part.PartTemplate;
+import aztech.modern_industrialization.materials.part.RawMetalPart;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
@@ -162,9 +167,16 @@ public class PartJsonCreator {
 
     }
 
-    public List<PartTemplate> fuelRodPart(NuclearConstant.IsotopeFuelParams a, NuclearConstant.IsotopeFuelParams b, double factor) {
-        return FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(a, b, factor));
+    public List<PartTemplate> fuelRodPart(String a, String b, double factor) {
+        var aValue = getIsotopeFuelParams(a);
+        var bValue = getIsotopeFuelParams(b);
+        return FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(aValue, bValue, factor));
 
+    }
+
+    public List<PartTemplate> fuelRodPart(String params) {
+        var paramsValue = getIsotopeFuelParams(params);
+        return FUEL_ROD.ofAll(paramsValue);
     }
 
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
@@ -173,4 +185,11 @@ public class PartJsonCreator {
                 fastScatteringProba, scatteringType, size);
 
     }
+
+    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType, String params,
+            double size) {
+        var isotopeParams = getIsotopeParams(params);
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, isotopeParams, size);
+    }
+
 }

@@ -23,16 +23,13 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
-import aztech.modern_industrialization.compat.kubejs.machine.AddEbfTiersEventJS;
-import aztech.modern_industrialization.compat.kubejs.machine.AddMultiblockSlotsEventJS;
-import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.machine.RegisterCasingsEventJS;
-import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEventJS;
-import aztech.modern_industrialization.compat.kubejs.machine.RegisterRecipeTypesEventJS;
-import aztech.modern_industrialization.compat.kubejs.machine.RegisterUpgradesEventJS;
+import aztech.modern_industrialization.compat.kubejs.machine.*;
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
+import aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeFuelParamsEventJS;
+import aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeParamsEventJS;
+import aztech.modern_industrialization.compat.kubejs.nuclear.NuclearConstantKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEventJS;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
@@ -100,4 +97,15 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     public void fireCustomConditionEvent() {
         MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(new CustomConditionEventJS());
     }
+
+    @Override
+    public void fireCreateIsotopeParams() {
+        NuclearConstantKubeJSEvents.CREATE_ISOTOPE_PARAMS.post(new CreateIsotopeParamsEventJS());
+    }
+
+    @Override
+    public void fireCreateIsotopeFuelParams() {
+        NuclearConstantKubeJSEvents.CREATE_ISOTOPE_FUEL_PARAMS.post(new CreateIsotopeFuelParamsEventJS());
+    }
+
 }

@@ -23,8 +23,9 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-public class NuclearConstant {
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 
+public class NuclearConstant {
     public static final int EU_FOR_FAST_NEUTRON = 8;
     public static final int DESINTEGRATION_BY_ROD = 10240000;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
@@ -135,4 +136,10 @@ public class NuclearConstant {
     public static final IsotopeParams CARBON = new IsotopeParams(0.01, 0.005, 0.5, 0.85);
 
     public static final IsotopeParams INVAR = new IsotopeParams(0.002, 0.001, 0.2, 0.5);
+
+    static {
+        KubeJSProxy.instance.fireCreateIsotopeParams();
+        KubeJSProxy.instance.fireCreateIsotopeFuelParams();
+    }
+
 }

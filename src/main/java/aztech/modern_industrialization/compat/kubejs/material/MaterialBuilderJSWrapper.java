@@ -189,8 +189,9 @@ class MaterialBuilderJSWrapper {
     }
 
     public MaterialBuilderJSWrapper fuelRod(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
-                                            double neutronsMultiplication, double directEnergyFactor) {
-        materialBuilder.addParts(creator.fuelRodPart(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
+            double neutronsMultiplication, double directEnergyFactor) {
+        materialBuilder.addParts(creator.fuelRodPart(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
+                neutronsMultiplication, directEnergyFactor));
         return this;
     }
 
@@ -199,8 +200,10 @@ class MaterialBuilderJSWrapper {
         return this;
     }
 
-    public MaterialBuilderJSWrapper controlRod(String name, int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
-        materialBuilder.addParts(creator.controlRodPart(name, maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba, scatteringType, size));
+    public MaterialBuilderJSWrapper controlRod(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
+            double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        materialBuilder.addParts(creator.controlRodPart(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
+                fastScatteringProba, scatteringType, size));
         return this;
     }
 

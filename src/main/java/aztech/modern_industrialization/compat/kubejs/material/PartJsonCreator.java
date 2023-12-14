@@ -23,21 +23,17 @@
  */
 package aztech.modern_industrialization.compat.kubejs.material;
 
+import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
+
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
-import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
-import net.minecraft.util.valueproviders.UniformInt;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
-
-import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
+import net.minecraft.util.valueproviders.UniformInt;
 
 public class PartJsonCreator {
 
@@ -159,8 +155,10 @@ public class PartJsonCreator {
         return MIParts.TANK.of(englishName, path, bucketCapacity);
     }
 
-    public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
-        return FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
+    public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
+            double neutronsMultiplication, double directEnergyFactor) {
+        return FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
+                neutronsMultiplication, directEnergyFactor));
 
     }
 
@@ -169,9 +167,10 @@ public class PartJsonCreator {
 
     }
 
-    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba, double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
-        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba, fastScatteringProba, scatteringType, size);
-
+    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
+            double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
+                fastScatteringProba, scatteringType, size);
 
     }
 }

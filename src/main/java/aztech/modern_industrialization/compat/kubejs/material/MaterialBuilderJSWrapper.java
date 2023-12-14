@@ -32,6 +32,7 @@ import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import aztech.modern_industrialization.materials.set.MaterialSet;
+import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 
 class MaterialBuilderJSWrapper {
@@ -186,4 +187,16 @@ class MaterialBuilderJSWrapper {
         materialBuilder.addRecipes(ForgeHammerRecipes::apply);
         return this;
     }
+
+    public MaterialBuilderJSWrapper fuelRod(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
+                                            double neutronsMultiplication, double directEnergyFactor) {
+        materialBuilder.addParts(creator.fuelRodPart(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
+        return this;
+    }
+
+    public MaterialBuilderJSWrapper fuelRod(NuclearConstant.IsotopeFuelParams a, NuclearConstant.IsotopeFuelParams b, double factor) {
+        materialBuilder.addParts(creator.fuelRodPart(a, b, factor));
+        return this;
+    }
+
 }

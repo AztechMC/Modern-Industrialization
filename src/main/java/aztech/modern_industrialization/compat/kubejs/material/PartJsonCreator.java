@@ -28,8 +28,11 @@ import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
+import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 import net.minecraft.util.valueproviders.UniformInt;
+
+import java.util.List;
 
 public class PartJsonCreator {
 
@@ -149,5 +152,15 @@ public class PartJsonCreator {
 
     public PartTemplate tankPart(String englishName, String path, int bucketCapacity) {
         return MIParts.TANK.of(englishName, path, bucketCapacity);
+    }
+
+    public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
+        return MIParts.FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh, neutronsMultiplication, directEnergyFactor));
+
+    }
+
+    public List<PartTemplate> fuelRodPart(NuclearConstant.IsotopeFuelParams a, NuclearConstant.IsotopeFuelParams b, double factor) {
+        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(a, b, factor));
+
     }
 }

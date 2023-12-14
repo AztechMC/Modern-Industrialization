@@ -52,9 +52,13 @@ public class ControlRodPart implements PartKeyProvider {
 
     public PartTemplate of(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
             NuclearConstant.IsotopeParams params, double size) {
-        return of(maxTemperature, heatConduction,
-                params.thermalAbsorption, params.fastAbsorption, params.thermalScattering, params.fastScattering,
-                scatteringType, size);
+        return new PartTemplate("Control Rod", key())
+                .withRegister((partContext, part, itemPath1, itemId, itemTag, itemEnglishName) -> NuclearAbsorbable
+                        .of(partContext.getMaterialEnglishName() + " Control Rod", itemPath1, maxTemperature,
+                                heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                INeutronBehaviour.of(scatteringType, params, size),
+                                NuclearConstant.DESINTEGRATION_BY_ROD))
+                .withCustomPath("%s_control_rod");
     }
 
 }

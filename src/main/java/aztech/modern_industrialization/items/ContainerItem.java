@@ -135,7 +135,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
             return new GenericItemStorage<>(containerItem, stackContext);
         }
 
-        public long insert(T resource, long maxAmount, TransactionContext transaction, boolean ignoreFilter) {
+        public long insert(T resource, long maxAmount, TransactionContext transaction, boolean ignoreFilter, boolean ignoreLock) {
             StoragePreconditions.notBlankNotNegative(resource, maxAmount);
 
             if (context.getItemVariant().getItem() != containerItem)
@@ -147,7 +147,8 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
             if (containerItem.getBehaviour().canInsert(resource) || ignoreFilter) {
 
-                if ((isResourceBlank() && containerItem.isUnlocked(context.getItemVariant().toStack())) || getResource().equals(resource)) {
+                if ((isResourceBlank() && (ignoreLock || containerItem.isUnlocked(context.getItemVariant().toStack())))
+                        || getResource().equals(resource)) {
                     long amount = getAmount();
                     long inserted = Math.min(maxAmount, containerItem.getBehaviour().getCapacityForResource(resource) - amount);
                     if (inserted > 0) {
@@ -162,7 +163,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
         @Override
         public long insert(T resource, long maxAmount, TransactionContext transaction) {
-            return insert(resource, maxAmount, transaction, false);
+            return insert(resource, maxAmount, transaction, false, false);
         }
 
         @Override

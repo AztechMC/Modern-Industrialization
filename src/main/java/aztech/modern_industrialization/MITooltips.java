@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
+import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
@@ -200,6 +201,8 @@ public class MITooltips {
         return state.getDefaultInstance().getHoverName().copy().withStyle(NUMBER_TEXT);
     };
 
+    public static final Parser<Component> COMPONENT = state -> state;
+
     // Tooltips
 
     public static final TooltipAttachment BATTERIES = TooltipAttachment.of(
@@ -313,6 +316,24 @@ public class MITooltips {
                 }
 
                 return Optional.empty();
+            });
+
+    public static final TooltipAttachment REDSTONE_CONTROL_MODULE = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (MIItem.REDSTONE_CONTROL_MODULE.is(itemStack)) {
+                    var lines = new ArrayList<Component>();
+
+                    var requiredSignal = RedstoneControlModuleItem.isRequiresLowSignal(itemStack) ? MIText.SignalLow : MIText.SignalHigh;
+
+                    lines.add(line(MIText.RedstoneControlModuleHelp).build());
+                    lines.add(line(MIText.RedstoneControlModuleMachineRequires)
+                            .arg(requiredSignal.text().setStyle(NUMBER_TEXT), COMPONENT).build());
+                    lines.add(line(MIText.UseItemToChange).build());
+
+                    return Optional.of(lines);
+                } else {
+                    return Optional.empty();
+                }
             });
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(

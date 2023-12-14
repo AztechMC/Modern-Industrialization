@@ -33,6 +33,7 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryS2CPacketHandlers;
 import aztech.modern_industrialization.items.ConfigCardItem;
+import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
@@ -65,6 +66,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -92,6 +94,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
         VersionEvents.init();
+        setupItemPredicates();
 
         // Warn if neither JEI nor REI is present!
         if (!FabricLoader.getInstance().isModLoaded("emi") && !FabricLoader.getInstance().isModLoaded("jei")
@@ -169,5 +172,12 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             }
             return null;
         });
+    }
+
+    private void setupItemPredicates() {
+        ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), new MIIdentifier("redstone_control_module"),
+                (stack, level, entity, seed) -> {
+                    return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
+                });
     }
 }

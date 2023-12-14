@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.SlotAccess;
@@ -68,6 +69,9 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         }
 
         var barrelStorage = GenericItemStorage.of(barrelLike, this);
+        // The player can ignore the lock of the barrel when inserting items.
+        InsertionOnlyStorage<ItemVariant> barrelStorageIgnoreLock = (res, max, tx) -> barrelStorage.insert(res, max, tx, true, true);
+
         SimpleContainer otherInv = new SimpleContainer(otherStack.getValue().copy()) {
             @Override
             public void setItem(int slot, ItemStack stack) {
@@ -79,7 +83,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         };
         var otherInvStorage = InventoryStorage.of(otherInv, null);
 
-        if (StorageUtil.move(otherInvStorage, barrelStorage, (iv) -> true, Long.MAX_VALUE, null) > 0
+        if (StorageUtil.move(otherInvStorage, barrelStorageIgnoreLock, (iv) -> true, Long.MAX_VALUE, null) > 0
                 || StorageUtil.move(barrelStorage, otherInvStorage, (iv) -> true, Long.MAX_VALUE, null) > 0) {
             otherStack.setValue(otherInv.getItem(0));
             return true;

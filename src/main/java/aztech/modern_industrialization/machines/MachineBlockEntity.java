@@ -28,6 +28,7 @@ import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -39,6 +40,8 @@ import aztech.modern_industrialization.util.WorldHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -79,6 +82,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * Server-side only: true if the next call to sync() will trigger a remesh.
      */
     private boolean syncCausesRemesh = true;
+    /**
+     * Caches the current redstone status. Invalidated by {@link MachineBlock}.
+     * {@code null} if the current status is not known.
+     */
+    private Boolean hasRedstoneHighSignal = null;
 
     public final OrientationComponent orientation;
     public final PlacedByComponent placedBy;
@@ -92,8 +100,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         registerComponents(orientation, placedBy);
     }
 
-    protected final void registerGuiComponent(GuiComponent.Server component) {
-        guiComponents.add(component);
+    protected final void registerGuiComponent(GuiComponent.Server... components) {
+        Collections.addAll(guiComponents, components);
     }
 
     protected final void registerComponents(IComponent... components) {
@@ -116,6 +124,34 @@ public abstract class MachineBlockEntity extends FastBlockEntity
             }
         }
         throw new RuntimeException("Couldn't find component " + componentId);
+    }
+
+    private <T> List<T> tryGetComponent(Class<T> clazz) {
+        List<T> components = new ArrayList<>();
+        for (var component : icomponents) {
+            if (clazz.isInstance(component)) {
+                components.add((T) component);
+            }
+        }
+        return components;
+    }
+
+    public final <T> void forComponentType(Class<T> clazz, Consumer<? super T> action) {
+        List<T> component = tryGetComponent(clazz);
+        for (T c : component) {
+            action.accept(c);
+        }
+    }
+
+    public <T, R> R mapComponentOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
+        List<T> components = tryGetComponent(clazz);
+        if (components.isEmpty()) {
+            return defaultValue;
+        } else if (components.size() == 1) {
+            return action.apply(components.get(0));
+        } else {
+            throw new RuntimeException("Multiple components of type " + clazz.getName() + " found");
+        }
     }
 
     @Override
@@ -251,7 +287,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     public List<ItemStack> dropExtra() {
-        return new ArrayList<>();
+        List<ItemStack> drops = new ArrayList<>();
+        forComponentType(DropableComponent.class, u -> drops.add(u.getDrop()));
+        return drops;
     }
 
     public List<Component> getTooltips() {
@@ -264,5 +302,16 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     protected int getComparatorOutput() {
         return 0;
+    }
+
+    public boolean hasRedstoneHighSignal() {
+        if (this.hasRedstoneHighSignal == null) {
+            refreshRedstoneStatus();
+        }
+        return this.hasRedstoneHighSignal;
+    }
+
+    void refreshRedstoneStatus() {
+        this.hasRedstoneHighSignal = level.hasNeighborSignal(worldPosition);
     }
 }

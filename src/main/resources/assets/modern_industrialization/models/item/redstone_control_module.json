@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "modern_industrialization:item/redstone_control_module_high"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "modern_industrialization:redstone_control_module": 0.5
+      },
+      "model": "modern_industrialization:item/redstone_control_module_low"
+    }
+  ]
+}

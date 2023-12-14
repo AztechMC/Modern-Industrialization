@@ -21,29 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.ftbquests;
+package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIConfig;
-import java.util.UUID;
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public interface FTBQuestsFacade {
-    FTBQuestsFacade INSTANCE = getInstance();
-
-    private static FTBQuestsFacade getInstance() {
-        if (FabricLoader.getInstance().isModLoaded("ftbquests") && MIConfig.getConfig().enableFtbQuestsIntegration) {
-            try {
-                return Class.forName("aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacadeImpl")
-                        .asSubclass(FTBQuestsFacade.class).getConstructor().newInstance();
-            } catch (Throwable throwable) {
-                throw new RuntimeException(throwable);
-            }
-        }
-
-        return (uuid, item, amount) -> {
-        };
+public class RedstoneControlModuleItem extends Item {
+    public RedstoneControlModuleItem(Properties properties) {
+        super(properties);
     }
 
-    void addCompleted(UUID uuid, Item item, long amount);
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        var stack = player.getItemInHand(usedHand);
+        setRequiresLowSignal(stack, !isRequiresLowSignal(stack));
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    }
+
+    private static final String SIGNAL_KEY = "low_signal";
+
+    public static boolean isRequiresLowSignal(ItemStack stack) {
+        return stack.getTagElement(SIGNAL_KEY) != null;
+    }
+
+    public static void setRequiresLowSignal(ItemStack stack, boolean requiresLowSignal) {
+        if (requiresLowSignal) {
+            stack.getOrCreateTagElement(SIGNAL_KEY);
+        } else {
+            stack.removeTagKey(SIGNAL_KEY);
+        }
+    }
 }

@@ -32,9 +32,11 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
@@ -55,6 +57,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private final IsActiveComponent isActiveComponent;
     private final MachineInventoryComponent inventoryComponent;
+    private final RedstoneControlComponent redstoneControl;
 
     private int progressTick = 0;
 
@@ -64,7 +67,8 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         super(bep, new MachineGuiParameters.Builder("replicator", true).build(), new OrientationComponent.Params(true, true, false));
 
-        isActiveComponent = new IsActiveComponent();
+        this.isActiveComponent = new IsActiveComponent();
+        this.redstoneControl = new RedstoneControlComponent();
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(85, 34, "arrow");
 
         long capacity = 81000 * 256;
@@ -80,7 +84,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.inventoryComponent = new MachineInventoryComponent(itemInputs, itemOutputs, fluidInput, Collections.emptyList(), itemSlotPositions,
                 fluidSlotPositions);
 
-        this.registerComponents(isActiveComponent, inventoryComponent, new IComponent() {
+        this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new IComponent() {
             @Override
             public void writeNbt(CompoundTag tag) {
                 tag.putInt("progressTick", progressTick);
@@ -94,6 +98,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
         registerGuiComponent(new AutoExtract.Server(orientation, false));
+        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
     }
 
@@ -151,17 +156,20 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     @Override
     public void tick() {
         if (!level.isClientSide) {
-
-            if (replicationStep(true)) {
-                progressTick++;
-                isActiveComponent.updateActive(true, this);
-                if (progressTick == 20) {
-                    replicationStep(false);
+            if (!redstoneControl.doAllowNormalOperation(this)) {
+                isActiveComponent.updateActive(false, this);
+            } else {
+                if (replicationStep(true)) {
+                    progressTick++;
+                    isActiveComponent.updateActive(true, this);
+                    if (progressTick == 20) {
+                        replicationStep(false);
+                        progressTick = 0;
+                    }
+                } else {
+                    isActiveComponent.updateActive(false, this);
                     progressTick = 0;
                 }
-            } else {
-                isActiveComponent.updateActive(false, this);
-                progressTick = 0;
             }
 
             if (orientation.extractItems) {

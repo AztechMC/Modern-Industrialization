@@ -285,6 +285,7 @@ public class SteamDrillItem
                                 ItemVariant.of(burnt.getCraftingRemainingItem()),
                                 1,
                                 tx,
+                                true,
                                 true);
                         tx.commit();
                     }

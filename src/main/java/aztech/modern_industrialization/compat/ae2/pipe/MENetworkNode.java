@@ -53,8 +53,14 @@ public class MENetworkNode extends PipeNetworkNode {
             }).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
         }
         if (this.mainNode != null && this.connections.size() == 0) {
-            this.mainNode.destroy();
+            // Destroying the node might cause a block update,
+            // which might trigger updateConnections,
+            // which might call this code again.
+            // So, we first clear the reference before clearing the node
+            // to ensure that if this code is called again nothing will happen.
+            var toDestroy = this.mainNode;
             this.mainNode = null;
+            toDestroy.destroy();
         }
     }
 

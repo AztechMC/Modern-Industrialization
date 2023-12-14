@@ -40,6 +40,7 @@ public enum MIText {
     AcceptSingleFluid("Consumes %s and produces %s per mb"),
     AcceptSingleItem("Consumes %s and produces %s per item"),
     AcceptsMachineHull("Change machine hull to connect higher tier cables."),
+    AcceptsRedstoneControlModule("Accepts a redstone control module."),
     AcceptsSteam("Accepts Steam (1 mb = 1 EU)"),
     AcceptsSteamToo("Also Accepts Steam (1 mb = 1 EU)"),
     AcceptsUpgrades("Add upgrades to increase max processing EU/t."),
@@ -205,6 +206,8 @@ public enum MIText {
     PriorityTransferHelp("Pipes will interact with higher priorities first."),
     Progress("Progress : %s"),
     PutMotorToUpgrade("Put any Motor here to improve Item Pipe Speed"),
+    RedstoneControlModuleHelp("Insert in a machine to enable redstone control."),
+    RedstoneControlModuleMachineRequires("Machine requires: %s"),
     RemAbsorption("Remaining Absorption : %d / %d "),
     RequiresBiome("Requires biome: %s"),
     RequiresBlockBehind("Requires block behind machine: %s"),
@@ -227,6 +230,8 @@ public enum MIText {
     ShiftClickToLockAll("Shift-Click to lock all"),
     ShiftClickToSwitch("Shift-Click to switch to %s"),
     ShiftClickToUnlockAll("Shift-Click to unlock all"),
+    SignalHigh("High Signal"),
+    SignalLow("Low Signal"),
     SingleNeutronCapture("Single Neutron Capture"),
     SteamDrillFuelHelp("2) Place fuel inside the drill (right click)."),
     SteamDrillProfit("3) Enjoy 3x3 Silk Touch."),
@@ -246,6 +251,7 @@ public enum MIText {
     TransparentCamouflageDisabled("Disabled transparent camouflage rendering"),
     TransparentCamouflageEnabled("Enabled transparent camouflage rendering"),
     Unlocked("Unlocked"),
+    UseItemToChange("Right-click to change."),
     WaterPercent("Water: %s %%"),
     Whitelist("Whitelist mode enabled");
 

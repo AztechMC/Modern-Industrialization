@@ -27,15 +27,13 @@ import aztech.modern_industrialization.compat.kubejs.machine.*;
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
-import aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeFuelParamsEventJS;
-import aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeParamsEventJS;
-import aztech.modern_industrialization.compat.kubejs.nuclear.NuclearConstantKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEventJS;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidNuclearComponentsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterNuclearParams;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -100,13 +98,8 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     }
 
     @Override
-    public void fireCreateIsotopeParams() {
-        NuclearConstantKubeJSEvents.CREATE_ISOTOPE_PARAMS.post(new CreateIsotopeParamsEventJS());
-    }
-
-    @Override
-    public void fireCreateIsotopeFuelParams() {
-        NuclearConstantKubeJSEvents.CREATE_ISOTOPE_FUEL_PARAMS.post(new CreateIsotopeFuelParamsEventJS());
+    public void fireCreateParams() {
+        MIRegistrationKubeJSEvents.CREATE_PARAMS.post(new RegisterNuclearParams());
     }
 
     @Override

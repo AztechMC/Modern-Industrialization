@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.kubejs.registration;
 
-import aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeParamsEventJS;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponents;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import dev.latvian.mods.kubejs.event.EventJS;
@@ -38,7 +37,7 @@ public class RegisterFluidNuclearComponentsEventJS extends EventJS {
 
         var fluid = Registry.FLUID.get(ResourceLocation.tryParse(fluidString));
         var neutronProduct = FluidVariant.of(Registry.FLUID.get(ResourceLocation.tryParse(productString)));
-        var params = CreateIsotopeParamsEventJS.getIsotopeParams(paramsString);
+        var params = RegisterNuclearParams.of(paramsString);
 
         var scatteringType = switch (scatteringString) {
         case "ULTRA_LIGHT" -> NuclearConstant.ScatteringType.ULTRA_LIGHT;

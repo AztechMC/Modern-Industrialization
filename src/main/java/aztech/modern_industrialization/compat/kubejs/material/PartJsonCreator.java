@@ -23,11 +23,8 @@
  */
 package aztech.modern_industrialization.compat.kubejs.material;
 
-import static aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeFuelParamsEventJS.getIsotopeFuelParams;
-import static aztech.modern_industrialization.compat.kubejs.nuclear.CreateIsotopeParamsEventJS.getIsotopeParams;
-import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
-
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterNuclearParams;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.OrePart;
 import aztech.modern_industrialization.materials.part.PartTemplate;
@@ -162,21 +159,26 @@ public class PartJsonCreator {
 
     public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
             double neutronsMultiplication, double directEnergyFactor) {
-        return FUEL_ROD.ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
-                neutronsMultiplication, directEnergyFactor));
-
+        return MIParts.FUEL_ROD
+                .ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
+                        neutronsMultiplication, directEnergyFactor));
     }
 
     public List<PartTemplate> fuelRodPart(String a, String b, double factor) {
-        var aValue = getIsotopeFuelParams(a);
-        var bValue = getIsotopeFuelParams(b);
-        return FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix(aValue, bValue, factor));
+        var aValue = RegisterNuclearParams.of(a);
+        var bValue = RegisterNuclearParams.of(b);
+        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix((NuclearConstant.IsotopeFuelParams) aValue,
+                (NuclearConstant.IsotopeFuelParams) bValue, factor));
 
     }
 
     public List<PartTemplate> fuelRodPart(String params) {
-        var paramsValue = getIsotopeFuelParams(params);
-        return FUEL_ROD.ofAll(paramsValue);
+        var paramsValue = RegisterNuclearParams.of(params);
+        return MIParts.FUEL_ROD.ofAll((NuclearConstant.IsotopeFuelParams) paramsValue);
+    }
+
+    public List<PartTemplate> fuelRodPart(NuclearConstant.IsotopeFuelParams params) {
+        return MIParts.FUEL_ROD.ofAll(params);
     }
 
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
@@ -188,8 +190,14 @@ public class PartJsonCreator {
 
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType, String params,
             double size) {
-        var isotopeParams = getIsotopeParams(params);
+        var isotopeParams = RegisterNuclearParams.of(params);
         return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, isotopeParams, size);
+    }
+
+    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
+            NuclearConstant.IsotopeParams params,
+            double size) {
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, params, size);
     }
 
 }

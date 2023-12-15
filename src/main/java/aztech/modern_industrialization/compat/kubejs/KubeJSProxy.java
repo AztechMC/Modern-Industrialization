@@ -65,10 +65,7 @@ public class KubeJSProxy {
     public void fireCustomConditionEvent() {
     }
 
-    public void fireCreateIsotopeParams() {
-    }
-
-    public void fireCreateIsotopeFuelParams() {
+    public void fireCreateParams() {
     }
 
     public void fireRegisterFluidNuclearComponentsEvent() {

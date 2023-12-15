@@ -21,38 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.nuclear;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import dev.latvian.mods.kubejs.event.EventJS;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class CreateIsotopeParamsEventJS extends EventJS {
+public class RegisterNuclearParams extends EventJS {
 
-    public static SortedMap<String, NuclearConstant.IsotopeParams> ISOTOPE_PARAMS = new TreeMap<>();
+    public static SortedMap<String, NuclearConstant.IsotopeParams> PARAMS = new TreeMap<>();
 
-    public void createIsotopeParams(String name, double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba,
+    public void create(String name, double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow,
+            int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
+        PARAMS.put(name, new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
+                neutronsMultiplication, directEnergyFactor));
+    }
+
+    public void create(String name, double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba,
             double fastScatteringProba) {
-        ISOTOPE_PARAMS.put(name, new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorptionProba,
+        PARAMS.put(name, new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorptionProba,
                 thermalScatteringProba, fastScatteringProba));
     }
 
-    public static NuclearConstant.IsotopeParams getIsotopeParams(String name) {
-
-        if (ISOTOPE_PARAMS.get(name) != null) {
-            return ISOTOPE_PARAMS.get(name);
-        }
-
-        return switch (name) {
-        case "hydrogen" -> NuclearConstant.HYDROGEN;
-        case "deuterium" -> NuclearConstant.DEUTERIUM;
-        case "cadmium" -> NuclearConstant.CADMIUM;
-        case "carbon" -> NuclearConstant.CARBON;
-        case "invar" -> NuclearConstant.INVAR;
-        default -> throw new IllegalArgumentException("Invalid Isotope Params: " + name);
-        };
-
+    public static NuclearConstant.IsotopeParams of(String name) {
+        return PARAMS.get(name);
     }
 
 }

@@ -138,8 +138,7 @@ public class NuclearConstant {
     public static final IsotopeParams INVAR = new IsotopeParams(0.002, 0.001, 0.2, 0.5);
 
     static {
-        KubeJSProxy.instance.fireCreateIsotopeParams();
-        KubeJSProxy.instance.fireCreateIsotopeFuelParams();
+        KubeJSProxy.instance.fireCreateParams();
     }
 
 }

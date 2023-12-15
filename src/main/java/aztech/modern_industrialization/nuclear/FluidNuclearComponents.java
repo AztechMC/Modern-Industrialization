@@ -24,12 +24,17 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import java.util.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidNuclearComponents {
+
+    public static HashMap<Fluid, INuclearComponent<FluidVariant>> NUCLEAR_FLUIDS = new HashMap<>();
+
     private static final INuclearComponent<FluidVariant> WATER = create(Fluids.WATER,
             NuclearConstant.BASE_HEAT_CONDUCTION * 5, 1,
             NuclearConstant.ScatteringType.ULTRA_LIGHT, NuclearConstant.HYDROGEN,
@@ -51,49 +56,51 @@ public class FluidNuclearComponents {
     public static INuclearComponent<FluidVariant> of(FluidVariant variant) {
         Fluid fluid = variant.getFluid();
 
-        if (fluid == Fluids.WATER) {
-            return WATER;
-        } else if (fluid == MIFluids.HEAVY_WATER.asFluid()) {
-            return HEAVY_WATER;
-        } else if (fluid == MIFluids.HIGH_PRESSURE_WATER.asFluid()) {
-            return HIGH_PRESSURE_WATER;
-        } else if (fluid == MIFluids.HIGH_PRESSURE_HEAVY_WATER.asFluid()) {
-            return HIGH_PRESSURE_HEAVY_WATER;
+        if (NUCLEAR_FLUIDS.containsKey(fluid)) {
+            return NUCLEAR_FLUIDS.get(fluid);
         }
-
         return null;
     }
 
-    private static INuclearComponent<FluidVariant> create(Fluid fluid, double heatConduction, double density, NuclearConstant.ScatteringType type,
+    public static INuclearComponent<FluidVariant> create(Fluid fluid, double heatConduction, double density, NuclearConstant.ScatteringType type,
             NuclearConstant.IsotopeParams params, FluidVariant neutronProduct, boolean highPressure) {
         FluidVariant variant = FluidVariant.of(fluid);
 
-        return new INuclearComponent<>() {
-            @Override
-            public double getHeatConduction() {
-                return heatConduction * density;
-            }
+        if (NUCLEAR_FLUIDS.containsKey(fluid)) {
+            throw new IllegalArgumentException("May not re-register fluid nuclear components");
+        } else {
+            return NUCLEAR_FLUIDS.put(fluid, new INuclearComponent<>() {
+                @Override
+                public double getHeatConduction() {
+                    return heatConduction * density;
+                }
 
-            @Override
-            public INeutronBehaviour getNeutronBehaviour() {
-                return INeutronBehaviour.of(type, params, density);
-            }
+                @Override
+                public INeutronBehaviour getNeutronBehaviour() {
+                    return INeutronBehaviour.of(type, params, density);
+                }
 
-            public FluidVariant getVariant() {
-                return variant;
-            }
+                public FluidVariant getVariant() {
+                    return variant;
+                }
 
-            public FluidVariant getNeutronProduct() {
-                return neutronProduct;
-            }
+                public FluidVariant getNeutronProduct() {
+                    return neutronProduct;
+                }
 
-            public long getNeutronProductAmount() {
-                return highPressure ? 8 : 1;
-            }
+                public long getNeutronProductAmount() {
+                    return highPressure ? 8 : 1;
+                }
 
-            public double getNeutronProductProbability() {
-                return highPressure ? 0.125 : 1;
-            }
-        };
+                public double getNeutronProductProbability() {
+                    return highPressure ? 0.125 : 1;
+                }
+
+            });
+        }
+    }
+
+    static {
+        KubeJSProxy.instance.fireRegisterFluidNuclearComponentsEvent();
     }
 }

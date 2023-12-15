@@ -34,6 +34,7 @@ import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEvent
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidNuclearComponentsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
@@ -106,6 +107,11 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireCreateIsotopeFuelParams() {
         NuclearConstantKubeJSEvents.CREATE_ISOTOPE_FUEL_PARAMS.post(new CreateIsotopeFuelParamsEventJS());
+    }
+
+    @Override
+    public void fireRegisterFluidNuclearComponentsEvent() {
+        MIRegistrationKubeJSEvents.REGISTER_FLUID_NUCLEAR_COMPONENTS.post(new RegisterFluidNuclearComponentsEventJS());
     }
 
 }

@@ -31,4 +31,6 @@ public interface MIRegistrationKubeJSEvents {
 
     EventHandler REGISTER_FLUIDS = EVENT_GROUP.startup("registerFluids", () -> RegisterFluidsEventJS.class);
     EventHandler REGISTER_FLUID_FUELS = EVENT_GROUP.startup("registerFluidFuels", () -> RegisterFluidFuelsEventJS.class);
+    EventHandler REGISTER_FLUID_NUCLEAR_COMPONENTS = EVENT_GROUP.startup("registerFluidNuclearComponents",
+            () -> RegisterFluidNuclearComponentsEventJS.class);
 }

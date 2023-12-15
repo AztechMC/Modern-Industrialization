@@ -70,4 +70,7 @@ public class KubeJSProxy {
 
     public void fireCreateIsotopeFuelParams() {
     }
+
+    public void fireRegisterFluidNuclearComponentsEvent() {
+    }
 }

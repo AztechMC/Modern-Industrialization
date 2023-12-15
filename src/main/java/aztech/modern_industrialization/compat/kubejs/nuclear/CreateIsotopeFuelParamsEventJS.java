@@ -33,8 +33,7 @@ public class CreateIsotopeFuelParamsEventJS extends EventJS {
     public static SortedMap<String, NuclearConstant.IsotopeFuelParams> FUEL_PARAMS = new TreeMap<>();
 
     public void createIsotopeFuelParams(String name, double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow,
-            int tempLimitHigh,
-            double neutronsMultiplication, double directEnergyFactor) {
+            int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
         FUEL_PARAMS.put(name, new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
                 neutronsMultiplication, directEnergyFactor));
     }

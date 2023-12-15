@@ -81,6 +81,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     }
 
     public interface Behavior {
+        default boolean isEnabled() {
+            return true;
+        }
+
         long consumeEu(long max, Simulation simulation);
 
         default boolean banRecipe(MachineRecipe recipe) {
@@ -190,13 +194,14 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             throw new IllegalStateException("May not call client side.");
         }
         boolean isActive;
+        boolean isEnabled = behavior.isEnabled();
 
         loadDelayedActiveRecipe();
 
         // START RECIPE IF NECESSARY
         // usedEnergy == 0 means that no recipe is currently started
         boolean recipeStarted = false;
-        if (usedEnergy == 0) {
+        if (usedEnergy == 0 && isEnabled) {
             if (behavior.consumeEu(1, SIMULATE) == 1) {
                 recipeStarted = updateActiveRecipe();
             }
@@ -209,7 +214,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // PROCESS RECIPE TICK
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
-        if (activeRecipe != null && (usedEnergy > 0 || recipeStarted)) {
+        if (activeRecipe != null && (usedEnergy > 0 || recipeStarted) && isEnabled) {
             recipeMaxEu = getRecipeMaxEu(activeRecipe.eu, recipeEnergy, efficiencyTicks);
             eu = activeRecipe.conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT) : 0;
             isActive = eu > 0;

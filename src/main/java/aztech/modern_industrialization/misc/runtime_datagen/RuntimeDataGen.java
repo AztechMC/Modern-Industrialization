@@ -29,18 +29,20 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceKey;
 
 public class RuntimeDataGen {
     public static void run(Consumer<FabricDataGenerator.Pack> config) {
@@ -73,7 +75,23 @@ public class RuntimeDataGen {
         var registriesFuture = CompletableFuture.supplyAsync(() -> {
             var vanillaBuilder = VanillaRegistries.BUILDER;
             DynamicRegistryDatagen.run(vanillaBuilder);
-            return vanillaBuilder.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+
+            // Combine entries by registry
+            Map<ResourceKey<? extends Registry<?>>, List<RegistrySetBuilder.RegistryBootstrap<?>>> map = new HashMap<>();
+            for (var entry : vanillaBuilder.entries) {
+                map.computeIfAbsent(entry.key(), k -> new ArrayList<>()).add(entry.bootstrap());
+            }
+
+            var combinedBuilder = new RegistrySetBuilder();
+            for (var entry : map.entrySet()) {
+                combinedBuilder.add((ResourceKey) entry.getKey(), ctx -> {
+                    for (var bootstrap : entry.getValue()) {
+                        bootstrap.run((BootstapContext) ctx);
+                    }
+                });
+            }
+
+            return combinedBuilder.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
         }, Util.backgroundExecutor());
         var gen = new FabricDataGenerator(dataOutput, modContainer, true, registriesFuture);
         config.accept(gen.createPack());

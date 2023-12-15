@@ -40,7 +40,7 @@ public class PackConfigMixin {
     private List<PackResources> injectCreateReload(List<PackResources> resourcePacks) {
         if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
             var mutableList = new ArrayList<>(resourcePacks);
-            mutableList.add(RuntimeResourcesHelper.createPack(PackType.SERVER_DATA));
+            RuntimeResourcesHelper.injectPack(PackType.SERVER_DATA, mutableList);
             return mutableList;
         } else {
             return resourcePacks;

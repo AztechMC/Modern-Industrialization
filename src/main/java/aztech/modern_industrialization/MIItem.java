@@ -123,7 +123,8 @@ public final class MIItem {
     public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
 
     // Quantum circuits
-    public static final ItemDefinition<Item> QBIT = item("QBit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+    // TODO 1.21: Change item id to "qubit"
+    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
     public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
     public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
     public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_OTHER);
@@ -134,6 +135,8 @@ public final class MIItem {
     public static final ItemDefinition<Item> TURBO_UPGRADE = item("Turbo Upgrade", "turbo_upgrade", (p) -> new Item(p.rarity(Rarity.UNCOMMON)), ITEMS_OTHER);
     public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
     public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.maxCount(1).rarity(Rarity.RARE)), ITEMS_OTHER);
+
+    public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_OTHER);
 
     // Tools
     public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);

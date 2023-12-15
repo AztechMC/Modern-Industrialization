@@ -45,7 +45,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-public class CasingComponent implements IComponent {
+public class CasingComponent implements IComponent, DropableComponent {
 
     private CableTier tierCasing;
     private final CableTier defaultCasing;
@@ -140,6 +140,7 @@ public class CasingComponent implements IComponent {
         return null;
     }
 
+    @Override
     public ItemStack getDrop() {
         if (tierCasing != defaultCasing) {
             return new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);

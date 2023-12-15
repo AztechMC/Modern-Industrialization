@@ -32,8 +32,10 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -50,6 +52,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     protected final EnergyComponent energy;
+    private final RedstoneControlComponent redstoneControl;
 
     protected final MIEnergyStorage insertable;
     protected final MIEnergyStorage extractable;
@@ -73,14 +76,18 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         this.euCapacity = euCapacity;
 
         this.energy = new EnergyComponent(this, euCapacity);
-        insertable = energy.buildInsertable((CableTier tier) -> tier == from);
-        extractable = energy.buildExtractable((CableTier tier) -> tier == to);
+        this.redstoneControl = new RedstoneControlComponent();
+
+        this.insertable = energy.buildInsertable((CableTier tier) -> tier == from);
+        this.extractable = energy.buildExtractable((CableTier tier) -> tier == to && redstoneControl.doAllowNormalOperation(this));
+
+        this.registerComponents(energy, redstoneControl);
+
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity),
+                new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
         this.extractableOnOutputDirection = extractableOnOutputDirection;
-
-        this.registerComponents(energy);
 
     }
 
@@ -107,7 +114,17 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     @Override
     public void tick() {
         if (!level.isClientSide()) {
-            EnergyHelper.autoOuput(this, orientation, to, extractable);
+            if (extractableOnOutputDirection) {
+                EnergyHelper.autoOutput(this, orientation, to, extractable);
+            } else {
+                for (Direction side : Direction.values()) {
+                    if (side == orientation.outputDirection) {
+                        continue;
+                    }
+
+                    EnergyHelper.autoOutput(this, side, to, extractable);
+                }
+            }
         }
     }
 

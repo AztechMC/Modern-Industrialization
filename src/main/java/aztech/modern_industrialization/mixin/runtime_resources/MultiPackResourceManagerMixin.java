@@ -49,7 +49,7 @@ public class MultiPackResourceManagerMixin {
         if (RuntimeResourcesHelper.IS_CREATING_SERVER_RELOAD_PACK.get() != null) {
             RuntimeResourcesHelper.IS_CREATING_SERVER_RELOAD_PACK.remove();
             packs = new ArrayList<>(packs);
-            packs.add(RuntimeResourcesHelper.createPack(packType));
+            RuntimeResourcesHelper.injectPack(packType, packs);
         }
     }
 }

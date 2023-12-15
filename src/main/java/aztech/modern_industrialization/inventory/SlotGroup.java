@@ -23,8 +23,12 @@
  */
 package aztech.modern_industrialization.inventory;
 
+/**
+ * Used to handle shift-click for groups of slots.
+ */
 public enum SlotGroup {
     CONFIGURABLE_STACKS,
     UPGRADES,
     CASING,
+    REDSTONE_MODULE,
 }

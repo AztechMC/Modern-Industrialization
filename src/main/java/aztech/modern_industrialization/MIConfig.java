@@ -64,6 +64,9 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")
     public boolean enableAe2Integration = true;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Enable the FTB Quests integration, if present (Restart needed)")
+    public boolean enableFtbQuestsIntegration = true;
     @EnglishTranslation(value = "Enable the default ore generation tooltips. Set this to false if you change the ore features in a datapack.")
     public boolean enableDefaultOreGenTooltips = true;
     @ConfigEntry.Gui.RequiresRestart
@@ -75,6 +78,9 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Removes trades from the Industrialist villager (Restart needed)")
     public boolean removeIndustrialistTrades = false;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Maximum height of the Distillation Tower multiblock (Restart needed)")
+    public int maxDistillationTowerHeight = 9;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

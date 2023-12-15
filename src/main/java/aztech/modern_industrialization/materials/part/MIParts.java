@@ -29,6 +29,7 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class MIParts {
@@ -97,6 +98,18 @@ public class MIParts {
     public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
             RAW_METAL_BLOCK);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
+
+    public static final Map<PartKey, CategoryTag> CATEGORY_TAGS = Map.of(
+            DUST.key(), new CategoryTag("c:dusts", "Dusts"),
+            GEAR.key(), new CategoryTag("c:gears", "Gears"),
+            INGOT.key(), new CategoryTag("c:ingots", "Ingots"),
+            NUGGET.key(), new CategoryTag("c:nuggets", "Nuggets"),
+            PLATE.key(), new CategoryTag("c:plates", "Plates"),
+            RAW_METAL.key(), new CategoryTag("c:raw_ores", "Raw Ores"),
+            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"));
+
+    public record CategoryTag(String tag, String englishName) {
+    }
 
     public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);

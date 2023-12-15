@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -59,27 +60,29 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
                     }
                 }
 
+                // Build a special storage that ignores the lock for manual player insertion.
+                InsertionOnlyStorage<ItemVariant> barrelInserter = (res, max, tx) -> barrel.insert(res, max, tx, true);
+
                 if (!player.isShiftKeyDown()) {
 
                     ItemStack stack = player.getItemInHand(hand);
 
                     if (stack.getItem() instanceof BarrelItem barrelItem) {
                         var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
-                        if (StorageUtil.move(storage, barrel, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+                        if (StorageUtil.move(storage, barrelInserter, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
                             return InteractionResult.sidedSuccess(world.isClientSide);
                         }
                     }
-                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrel,
+                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrelInserter,
                             (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
                         return InteractionResult.sidedSuccess(world.isClientSide);
                     }
                 } else {
                     ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
-                    if (StorageUtil.move(PlayerInventoryStorage.of(player), barrel, (itemVariant) -> itemVariant.equals(currentInHand),
+                    if (StorageUtil.move(PlayerInventoryStorage.of(player), barrelInserter, (itemVariant) -> itemVariant.equals(currentInHand),
                             Long.MAX_VALUE, null) > 0) {
                         return InteractionResult.sidedSuccess(world.isClientSide);
                     }
-
                 }
             }
             return InteractionResult.PASS;

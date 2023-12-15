@@ -34,8 +34,8 @@ public class CreateIsotopeParamsEventJS extends EventJS {
 
     public void createIsotopeParams(String name, double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba,
             double fastScatteringProba) {
-        ISOTOPE_PARAMS.put(name,
-                new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorptionProba, thermalScatteringProba, fastScatteringProba));
+        ISOTOPE_PARAMS.put(name, new NuclearConstant.IsotopeParams(thermalAbsorbProba, fastAbsorptionProba,
+                thermalScatteringProba, fastScatteringProba));
     }
 
     public static NuclearConstant.IsotopeParams getIsotopeParams(String name) {

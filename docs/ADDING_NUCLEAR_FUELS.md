@@ -30,14 +30,15 @@ MIMaterialEvents.addMaterials(event => {
 ```
 
 You can also mix two different isotope fuel parameters. This can be used to simulate MOX and MOX-type fuels.
-The resulting parameters will be `r * a + (1 - b) * b`, where `r` is the factor, `a` is the first parameters and `b` is the second parameters: 
-The example below illustrates how a fuel rod can be created from the U238 and Pu239 parameters. This generates the same parameters as LE MOX fuel.
+The resulting parameters will be `r * a + (1 - b) * b`, where `r` is the factor, `a` is the first set of parameters and `b` is the second 
+The example below illustrates how a fuel rod can be created from the U238 and Pu239 parameters
+This generates the same parameters as LE MOX fuel
 
 ``` javascript
 [...]
 .fuelRod(
-   U238,       // First parameters
-   Pu239,      // Second parameters
+   U238,       // First params
+   Pu239,      // Second params
    0.11111),   // Factor
 [...]
 ```

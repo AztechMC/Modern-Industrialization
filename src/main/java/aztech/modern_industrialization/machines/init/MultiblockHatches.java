@@ -121,7 +121,7 @@ public class MultiblockHatches {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
-            String englishName = tier.englishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
+            String englishName = tier.shortEnglishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
             MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
                     EnergyHatch::registerEnergyApi);
             MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);

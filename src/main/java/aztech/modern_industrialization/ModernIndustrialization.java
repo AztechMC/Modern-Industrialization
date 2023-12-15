@@ -93,8 +93,6 @@ public class ModernIndustrialization {
                 })
                 .build());
 
-        KubeJSProxy.instance.fireCableTiersEvent();
-
         MIMaterials.init();
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();

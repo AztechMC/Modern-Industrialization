@@ -30,7 +30,9 @@ import aztech.modern_industrialization.machines.blockentities.*;
 import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SingleBlockSpecialMachines {
 
@@ -51,8 +53,11 @@ public class SingleBlockSpecialMachines {
                 ElectricWaterPumpBlockEntity::registerEnergyApi);
 
         registerTransformers();
-        registerSteamTurbines(32, 128, 512);
         registerEUStorage();
+
+        registerSteamTurbine(CableTier.LV, 32, 16000);
+        registerSteamTurbine(CableTier.MV, 128, 32000);
+        registerSteamTurbine(CableTier.HV, 512, 64000);
 
         MachineRegistrationHelper.registerMachine("LV Diesel Generator", "lv_diesel_generator",
                 bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator",
@@ -90,24 +95,43 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.EV.casing, true, false, true, true);
     }
 
+    private static void registerTransformer(CableTier low, CableTier up) {
+        String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
+        String lowToUpName = TransformerMachineBlockEntity.getTransformerEnglishName(low, up);
+        MachineRegistrationHelper.registerMachine(lowToUpName, lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
+                AbstractStorageMachineBlockEntity::registerEnergyApi);
+
+        String upToLow = TransformerMachineBlockEntity.getTransformerName(up, low);
+        String upToLowName = TransformerMachineBlockEntity.getTransformerEnglishName(up, low);
+        MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
+                AbstractStorageMachineBlockEntity::registerEnergyApi);
+
+        MachineRegistrationHelper.addMachineModel(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
+        MachineRegistrationHelper.addMachineModel(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
+    }
+
     private static void registerTransformers() {
+        record TierPair(CableTier low, CableTier high) {
+        }
+
+        Set<TierPair> registeredPairs = new HashSet<>();
+
+        // Register N <-> N+1 transformers
         List<CableTier> tiers = CableTier.allTiers();
         for (int i = 0; i < tiers.size() - 1; i++) {
-            final CableTier low = tiers.get(i);
-            final CableTier up = tiers.get(i + 1);
+            var pair = new TierPair(tiers.get(i), tiers.get(i + 1));
+            registerTransformer(pair.low, pair.high);
+            registeredPairs.add(pair);
+        }
 
-            String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
-            String lowToUpName = TransformerMachineBlockEntity.getTransformerEnglishName(low, up);
-            MachineRegistrationHelper.registerMachine(lowToUpName, lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
-
-            String upToLow = TransformerMachineBlockEntity.getTransformerName(up, low);
-            String upToLowName = TransformerMachineBlockEntity.getTransformerEnglishName(up, low);
-            MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
-
-            MachineRegistrationHelper.addMachineModel(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
-            MachineRegistrationHelper.addMachineModel(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
+        // Register transformers for builtin MI cable tiers, even if added tiers are placed in between.
+        // This ensures that our recipes, guidebook pages, etc... won't error if tiers are added.
+        List<CableTier> builtinTiers = CableTier.allTiers().stream().filter(x -> x.builtin).toList();
+        for (int i = 0; i < builtinTiers.size() - 1; i++) {
+            var pair = new TierPair(builtinTiers.get(i), builtinTiers.get(i + 1));
+            if (registeredPairs.add(pair)) {
+                registerTransformer(pair.low, pair.high);
+            }
         }
     }
 
@@ -119,28 +143,21 @@ public class SingleBlockSpecialMachines {
         }
     }
 
-    private static void registerSteamTurbines(int... maxConsumption) {
-        List<CableTier> tiers = CableTier.allTiers();
+    private static void registerSteamTurbine(CableTier tier, int eu, int fluidCapacity) {
+        String id = tier.name + "_steam_turbine";
+        String englishName = tier.shortEnglishName + " Steam Turbine";
+        MachineRegistrationHelper.registerMachine(englishName, id,
+                bet -> new GeneratorMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
+                        MIFluids.STEAM, 1),
+                MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
-        for (int i = 0; i < maxConsumption.length; i++) {
-            CableTier tier = tiers.get(i);
-            String id = tier.name + "_steam_turbine";
-            String englishName = tier.englishName + " Steam Turbine";
-            final int eu = maxConsumption[i];
-            final int fluidCapacity = 16000 * (1 << i);
-            MachineRegistrationHelper.registerMachine(englishName, id,
-                    bet -> new GeneratorMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
-                            MIFluids.STEAM, 1),
-                    MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
-
-            MachineRegistrationHelper.addMachineModel(id, "steam_turbine", tier.casing, true, false, false);
-        }
+        MachineRegistrationHelper.addMachineModel(id, "steam_turbine", tier.casing, true, false, false);
     }
 
     private static void registerEUStorage() {
         for (CableTier tier : CableTier.allTiers()) {
             String id = tier.name + "_storage_unit";
-            String englishName = tier.englishName + " Storage Unit";
+            String englishName = tier.shortEnglishName + " Storage Unit";
             MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 

@@ -30,13 +30,13 @@ import aztech.modern_industrialization.compat.kubejs.machine.RegisterCasingsEven
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterMachinesEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterRecipeTypesEventJS;
 import aztech.modern_industrialization.compat.kubejs.machine.RegisterUpgradesEventJS;
-import aztech.modern_industrialization.compat.kubejs.material.AddCableTiersEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.AddMaterialsEventJS;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEventJS;
 import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEventJS;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterCableTiersEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -104,6 +104,6 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
 
     @Override
     public void fireCableTiersEvent() {
-        MIMaterialKubeJSEvents.ADD_CABLE_TIERS.post(new AddCableTiersEventJS());
+        MIRegistrationKubeJSEvents.REGISTER_CABLE_TIERS.post(new RegisterCableTiersEventJS());
     }
 }

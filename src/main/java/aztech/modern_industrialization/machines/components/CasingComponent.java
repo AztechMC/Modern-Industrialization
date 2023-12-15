@@ -23,89 +23,83 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 public class CasingComponent implements IComponent, DropableComponent {
 
-    private CableTier tierCasing;
-    private final CableTier defaultCasing;
-    public static final BiMap<Block, CableTier> blockCasing = HashBiMap.create();
+    private ItemStack casingStack = ItemStack.EMPTY;
+    private CableTier currentTier = CableTier.LV;
 
-    static {
-        blockCasing.put(MIBlock.BASIC_MACHINE_HULL.asBlock(), CableTier.LV);
-        blockCasing.put(MIBlock.ADVANCED_MACHINE_HULL.asBlock(), CableTier.MV);
-        blockCasing.put(MIBlock.TURBO_MACHINE_HULL.asBlock(), CableTier.HV);
-        blockCasing.put(MIBlock.HIGHLY_ADVANCED_MACHINE_HULL.asBlock(), CableTier.EV);
-        blockCasing.put(MIBlock.QUANTUM_MACHINE_HULL.asBlock(), CableTier.SUPERCONDUCTOR);
-    }
+    /**
+     * Sets the current casing stack and update {@link #currentTier} accordingly.
+     */
+    private void setCasingStack(ItemStack stack) {
+        casingStack = stack;
 
-    public CasingComponent(CableTier defaultCasing) {
-        this.defaultCasing = defaultCasing;
-        this.tierCasing = defaultCasing;
-
+        // Compute tier
+        currentTier = getCasingTier(stack.getItem());
+        if (currentTier == null) {
+            currentTier = CableTier.LV;
+        }
     }
 
     @Override
     public void writeNbt(CompoundTag tag) {
-        tag.putString("casing", tierCasing.name);
+        tag.put("casing", casingStack.save(new CompoundTag()));
     }
 
     @Override
     public void readNbt(CompoundTag tag) {
-        tierCasing = CableTier.getTier(tag.getString("casing"));
-        if (tierCasing == null) {
-            tierCasing = defaultCasing;
+        // legacy saving by CableTier name
+        // TODO 1.21: remove
+        if (tag.contains("casing", Tag.TAG_STRING)) {
+            var tier = CableTier.getTier(tag.getString("casing"));
+            setCasingStack(BuiltInRegistries.ITEM.get(tier.itemKey).getDefaultInstance());
+        } else {
+            setCasingStack(ItemStack.of(tag.getCompound("casing")));
         }
-
     }
 
     @Override
     public void writeClientNbt(CompoundTag tag) {
-        tag.putString("casing", tierCasing.name);
+        tag.putString("casing", currentTier.name);
     }
 
     @Override
     public void readClientNbt(CompoundTag tag) {
-        tierCasing = CableTier.getTier(tag.getString("casing"));
-        if (tierCasing == null) {
-            tierCasing = defaultCasing;
-        }
+        currentTier = CableTier.getTier(tag.getString("casing"));
     }
 
     public void dropCasing(Level world, BlockPos pos) {
-        ItemStack stack = new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
-        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), casingStack);
     }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.getCount() >= 1) {
             var newTier = getCasingTier(stackInHand.getItem());
-            if (newTier != null && newTier != defaultCasing && newTier != tierCasing) {
-                if (defaultCasing != tierCasing) {
+            if (newTier != null && newTier != currentTier) {
+                if (currentTier != CableTier.LV) {
                     dropCasing(be.getLevel(), be.getBlockPos());
                 }
-                tierCasing = newTier;
+                setCasingStack(stackInHand.copyWithCount(1));
                 if (!player.isCreative()) {
                     stackInHand.shrink(1);
                 }
@@ -113,6 +107,7 @@ public class CasingComponent implements IComponent, DropableComponent {
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
+                be.getLevel().updateNeighborsAt(be.getBlockPos(), Blocks.AIR);
                 // Play a nice sound :)
                 playCasingPlaceSound(be);
                 return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
@@ -122,58 +117,54 @@ public class CasingComponent implements IComponent, DropableComponent {
     }
 
     private void playCasingPlaceSound(MachineBlockEntity be) {
-        if (tierCasing == defaultCasing) {
+        var blockKey = currentTier.itemKey;
+        if (blockKey == null) {
             return; // no sound for LV
         }
 
-        var casingState = blockCasing.inverse().get(tierCasing).defaultBlockState();
-        var group = casingState.getSoundType();
-        var sound = group.getBreakSound();
-        be.getLevel().playSound(null, be.getBlockPos(), sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+        // Look for corresponding block
+        BuiltInRegistries.BLOCK.getOptional(blockKey).ifPresent(block -> {
+            var casingState = block.defaultBlockState();
+            var group = casingState.getSoundType();
+            var sound = group.getBreakSound();
+            be.getLevel().playSound(null, be.getBlockPos(), sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+        });
+
     }
 
     @Nullable
-    private static CableTier getCasingTier(Item item) {
-        if (item instanceof BlockItem blockItem) {
-            return blockCasing.get(blockItem.getBlock());
+    public static CableTier getCasingTier(Item item) {
+        var itemKey = BuiltInRegistries.ITEM.getKey(item);
+        for (var tier : CableTier.allTiers()) {
+            if (tier.itemKey != null && tier.itemKey.equals(itemKey)) {
+                return tier;
+            }
         }
         return null;
     }
 
     @Override
     public ItemStack getDrop() {
-        if (tierCasing != defaultCasing) {
-            return new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
-        }
-        return ItemStack.EMPTY;
+        return casingStack;
     }
 
     public void setCasingServer(MachineBlockEntity be, ItemStack casing) {
-        if (casing.isEmpty()) {
-            tierCasing = defaultCasing;
-            be.setChanged();
-            be.sync();
-            be.getLevel().blockUpdated(be.getBlockPos(), Blocks.AIR);
-        }
-        var tier = getCasingTier(casing.getItem());
-        if (tier != null && tier != defaultCasing) {
-            tierCasing = tier;
-            be.setChanged();
-            be.sync();
-            be.getLevel().blockUpdated(be.getBlockPos(), Blocks.AIR);
-        }
+        setCasingStack(casing);
+        be.setChanged();
+        be.sync();
+        be.getLevel().updateNeighborsAt(be.getBlockPos(), Blocks.AIR);
         playCasingPlaceSound(be);
     }
 
     public MachineCasing getCasing() {
-        return tierCasing.casing;
+        return currentTier.casing;
     }
 
     public boolean canInsertEu(CableTier tier) {
-        return tier == tierCasing;
+        return tier == currentTier;
     }
 
     public long getEuCapacity() {
-        return tierCasing.getEu() * 100;
+        return currentTier.getEu() * 100;
     }
 }

@@ -32,5 +32,4 @@ public interface MIMaterialKubeJSEvents {
 
     EventHandler ADD_MATERIALS = EVENT_GROUP.startup("addMaterials", () -> AddMaterialsEventJS.class);
     EventHandler MODIFY_MATERIAL = EVENT_GROUP.startup("modifyMaterial", () -> ModifyMaterialEventJS.class).extra(Extra.STRING);
-    EventHandler ADD_CABLE_TIERS = EVENT_GROUP.startup("cableTiers", () -> AddCableTiersEventJS.class);
 }

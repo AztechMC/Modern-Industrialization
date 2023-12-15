@@ -139,6 +139,10 @@ public class MITooltips {
                 return ITEM_PARSER.parse(((ItemLike) o).asItem());
             }
 
+            if (o instanceof Component c) {
+                return c.copy().withStyle(style);
+            }
+
             return Component.literal(String.valueOf(o)).withStyle(style);
         }
     };
@@ -219,7 +223,7 @@ public class MITooltips {
             (itemStack, item) -> {
                 if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe)) {
                     var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
-                    return Optional.of(new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
+                    return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
                 } else {
                     return Optional.empty();
                 }

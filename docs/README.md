@@ -48,8 +48,9 @@ Here are some examples to get you started:
   will change the texture of the aluminum plate only.
 - Refer to the contents of the MI .jar for more details on the file structure.
 
-### Adding new machines
-Refer to [ADDING_MACHINES.md](ADDING_MACHINES.md) for more information on how to add machines via KubeJS.
-
-### Adding new fluids
-Refer to [ADDING_FLUIDS.md](ADDING_FLUIDS.md) for more information on how to add fluids via KubeJS.
+### Adding content
+Refer to the page that interests you:
+- [Cable tiers](ADDING_CABLE_TIERS.md)
+- [Fluids](ADDING_FLUIDS.md)
+- [Machines](ADDING_MACHINES.md)
+- [Materials](ADDING_MATERIALS.md)

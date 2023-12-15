@@ -23,60 +23,85 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MIBlockKeys;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A single tier of cable that can have a varying amount of energy pushed through it per tick.
  */
 public final class CableTier implements Comparable<CableTier> {
     // static references
-    public static CableTier LV = new CableTier("LV", "lv", 32, MIText.CableTierLV);
-    public static CableTier MV = new CableTier("MV", "mv", 32 * 4, MIText.CableTierMV);
-    public static CableTier HV = new CableTier("HV", "hv", 32 * 4 * 8, MIText.CableTierHV);
-    public static CableTier EV = new CableTier("EV", "ev", 32 * 4 * 8 * 8, MIText.CableTierEV);
-    public static CableTier SUPERCONDUCTOR = new CableTier("Superconductor", "superconductor", 128000000, MIText.CableTierSuperconductor);
+    public static CableTier LV = new CableTier("lv", "LV", "Low Voltage", 32, null);
+    public static CableTier MV = new CableTier("mv", "MV", "Medium Voltage", 32 * 4, MIBlockKeys.ADVANCED_MACHINE_HULL);
+    public static CableTier HV = new CableTier("hv", "HV", "High Voltage", 32 * 4 * 8, MIBlockKeys.TURBO_MACHINE_HULL);
+    public static CableTier EV = new CableTier("ev", "EV", "Extreme Voltage", 32 * 4 * 8 * 8, MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL);
+    public static CableTier SUPERCONDUCTOR = new CableTier("superconductor", "Superconductor", "Superconductor", 128000000,
+            MIBlockKeys.QUANTUM_MACHINE_HULL);
 
-    // actual fields
-    public final String englishName;
     public final String name;
+    public final String shortEnglishName;
+    public final String longEnglishName;
     public final long eu;
-
-    public final String translationKey;
-    private final Component englishNameComponent;
+    /**
+     * {@code null} for LV only.
+     */
+    @Nullable
+    public final ResourceLocation itemKey;
+    /**
+     * {@code true} if this is present in base MI, {@code false} if added using some API.
+     */
+    public final boolean builtin;
 
     /**
      * The {@link MachineCasing} that uses this cable tier.
      */
     public final MachineCasing casing;
 
-    public CableTier(String englishName, String name, long eu, Component englishNameComponent) {
-        this.englishName = englishName;
+    public CableTier(String name, String shortEnglishName, String longEnglishName, long eu, ResourceLocation itemKey, boolean builtin) {
+        StoragePreconditions.notNegative(eu);
+
         this.name = name;
+        this.shortEnglishName = shortEnglishName;
+        this.longEnglishName = longEnglishName;
         this.eu = eu;
-        this.translationKey = "text.modern_industrialization.cable_tier_" + name;
-        this.englishNameComponent = englishNameComponent;
+        this.itemKey = itemKey;
         this.casing = MachineCasings.create(name);
+        this.builtin = builtin;
     }
 
-    // package private as nobody will need to pass an MIText externally?
-    CableTier(String englishName, String name, long eu, MIText englishNameText) {
-        this(englishName, name, eu, englishNameText.text());
+    private CableTier(String name, String shortEnglishName, String longEnglishName, long eu, @Nullable ResourceKey<Block> key) {
+        this(name, shortEnglishName, longEnglishName, eu, key == null ? null : key.location(), true);
     }
 
-    /**
-     * @return A copy of the english name text component stored within.
-     */
-    public MutableComponent getEnglishNameComponent() {
-        return englishNameComponent.copy();
+    public String shortEnglishKey() {
+        return "cable_tier_short.modern_industrialization." + name;
+    }
+
+    public MutableComponent shortEnglishName() {
+        return Component.translatable(shortEnglishKey());
+    }
+
+    public String longEnglishKey() {
+        return "cable_tier_long.modern_industrialization." + name;
+    }
+
+    public MutableComponent longEnglishName() {
+        return Component.translatable(longEnglishKey());
     }
 
     /**
@@ -102,7 +127,7 @@ public final class CableTier implements Comparable<CableTier> {
     }
 
     // "registry" of name -> instance.
-    private final static Map<String, CableTier> TIERS = new HashMap<>();
+    private final static Map<String, CableTier> tiers = new HashMap<>();
 
     /**
      * Adds a new cable tier to the internal mapping of tiers. If the tier already existed,
@@ -111,22 +136,29 @@ public final class CableTier implements Comparable<CableTier> {
      * @param tier The new tier instance to register.
      */
     public static void addTier(CableTier tier) {
-        if (TIERS.containsKey(tier.name)) {
-            throw new IllegalArgumentException("Tier " + tier + " already exists!");
+        for (var existingTier : tiers.values()) {
+            if (existingTier.name.equals(tier.name)) {
+                throw new IllegalArgumentException("Tier " + tier + " already exists!");
+            }
+            if (existingTier.eu == tier.eu) {
+                throw new IllegalArgumentException("A tier with eu " + tier.eu + " already exists!");
+            }
+            if (Objects.equals(existingTier.itemKey, tier.itemKey)) {
+                throw new IllegalArgumentException("A tier with block key " + tier.itemKey + " already exists!");
+            }
         }
 
-        TIERS.put(tier.name, tier);
+        tiers.put(tier.name, tier);
     }
 
     /**
      * Looks up a cable tier registered by name.
      *
-     * @param name The name of the tier, e.g. <code>LV</code>.
+     * @param name The name of the tier, e.g. <code>lv</code>.
      * @return An instance of the cable tier with the provided name.
      */
-    @NotNull // Should it be?
     public static CableTier getTier(String name) {
-        CableTier existing = TIERS.get(name);
+        CableTier existing = tiers.get(name);
 
         if (existing == null) {
             throw new NoSuchElementException("No such cable tier: " + name);
@@ -135,16 +167,11 @@ public final class CableTier implements Comparable<CableTier> {
         return existing;
     }
 
-    @Deprecated
-    public static CableTier getByName(String tier) {
-        return getTier(tier);
-    }
-
     /**
      * @return A list of all registered CableTier instances, sorted by their EU.
      */
     public static List<CableTier> allTiers() {
-        return TIERS.values().stream().sorted().toList();
+        return tiers.values().stream().sorted().toList();
     }
 
     static {
@@ -153,5 +180,7 @@ public final class CableTier implements Comparable<CableTier> {
         addTier(HV);
         addTier(EV);
         addTier(SUPERCONDUCTOR);
+
+        KubeJSProxy.instance.fireCableTiersEvent();
     }
 }

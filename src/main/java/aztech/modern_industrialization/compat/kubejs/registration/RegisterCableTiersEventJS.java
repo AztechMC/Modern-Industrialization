@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.material;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.typings.Info;
-import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Event class for registering new cable tiers.
  */
-public final class AddCableTiersEventJS extends EventJS {
+public final class RegisterCableTiersEventJS extends EventJS {
     // useful primarily for setting EU based off of a previous tier's value.
     @Info("""
             Gets a previously registered cable tier by name.
@@ -42,11 +42,10 @@ public final class AddCableTiersEventJS extends EventJS {
 
     @SuppressWarnings("unused") // shh, intellij
     @Info("""
-            Adds a new tier to the list of registered cable tiers.
+            Registers a new cable tier.
             """)
-    public CableTier addTier(String englishName, String name, long eu) {
-        Component key = Component.translatable("cable_tier.modern_industrialization." + name);
-        CableTier tier = new CableTier(englishName, name, eu, key);
+    public CableTier register(String name, String shortEnglishName, String longEnglishName, long eu, ResourceLocation itemKey) {
+        CableTier tier = new CableTier(name, shortEnglishName, longEnglishName, eu, itemKey, false);
         CableTier.addTier(tier);
         return tier;
     }

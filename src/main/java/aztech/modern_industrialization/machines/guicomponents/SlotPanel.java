@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.inventory.HackySlot;
@@ -43,7 +42,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
 public class SlotPanel {
@@ -128,12 +126,7 @@ public class SlotPanel {
         REDSTONE_MODULE(SlotGroup.REDSTONE_MODULE, 1, MIItem.REDSTONE_CONTROL_MODULE::is, 36, 80, MIText.AcceptsRedstoneControlModule),
         UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.getExtraEu(stack.getItem()) > 0, 0, 80, MIText.AcceptsUpgrades),
         // Assumes that the default casing is always the LV casing for now
-        CASINGS(SlotGroup.CASING, 1, stack -> {
-            if (stack.getItem() instanceof BlockItem block && block != MIBlock.BASIC_MACHINE_HULL.asItem()) {
-                return CasingComponent.blockCasing.containsKey(block.getBlock());
-            }
-            return false;
-        }, 18, 80, MIText.AcceptsMachineHull),
+        CASINGS(SlotGroup.CASING, 1, stack -> CasingComponent.getCasingTier(stack.getItem()) != null, 18, 80, MIText.AcceptsMachineHull),
         ;
 
         public final SlotGroup group;

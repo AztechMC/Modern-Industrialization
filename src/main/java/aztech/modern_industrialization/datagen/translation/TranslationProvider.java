@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.translation;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
@@ -121,6 +122,11 @@ public final class TranslationProvider implements DataProvider {
 
         for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
             addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
+        }
+
+        for (var cableTier : CableTier.allTiers()) {
+            addTranslation(cableTier.shortEnglishKey(), cableTier.shortEnglishName);
+            addTranslation(cableTier.longEnglishKey(), cableTier.longEnglishName);
         }
     }
 

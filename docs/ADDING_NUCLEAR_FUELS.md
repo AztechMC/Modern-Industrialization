@@ -10,7 +10,6 @@ For a full tutorial on how to add new materials, refer to `ADDING_MATERIALS.md`
 
 ```javascript
 MIMaterialEvents.addMaterials(event => {
-
     event.createMaterial('LE Americium MOX', 'le_americium_mox', 0x83867B,
     builder => {
         // Every material with a fuel rod needs at least the ingot and rod parts
@@ -25,7 +24,6 @@ MIMaterialEvents.addMaterials(event => {
                     0.5),    // Direct energy factor
                .defaultRecipes();
     });
-    
 });
 ```
 
@@ -35,21 +33,31 @@ The example below illustrates how a fuel rod can be created from the U238 and Pu
 This generates the same parameters as LE MOX fuel
 
 ``` javascript
-[...]
-.fuelRod(
-   U238,       // First params
-   Pu239,      // Second params
-   0.11111),   // Factor
-[...]
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial('LE Americium MOX', 'le_americium_mox', 0x83867B,
+    builder => {
+        builder.addParts('ingot', 'rod') 
+               .fuelRod(
+                  U238,       // First params
+                  Pu239,      // Second params
+                  0.11111),   // Factor
+               .defaultRecipes();
+    });
+});
 ```
 
 Alternatively, you can use preexisting isotope fuel parameters:
 
 ``` javascript
-[...]
-// MI adds the following entries: U235, U238, Pu239, U, LEU, HEU, LE_MOX and HE_MOX
-.fuelRod('LE_MOX'), 
-[...]
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial('LE Americium MOX', 'le_americium_mox', 0x83867B,
+    builder => {
+        builder.addParts('ingot', 'rod') 
+               // MI adds the following entries: U235, U238, Pu239, U, LEU, HEU, LE_MOX and HE_MOX
+               .fuelRod('LE_MOX'), 
+               .defaultRecipes();
+    });
+});
 ```
 
 If you want to, you can create your own isotope fuel parameters and then add them to a control rod.
@@ -57,7 +65,6 @@ You will need to use a startup script and the events in `NuclearConstantEvents`:
 
 ``` javascript
 NuclearConstantEvents.createIsotopeParams(event => {
-
     event.createIsotopeFuelParams(
         'americium',   // Parameters name
         0.9,           // Thermal absorption probability
@@ -67,15 +74,19 @@ NuclearConstantEvents.createIsotopeParams(event => {
         3200,          // Temperature limit (high)
         11,            // Neutron multiplication
         0.7);          // Direct energy factor
-
 });
 ```
 
 Then, you can add your new parameters to a fuel rod:
 ``` javascript
-[...]
-.fuelRod('americium'), 
-[...]
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial('LE Americium MOX', 'le_americium_mox', 0x83867B,
+    builder => {
+        builder.addParts('ingot', 'rod') 
+               .fuelRod('americium'),     // The isotope fuel params go here
+               .defaultRecipes();
+    });
+});
 ```
 
 ## Add a control rod
@@ -83,7 +94,6 @@ Here is an example script that adds a new `Boron` material that has a control ro
 
 ```javascript
 MIMaterialEvents.addMaterials(event => {
-
     event.createMaterial('Boron', 'boron', 0x493D35,
     builder => {
         // Every material that has a control rod needs at least the ingot and rod parts
@@ -99,17 +109,27 @@ MIMaterialEvents.addMaterials(event => {
                     1),       // Size
                .defaultRecipes();
     });
-
 });
 ```
 
 You can also use preexisting isotope parameters:
 ``` javascript
-[...]
-// MI adds the following entries: hydrogen, deuterium, cadmium, carbon and invar
-// You still need to add the max temperature, heat conduction, scattering type and size
-.controlRod(1900, 0.5, 'HEAVY', 'cadmium', 1),
-[...]
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial('Boron', 'boron', 0x493D35,
+    builder => {
+        // Every material that has a control rod needs at least the ingot and rod parts
+        builder.addParts('ingot', 'rod')
+                // MI adds the following entries: hydrogen, deuterium, cadmium, carbon and invar
+                // You still need to add the max temperature, heat conduction, scattering type and size
+               .controlRod(
+                    1900,       // Max temperature
+                    0.5,        // Heat conduction
+                    'HEAVY',    // Scattering type
+                    'cadmium',  // Isotope params
+                    1),         // Size
+               .defaultRecipes();
+    });
+});
 ```
 
 If you want to, you can create your own isotope parameters and then add them to a control rod.
@@ -117,23 +137,32 @@ You will need to use a startup script and the events in `NuclearConstantEvents`:
 
 ``` javascript
 NuclearConstantEvents.createIsotopeParams(event => {
-
     event.createIsotopeParams(
          'boron',  // Parameter name
          0.95,     // Thermal absorption probability
          0.9,      // Fast absorption probability
          0.05,     // Thermal scattering probability
          0.1);     // Fast scattering probability
-
 });
 ```
 
 Then, you can add them to your control rod:
 ``` javascript
-[...]
-// You still need to add the max temperature, heat conduction, scattering type and size
-.controlRod(1900, 0.5, 'HEAVY', 'boron', 1),
-[...]
+MIMaterialEvents.addMaterials(event => {
+    event.createMaterial('Boron', 'boron', 0x493D35,
+    builder => {
+        // Every material that has a control rod needs at least the ingot and rod parts
+        builder.addParts('ingot', 'rod')
+                // You still need to add the max temperature, heat conduction, scattering type and size
+               .controlRod(
+                    1900,       // Max temperature
+                    0.5,        // Heat conduction
+                    'HEAVY',    // Scattering type
+                    'boron',    // Isotope params
+                    1),         // Size
+               .defaultRecipes();
+    });
+});
 ```
 
 ## Add a fluid nuclear component
@@ -144,7 +173,6 @@ Here's an example script that adds tritium turning into hydrogen-4:
 
 ``` javascript
 MIRegistrationEvents.registerFluidNuclearComponents(event => {
-
     event.register(
     'modern_industrialization:tritium',    // The fluid being added as a nuclear component 
     5,                                     // Heat conduction (multiplied by the base heat conduction, 0.01)
@@ -153,7 +181,6 @@ MIRegistrationEvents.registerFluidNuclearComponents(event => {
     'tritium',                             // Isotope parameters for the fluid nuclear component
     'modern_industrialization:hydrogen_4', // The fluid product
     false);                                // Is the fluid a high pressure one?
-
 });
 ```
 
@@ -162,16 +189,13 @@ You can remove a fluid nuclear component:
 
 ``` javascript
 MIRegistrationEvents.registerFluidNuclearComponents(event => {
-
     event.remove('minecraft:water');     // Remove water as a fluid nuclear component
-
 });
 ```
 
 If, instead of removing the fluid nuclear component, you'd rather modify it, you can:
 ``` javascript
 MIRegistrationEvents.registerFluidNuclearComponents(event => {
-
     event.modify(
     'minecraft:water',                        // The fluid nuclear component being modified
     5,                                        // New heat conduction (multiplied by the base heat conduction, 0.01)
@@ -180,6 +204,5 @@ MIRegistrationEvents.registerFluidNuclearComponents(event => {
     'tritium',                                // New isotope parameters
     'modern_industrialization:heavy_water',   // New fluid product
     false);                                   // New high pressure boolean
-
 });
 ```

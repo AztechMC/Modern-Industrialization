@@ -54,12 +54,7 @@ public class FluidNuclearComponents {
 
     @Nullable
     public static INuclearComponent<FluidVariant> of(FluidVariant variant) {
-        Fluid fluid = variant.getFluid();
-
-        if (NUCLEAR_FLUIDS.containsKey(fluid)) {
-            return NUCLEAR_FLUIDS.get(fluid);
-        }
-        return null;
+        return NUCLEAR_FLUIDS.get(variant.getFluid());
     }
 
     public static INuclearComponent<FluidVariant> create(Fluid fluid, double heatConduction, double density, NuclearConstant.ScatteringType type,

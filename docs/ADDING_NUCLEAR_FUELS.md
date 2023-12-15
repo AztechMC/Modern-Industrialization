@@ -135,3 +135,24 @@ Then, you can add them to your control rod:
 .controlRod(1900, 0.5, 'HEAVY', 'boron', 1),
 [...]
 ```
+
+## Add a fluid nuclear component
+These types of fluids are the ones that have interactions inside a Nuclear Reactor (think water producing deuterium)
+You can add your own using a startup script and the `MIRegistrationEvents.registerFluidNuclearComponents` event
+Here's an example script that adds tritium turning into hydrogen-4:
+
+``` javascript
+MIRegistrationEvents.registerFluidNuclearComponents(event => {
+
+    event.register(
+    'modern_industrialization:tritium',    // The fluid being added as a nuclear component 
+    5,                                     // Heat conduction (multiplied by the base heat conduction, 0.01)
+    1,                                     // Density
+    'ULTRA_LIGHT',                         // Scattering type
+    'tritium',                             // Isotope parameters for the fluid nuclear component
+    'modern_industrialization:hydrogen_4', // The fluid product
+    false);                                // Is the fluid a high pressure one?
+
+});
+```
+Remember you can add fluids and isotope parameters using KubeJS

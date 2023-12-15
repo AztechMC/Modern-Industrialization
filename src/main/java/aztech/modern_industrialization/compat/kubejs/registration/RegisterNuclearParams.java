@@ -62,7 +62,7 @@ public class RegisterNuclearParams extends EventJS {
         case "CADMIUM" -> NuclearConstant.CADMIUM;
         case "CARBON" -> NuclearConstant.CARBON;
         case "INVAR" -> NuclearConstant.INVAR;
-        default -> throw new IllegalStateException("Invalid params: " + name);
+        default -> throw new IllegalArgumentException("Invalid params: " + name);
         };
     }
 

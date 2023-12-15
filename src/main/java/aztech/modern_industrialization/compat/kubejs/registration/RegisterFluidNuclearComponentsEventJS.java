@@ -54,4 +54,23 @@ public class RegisterFluidNuclearComponentsEventJS extends EventJS {
                 neutronProduct, highPressure);
     }
 
+    public void remove(String fluidString) {
+        var fluid = Registry.FLUID.get(ResourceLocation.tryParse(fluidString));
+
+        if(!FluidNuclearComponents.NUCLEAR_FLUIDS.containsKey(fluid)) {
+            throw new IllegalArgumentException("Fluid " + fluidString + " is not a nuclear component!");
+        }
+
+        FluidNuclearComponents.NUCLEAR_FLUIDS.remove(fluid);
+
+    }
+
+    public void modify(String fluidString, double heatConduction, double density, String scatteringString, String paramsString,
+                       String productString, boolean highPressure) {
+
+        remove(fluidString);
+        register(fluidString, heatConduction, density, scatteringString, paramsString, productString, highPressure);
+
+    }
+
 }

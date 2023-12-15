@@ -139,6 +139,7 @@ Then, you can add them to your control rod:
 ## Add a fluid nuclear component
 These types of fluids are the ones that have interactions inside a Nuclear Reactor (think water producing deuterium)
 You can add your own using a startup script and the `MIRegistrationEvents.registerFluidNuclearComponents` event
+Remember you can add fluids and isotope parameters using KubeJS
 Here's an example script that adds tritium turning into hydrogen-4:
 
 ``` javascript
@@ -155,4 +156,30 @@ MIRegistrationEvents.registerFluidNuclearComponents(event => {
 
 });
 ```
-Remember you can add fluids and isotope parameters using KubeJS
+
+### Removing and modifying a fluid nuclear component
+You can remove a fluid nuclear component:
+
+``` javascript
+MIRegistrationEvents.registerFluidNuclearComponents(event => {
+
+    event.remove('minecraft:water');     // Remove water as a fluid nuclear component
+
+});
+```
+
+If, instead of removing the fluid nuclear component, you'd rather modify it, you can:
+``` javascript
+MIRegistrationEvents.registerFluidNuclearComponents(event => {
+
+    event.modify(
+    'minecraft:water',                        // The fluid nuclear component being modified
+    5,                                        // New heat conduction (multiplied by the base heat conduction, 0.01)
+    1,                                        // New density
+    'ULTRA_LIGHT',                            // New scattering type
+    'tritium',                                // New isotope parameters
+    'modern_industrialization:heavy_water',   // New fluid product
+    false);                                   // New high pressure boolean
+
+});
+```

@@ -36,6 +36,7 @@ import aztech.modern_industrialization.compat.kubejs.material.ModifyMaterialEven
 import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEventJS;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterCableTiersEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -99,5 +100,10 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireCustomConditionEvent() {
         MIRecipeKubeJSEvents.CUSTOM_CONDITION.post(new CustomConditionEventJS());
+    }
+
+    @Override
+    public void fireCableTiersEvent() {
+        MIRegistrationKubeJSEvents.REGISTER_CABLE_TIERS.post(new RegisterCableTiersEventJS());
     }
 }

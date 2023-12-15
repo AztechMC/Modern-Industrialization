@@ -21,22 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.blockentities;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.BEP;
+import dev.latvian.mods.kubejs.event.EventJS;
+import dev.latvian.mods.kubejs.typings.Info;
+import net.minecraft.resources.ResourceLocation;
 
-public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEntity {
-
-    public TransformerMachineBlockEntity(BEP bep, CableTier from, CableTier to) {
-        super(bep, from, to, getTransformerName(from, to), 200 * Math.min(from.eu, to.eu), from.eu < to.eu);
+/**
+ * Event class for registering new cable tiers.
+ */
+public final class RegisterCableTiersEventJS extends EventJS {
+    // useful primarily for setting EU based off of a previous tier's value.
+    @Info("""
+            Gets a previously registered cable tier by name.
+            """)
+    public CableTier get(String name) {
+        return CableTier.getTier(name);
     }
 
-    public static String getTransformerName(CableTier from, CableTier to) {
-        return from.name + "_" + to.name + "_transformer";
-    }
-
-    public static String getTransformerEnglishName(CableTier from, CableTier to) {
-        return from.shortEnglishName + " to " + to.shortEnglishName + " Transformer";
+    @SuppressWarnings("unused") // shh, intellij
+    @Info("""
+            Registers a new cable tier.
+            """)
+    public CableTier register(String name, String shortEnglishName, String longEnglishName, long eu, ResourceLocation itemKey) {
+        CableTier tier = new CableTier(name, shortEnglishName, longEnglishName, eu, itemKey, false);
+        CableTier.addTier(tier);
+        return tier;
     }
 }

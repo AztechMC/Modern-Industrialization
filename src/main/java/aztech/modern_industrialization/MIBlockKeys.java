@@ -21,22 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.blockentities;
+package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.BEP;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 
-public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEntity {
+/**
+ * Holder for some keys that are needed before the block is even created.
+ */
+public class MIBlockKeys {
+    public static final ResourceKey<Block> BASIC_MACHINE_HULL = block("basic_machine_hull");
+    public static final ResourceKey<Block> ADVANCED_MACHINE_HULL = block("advanced_machine_hull");
+    public static final ResourceKey<Block> TURBO_MACHINE_HULL = block("turbo_machine_hull");
+    public static final ResourceKey<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("highly_advanced_machine_hull");
+    public static final ResourceKey<Block> QUANTUM_MACHINE_HULL = block("quantum_machine_hull");
 
-    public TransformerMachineBlockEntity(BEP bep, CableTier from, CableTier to) {
-        super(bep, from, to, getTransformerName(from, to), 200 * Math.min(from.eu, to.eu), from.eu < to.eu);
-    }
-
-    public static String getTransformerName(CableTier from, CableTier to) {
-        return from.name + "_" + to.name + "_transformer";
-    }
-
-    public static String getTransformerEnglishName(CableTier from, CableTier to) {
-        return from.shortEnglishName + " to " + to.shortEnglishName + " Transformer";
+    private static ResourceKey<Block> block(String path) {
+        return ResourceKey.create(Registries.BLOCK, new MIIdentifier(path));
     }
 }

@@ -66,7 +66,8 @@ public class PartJsonCreator {
     }
 
     public PartTemplate cablePart(String tier) {
-        CableTier cableTier = CableTier.getByName(tier);
+        CableTier cableTier = CableTier.getTier(tier);
+        // TODO: remove this if CableTier#getTier should be non-null
         if (cableTier == null) {
             throw new IllegalArgumentException("No such Cable Tier: " + tier);
         }

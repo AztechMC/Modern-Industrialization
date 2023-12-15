@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -448,7 +449,7 @@ public class MultiblockMachines {
     }
 
     private static void fusionReactor() {
-        ShapeTemplate.Builder fusionReactorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.EV);
+        ShapeTemplate.Builder fusionReactorShapeBuilder = new ShapeTemplate.Builder(CableTier.EV.casing);
         int[][] shapeEdge = new int[][]{
                 {6, 1, 0, 0},
                 {4, 3, 0, 0},
@@ -681,7 +682,7 @@ public class MultiblockMachines {
                 "large_tank", MachineCasings.STEEL, true, false, false, false);
 
         MachineRegistrationHelper.addMachineModel("fusion_reactor",
-                "fusion_reactor", MachineCasings.EV, true, false, false, true);
+                "fusion_reactor", CableTier.EV.casing, true, false, false, true);
         new Rei("Fusion Reactor", "fusion_reactor", MIMachineRecipeTypes.FUSION_REACTOR, new ProgressBar.Parameters(66, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlots(26, 35, 2, 1), outputs -> outputs.addSlots(92, 35, 3, 1))
                 .register();

@@ -45,7 +45,25 @@ public class RegisterNuclearParams extends EventJS {
     }
 
     public static NuclearConstant.IsotopeParams of(String name) {
-        return PARAMS.get(name);
+        if (PARAMS.get(name) != null) {
+            return PARAMS.get(name);
+        }
+        return switch (name) {
+        case "U235" -> NuclearConstant.U235;
+        case "U238" -> NuclearConstant.U238;
+        case "Pu239" -> NuclearConstant.Pu239;
+        case "U" -> NuclearConstant.U;
+        case "LEU" -> NuclearConstant.LEU;
+        case "HEU" -> NuclearConstant.HEU;
+        case "LE_MOX" -> NuclearConstant.LE_MOX;
+        case "HE_MOX" -> NuclearConstant.HE_MOX;
+        case "HYDROGEN" -> NuclearConstant.HYDROGEN;
+        case "DEUTERIUM" -> NuclearConstant.DEUTERIUM;
+        case "CADMIUM" -> NuclearConstant.CADMIUM;
+        case "CARBON" -> NuclearConstant.CARBON;
+        case "INVAR" -> NuclearConstant.INVAR;
+        default -> throw new IllegalStateException("Invalid params: " + name);
+        };
     }
 
 }

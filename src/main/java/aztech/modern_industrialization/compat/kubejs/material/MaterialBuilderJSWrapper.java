@@ -205,11 +205,6 @@ class MaterialBuilderJSWrapper {
         return this;
     }
 
-    public MaterialBuilderJSWrapper fuelRod(NuclearConstant.IsotopeFuelParams params) {
-        materialBuilder.addParts(creator.fuelRodPart(params));
-        return this;
-    }
-
     public MaterialBuilderJSWrapper controlRod(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
             double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
         materialBuilder.addParts(creator.controlRodPart(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
@@ -219,12 +214,6 @@ class MaterialBuilderJSWrapper {
 
     public MaterialBuilderJSWrapper controlRod(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
             String params, double size) {
-        materialBuilder.addParts(creator.controlRodPart(maxTemperature, heatConduction, scatteringType, params, size));
-        return this;
-    }
-
-    public MaterialBuilderJSWrapper controlRod(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
-            NuclearConstant.IsotopeParams params, double size) {
         materialBuilder.addParts(creator.controlRodPart(maxTemperature, heatConduction, scatteringType, params, size));
         return this;
     }

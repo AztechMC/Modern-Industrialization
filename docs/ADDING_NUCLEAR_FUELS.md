@@ -2,7 +2,7 @@
 To add fission fuel rods and control rods, you will need to use a startup script and the events in `MIMaterialEvents`
 Fuel rods and control rods are parts that can be added to a new or preexisting material.
 
-Isotope Fuel Parameters and Isotope Parameters can also be added. They need a startup script and the events in `NuclearConstantEvents`
+Isotope Fuel Parameters and Isotope Parameters can also be added using the `MIRegistrationEvents.registerNuclearParams` event
 
 ## Add a fuel rod
 Here is an example script that adds a new `LE Americium MOX` material that has fuel rods.
@@ -61,12 +61,12 @@ MIMaterialEvents.addMaterials(event => {
 ```
 
 If you want to, you can create your own isotope fuel parameters and then add them to a control rod.
-You will need to use a startup script and the events in `NuclearConstantEvents`:
+You will need to use a startup script and the `MIRegistrationEvents.registerNuclearParams` event:
 
 ``` javascript
-NuclearConstantEvents.createIsotopeParams(event => {
-    event.createIsotopeFuelParams(
-        'americium',   // Parameters name
+MIRegistrationEvents.registerNuclearParams(event => {
+    event.create(
+        'AMERICIUM',   // Parameters name
         0.9,           // Thermal absorption probability
         0.35,          // Thermal scattering
         3500,          // Max temperature
@@ -83,7 +83,7 @@ MIMaterialEvents.addMaterials(event => {
     event.createMaterial('LE Americium MOX', 'le_americium_mox', 0x83867B,
     builder => {
         builder.addParts('ingot', 'rod') 
-               .fuelRod('americium'),     // The isotope fuel params go here
+               .fuelRod('AMERICIUM'),     // The isotope fuel params go here
                .defaultRecipes();
     });
 });
@@ -119,13 +119,13 @@ MIMaterialEvents.addMaterials(event => {
     builder => {
         // Every material that has a control rod needs at least the ingot and rod parts
         builder.addParts('ingot', 'rod')
-                // MI adds the following entries: hydrogen, deuterium, cadmium, carbon and invar
+                // MI adds the following entries: HYDROGEN, DEUTERIUM, CADMIUM, CARBON and INVAR
                 // You still need to add the max temperature, heat conduction, scattering type and size
                .controlRod(
                     1900,       // Max temperature
                     0.5,        // Heat conduction
                     'HEAVY',    // Scattering type
-                    'cadmium',  // Isotope params
+                    'CADMIUM',  // Isotope params
                     1),         // Size
                .defaultRecipes();
     });
@@ -133,12 +133,12 @@ MIMaterialEvents.addMaterials(event => {
 ```
 
 If you want to, you can create your own isotope parameters and then add them to a control rod.
-You will need to use a startup script and the events in `NuclearConstantEvents`:
+You will need to use a startup script and the `MIRegistrationEvents.registerNuclearParams` event:
 
 ``` javascript
-NuclearConstantEvents.createIsotopeParams(event => {
-    event.createIsotopeParams(
-         'boron',  // Parameter name
+MIRegistrationEvents.registerNuclearParams(event => {
+    event.create(
+         'BORON',  // Parameter name
          0.95,     // Thermal absorption probability
          0.9,      // Fast absorption probability
          0.05,     // Thermal scattering probability
@@ -158,7 +158,7 @@ MIMaterialEvents.addMaterials(event => {
                     1900,       // Max temperature
                     0.5,        // Heat conduction
                     'HEAVY',    // Scattering type
-                    'boron',    // Isotope params
+                    'BORON',    // Isotope params
                     1),         // Size
                .defaultRecipes();
     });
@@ -178,7 +178,7 @@ MIRegistrationEvents.registerFluidNuclearComponents(event => {
     5,                                     // Heat conduction (multiplied by the base heat conduction, 0.01)
     1,                                     // Density
     'ULTRA_LIGHT',                         // Scattering type
-    'tritium',                             // Isotope parameters for the fluid nuclear component
+    'TRITIUM',                             // Isotope parameters for the fluid nuclear component
     'modern_industrialization:hydrogen_4', // The fluid product
     false);                                // Is the fluid a high pressure one?
 });
@@ -201,7 +201,7 @@ MIRegistrationEvents.registerFluidNuclearComponents(event => {
     5,                                        // New heat conduction (multiplied by the base heat conduction, 0.01)
     1,                                        // New density
     'ULTRA_LIGHT',                            // New scattering type
-    'tritium',                                // New isotope parameters
+    'TRITIUM',                                // New isotope parameters
     'modern_industrialization:heavy_water',   // New fluid product
     false);                                   // New high pressure boolean
 });

@@ -165,20 +165,13 @@ public class PartJsonCreator {
     }
 
     public List<PartTemplate> fuelRodPart(String a, String b, double factor) {
-        var aValue = RegisterNuclearParams.of(a);
-        var bValue = RegisterNuclearParams.of(b);
-        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix((NuclearConstant.IsotopeFuelParams) aValue,
-                (NuclearConstant.IsotopeFuelParams) bValue, factor));
+        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix((NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(a),
+                (NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(b), factor));
 
     }
 
     public List<PartTemplate> fuelRodPart(String params) {
-        var paramsValue = RegisterNuclearParams.of(params);
-        return MIParts.FUEL_ROD.ofAll((NuclearConstant.IsotopeFuelParams) paramsValue);
-    }
-
-    public List<PartTemplate> fuelRodPart(NuclearConstant.IsotopeFuelParams params) {
-        return MIParts.FUEL_ROD.ofAll(params);
+        return MIParts.FUEL_ROD.ofAll((NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(params));
     }
 
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
@@ -190,14 +183,7 @@ public class PartJsonCreator {
 
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType, String params,
             double size) {
-        var isotopeParams = RegisterNuclearParams.of(params);
-        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, isotopeParams, size);
-    }
-
-    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
-            NuclearConstant.IsotopeParams params,
-            double size) {
-        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, params, size);
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, RegisterNuclearParams.of(params), size);
     }
 
 }

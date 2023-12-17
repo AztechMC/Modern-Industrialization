@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-
 public class NuclearConstant {
     public static final int EU_FOR_FAST_NEUTRON = 8;
     public static final int DESINTEGRATION_BY_ROD = 10240000;
@@ -49,86 +47,6 @@ public class NuclearConstant {
         public final double slowFraction;
     }
 
-    public static class IsotopeParams {
-        public final double thermalAbsorption;
-        public final double fastAbsorption;
-        public final double fastScattering;
-        public final double thermalScattering;
-
-        public IsotopeParams(double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba, double fastScatteringProba) {
-            this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
-            this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
-            this.thermalScattering = INeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
-            this.fastScattering = INeutronBehaviour.crossSectionFromProba(fastScatteringProba);
-        }
-    }
-
-    public static class IsotopeFuelParams extends IsotopeParams {
-
-        public final int maxTemp;
-        public final double neutronsMultiplication;
-        public final double directEnergyFactor;
-        public final int tempLimitLow;
-        public final int tempLimitHigh;
-
-        public IsotopeFuelParams(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
-                double neutronsMultiplication, double directEnergyFactor) {
-
-            super(thermalAbsorbProba, INeutronBehaviour.reduceCrossProba(thermalAbsorbProba, 0.1), thermalScatterings,
-                    INeutronBehaviour.reduceCrossProba(thermalScatterings, 0.5));
-
-            this.maxTemp = maxTemp;
-            this.neutronsMultiplication = neutronsMultiplication;
-            this.directEnergyFactor = directEnergyFactor;
-            this.tempLimitLow = tempLimitLow;
-            this.tempLimitHigh = tempLimitHigh;
-
-        }
-
-        public static IsotopeFuelParams mix(IsotopeFuelParams a, IsotopeFuelParams b, double factor) {
-
-            factor = 1 - factor;
-
-            double newThermalAbsorptionProba = INeutronBehaviour.probaFromCrossSection(mix(a.thermalAbsorption, b.thermalAbsorption, factor));
-            double newScatteringProba = INeutronBehaviour.probaFromCrossSection(mix(a.thermalScattering, b.thermalScattering, factor));
-            double newNeutronMultiplicationFactor = mix(a.neutronsMultiplication, b.neutronsMultiplication, factor);
-
-            double totalEnergy = mix(a.neutronsMultiplication * (1 + a.directEnergyFactor), b.neutronsMultiplication * (1 + b.directEnergyFactor),
-                    factor);
-
-            int newMaxTemp = (int) mix(a.maxTemp, b.maxTemp, factor);
-            int newTempLimitLow = (int) mix(a.tempLimitLow, b.tempLimitLow, factor);
-            int newTempLimitHigh = (int) mix(a.tempLimitHigh, b.tempLimitHigh, factor);
-
-            double newDirectEnergyFactor = totalEnergy / (newNeutronMultiplicationFactor) - 1;
-
-            return new IsotopeFuelParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newTempLimitLow, newTempLimitHigh,
-                    newNeutronMultiplicationFactor, newDirectEnergyFactor);
-
-        }
-
-        private static double mix(double a, double b, double r) {
-            return r * a + (1 - r) * b;
-        }
-
-        public IsotopeFuelParams mix(IsotopeFuelParams b, double factor) {
-            return IsotopeFuelParams.mix(this, b, factor);
-        }
-
-    }
-
-    public static final IsotopeFuelParams U235 = new IsotopeFuelParams(0.6, 0.35, 2400, 900, 2300, 8, 0.5);
-    public static final IsotopeFuelParams U238 = new IsotopeFuelParams(0.6, 0.30, 3200, 1000, 3000, 6, 0.3);
-    public static final IsotopeFuelParams Pu239 = new IsotopeFuelParams(0.9, 0.25, 2100, 600, 2000, 9, 0.25);
-
-    public static final IsotopeFuelParams U = U238.mix(U235, 1.0 / 81);
-
-    public static final IsotopeFuelParams LEU = U238.mix(U235, 1.0 / 9);
-    public static final IsotopeFuelParams HEU = U238.mix(U235, 1.0 / 3);
-
-    public static final IsotopeFuelParams LE_MOX = U238.mix(Pu239, 1.0 / 9);
-    public static final IsotopeFuelParams HE_MOX = U238.mix(Pu239, 1.0 / 3);
-
     public static final IsotopeParams HYDROGEN = new IsotopeParams(0.1, 0.05, 0.25, 0.75);
     public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.15, 0.65);
 
@@ -136,9 +54,4 @@ public class NuclearConstant {
     public static final IsotopeParams CARBON = new IsotopeParams(0.01, 0.005, 0.5, 0.85);
 
     public static final IsotopeParams INVAR = new IsotopeParams(0.002, 0.001, 0.2, 0.5);
-
-    static {
-        KubeJSProxy.instance.fireCreateParams();
-    }
-
 }

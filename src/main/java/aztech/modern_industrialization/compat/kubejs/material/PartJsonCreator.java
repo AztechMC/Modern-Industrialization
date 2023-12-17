@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.compat.kubejs.registration.RegisterNuclearParams;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.OrePart;
 import aztech.modern_industrialization.materials.part.PartTemplate;
@@ -34,7 +33,6 @@ import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
-import java.util.List;
 import net.minecraft.util.valueproviders.UniformInt;
 
 public class PartJsonCreator {
@@ -157,33 +155,10 @@ public class PartJsonCreator {
         return MIParts.TANK.of(englishName, path, bucketCapacity);
     }
 
-    public List<PartTemplate> fuelRodPart(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
-            double neutronsMultiplication, double directEnergyFactor) {
-        return MIParts.FUEL_ROD
-                .ofAll(new NuclearConstant.IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
-                        neutronsMultiplication, directEnergyFactor));
-    }
-
-    public List<PartTemplate> fuelRodPart(String a, String b, double factor) {
-        return MIParts.FUEL_ROD.ofAll(NuclearConstant.IsotopeFuelParams.mix((NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(a),
-                (NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(b), factor));
-
-    }
-
-    public List<PartTemplate> fuelRodPart(String params) {
-        return MIParts.FUEL_ROD.ofAll((NuclearConstant.IsotopeFuelParams) RegisterNuclearParams.of(params));
-    }
-
     public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
             double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
         return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
                 fastScatteringProba, scatteringType, size);
 
     }
-
-    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType, String params,
-            double size) {
-        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, scatteringType, RegisterNuclearParams.of(params), size);
-    }
-
 }

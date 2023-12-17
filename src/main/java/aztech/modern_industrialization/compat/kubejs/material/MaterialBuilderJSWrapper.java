@@ -24,7 +24,9 @@
 package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.part.NuclearFuelPart;
 import aztech.modern_industrialization.materials.part.PartKey;
 import aztech.modern_industrialization.materials.property.MaterialHardness;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
@@ -32,6 +34,7 @@ import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import aztech.modern_industrialization.materials.set.MaterialSet;
+import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 
@@ -188,20 +191,23 @@ class MaterialBuilderJSWrapper {
         return this;
     }
 
-    public MaterialBuilderJSWrapper fuelRod(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
-            double neutronsMultiplication, double directEnergyFactor) {
-        materialBuilder.addParts(creator.fuelRodPart(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow, tempLimitHigh,
-                neutronsMultiplication, directEnergyFactor));
+    public MaterialBuilderJSWrapper nuclearFuel(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow,
+            int tempLimitHigh, double neutronsMultiplication, double directEnergyFactor) {
+        materialBuilder.set(MaterialProperty.ISOTOPE, new IsotopeFuelParams(thermalAbsorbProba, thermalScatterings, maxTemp, tempLimitLow,
+                tempLimitHigh, neutronsMultiplication, directEnergyFactor));
         return this;
     }
 
-    public MaterialBuilderJSWrapper fuelRod(String a, String b, double factor) {
-        materialBuilder.addParts(creator.fuelRodPart(a, b, factor));
+    public MaterialBuilderJSWrapper nuclearFuelMix(String a, String b, double factor) {
+        materialBuilder.set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(
+                IsotopeFuelParams.of(MaterialRegistry.getMaterial(a)),
+                IsotopeFuelParams.of(MaterialRegistry.getMaterial(b)),
+                factor));
         return this;
     }
 
-    public MaterialBuilderJSWrapper fuelRod(String params) {
-        materialBuilder.addParts(creator.fuelRodPart(params));
+    public MaterialBuilderJSWrapper fuelRods() {
+        materialBuilder.addParts(NuclearFuelPart.ofAll());
         return this;
     }
 
@@ -211,11 +217,4 @@ class MaterialBuilderJSWrapper {
                 fastScatteringProba, scatteringType, size));
         return this;
     }
-
-    public MaterialBuilderJSWrapper controlRod(int maxTemperature, double heatConduction, NuclearConstant.ScatteringType scatteringType,
-            String params, double size) {
-        materialBuilder.addParts(creator.controlRodPart(maxTemperature, heatConduction, scatteringType, params, size));
-        return this;
-    }
-
 }

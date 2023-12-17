@@ -86,7 +86,7 @@ public interface INeutronBehaviour {
         return 1 - Math.exp(-crossSection);
     }
 
-    static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, NuclearConstant.IsotopeParams params, double size) {
+    static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, IsotopeParams params, double size) {
 
         return of(scatteringType, params.thermalAbsorption, params.fastAbsorption, params.thermalScattering, params.fastScattering, size);
     }

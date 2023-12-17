@@ -31,9 +31,8 @@ import aztech.modern_industrialization.compat.kubejs.recipe.CustomConditionEvent
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
-import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidNuclearComponentsEventJS;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidNeutronInteractionsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
-import aztech.modern_industrialization.compat.kubejs.registration.RegisterNuclearParams;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -98,13 +97,8 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     }
 
     @Override
-    public void fireCreateParams() {
-        MIRegistrationKubeJSEvents.CREATE_PARAMS.post(new RegisterNuclearParams());
-    }
-
-    @Override
-    public void fireRegisterFluidNuclearComponentsEvent() {
-        MIRegistrationKubeJSEvents.REGISTER_FLUID_NUCLEAR_COMPONENTS.post(new RegisterFluidNuclearComponentsEventJS());
+    public void fireRegisterFluidNeutronInteractionsEvent() {
+        MIRegistrationKubeJSEvents.REGISTER_FLUID_NEUTRON_INTERACTIONS.post(new RegisterFluidNeutronInteractionsEventJS());
     }
 
 }

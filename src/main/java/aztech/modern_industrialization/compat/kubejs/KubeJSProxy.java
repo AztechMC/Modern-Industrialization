@@ -65,9 +65,6 @@ public class KubeJSProxy {
     public void fireCustomConditionEvent() {
     }
 
-    public void fireCreateParams() {
-    }
-
-    public void fireRegisterFluidNuclearComponentsEvent() {
+    public void fireRegisterFluidNeutronInteractionsEvent() {
     }
 }

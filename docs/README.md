@@ -54,3 +54,4 @@ Refer to the page that interests you:
 - [Fluids](ADDING_FLUIDS.md)
 - [Machines](ADDING_MACHINES.md)
 - [Materials](ADDING_MATERIALS.md)
+- [Nuclear reactor components](ADDING_NUCLEAR_COMPONENTS.md)

@@ -21,35 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials;
+package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+public class IsotopeParams {
+    public final double thermalAbsorption;
+    public final double fastAbsorption;
+    public final double fastScattering;
+    public final double thermalScattering;
 
-public class MaterialRegistry {
-    static final Map<String, Material> MATERIALS = new TreeMap<>();
-
-    public static Material addMaterial(MaterialBuilder materialBuilder) {
-        KubeJSProxy.instance.fireModifyMaterialEvent(materialBuilder);
-
-        Material material = materialBuilder.build();
-        if (MATERIALS.put(material.name, material) != null) {
-            throw new IllegalStateException("Duplicate registration of material " + material.name);
-        }
-        return material;
-    }
-
-    public static Material getMaterial(String name) {
-        Material material = MATERIALS.get(name);
-        if (material == null) {
-            throw new IllegalArgumentException("No such material: " + name);
-        }
-        return material;
-    }
-
-    public static Map<String, Material> getMaterials() {
-        return Collections.unmodifiableMap(MATERIALS);
+    public IsotopeParams(double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba, double fastScatteringProba) {
+        this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
+        this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
+        this.thermalScattering = INeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
+        this.fastScattering = INeutronBehaviour.crossSectionFromProba(fastScatteringProba);
     }
 }

@@ -61,7 +61,7 @@ public interface INuclearTileData {
 
         } else if (variant instanceof FluidVariant resource) {
             if (!resource.isBlank() && getVariantAmount() > 0) {
-                return FluidNuclearComponents.of(resource);
+                return FluidNuclearComponent.get(resource.getFluid());
             }
         }
 

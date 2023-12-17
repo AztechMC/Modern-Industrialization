@@ -32,4 +32,6 @@ public interface MIRegistrationKubeJSEvents {
     EventHandler REGISTER_CABLE_TIERS = EVENT_GROUP.startup("registerCableTiers", () -> RegisterCableTiersEventJS.class);
     EventHandler REGISTER_FLUIDS = EVENT_GROUP.startup("registerFluids", () -> RegisterFluidsEventJS.class);
     EventHandler REGISTER_FLUID_FUELS = EVENT_GROUP.startup("registerFluidFuels", () -> RegisterFluidFuelsEventJS.class);
+    EventHandler REGISTER_FLUID_NEUTRON_INTERACTIONS = EVENT_GROUP.startup("registerFluidNeutronInteractions",
+            () -> RegisterFluidNeutronInteractionsEventJS.class);
 }

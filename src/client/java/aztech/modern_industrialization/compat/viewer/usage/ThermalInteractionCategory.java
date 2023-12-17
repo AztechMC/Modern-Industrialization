@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.nuclear.FluidNuclearComponents;
+import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -36,7 +36,6 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
@@ -77,8 +76,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
         for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
-                FluidVariant variant = FluidVariant.of(fluid);
-                INuclearComponent<?> component = FluidNuclearComponents.of(variant);
+                INuclearComponent<?> component = FluidNuclearComponent.get(fluid);
 
                 if (component != null) {
                     consumer.accept(new Recipe(component, CategoryType.THERMAL_PROPERTIES));

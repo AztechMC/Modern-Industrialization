@@ -41,6 +41,7 @@ import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -536,21 +537,12 @@ public class MIMaterials {
                 .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(CABLE.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, false, 64)));
 
-        URANIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Uranium", "uranium")
-                .set(MaterialProperty.SET, DULL)
-                .set(MaterialProperty.MEAN_RGB, 0x39e600)
-                .addParts(FUEL_ROD.ofAll(NuclearConstant.U))
-                .addParts(ITEM_PURE_METAL).addParts(ROD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ORE.ofAll(8, 5, 16, MaterialOreSet.COPPER))
-                .addParts(RAW_METAL.of(MaterialRawSet.URANIUM))
-                .addParts(RAW_METAL_BLOCK.of(MaterialRawSet.COPPER))
-                .addRecipes(StandardRecipes::apply)
-                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
-
         URANIUM_235 = MaterialRegistry.addMaterial(
                 new MaterialBuilder("Uranium 235", "uranium_235")
                         .set(MaterialProperty.SET, SHINY)
                         .set(MaterialProperty.MEAN_RGB, 0xe60045)
                         .set(MaterialProperty.HARDNESS, VERY_HARD)
+                        .set(MaterialProperty.ISOTOPE, new IsotopeFuelParams(0.6, 0.35, 2400, 900, 2300, 8, 0.5))
                         .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
                         .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
@@ -559,13 +551,27 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0x55bd33)
                         .set(MaterialProperty.HARDNESS, SOFT)
+                        .set(MaterialProperty.ISOTOPE, new IsotopeFuelParams(0.6, 0.30, 3200, 1000, 3000, 6, 0.3))
                         .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
                         .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
+
+        URANIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Uranium", "uranium")
+                .set(MaterialProperty.SET, DULL)
+                .set(MaterialProperty.MEAN_RGB, 0x39e600)
+                .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, URANIUM_235, 1.0 / 81))
+                .addParts(NuclearFuelPart.ofAll())
+                .addParts(ITEM_PURE_METAL).addParts(ROD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ORE.ofAll(8, 5, 16, MaterialOreSet.COPPER))
+                .addParts(RAW_METAL.of(MaterialRawSet.URANIUM))
+                .addParts(RAW_METAL_BLOCK.of(MaterialRawSet.COPPER))
+                .addRecipes(StandardRecipes::apply)
+                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
         LE_URANIUM = MaterialRegistry.addMaterial(new MaterialBuilder("LE Uranium", "le_uranium")
                 .set(MaterialProperty.SET, DULL)
                 .set(MaterialProperty.MEAN_RGB, 0x70a33c)
-                .set(MaterialProperty.HARDNESS, VERY_HARD).addParts(FUEL_ROD.ofAll(NuclearConstant.LEU))
+                .set(MaterialProperty.HARDNESS, VERY_HARD)
+                .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, URANIUM_235, 1.0 / 9))
+                .addParts(NuclearFuelPart.ofAll())
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
@@ -573,31 +579,36 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, DULL)
                 .set(MaterialProperty.MEAN_RGB, 0xaae838)
                 .set(MaterialProperty.HARDNESS, VERY_HARD)
-                .addParts(FUEL_ROD.ofAll(NuclearConstant.HEU))
+                .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, URANIUM_235, 1.0 / 3))
+                .addParts(NuclearFuelPart.ofAll())
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
+                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
+
+        PLUTONIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Plutonium", "plutonium")
+                .set(MaterialProperty.SET, SHINY)
+                .set(MaterialProperty.MEAN_RGB, 0xd701e7)
+                .set(MaterialProperty.HARDNESS, VERY_HARD)
+                .set(MaterialProperty.ISOTOPE, new IsotopeFuelParams(0.9, 0.25, 2100, 600, 2000, 9, 0.25))
+                .addParts(BLOCK.of(MaterialBlockSet.GOLD))
+                .addParts(ITEM_PURE_METAL).addParts(BATTERY.of(CableTier.SUPERCONDUCTOR)).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
         LE_MOX = MaterialRegistry.addMaterial(new MaterialBuilder("LE Mox", "le_mox")
                 .set(MaterialProperty.SET, SHINY)
                 .set(MaterialProperty.MEAN_RGB, 0x00e7e5)
                 .set(MaterialProperty.HARDNESS, VERY_HARD)
+                .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, PLUTONIUM, 1.0 / 9))
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD))
-                .addParts(FUEL_ROD.ofAll(NuclearConstant.LE_MOX)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
+                .addParts(NuclearFuelPart.ofAll()).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
         HE_MOX = MaterialRegistry.addMaterial(new MaterialBuilder("HE Mox", "he_mox")
                 .set(MaterialProperty.SET, SHINY)
                 .set(MaterialProperty.MEAN_RGB, 0xcc87fa)
                 .set(MaterialProperty.HARDNESS, VERY_HARD)
+                .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, PLUTONIUM, 1.0 / 3))
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD))
-                .addParts(FUEL_ROD.ofAll(NuclearConstant.HE_MOX)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
-                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
-
-        PLUTONIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Plutonium", "plutonium")
-                .set(MaterialProperty.SET, SHINY)
-                .set(MaterialProperty.MEAN_RGB, 0xd701e7)
-                .set(MaterialProperty.HARDNESS, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
-                .addParts(ITEM_PURE_METAL).addParts(BATTERY.of(CableTier.SUPERCONDUCTOR)).addRecipes(StandardRecipes::apply)
+                .addParts(NuclearFuelPart.ofAll()).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)));
 
         PLATINUM = MaterialRegistry.addMaterial(
@@ -659,14 +670,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0x967224)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY.of(CableTier.EV))
-                        .addParts(
-                                new PartTemplate("Control Rod", FUEL_ROD.key)
-                                        .withRegister((partContext, part, itemPath1, itemId, itemTag, englishName) -> NuclearAbsorbable
-                                                .of("Cadmium Control Rod", itemPath1, 1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                                        INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM,
-                                                                1),
-                                                        NuclearConstant.DESINTEGRATION_BY_ROD))
-                                        .withCustomPath("%s_control_rod"))
+                        .addParts(CONTROL_ROD.of(1900, 0.5, NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM, 1))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         NEODYMIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Neodymium", "neodymium")

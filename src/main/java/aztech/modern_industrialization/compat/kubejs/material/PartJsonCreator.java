@@ -24,10 +24,14 @@
 package aztech.modern_industrialization.compat.kubejs.material;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.materials.part.*;
+import aztech.modern_industrialization.materials.part.MIParts;
+import aztech.modern_industrialization.materials.part.OrePart;
+import aztech.modern_industrialization.materials.part.PartTemplate;
+import aztech.modern_industrialization.materials.part.RawMetalPart;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
+import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 import net.minecraft.util.valueproviders.UniformInt;
 
@@ -149,5 +153,12 @@ public class PartJsonCreator {
 
     public PartTemplate tankPart(String englishName, String path, int bucketCapacity) {
         return MIParts.TANK.of(englishName, path, bucketCapacity);
+    }
+
+    public PartTemplate controlRodPart(int maxTemperature, double heatConduction, double thermalAbsorbProba, double fastAbsorbProba,
+            double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
+        return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
+                fastScatteringProba, scatteringType, size);
+
     }
 }

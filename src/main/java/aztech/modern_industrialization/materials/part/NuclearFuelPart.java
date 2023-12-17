@@ -25,7 +25,9 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
+import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
@@ -61,13 +63,7 @@ public class NuclearFuelPart implements PartKeyProvider {
         return key;
     }
 
-    public PartTemplate of(NuclearConstant.IsotopeFuelParams params) {
-
-        NuclearFuelParams fuelParams = new NuclearFuelParams(NuclearConstant.DESINTEGRATION_BY_ROD * type.size, params.maxTemp, params.tempLimitLow,
-                params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
-
-        INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
-
+    private PartTemplate of() {
         String englishNameFormatter = switch (type) {
         case SIMPLE -> "Fuel Rod";
         case DOUBLE -> "Double Fuel Rod";
@@ -75,11 +71,22 @@ public class NuclearFuelPart implements PartKeyProvider {
         case DEPLETED -> "Depleted %s Fuel Rod";
         };
 
-        var out = new PartTemplate(englishNameFormatter,
-                key).withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
+        var out = new PartTemplate(englishNameFormatter, key)
+                .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
                     if (Type.DEPLETED == type) {
                         MIItem.item(englishName, itemPath, SortOrder.ITEMS_OTHER);
                     } else {
+                        IsotopeFuelParams params = partContext.get(MaterialProperty.ISOTOPE);
+                        if (params == null) {
+                            throw new IllegalArgumentException("Material %s must be a fuel isotope".formatted(partContext.getMaterialName()));
+                        }
+
+                        NuclearFuelParams fuelParams = new NuclearFuelParams(NuclearConstant.DESINTEGRATION_BY_ROD * type.size, params.maxTemp,
+                                params.tempLimitLow,
+                                params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
+
+                        INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
+
                         NuclearFuel.of(englishName, itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
                     }
@@ -90,8 +97,11 @@ public class NuclearFuelPart implements PartKeyProvider {
         return out;
     }
 
-    public List<PartTemplate> ofAll(NuclearConstant.IsotopeFuelParams params) {
-        return List.of(MIParts.FUEL_ROD.of(params), MIParts.FUEL_ROD_DOUBLE.of(params), MIParts.FUEL_ROD_QUAD.of(params),
-                MIParts.FUEL_ROD_DEPLETED.of(params));
+    public static List<PartTemplate> ofAll() {
+        return List.of(
+                MIParts.FUEL_ROD.of(),
+                MIParts.FUEL_ROD_DOUBLE.of(),
+                MIParts.FUEL_ROD_QUAD.of(),
+                MIParts.FUEL_ROD_DEPLETED.of());
     }
 }

@@ -72,21 +72,21 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
             ServerPlayer serverPlayer = (ServerPlayer) playerInventory.player;
             if (!trackedNetworkFluid.equals(iface.getNetworkFluid())) {
                 trackedNetworkFluid = iface.getNetworkFluid();
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 trackedNetworkFluid.toPacket(buf);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_NETWORK_FLUID, buf);
             }
             if (trackedType != iface.getConnectionType()) {
                 trackedType = iface.getConnectionType();
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeInt(trackedType);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
             if (trackedPriority != iface.getPriority(0)) {
                 trackedPriority = iface.getPriority(0);
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeInt(0);
                 buf.writeInt(trackedPriority);

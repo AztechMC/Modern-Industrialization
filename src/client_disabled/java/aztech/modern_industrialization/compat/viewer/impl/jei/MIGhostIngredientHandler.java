@@ -98,7 +98,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
                         public void accept(I ingredient) {
                             if (dw.dragItem(ik, Simulation.ACT)) {
                                 int slotId = handler.slots.indexOf(slot);
-                                FriendlyByteBuf buf = PacketByteBufs.create();
+                                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                                 buf.writeInt(handler.containerId);
                                 buf.writeVarInt(slotId);
                                 buf.writeBoolean(true);
@@ -119,7 +119,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
                         public void accept(I ingredient) {
                             if (dw.dragFluid(fk, Simulation.ACT)) {
                                 int slotId = handler.slots.indexOf(slot);
-                                FriendlyByteBuf buf = PacketByteBufs.create();
+                                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                                 buf.writeInt(handler.containerId);
                                 buf.writeVarInt(slotId);
                                 buf.writeBoolean(false);

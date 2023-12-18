@@ -103,7 +103,7 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return false;
         if (doTransfer) {
-            FriendlyByteBuf buf = PacketByteBufs.create();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeInt(handler.containerId);
             buf.writeResourceLocation(recipe.getId());
             ClientPlayNetworking.send(MachinePackets.C2S.REI_LOCK_SLOTS, buf);

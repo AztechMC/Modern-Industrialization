@@ -75,7 +75,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         if (slot instanceof ReiDraggable dw) {
             int slotId = handler.slots.indexOf(slot);
             if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(handler.containerId);
                 buf.writeVarInt(slotId);
                 buf.writeBoolean(true);
@@ -84,7 +84,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
                 return true;
             }
             if (fk != null && dw.dragFluid(fk, Simulation.ACT)) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(handler.containerId);
                 buf.writeVarInt(slotId);
                 buf.writeBoolean(false);

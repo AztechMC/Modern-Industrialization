@@ -102,7 +102,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
     private void setNetworkFluid(FluidVariant fluidKey) {
         menu.iface.setNetworkFluid(fluidKey);
-        FriendlyByteBuf buf = PacketByteBufs.create();
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeInt(menu.containerId);
         fluidKey.toPacket(buf);
         ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);

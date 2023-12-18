@@ -88,7 +88,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return helper.createInternalError();
         if (doTransfer) {
-            FriendlyByteBuf buf = PacketByteBufs.create();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeInt(menu.containerId);
             buf.writeResourceLocation(recipe.getId());
             ClientPlayNetworking.send(MachinePackets.C2S.REI_LOCK_SLOTS, buf);

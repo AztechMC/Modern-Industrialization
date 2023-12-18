@@ -79,7 +79,7 @@ public class AutoExtractClient implements GuiComponentClient {
             container.addButton(u, syncId -> {
                 boolean newExtract = !extractStatus[index];
                 extractStatus[index] = newExtract;
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
                 buf.writeBoolean(isItem);
                 buf.writeBoolean(newExtract);

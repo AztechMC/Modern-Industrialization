@@ -105,7 +105,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             int channel, Supplier<List<Component>> priorityTooltip) {
         addRenderableWidget(new PriorityButton(x + this.leftPos, y + this.topPos, width, u, text, button -> {
             priority.incrementPriority(channel, delta);
-            FriendlyByteBuf buf = PacketByteBufs.create();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeInt(menu.containerId);
             buf.writeInt(channel);
             buf.writeInt(delta);
@@ -142,7 +142,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         addRenderableWidget(new ConnectionTypeButton(x + this.leftPos, y + this.topPos, widget -> {
             int newType = connectionTypeNext(connectionType);
             connectionType.setConnectionType(newType);
-            FriendlyByteBuf buf = PacketByteBufs.create();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeInt(menu.containerId);
             buf.writeInt(newType);
             ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);

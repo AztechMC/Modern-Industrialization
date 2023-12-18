@@ -70,7 +70,7 @@ class ForgeHammerRecipeHandler implements EmiRecipeHandler<ForgeHammerScreenHand
 
     @Override
     public boolean performFill(EmiRecipe recipe, AbstractContainerScreen<ForgeHammerScreenHandler> screen, EmiFillAction action, int amount) {
-        var buf = PacketByteBufs.create();
+        var buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeInt(screen.getMenu().containerId);
         buf.writeResourceLocation(recipe.getId());
         buf.writeByte(switch (action) {

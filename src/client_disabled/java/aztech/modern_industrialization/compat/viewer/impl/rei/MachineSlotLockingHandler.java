@@ -55,7 +55,7 @@ class MachineSlotLockingHandler implements TransferHandler {
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return Result.createNotApplicable();
         if (context.isActuallyCrafting()) {
-            FriendlyByteBuf buf = PacketByteBufs.create();
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeInt(handler.containerId);
             buf.writeResourceLocation(recipe.getId());
             ClientPlayNetworking.send(MachinePackets.C2S.REI_LOCK_SLOTS, buf);

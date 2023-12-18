@@ -142,21 +142,21 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
             ServerPlayer serverPlayer = (ServerPlayer) playerInventory.player;
             if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeBoolean(trackedWhitelist);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_WHITELIST, buf);
             }
             if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeInt(trackedType);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
             if (trackedPriority0 != pipeInterface.getPriority(0)) {
                 trackedPriority0 = pipeInterface.getPriority(0);
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeInt(0);
                 buf.writeInt(trackedPriority0);
@@ -164,7 +164,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
             }
             if (trackedPriority1 != pipeInterface.getPriority(1)) {
                 trackedPriority1 = pipeInterface.getPriority(1);
-                FriendlyByteBuf buf = PacketByteBufs.create();
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeInt(containerId);
                 buf.writeInt(1);
                 buf.writeInt(trackedPriority1);

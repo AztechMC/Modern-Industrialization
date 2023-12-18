@@ -280,6 +280,8 @@ dependencies {
 //    }
 }
 
+minecraft.accessTransformers.file file("src/main/resources/META-INF/accesstransformer.cfg")
+
 runs {
     // applies to all the run configs below
     configureEach {

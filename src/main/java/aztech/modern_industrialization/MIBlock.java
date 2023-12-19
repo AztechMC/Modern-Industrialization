@@ -53,7 +53,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
 public class MIBlock {
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MI.ID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MI.ID);
 
     public static void init(IEventBus modBus) {
         BLOCKS.register(modBus);
@@ -182,6 +182,10 @@ public class MIBlock {
             this.modelGenerator = modelGenerator;
             this.lootTableGenerator = lootTableGenerator;
             this.tags.addAll(tags);
+        }
+
+        public static BlockDefinitionParams<Block> of() {
+            return of(BlockBehaviour.Properties.of());
         }
 
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {

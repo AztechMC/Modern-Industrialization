@@ -23,14 +23,9 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
-import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,20 +38,20 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 
 public final class TranslationProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
-    private final FabricDataOutput packOutput;
+    private final PackOutput packOutput;
     private final boolean runtimeDatagen;
     private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public TranslationProvider(FabricDataOutput packOutput, boolean runtimeDatagen) {
+    public TranslationProvider(PackOutput packOutput, boolean runtimeDatagen) {
         this.packOutput = packOutput;
         this.runtimeDatagen = runtimeDatagen;
     }
@@ -97,32 +92,34 @@ public final class TranslationProvider implements DataProvider {
             }
         }
 
-        for (Field f : MIConfig.class.getFields()) {
-            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
-            if (englishTranslation != null) {
-                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
-            }
-        }
+        // TODO NEO
+//        for (Field f : MIConfig.class.getFields()) {
+//            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
+//            if (englishTranslation != null) {
+//                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
+//            }
+//        }
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
             addTranslation(definition.getTranslationKey(), definition.getEnglishName());
         }
 
-        for (var entry : MITooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
-            addTranslation(entry.getKey(), entry.getValue());
-        }
-
-        for (var entry : ReiMachineRecipes.categories.entrySet()) {
-            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
-        }
-
-        for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
-            addTranslation(entry.getKey(), entry.getValue());
-        }
-
-        for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
-            addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
-        }
+        // TODO NEO
+//        for (var entry : MITooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
+//            addTranslation(entry.getKey(), entry.getValue());
+//        }
+//
+//        for (var entry : ReiMachineRecipes.categories.entrySet()) {
+//            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
+//        }
+//
+//        for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
+//            addTranslation(entry.getKey(), entry.getValue());
+//        }
+//
+//        for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
+//            addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
+//        }
 
         for (var cableTier : CableTier.allTiers()) {
             addTranslation(cableTier.shortEnglishKey(), cableTier.shortEnglishName);

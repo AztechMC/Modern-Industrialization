@@ -23,14 +23,23 @@
  */
 package aztech.modern_industrialization.definition;
 
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.fluid.MIBucketItem;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.fluid.MIFluidBlock;
+import aztech.modern_industrialization.fluid.MIFluidType;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.function.Supplier;
 
 public class FluidDefinition extends Definition implements FluidLike {
 
@@ -39,9 +48,10 @@ public class FluidDefinition extends Definition implements FluidLike {
     public static final int NEAR_OPACITY = 240;
     public static final int MEDIUM_OPACITY = 230;
 
-    public final MIFluidBlock fluidBlock;
-    public final MIFluid fluid;
-    private final FluidVariant variant;
+    private final DeferredHolder<Fluid, MIFluid> fluid;
+    private DeferredBlock<MIFluidBlock> fluidBlock;
+    private ItemDefinition<MIBucketItem> bucketItemDefinition;
+    private DeferredHolder<FluidType, MIFluidType> fluidType;
 
     public final int color;
     public final int opacity;
@@ -50,25 +60,24 @@ public class FluidDefinition extends Definition implements FluidLike {
 
     public final FluidTexture fluidTexture;
 
-    public final ItemDefinition<MIBucketItem> bucketItemDefinition;
-
     public FluidDefinition(String englishName, String id, int color, int opacity, FluidTexture texture, boolean isGas) {
         super(englishName, id);
         this.color = color;
         this.isGas = isGas;
 
-        fluidBlock = new MIFluidBlock(color);
-        fluid = new MIFluid(fluidBlock, color);
+        fluid = MIFluids.FLUIDS.register(id, () -> new MIFluid(fluidBlock, bucketItemDefinition, fluidType, color));
+        fluidBlock = MIBlock.BLOCKS.register(id, () -> new MIFluidBlock(color));
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
-                id + "_bucket", s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
+                id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
+        fluidType = MIRegistries.FLUID_TYPES.register(id,
+                () -> new MIFluidType(fluidBlock, FluidType.Properties.create()
+                        .descriptionId(fluidBlock.get().getDescriptionId())));
 
-        fluid.setBucketItem(bucketItemDefinition.asItem());
-        this.variant = FluidVariant.of(fluid);
         this.fluidTexture = texture;
         this.opacity = opacity;
 
         if (isGas) {
-            // TODO NEO
+            // TODO NEO this is now a tag
 //            FluidVariantAttributes.register(fluid, new FluidVariantAttributeHandler() {
 //                @Override
 //                public boolean isLighterThanAir(FluidVariant variant) {
@@ -86,7 +95,7 @@ public class FluidDefinition extends Definition implements FluidLike {
 
     @Override
     public Fluid asFluid() {
-        return fluid;
+        return fluid.get();
     }
 
     public BucketItem getBucket() {
@@ -94,7 +103,7 @@ public class FluidDefinition extends Definition implements FluidLike {
     }
 
     public FluidVariant variant() {
-        return variant;
+        return FluidVariant.of(asFluid());
     }
 
 }

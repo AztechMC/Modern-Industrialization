@@ -188,17 +188,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             }
         }
 
-        // Shadow around the GUI
-        // TODO NEO potentially not needed in 1.20.4
-        renderBackground(guiGraphics, mouseX, mouseY, delta);
-        RenderSystem.enableBlend();
-        // Background
-        actualDrawBackground(guiGraphics);
-        renderConfigurableSlotBackgrounds(guiGraphics);
-        // Locked items and fluids
-        renderFluidSlots(guiGraphics, mouseX, mouseY);
-        renderLockedItems(guiGraphics);
-        // Regular items and the foreground
+        // Normal render - handles background and slots
         super.render(guiGraphics, mouseX, mouseY, delta);
         // Tooltips
         renderConfigurableSlotTooltips(guiGraphics, mouseX, mouseY);
@@ -207,9 +197,8 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
     }
 
-    // drawBackground() is called too late, so it's not used at all.
-    // This function is used by our custom render() function when appropriate.
-    private void actualDrawBackground(GuiGraphics guiGraphics) {
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
         int bw = menu.guiParams.backgroundWidth;
         int bh = menu.guiParams.backgroundHeight;
         guiGraphics.blit(BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4);
@@ -218,6 +207,8 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         for (ClientComponentRenderer renderer : renderers) {
             renderer.renderBackground(guiGraphics, leftPos, topPos);
         }
+
+        renderConfigurableSlotBackgrounds(guiGraphics);
     }
 
     private void renderConfigurableSlotBackgrounds(GuiGraphics guiGraphics) {
@@ -230,41 +221,24 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
     }
 
-    private void renderFluidSlots(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        for (Slot slot : menu.slots) {
-            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                int i = leftPos + slot.x;
-                int j = topPos + slot.y;
-
-                ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
-                if (!renderedKey.isBlank()) {
-                    RenderHelper.drawFluidInGui(guiGraphics, renderedKey, i, j);
-                }
-
-                if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive()) {
-                    this.hoveredSlot = slot;
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.colorMask(true, true, true, false);
-                    guiGraphics.fillGradient(i, j, i + 16, j + 16, -2130706433, -2130706433);
-                    RenderSystem.colorMask(true, true, true, true);
-                    RenderSystem.enableDepthTest();
+    @Override
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
+        if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
+            ConfigurableFluidStack stack = cfs.getConfStack();
+            FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
+            if (!renderedKey.isBlank()) {
+                RenderHelper.drawFluidInGui(guiGraphics, renderedKey, slot.x, slot.y);
+            }
+        } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
+            ConfigurableItemStack itemStack = itemSlot.getConfStack();
+            if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
+                Item item = itemStack.getLockedInstance();
+                if (item != Items.AIR) {
+                    RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x, slot.y, "0");
                 }
             }
-        }
-    }
-
-    private void renderLockedItems(GuiGraphics guiGraphics) {
-        for (Slot slot : this.menu.slots) {
-            if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
-                ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
-                    Item item = itemStack.getLockedInstance();
-                    if (item != Items.AIR) {
-                        RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x + this.leftPos, slot.y + this.topPos, "0");
-                    }
-                }
-            }
+        } else {
+            super.renderSlot(guiGraphics, slot);
         }
     }
 
@@ -314,10 +288,6 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         textTooltip.add(MIText.ConfigurableSlotCapacity.text(capacityText).setStyle(TextHelper.GRAY_TEXT));
         // Render
         guiGraphics.renderTooltip(font, textTooltip, data, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
     }
 
     @Override

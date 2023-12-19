@@ -31,13 +31,15 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.function.Supplier;
+
 public class MIBucketItem extends BucketItem {
 
     public final int color;
 
-    public MIBucketItem(MIFluid fluid, Properties settings) {
+    public MIBucketItem(MIFluid fluid, int color, Properties settings) {
         super(fluid, settings.stacksTo(1).craftRemainder(Items.BUCKET));
-        this.color = FluidHelper.getColorMinLuminance(fluid.color);
+        this.color = FluidHelper.getColorMinLuminance(color);
     }
 
     @Override

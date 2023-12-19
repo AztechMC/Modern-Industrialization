@@ -26,6 +26,8 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import java.util.HashMap;
 import java.util.Map;
+
+import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponentsClient {
@@ -49,7 +51,7 @@ public final class GuiComponentsClient {
 //        register(GuiComponents.LARGE_TANK_FLUID_DISPLAY, LargeTankFluidDisplayClient::new);
 //        register(GuiComponents.GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGuiClient::new);
 //        register(GuiComponents.NUCLEAR_REACTOR_GUI, NuclearReactorGuiClient::new);
-//        register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);
+        register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);
 //        register(GuiComponents.RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBarClient::new);
 //        register(GuiComponents.REI_SLOT_LOCKING, ReiSlotLockingClient::new);
 //        register(GuiComponents.SHAPE_SELECTION, ShapeSelectionClient::new);

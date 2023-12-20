@@ -21,31 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen.texture;
+package aztech.modern_industrialization.datagen;
 
-import java.util.List;
-import java.util.function.BiConsumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricCodecDataProvider;
-import net.minecraft.client.renderer.texture.atlas.SpriteSource;
-import net.minecraft.client.renderer.texture.atlas.SpriteSources;
-import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import aztech.modern_industrialization.datagen.texture.SpriteSourceProvider;
+import aztech.modern_industrialization.datagen.texture.TexturesProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class SpriteSourceProvider extends FabricCodecDataProvider<List<SpriteSource>> {
-    public SpriteSourceProvider(FabricDataOutput packOutput) {
-        super(packOutput, PackOutput.Target.RESOURCE_PACK, "atlases", SpriteSources.FILE_CODEC);
-    }
+import java.util.concurrent.CompletableFuture;
 
-    @Override
-    protected void configure(BiConsumer<ResourceLocation, List<SpriteSource>> provider) {
-        provider.accept(new ResourceLocation("minecraft", "blocks"), List.of(
-                new DirectoryLister("fluid", "fluid/")));
-    }
+public class MIDatagenClient {
+    public static void configure(
+            DataGenerator gen,
+            ExistingFileHelper fileHelper,
+            CompletableFuture<HolderLookup.Provider> lookupProvider,
+            boolean run,
+            boolean runtimeDatagen) {
+        var aggregate = gen.addProvider(run, new AggregateDataProvider("Client Resources"));
+//
+//        aggregate.addProvider(MachineModelsProvider::new);
+//        aggregate.addProvider(ModelProvider::new);
+        aggregate.addProvider(new SpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
 
-    @Override
-    public String getName() {
-        return "Sprite Sources";
+        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
     }
 }

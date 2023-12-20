@@ -21,23 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen;
+package aztech.modern_industrialization.datagen.texture;
 
-import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
-import aztech.modern_industrialization.datagen.model.ModelProvider;
-import aztech.modern_industrialization.datagen.texture.SpriteSourceProvider;
-import aztech.modern_industrialization.datagen.texture.TexturesProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 
-public class MIDatagenClient {
-    public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        var aggregate = pack.addProvider(AggregateDataProvider.create("Client Resources"));
+import aztech.modern_industrialization.MI;
+import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-        aggregate.addProvider(MachineModelsProvider::new);
-        aggregate.addProvider(ModelProvider::new);
-        aggregate.addProvider(SpriteSourceProvider::new);
+public class SpriteSourceProvider extends net.neoforged.neoforge.common.data.SpriteSourceProvider {
+    public SpriteSourceProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+        super(packOutput, lookupProvider, MI.ID, fileHelper);
+    }
 
-        pack.addProvider((FabricDataOutput packOutput) -> new TexturesProvider(packOutput, runtimeDatagen));
+    @Override
+    protected void gather() {
+        atlas(BLOCKS_ATLAS)
+                .addSource(new DirectoryLister("fluid", "fluid/"));
     }
 }

@@ -28,39 +28,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import org.slf4j.Logger;
 
 public class AggregateDataProvider implements DataProvider {
-    public static FabricDataGenerator.Pack.RegistryDependentFactory<AggregateDataProvider> create(String name) {
-        return (packOutput, registriesFuture) -> new AggregateDataProvider(name, packOutput, registriesFuture);
-    }
-
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final String name;
-    private final FabricDataOutput packOutput;
-    private final CompletableFuture<HolderLookup.Provider> registriesFuture;
     private final List<DataProvider> providers = new ArrayList<>();
 
-    private AggregateDataProvider(String name, FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+    public AggregateDataProvider(String name) {
         this.name = name;
-        this.packOutput = packOutput;
-        this.registriesFuture = registriesFuture;
     }
 
-    public <T extends DataProvider> T addProvider(FabricDataGenerator.Pack.Factory<T> factory) {
-        var provider = factory.create(packOutput);
-        providers.add(provider);
-        return provider;
-    }
-
-    public <T extends DataProvider> T addProvider(FabricDataGenerator.Pack.RegistryDependentFactory<T> factory) {
-        var provider = factory.create(packOutput, registriesFuture);
+    public <T extends DataProvider> T addProvider(T provider) {
         providers.add(provider);
         return provider;
     }

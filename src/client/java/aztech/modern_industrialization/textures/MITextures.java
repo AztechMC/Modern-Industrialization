@@ -23,13 +23,9 @@
  */
 package aztech.modern_industrialization.textures;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.FluidDefinition;
-import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.part.MaterialItemPart;
-import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.IColoramp;
 import com.google.gson.JsonElement;
@@ -59,22 +55,23 @@ public final class MITextures {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         Consumer<IORunnable> defer = r -> futures.add(CompletableFuture.runAsync(r::safeRun, Util.backgroundExecutor()));
 
-        for (Material material : MaterialRegistry.getMaterials().values()) {
-            var meanRgb = material.get(MaterialProperty.MEAN_RGB);
+        // TODO NEO materials
+//        for (Material material : MaterialRegistry.getMaterials().values()) {
+//            var meanRgb = material.get(MaterialProperty.MEAN_RGB);
+//
+//            if (meanRgb == 0) {
+//                ModernIndustrialization.LOGGER.error("Missing mean RGB for material {}", material.name);
+//                continue;
+//            }
+//
+//            IColoramp coloramp = new Coloramp(mtm, meanRgb, material.name);
+//
+//            for (MaterialItemPart part : material.getParts().values()) {
+//                defer.accept(() -> PartTextureGenerator.processPart(coloramp, mtm, material, part));
+//            }
+//        }
 
-            if (meanRgb == 0) {
-                ModernIndustrialization.LOGGER.error("Missing mean RGB for material {}", material.name);
-                continue;
-            }
-
-            IColoramp coloramp = new Coloramp(mtm, meanRgb, material.name);
-
-            for (MaterialItemPart part : material.getParts().values()) {
-                defer.accept(() -> PartTextureGenerator.processPart(coloramp, mtm, material, part));
-            }
-        }
-
-        for (FluidDefinition fluid : MIFluids.FLUIDS.values()) {
+        for (FluidDefinition fluid : MIFluids.FLUID_DEFINITIONS.values()) {
             defer.accept(() -> registerFluidTextures(mtm, fluid));
         }
 
@@ -85,43 +82,44 @@ public final class MITextures {
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/highly_advanced_machine_hull.png")));
         mtm.runAtEnd(() -> casingFromTexture(mtm, "superconductor",
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/quantum_machine_hull.png")));
-        mtm.runAtEnd(
-                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
-
-        mtm.runAtEnd(
-                () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png")));
-
-        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_bronze",
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/bronze_machine_casing.png"),
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-
-        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_steel",
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/steel_machine_casing.png"),
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-
-        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
-                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/tungsten_ingot.png"))));
-
-        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_plate_nuclear.png",
-                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/cadmium_plate.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/beryllium_plate.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_plate.png"), 1, 2)));
-
-        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_iridium.png",
-                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
-                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"))));
+        // TODO NEO
+//        mtm.runAtEnd(
+//                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
+//
+//        mtm.runAtEnd(
+//                () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+//
+//        mtm.runAtEnd(() -> casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png")));
+//
+//        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_bronze",
+//                mtm.getAssetAsTexture("modern_industrialization:textures/block/bronze_machine_casing.png"),
+//                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+//
+//        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_steel",
+//                mtm.getAssetAsTexture("modern_industrialization:textures/block/steel_machine_casing.png"),
+//                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+//
+//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
+//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/tungsten_ingot.png"))));
+//
+//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_plate_nuclear.png",
+//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/cadmium_plate.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/beryllium_plate.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_plate.png"), 1, 2)));
+//
+//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_iridium.png",
+//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
+//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"))));
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenComposeAsync(v -> {
                     // Do second phase work
                     return mtm.doEndWork();
                 }, Util.backgroundExecutor())
-                .thenRun(() -> ModernIndustrialization.LOGGER.info("I used the png to destroy the png."));
+                .thenRun(() -> MI.LOGGER.info("I used the png to destroy the png."));
     }
 
     private static String getTemplate(String materialSet, String part, String suffix) {
@@ -166,7 +164,7 @@ public final class MITextures {
     }
 
     public static void logTextureGenerationError(Throwable throwable, String path, String materialSet, String part) {
-        ModernIndustrialization.LOGGER.warn(
+        MI.LOGGER.warn(
                 String.format("Failed to generate item part texture for path %s, material set %s, partTemplate %s", path, materialSet, part),
                 throwable);
     }

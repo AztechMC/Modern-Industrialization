@@ -41,6 +41,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public class MIFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, MI.ID);
+    public static SortedMap<ResourceLocation, FluidDefinition> FLUID_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         FLUIDS.register(modBus);
@@ -124,7 +125,11 @@ public class MIFluids {
     }
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, FluidTexture texture,  boolean isGas){
-        return new FluidDefinition(englishName, id, color, opacity, texture, isGas);
+        var definition = new FluidDefinition(englishName, id, color, opacity, texture, isGas);
+        if (FLUID_DEFINITIONS.put(definition.getId(), definition) != null) {
+            throw new IllegalArgumentException("Fluid id already taken : " + definition.getId());
+        }
+        return definition;
     }
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, boolean isGas) {

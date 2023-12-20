@@ -57,8 +57,9 @@ import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public record TexturesProvider(PackOutput packOutput, boolean runtimeDatagen) implements DataProvider {
+public record TexturesProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper, boolean runtimeDatagen) implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
@@ -107,7 +108,8 @@ public record TexturesProvider(PackOutput packOutput, boolean runtimeDatagen) im
                         return generated;
                     }
                     return fallbackResourceProvider.getResource(resourceLocation);
-                })
+                },
+                existingFileHelper)
                 .whenComplete((result, throwable) -> outputPack.close());
     }
 

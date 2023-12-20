@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import static net.minecraft.world.level.material.MapColor.STONE;
 
+import aztech.modern_industrialization.datagen.model.MIModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import com.google.gson.JsonParser;
@@ -33,6 +34,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
@@ -49,11 +52,14 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
 public class MIBlock {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MI.ID);
+    public static final SortedMap<ResourceLocation, BlockDefinition<?>> BLOCK_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         BLOCKS.register(modBus);
@@ -124,7 +130,7 @@ public class MIBlock {
             String englishName, String id, BlockDefinitionParams<T> params) {
 
         var holder = BLOCKS.registerBlock(id, params.ctor, params.props);
-        return new BlockDefinition<>(
+        var def = new BlockDefinition<>(
                 englishName,
                 holder,
                 params.blockItemCtor,
@@ -133,6 +139,8 @@ public class MIBlock {
                 params.lootTableGenerator,
                 params.tags,
                 params.sortOrder);
+        BLOCK_DEFINITIONS.put(holder.getId(), def);
+        return def;
     }
 
     // TODO NEO
@@ -160,8 +168,8 @@ public class MIBlock {
     public static class BlockDefinitionParams<T extends Block> {
 
         public final BlockBehaviour.Properties props;
-        public BiConsumer<Block, BlockModelGenerators> modelGenerator;
-        public BiConsumer<Item, ItemModelGenerators> itemModelGenerator = (item, gen) -> {
+        public BiConsumer<Block, MIModelProvider> modelGenerator;
+        public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {
         };
         public BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
@@ -173,7 +181,7 @@ public class MIBlock {
         protected BlockDefinitionParams(BlockBehaviour.Properties properties,
                 Function<BlockBehaviour.Properties, T> ctor,
                 BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
-                BiConsumer<Block, BlockModelGenerators> modelGenerator,
+                BiConsumer<Block, MIModelProvider> modelGenerator,
                 BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
                 List<TagKey<Block>> tags) {
             this.props = properties;
@@ -190,7 +198,7 @@ public class MIBlock {
 
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
             return new BlockDefinitionParams<>(properties, Block::new, BlockItem::new,
-                    (block, modelGenerator) -> modelGenerator.createTrivialCube(block),
+                    (block, modelGenerator) -> modelGenerator.cubeAll(block),
                     (block, lootGenerator) -> lootGenerator.dropSelf(block),
                     List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
         }
@@ -217,70 +225,72 @@ public class MIBlock {
             return this;
         }
 
-        public BlockDefinitionParams<T> withModel(BiConsumer<Block, BlockModelGenerators> modelGenerator) {
+        public BlockDefinitionParams<T> withModel(BiConsumer<Block, MIModelProvider> modelGenerator) {
             this.modelGenerator = modelGenerator;
             return this;
         }
 
-        public BlockDefinitionParams<T> withModel(TexturedModel.Provider model) {
-            return this.withModel((block, blockModelGenerator) -> blockModelGenerator.createTrivialBlock(block, model));
-        }
+        // TODO NEO
+//        public BlockDefinitionParams<T> withModel(TexturedModel.Provider model) {
+//            return this.withModel((block, blockModelGenerator) -> blockModelGenerator.createTrivialBlock(block, model));
+//        }
 
-        public BlockDefinitionParams<T> withItemModel(BiConsumer<Item, ItemModelGenerators> itemModelGenerator) {
+        public BlockDefinitionParams<T> withItemModel(BiConsumer<Item, ItemModelProvider> itemModelGenerator) {
             this.itemModelGenerator = itemModelGenerator;
             return this;
         }
 
-        public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
-            var currentModel = this.modelGenerator;
-            return withModel((block, gen) -> {
-                currentModel.accept(block, gen);
-                // Skip default item model
-                gen.skipAutoItemBlock(block);
-            }).withItemModel((item, gen) -> {
-                // We need the builtin/entity parent and the proper transforms (copied from block/block.json from vanilla)
-                gen.output.accept(ModelLocationUtils.getModelLocation(item), () -> {
-                    var json = JsonParser.parseString("""
-                            {
-                                "display": {
-                                    "gui": {
-                                        "rotation": [ 30, 225, 0 ],
-                                        "translation": [ 0, 0, 0],
-                                        "scale":[ 0.625, 0.625, 0.625 ]
-                                    },
-                                    "ground": {
-                                        "rotation": [ 0, 0, 0 ],
-                                        "translation": [ 0, 3, 0],
-                                        "scale":[ 0.25, 0.25, 0.25 ]
-                                    },
-                                    "fixed": {
-                                        "rotation": [ 0, 0, 0 ],
-                                        "translation": [ 0, 0, 0],
-                                        "scale":[ 0.5, 0.5, 0.5 ]
-                                    },
-                                    "thirdperson_righthand": {
-                                        "rotation": [ 75, 45, 0 ],
-                                        "translation": [ 0, 2.5, 0],
-                                        "scale": [ 0.375, 0.375, 0.375 ]
-                                    },
-                                    "firstperson_righthand": {
-                                        "rotation": [ 0, 45, 0 ],
-                                        "translation": [ 0, 0, 0 ],
-                                        "scale": [ 0.40, 0.40, 0.40 ]
-                                    },
-                                    "firstperson_lefthand": {
-                                        "rotation": [ 0, 225, 0 ],
-                                        "translation": [ 0, 0, 0 ],
-                                        "scale": [ 0.40, 0.40, 0.40 ]
-                                    }
-                                }
-                            }
-                                                        """).getAsJsonObject();
-                    json.addProperty("parent", "builtin/entity");
-                    return json;
-                });
-            });
-        }
+        // TODO NEO
+//        public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
+//            var currentModel = this.modelGenerator;
+//            return withModel((block, gen) -> {
+//                currentModel.accept(block, gen);
+//                // Skip default item model
+//                gen.skipAutoItemBlock(block);
+//            }).withItemModel((item, gen) -> {
+//                // We need the builtin/entity parent and the proper transforms (copied from block/block.json from vanilla)
+//                gen.output.accept(ModelLocationUtils.getModelLocation(item), () -> {
+//                    var json = JsonParser.parseString("""
+//                            {
+//                                "display": {
+//                                    "gui": {
+//                                        "rotation": [ 30, 225, 0 ],
+//                                        "translation": [ 0, 0, 0],
+//                                        "scale":[ 0.625, 0.625, 0.625 ]
+//                                    },
+//                                    "ground": {
+//                                        "rotation": [ 0, 0, 0 ],
+//                                        "translation": [ 0, 3, 0],
+//                                        "scale":[ 0.25, 0.25, 0.25 ]
+//                                    },
+//                                    "fixed": {
+//                                        "rotation": [ 0, 0, 0 ],
+//                                        "translation": [ 0, 0, 0],
+//                                        "scale":[ 0.5, 0.5, 0.5 ]
+//                                    },
+//                                    "thirdperson_righthand": {
+//                                        "rotation": [ 75, 45, 0 ],
+//                                        "translation": [ 0, 2.5, 0],
+//                                        "scale": [ 0.375, 0.375, 0.375 ]
+//                                    },
+//                                    "firstperson_righthand": {
+//                                        "rotation": [ 0, 45, 0 ],
+//                                        "translation": [ 0, 0, 0 ],
+//                                        "scale": [ 0.40, 0.40, 0.40 ]
+//                                    },
+//                                    "firstperson_lefthand": {
+//                                        "rotation": [ 0, 225, 0 ],
+//                                        "translation": [ 0, 0, 0 ],
+//                                        "scale": [ 0.40, 0.40, 0.40 ]
+//                                    }
+//                                }
+//                            }
+//                                                        """).getAsJsonObject();
+//                    json.addProperty("parent", "builtin/entity");
+//                    return json;
+//                });
+//            });
+//        }
 
         public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLootSubProvider> lootTableGenerator) {
             this.lootTableGenerator = lootTableGenerator;
@@ -288,7 +298,7 @@ public class MIBlock {
         }
 
         public BlockDefinitionParams<T> noModel() {
-            this.modelGenerator = (block, modelGenerator) -> modelGenerator.createNonTemplateModelBlock(block);
+            this.modelGenerator = (block, modelGenerator) -> modelGenerator.existingModel(block);
             // still creating the blockstate
             return this;
         }

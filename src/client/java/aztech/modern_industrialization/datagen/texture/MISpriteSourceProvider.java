@@ -23,18 +23,17 @@
  */
 package aztech.modern_industrialization.datagen.texture;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.SpriteSourceProvider;
 
-public class SpriteSourceProvider extends net.neoforged.neoforge.common.data.SpriteSourceProvider {
-    public SpriteSourceProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
+public class MISpriteSourceProvider extends SpriteSourceProvider {
+    public MISpriteSourceProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
         super(packOutput, lookupProvider, MI.ID, fileHelper);
     }
 

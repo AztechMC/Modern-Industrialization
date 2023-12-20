@@ -23,47 +23,56 @@
  */
 package aztech.modern_industrialization.datagen.model;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
-import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class ModelProvider extends FabricModelProvider {
+public class MIModelProvider extends BlockStateProvider {
 
-    public ModelProvider(FabricDataOutput packOutput) {
-        super(packOutput);
+    public MIModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, MI.ID, exFileHelper);
     }
 
     @Override
-    public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
+    protected void registerStatesAndModels() {
+        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCK_DEFINITIONS.values()) {
             if (blockDefinition.modelGenerator != null) {
-                blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), blockStateModelGenerator);
+                blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), this);
             }
         }
 
-        for (FluidDefinition fluidDefinition : MIFluids.FLUIDS.values()) {
-            blockStateModelGenerator.createNonTemplateModelBlock(fluidDefinition.fluidBlock, Blocks.AIR);
+        for (FluidDefinition fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
+            existingModel(fluidDefinition.asFluidBlock(), Blocks.AIR);
         }
 
-        blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);
-    }
+        // TODO NEO
+//        blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);
 
-    @Override
-    public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        for (ItemDefinition<?> itemDefinition : MIItem.ITEMS.values()) {
+        // Item models as well...
+        for (ItemDefinition<?> itemDefinition : MIItem.ITEM_DEFINITIONS.values()) {
             if (itemDefinition.modelGenerator != null) {
-                itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModelGenerator);
+                itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
             }
         }
     }
 
+    public void existingModel(Block block) {
+        existingModel(block, block);
+    }
+
+    public void existingModel(Block block, Block targetBlock) {
+        simpleBlock(block, models().getExistingFile(blockTexture(targetBlock)));
+    }
 }

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.definition;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.datagen.model.MIModelProvider;
 import aztech.modern_industrialization.items.SortOrder;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -36,6 +37,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 public class BlockDefinition<T extends Block> extends Definition implements ItemLike {
@@ -43,7 +46,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     private final DeferredBlock<T> block;
     public final ItemDefinition<BlockItem> blockItem;
 
-    public final BiConsumer<Block, BlockModelGenerators> modelGenerator;
+    public final BiConsumer<Block, MIModelProvider> modelGenerator;
     public final BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
     public final List<TagKey<Block>> tags;
 
@@ -51,8 +54,8 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
 
     public BlockDefinition(String englishName, DeferredBlock<T> block,
             BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
-            BiConsumer<Block, BlockModelGenerators> modelGenerator,
-            BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
+            BiConsumer<Block, MIModelProvider> modelGenerator,
+            BiConsumer<Item, ItemModelProvider> itemModelGenerator,
             BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {

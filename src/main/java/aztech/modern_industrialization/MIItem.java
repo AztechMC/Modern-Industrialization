@@ -25,10 +25,13 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.items.SortOrder.*;
 
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -38,11 +41,13 @@ import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
 public final class MIItem {
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MI.ID);
+    public static final SortedMap<ResourceLocation, ItemDefinition<?>> ITEM_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         ITEMS.register(modBus);
@@ -182,22 +187,22 @@ public final class MIItem {
             String englishName,
             String path,
             Function<Item.Properties, T> ctor,
-            BiConsumer<Item, ItemModelGenerators> modelGenerator,
+            BiConsumer<Item, ItemModelProvider> modelGenerator,
             SortOrder sortOrder) {
 
         var holder = ITEMS.registerItem(path, ctor);
-        return new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
+        var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
+        ITEM_DEFINITIONS.put(holder.getId(), def);
+        return def;
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
     }
 
     public static ItemDefinition<Item> itemHandheld(String englishName, String path) {
@@ -221,8 +226,9 @@ public final class MIItem {
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_HANDHELD_ITEM), sortOrder);
+        return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
+            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(new ResourceLocation("minecraft:item/handheld")));
+        }, sortOrder);
     }
 
     private MIItem() {

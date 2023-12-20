@@ -69,7 +69,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         fluidBlock = MIBlock.BLOCKS.register(id, () -> new MIFluidBlock(color));
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
                 id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
-        fluidType = MIRegistries.FLUID_TYPES.register(id,
+        fluidType = MIFluids.FLUID_TYPES.register(id,
                 () -> new MIFluidType(fluidBlock, FluidType.Properties.create()
                         .descriptionId(fluidBlock.get().getDescriptionId())));
 
@@ -96,6 +96,10 @@ public class FluidDefinition extends Definition implements FluidLike {
     @Override
     public Fluid asFluid() {
         return fluid.get();
+    }
+
+    public MIFluidBlock asFluidBlock() {
+        return fluidBlock.get();
     }
 
     public BucketItem getBucket() {

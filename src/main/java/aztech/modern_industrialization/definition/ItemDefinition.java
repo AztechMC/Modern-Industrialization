@@ -30,6 +30,7 @@ import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 public class ItemDefinition<T extends Item> extends Definition implements ItemLike {
@@ -37,11 +38,11 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
     private final DeferredItem<T> item;
     public final SortOrder sortOrder;
 
-    public final BiConsumer<Item, ItemModelGenerators> modelGenerator;
+    public final BiConsumer<Item, ItemModelProvider> modelGenerator;
     private Consumer<? super T> onItemRegistrationEvent;
 
     public ItemDefinition(String englishName, DeferredItem<T> item,
-            BiConsumer<Item, ItemModelGenerators> modelGenerator, SortOrder sortOrder) {
+            BiConsumer<Item, ItemModelProvider> modelGenerator, SortOrder sortOrder) {
         super(englishName, item.getId().getPath());
         this.item = item;
         this.modelGenerator = modelGenerator;

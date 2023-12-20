@@ -38,12 +38,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public final class MITextures {
 
     public static CompletableFuture<?> offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
-            ResourceProvider manager) {
+            ResourceProvider manager, ExistingFileHelper fileHelper) {
         TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
 
         // Texture generation runs in two phases:
@@ -119,6 +120,9 @@ public final class MITextures {
                     // Do second phase work
                     return mtm.doEndWork();
                 }, Util.backgroundExecutor())
+                .thenRun(() -> {
+                    mtm.markTexturesAsGenerated(fileHelper);
+                })
                 .thenRun(() -> MI.LOGGER.info("I used the png to destroy the png."));
     }
 

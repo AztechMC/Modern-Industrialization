@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.datagen;
 
-import aztech.modern_industrialization.datagen.texture.SpriteSourceProvider;
+import aztech.modern_industrialization.datagen.model.MIModelProvider;
+import aztech.modern_industrialization.datagen.texture.MISpriteSourceProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -38,12 +39,8 @@ public class MIDatagenClient {
             CompletableFuture<HolderLookup.Provider> lookupProvider,
             boolean run,
             boolean runtimeDatagen) {
-        var aggregate = gen.addProvider(run, new AggregateDataProvider("Client Resources"));
-//
-//        aggregate.addProvider(MachineModelsProvider::new);
-//        aggregate.addProvider(ModelProvider::new);
-        aggregate.addProvider(new SpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
-
-        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
+        gen.addProvider(run, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), fileHelper, runtimeDatagen));
+        gen.addProvider(run, new MIModelProvider(gen.getPackOutput(), fileHelper));
     }
 }

@@ -14,7 +14,7 @@ public record MachineComponentSyncPacket(int syncId, int componentIndex, Friendl
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(syncId);
         buf.writeVarInt(componentIndex);
-        buf.writeBytes(buf, 0, this.buf.readableBytes());
+        buf.writeBytes(this.buf, 0, this.buf.readableBytes());
     }
 
     @Override

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -89,7 +90,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
                     trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
                     new UpdateFluidSlotPacket(containerId, i, trackedFluids.get(i))
-                            .sendToServer();
+                            .sendToClient(player);
                 }
             }
         }
@@ -108,8 +109,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    // TODO NEO
-//                    fluidSlot.playerInteract(ContainerItemContext.ofPlayerCursor(player, this), player, true);
+                    fluidSlot.playerInteract(createCarriedSlotAccess(), player, true);
                 }
                 return;
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
@@ -147,15 +147,13 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
                 // try to shift-click fluid first
-                // TODO NEO
-//                var playerInvStorage = PlayerInventoryStorage.of(player);
-//                var ctx = ContainerItemContext.ofPlayerSlot(player, playerInvStorage.getSlot(slot.getContainerSlot()));
-//                for (var maybeFluidSlot : slots) {
-//                    if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
-//                            && fluidSlot.playerInteract(ctx, player, false)) {
-//                        return;
-//                    }
-//                }
+                var ctx = SlotAccess.forContainer(player.getInventory(), slot.getContainerSlot());
+                for (var maybeFluidSlot : slots) {
+                    if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
+                            && fluidSlot.playerInteract(ctx, player, false)) {
+                        return;
+                    }
+                }
 
                 // move by slot group
                 for (var group : slotGroupIndices) {

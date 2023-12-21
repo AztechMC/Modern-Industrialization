@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 
-// TODO NEO: should refactor to always use DeferredHolder
 public abstract class Definition {
 
     public static List<Definition> TRANSLATABLE_DEFINITION = new ArrayList<>();

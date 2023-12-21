@@ -16,6 +16,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid;
 
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.fluid.FluidVariantImpl;
 import net.minecraft.nbt.CompoundTag;
@@ -44,6 +45,13 @@ public interface FluidVariant extends TransferVariant<Fluid> {
 	 */
 	static FluidVariant blank() {
 		return of(Fluids.EMPTY);
+	}
+
+	/**
+	 * Retrieve an ItemVariant with the item and tag of a stack.
+	 */
+	static FluidVariant of(FluidStack stack) {
+		return of(stack.getFluid(), stack.getTag());
 	}
 
 	/**

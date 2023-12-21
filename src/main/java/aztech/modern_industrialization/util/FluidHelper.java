@@ -34,6 +34,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class FluidHelper {
     public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
@@ -47,11 +48,11 @@ public class FluidHelper {
 
     public static MutableComponent getFluidAmount(long amount, long capacity) {
         if (capacity < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
-            String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
+            String text = amount + " / " + capacity;
             return Component.literal(text + " mB");
         } else {
-            var maxedAmount = TextHelper.getMaxedAmount((double) amount / FluidConstants.BUCKET,
-                    (double) capacity / FluidConstants.BUCKET);
+            var maxedAmount = TextHelper.getMaxedAmount((double) amount / FluidType.BUCKET_VOLUME,
+                    (double) capacity / FluidType.BUCKET_VOLUME);
             return Component.literal(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
 
@@ -59,7 +60,7 @@ public class FluidHelper {
 
     public static MutableComponent getFluidAmount(long amount) {
         if (amount < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
-            String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
+            String text = String.valueOf(amount);
             return Component.literal(text + " mB");
         } else {
             return getFluidAmountLarge(amount);
@@ -67,7 +68,7 @@ public class FluidHelper {
     }
 
     public static MutableComponent getFluidAmountLarge(long amount) {
-        var amountUnit = TextHelper.getAmount((double) amount / FluidConstants.BUCKET);
+        var amountUnit = TextHelper.getAmount((double) amount / FluidType.BUCKET_VOLUME);
         return Component.literal(amountUnit.digit() + " " + amountUnit.unit() + "B");
     }
 

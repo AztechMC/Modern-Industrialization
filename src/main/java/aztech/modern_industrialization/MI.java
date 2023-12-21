@@ -8,7 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,5 +38,7 @@ public class MI {
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenServer.configure(event.getGenerator(), event.includeServer(), false);
         });
+
+        modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
     }
 }

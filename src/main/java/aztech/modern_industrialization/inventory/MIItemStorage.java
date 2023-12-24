@@ -115,6 +115,10 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
             }
             try (var tx = Transaction.hackyOpen()) {
                 var variant = stacks.get(slot).getVariant();
+                if (variant.isBlank()) {
+                    return ItemStack.EMPTY;
+                }
+
                 long result = stacks.get(slot).extract(variant, amount, tx);
                 if (result > 0 && !simulate) {
                     tx.commit();

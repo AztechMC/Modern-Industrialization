@@ -34,6 +34,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Decoder;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -51,8 +56,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
 
-    private final Codec<MachineRecipe> codec = NeoForgeExtraCodecs.decodeOnly(
-            JsonMapCodec.INSTANCE.map(this::fromJson).decoder());
+    /**
+     * Creates a codec from a decoder.
+     * The returned codec can only decode, and will throw on any attempt to encode.
+     */
+    private static <A> MapCodec<A> decodeOnly(MapDecoder<A> decoder) {
+        return MapCodec.of(MapCodec.unit(() -> {
+            throw new UnsupportedOperationException("Cannot encode with decode-only codec! Decoder:" + decoder);
+        }), decoder, () -> "DecodeOnly[" + decoder + "]");
+    }
+
+    private final Codec<MachineRecipe> codec =
+            decodeOnly(JsonMapCodec.INSTANCE.map(this::fromJson)).codec();
 
     public MachineRecipeType(ResourceLocation id) {
         this.id = id;
@@ -272,6 +287,10 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         }
     }
 
+    private static Ingredient ingredientFromJson(JsonElement json) {
+        return Util.getOrThrow(Ingredient.CODEC_NONEMPTY.parse(JsonOps.INSTANCE, json), IllegalArgumentException::new);
+    }
+
     public static MachineRecipe.ItemInput readItemInput(JsonObject json) {
         int amount = 1;
         if (json.has("amount")) {
@@ -283,9 +302,9 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         Ingredient ingredient;
 
         if (json.has("ingredient")) {
-            ingredient = Ingredient.fromJson(json.get("ingredient"), true);
+            ingredient = ingredientFromJson(json.get("ingredient"));
         } else {
-            ingredient = Ingredient.fromJson(json, true);
+            ingredient = ingredientFromJson(json);
         }
         return new MachineRecipe.ItemInput(ingredient, amount, probability);
     }

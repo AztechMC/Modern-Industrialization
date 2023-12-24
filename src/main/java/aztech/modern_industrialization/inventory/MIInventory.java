@@ -28,17 +28,22 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import aztech.modern_industrialization.util.TransferHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 
 public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
 
-    // TODO NEO
-    //private BlockApiCache<Storage<ItemVariant>, Direction> outputCache;
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> outputCache;
 
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;
@@ -79,24 +84,21 @@ public final class MIInventory implements IComponent {
         return fluidStorage.stacks;
     }
 
-    // TODO NEO 4 functions below
-
     public void autoExtractItems(Level world, BlockPos pos, Direction direction) {
-//        if (outputCache == null) {
-//            outputCache = BlockApiCache.create(ItemStorage.SIDED, (ServerLevel) world, pos.relative(direction));
-//        } else if (outputCache.getWorld() != world || !outputCache.getPos().equals(pos.relative(direction))) {
-//            // Needed in case we change the output side...
-//            outputCache = BlockApiCache.create(ItemStorage.SIDED, (ServerLevel) world, pos.relative(direction));
-//        }
-//
-//        Storage<ItemVariant> target = outputCache.find(direction.getOpposite());
-//        target = StorageUtil2.wrapInventory(target);
-//
-//        if (target != null) {
-//            StorageUtil.move(itemStorage, target, k -> true, Long.MAX_VALUE, null);
-//        }
+        // The second check is needed in case we change the output side...
+        boolean updateCache = outputCache == null || outputCache.context() != direction.getOpposite();
+
+        if (updateCache) {
+            outputCache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, (ServerLevel) world, pos.relative(direction), direction.getOpposite());
+        }
+
+        var target = outputCache.getCapability();
+        if (target != null) {
+            TransferHelper.moveAll(itemStorage.itemHandler, target, true);
+        }
     }
 
+    // TODO NEO
     public void autoExtractFluids(Level world, BlockPos pos, Direction direction) {
 //        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
 //
@@ -106,13 +108,14 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoInsertItems(Level world, BlockPos pos, Direction direction) {
-//        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
-//
-//        if (target != null) {
-//            StorageUtil.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
-//        }
+        IItemHandler target = world.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+
+        if (target != null) {
+            TransferHelper.moveAll(target, itemStorage.itemHandler, false);
+        }
     }
 
+    // TODO NEO
     public void autoInsertFluids(Level world, BlockPos pos, Direction direction) {
 //        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
 //

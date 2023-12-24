@@ -268,6 +268,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
             }
             if (forceChunkRemesh) {
                 WorldHelper.forceChunkRemesh(level, worldPosition);
+                requestModelDataUpdate();
             }
         }
     }

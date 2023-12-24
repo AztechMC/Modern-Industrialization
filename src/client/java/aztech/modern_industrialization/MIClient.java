@@ -3,12 +3,16 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
+import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
 import aztech.modern_industrialization.machines.models.MachineUnbakedModel;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
@@ -53,5 +57,24 @@ public class MIClient {
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(MachineCasingHolderModel.MODEL_ID);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockEntityRenderers(FMLClientSetupEvent event) {
+        for (var blockDef : MIBlock.BLOCKS.getEntries()) {
+            if (blockDef.get() instanceof MachineBlock machine) {
+                var blockEntity = machine.getBlockEntityInstance();
+                BlockEntityType type = blockEntity.getType();
+
+                // TODO NEO multiblock BERs
+//                if (blockEntity instanceof LargeTankMultiblockBlockEntity) {
+//                    BlockEntityRenderers.register(type, MultiblockTankBER::new);
+//                } else if (blockEntity instanceof MultiblockMachineBlockEntity) {
+//                    BlockEntityRenderers.register(type, MultiblockMachineBER::new);
+//                } else {
+                    BlockEntityRenderers.register(type, c -> new MachineBlockEntityRenderer(c));
+//                }
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
@@ -31,6 +33,10 @@ public class MIRegistries {
         return IMenuTypeExtension.create(CommonProxy.INSTANCE::createClientMachineMenu);
     })::get;
 
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MI.ID);
+
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MI.ID);
+
     private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MI.ID);
 
     private static final Supplier<CreativeModeTab> TAB = TABS.register("general", () -> CreativeModeTab.builder()
@@ -48,6 +54,8 @@ public class MIRegistries {
     static void init(IEventBus modBus) {
         BLOCK_ENTITIES.register(modBus);
         MENUS.register(modBus);
+        RECIPE_SERIALIZERS.register(modBus);
+        RECIPE_TYPES.register(modBus);
         TABS.register(modBus);
     }
 }

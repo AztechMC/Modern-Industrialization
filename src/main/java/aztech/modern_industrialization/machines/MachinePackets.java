@@ -33,26 +33,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 public class MachinePackets {
     public static class C2S {
         // TODO NEO
-//        public static final ResourceLocation SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");
-//        public static final ServerPlayNetworking.PlayChannelHandler ON_SET_AUTO_EXTRACT = (ms, player, handler, buf, sender) -> {
-//            int syncId = buf.readInt();
-//            boolean isItem = buf.readBoolean();
-//            boolean isExtract = buf.readBoolean();
-//            ms.execute(() -> {
-//                if (player.containerMenu.containerId == syncId) {
-//                    var screenHandler = (MachineMenuServer) player.containerMenu;
-//                    AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(GuiComponents.AUTO_EXTRACT);
-//                    OrientationComponent orientation = autoExtract.getOrientation();
-//                    if (isItem) {
-//                        orientation.extractItems = isExtract;
-//                    } else {
-//                        orientation.extractFluids = isExtract;
-//                    }
-//                    screenHandler.blockEntity.setChanged();
-//                    screenHandler.blockEntity.sync();
-//                }
-//            });
-//        };
 //        public static final ResourceLocation REI_LOCK_SLOTS = new MIIdentifier("rei_lock_slots");
 //        public static final ServerPlayNetworking.PlayChannelHandler ON_REI_LOCK_SLOTS = (ms, player, handler, buf, sender) -> {
 //            int syncId = buf.readInt();

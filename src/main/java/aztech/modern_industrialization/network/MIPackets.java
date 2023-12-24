@@ -4,6 +4,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.network.machines.AdjustSlotCapacityPacket;
 import aztech.modern_industrialization.network.machines.LockAllPacket;
 import aztech.modern_industrialization.network.machines.MachineComponentSyncPacket;
+import aztech.modern_industrialization.network.machines.SetAutoExtractPacket;
 import aztech.modern_industrialization.network.machines.SetLockingModePacket;
 import aztech.modern_industrialization.network.machines.UpdateFluidSlotPacket;
 import aztech.modern_industrialization.network.machines.UpdateItemSlotPacket;
@@ -39,6 +40,8 @@ public class MIPackets {
         register(SetLockingModePacket.class, SetLockingModePacket::new);
         register(UpdateFluidSlotPacket.class, UpdateFluidSlotPacket::new);
         register(UpdateItemSlotPacket.class, UpdateItemSlotPacket::new);
+        // Machine
+        register(SetAutoExtractPacket.class, SetAutoExtractPacket::new);
     }
 
     public static void init() {

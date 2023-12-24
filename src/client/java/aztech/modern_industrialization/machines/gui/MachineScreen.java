@@ -229,7 +229,10 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             if (!renderedKey.isBlank()) {
                 RenderHelper.drawFluidInGui(guiGraphics, renderedKey, slot.x, slot.y);
             }
-        } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
+            return;
+        }
+
+        if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
             ConfigurableItemStack itemStack = itemSlot.getConfStack();
             if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
                 Item item = itemStack.getLockedInstance();
@@ -237,9 +240,8 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                     RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x, slot.y, "0");
                 }
             }
-        } else {
-            super.renderSlot(guiGraphics, slot);
         }
+        super.renderSlot(guiGraphics, slot);
     }
 
     private void renderConfigurableSlotTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {

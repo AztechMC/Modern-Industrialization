@@ -33,6 +33,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,11 +62,10 @@ public class CommonProxy {
 
     private static MinecraftServer currentServer = null;
 
-    // TODO NEO
-//    public static void initEvents() {
-//        ServerLifecycleEvents.SERVER_STARTED.register(s -> currentServer = s);
-//        ServerLifecycleEvents.SERVER_STOPPED.register(s -> currentServer = null);
-//    }
+    public static void initEvents() {
+        NeoForge.EVENT_BUS.addListener(ServerStartedEvent.class, e -> currentServer = e.getServer());
+        NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, e -> currentServer = null);
+    }
 
     public static MinecraftServer getCurrentServer() {
         return currentServer;

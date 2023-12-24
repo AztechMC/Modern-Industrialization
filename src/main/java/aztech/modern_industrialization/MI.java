@@ -2,9 +2,12 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.fluid.MIFluid;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.network.MIPackets;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -35,7 +38,11 @@ public class MI {
         MIRegistries.init(modBus);
         MIMaterials.init();
 
+        MIMachineRecipeTypes.init();
+        SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
+
+        CommonProxy.initEvents();
 
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenServer.configure(

@@ -16,9 +16,8 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.context.ContainerItemContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferApiImpl;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.List;

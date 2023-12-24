@@ -105,6 +105,10 @@ public interface Transaction extends AutoCloseable, TransactionContext {
 		return maybeParent == null ? openOuter() : maybeParent.openNested();
 	}
 
+	static Transaction hackyOpen() {
+		return openNested(getCurrentUnsafe());
+	}
+
 	/**
 	 * Retrieve the currently open transaction, or null if there is none.
 	 *

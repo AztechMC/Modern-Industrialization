@@ -23,14 +23,12 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
 import java.util.*;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+
+import aztech.modern_industrialization.util.ModelHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -45,14 +43,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineCasingModel implements UnbakedModel, BakedModel {
+public class MachineCasingModel {
     public static MachineCasingModel get(MachineCasing casing) {
         return (MachineCasingModel) casing.model;
     }
 
-    ResourceLocation id;
     /**
      * <ol>
      * <li>Top texture</li>
@@ -60,99 +58,35 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
      * <li>Bottom texture</li>
      * </ol>
      */
-    private final Material[] spriteIds = new Material[3];
     private static final String[] SIDES = new String[] { "top", "side", "bottom" };
 
-    private Mesh mesh;
-    private TextureAtlasSprite sideSprite;
+    private final BakedQuad[] quads;
+    private final TextureAtlasSprite sideSprite;
 
-    public MachineCasingModel(String folder) {
-        this.id = new MIIdentifier("machine_casing/" + folder);
+    public MachineCasingModel(String folder, Function<Material, TextureAtlasSprite> spriteGetter) {
+        TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
         for (int i = 0; i < 3; ++i) {
-            spriteIds[i] = new Material(InventoryMenu.BLOCK_ATLAS,
+            var spriteId = new Material(InventoryMenu.BLOCK_ATLAS,
                     new MIIdentifier("block/casings/" + folder + "/" + SIDES[i]));
+            sprites[i] = spriteGetter.apply(spriteId);
         }
+        this.sideSprite = sprites[1];
+        BakedQuad[] quads = new BakedQuad[6];
+        var vc = new QuadBakingVertexConsumer.Buffered();
+        for (int i = 0; i < 6; ++i) {
+            Direction direction = Direction.from3DDataValue(i);
+            int spriteIdx = direction == Direction.UP ? 0 : direction == Direction.DOWN ? 2 : 1;
+            ModelHelper.emitSprite(vc, direction, sprites[spriteIdx], 0.0f);
+            quads[i] = vc.getQuad();
+        }
+        this.quads = quads;
     }
 
-    public Mesh getMesh() {
-        return mesh;
+    public BakedQuad getQuad(Direction side) {
+        return quads[side.get3DDataValue()];
     }
 
     public TextureAtlasSprite getSideSprite() {
         return sideSprite;
-    }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
-    }
-
-    @Nullable
-    @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
-        TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
-        for (int i = 0; i < 3; ++i) {
-            sprites[i] = spriteGetter.apply(spriteIds[i]);
-        }
-        this.sideSprite = sprites[1];
-        MeshBuilder meshBuilder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
-        QuadEmitter emitter = meshBuilder.getEmitter();
-        for (Direction direction : Direction.values()) {
-            int spriteIdx = direction == Direction.UP ? 0 : direction == Direction.DOWN ? 2 : 1;
-            emitter.square(direction, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-            emitter.spriteBake(sprites[spriteIdx], MutableQuadView.BAKE_LOCK_UV);
-            emitter.color(-1, -1, -1, -1);
-            emitter.emit();
-        }
-        this.mesh = meshBuilder.build();
-        return this;
-    }
-
-    public void setId(ResourceLocation id) {
-        this.id = id;
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, RandomSource random) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return false;
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return false;
-    }
-
-    @Override
-    public boolean usesBlockLight() {
-        return false;
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return null;
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return null;
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return null;
     }
 }

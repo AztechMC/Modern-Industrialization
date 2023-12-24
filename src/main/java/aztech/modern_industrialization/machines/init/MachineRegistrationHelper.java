@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.BEP;
@@ -116,9 +117,7 @@ public class MachineRegistrationHelper {
 
     public static void addMachineModel(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
             boolean sideOverlay, boolean hasActive) {
-        MachineBlock.REGISTERED_MACHINES.put(id, defaultCasing);
-        // TODO NEO
-//        MachineModelsToGenerate.register(id, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
+        MachineModelsToGenerate.register(id, defaultCasing, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
     }
 
     public static void addModelsForTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {

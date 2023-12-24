@@ -23,24 +23,17 @@
  */
 package aztech.modern_industrialization;
 
-import static net.minecraft.world.level.material.MapColor.STONE;
-
-import aztech.modern_industrialization.datagen.model.MIModelProvider;
+import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import com.google.gson.JsonParser;
+
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.model.ModelLocationUtils;
-import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -52,7 +45,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -168,7 +160,7 @@ public class MIBlock {
     public static class BlockDefinitionParams<T extends Block> {
 
         public final BlockBehaviour.Properties props;
-        public BiConsumer<Block, MIModelProvider> modelGenerator;
+        public BiConsumer<Block, BaseModelProvider> modelGenerator;
         public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {
         };
         public BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
@@ -181,7 +173,7 @@ public class MIBlock {
         protected BlockDefinitionParams(BlockBehaviour.Properties properties,
                 Function<BlockBehaviour.Properties, T> ctor,
                 BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
-                BiConsumer<Block, MIModelProvider> modelGenerator,
+                BiConsumer<Block, BaseModelProvider> modelGenerator,
                 BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
                 List<TagKey<Block>> tags) {
             this.props = properties;
@@ -225,7 +217,7 @@ public class MIBlock {
             return this;
         }
 
-        public BlockDefinitionParams<T> withModel(BiConsumer<Block, MIModelProvider> modelGenerator) {
+        public BlockDefinitionParams<T> withModel(BiConsumer<Block, BaseModelProvider> modelGenerator) {
             this.modelGenerator = modelGenerator;
             return this;
         }

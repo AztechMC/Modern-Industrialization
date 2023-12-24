@@ -14,7 +14,7 @@ description='''A modern industrial mod for Minecraft.'''
 
 [[dependencies.modern_industrialization]]
 modId="neoforge"
-mandatory=true
+type="required"
 versionRange="${neo_version_range}"
 ordering="AFTER"
 side="BOTH"

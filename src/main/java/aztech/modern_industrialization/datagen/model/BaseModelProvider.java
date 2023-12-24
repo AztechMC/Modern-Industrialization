@@ -30,42 +30,27 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class MIModelProvider extends BlockStateProvider {
+// TODO: PR to neoforge
+public abstract class BaseModelProvider extends BlockStateProvider {
 
-    public MIModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+    public BaseModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, MI.ID, exFileHelper);
     }
 
-    @Override
-    protected void registerStatesAndModels() {
-        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCK_DEFINITIONS.values()) {
-            if (blockDefinition.modelGenerator != null) {
-                blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), this);
-            }
-        }
+    protected ResourceLocation key(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block);
+    }
 
-        for (FluidDefinition fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
-            existingModel(fluidDefinition.asFluidBlock(), Blocks.AIR);
-        }
-
-        // TODO NEO
-//        blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);
-
-        // Item models as well...
-        for (ItemDefinition<?> itemDefinition : MIItem.ITEM_DEFINITIONS.values()) {
-            if (itemDefinition.modelGenerator != null) {
-                itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
-            }
-        }
+    protected String name(Block block) {
+        return key(block).getPath();
     }
 
     public void existingModel(Block block) {

@@ -20,11 +20,9 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.bas
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -110,14 +108,14 @@ public final class StorageUtil {
 
 			iterationTransaction.commit();
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Moving resources between storages");
-			report.addElement("Move details")
-					.add("Input storage", from::toString)
-					.add("Output storage", to::toString)
-					.add("Filter", filter::toString)
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Moving resources between storages");
+			report.addCategory("Move details")
+					.setDetail("Input storage", from::toString)
+					.setDetail("Output storage", to::toString)
+					.setDetail("Filter", filter::toString)
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return totalMoved;
@@ -193,12 +191,12 @@ public final class StorageUtil {
 				if (amount > 0) return new ResourceAmount<>(resource, amount);
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Extracting resources from storage");
-			report.addElement("Extraction details")
-					.add("Storage", storage::toString)
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Extracting resources from storage");
+			report.addCategory("Extraction details")
+					.setDetail("Storage", storage::toString)
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return null;
@@ -228,13 +226,13 @@ public final class StorageUtil {
 				if (amount == maxAmount) return amount;
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Inserting resources into slots");
-			report.addElement("Slotted insertion details")
-					.add("Slots", () -> Objects.toString(slots, null))
-					.add("Resource", () -> Objects.toString(resource, null))
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Inserting resources into slots");
+			report.addCategory("Slotted insertion details")
+					.setDetail("Slots", () -> Objects.toString(slots, null))
+					.setDetail("Resource", () -> Objects.toString(resource, null))
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 
 		return amount;
@@ -261,13 +259,13 @@ public final class StorageUtil {
 				return 0;
 			}
 		} catch (Exception e) {
-			CrashReport report = CrashReport.create(e, "Inserting resources into a storage");
-			report.addElement("Insertion details")
-					.add("Storage", () -> Objects.toString(storage, null))
-					.add("Resource", () -> Objects.toString(resource, null))
-					.add("Max amount", maxAmount)
-					.add("Transaction", transaction);
-			throw new CrashException(report);
+			CrashReport report = CrashReport.forThrowable(e, "Inserting resources into a storage");
+			report.addCategory("Insertion details")
+					.setDetail("Storage", () -> Objects.toString(storage, null))
+					.setDetail("Resource", () -> Objects.toString(resource, null))
+					.setDetail("Max amount", maxAmount)
+					.setDetail("Transaction", transaction);
+			throw new ReportedException(report);
 		}
 	}
 
@@ -404,6 +402,6 @@ public final class StorageUtil {
 			}
 		}
 
-		return MathHelper.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
+		return Mth.floor(fillPercentage / viewCount * 14) + (hasNonEmptyView ? 1 : 0);
 	}
 }

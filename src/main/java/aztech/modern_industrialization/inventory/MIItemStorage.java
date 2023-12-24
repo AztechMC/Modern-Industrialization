@@ -25,11 +25,20 @@ package aztech.modern_industrialization.inventory;
 
 import java.util.List;
 import java.util.Set;
+
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import com.google.common.primitives.Ints;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> implements WhitelistedItemStorage {
+    public final IItemHandler itemHandler = new ItemHandler();
+
     public MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }
@@ -51,6 +60,77 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
             if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
                 whitelist.add(stack.getLockedInstance());
             }
+        }
+    }
+
+    public class ItemHandler implements IItemHandler {
+        @Override
+        public int getSlots() {
+            return stacks.size();
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return stacks.get(slot).getVariant().toStack(Ints.saturatedCast(stacks.get(slot).getAmount()));
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack item, boolean simulate) {
+            if (item.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+
+            var stack = stacks.get(slot);
+            ItemVariant resource = ItemVariant.of(item);
+
+            boolean isSlotEmpty = stack.getAmount() == 0 && stack.getLockedInstance() == null;
+            boolean canInsert;
+
+            if (stack.getAmount() == 0) {
+                // If the amount is 0, we check if the lock allows it.
+                canInsert = stack.isResourceAllowedByLock(resource);
+            } else {
+                // Otherwise we check that the resources match exactly.
+                canInsert = stack.getResource().equals(resource);
+            }
+
+            if (canInsert) {
+                long inserted = Math.min(item.getCount(), stack.getRemainingCapacityFor(resource));
+
+                if (inserted > 0 && !simulate) {
+                    stack.setKey(resource);
+                    stack.increment(inserted);
+                }
+
+                return inserted == item.getCount() ? ItemStack.EMPTY : resource.toStack((int) (item.getCount() - inserted));
+            }
+
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (amount <= 0) {
+                return ItemStack.EMPTY;
+            }
+            try (var tx = Transaction.hackyOpen()) {
+                var variant = stacks.get(slot).getVariant();
+                long result = stacks.get(slot).extract(variant, amount, tx);
+                if (result > 0 && !simulate) {
+                    tx.commit();
+                }
+                return result == 0 ? ItemStack.EMPTY : variant.toStack((int) result);
+            }
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return (int) stacks.get(slot).getCapacity();
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return stacks.get(slot).isResourceAllowedByLock(stack.getItem());
         }
     }
 }

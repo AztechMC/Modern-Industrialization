@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines;
 
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -63,6 +64,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -281,14 +283,17 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    // TODO NEO 2 methods below
-//    public static void registerItemApi(BlockEntityType<?> bet) {
-//        ItemStorage.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage, bet);
-//    }
-//
-//    public static void registerFluidApi(BlockEntityType<?> bet) {
-//        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage, bet);
-//    }
+    public static void registerItemApi(BlockEntityType<?> bet) {
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet, (be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage.itemHandler);
+        });
+    }
+
+    public static void registerFluidApi(BlockEntityType<?> bet) {
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage.fluidHandler);
+        });
+    }
 
     public List<ItemStack> dropExtra() {
         List<ItemStack> drops = new ArrayList<>();

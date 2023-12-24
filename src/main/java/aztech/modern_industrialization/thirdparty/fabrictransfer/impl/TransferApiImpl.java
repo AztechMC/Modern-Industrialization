@@ -16,8 +16,10 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.impl;
 
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.SlottedStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,18 +93,17 @@ public class TransferApiImpl {
 		};
 	}
 
-	// TODO NEO
-//	public static <T> List<SingleSlotStorage<T>> makeListView(SlottedStorage<T> storage) {
-//		return new AbstractList<>() {
-//			@Override
-//			public SingleSlotStorage<T> get(int index) {
-//				return storage.getSlot(index);
-//			}
-//
-//			@Override
-//			public int size() {
-//				return storage.getSlotCount();
-//			}
-//		};
-//	}
+	public static <T> List<SingleSlotStorage<T>> makeListView(SlottedStorage<T> storage) {
+		return new AbstractList<>() {
+			@Override
+			public SingleSlotStorage<T> get(int index) {
+				return storage.getSlot(index);
+			}
+
+			@Override
+			public int size() {
+				return storage.getSlotCount();
+			}
+		};
+	}
 }

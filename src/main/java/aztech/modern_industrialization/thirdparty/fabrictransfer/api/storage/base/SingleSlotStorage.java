@@ -18,7 +18,7 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.ba
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.SlottedStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferApiImpl;
 
 import java.util.Iterator;
 

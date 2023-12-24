@@ -2,8 +2,11 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
+import aztech.modern_industrialization.machines.models.MachineUnbakedModel;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -12,6 +15,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.Objects;
@@ -38,5 +42,16 @@ public class MIClient {
         event.enqueueWork(() -> {
             MenuScreens.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
         });
+    }
+
+    @SubscribeEvent
+    public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(MachineCasingHolderModel.LOADER_ID, MachineCasingHolderModel.LOADER);
+        event.register(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.LOADER);
+    }
+
+    @SubscribeEvent
+    public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+        event.register(MachineCasingHolderModel.MODEL_ID);
     }
 }

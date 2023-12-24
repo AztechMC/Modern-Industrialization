@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
-
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import java.util.HashSet;
@@ -34,12 +32,13 @@ import java.util.Set;
 
 public class MIParts {
 
-    public static final BatteryPart BATTERY = new BatteryPart();
-    public static final BarrelPart BARREL = new BarrelPart();
+    // TODO NEO commented out parts
+//    public static final BatteryPart BATTERY = new BatteryPart();
+//    public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
     public static final BlockPart BLOCK = new BlockPart();
     public static final PartTemplate BOLT = new PartTemplate("Bolt", "bolt");
-    public static final CablePart CABLE = new CablePart();
+//    public static final CablePart CABLE = new CablePart();
     public static final PartTemplate COIL = new PartTemplate("Coil", "coil").asColumnBlock(SortOrder.COILS);
     public static final PartTemplate CRUSHED_DUST = new PartTemplate("Crushed Dust", "crushed_dust");
     public static final PartTemplate CURVED_PLATE = new PartTemplate("Curved Plate", "curved_plate");
@@ -55,7 +54,7 @@ public class MIParts {
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
     public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
         var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-        TagsToGenerate.generateTag("c:" + itemPath, item.asItem(), englishName + "s");
+        TagsToGenerate.generateTag("c:" + itemPath, item, englishName + "s");
     })
             .withTexture(new TextureGenParams.Gem())
             .withCustomPath("%s", "%s");
@@ -70,8 +69,8 @@ public class MIParts {
     public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("Pipe Machine Casing", "machine_casing_pipe");
     public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
     public static final PartTemplate NUGGET = new PartTemplate("Nugget", "nugget");
-    public static final OrePart ORE = new OrePart(false);
-    public static final OrePart ORE_DEEPSLATE = new OrePart(true);
+//    public static final OrePart ORE = new OrePart(false);
+//    public static final OrePart ORE_DEEPSLATE = new OrePart(true);
     public static final PartTemplate PLATE = new PartTemplate("Plate", "plate");
     public static final RawMetalPart RAW_METAL = new RawMetalPart(false);
     public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);
@@ -79,17 +78,17 @@ public class MIParts {
     public static final PartTemplate ROD = new PartTemplate("Rod", "rod");
     public static final PartTemplate ROD_MAGNETIC = new PartTemplate("Magnetic %s Rod", "rod_magnetic").withOverlay(ROD, "magnetic");
     public static final PartTemplate ROTOR = new PartTemplate("Rotor", "rotor");
-    public static final TankPart TANK = new TankPart();
+//    public static final TankPart TANK = new TankPart();
     public static final PartTemplate TINY_DUST = new PartTemplate("Tiny Dust", "tiny_dust");
     public static final PartTemplate WIRE = new PartTemplate("Wire", "wire");
     public static final PartTemplate WIRE_MAGNETIC = new PartTemplate("Magnetic %s Wire", "wire_magnetic").withOverlay(WIRE, "magnetic");
 
-    public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
-    public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
-    public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
-    public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
-
-    public static final ControlRodPart CONTROL_ROD = new ControlRodPart();
+//    public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
+//    public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
+//    public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
+//    public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
+//
+//    public static final ControlRodPart CONTROL_ROD = new ControlRodPart();
 
     public static final PartTemplate N_DOPED_PLATE = new PartTemplate("N-Doped %s Plate", "n_doped_plate").withOverlay(PLATE, "n_doped");
     public static final PartTemplate P_DOPED_PLATE = new PartTemplate("P-Doped %s Plate", "p_doped_plate").withOverlay(PLATE, "p_doped");
@@ -97,7 +96,8 @@ public class MIParts {
     public static final PartTemplate[] ITEM_PURE_NON_METAL = new PartTemplate[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final PartTemplate[] ITEM_PURE_METAL = new PartTemplate[] { INGOT, NUGGET, TINY_DUST, DUST };
 
-    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
+    // TODO NEO uncomment ore
+    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, /*ORE, */PLATE, TINY_DUST, RAW_METAL,
             RAW_METAL_BLOCK);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
@@ -113,7 +113,8 @@ public class MIParts {
     public record CategoryTag(String tag, String englishName) {
     }
 
-    public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
+    // TODO NEO uncomment ore and barrel
+    public static final List<PartKey> BLOCKS = PartKeyProvider.of(/*ORE, BARREL, */BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
 
 }

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 
 public class KubeJSProxy {
     public static KubeJSProxy instance = new KubeJSProxy();
@@ -31,9 +32,8 @@ public class KubeJSProxy {
     public void fireAddMaterialsEvent() {
     }
 
-    // TODO NEO
-//    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
-//    }
+    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
+    }
 
     public void fireRegisterFluidsEvent() {
     }

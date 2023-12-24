@@ -131,9 +131,10 @@ class PartTextureGenerator {
     }
 
     private void processDepletedNuclear() {
-        MITextures.generateItemPartTexture(mtm,
-                NuclearFuelPart.Type.SIMPLE.key, "common", itemPath, false,
-                new DepletedColoramp(coloramp));
+        // TODO NEO
+//        MITextures.generateItemPartTexture(mtm,
+//                NuclearFuelPart.Type.SIMPLE.key, "common", itemPath, false,
+//                new DepletedColoramp(coloramp));
     }
 
     private void processDoubleIngot(PartKeyProvider part) {

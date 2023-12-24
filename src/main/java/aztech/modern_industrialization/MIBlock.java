@@ -324,6 +324,16 @@ public class MIBlock {
             this.props.isValidSpawn(isValidSpawn);
             return this;
         }
+
+        public BlockDefinitionParams<T> destroyTime(float destroyTime) {
+            this.props.destroyTime(destroyTime);
+            return this;
+        }
+
+        public BlockDefinitionParams<T> explosionResistance(float explosionResistance) {
+            this.props.explosionResistance(explosionResistance);
+            return this;
+        }
     }
 
 }

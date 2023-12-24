@@ -3,6 +3,7 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
+import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.network.MIPackets;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -32,6 +33,7 @@ public class MI {
         MIBlock.init(modBus);
         MIItem.init(modBus);
         MIRegistries.init(modBus);
+        MIMaterials.init();
 
         SingleBlockSpecialMachines.init();
 

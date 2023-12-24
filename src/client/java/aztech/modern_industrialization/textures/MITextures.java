@@ -26,6 +26,10 @@ package aztech.modern_industrialization.textures;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.FluidDefinition;
+import aztech.modern_industrialization.materials.Material;
+import aztech.modern_industrialization.materials.MaterialRegistry;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.IColoramp;
 import com.google.gson.JsonElement;
@@ -56,21 +60,20 @@ public final class MITextures {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         Consumer<IORunnable> defer = r -> futures.add(CompletableFuture.runAsync(r::safeRun, Util.backgroundExecutor()));
 
-        // TODO NEO materials
-//        for (Material material : MaterialRegistry.getMaterials().values()) {
-//            var meanRgb = material.get(MaterialProperty.MEAN_RGB);
-//
-//            if (meanRgb == 0) {
-//                ModernIndustrialization.LOGGER.error("Missing mean RGB for material {}", material.name);
-//                continue;
-//            }
-//
-//            IColoramp coloramp = new Coloramp(mtm, meanRgb, material.name);
-//
-//            for (MaterialItemPart part : material.getParts().values()) {
-//                defer.accept(() -> PartTextureGenerator.processPart(coloramp, mtm, material, part));
-//            }
-//        }
+        for (Material material : MaterialRegistry.getMaterials().values()) {
+            var meanRgb = material.get(MaterialProperty.MEAN_RGB);
+
+            if (meanRgb == 0) {
+                MI.LOGGER.error("Missing mean RGB for material {}", material.name);
+                continue;
+            }
+
+            IColoramp coloramp = new Coloramp(mtm, meanRgb, material.name);
+
+            for (MaterialItemPart part : material.getParts().values()) {
+                defer.accept(() -> PartTextureGenerator.processPart(coloramp, mtm, material, part));
+            }
+        }
 
         for (FluidDefinition fluid : MIFluids.FLUID_DEFINITIONS.values()) {
             defer.accept(() -> registerFluidTextures(mtm, fluid));

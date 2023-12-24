@@ -27,10 +27,11 @@ import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class TagsToGenerate {
 
-    static final Map<String, List<Item>> tagToItemMap = new HashMap<>();
+    static final Map<String, List<ItemLike>> tagToItemMap = new HashMap<>();
     static final Set<String> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
@@ -40,7 +41,7 @@ public class TagsToGenerate {
         tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 
-    public static void generateTag(String tag, Item item, String tagEnglishName) {
+    public static void generateTag(String tag, ItemLike item, String tagEnglishName) {
         if (tag.startsWith("#")) {
             throw new IllegalArgumentException("Tag must not start with #: " + tag);
         }
@@ -60,7 +61,7 @@ public class TagsToGenerate {
         addTranslation(tagTarget, targetEnglishName);
     }
 
-    public static void generateTag(TagKey<Item> tag, Item item, String tagEnglishName) {
+    public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName) {
         generateTag(tag.location().toString(), item, tagEnglishName);
     }
 

@@ -31,6 +31,7 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class PartTemplate implements PartKeyProvider {
 
@@ -75,11 +76,11 @@ public class PartTemplate implements PartKeyProvider {
         this.itemPathFormatter = itemPathFormatter;
     }
 
-    public static Item createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
-        return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part)).asItem();
+    public static ItemLike createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
+        return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part));
     }
 
-    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, Item item) {
+    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, ItemLike item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
@@ -159,7 +160,8 @@ public class PartTemplate implements PartKeyProvider {
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
-                            .withModel(TexturedModel.COLUMN)
+                            // TODO NEO column model
+                            //.withModel(TexturedModel.COLUMN)
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)
 

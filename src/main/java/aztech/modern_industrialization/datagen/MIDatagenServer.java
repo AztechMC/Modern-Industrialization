@@ -23,11 +23,24 @@
  */
 package aztech.modern_industrialization.datagen;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class MIDatagenServer {
-    public static void configure(DataGenerator gen, boolean run, boolean runtimeDatagen) {
+    public static void configure(
+            DataGenerator gen,
+            ExistingFileHelper fileHelper,
+            CompletableFuture<HolderLookup.Provider> lookupProvider,
+            boolean run,
+            boolean runtimeDatagen) {
         // TODO NEO
 //        var aggregate = pack.addProvider(AggregateDataProvider.create("Server Data"));
 //
@@ -44,9 +57,9 @@ public class MIDatagenServer {
 //        aggregate.addProvider(VanillaCompatRecipesProvider::new);
 //
 //        aggregate.addProvider(BlockLootTableProvider::new);
-//
-//        aggregate.addProvider(MIDynamicRegistriesProvider::new);
-//
+
+        gen.addProvider(run, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
+
 //        aggregate.addProvider(MIBlockTagProvider::new);
 //        aggregate.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
 //        aggregate.addProvider(MIPoiTypeTagProvider::new);

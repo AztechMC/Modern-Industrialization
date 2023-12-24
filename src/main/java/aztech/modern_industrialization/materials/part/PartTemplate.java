@@ -140,7 +140,7 @@ public class PartTemplate implements PartKeyProvider {
 
             );
 
-            setupTag(partContext, part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition);
 
         };
         return new PartTemplate(englishNameFormatter, partKey, blockRegister, textureGenParams, itemPathFormatter);

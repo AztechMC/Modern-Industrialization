@@ -190,7 +190,7 @@ public class MIBlock {
 
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
             return new BlockDefinitionParams<>(properties, Block::new, BlockItem::new,
-                    (block, modelGenerator) -> modelGenerator.cubeAll(block),
+                    (block, modelGenerator) -> modelGenerator.simpleBlockWithItem(block, modelGenerator.cubeAll(block)),
                     (block, lootGenerator) -> lootGenerator.dropSelf(block),
                     List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
         }
@@ -332,6 +332,11 @@ public class MIBlock {
 
         public BlockDefinitionParams<T> explosionResistance(float explosionResistance) {
             this.props.explosionResistance(explosionResistance);
+            return this;
+        }
+
+        public BlockDefinitionParams<T> sound(SoundType soundType) {
+            this.props.sound(soundType);
             return this;
         }
     }

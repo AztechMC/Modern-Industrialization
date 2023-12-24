@@ -38,7 +38,12 @@ public class MI {
         SingleBlockSpecialMachines.init();
 
         modBus.addListener(GatherDataEvent.class, event -> {
-            MIDatagenServer.configure(event.getGenerator(), event.includeServer(), false);
+            MIDatagenServer.configure(
+                    event.getGenerator(),
+                    event.getExistingFileHelper(),
+                    event.getLookupProvider(),
+                    event.includeServer(),
+                    false);
         });
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);

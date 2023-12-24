@@ -32,6 +32,9 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
+import aztech.modern_industrialization.materials.set.MaterialBlockSet;
+import aztech.modern_industrialization.materials.set.MaterialOreSet;
+import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import net.minecraft.util.valueproviders.UniformInt;
 
 // TODO NEO all the materials...
@@ -88,7 +91,7 @@ public class MIMaterials {
 //    public static final Material STEEL;
 //    public static final Material SULFUR;
 //    public static final Material SUPERCONDUCTOR;
-//    public static final Material TIN;
+    public static final Material TIN;
 //    public static final Material TITANIUM;
 //    public static final Material TUNGSTEN;
 //    public static final Material URANIUM;
@@ -302,15 +305,17 @@ public class MIMaterials {
 //                        .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
 //                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 //
-//        TIN = MaterialRegistry
-//                .addMaterial(new MaterialBuilder("Tin", "tin")
-//                        .set(MaterialProperty.SET, DULL)
-//                        .set(MaterialProperty.MEAN_RGB, 0xc0bcd0)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-//                        .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON))
-//                        .addParts(WIRE).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
-//                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.LV))
+        TIN = MaterialRegistry
+                .addMaterial(new MaterialBuilder("Tin", "tin")
+                        .set(MaterialProperty.SET, DULL)
+                        .set(MaterialProperty.MEAN_RGB, 0xc0bcd0)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON))
+                        .addParts(WIRE).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
+                        // TODO NEO add cables back
+                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)));//.addParts(CABLE.of(CableTier.LV)));
+        // TODO NEO recipes
 //                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 //
 //        STEEL = MaterialRegistry.addMaterial(

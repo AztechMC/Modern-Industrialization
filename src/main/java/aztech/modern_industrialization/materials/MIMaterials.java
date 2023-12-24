@@ -48,7 +48,7 @@ public class MIMaterials {
 //    public static final Material BERYLLIUM;
 //    public static final Material BLASTPROOF_ALLOY;
 //    public static final Material BRICK;
-//    public static final Material BRONZE;
+    public static final Material BRONZE;
 //    public static final Material CADMIUM;
 //    public static final Material CARBON;
 //    public static final Material CHROMIUM;
@@ -88,7 +88,7 @@ public class MIMaterials {
 //    public static final Material SODIUM;
 //    public static final Material SOLDERING_ALLOY;
 //    public static final Material STAINLESS_STEEL;
-//    public static final Material STEEL;
+    public static final Material STEEL;
 //    public static final Material SULFUR;
 //    public static final Material SUPERCONDUCTOR;
     public static final Material TIN;
@@ -131,12 +131,11 @@ public class MIMaterials {
     public static MaterialBuilder addVanillaMetal(boolean nugget, MaterialBuilder builder) {
         String n = builder.getMaterialName();
         MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
-                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"));
-                // TODO NEO add parts back
-//                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-//                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
-//                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
-//                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
 
         if (nugget) {
             res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
@@ -146,24 +145,24 @@ public class MIMaterials {
         return res;
     }
 
-//    public static MaterialBuilder addVanillaGem(boolean compressor, MaterialBuilder builder) {
-//        return addVanillaGem(compressor, builder.getMaterialName(), builder);
-//    }
-//
-//    public static MaterialBuilder addVanillaGem(boolean compressor, String gemPath, MaterialBuilder builder) {
-//        String n = builder.getMaterialName();
-//        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
-//                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-//                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-//                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
-//
+    public static MaterialBuilder addVanillaGem(boolean compressor, MaterialBuilder builder) {
+        return addVanillaGem(compressor, builder.getMaterialName(), builder);
+    }
+
+    public static MaterialBuilder addVanillaGem(boolean compressor, String gemPath, MaterialBuilder builder) {
+        String n = builder.getMaterialName();
+        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
+
 //        res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
 //
 //        if (compressor) {
 //            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
 //        }
-//        return res;
-//    }
+        return res;
+    }
 
     static {
         GOLD = MaterialRegistry.addMaterial(addVanillaMetal(true,
@@ -294,17 +293,18 @@ public class MIMaterials {
 //                        })
 //                        .addRecipes(StandardRecipes::apply));
 //
-//        BRONZE = MaterialRegistry.addMaterial(
-//                new MaterialBuilder("Bronze", "bronze")
-//                        .set(MaterialProperty.SET, SHINY)
-//                        .set(MaterialProperty.MEAN_RGB, 0xffcc00)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-//                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
-//                        .addParts(BARREL.of(32)).addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of())
-//                        .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
+        BRONZE = MaterialRegistry.addMaterial(
+                new MaterialBuilder("Bronze", "bronze")
+                        .set(MaterialProperty.SET, SHINY)
+                        .set(MaterialProperty.MEAN_RGB, 0xffcc00)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BLOCK.of(MaterialBlockSet.COPPER))/*.addParts(TANK.of(4))*/.addParts(DRILL_HEAD, DRILL)
+                        // TODO NEO barrel, tank, recipes
+                        /*.addParts(BARREL.of(32))*/.addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of())
+                        .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks")));
 //                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
-//
+
         TIN = MaterialRegistry
                 .addMaterial(new MaterialBuilder("Tin", "tin")
                         .set(MaterialProperty.SET, DULL)
@@ -317,17 +317,18 @@ public class MIMaterials {
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)));//.addParts(CABLE.of(CableTier.LV)));
         // TODO NEO recipes
 //                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
-//
-//        STEEL = MaterialRegistry.addMaterial(
-//                new MaterialBuilder("Steel", "steel")
-//                        .set(MaterialProperty.SET, METALLIC)
-//                        .set(MaterialProperty.MEAN_RGB, 0x3f3f3f)
-//                        .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-//                        .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
-//                        .addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of()).addParts(TANK.of(8)).addParts(BARREL.of(128))
+
+        STEEL = MaterialRegistry.addMaterial(
+                new MaterialBuilder("Steel", "steel")
+                        .set(MaterialProperty.SET, METALLIC)
+                        .set(MaterialProperty.MEAN_RGB, 0x3f3f3f)
+                        .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
+                        // TODO NEO tank, barrel, hammer, recipes
+                        .addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of()));/*.addParts(TANK.of(8)).addParts(BARREL.of(128))*/
 //                        .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
 //                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
-//
+
 //        LIGNITE_COAL = MaterialRegistry.addMaterial(new MaterialBuilder("Lignite Coal", "lignite_coal")
 //                .set(MaterialProperty.MAIN_PART, GEM)
 //                .set(MaterialProperty.SET, STONE)

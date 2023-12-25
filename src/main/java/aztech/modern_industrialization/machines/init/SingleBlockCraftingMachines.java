@@ -32,6 +32,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.ElectricCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.SteamCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.components.OverclockComponent;
@@ -206,37 +207,36 @@ public final class SingleBlockCraftingMachines {
             MachineRegistrationHelper.addMachineModel(prefix, id, machine, frontOverlay, topOverlay, sideOverlay);
         }
         if ((tiers & TIER_ELECTRIC) > 0) {
-            // TODO NEO electric machines
-//            SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
-//            SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
-//
-//            String id = tiers == TIER_ELECTRIC ? machine : "electric_" + machine;
-//
-//            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(id, true);
-//            guiParams.accept(guiParamsBuilder);
-//            MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
-//
-//            String electricEnglishName = englishName;
-//
-//            if ((tiers & TIER_BRONZE) > 0 | (tiers & TIER_STEEL) > 0) {
-//                electricEnglishName = "Electric " + englishName;
-//            }
-//
-//            MachineRegistrationHelper.registerMachine(electricEnglishName, id,
-//                    bet -> new ElectricCraftingMachineBlockEntity(bet, type,
-//                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0, ioBucketCapacity),
-//                            builtGuiParams,
-//                            energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
-//                    bet -> {
-//                        ElectricCraftingMachineBlockEntity.registerEnergyApi(bet);
-//                        if (itemInputCount + itemOutputCount > 0) {
-//                            MachineBlockEntity.registerItemApi(bet);
-//                        }
-//                        if (fluidInputCount + fluidOutputCount > 0) {
-//                            MachineBlockEntity.registerFluidApi(bet);
-//                        }
-//                    });
-//            MachineRegistrationHelper.addMachineModel("electric", id, machine, frontOverlay, topOverlay, sideOverlay);
+            SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
+            SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
+
+            String id = tiers == TIER_ELECTRIC ? machine : "electric_" + machine;
+
+            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(id, true);
+            guiParams.accept(guiParamsBuilder);
+            MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
+
+            String electricEnglishName = englishName;
+
+            if ((tiers & TIER_BRONZE) > 0 | (tiers & TIER_STEEL) > 0) {
+                electricEnglishName = "Electric " + englishName;
+            }
+
+            MachineRegistrationHelper.registerMachine(electricEnglishName, id,
+                    bet -> new ElectricCraftingMachineBlockEntity(bet, type,
+                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0, ioBucketCapacity),
+                            builtGuiParams,
+                            energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
+                    bet -> {
+                        ElectricCraftingMachineBlockEntity.registerEnergyApi(bet);
+                        if (itemInputCount + itemOutputCount > 0) {
+                            MachineBlockEntity.registerItemApi(bet);
+                        }
+                        if (fluidInputCount + fluidOutputCount > 0) {
+                            MachineBlockEntity.registerFluidApi(bet);
+                        }
+                    });
+            MachineRegistrationHelper.addMachineModel("electric", id, machine, frontOverlay, topOverlay, sideOverlay);
         }
 
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);

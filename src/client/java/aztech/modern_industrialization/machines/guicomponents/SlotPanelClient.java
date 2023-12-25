@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -87,7 +86,8 @@ public class SlotPanelClient implements GuiComponentClient {
 
                 @Override
                 public Component getTooltip() {
-                    return MITooltips.line(type.tooltip).build();
+                    // TODO NEO MITooltips
+                    return type.tooltip.text();// MITooltips.line(type.tooltip).build();
                 }
             }
 

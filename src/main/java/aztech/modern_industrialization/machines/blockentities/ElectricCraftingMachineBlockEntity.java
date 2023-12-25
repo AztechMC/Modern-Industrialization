@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
@@ -88,7 +89,9 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(EnergyApi.SIDED, bet, (be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable);
+        });
     }
 
     @Override

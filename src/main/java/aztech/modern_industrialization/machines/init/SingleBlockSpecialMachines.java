@@ -25,24 +25,25 @@ package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.*;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 
 // TODO NEO all comments
 public class SingleBlockSpecialMachines {
 
     public static void init() {
-//        MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
-//                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
-//        MachineRegistrationHelper.registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
-//                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
+        MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
+                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
+        MachineRegistrationHelper.registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
+                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
 
         // TODO: register water pumps in REI?
         MachineRegistrationHelper.registerMachine("Bronze Water Pump", "bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi);
         MachineRegistrationHelper.registerMachine("Steel Water Pump", "steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi);
-//        MachineRegistrationHelper.registerMachine("Electric Water Pump", "electric_water_pump", ElectricWaterPumpBlockEntity::new,
-//                MachineBlockEntity::registerFluidApi,
-//                ElectricWaterPumpBlockEntity::registerEnergyApi);
+        MachineRegistrationHelper.registerMachine("Electric Water Pump", "electric_water_pump", ElectricWaterPumpBlockEntity::new,
+                MachineBlockEntity::registerFluidApi,
+                ElectricWaterPumpBlockEntity::registerEnergyApi);
 
 //        registerTransformers();
 //        registerEUStorage();
@@ -76,10 +77,9 @@ public class SingleBlockSpecialMachines {
 //        MachineRegistrationHelper.registerMachine("Replicator", "replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
 //                MachineBlockEntity::registerItemApi);
 //
-        // TODO NEO add back, "electric"); pump
-        MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel");
-//        MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
-//        MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
+        MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
+        MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
+        MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
 //        MachineRegistrationHelper.addMachineModel("lv_diesel_generator", "diesel_generator", CableTier.LV.casing, true, true, true);
 //        MachineRegistrationHelper.addMachineModel("mv_diesel_generator", "diesel_generator", CableTier.MV.casing, true, true, true);
 //        MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", CableTier.HV.casing, true, true, true);

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanelClient;
+import aztech.modern_industrialization.machines.guicomponents.TemperatureBarClient;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponentsClient {
@@ -62,6 +63,6 @@ public final class GuiComponentsClient {
         register(GuiComponents.REI_SLOT_LOCKING, ReiSlotLockingClient::new);
 //        register(GuiComponents.SHAPE_SELECTION, ShapeSelectionClient::new);
         register(GuiComponents.SLOT_PANEL, SlotPanelClient::new);
-//        register(GuiComponents.TEMPERATURE_BAR, TemperatureBarClient::new);
+        register(GuiComponents.TEMPERATURE_BAR, TemperatureBarClient::new);
     }
 }

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -33,10 +32,10 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.CommonHooks;
 
 public class FuelBurningComponent implements IComponent {
     /**
@@ -113,10 +112,10 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer < maxEuProduction) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
-                Item fuel = stack.getResource().getItem();
+                var fuel = stack.getResource().toStack((int) stack.getAmount());
                 if (ItemStackHelper.consumeFuel(stack, true)) {
-                    Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
-                    if (fuelTime != null && fuelTime > 0) {
+                    int fuelTime = CommonHooks.getBurnTime(fuel, null);
+                    if (fuelTime > 0) {
                         burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         ItemStackHelper.consumeFuel(stack, false);
                         continue outer;
@@ -159,16 +158,17 @@ public class FuelBurningComponent implements IComponent {
 
     public List<Component> getTooltips() {
         List<Component> returnList = new ArrayList<>();
-        returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
-                this.maxEuProduction,
-                MITooltips.EU_PER_TICK_PARSER)
-                .arg(MIFluids.STEAM)
-                .build());
-
-        if (burningEuMultiplier == 2) {
-            returnList.add(
-                    new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
-        }
+        // TODO NEO tooltips
+//        returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
+//                this.maxEuProduction,
+//                MITooltips.EU_PER_TICK_PARSER)
+//                .arg(MIFluids.STEAM)
+//                .build());
+//
+//        if (burningEuMultiplier == 2) {
+//            returnList.add(
+//                    new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
+//        }
 
         return returnList;
     }

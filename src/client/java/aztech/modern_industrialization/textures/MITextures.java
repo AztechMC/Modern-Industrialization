@@ -89,20 +89,20 @@ public final class MITextures {
         // TODO NEO
 //        mtm.runAtEnd(
 //                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
-//
-//        mtm.runAtEnd(
-//                () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-//
-//        mtm.runAtEnd(() -> casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png")));
-//
-//        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_bronze",
-//                mtm.getAssetAsTexture("modern_industrialization:textures/block/bronze_machine_casing.png"),
-//                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-//
-//        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_steel",
-//                mtm.getAssetAsTexture("modern_industrialization:textures/block/steel_machine_casing.png"),
-//                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-//
+
+        mtm.runAtEnd(
+                () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+
+        mtm.runAtEnd(() -> casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png")));
+
+        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_bronze",
+                mtm.getAssetAsTexture("modern_industrialization:textures/block/bronze_machine_casing.png"),
+                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+
+        mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_steel",
+                mtm.getAssetAsTexture("modern_industrialization:textures/block/steel_machine_casing.png"),
+                mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
+
 //        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
 //                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
 //                        mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),

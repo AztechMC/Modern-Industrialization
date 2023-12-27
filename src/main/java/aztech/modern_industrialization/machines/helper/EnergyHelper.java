@@ -25,11 +25,11 @@ package aztech.modern_industrialization.machines.helper;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.EnergyStorageUtil;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import net.minecraft.core.Direction;
-import team.reborn.energy.api.EnergyStorageUtil;
 
 public class EnergyHelper {
 
@@ -38,9 +38,9 @@ public class EnergyHelper {
     }
 
     public static void autoOutput(MachineBlockEntity machine, Direction side, CableTier output, MIEnergyStorage energySource) {
-        var storage = EnergyApi.SIDED.find(machine.getLevel(), machine.getBlockPos().relative(side), side.getOpposite());
+        var storage = machine.getLevel().getCapability(EnergyApi.SIDED, machine.getBlockPos().relative(side), side.getOpposite());
         if (storage != null && storage.canConnect(output)) {
-            if (EnergyStorageUtil.move(energySource, storage, Long.MAX_VALUE, null) > 0) {
+            if (EnergyStorageUtil.move(energySource, storage, Long.MAX_VALUE) > 0) {
                 machine.setChanged();
             }
         }

@@ -33,4 +33,9 @@ record NonLongWrapper(IEnergyStorage storage) implements ILongEnergyStorage {
     public boolean canReceive() {
         return storage.canReceive();
     }
+
+    @Override
+    public String toString() {
+        return "NonLongWrapper[" + storage.toString() + "]";
+    }
 }

@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.ArrayList;
 import java.util.List;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidConstants;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
@@ -47,7 +46,7 @@ public class FluidHelper {
     }
 
     public static MutableComponent getFluidAmount(long amount, long capacity) {
-        if (capacity < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
+        if (capacity < 100 * FluidType.BUCKET_VOLUME || CommonProxy.INSTANCE.hasShiftDown()) {
             String text = amount + " / " + capacity;
             return Component.literal(text + " mB");
         } else {
@@ -59,7 +58,7 @@ public class FluidHelper {
     }
 
     public static MutableComponent getFluidAmount(long amount) {
-        if (amount < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
+        if (amount < 100 * FluidType.BUCKET_VOLUME || CommonProxy.INSTANCE.hasShiftDown()) {
             String text = String.valueOf(amount);
             return Component.literal(text + " mB");
         } else {

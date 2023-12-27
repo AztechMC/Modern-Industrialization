@@ -26,6 +26,7 @@ package aztech.modern_industrialization.proxy;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -61,12 +62,12 @@ public class ClientProxy extends CommonProxy {
 //            Minecraft.getInstance().gameMode.destroyDelay = 5;
 //        }
 //    }
-//
-//    @Override
-//    public boolean hasShiftDown() {
-//        return Screen.hasShiftDown();
-//    }
-//
+
+    @Override
+    public boolean hasShiftDown() {
+        return Screen.hasShiftDown();
+    }
+
 //    @Override
 //    public List<Component> getFluidTooltip(FluidVariant variant) {
 //        return FluidVariantRendering.getTooltip(variant);

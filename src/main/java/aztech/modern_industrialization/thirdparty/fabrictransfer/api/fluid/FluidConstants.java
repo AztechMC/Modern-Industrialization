@@ -23,6 +23,7 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid;
  * the convention is to use 81000 droplets for what is worth one block of that resource.
  */
 // TODO NEO: we don't do that here...
+@Deprecated(forRemoval = true)
 public final class FluidConstants {
 	///////////////////////////
 	// ==== FLUID UNITS ==== //

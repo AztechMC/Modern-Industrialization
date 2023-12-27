@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
@@ -46,8 +47,7 @@ public class ReiMachineRecipes {
     /**
      * List of registered multiblock shape "recipes".
      */
-    // TODO NEO
-//    public static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
+    public static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -77,10 +77,9 @@ public class ReiMachineRecipes {
         machineToClickArea.put(machine, clickArea);
     }
 
-    // TODO NEO
-//    public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
-//        multiblockShapes.add(new Tuple<>(machine, shapeTemplate));
-//    }
+    public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
+        multiblockShapes.add(new Tuple<>(machine, shapeTemplate));
+    }
 
     public static class ClickAreaCategory {
         public final ResourceLocation category;

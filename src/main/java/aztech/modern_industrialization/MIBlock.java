@@ -48,6 +48,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import static net.minecraft.world.level.material.MapColor.STONE;
+
 @SuppressWarnings("unused")
 public class MIBlock {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MI.ID);
@@ -111,10 +113,10 @@ public class MIBlock {
 //
 //    public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
 //            "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
-//
-//    // Materials
-//    public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
-//            BlockDefinitionParams.of(BlockBehaviour.Properties.of().mapColor(STONE)).sortOrder(SortOrder.MATERIALS.and("fire_clay")).destroyTime(2.0f).explosionResistance(6.0f).requiresCorrectToolForDrops());
+
+    // Materials
+    public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
+            BlockDefinitionParams.of(BlockBehaviour.Properties.of().mapColor(STONE)).sortOrder(SortOrder.MATERIALS.and("fire_clay")).destroyTime(2.0f).explosionResistance(6.0f).requiresCorrectToolForDrops());
 
     // @formatter:on
 
@@ -337,6 +339,11 @@ public class MIBlock {
 
         public BlockDefinitionParams<T> sound(SoundType soundType) {
             this.props.sound(soundType);
+            return this;
+        }
+
+        public BlockDefinitionParams<T> requiresCorrectToolForDrops() {
+            this.props.requiresCorrectToolForDrops();
             return this;
         }
     }

@@ -28,11 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aztech.modern_industrialization.machines.guicomponents.AutoExtractClient;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelectionClient;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanelClient;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBarClient;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +55,7 @@ public final class GuiComponentsClient {
     static {
         // TODO NEO add back when needed
         register(GuiComponents.AUTO_EXTRACT, AutoExtractClient::new);
-//        register(GuiComponents.CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGuiClient::new);
+        register(GuiComponents.CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGuiClient::new);
         register(GuiComponents.ENERGY_BAR, EnergyBarClient::new);
 //        register(GuiComponents.LARGE_TANK_FLUID_DISPLAY, LargeTankFluidDisplayClient::new);
         register(GuiComponents.GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGuiClient::new);
@@ -61,7 +63,7 @@ public final class GuiComponentsClient {
         register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);
         register(GuiComponents.RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBarClient::new);
         register(GuiComponents.REI_SLOT_LOCKING, ReiSlotLockingClient::new);
-//        register(GuiComponents.SHAPE_SELECTION, ShapeSelectionClient::new);
+        register(GuiComponents.SHAPE_SELECTION, ShapeSelectionClient::new);
         register(GuiComponents.SLOT_PANEL, SlotPanelClient::new);
         register(GuiComponents.TEMPERATURE_BAR, TemperatureBarClient::new);
     }

@@ -3,8 +3,11 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.init.MultiblockHatches;
+import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
+import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.proxy.CommonProxy;
@@ -41,8 +44,11 @@ public class MI {
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
+        MultiblockHatches.init();
+        MultiblockMachines.init();
 
         CommonProxy.initEvents();
+        ChunkEventListeners.init();
 
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenServer.configure(

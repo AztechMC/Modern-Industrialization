@@ -63,26 +63,5 @@ public class MachinePackets {
 //                }
 //            });
 //        };
-//        public static final ResourceLocation CHANGE_SHAPE = new MIIdentifier("change_shape");
-//        public static final ServerPlayNetworking.PlayChannelHandler ON_CHANGE_SHAPE = (ms, player, handler, buf, sender) -> {
-//            int syncId = buf.readInt();
-//            int shapeLine = buf.readVarInt();
-//            boolean clickedLeftButton = buf.readBoolean();
-//            ms.execute(() -> {
-//                AbstractContainerMenu menu = player.containerMenu;
-//                if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
-//                    ShapeSelection.Server shapeSelection = machineMenu.blockEntity.getComponent(GuiComponents.SHAPE_SELECTION);
-//                    shapeSelection.behavior.handleClick(shapeLine, clickedLeftButton ? -1 : +1);
-//                }
-//            });
-//        };
-//
-//        public static FriendlyByteBuf encodeChangeShape(int syncId, int shapeLine, boolean clickedLeftButton) {
-//            var buf = new FriendlyByteBuf(Unpooled.buffer());
-//            buf.writeInt(syncId);
-//            buf.writeVarInt(shapeLine);
-//            buf.writeBoolean(clickedLeftButton);
-//            return buf;
-//        }
     }
 }

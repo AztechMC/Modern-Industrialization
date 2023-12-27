@@ -29,6 +29,8 @@ import aztech.modern_industrialization.items.SortOrder;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -38,7 +40,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
-public class BlockDefinition<T extends Block> extends Definition implements ItemLike {
+public class BlockDefinition<T extends Block> extends Definition implements ItemLike, Supplier<T> {
 
     private final DeferredBlock<T> block;
     public final ItemDefinition<BlockItem> blockItem;
@@ -101,4 +103,8 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
         }
     }
 
+    @Override
+    public T get() {
+        return asBlock();
+    }
 }

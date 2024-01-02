@@ -8,12 +8,12 @@ import net.minecraft.world.inventory.Slot;
 
 public record AdjustSlotCapacityPacket(int syncId, int slotId, boolean isIncrease, boolean isShiftDown) implements BasePacket {
     public AdjustSlotCapacityPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), buf.readBoolean(), buf.readBoolean());
+        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readBoolean(), buf.readBoolean());
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeVarInt(slotId);
         buf.writeBoolean(isIncrease);
         buf.writeBoolean(isShiftDown);

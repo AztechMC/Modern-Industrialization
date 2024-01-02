@@ -4,15 +4,14 @@ import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.network.BasePacket;
 import net.minecraft.network.FriendlyByteBuf;
 
-// TODO NEO double check that this works
 public record MachineComponentSyncPacket(int syncId, int componentIndex, FriendlyByteBuf buf) implements BasePacket {
     public MachineComponentSyncPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), new FriendlyByteBuf(buf.copy()));
+        this(buf.readUnsignedByte(), buf.readVarInt(), new FriendlyByteBuf(buf.copy()));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeVarInt(componentIndex);
         buf.writeBytes(this.buf, 0, this.buf.readableBytes());
     }

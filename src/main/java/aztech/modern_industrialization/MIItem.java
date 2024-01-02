@@ -178,8 +178,8 @@ public final class MIItem {
 //    public static final ItemDefinition<NuclearComponentItem> LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
 //            "Large Heat Exchanger", "large_heat_exchanger",
 //            1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
-//
-//    public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
+
+    public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
 
     // @formatter:on
 

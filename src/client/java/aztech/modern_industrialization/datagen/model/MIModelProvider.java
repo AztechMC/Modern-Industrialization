@@ -8,6 +8,8 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
+import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -33,8 +35,9 @@ public class MIModelProvider extends BaseModelProvider {
             existingModel(fluidDefinition.asFluidBlock(), Blocks.AIR);
         }
 
-        // TODO NEO
-//        blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);
+        simpleBlock(MIPipes.BLOCK_PIPE.get(), models().getBuilder("pipe")
+                .customLoader(TrivialModelBuilder.begin(PipeUnbakedModel.LOADER_ID))
+                .end());
 
         // Item models as well...
         for (ItemDefinition<?> itemDefinition : MIItem.ITEM_DEFINITIONS.values()) {
@@ -44,12 +47,8 @@ public class MIModelProvider extends BaseModelProvider {
         }
 
         // Custom loader to bake machine casing models
-        models().getBuilder(MachineCasingHolderModel.MODEL_ID.toString()).customLoader((parent, exFile) -> new CustomLoaderBuilder<BlockModelBuilder>(MachineCasingHolderModel.LOADER_ID, parent, exFile, false) {
-            @Override
-            public JsonObject toJson(JsonObject json) {
-                return super.toJson(json);
-            }
-        });
+        models().getBuilder(MachineCasingHolderModel.MODEL_ID.toString())
+                .customLoader(TrivialModelBuilder.begin(MachineCasingHolderModel.LOADER_ID));
         
         // Machine models
         for (var entry : MachineModelsToGenerate.props.entrySet()) {

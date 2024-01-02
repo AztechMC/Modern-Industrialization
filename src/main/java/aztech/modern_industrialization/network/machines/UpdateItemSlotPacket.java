@@ -9,12 +9,12 @@ import net.minecraft.world.inventory.Slot;
 
 public record UpdateItemSlotPacket(int syncId, int stackId, ConfigurableItemStack newStack) implements BasePacket {
     public UpdateItemSlotPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), new ConfigurableItemStack(buf.readNbt()));
+        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableItemStack(buf.readNbt()));
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeVarInt(stackId);
         buf.writeNbt(newStack.toNbt());
     }

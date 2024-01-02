@@ -7,11 +7,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record LockAllPacket(int containerId, boolean lock) implements BasePacket {
     public LockAllPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readBoolean());
+        this(buf.readUnsignedByte(), buf.readBoolean());
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(containerId);
+        buf.writeByte(containerId);
         buf.writeBoolean(lock);
     }
 

@@ -9,6 +9,11 @@ import aztech.modern_industrialization.network.machines.SetAutoExtractPacket;
 import aztech.modern_industrialization.network.machines.SetLockingModePacket;
 import aztech.modern_industrialization.network.machines.UpdateFluidSlotPacket;
 import aztech.modern_industrialization.network.machines.UpdateItemSlotPacket;
+import aztech.modern_industrialization.network.pipes.IncrementPriorityPacket;
+import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
+import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
+import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
+import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
@@ -44,6 +49,12 @@ public class MIPackets {
         // Machine
         register(ChangeShapePacket.class, ChangeShapePacket::new);
         register(SetAutoExtractPacket.class, SetAutoExtractPacket::new);
+        // Pipes
+        register(IncrementPriorityPacket.class, IncrementPriorityPacket::new);
+        register(SetConnectionTypePacket.class, SetConnectionTypePacket::new);
+        register(SetItemWhitelistPacket.class, SetItemWhitelistPacket::new);
+        register(SetNetworkFluidPacket.class, SetNetworkFluidPacket::new);
+        register(SetPriorityPacket.class, SetPriorityPacket::new);
     }
 
     public static void init() {

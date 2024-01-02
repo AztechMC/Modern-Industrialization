@@ -7,12 +7,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record SetLockingModePacket(int syncId, boolean lockingMode) implements BasePacket {
     public SetLockingModePacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readBoolean());
+        this(buf.readUnsignedByte(), buf.readBoolean());
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeBoolean(lockingMode);
     }
 

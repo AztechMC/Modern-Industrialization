@@ -9,12 +9,12 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract) implements BasePacket {
     public SetAutoExtractPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readBoolean(), buf.readBoolean());
+        this(buf.readUnsignedByte(), buf.readBoolean(), buf.readBoolean());
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeBoolean(isItem);
         buf.writeBoolean(isExtract);
     }

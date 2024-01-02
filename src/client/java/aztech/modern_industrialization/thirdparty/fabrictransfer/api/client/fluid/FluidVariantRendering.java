@@ -5,8 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,6 +79,13 @@ public final class FluidVariantRendering {
      */
     public static int getColor(FluidVariant fluidVariant) {
         return getExtensions(fluidVariant).getTintColor(fluidVariant.toStack(1));
+    }
+
+    /**
+     * Return the position-independent color that should be used to render {@linkplain #getSprite the sprite} of the passed fluid variant.
+     */
+    public static int getColor(FluidVariant fluidVariant, BlockAndTintGetter level, BlockPos pos) {
+        return getExtensions(fluidVariant).getTintColor(fluidVariant.getFluid().defaultFluidState(), level, pos);
     }
 
     // TODO NEO

@@ -9,12 +9,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftButton) implements BasePacket {
     public ChangeShapePacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), buf.readBoolean());
+        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readBoolean());
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-        buf.writeVarInt(syncId);
+        buf.writeByte(syncId);
         buf.writeVarInt(shapeLine);
         buf.writeBoolean(clickedLeftButton);
     }

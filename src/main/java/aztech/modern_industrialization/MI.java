@@ -10,6 +10,7 @@ import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.network.MIPackets;
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -46,6 +47,8 @@ public class MI {
         SingleBlockSpecialMachines.init();
         MultiblockHatches.init();
         MultiblockMachines.init();
+
+        MIPipes.INSTANCE.setup();
 
         CommonProxy.initEvents();
         ChunkEventListeners.init();

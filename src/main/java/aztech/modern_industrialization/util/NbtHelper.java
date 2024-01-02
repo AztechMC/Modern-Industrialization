@@ -25,6 +25,8 @@ package aztech.modern_industrialization.util;
 
 import java.util.List;
 import java.util.function.Function;
+
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,23 +75,22 @@ public class NbtHelper {
         return directions;
     }
 
-    // TODO NEO
-//    public static byte[] encodeConnections(PipeEndpointType[] connections) {
-//        byte[] encoded = new byte[6];
-//        for (int i = 0; i < 6; ++i) {
-//            PipeEndpointType type = connections[i];
-//            encoded[i] = type == null ? 127 : (byte) type.getId();
-//        }
-//        return encoded;
-//    }
-//
-//    public static PipeEndpointType[] decodeConnections(byte[] encoded) {
-//        PipeEndpointType[] connections = new PipeEndpointType[6];
-//        for (int i = 0; i < 6; ++i) {
-//            connections[i] = PipeEndpointType.byId(encoded[i]);
-//        }
-//        return connections;
-//    }
+    public static byte[] encodeConnections(PipeEndpointType[] connections) {
+        byte[] encoded = new byte[6];
+        for (int i = 0; i < 6; ++i) {
+            PipeEndpointType type = connections[i];
+            encoded[i] = type == null ? 127 : (byte) type.getId();
+        }
+        return encoded;
+    }
+
+    public static PipeEndpointType[] decodeConnections(byte[] encoded) {
+        PipeEndpointType[] connections = new PipeEndpointType[6];
+        for (int i = 0; i < 6; ++i) {
+            connections[i] = PipeEndpointType.byId(encoded[i]);
+        }
+        return connections;
+    }
 
     public static <T> void putList(CompoundTag tag, String key, List<T> list, Function<T, CompoundTag> encoder) {
         ListTag listTag = new ListTag();

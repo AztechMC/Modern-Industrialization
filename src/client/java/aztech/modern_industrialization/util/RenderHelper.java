@@ -462,13 +462,13 @@ public class RenderHelper {
 //        var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
 //        Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
 //    };
-//
-//    public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
-//            float green, float blue, float alpha) {
-//        for (AABB aabb : shape.toAabbs()) {
-//            LevelRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, red, green, blue, alpha);
-//        }
-//    }
+
+    public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
+            float green, float blue, float alpha) {
+        for (AABB aabb : shape.toAabbs()) {
+            LevelRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, red, green, blue, alpha);
+        }
+    }
 
     public static void renderAndDecorateItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
         renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, x, y);

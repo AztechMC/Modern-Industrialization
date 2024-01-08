@@ -4,6 +4,8 @@ import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
+import aztech.modern_industrialization.items.SteamDrillItem;
+import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
@@ -26,6 +28,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.Objects;
@@ -89,5 +92,17 @@ public class MIClient {
 //                }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerClientTooltipComponents(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(SteamDrillItem.SteamDrillTooltipData.class, SteamDrillTooltipComponent::new);
+
+        // TODO NEO
+//        if (data instanceof BarrelTooltipData barrelData) {
+//            return new BarrelTooltipComponent(barrelData);
+//        } else if (data instanceof ConfigCardItem.TooltipData configCardData) {
+//            return new ClientConfigCardTooltip(configCardData);
+//        }
     }
 }

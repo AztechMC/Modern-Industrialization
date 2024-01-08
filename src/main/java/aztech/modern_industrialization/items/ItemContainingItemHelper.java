@@ -23,10 +23,9 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.InventoryStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.InsertionOnlyStorage;
+import aztech.modern_industrialization.util.ItemHandlerItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.SlotAccess;
@@ -34,8 +33,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.wrapper.ForwardingItemHandler;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.NotNull;
 
 public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
 
@@ -64,32 +65,34 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
     }
 
     default boolean handleClick(Player player, ItemStack barrelLike, Mutable<ItemStack> otherStack) {
-        if (!(barrelLike.getItem() instanceof ItemContainingItemHelper helper)) {
+        if (!(barrelLike.getItem() instanceof ItemContainingItemHelper)) {
             throw new AssertionError("This method should only be called on a ItemContainingItemHelper.");
         }
 
-        var barrelStorage = GenericItemStorage.of(barrelLike, this);
-        // The player can ignore the lock of the barrel when inserting items.
-        InsertionOnlyStorage<ItemVariant> barrelStorageIgnoreLock = (res, max, tx) -> barrelStorage.insert(res, max, tx, true, true);
+        var barrelHandler = new ItemHandler(barrelLike, this);
 
-        SimpleContainer otherInv = new SimpleContainer(otherStack.getValue().copy()) {
-            @Override
-            public void setItem(int slot, ItemStack stack) {
-                // Override vanilla clamping to max stack size.
-                // This fixes interactions with stacks greater than their max size,
-                // for example when interacting in Dank Storage GUIs.
-                this.items.set(slot, stack);
-            }
-        };
-        var otherInvStorage = InventoryStorage.of(otherInv, null);
-
-        if (StorageUtil.move(otherInvStorage, barrelStorageIgnoreLock, (iv) -> true, Long.MAX_VALUE, null) > 0
-                || StorageUtil.move(barrelStorage, otherInvStorage, (iv) -> true, Long.MAX_VALUE, null) > 0) {
-            otherStack.setValue(otherInv.getItem(0));
+        // Try to fill barrel with otherStack
+        int otherCount = otherStack.getValue().getCount();
+        var leftover = barrelHandler.insertItem(0, otherStack.getValue(), false);
+        int insertedCount = otherCount - leftover.getCount();
+        otherStack.setValue(leftover);
+        if (insertedCount != 0) {
             return true;
-        } else {
-            return !isEmpty(barrelLike) || !otherStack.getValue().isEmpty();
         }
+
+        // Try to empty barrel into otherStack
+        var heldStack = barrelHandler.getStackInSlot(0);
+        if (!heldStack.isEmpty()) {
+            if (otherStack.getValue().isEmpty() || ItemStack.isSameItemSameTags(heldStack, otherStack.getValue())) {
+                var extracted = barrelHandler.extractItem(0, heldStack.getMaxStackSize() - heldStack.getCount(), false);
+                var newOther = otherStack.getValue().copy();
+                newOther.grow(extracted.getCount());
+                otherStack.setValue(newOther);
+                return true;
+            }
+        }
+
+        return !isEmpty(barrelLike) || !otherStack.getValue().isEmpty();
     }
 
     @Override

@@ -200,21 +200,6 @@ public class ModernIndustrialization {
         addFuel("lignite_coal_tiny_dust", 160);
         addFuel("carbon_dust", 6400);
         addFuel("carbon_tiny_dust", 640);
-
-        FluidFuelRegistry.register(MIFluids.HYDROGEN, 1);
-        FluidFuelRegistry.register(MIFluids.DEUTERIUM, 1);
-        FluidFuelRegistry.register(MIFluids.TRITIUM, 1);
-        FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 16);
-        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 16);
-        FluidFuelRegistry.register(MIFluids.RAW_BIODIESEL, 50);
-        FluidFuelRegistry.register(MIFluids.NAPHTHA, 80);
-        FluidFuelRegistry.register(MIFluids.CREOSOTE, 160);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 160);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 240);
-        FluidFuelRegistry.register(MIFluids.BIODIESEL, 250);
-        FluidFuelRegistry.register(MIFluids.DIESEL, 400);
-        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 800);
-        KubeJSProxy.instance.fireRegisterFluidFuelsEvent();
     }
 
     private static void setupWrench() {

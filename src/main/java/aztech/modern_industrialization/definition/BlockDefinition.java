@@ -96,7 +96,6 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
         return blockItem.getTranslationKey();
     }
 
-    // TODO NEO not called
     public void onRegister() {
         if (onBlockRegistrationEvent != null) {
             onBlockRegistrationEvent.accept(block.get(), blockItem.asItem());

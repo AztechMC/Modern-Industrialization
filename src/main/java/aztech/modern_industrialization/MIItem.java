@@ -36,11 +36,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -138,16 +140,24 @@ public final class MIItem {
 
     public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_OTHER);
 
-//    // Tools
-//    public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
-//
-//    public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
-//
-//    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
-//            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
-//    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
-//            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
-//
+    // Tools
+    public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
+
+    public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
+
+    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
+            .withItemRegistrationEvent((item) -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                });
+            });
+    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
+            .withItemRegistrationEvent((item) -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                });
+            });
+
 //    public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
 //            .withItemRegistrationEvent(item -> EnergyApi.ITEM.registerForItems((stack, ctx) -> SimpleEnergyItem.createStorage(ctx, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item));
 //

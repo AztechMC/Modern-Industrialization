@@ -161,17 +161,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 }
             }
         }));
-
-        TooltipComponentCallback.EVENT.register(data -> {
-            if (data instanceof BarrelTooltipData barrelData) {
-                return new BarrelTooltipComponent(barrelData);
-            } else if (data instanceof SteamDrillItem.SteamDrillTooltipData steamDrillData) {
-                return new SteamDrillTooltipComponent(steamDrillData);
-            } else if (data instanceof ConfigCardItem.TooltipData configCardData) {
-                return new ClientConfigCardTooltip(configCardData);
-            }
-            return null;
-        });
     }
 
     private void setupItemPredicates() {

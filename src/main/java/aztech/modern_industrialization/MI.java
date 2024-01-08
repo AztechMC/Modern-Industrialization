@@ -1,6 +1,10 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
+import aztech.modern_industrialization.debug.DebugCommands;
+import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MultiblockHatches;
@@ -16,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -52,6 +57,14 @@ public class MI {
 
         CommonProxy.initEvents();
         ChunkEventListeners.init();
+        DebugCommands.init();
+
+        modBus.addListener(FMLCommonSetupEvent.class, event -> {
+            MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);
+            MIItem.ITEM_DEFINITIONS.values().forEach(ItemDefinition::onRegister);
+
+            FluidFuelRegistry.init();
+        });
 
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenServer.configure(

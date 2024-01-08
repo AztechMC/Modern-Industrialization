@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.api;
 
+import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.definition.FluidLike;
 import java.util.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -66,5 +68,22 @@ public class FluidFuelRegistry {
         List<ResourceLocation> fluidIds = new ArrayList<>(fluidEus.keySet());
         fluidIds.sort(Comparator.comparing(fluidEus::get));
         return fluidIds.stream().map(BuiltInRegistries.FLUID::get).filter(fluid -> fluid != Fluids.EMPTY).toList();
+    }
+
+    public static void init() {
+        FluidFuelRegistry.register(MIFluids.HYDROGEN, 1);
+        FluidFuelRegistry.register(MIFluids.DEUTERIUM, 1);
+        FluidFuelRegistry.register(MIFluids.TRITIUM, 1);
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 16);
+        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 16);
+        FluidFuelRegistry.register(MIFluids.RAW_BIODIESEL, 50);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA, 80);
+        FluidFuelRegistry.register(MIFluids.CREOSOTE, 160);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 160);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 240);
+        FluidFuelRegistry.register(MIFluids.BIODIESEL, 250);
+        FluidFuelRegistry.register(MIFluids.DIESEL, 400);
+        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 800);
+        KubeJSProxy.instance.fireRegisterFluidFuelsEvent();
     }
 }

@@ -55,7 +55,6 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
         return this;
     }
 
-    // TODO NEO not called
     public void onRegister() {
         if (this.onItemRegistrationEvent != null) {
             this.onItemRegistrationEvent.accept(item.get());

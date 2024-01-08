@@ -40,6 +40,7 @@ import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -55,81 +56,81 @@ public final class MIItem {
         ITEMS.register(modBus);
     }
 
+    // @formatter:off
+    // Guide book first so people read it!
+    public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
+
     // TODO NEO
-//    // @formatter:off
-//    // Guide book first so people read it!
-//    public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
-//
 //    // Forge hammer, then the various hammers!
 //    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p), HAMMER);
 //    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p), HAMMER);
 //    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p), HAMMER);
 //    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p), HAMMER);
-//
-//    // Steam tier stuff
-//    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", STEAM_TIER);
-//    public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", STEAM_TIER);
-//    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)), STEAM_TIER);
-//    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)), STEAM_TIER);
-//
-//    // Mechanical components: motors
-//    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_OTHER);
-//    // Mechanical components: pumps
-//    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_OTHER);
-//    // Mechanical components: others
-//    public static final ItemDefinition<Item> PISTON = item("Piston", "piston", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> CONVEYOR = item("Conveyor", "conveyor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ROBOT_ARM = item("Robot Arm", "robot_arm", ITEMS_OTHER);
-//
-//    // Circuits
-//    public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> PROCESSING_UNIT_BOARD = item("Processing Unit Board", "processing_unit_board", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> PROCESSING_UNIT = item("Processing Unit", "processing_unit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> DIGITAL_CIRCUIT_BOARD = item("Digital Circuit Board", "digital_circuit_board", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> DIGITAL_CIRCUIT = item("Digital Circuit", "digital_circuit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-//    public static final ItemDefinition<Item> QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-//
-//    // LV circuits
-//    public static final ItemDefinition<Item> RESISTOR = item("Resistor", "resistor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_OTHER);
-//
-//    // MV circuits
-//    public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> TRANSISTOR = item("Transistor", "transistor", ITEMS_OTHER);
-//
-//    // HV circuits
-//    public static final ItemDefinition<Item> OP_AMP = item("Op Amp", "op_amp", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> AND_GATE = item("AND Gate", "and_gate", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> OR_GATE = item("OR Gate", "or_gate", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> NOT_GATE = item("NOT Gate", "not_gate", ITEMS_OTHER);
-//
-//    // EV circuits
-//    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.maxCount(1)), ITEMS_OTHER);
-//    public static final ItemDefinition<Item> MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> SILICON_WAFER = item("Silicon Wafer", "silicon_wafer", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ARITHMETIC_LOGIC_UNIT = item("Arithmetic Logic Unit", "arithmetic_logic_unit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> MEMORY_MANAGEMENT_UNIT = item("Memory Management Unit", "memory_management_unit", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
-//
-//    // Quantum circuits
-//    // TODO 1.21: Change item id to "qubit"
-//    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-//    public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
-//    public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_OTHER);
+
+    // Steam tier stuff
+    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", STEAM_TIER);
+    public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", STEAM_TIER);
+    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
+    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
+
+    // Mechanical components: motors
+    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_OTHER);
+    // Mechanical components: pumps
+    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_OTHER);
+    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_OTHER);
+    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_OTHER);
+    // Mechanical components: others
+    public static final ItemDefinition<Item> PISTON = item("Piston", "piston", ITEMS_OTHER);
+    public static final ItemDefinition<Item> CONVEYOR = item("Conveyor", "conveyor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ROBOT_ARM = item("Robot Arm", "robot_arm", ITEMS_OTHER);
+
+    // Circuits
+    public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> PROCESSING_UNIT_BOARD = item("Processing Unit Board", "processing_unit_board", ITEMS_OTHER);
+    public static final ItemDefinition<Item> PROCESSING_UNIT = item("Processing Unit", "processing_unit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> DIGITAL_CIRCUIT_BOARD = item("Digital Circuit Board", "digital_circuit_board", ITEMS_OTHER);
+    public static final ItemDefinition<Item> DIGITAL_CIRCUIT = item("Digital Circuit", "digital_circuit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+
+    // LV circuits
+    public static final ItemDefinition<Item> RESISTOR = item("Resistor", "resistor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_OTHER);
+    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_OTHER);
+
+    // MV circuits
+    public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_OTHER);
+    public static final ItemDefinition<Item> TRANSISTOR = item("Transistor", "transistor", ITEMS_OTHER);
+
+    // HV circuits
+    public static final ItemDefinition<Item> OP_AMP = item("Op Amp", "op_amp", ITEMS_OTHER);
+    public static final ItemDefinition<Item> AND_GATE = item("AND Gate", "and_gate", ITEMS_OTHER);
+    public static final ItemDefinition<Item> OR_GATE = item("OR Gate", "or_gate", ITEMS_OTHER);
+    public static final ItemDefinition<Item> NOT_GATE = item("NOT Gate", "not_gate", ITEMS_OTHER);
+
+    // EV circuits
+    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.stacksTo(1)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon", ITEMS_OTHER);
+    public static final ItemDefinition<Item> SILICON_WAFER = item("Silicon Wafer", "silicon_wafer", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ARITHMETIC_LOGIC_UNIT = item("Arithmetic Logic Unit", "arithmetic_logic_unit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> MEMORY_MANAGEMENT_UNIT = item("Memory Management Unit", "memory_management_unit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
+
+    // Quantum circuits
+    // TODO NEO: Change item id to "qubit"
+    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
+    public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_OTHER);
 
     // Upgrades
     public static final ItemDefinition<Item> BASIC_UPGRADE = item("Basic Upgrade", "basic_upgrade", ITEMS_OTHER);
@@ -173,15 +174,16 @@ public final class MIItem {
 //    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(ArmorItem.Type.CHESTPLATE, s), ITEMS_OTHER);
 //    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(ArmorItem.Type.LEGGINGS, s), ITEMS_OTHER);
 //    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(ArmorItem.Type.BOOTS, s), ITEMS_OTHER);
-//
-//    // Material-like items
-//    public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));
+
+    // Material-like items
+    public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));
+    // TODO NEO we need to restore the texture gen first
 //    public static final ItemDefinition<Item> MIXED_INGOT_BLASTPROOF = item("Mixed Blastproof Ingot", "mixed_ingot_blastproof", MATERIALS.and("blastproof"));
 //    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium", s -> new Item(s.food(new FoodProperties.Builder().nutrition(20).saturationMod(1).build())), MATERIALS.and("iridium"));
 //    public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
-//
-//    // Others
-//    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_OTHER);
+
+    // Others
+    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_OTHER);
 //    public static final ItemDefinition<NuclearComponentItem> SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
 //            "Small Heat Exchanger", "small_heat_exchanger",
 //            2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);

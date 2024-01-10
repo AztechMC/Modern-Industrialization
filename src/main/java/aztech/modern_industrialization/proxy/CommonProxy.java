@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
@@ -32,16 +33,17 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Abstractions over client-only code called in common code.
@@ -106,6 +108,9 @@ public class CommonProxy {
         return list;
     }
 
+    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
+    }
+
     // TODO NEO
 //    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
 //        ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, listener, buf, responseSender) -> {
@@ -116,10 +121,9 @@ public class CommonProxy {
 //    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
 //            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
 //    }
-//
-//    public void registerPartBarrelClient(Block barrelBlock, Item barrelItem, String materialName, String itemPath,
-//            BlockEntityType<BarrelBlockEntity> blockEntityType, int meanRgb) {
-//    }
+
+    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
+    }
 
     public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         throw new UnsupportedOperationException("Only supported on the server");

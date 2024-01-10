@@ -33,6 +33,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -40,12 +41,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static net.minecraft.world.level.material.MapColor.STONE;
@@ -234,57 +237,37 @@ public class MIBlock {
             return this;
         }
 
-        // TODO NEO
-//        public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
-//            var currentModel = this.modelGenerator;
-//            return withModel((block, gen) -> {
-//                currentModel.accept(block, gen);
-//                // Skip default item model
-//                gen.skipAutoItemBlock(block);
-//            }).withItemModel((item, gen) -> {
-//                // We need the builtin/entity parent and the proper transforms (copied from block/block.json from vanilla)
-//                gen.output.accept(ModelLocationUtils.getModelLocation(item), () -> {
-//                    var json = JsonParser.parseString("""
-//                            {
-//                                "display": {
-//                                    "gui": {
-//                                        "rotation": [ 30, 225, 0 ],
-//                                        "translation": [ 0, 0, 0],
-//                                        "scale":[ 0.625, 0.625, 0.625 ]
-//                                    },
-//                                    "ground": {
-//                                        "rotation": [ 0, 0, 0 ],
-//                                        "translation": [ 0, 3, 0],
-//                                        "scale":[ 0.25, 0.25, 0.25 ]
-//                                    },
-//                                    "fixed": {
-//                                        "rotation": [ 0, 0, 0 ],
-//                                        "translation": [ 0, 0, 0],
-//                                        "scale":[ 0.5, 0.5, 0.5 ]
-//                                    },
-//                                    "thirdperson_righthand": {
-//                                        "rotation": [ 75, 45, 0 ],
-//                                        "translation": [ 0, 2.5, 0],
-//                                        "scale": [ 0.375, 0.375, 0.375 ]
-//                                    },
-//                                    "firstperson_righthand": {
-//                                        "rotation": [ 0, 45, 0 ],
-//                                        "translation": [ 0, 0, 0 ],
-//                                        "scale": [ 0.40, 0.40, 0.40 ]
-//                                    },
-//                                    "firstperson_lefthand": {
-//                                        "rotation": [ 0, 225, 0 ],
-//                                        "translation": [ 0, 0, 0 ],
-//                                        "scale": [ 0.40, 0.40, 0.40 ]
-//                                    }
-//                                }
-//                            }
-//                                                        """).getAsJsonObject();
-//                    json.addProperty("parent", "builtin/entity");
-//                    return json;
-//                });
-//            });
-//        }
+        public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
+            return withItemModel((item, gen) -> {
+                var builder = gen.getBuilder(BuiltInRegistries.ITEM.getKey(item).toString())
+                        .parent(new ModelFile.UncheckedModelFile("builtin/entity"));
+                var transforms = builder.transforms();
+                transforms.transform(ItemDisplayContext.GUI)
+                        .rotation(30, 225, 0)
+                        .translation(0, 0, 0)
+                        .scale(0.625f, 0.625f, 0.625f);
+                transforms.transform(ItemDisplayContext.GROUND)
+                        .rotation(0, 0, 0)
+                        .translation(0, 3, 0)
+                        .scale(0.25f, 0.25f, 0.25f);
+                transforms.transform(ItemDisplayContext.FIXED)
+                        .rotation(0, 0, 0)
+                        .translation(0, 0, 0)
+                        .scale(0.5f, 0.5f, 0.5f);
+                transforms.transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                        .rotation(75, 45, 0)
+                        .translation(0, 2.5f, 0)
+                        .scale(0.375f, 0.375f, 0.375f);
+                transforms.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+                        .rotation(0, 45, 0)
+                        .translation(0, 0, 0)
+                        .scale(0.4f, 0.4f, 0.4f);
+                transforms.transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+                        .rotation(0, 225, 0)
+                        .translation(0, 0, 0)
+                        .scale(0.4f, 0.4f, 0.4f);
+            });
+        }
 
         public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLootSubProvider> lootTableGenerator) {
             this.lootTableGenerator = lootTableGenerator;

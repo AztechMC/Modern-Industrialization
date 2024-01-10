@@ -36,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 // TODO: PR to neoforge
@@ -49,8 +50,12 @@ public abstract class BaseModelProvider extends BlockStateProvider {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
-    protected String name(Block block) {
+    public String name(Block block) {
         return key(block).getPath();
+    }
+
+    public ResourceLocation blockTexture(String path) {
+        return modLoc(ModelProvider.BLOCK_FOLDER + "/" + path);
     }
 
     public void existingModel(Block block) {

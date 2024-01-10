@@ -25,6 +25,10 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadViewImpl;
+import aztech.modern_industrialization.thirdparty.fabricrendering.QuadBuffer;
+import aztech.modern_industrialization.thirdparty.fabricrendering.QuadEmitter;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -44,6 +48,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -58,6 +63,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -412,56 +418,57 @@ public class RenderHelper {
         RenderSystem.disableBlend();
     }
 
-//    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
-//        VertexConsumer vc = vertexConsumers.getBuffer(RenderType.cutout());
-//        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
-//        // draw the sprite on each face
-//
-//        var pos = entity.getBlockPos();
-//        var state = entity.getBlockState();
-//        float r = (colorRgb >> 16 & 255) / 255.0F;
-//        float g = (colorRgb >> 8 & 255) / 255.0F;
-//        float b = (colorRgb & 255) / 255.0F;
-//
-//        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-//        for (Direction direction : Direction.values()) {
-//            if (direction.getAxis().isVertical() ||
-//            // Note: level can be null from builtin item renderer
-//                    entity.getLevel() != null && !Block.shouldRenderFace(state, entity.getLevel(), pos,
-//                            direction.getOpposite(), pos.relative(direction.getOpposite()))) {
-//                continue;
-//            }
-//
-//            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-//
-//            emitter.square(direction, 1, 0, 0, 1, 1.015f);
-//            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-//
-//            vc.putBulkData(matrices.last(),
-//                    emitter.toBakedQuad(sprite),
-//                    r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
-//        }
-//    }
-//
-//    public static final BuiltinItemRendererRegistry.DynamicItemRenderer BLOCK_AND_ENTITY_RENDERER = (stack, mode, matrices, vertexConsumers, light,
-//            overlay) -> {
-//        if (!(stack.getItem() instanceof BlockItem blockItem)) {
-//            throw new IllegalArgumentException("Stack must be a block item!");
-//        }
-//        if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
-//            throw new IllegalArgumentException("Block must be an entity block!");
-//        }
-//
-//        var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
-//        var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
-//        Objects.requireNonNull(fakeBlockEntity).load(tag);
-//
-//        // Render the base block first
-//        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
-//        // Render additional data using the block entity renderer
-//        var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
-//        Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
-//    };
+    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
+        VertexConsumer vc = vertexConsumers.getBuffer(RenderType.cutout());
+        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
+        // draw the sprite on each face
+
+        var pos = entity.getBlockPos();
+        var state = entity.getBlockState();
+        float r = (colorRgb >> 16 & 255) / 255.0F;
+        float g = (colorRgb >> 8 & 255) / 255.0F;
+        float b = (colorRgb & 255) / 255.0F;
+
+        var emitter = new QuadBuffer();
+        for (Direction direction : Direction.values()) {
+            if (direction.getAxis().isVertical() ||
+            // Note: level can be null from builtin item renderer
+                    entity.getLevel() != null && !Block.shouldRenderFace(state, entity.getLevel(), pos,
+                            direction.getOpposite(), pos.relative(direction.getOpposite()))) {
+                continue;
+            }
+
+            emitter.emit();
+            emitter.square(direction, 1, 0, 0, 1, 1.015f);
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+
+            vc.putBulkData(matrices.last(),
+                    emitter.toBakedQuad(sprite),
+                    r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+        }
+    }
+
+    public static final BlockEntityWithoutLevelRenderer BLOCK_AND_ENTITY_RENDERER = new BlockEntityWithoutLevelRenderer(null, null) {
+        @Override
+        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+            if (!(stack.getItem() instanceof BlockItem blockItem)) {
+                throw new IllegalArgumentException("Stack must be a block item!");
+            }
+            if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
+                throw new IllegalArgumentException("Block must be an entity block!");
+            }
+
+            var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
+            var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
+            Objects.requireNonNull(fakeBlockEntity).load(tag);
+
+            // Render the base block first
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
+            // Render additional data using the block entity renderer
+            var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
+            Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
+        }
+    };
 
     public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
             float green, float blue, float alpha) {

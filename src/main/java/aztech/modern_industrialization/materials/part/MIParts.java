@@ -34,7 +34,7 @@ public class MIParts {
 
     // TODO NEO commented out parts
 //    public static final BatteryPart BATTERY = new BatteryPart();
-//    public static final BarrelPart BARREL = new BarrelPart();
+    public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
     public static final BlockPart BLOCK = new BlockPart();
     public static final PartTemplate BOLT = new PartTemplate("Bolt", "bolt");

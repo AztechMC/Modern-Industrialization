@@ -23,17 +23,27 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.MIClient;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.textures.TextureHelper;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ClientProxy extends CommonProxy {
     @Override
@@ -89,13 +99,21 @@ public class ClientProxy extends CommonProxy {
 //        TankRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
 //        BuiltinItemRendererRegistry.INSTANCE.register(tankItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
 //    }
-//
-//    @Override
-//    public void registerPartBarrelClient(Block barrelBlock, Item barrelItem, String materialName, String itemPath,
-//            BlockEntityType<BarrelBlockEntity> blockEntityType, int meanRgb) {
-//        BarrelRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
-//        BuiltinItemRendererRegistry.INSTANCE.register(barrelItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
-//    }
+
+    @Override
+    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
+        ((Consumer<IClientItemExtensions>) stupidClientProperties).accept(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return RenderHelper.BLOCK_AND_ENTITY_RENDERER;
+            }
+        });
+    }
+
+    @Override
+    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
+    }
 
     @Override
     public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {

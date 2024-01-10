@@ -29,7 +29,6 @@ import aztech.modern_industrialization.items.ItemContainingItemHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Optional;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -48,7 +47,7 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
 
     private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
-    public BarrelItem(BarrelBlock block, FabricItemSettings settings) {
+    public BarrelItem(BarrelBlock block, Properties settings) {
         super(block, settings.stacksTo(1));
     }
 

@@ -30,6 +30,7 @@ import static net.minecraft.commands.arguments.ResourceLocationArgument.id;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -58,10 +59,9 @@ public class DebugCommands {
     // @formatter:off
     public static void init() {
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, event -> {
-            // TODO NEO config
-//            if (!MIConfig.getConfig().enableDebugCommands) {
-//                return;
-//            }
+            if (!MIConfig.getConfig().enableDebugCommands) {
+                return;
+            }
 
             event.getDispatcher().register(literal("mi")
                     .requires(source -> source.hasPermission(4))

@@ -24,6 +24,7 @@ import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -36,6 +37,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -62,6 +64,10 @@ public class MIClient {
                     event.includeServer(),
                     false);
         });
+
+        ModLoadingContext.get().registerExtensionPoint(
+                ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get()));
     }
 
     @SubscribeEvent

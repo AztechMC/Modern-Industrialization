@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.thirdparty.fabricrendering.SpriteFinderImpl;
@@ -44,7 +45,8 @@ public class PipeUnbakedModel implements IUnbakedGeometry<PipeUnbakedModel> {
         }
 
         BakedModel[] meWireConnectors = null;
-        if (false) { // TODO NEO config MIConfig.loadAe2Compat()) {
+        if (MIConfig.loadAe2Compat()) {
+            // TODO NEO
             //meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker);
         }
 

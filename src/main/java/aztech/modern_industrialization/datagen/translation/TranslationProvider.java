@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.definition.Definition;
@@ -92,13 +93,12 @@ public final class TranslationProvider implements DataProvider {
             }
         }
 
-        // TODO NEO
-//        for (Field f : MIConfig.class.getFields()) {
-//            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
-//            if (englishTranslation != null) {
-//                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
-//            }
-//        }
+        for (Field f : MIConfig.class.getFields()) {
+            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
+            if (englishTranslation != null) {
+                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
+            }
+        }
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
             addTranslation(definition.getTranslationKey(), definition.getEnglishName());

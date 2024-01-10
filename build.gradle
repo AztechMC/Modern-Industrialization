@@ -229,11 +229,9 @@ dependencies {
 //    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
-//
-//    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
-//
+
+    implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
+
 //    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
 //    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
 //    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"

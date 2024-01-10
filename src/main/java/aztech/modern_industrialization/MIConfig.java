@@ -29,7 +29,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.ModList;
 
 @Config(name = MIConfig.NAME)
 public class MIConfig implements ConfigData {
@@ -95,6 +95,6 @@ public class MIConfig implements ConfigData {
     }
 
     public static boolean loadAe2Compat() {
-        return getConfig().enableAe2Integration && FabricLoader.getInstance().isModLoaded("ae2");
+        return getConfig().enableAe2Integration && ModList.get().isLoaded("ae2");
     }
 }

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -56,7 +57,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
             RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);
         }
 
-        if (false/*!MIConfig.getConfig().enableBarrelContentRendering*/) { // TODO NEO config
+        if (!MIConfig.getConfig().enableBarrelContentRendering) {
             return;
         }
 

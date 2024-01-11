@@ -23,16 +23,14 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.context.ContainerItemContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class TankBlockEntity extends AbstractTankBlockEntity {
 
@@ -41,20 +39,6 @@ public class TankBlockEntity extends AbstractTankBlockEntity {
     }
 
     public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
-        if (handIo != null) {
-            // move from hand into this tank
-            if (StorageUtil.move(handIo, this, f -> true, Long.MAX_VALUE, null) > 0) {
-                player.playNotifySound(FluidVariantAttributes.getEmptySound(getResource()), SoundSource.BLOCKS, 1, 1);
-                return true;
-            }
-            // move from this tank into hand
-            FluidVariant oldFluid = getResource(); // get current fluid to play the sound later
-            if (StorageUtil.move(this, handIo, f -> true, Long.MAX_VALUE, null) > 0) {
-                player.playNotifySound(FluidVariantAttributes.getFillSound(oldFluid), SoundSource.BLOCKS, 1, 1);
-                return true;
-            }
-        }
-        return false;
+        return FluidUtil.interactWithFluidHandler(player, InteractionHand.MAIN_HAND, new SlotFluidHandler(this));
     }
 }

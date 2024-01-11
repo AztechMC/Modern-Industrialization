@@ -146,46 +146,46 @@ public class RenderHelper {
     private static final float TANK_W = 1 / 16f + 0.001f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-//    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-//        drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
-//    }
-//
-//    public static void drawFluidInTank(Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-//        VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
-//        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
-//        int color = FluidVariantRendering.getColor(fluid, world, pos);
-//        float r = ((color >> 16) & 255) / 256f;
-//        float g = ((color >> 8) & 255) / 256f;
-//        float b = (color & 255) / 256f;
-//
-//        SodiumCompat.markSpriteActive(sprite);
-//
-//        // Make sure fill is within [TANK_W, 1 - TANK_W]
-//        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
-//        // Top and bottom positions of the fluid inside the tank
-//        float topHeight = fill;
-//        float bottomHeight = TANK_W;
-//        // Render gas from top to bottom
-//        if (FluidVariantAttributes.isLighterThanAir(fluid)) {
-//            topHeight = 1 - TANK_W;
-//            bottomHeight = 1 - fill;
-//        }
-//
-//        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-//        for (Direction direction : Direction.values()) {
-//            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-//
-//            if (direction.getAxis().isVertical()) {
-//                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
-//            } else {
-//                emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
-//            }
-//
-//            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-//            emitter.color(-1, -1, -1, -1);
-//            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
-//        }
-//    }
+    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
+        drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
+    }
+
+    public static void drawFluidInTank(@Nullable Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
+        VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
+        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
+        int color = FluidVariantRendering.getColor(fluid, world, pos);
+        float r = ((color >> 16) & 255) / 256f;
+        float g = ((color >> 8) & 255) / 256f;
+        float b = (color & 255) / 256f;
+
+        SodiumCompat.markSpriteActive(sprite);
+
+        // Make sure fill is within [TANK_W, 1 - TANK_W]
+        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
+        // Top and bottom positions of the fluid inside the tank
+        float topHeight = fill;
+        float bottomHeight = TANK_W;
+        // Render gas from top to bottom
+        if (fluid.getFluid().getFluidType().isLighterThanAir()) {
+            topHeight = 1 - TANK_W;
+            bottomHeight = 1 - fill;
+        }
+
+        var emitter = new QuadBuffer();
+        for (Direction direction : Direction.values()) {
+            emitter.emit();
+
+            if (direction.getAxis().isVertical()) {
+                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
+            } else {
+                emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
+            }
+
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.color(-1, -1, -1, -1);
+            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+        }
+    }
 
     public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int i, int j) {
         drawFluidInGui(guiGraphics, fluid, i, j, 16, 1);

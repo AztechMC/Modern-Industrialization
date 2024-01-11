@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
@@ -117,10 +118,9 @@ public class CommonProxy {
 //            server.execute(handler.handlePacket(player, buf));
 //        });
 //    }
-//
-//    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
-//            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
-//    }
+
+    public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
+    }
 
     public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
     }

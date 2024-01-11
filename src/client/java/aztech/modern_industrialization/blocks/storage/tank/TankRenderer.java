@@ -31,13 +31,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity> {
-    public static void register(BlockEntityType<? extends AbstractTankBlockEntity> type, int lockIconColor) {
-        BlockEntityRenderers.register(type, context -> new TankRenderer(lockIconColor));
-    }
-
     private final int lockIconColor;
 
-    private TankRenderer(int lockIconColor) {
+    public TankRenderer(int lockIconColor) {
         this.lockIconColor = lockIconColor;
     }
 

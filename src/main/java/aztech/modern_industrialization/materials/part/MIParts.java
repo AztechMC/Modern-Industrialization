@@ -78,7 +78,7 @@ public class MIParts {
     public static final PartTemplate ROD = new PartTemplate("Rod", "rod");
     public static final PartTemplate ROD_MAGNETIC = new PartTemplate("Magnetic %s Rod", "rod_magnetic").withOverlay(ROD, "magnetic");
     public static final PartTemplate ROTOR = new PartTemplate("Rotor", "rotor");
-//    public static final TankPart TANK = new TankPart();
+    public static final TankPart TANK = new TankPart();
     public static final PartTemplate TINY_DUST = new PartTemplate("Tiny Dust", "tiny_dust");
     public static final PartTemplate WIRE = new PartTemplate("Wire", "wire");
     public static final PartTemplate WIRE_MAGNETIC = new PartTemplate("Magnetic %s Wire", "wire_magnetic").withOverlay(WIRE, "magnetic");

@@ -26,6 +26,8 @@ package aztech.modern_industrialization.proxy;
 import aztech.modern_industrialization.MIClient;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
+import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.textures.TextureHelper;
@@ -82,23 +84,6 @@ public class ClientProxy extends CommonProxy {
 //    public List<Component> getFluidTooltip(FluidVariant variant) {
 //        return FluidVariantRendering.getTooltip(variant);
 //    }
-//
-//    @Override
-//    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
-//        super.registerUnsidedPacket(identifier, handler);
-//
-//        ClientPlayNetworking.registerGlobalReceiver(identifier, (mc, listener, buf, responseSender) -> {
-//            mc.execute(handler.handlePacket(mc.player, buf));
-//        });
-//    }
-//
-//    @Override
-//    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
-//            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
-//        BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
-//        TankRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
-//        BuiltinItemRendererRegistry.INSTANCE.register(tankItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
-//    }
 
     @Override
     public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
@@ -108,6 +93,21 @@ public class ClientProxy extends CommonProxy {
                 return RenderHelper.BLOCK_AND_ENTITY_RENDERER;
             }
         });
+    }
+
+//    @Override
+//    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
+//        super.registerUnsidedPacket(identifier, handler);
+//
+//        ClientPlayNetworking.registerGlobalReceiver(identifier, (mc, listener, buf, responseSender) -> {
+//            mc.execute(handler.handlePacket(mc.player, buf));
+//        });
+//    }
+
+    @Override
+    public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
+        // TODO NEO BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new TankRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
     }
 
     @Override

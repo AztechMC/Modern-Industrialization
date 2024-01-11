@@ -227,11 +227,6 @@ public class MIBlock {
             return this;
         }
 
-        // TODO NEO
-//        public BlockDefinitionParams<T> withModel(TexturedModel.Provider model) {
-//            return this.withModel((block, blockModelGenerator) -> blockModelGenerator.createTrivialBlock(block, model));
-//        }
-
         public BlockDefinitionParams<T> withItemModel(BiConsumer<Item, ItemModelProvider> itemModelGenerator) {
             this.itemModelGenerator = itemModelGenerator;
             return this;

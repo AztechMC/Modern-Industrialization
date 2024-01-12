@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
+import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -49,7 +50,7 @@ public class MIDatagenServer {
 //        aggregate.addProvider(HeatExchangerRecipesProvider::new);
 //        aggregate.addProvider(HatchRecipesProvider::new);
 //        aggregate.addProvider(AlloyRecipesProvider::new);
-//        aggregate.addProvider(MaterialRecipesProvider::new);
+        gen.addProvider(run, new MaterialRecipesProvider(gen.getPackOutput(), lookupProvider));
 //        aggregate.addProvider(DyeRecipesProvider::new);
 //        aggregate.addProvider(AssemblerRecipesProvider::new);
 //        aggregate.addProvider(CompatRecipesProvider::new);

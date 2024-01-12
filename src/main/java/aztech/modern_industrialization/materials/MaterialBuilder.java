@@ -27,6 +27,9 @@ import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import java.util.*;
 import java.util.function.Consumer;
+
+import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.Nullable;
 
 public final class MaterialBuilder {
@@ -127,22 +130,20 @@ public final class MaterialBuilder {
             event.onRegister(context);
         }
 
-        // TODO NEO recipes
-        return new Material(materialName, properties, Collections.unmodifiableMap(partsMap));
-//        return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
+        return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
-//    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
-//        Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
-//        RecipeContext recipeContext = new RecipeContext(recipesMap);
-//        for (RecipeAction action : recipesActions) {
-//            action.apply(recipeContext);
-//        }
-//        for (MaterialRecipeBuilder builder : recipesMap.values()) {
-//            // noinspection deprecation
-//            builder.save(consumer);
-//        }
-//    }
+    public void buildRecipes(RecipeOutput output) {
+        Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
+        RecipeContext recipeContext = new RecipeContext(recipesMap);
+        for (RecipeAction action : recipesActions) {
+            action.apply(recipeContext);
+        }
+        for (MaterialRecipeBuilder builder : recipesMap.values()) {
+            // noinspection deprecation
+            builder.save(output);
+        }
+    }
 
     public class PartContext {
 
@@ -164,30 +165,29 @@ public final class MaterialBuilder {
     }
 
     public class RecipeContext {
-        // TODO NEO
-//        private final Map<String, MaterialRecipeBuilder> recipesMap;
-//
-//        public RecipeContext(Map<String, MaterialRecipeBuilder> recipesMap) {
-//            this.recipesMap = recipesMap;
-//        }
-//
-//        public void addRecipe(MaterialRecipeBuilder builder) {
-//            if (recipesMap.containsKey(builder.getRecipeId())) {
-//                if (recipesMap.get(builder.getRecipeId()).isCanceled()) {
-//                    recipesMap.remove(builder.getRecipeId());
-//                } else {
-//                    throw new IllegalStateException(
-//                            "Duplicate registration of recipe " + builder.getRecipeId() + " for Material : " + getMaterialName());
-//                }
-//            }
-//            recipesMap.put(builder.getRecipeId(), builder);
-//        }
-//
-//        public void removeRecipe(String recipeId) {
-//            if (recipesMap.remove(recipeId) == null) {
-//                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId + " for Material : " + materialName);
-//            }
-//        }
+        private final Map<String, MaterialRecipeBuilder> recipesMap;
+
+        public RecipeContext(Map<String, MaterialRecipeBuilder> recipesMap) {
+            this.recipesMap = recipesMap;
+        }
+
+        public void addRecipe(MaterialRecipeBuilder builder) {
+            if (recipesMap.containsKey(builder.getRecipeId())) {
+                if (recipesMap.get(builder.getRecipeId()).isCanceled()) {
+                    recipesMap.remove(builder.getRecipeId());
+                } else {
+                    throw new IllegalStateException(
+                            "Duplicate registration of recipe " + builder.getRecipeId() + " for Material : " + getMaterialName());
+                }
+            }
+            recipesMap.put(builder.getRecipeId(), builder);
+        }
+
+        public void removeRecipe(String recipeId) {
+            if (recipesMap.remove(recipeId) == null) {
+                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId + " for Material : " + materialName);
+            }
+        }
 
         @Nullable
         public MaterialItemPart getPart(PartKeyProvider part) {

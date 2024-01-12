@@ -21,21 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.recipe.builder;
+package aztech.modern_industrialization.datagen.recipe;
 
-import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
+import aztech.modern_industrialization.MIIdentifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceLocation;
 
-public interface MaterialRecipeBuilder {
-    String getRecipeId();
+import java.util.concurrent.CompletableFuture;
 
-    void cancel();
+public abstract class MIRecipesProvider extends RecipeProvider {
+    public MIRecipesProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider);
+    }
 
-    boolean isCanceled();
+    protected static ResourceLocation id(String path) {
+        return new MIIdentifier(path);
+    }
 
-    /**
-     * @deprecated don't call, let the MaterialBuilder do it
-     */
-    @Deprecated
-    void save(Consumer<FinishedRecipe> consumer);
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
 }

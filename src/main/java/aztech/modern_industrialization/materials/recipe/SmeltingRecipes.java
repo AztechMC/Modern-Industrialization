@@ -27,7 +27,6 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 
 /**
@@ -36,39 +35,40 @@ import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBu
  */
 public final class SmeltingRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, TINY_DUST, NUGGET, 0.08);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, CRUSHED_DUST, INGOT, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, DUST, INGOT, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, INGOT, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE_DEEPSLATE, INGOT, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, RAW_METAL, INGOT, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, GEM, 0.7);
-        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE_DEEPSLATE, GEM, 0.7);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, TINY_DUST, NUGGET, 0.08f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, CRUSHED_DUST, INGOT, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, DUST, INGOT, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, INGOT, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE_DEEPSLATE, INGOT, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, RAW_METAL, INGOT, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, GEM, 0.7f);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE_DEEPSLATE, GEM, 0.7f);
     }
 
-    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu, int duration) {
-        if (hotIngot) {
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(HOT_INGOT,
-                    1);
-        } else {
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(INGOT, 1);
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1)
-                    .addPartOutput(NUGGET, 1);
-        }
-
-    }
-
-    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu) {
-        applyBlastFurnace(ctx, hotIngot, eu, 200);
-    }
-
-    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, int eu) {
-        applyBlastFurnace(ctx, false, eu);
-    }
-
-    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx) {
-        applyBlastFurnace(ctx, 32);
-    }
+    // TODO NEO
+//    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu, int duration) {
+//        if (hotIngot) {
+//            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(HOT_INGOT,
+//                    1);
+//        } else {
+//            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(INGOT, 1);
+//            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1)
+//                    .addPartOutput(NUGGET, 1);
+//        }
+//
+//    }
+//
+//    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu) {
+//        applyBlastFurnace(ctx, hotIngot, eu, 200);
+//    }
+//
+//    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, int eu) {
+//        applyBlastFurnace(ctx, false, eu);
+//    }
+//
+//    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx) {
+//        applyBlastFurnace(ctx, 32);
+//    }
 
     private SmeltingRecipes() {
     }

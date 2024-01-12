@@ -23,22 +23,25 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.resources.ResourceLocation;
+import aztech.modern_industrialization.materials.Material;
+import aztech.modern_industrialization.materials.MaterialRegistry;
 
-public abstract class MIRecipesProvider extends FabricRecipeProvider {
-    public MIRecipesProvider(FabricDataOutput packOutput) {
-        super(packOutput);
-    }
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 
-    protected static ResourceLocation id(String path) {
-        return new MIIdentifier(path);
+public class MaterialRecipesProvider extends MIRecipesProvider {
+
+    public MaterialRecipesProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider);
     }
 
     @Override
-    public String getName() {
-        return this.getClass().getSimpleName();
+    protected void buildRecipes(RecipeOutput recipeOutput) {
+        for (Material material : MaterialRegistry.getMaterials().values()) {
+            material.registerRecipes.accept(recipeOutput);
+        }
     }
 }

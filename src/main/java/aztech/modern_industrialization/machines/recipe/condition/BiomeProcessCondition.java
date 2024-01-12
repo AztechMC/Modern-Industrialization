@@ -27,6 +27,8 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.google.gson.JsonObject;
 import java.util.List;
+
+import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -34,13 +36,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.biome.Biome;
 
-public class BiomeProcessCondition implements MachineProcessCondition {
-    public static final BiomeProcessCondition.Serde SERIALIZER = new BiomeProcessCondition.Serde();
-    private final ResourceKey<Biome> biome;
-
-    public BiomeProcessCondition(ResourceLocation biome) {
-        this.biome = ResourceKey.create(Registries.BIOME, biome);
-    }
+public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {
+    static final Codec<BiomeProcessCondition> CODEC = ResourceKey.codec(Registries.BIOME)
+            .xmap(BiomeProcessCondition::new, BiomeProcessCondition::biome);
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
@@ -56,21 +54,7 @@ public class BiomeProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public Serializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    private static class Serde implements Serializer<BiomeProcessCondition> {
-        @Override
-        public BiomeProcessCondition fromJson(JsonObject json) {
-            return new BiomeProcessCondition(new ResourceLocation(GsonHelper.getAsString(json, "biome")));
-        }
-
-        @Override
-        public JsonObject toJson(BiomeProcessCondition condition, boolean syncToClient) {
-            var obj = new JsonObject();
-            obj.addProperty("biome", condition.biome.location().toString());
-            return obj;
-        }
+    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+        return CODEC;
     }
 }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:bronze_plates"
+    },
+    "R": {
+      "item": "modern_industrialization:bronze_ring"
+    },
+    "b": {
+      "item": "modern_industrialization:bronze_bolt"
+    }
+  },
+  "pattern": [
+    "PbP",
+    "bRb",
+    "PbP"
+  ],
+  "result": {
+    "item": "modern_industrialization:bronze_gear"
+  }
+}

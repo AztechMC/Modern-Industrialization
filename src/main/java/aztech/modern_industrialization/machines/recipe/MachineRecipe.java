@@ -25,12 +25,25 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import aztech.modern_industrialization.util.MIExtraCodecs;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,17 +53,43 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 public class MachineRecipe implements Recipe<Container> {
+    public static MapCodec<MachineRecipe> codec(MachineRecipeType type) {
+        return RecordCodecBuilder.mapCodec(
+                g -> g
+                        .group(
+                                ExtraCodecs.POSITIVE_INT.fieldOf("eu").forGetter(recipe -> recipe.eu),
+                                ExtraCodecs.POSITIVE_INT.fieldOf("duration").forGetter(recipe -> recipe.duration),
+                                MIExtraCodecs.maybeList(ItemInput.CODEC, "item_inputs").forGetter(recipe -> recipe.itemInputs),
+                                MIExtraCodecs.maybeList(FluidInput.CODEC, "fluid_inputs").forGetter(recipe -> recipe.fluidInputs),
+                                MIExtraCodecs.maybeList(ItemOutput.CODEC, "item_outputs").forGetter(recipe -> recipe.itemOutputs),
+                                MIExtraCodecs.maybeList(FluidOutput.CODEC, "fluid_outputs").forGetter(recipe -> recipe.fluidOutputs),
+                                MIExtraCodecs.maybeList(MachineProcessCondition.CODEC, "conditions").forGetter(recipe -> recipe.conditions))
+                        .apply(g, (eu, duration, itemInputs, fluidInputs, itemOutputs, fluidOutputs, conditions) -> {
+                            var ret = new MachineRecipe(type);
+                            ret.eu = eu;
+                            ret.duration = duration;
+                            ret.itemInputs = itemInputs;
+                            ret.fluidInputs = fluidInputs;
+                            ret.itemOutputs = itemOutputs;
+                            ret.fluidOutputs = fluidOutputs;
+                            ret.conditions = conditions;
+                            return ret;
+                        }));
+
+    }
+
     final MachineRecipeType type;
 
     public int eu; // Also used for forge hammer damage
     public int duration;
-    public List<ItemInput> itemInputs;
-    public List<FluidInput> fluidInputs;
-    public List<ItemOutput> itemOutputs;
-    public List<FluidOutput> fluidOutputs;
-    public List<MachineProcessCondition> conditions = List.of();
+    public List<ItemInput> itemInputs = new ArrayList<>();
+    public List<FluidInput> fluidInputs = new ArrayList<>();
+    public List<ItemOutput> itemOutputs = new ArrayList<>();
+    public List<FluidOutput> fluidOutputs = new ArrayList<>();
+    public List<MachineProcessCondition> conditions = new ArrayList<>();
 
     MachineRecipe(MachineRecipeType type) {
         this.type = type;
@@ -124,6 +163,42 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public static class ItemInput {
+        private static final MapCodec<Ingredient> INGREDIENT_CODEC = MIExtraCodecs
+                .xor(
+                        MIExtraCodecs.xor(
+                                ItemStack.SINGLE_ITEM_CODEC.fieldOf("item"),
+                                TagKey.codec(Registries.ITEM).fieldOf("tag")),
+                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient"))
+                .xmap(
+                        des -> {
+                            return des.map(x -> x.map(Ingredient::of, Ingredient::of), x -> x);
+                        },
+                        ing -> {
+                            if (ing.values.length == 1) {
+                                if (ing.values[0] instanceof Ingredient.ItemValue itemValue) {
+                                    return Either.left(Either.left(itemValue.item()));
+                                } else if (ing.values[0] instanceof Ingredient.TagValue tagValue) {
+                                    return Either.left(Either.right(tagValue.tag()));
+                                }
+                            }
+                            return Either.right(ing);
+                        });
+
+        private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
+                .mapWithAlternative(
+                        ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount"),
+                        ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "count"))
+                .xmap(
+                        deserialized -> deserialized.orElse(1),
+                        Optional::of);
+
+        public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
+                g -> g.group(
+                        INGREDIENT_CODEC.forGetter(itemInput -> itemInput.ingredient),
+                        AMOUNT_CODEC.forGetter(itemInput -> itemInput.amount),
+                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemInput -> itemInput.probability))
+                .apply(g, ItemInput::new));
+
         public final Ingredient ingredient;
         public final int amount;
         public final float probability;
@@ -144,6 +219,13 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public static class FluidInput {
+        public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
+                g -> g.group(
+                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidInput -> fluidInput.fluid),
+                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(fluidInput -> fluidInput.amount),
+                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidInput -> fluidInput.probability))
+                .apply(g, FluidInput::new));
+
         public final Fluid fluid;
         public final long amount;
         public final float probability;
@@ -156,6 +238,13 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public static class ItemOutput {
+        public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
+                g -> g.group(
+                        BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(itemOutput -> itemOutput.item),
+                        MIExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(itemOutput -> itemOutput.amount),
+                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemOutput -> itemOutput.probability))
+                .apply(g, ItemOutput::new));
+
         public final Item item;
         public final int amount;
         public final float probability;
@@ -172,6 +261,13 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public static class FluidOutput {
+        public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
+                g -> g.group(
+                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
+                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(fluidOutput -> fluidOutput.amount),
+                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
+                .apply(g, FluidOutput::new));
+
         public final Fluid fluid;
         public final long amount;
         public final float probability;

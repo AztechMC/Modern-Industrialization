@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 800,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "tag": "c:diamond_plates"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:diamond_large_plate"
+    }
+  ]
+}

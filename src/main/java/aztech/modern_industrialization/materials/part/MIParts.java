@@ -33,7 +33,7 @@ import java.util.Set;
 public class MIParts {
 
     // TODO NEO commented out parts
-//    public static final BatteryPart BATTERY = new BatteryPart();
+    public static final BatteryPart BATTERY = new BatteryPart();
     public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
     public static final BlockPart BLOCK = new BlockPart();
@@ -96,8 +96,7 @@ public class MIParts {
     public static final PartTemplate[] ITEM_PURE_NON_METAL = new PartTemplate[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final PartTemplate[] ITEM_PURE_METAL = new PartTemplate[] { INGOT, NUGGET, TINY_DUST, DUST };
 
-    // TODO NEO uncomment ore
-    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, /*ORE, */PLATE, TINY_DUST, RAW_METAL,
+    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
             RAW_METAL_BLOCK);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
@@ -113,8 +112,7 @@ public class MIParts {
     public record CategoryTag(String tag, String englishName) {
     }
 
-    // TODO NEO uncomment ore and barrel
-    public static final List<PartKey> BLOCKS = PartKeyProvider.of(/*ORE, BARREL, */BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
+    public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
 
 }

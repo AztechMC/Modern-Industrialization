@@ -1,0 +1,22 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 50,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:coal_crushed_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:coal_dust"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:coal_dust",
+      "probability": 0.5
+    }
+  ]
+}

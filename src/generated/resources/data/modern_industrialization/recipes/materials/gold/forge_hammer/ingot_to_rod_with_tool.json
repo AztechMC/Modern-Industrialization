@@ -1,0 +1,11 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 20,
+  "ingredient": {
+    "tag": "c:gold_ingots"
+  },
+  "result": {
+    "count": 2,
+    "item": "modern_industrialization:gold_rod"
+  }
+}

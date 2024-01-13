@@ -30,11 +30,13 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
+import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
@@ -50,27 +52,27 @@ public class MIMaterials {
 //    public static final Material BAUXITE;
 //    public static final Material BERYLLIUM;
 //    public static final Material BLASTPROOF_ALLOY;
-//    public static final Material BRICK;
+    public static final Material BRICK;
     public static final Material BRONZE;
 //    public static final Material CADMIUM;
 //    public static final Material CARBON;
 //    public static final Material CHROMIUM;
-//    public static final Material COAL;
-//    public static final Material COKE;
+    public static final Material COAL;
+    public static final Material COKE;
 //    public static final Material COPPER;
 //    public static final Material CUPRONICKEL;
-//    public static final Material DIAMOND;
+    public static final Material DIAMOND;
 //    public static final Material ELECTRUM;
-//    public static final Material EMERALD;
-//    public static final Material FIRE_CLAY;
+    public static final Material EMERALD;
+    public static final Material FIRE_CLAY;
     public static final Material GOLD;
 //    public static final Material HE_MOX;
 //    public static final Material HE_URANIUM;
 //    public static final Material INVAR;
 //    public static final Material IRIDIUM;
-//    public static final Material IRON;
+    public static final Material IRON;
 //    public static final Material KANTHAL;
-//    public static final Material LAPIS;
+    public static final Material LAPIS;
 //    public static final Material LEAD;
 //    public static final Material LE_MOX;
 //    public static final Material LE_URANIUM;
@@ -82,8 +84,8 @@ public class MIMaterials {
 //    public static final Material NUCLEAR_ALLOY;
 //    public static final Material PLATINUM;
 //    public static final Material PLUTONIUM;
-//    public static final Material QUARTZ;
-//    public static final Material REDSTONE;
+    public static final Material QUARTZ;
+    public static final Material REDSTONE;
 //    public static final Material RUBY;
 //    public static final Material SALT;
 //    public static final Material SILICON;
@@ -143,7 +145,7 @@ public class MIMaterials {
         if (nugget) {
             res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
         }
-//        res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply);
+        res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply);
 
         return res;
     }
@@ -159,11 +161,11 @@ public class MIMaterials {
                 .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
                 .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
 
-//        res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
-//
-//        if (compressor) {
-//            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
-//        }
+        res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
+
+        if (compressor) {
+            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
+        }
         return res;
     }
 
@@ -177,15 +179,15 @@ public class MIMaterials {
                         .addParts(DRILL_HEAD, DRILL))
         );
 
-//        IRON = MaterialRegistry.addMaterial(
-//                addVanillaMetal(true,
-//                        new MaterialBuilder("Iron", "iron")
-//                                .set(MaterialProperty.SET, METALLIC)
-//                                .set(MaterialProperty.MEAN_RGB, 0xC8C8C8)
-//                                .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
-//                                .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
-//        );
-//
+        IRON = MaterialRegistry.addMaterial(
+                addVanillaMetal(true,
+                        new MaterialBuilder("Iron", "iron")
+                                .set(MaterialProperty.SET, METALLIC)
+                                .set(MaterialProperty.MEAN_RGB, 0xC8C8C8)
+                                .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
+                                .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
+        );
+
 //        COPPER = MaterialRegistry.addMaterial(addVanillaMetal(false,
 //                new MaterialBuilder("Copper", "copper")
 //                        .set(MaterialProperty.SET, METALLIC)
@@ -198,103 +200,103 @@ public class MIMaterials {
 //                        .addParts(DRILL_HEAD, DRILL))
 //                .cancelRecipes("macerator/ore_to_raw", "forge_hammer/ore_to_raw_metal",
 //                        "forge_hammer/ore_to_raw_metal_with_tool", "forge_hammer/ore_to_dust_with_tool"));
-//
-//        COAL = MaterialRegistry.addMaterial(addVanillaGem(true,
-//                new MaterialBuilder("Coal", "coal")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, STONE)
-//                        .set(MaterialProperty.MEAN_RGB, 0x282828)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(ITEM_PURE_NON_METAL))
-//                .addRecipes(ForgeHammerRecipes::apply)
-//        );
-//
-//        DIAMOND = MaterialRegistry.addMaterial(addVanillaGem(false,
-//                new MaterialBuilder("Diamond", "diamond")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, SHINY)
-//                        .set(MaterialProperty.MEAN_RGB, 0x48eeda)
-//                        .set(MaterialProperty.HARDNESS, VERY_HARD)
-//                        .addParts(ITEM_PURE_NON_METAL)
-//                        .addParts(PLATE, LARGE_PLATE)
-//                        .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.DIAMOND_HAMMER.getId().toString())))
-//        );
-//
-//        EMERALD = MaterialRegistry.addMaterial(addVanillaGem(false,
-//                new MaterialBuilder("Emerald", "emerald")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, SHINY)
-//                        .set(MaterialProperty.MEAN_RGB, 0x3FF385)
-//                        .set(MaterialProperty.HARDNESS, VERY_HARD)
-//                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)));
-//
-//        LAPIS = MaterialRegistry.addMaterial(addVanillaGem(true, "lapis_lazuli",
-//                new MaterialBuilder("Lapis Lazuli", "lapis")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, DULL)
-//                        .set(MaterialProperty.MEAN_RGB, 0x1A2D8D)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).cancelRecipes("macerator/ore_to_crushed"));
-//
-//        REDSTONE = MaterialRegistry
-//                .addMaterial(new MaterialBuilder("Redstone", "redstone")
-//                        .set(MaterialProperty.MAIN_PART, DUST)
-//                        .set(MaterialProperty.SET, STONE)
-//                        .set(MaterialProperty.MEAN_RGB, 0xd20000)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
-//                        .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
-//                        .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
-//                        .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
-//                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-//                        .cancelRecipes("macerator/ore_to_crushed"));
-//
-//        QUARTZ = MaterialRegistry
-//                .addMaterial(new MaterialBuilder("Quartz", "quartz")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, STONE)
-//                        .set(MaterialProperty.MEAN_RGB, 0xf0ebe4)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(CRUSHED_DUST, DUST, TINY_DUST)
-//                        .addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
-//                        .addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
-//                        .cancelRecipes("macerator/ore_to_crushed")
-//                        .addRecipes(context -> {
-//                            new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
-//                                    .addTaggedPartInput(DUST, 1).addItemOutput("minecraft:quartz", 1);
-//                        })
-//                );
-//
-//        BRICK = MaterialRegistry.addMaterial(new MaterialBuilder("Brick", "brick")
-//                .set(MaterialProperty.SET, STONE)
-//                .set(MaterialProperty.MEAN_RGB, 0xb75a36)
-//                .set(MaterialProperty.HARDNESS, SOFT)
-//                .addParts(DUST, TINY_DUST)
-//                .addMaterialItemParts(MaterialItemPart.external(INGOT, "minecraft:brick", "minecraft:brick"))
-//                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
-//
-//        FIRE_CLAY = MaterialRegistry.addMaterial(
-//                new MaterialBuilder("Fire Clay", "fire_clay")
-//                        .set(MaterialProperty.SET, STONE)
-//                        .set(MaterialProperty.MEAN_RGB, 0xb75a36)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(DUST)
-//                        .addMaterialItemParts(MaterialItemPart.simpleItem(INGOT, "Fire Clay Brick", "fire_clay_brick"))
-//                        .addRecipes(SmeltingRecipes::apply));
-//
-//        COKE = MaterialRegistry
-//                .addMaterial(new MaterialBuilder("Coke", "coke")
-//                        .set(MaterialProperty.MAIN_PART, GEM)
-//                        .set(MaterialProperty.SET, STONE)
-//                        .set(MaterialProperty.MEAN_RGB, 0x6d6d57)
-//                        .set(MaterialProperty.HARDNESS, SOFT)
-//                        .addParts(DUST)
-//                        .addMaterialItemParts(MaterialItemPart.simpleItem(GEM, "Coke", "coke"))
-//                        .addParts(BLOCK.of(MaterialBlockSet.COAL))
-//                        .addRecipes(context -> {
-//                            new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1);
-//                        })
-//                        .addRecipes(StandardRecipes::apply));
+
+        COAL = MaterialRegistry.addMaterial(addVanillaGem(true,
+                new MaterialBuilder("Coal", "coal")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, STONE)
+                        .set(MaterialProperty.MEAN_RGB, 0x282828)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(ITEM_PURE_NON_METAL))
+                .addRecipes(ForgeHammerRecipes::apply)
+        );
+
+        DIAMOND = MaterialRegistry.addMaterial(addVanillaGem(false,
+                new MaterialBuilder("Diamond", "diamond")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, SHINY)
+                        .set(MaterialProperty.MEAN_RGB, 0x48eeda)
+                        .set(MaterialProperty.HARDNESS, VERY_HARD)
+                        .addParts(ITEM_PURE_NON_METAL)
+                        .addParts(PLATE, LARGE_PLATE)
+                        .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.DIAMOND_HAMMER.getId().toString())))
+        );
+
+        EMERALD = MaterialRegistry.addMaterial(addVanillaGem(false,
+                new MaterialBuilder("Emerald", "emerald")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, SHINY)
+                        .set(MaterialProperty.MEAN_RGB, 0x3FF385)
+                        .set(MaterialProperty.HARDNESS, VERY_HARD)
+                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)));
+
+        LAPIS = MaterialRegistry.addMaterial(addVanillaGem(true, "lapis_lazuli",
+                new MaterialBuilder("Lapis Lazuli", "lapis")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, DULL)
+                        .set(MaterialProperty.MEAN_RGB, 0x1A2D8D)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).cancelRecipes("macerator/ore_to_crushed"));
+
+        REDSTONE = MaterialRegistry
+                .addMaterial(new MaterialBuilder("Redstone", "redstone")
+                        .set(MaterialProperty.MAIN_PART, DUST)
+                        .set(MaterialProperty.SET, STONE)
+                        .set(MaterialProperty.MEAN_RGB, 0xd20000)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
+                        .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .cancelRecipes("macerator/ore_to_crushed"));
+
+        QUARTZ = MaterialRegistry
+                .addMaterial(new MaterialBuilder("Quartz", "quartz")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, STONE)
+                        .set(MaterialProperty.MEAN_RGB, 0xf0ebe4)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(CRUSHED_DUST, DUST, TINY_DUST)
+                        .addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
+                        .addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
+                        .cancelRecipes("macerator/ore_to_crushed")
+                        .addRecipes(context -> {
+                            new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
+                                    .addTaggedPartInput(DUST, 1).addItemOutput("minecraft:quartz", 1);
+                        })
+                );
+
+        BRICK = MaterialRegistry.addMaterial(new MaterialBuilder("Brick", "brick")
+                .set(MaterialProperty.SET, STONE)
+                .set(MaterialProperty.MEAN_RGB, 0xb75a36)
+                .set(MaterialProperty.HARDNESS, SOFT)
+                .addParts(DUST, TINY_DUST)
+                .addMaterialItemParts(MaterialItemPart.external(INGOT, "minecraft:brick", "minecraft:brick"))
+                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+
+        FIRE_CLAY = MaterialRegistry.addMaterial(
+                new MaterialBuilder("Fire Clay", "fire_clay")
+                        .set(MaterialProperty.SET, STONE)
+                        .set(MaterialProperty.MEAN_RGB, 0xb75a36)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(DUST)
+                        .addMaterialItemParts(MaterialItemPart.simpleItem(INGOT, "Fire Clay Brick", "fire_clay_brick"))
+                        .addRecipes(SmeltingRecipes::apply));
+
+        COKE = MaterialRegistry
+                .addMaterial(new MaterialBuilder("Coke", "coke")
+                        .set(MaterialProperty.MAIN_PART, GEM)
+                        .set(MaterialProperty.SET, STONE)
+                        .set(MaterialProperty.MEAN_RGB, 0x6d6d57)
+                        .set(MaterialProperty.HARDNESS, SOFT)
+                        .addParts(DUST)
+                        .addMaterialItemParts(MaterialItemPart.simpleItem(GEM, "Coke", "coke"))
+                        .addParts(BLOCK.of(MaterialBlockSet.COAL))
+                        .addRecipes(context -> {
+                            new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1);
+                        })
+                        .addRecipes(StandardRecipes::apply));
 //
         BRONZE = MaterialRegistry.addMaterial(
                 new MaterialBuilder("Bronze", "bronze")

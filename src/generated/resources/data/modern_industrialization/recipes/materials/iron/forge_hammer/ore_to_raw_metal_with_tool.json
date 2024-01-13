@@ -1,0 +1,11 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 20,
+  "ingredient": {
+    "tag": "c:iron_ores"
+  },
+  "result": {
+    "count": 3,
+    "item": "minecraft:raw_iron"
+  }
+}

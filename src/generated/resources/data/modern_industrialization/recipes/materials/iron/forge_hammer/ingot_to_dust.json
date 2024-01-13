@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:iron_ingots"
+  },
+  "result": {
+    "item": "modern_industrialization:iron_dust"
+  }
+}

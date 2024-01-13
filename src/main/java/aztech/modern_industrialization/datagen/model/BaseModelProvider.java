@@ -65,4 +65,8 @@ public abstract class BaseModelProvider extends BlockStateProvider {
     public void existingModel(Block block, Block targetBlock) {
         simpleBlock(block, models().getExistingFile(blockTexture(targetBlock)));
     }
+
+    public void existingModelWithItem(Block block) {
+        simpleBlockWithItem(block, models().getExistingFile(blockTexture(block)));
+    }
 }

@@ -30,7 +30,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permits MaterialItemPartImpl {
@@ -72,6 +74,15 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
      *         otherwise.
      */
     String getTaggedItemId();
+
+    default Ingredient getTaggedIngredient() {
+        var taggedItem = getTaggedItemId();
+        if (taggedItem.startsWith("#")) {
+            return Ingredient.of(ItemTags.create(new ResourceLocation(taggedItem.substring(1))));
+        } else {
+            return Ingredient.of(asItem());
+        }
+    }
 
     /**
      * @return The full id of this part. Includes the namespace and the path, separated by :.

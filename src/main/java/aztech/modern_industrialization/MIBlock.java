@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
@@ -63,13 +64,12 @@ public class MIBlock {
     }
 
     // TODO NEO
-//    // @formatter:off
-//    // Forge hammer
-//    public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
-//            BlockDefinitionParams.defaultStone().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER).noModel().destroyTime(6.0f).explosionResistance(1200)
-//                    .sound(SoundType.ANVIL),
-//            ForgeHammerBlock.class);
-//
+    // @formatter:off
+    // Forge hammer
+    public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
+            BlockDefinitionParams.defaultStone().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER).noModel().destroyTime(6.0f).explosionResistance(1200)
+                    .sound(SoundType.ANVIL));
+
 //    // Bronze stuff
 //    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
 //            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
@@ -270,7 +270,7 @@ public class MIBlock {
         }
 
         public BlockDefinitionParams<T> noModel() {
-            this.modelGenerator = (block, modelGenerator) -> modelGenerator.existingModel(block);
+            this.modelGenerator = (block, modelGenerator) -> modelGenerator.existingModelWithItem(block);
             // still creating the blockstate
             return this;
         }

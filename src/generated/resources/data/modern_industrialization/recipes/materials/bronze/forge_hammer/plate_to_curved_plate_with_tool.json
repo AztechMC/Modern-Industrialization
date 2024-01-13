@@ -2,10 +2,9 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
   "ingredient": {
-    "tag": "c:copper_ores"
+    "tag": "c:bronze_plates"
   },
   "result": {
-    "item": "minecraft:raw_copper",
-    "count": 8
+    "item": "modern_industrialization:bronze_curved_plate"
   }
 }

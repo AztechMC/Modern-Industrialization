@@ -1,5 +1,6 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
@@ -73,6 +74,7 @@ public class MIClient {
     @SubscribeEvent
     private static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            MenuScreens.register(MIRegistries.FORGE_HAMMER_MENU.get(), ForgeHammerScreen::new);
             MenuScreens.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
 
             MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), ItemPipeScreen::new);

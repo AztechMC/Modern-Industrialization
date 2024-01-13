@@ -1,10 +1,9 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:copper_ores"
+    "tag": "c:bronze_nuggets"
   },
   "result": {
-    "item": "minecraft:raw_copper",
-    "count": 5
+    "item": "modern_industrialization:bronze_tiny_dust"
   }
 }

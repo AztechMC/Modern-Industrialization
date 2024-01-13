@@ -200,15 +200,6 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             throw new IllegalArgumentException("Must have at least one fluid or item input.");
         if (recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0)
             throw new IllegalArgumentException("Must have at least one fluid or item output.");
-
-        if (this == MIMachineRecipeTypes.FORGE_HAMMER) {
-            if (recipe.itemInputs.size() != 1)
-                throw new IllegalArgumentException("Must have exactly one item input.");
-            if (recipe.itemOutputs.size() != 1)
-                throw new IllegalArgumentException("Must have exactly one item output.");
-            if (recipe.itemInputs.get(0).probability != 1.0f || recipe.itemOutputs.get(0).probability != 1.0f)
-                throw new IllegalArgumentException("Chanced recipes are not supported for the forge hammer.");
-        }
     }
 
     @Override

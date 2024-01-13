@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 40,
+  "ingredient": {
+    "tag": "c:bronze_ingots"
+  },
+  "result": {
+    "item": "modern_industrialization:bronze_curved_plate"
+  }
+}

@@ -23,11 +23,13 @@
  */
 package aztech.modern_industrialization.blocks.forgehammer;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.*;
+
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,12 +47,13 @@ import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
     private final DataSlot selectedRecipe;
-    private final List<MachineRecipe> availableRecipes;
+    private final List<RecipeHolder<ForgeHammerRecipe>> availableRecipes;
 
     public final Slot output;
 
@@ -68,7 +71,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     public ForgeHammerScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
-        super(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, syncId);
+        super(MIRegistries.FORGE_HAMMER_MENU.get(), syncId);
         this.context = context;
         this.selectedRecipe = DataSlot.standalone();
         this.availableRecipes = new ArrayList<>();
@@ -136,7 +139,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         return selectedRecipe.get();
     }
 
-    public List<MachineRecipe> getAvailableRecipes() {
+    public List<RecipeHolder<ForgeHammerRecipe>> getAvailableRecipes() {
         return availableRecipes;
     }
 
@@ -162,33 +165,31 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.inputStackCache = input.getItem().copy();
         this.toolStackCache = tool.getItem().copy();
 
-        MachineRecipe old = isInBounds(selectedRecipe.get()) ? availableRecipes.get(selectedRecipe.get()) : null;
+        RecipeHolder<ForgeHammerRecipe> old = isInBounds(selectedRecipe.get()) ? availableRecipes.get(selectedRecipe.get()) : null;
 
         this.availableRecipes.clear();
         this.selectedRecipe.set(-1);
         this.output.set(ItemStack.EMPTY);
 
         if (!input.getItem().isEmpty()) {
+            Set<ItemVariant> outputs = new HashSet<>();
 
-            Map<ResourceLocation, MachineRecipe> recipeMap = new HashMap<>();
+            for (var holder : this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())) {
+                ForgeHammerRecipe recipe = holder.value();
 
-            for (MachineRecipe recipe : MIMachineRecipeTypes.FORGE_HAMMER.getRecipes(this.world)) {
-
-                MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
-
-                if (recipeInput.matches(input.getItem()) && recipeInput.amount <= input.getItem().getCount()) {
-                    ResourceLocation idOutput = BuiltInRegistries.ITEM.getKey(recipe.itemOutputs.get(0).item);
-                    if ((recipe.eu != 0) && (!tool.getItem().isEmpty())) {
-                        recipeMap.put(idOutput, recipe);
-                    } else if (recipe.eu == 0 && !recipeMap.containsKey(idOutput)) {
-                        recipeMap.put(idOutput, recipe);
+                if (recipe.ingredient().test(input.getItem()) && recipe.count() <= input.getItem().getCount()) {
+                    var output = ItemVariant.of(recipe.result());
+                    if ((recipe.hammerDamage() != 0) && (!tool.getItem().isEmpty())) {
+                        outputs.add(output);
+                        availableRecipes.add(holder);
+                    } else if (recipe.hammerDamage() == 0 && !outputs.contains(output)) {
+                        outputs.add(output);
+                        availableRecipes.add(holder);
                     }
                 }
             }
 
-            availableRecipes.addAll(recipeMap.values());
-
-            availableRecipes.sort(Comparator.comparing(MachineRecipe::getId));
+            availableRecipes.sort(Comparator.comparing(RecipeHolder::id));
 
             for (int i = 0; i < availableRecipes.size(); i++) {
                 if (old == availableRecipes.get(i)) {
@@ -202,9 +203,9 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
     void populateResult() {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
-            MachineRecipe current = this.availableRecipes.get(getSelectedRecipe());
-            if (current.eu == 0 || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
-                this.output.set(current.getResultItem(world.registryAccess()));
+            RecipeHolder<ForgeHammerRecipe> current = this.availableRecipes.get(getSelectedRecipe());
+            if (current.value().hammerDamage() == 0 || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
+                this.output.set(current.value().result().copy());
             } else {
                 this.output.set(ItemStack.EMPTY);
             }
@@ -224,12 +225,11 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     private void onCraft() {
-
-        MachineRecipe current = this.availableRecipes.get(this.selectedRecipe.get());
-        this.input.getItem().shrink(current.itemInputs.get(0).amount);
+        RecipeHolder<ForgeHammerRecipe> current = this.availableRecipes.get(this.selectedRecipe.get());
+        this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {
-                tool.getItem().hurt(current.eu, world.getRandom(), (ServerPlayer) this.player);
+                tool.getItem().hurt(current.value().hammerDamage(), world.getRandom(), (ServerPlayer) this.player);
             }
             if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {
                 tool.set(ItemStack.EMPTY);
@@ -239,7 +239,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 });
             }
 
-        } else if (current.eu > 0) {
+        } else if (current.value().hammerDamage() > 0) {
             throw new IllegalStateException("Forge Hammer Exception : Tool crafting without a tool");
         }
 
@@ -308,20 +308,20 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     public void moveRecipe(ResourceLocation recipeId, int fillAction, int amount) {
-        MachineRecipe recipe = MIMachineRecipeTypes.FORGE_HAMMER.getRecipe(this.world, recipeId);
-        if (recipe == null) {
+        var recipeHolder = this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream().filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
+        if (recipeHolder == null) {
             return;
         }
 
-        var recipeInput = recipe.itemInputs.get(0);
+        var recipe = recipeHolder.value();
         boolean firstPass = true;
 
         while (amount > 0) {
             boolean didSomething = false;
 
-            if (recipeInput.matches(input.getItem())) {
+            if (recipe.ingredient().test(input.getItem())) {
                 // Pull from player inventory
-                int targetAmount = firstPass ? recipeInput.amount : input.getItem().getCount() + recipeInput.amount;
+                int targetAmount = firstPass ? recipe.count() : input.getItem().getCount() + recipe.count();
                 int delta = targetAmount - input.getItem().getCount();
                 if (delta < 0) {
                     player.getInventory().placeItemBackInInventory(input.remove(-delta));
@@ -350,7 +350,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 var matchingStack = ItemStack.EMPTY;
                 for (int i = 0; i < 36 && matchingStack.isEmpty(); ++i) {
                     Slot slot = this.slots.get(i);
-                    if (recipeInput.matches(slot.getItem())) {
+                    if (recipe.ingredient().test(slot.getItem())) {
                         matchingStack = slot.getItem().copy();
                     }
                 }
@@ -358,7 +358,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                     return;
                 }
                 // Pull matching input from player inventory
-                int toPull = recipeInput.amount;
+                int toPull = recipe.count();
                 input.set(matchingStack.copy());
                 input.getItem().setCount(0);
                 for (int i = 0; i < 36; ++i) {
@@ -377,7 +377,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             }
 
             // Move hammer into gui
-            if (recipe.eu > 0 && !this.tool.hasItem()) {
+            if (recipe.hammerDamage() > 0 && !this.tool.hasItem()) {
                 for (int i = 0; i < 36; ++i) {
                     Slot slot = this.slots.get(i);
                     if (slot.getItem().is(ForgeTool.TAG)) {
@@ -391,7 +391,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             // Select recipe
             int recipeIndex = -1;
             for (int i = 0; i < this.availableRecipes.size(); ++i) {
-                if (this.availableRecipes.get(i).getId().equals(recipeId)) {
+                if (this.availableRecipes.get(i).id().equals(recipeId)) {
                     recipeIndex = i;
                     break;
                 }

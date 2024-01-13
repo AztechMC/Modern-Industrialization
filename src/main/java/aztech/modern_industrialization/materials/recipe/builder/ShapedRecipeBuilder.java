@@ -50,8 +50,6 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
-    private static final Gson GSON = new Gson();
-
     public final String recipeId;
     private final MaterialBuilder.RecipeContext context;
     private boolean canceled = false;

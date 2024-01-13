@@ -2,10 +2,10 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 60,
   "ingredient": {
-    "tag": "c:copper_ores"
+    "tag": "c:bronze_ingots"
   },
   "result": {
-    "item": "modern_industrialization:copper_dust",
-    "count": 12
+    "count": 2,
+    "item": "modern_industrialization:bronze_ring"
   }
 }

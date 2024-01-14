@@ -215,26 +215,6 @@ public class PipeBakedModel implements IDynamicBakedModel {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
-    // TODO NEO
-//    @Override
-//    public void emitItemQuads(ItemStack itemStack, Supplier<RandomSource> supplier, RenderContext renderContext) {
-//        Item item = itemStack.getItem();
-//        if (item instanceof PipeItem) {
-//            // TODO: remove allocation if it becomes an issue
-//            PipeNetworkType type = ((PipeItem) item).type;
-//            int color = type.getColor();
-//            renderContext.pushTransform(getColorTransform(color));
-//            renderContext.pushTransform(ITEM_TRANSFORM);
-//
-//            PipeEndpointType[][] connections = new PipeEndpointType[][] {
-//                    { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
-//            renderers.get(PipeRenderer.get(type)).draw(null, null, renderContext, 0, connections, new CompoundTag());
-//
-//            renderContext.popTransform();
-//            renderContext.popTransform();
-//        }
-//    }
-
     private static PipeRenderContext.QuadTransform getColorTransform(int color) {
         return quad -> {
             if (quad.tag() == 0) {
@@ -290,5 +270,38 @@ public class PipeBakedModel implements IDynamicBakedModel {
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
+    }
+
+    @Override
+    public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
+        if (itemStack.getItem() instanceof PipeItem pipe) {
+            PipeNetworkType type = pipe.type;
+            int color = type.getColor();
+
+            return List.of(new PipeBakedModel(particleSprite, renderers, meWireConnectors, spriteFinder) {
+                @Override
+                public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+                    if (side != null) {
+                        return List.of();
+                    }
+
+                    var renderContext = new PipeRenderContext(spriteFinder, true, true);
+
+                    renderContext.pushTransform(getColorTransform(color));
+                    renderContext.pushTransform(ITEM_TRANSFORM);
+
+                    PipeEndpointType[][] connections = new PipeEndpointType[][] {
+                            { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
+                    renderers.get(PipeRenderer.get(type)).draw(null, null, renderContext, 0, connections, new CompoundTag());
+
+                    renderContext.popTransform();
+                    renderContext.popTransform();
+
+                    return renderContext.quads;
+                }
+            });
+        } else {
+            return List.of(this);
+        }
     }
 }

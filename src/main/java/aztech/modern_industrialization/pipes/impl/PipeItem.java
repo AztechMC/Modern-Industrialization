@@ -44,7 +44,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class PipeItem extends Item {
-    final PipeNetworkType type;
+    public final PipeNetworkType type;
     public final PipeNetworkData defaultData;
 
     public PipeItem(Properties settings, PipeNetworkType type, PipeNetworkData defaultData) {

@@ -38,7 +38,7 @@ public class MIParts {
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
     public static final BlockPart BLOCK = new BlockPart();
     public static final PartTemplate BOLT = new PartTemplate("Bolt", "bolt");
-//    public static final CablePart CABLE = new CablePart();
+    public static final CablePart CABLE = new CablePart();
     public static final PartTemplate COIL = new PartTemplate("Coil", "coil").asColumnBlock(SortOrder.COILS);
     public static final PartTemplate CRUSHED_DUST = new PartTemplate("Crushed Dust", "crushed_dust");
     public static final PartTemplate CURVED_PLATE = new PartTemplate("Curved Plate", "curved_plate");

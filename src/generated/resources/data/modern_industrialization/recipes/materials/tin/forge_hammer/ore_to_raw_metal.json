@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:tin_ores"
+  },
+  "result": {
+    "count": 2,
+    "item": "modern_industrialization:raw_tin"
+  }
+}

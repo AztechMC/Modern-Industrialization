@@ -297,7 +297,7 @@ public class MIMaterials {
                             new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1);
                         })
                         .addRecipes(StandardRecipes::apply));
-//
+
         BRONZE = MaterialRegistry.addMaterial(
                 new MaterialBuilder("Bronze", "bronze")
                         .set(MaterialProperty.SET, SHINY)
@@ -317,10 +317,8 @@ public class MIMaterials {
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON))
                         .addParts(WIRE).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
-                        // TODO NEO add cables back
-                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)));//.addParts(CABLE.of(CableTier.LV)));
-        // TODO NEO recipes
-//                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
+                        .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.LV))
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
 
         STEEL = MaterialRegistry.addMaterial(
                 new MaterialBuilder("Steel", "steel")

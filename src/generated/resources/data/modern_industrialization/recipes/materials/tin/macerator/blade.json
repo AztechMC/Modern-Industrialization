@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:tin_blade"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 5,
+      "item": "modern_industrialization:tin_tiny_dust"
+    }
+  ]
+}

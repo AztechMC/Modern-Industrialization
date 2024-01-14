@@ -217,8 +217,8 @@ public class MITooltips {
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe)) {
-                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
+                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe.type)) {
+                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get(pipe.type);
                     return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
                 } else {
                     return Optional.empty();

@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "item": "modern_industrialization:tin_double_ingot"
+  },
+  "result": {
+    "item": "modern_industrialization:tin_plate"
+  }
+}

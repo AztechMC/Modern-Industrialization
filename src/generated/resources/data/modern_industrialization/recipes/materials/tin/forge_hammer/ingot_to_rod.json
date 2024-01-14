@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:tin_ingots"
+  },
+  "result": {
+    "item": "modern_industrialization:tin_rod"
+  }
+}

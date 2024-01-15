@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:compressor",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:silver_double_ingot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:silver_plate"
+    }
+  ]
+}

@@ -32,6 +32,8 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getL
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
@@ -91,6 +93,12 @@ public class DebugCommands {
                                 .executes(ctx -> {
                                     return dumpStats(ctx.getSource().getPlayerOrException());
                                 })
+                            )
+                            .then(literal("build_multiblock")
+                                    .then(argument("controller_pos", blockPos())
+                                            .executes(ctx -> {
+                                                return buildMultiblock(ctx.getSource(), getLoadedBlockPos(ctx, "controller_pos"));
+                                            }))
                             )
                     )
             );
@@ -160,6 +168,21 @@ public class DebugCommands {
     private static int dumpStats(ServerPlayer player) {
         player.displayClientMessage(Component.literal(
                 PlayerStatisticsData.get(player.server).get(player).toTag().toString()), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int buildMultiblock(CommandSourceStack src, BlockPos controllerPos) {
+        var be = src.getLevel().getBlockEntity(controllerPos);
+        if (be instanceof MultiblockMachineBlockEntity multiblock) {
+            var shape = multiblock.getActiveShape();
+            var shapeMatcher = new ShapeMatcher(src.getLevel(), controllerPos, multiblock.orientation.facingDirection, shape);
+            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
+
+            src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(
+                    controllerPos, updatedBlocks)), true);
+        } else {
+            src.sendFailure(Component.literal("Block at position %s is not a multiblock controller.".formatted(controllerPos)));
+        }
         return Command.SINGLE_SUCCESS;
     }
 }

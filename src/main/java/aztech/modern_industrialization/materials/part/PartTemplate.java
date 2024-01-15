@@ -160,14 +160,16 @@ public class PartTemplate implements PartKeyProvider {
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
-                            // TODO NEO column model
-                            //.withModel(TexturedModel.COLUMN)
+                            .withModel((block, gen) -> {
+                                String name = gen.name(block);
+                                gen.simpleBlockWithItem(block, gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                            })
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)
 
             );
 
-            setupTag(partContext, part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition);
 
         };
         return new PartTemplate(englishNameFormatter, partKey, columnBlockRegister, new TextureGenParams.ColumnBlock(), itemPathFormatter);

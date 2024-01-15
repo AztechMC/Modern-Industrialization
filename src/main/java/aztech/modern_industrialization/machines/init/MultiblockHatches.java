@@ -31,6 +31,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.ItemHatch;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -59,15 +60,15 @@ public class MultiblockHatches {
         registerEnergyHatches(CableTier.EV);
         registerEnergyHatches(CableTier.SUPERCONDUCTOR);
 
-//        MachineRegistrationHelper.registerMachine(
-//                "Nuclear Item Hatch",
-//                "nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
-//        MachineRegistrationHelper.registerMachine("Nuclear Fluid Hatch", "nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true),
-//                NuclearHatch::registerFluidApi);
-//
-//        MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
-//        MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
-//
+        MachineRegistrationHelper.registerMachine(
+                "Nuclear Item Hatch",
+                "nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
+        MachineRegistrationHelper.registerMachine("Nuclear Fluid Hatch", "nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true),
+                NuclearHatch::registerFluidApi);
+
+        MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
+        MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
+
 //        MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
 //        MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
     }

@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 400,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:titanium_curved_plate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:titanium_rod"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:titanium_blade"
+    }
+  ]
+}

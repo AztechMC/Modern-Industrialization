@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:unpacker",
+  "duration": 400,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:stainless_steel_ingots"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "modern_industrialization:stainless_steel_nugget"
+    }
+  ]
+}

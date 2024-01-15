@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:copper_nuggets"
+    },
+    "y": {
+      "item": "modern_industrialization:copper_nugget"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "item": "minecraft:copper_ingot"
+  }
+}

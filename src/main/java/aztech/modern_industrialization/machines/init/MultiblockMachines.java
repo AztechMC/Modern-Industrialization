@@ -437,11 +437,10 @@ public class MultiblockMachines {
     }
 
     private static void nuclearReactor() {
-        NUCLEAR_REACTOR = null;
-//        NUCLEAR_REACTOR = MachineRegistrationHelper.registerMachine(
-//                "Nuclear Reactor",
-//                "nuclear_reactor", NuclearReactorMultiblockBlockEntity::new);
-//        NuclearReactorMultiblockBlockEntity.registerReiShapes();
+        NUCLEAR_REACTOR = MachineRegistrationHelper.registerMachine(
+                "Nuclear Reactor",
+                "nuclear_reactor", NuclearReactorMultiblockBlockEntity::new);
+        NuclearReactorMultiblockBlockEntity.registerReiShapes();
     }
 
     private static void largeTank() {
@@ -682,9 +681,9 @@ public class MultiblockMachines {
                         .items(inputs -> inputs.addSlots(36, 35, 2, 2), outputs -> outputs.addSlot(102, 42))
                         .register();
 
+        MachineRegistrationHelper.addMachineModel("nuclear_reactor", "nuclear_reactor", MachineCasings.NUCLEAR, true, false, false, true);
+
         // TODO NEO
-//        MachineRegistrationHelper.addMachineModel("nuclear_reactor", "nuclear_reactor", MachineCasings.NUCLEAR, true, false, false, true);
-//
 //        MachineRegistrationHelper.addMachineModel("large_tank",
 //                "large_tank", MachineCasings.STEEL, true, false, false, false);
 

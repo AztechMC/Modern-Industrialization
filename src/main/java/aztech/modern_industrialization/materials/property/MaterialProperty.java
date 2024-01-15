@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -68,6 +70,5 @@ public class MaterialProperty<T> {
     /**
      * Isotope parameters for nuclear fission fuels.
      */
-    // TODO NEO
-//    public static final MaterialProperty<@Nullable IsotopeFuelParams> ISOTOPE = new MaterialProperty<>("isotope", null);
+    public static final MaterialProperty<@Nullable IsotopeFuelParams> ISOTOPE = new MaterialProperty<>("isotope", null);
 }

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:invar_nuggets"
+    },
+    "y": {
+      "item": "modern_industrialization:invar_nugget"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "item": "modern_industrialization:invar_ingot"
+  }
+}

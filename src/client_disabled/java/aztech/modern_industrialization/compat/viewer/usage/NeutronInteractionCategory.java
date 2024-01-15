@@ -49,7 +49,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
-    public static final ResourceLocation TEXTURE_ATLAS = new ResourceLocation(ModernIndustrialization.MOD_ID, "textures/gui/rei/texture_atlas.png");
+    public static final ResourceLocation TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
     private static final ResourceLocation PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");
 
     private final int centerX;

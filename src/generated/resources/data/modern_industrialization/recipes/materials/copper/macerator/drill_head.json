@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:copper_drill_head"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 64,
+      "item": "modern_industrialization:copper_tiny_dust"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:copper_tiny_dust"
+    }
+  ]
+}

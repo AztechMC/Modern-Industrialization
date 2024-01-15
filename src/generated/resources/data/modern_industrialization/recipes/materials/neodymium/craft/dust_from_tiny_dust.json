@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:neodymium_tiny_dusts"
+    },
+    "y": {
+      "item": "modern_industrialization:neodymium_tiny_dust"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "item": "modern_industrialization:neodymium_dust"
+  }
+}

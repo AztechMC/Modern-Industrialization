@@ -14,6 +14,7 @@ import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.network.MIPackets;
+import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import net.minecraft.resources.ResourceLocation;
@@ -64,6 +65,7 @@ public class MI {
             MIItem.ITEM_DEFINITIONS.values().forEach(ItemDefinition::onRegister);
 
             FluidFuelRegistry.init();
+            FluidNuclearComponent.init();
         });
 
         modBus.addListener(GatherDataEvent.class, event -> {

@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 400,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:titanium_drill_head"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 64,
+      "item": "modern_industrialization:titanium_tiny_dust"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:titanium_tiny_dust"
+    }
+  ]
+}

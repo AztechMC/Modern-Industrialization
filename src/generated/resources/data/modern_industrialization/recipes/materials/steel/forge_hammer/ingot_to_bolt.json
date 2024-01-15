@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:steel_ingots"
+  },
+  "result": {
+    "count": 2,
+    "item": "modern_industrialization:steel_bolt"
+  }
+}

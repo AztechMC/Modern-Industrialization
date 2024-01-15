@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:uranium_238_nuggets"
+    },
+    "y": {
+      "item": "modern_industrialization:uranium_238_nugget"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "item": "modern_industrialization:uranium_238_ingot"
+  }
+}

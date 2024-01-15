@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:unpacker",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:aluminum_dusts"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "modern_industrialization:aluminum_tiny_dust"
+    }
+  ]
+}

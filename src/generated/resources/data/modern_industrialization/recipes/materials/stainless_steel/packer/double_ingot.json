@@ -1,0 +1,22 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 400,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "tag": "c:stainless_steel_ingots"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:packer_double_ingot_template",
+      "probability": 0.0
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:stainless_steel_double_ingot"
+    }
+  ]
+}

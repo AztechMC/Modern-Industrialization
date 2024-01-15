@@ -86,9 +86,8 @@ public final class MITextures {
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/highly_advanced_machine_hull.png")));
         mtm.runAtEnd(() -> casingFromTexture(mtm, "superconductor",
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/quantum_machine_hull.png")));
-        // TODO NEO
-//        mtm.runAtEnd(
-//                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
+        mtm.runAtEnd(
+                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
 
         mtm.runAtEnd(
                 () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
@@ -103,20 +102,20 @@ public final class MITextures {
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/steel_machine_casing.png"),
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
 
-//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
-//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/tungsten_ingot.png"))));
-//
-//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_plate_nuclear.png",
-//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/cadmium_plate.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/beryllium_plate.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_plate.png"), 1, 2)));
-//
-//        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_iridium.png",
-//                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
-//                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"))));
+        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
+                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/tungsten_ingot.png"))));
+
+        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_plate_nuclear.png",
+                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/cadmium_plate.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/beryllium_plate.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_plate.png"), 1, 2)));
+
+        mtm.runAtEnd(() -> mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_iridium.png",
+                TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
+                        mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"))));
 
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenComposeAsync(v -> {

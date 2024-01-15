@@ -19,6 +19,7 @@ targetCompatibility = JavaVersion.VERSION_17
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.matching("jetbrains")
     }
 
     withSourcesJar()
@@ -297,6 +298,8 @@ runs {
 
         modSource project.sourceSets.main
         modSource project.sourceSets.client
+
+        jvmArgument "-XX:+AllowEnhancedClassRedefinition"
     }
 
     client {

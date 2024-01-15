@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 20,
+  "eu": 32,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:aluminum_tiny_dusts"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:aluminum_nugget"
+    }
+  ]
+}

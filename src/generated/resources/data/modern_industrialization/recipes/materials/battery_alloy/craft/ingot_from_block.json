@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:battery_alloy_block"
+    }
+  },
+  "pattern": [
+    "x"
+  ],
+  "result": {
+    "count": 9,
+    "item": "modern_industrialization:battery_alloy_ingot"
+  }
+}

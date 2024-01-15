@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 400,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "modern_industrialization:soldering_alloy"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 4,
+      "tag": "c:stainless_steel_plates"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:stainless_steel_ring"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:stainless_steel_gear"
+    }
+  ]
+}

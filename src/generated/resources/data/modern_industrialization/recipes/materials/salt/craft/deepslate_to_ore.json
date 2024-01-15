@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:deepslate_salt_ore"
+    }
+  },
+  "pattern": [
+    "   ",
+    " x ",
+    "   "
+  ],
+  "result": {
+    "item": "modern_industrialization:salt_ore"
+  }
+}

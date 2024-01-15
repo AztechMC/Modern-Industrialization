@@ -30,9 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
+
 public class MIParts {
 
-    // TODO NEO commented out parts
     public static final BatteryPart BATTERY = new BatteryPart();
     public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
@@ -83,12 +84,12 @@ public class MIParts {
     public static final PartTemplate WIRE = new PartTemplate("Wire", "wire");
     public static final PartTemplate WIRE_MAGNETIC = new PartTemplate("Magnetic %s Wire", "wire_magnetic").withOverlay(WIRE, "magnetic");
 
-//    public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
-//    public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
-//    public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
-//    public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
-//
-//    public static final ControlRodPart CONTROL_ROD = new ControlRodPart();
+    public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
+    public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
+    public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
+    public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
+
+    public static final ControlRodPart CONTROL_ROD = new ControlRodPart();
 
     public static final PartTemplate N_DOPED_PLATE = new PartTemplate("N-Doped %s Plate", "n_doped_plate").withOverlay(PLATE, "n_doped");
     public static final PartTemplate P_DOPED_PLATE = new PartTemplate("P-Doped %s Plate", "p_doped_plate").withOverlay(PLATE, "p_doped");

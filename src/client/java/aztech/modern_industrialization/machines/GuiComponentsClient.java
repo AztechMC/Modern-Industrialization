@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.guicomponents.AutoExtractClient;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGuiClient;
+import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
@@ -59,7 +60,7 @@ public final class GuiComponentsClient {
         register(GuiComponents.ENERGY_BAR, EnergyBarClient::new);
 //        register(GuiComponents.LARGE_TANK_FLUID_DISPLAY, LargeTankFluidDisplayClient::new);
         register(GuiComponents.GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGuiClient::new);
-//        register(GuiComponents.NUCLEAR_REACTOR_GUI, NuclearReactorGuiClient::new);
+        register(GuiComponents.NUCLEAR_REACTOR_GUI, NuclearReactorGuiClient::new);
         register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);
         register(GuiComponents.RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBarClient::new);
         register(GuiComponents.REI_SLOT_LOCKING, ReiSlotLockingClient::new);

@@ -29,8 +29,10 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.hatches.EnergyHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.ItemHatch;
+import aztech.modern_industrialization.machines.blockentities.hatches.LargeTankHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -39,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// TODO NEO missing hatches
 public class MultiblockHatches {
     public static void init() {
         registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
@@ -69,8 +70,8 @@ public class MultiblockHatches {
         MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
         MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
 
-//        MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
-//        MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
+        MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
+        MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
     }
 
     private static void registerItemHatches(
@@ -117,13 +118,13 @@ public class MultiblockHatches {
     }
 
     private static void registerEnergyHatches(CableTier tier) {
-//        for (int iter = 0; iter < 2; ++iter) {
-//            boolean input = iter == 0;
-//            String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
-//            String englishName = tier.shortEnglishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
-//            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
-//                    EnergyHatch::registerEnergyApi);
-//            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);
-//        }
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean input = iter == 0;
+            String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
+            String englishName = tier.shortEnglishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
+            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
+                    EnergyHatch::registerEnergyApi);
+            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);
+        }
     }
 }

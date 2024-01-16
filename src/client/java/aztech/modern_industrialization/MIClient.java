@@ -13,11 +13,17 @@ import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.items.client.ClientConfigCardTooltip;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
+import aztech.modern_industrialization.machines.MachineOverlayClient;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
 import aztech.modern_industrialization.machines.models.MachineUnbakedModel;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -41,6 +47,7 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.ArrayList;
@@ -52,6 +59,8 @@ import java.util.function.Supplier;
 public class MIClient {
     @SubscribeEvent
     private static void init(FMLConstructModEvent ignored) {
+        NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
+        MultiblockErrorHighlight.init();
         MIPipesClient.setupClient();
 
         var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
@@ -108,14 +117,13 @@ public class MIClient {
                 var blockEntity = machine.getBlockEntityInstance();
                 BlockEntityType type = blockEntity.getType();
 
-                // TODO NEO multiblock BERs
-//                if (blockEntity instanceof LargeTankMultiblockBlockEntity) {
-//                    BlockEntityRenderers.register(type, MultiblockTankBER::new);
-//                } else if (blockEntity instanceof MultiblockMachineBlockEntity) {
-//                    BlockEntityRenderers.register(type, MultiblockMachineBER::new);
-//                } else {
+                if (blockEntity instanceof LargeTankMultiblockBlockEntity) {
+                    BlockEntityRenderers.register(type, MultiblockTankBER::new);
+                } else if (blockEntity instanceof MultiblockMachineBlockEntity) {
+                    BlockEntityRenderers.register(type, MultiblockMachineBER::new);
+                } else {
                     BlockEntityRenderers.register(type, c -> new MachineBlockEntityRenderer(c));
-//                }
+                }
             }
         }
 

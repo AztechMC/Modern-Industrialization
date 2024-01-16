@@ -75,18 +75,18 @@ public class MIBlock {
 //            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
 //            TrashCanBlock.class)
 //            .withBlockRegistrationEvent(TrashCanBlock::onRegister);
-//
-//    // Other
-//    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
-//    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = block("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.location().getPath());
-//    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = block("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.location().getPath());
-//    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.location().getPath());
-//    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.location().getPath(), BlockDefinitionParams.defaultStone().resistance(6000f));
-//
-//    public static final BlockDefinition<Block> FUSION_CHAMBER = block("Fusion Chamber", "fusion_chamber");
-//    public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
-//    public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
-//
+
+    // Other
+    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = block("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = block("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.location().getPath(), BlockDefinitionParams.defaultStone().explosionResistance(6000f));
+
+    public static final BlockDefinition<Block> FUSION_CHAMBER = block("Fusion Chamber", "fusion_chamber");
+    public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
+    public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
+
 //    public static final BlockDefinition<TankBlock> CREATIVE_TANK = block(
 //            "Creative Tank",
 //            "creative_tank",

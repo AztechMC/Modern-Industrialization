@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadViewImpl;
@@ -79,43 +80,33 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
-// TODO NEO whole class
 public class RenderHelper {
     private static final Supplier<BakedQuad[]> OVERLAY_QUADS;
     private static final float W = 0.05f;
     private static final MIIdentifier LOCKED_TEXTURE_LOCATION = new MIIdentifier("block/locked");
 
-//    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-//        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
-//        for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
-//            putBulkData(vc, ms.last(), overlayQuad, r, g, b, light, overlay);
-//        }
-//    }
+    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
+        for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
+            putBulkData(vc, ms.last(), overlayQuad, r, g, b, light, overlay);
+        }
+    }
 
     static {
         OVERLAY_QUADS = Suppliers.memoize(() -> {
             var overlayQuads = new BakedQuad[24];
-//            Renderer r = RendererAccess.INSTANCE.getRenderer();
-//            RenderMaterial material = r.materialFinder().blendMode(BlendMode.SOLID).find();
-//            for (Direction direction : Direction.values()) {
-//                QuadEmitter emitter;
-//                emitter = r.meshBuilder().getEmitter();
-//                emitter.square(direction, 0, 0, 1, W, 0);
-//                emitter.material(material);
-//                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(null);
-//                emitter = r.meshBuilder().getEmitter();
-//                emitter.square(direction, 0, 1 - W, 1, 1, 0);
-//                emitter.material(material);
-//                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(null);
-//                emitter = r.meshBuilder().getEmitter();
-//                emitter.square(direction, 0, W, W, 1 - W, 0);
-//                emitter.material(material);
-//                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(null);
-//                emitter = r.meshBuilder().getEmitter();
-//                emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
-//                emitter.material(material);
-//                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(null);
-//            }
+            QuadEmitter emitter = new QuadBuffer();
+            for (Direction direction : Direction.values()) {
+                emitter.emit();
+                emitter.square(direction, 0, 0, 1, W, 0);
+                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(null);
+                emitter.square(direction, 0, 1 - W, 1, 1, 0);
+                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(null);
+                emitter.square(direction, 0, W, W, 1 - W, 0);
+                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(null);
+                emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
+                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(null);
+            }
             return overlayQuads;
         });
     }
@@ -123,22 +114,20 @@ public class RenderHelper {
     private static final Supplier<BakedQuad[]> CUBE_QUADS;
 
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-//        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
-//        for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
-//            putBulkData(vc, ms.last(), cubeQuad, r, g, b, light, overlay);
-//        }
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
+        for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
+            putBulkData(vc, ms.last(), cubeQuad, r, g, b, light, overlay);
+        }
     }
 
     static {
         CUBE_QUADS = Suppliers.memoize(() -> {
             var cubeQuads = new BakedQuad[6];
-//            Renderer r = RendererAccess.INSTANCE.getRenderer();
-//            for (Direction direction : Direction.values()) {
-//                QuadEmitter emitter;
-//                emitter = r.meshBuilder().getEmitter();
-//                emitter.square(direction, 0, 0, 1, 1, 0);
-//                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(null);
-//            }
+            for (Direction direction : Direction.values()) {
+                QuadEmitter emitter = new QuadBuffer();
+                emitter.square(direction, 0, 0, 1, 1, 0);
+                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(null);
+            }
             return cubeQuads;
         });
     }

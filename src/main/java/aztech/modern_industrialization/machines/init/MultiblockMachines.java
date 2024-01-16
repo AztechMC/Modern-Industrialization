@@ -444,11 +444,9 @@ public class MultiblockMachines {
     }
 
     private static void largeTank() {
-        LARGE_TANK = null;
-//        LARGE_TANK = MachineRegistrationHelper.registerMachine(
-//                "Large Tank",
-//                "large_tank", LargeTankMultiblockBlockEntity::new);
-//        LargeTankMultiblockBlockEntity.registerFluidAPI(LARGE_TANK);
+        LARGE_TANK = MachineRegistrationHelper.registerMachine(
+                "Large Tank",
+                "large_tank", LargeTankMultiblockBlockEntity::new, LargeTankMultiblockBlockEntity::registerFluidAPI);
     }
 
     private static void fusionReactor() {
@@ -554,27 +552,27 @@ public class MultiblockMachines {
 
     public static void init() {
 
-        invarCasings = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("heatproof_machine_casing")));
+        invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("heatproof_machine_casing")));
 
         bronzePlatedBricks = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("bronze_plated_bricks")));
         bronzePipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("bronze_machine_casing_pipe")));
 
-        frostproofMachineCasing = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("frostproof_machine_casing")));
+        frostproofMachineCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("frostproof_machine_casing")));
 
-        stainlessSteelClean = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("clean_stainless_steel_machine_casing")));
-        stainlessSteelPipe = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("stainless_steel_machine_casing_pipe")));
+        stainlessSteelClean = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("clean_stainless_steel_machine_casing")));
+        stainlessSteelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("stainless_steel_machine_casing_pipe")));
 
-        titaniumCasing = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("solid_titanium_machine_casing")));
-        titaniumPipe = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("titanium_machine_casing_pipe")));
+        titaniumCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("solid_titanium_machine_casing")));
+        titaniumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("titanium_machine_casing_pipe")));
 
-        blastProofCasing = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("blastproof_casing")));
+        blastProofCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("blastproof_casing")));
 
 
-        highlyAdvancedHull = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("highly_advanced_machine_hull")));
-        fusionChamber = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("fusion_chamber")));
+        highlyAdvancedHull = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("highly_advanced_machine_hull")));
+        fusionChamber = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("fusion_chamber")));
 
-        plasmaHandlingIridium = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("plasma_handling_iridium_machine_casing")));
-        iridiumPipe = SimpleMember.forBlock(() -> null); // TODO NEO SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("iridium_machine_casing_pipe")));
+        plasmaHandlingIridium = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("plasma_handling_iridium_machine_casing")));
+        iridiumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("iridium_machine_casing_pipe")));
 
         cokeOven();
         steamBlastFurnace();
@@ -683,9 +681,8 @@ public class MultiblockMachines {
 
         MachineRegistrationHelper.addMachineModel("nuclear_reactor", "nuclear_reactor", MachineCasings.NUCLEAR, true, false, false, true);
 
-        // TODO NEO
-//        MachineRegistrationHelper.addMachineModel("large_tank",
-//                "large_tank", MachineCasings.STEEL, true, false, false, false);
+        MachineRegistrationHelper.addMachineModel("large_tank",
+                "large_tank", MachineCasings.STEEL, true, false, false, false);
 
         MachineRegistrationHelper.addMachineModel("fusion_reactor",
                 "fusion_reactor", CableTier.EV.casing, true, false, false, true);

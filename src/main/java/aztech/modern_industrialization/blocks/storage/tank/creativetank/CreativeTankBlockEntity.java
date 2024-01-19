@@ -23,9 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
-import aztech.modern_industrialization.MIBlockEntityTypes;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.context.ContainerItemContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
@@ -34,31 +33,34 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
-        super(MIBlockEntityTypes.CREATIVE_TANK, pos, state);
+        super(MIRegistries.CREATIVE_TANK_BE.get(), pos, state);
     }
 
     @Override
     public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
-        if (handIo != null) {
-            if (isResourceBlank()) {
-                for (StorageView<FluidVariant> view : handIo) {
-                    if (!view.isResourceBlank()) {
-                        resource = view.getResource();
-                        onChanged();
-                        break;
-                    }
-                }
-                return !isResourceBlank();
-            } else {
-                try (Transaction tx = Transaction.openOuter()) {
-                    long inserted = handIo.insert(resource, Long.MAX_VALUE, tx);
-                    tx.commit();
-                    return inserted > 0;
+        if (isResourceBlank()) {
+            var fluid = FluidUtil.getFluidContained(player.getItemInHand(InteractionHand.MAIN_HAND));
+            if (fluid.isPresent()) {
+                resource = FluidVariant.of(fluid.get());
+                onChanged();
+                return true;
+            }
+            return !isResourceBlank();
+        } else {
+            // Fill all of the stacks, fuck it!
+            var fluidHandler = player.getItemInHand(InteractionHand.MAIN_HAND).getCapability(Capabilities.FluidHandler.ITEM);
+            if (fluidHandler != null) {
+                int inserted = fluidHandler.fill(resource.toStack(Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
+                if (inserted > 0) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, fluidHandler.getContainer());
+                    return true;
                 }
             }
         }

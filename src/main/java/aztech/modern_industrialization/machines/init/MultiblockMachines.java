@@ -60,8 +60,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-// TODO NEO uncomment stuff
-@SuppressWarnings("rawtypes")
 public class MultiblockMachines {
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,
             CraftingMultiblockGui.W, CraftingMultiblockGui.H);

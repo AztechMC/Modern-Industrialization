@@ -106,7 +106,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
-        // TODO NEO BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
         MIClient.registerBlockEntityRenderer(blockEntityType, context -> new TankRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
     }
 

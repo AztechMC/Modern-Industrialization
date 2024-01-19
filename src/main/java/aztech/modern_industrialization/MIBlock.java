@@ -23,9 +23,19 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.TrashCanBlock;
+import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
+import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
+import aztech.modern_industrialization.blocks.storage.tank.TankItem;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 
 import java.util.*;
@@ -34,8 +44,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import aztech.modern_industrialization.materials.part.TankPart;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -48,6 +60,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -63,18 +76,16 @@ public class MIBlock {
         BLOCKS.register(modBus);
     }
 
-    // TODO NEO
     // @formatter:off
     // Forge hammer
     public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
             BlockDefinitionParams.defaultStone().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER).noModel().destroyTime(6.0f).explosionResistance(1200)
                     .sound(SoundType.ANVIL));
 
-//    // Bronze stuff
-//    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
-//            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
-//            TrashCanBlock.class)
-//            .withBlockRegistrationEvent(TrashCanBlock::onRegister);
+    // Bronze stuff
+    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
+            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200))
+            .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
     // Other
     public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
@@ -87,35 +98,39 @@ public class MIBlock {
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
-//    public static final BlockDefinition<TankBlock> CREATIVE_TANK = block(
-//            "Creative Tank",
-//            "creative_tank",
-//            BlockDefinitionParams.defaultStone()
-//                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new, StorageBehaviour.creative()))
-//                    .withBlockItemConstructor(TankItem::new)
-//                    .withModel(TankPart.MODEL_GENERATOR)
-//                    .withBlockEntityRendererItemModel()
-//                    .noLootTable(),
-//            TankBlock.class
-//    ).withBlockRegistrationEvent(
-//            (block, item) -> ((TankItem) item).registerItemApi());
-//
-//
-//    public static final BlockDefinition<BarrelBlock> CREATIVE_BARREL = block(
-//            "Creative Barrel",
-//            "creative_barrel",
-//            BlockDefinitionParams.defaultStone()
-//                    .withBlockConstructor((p) -> new BarrelBlock(CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
-//                    .withBlockItemConstructor(BarrelItem::new)
-//                    .withModel(TexturedModel.COLUMN)
-//                    .withBlockEntityRendererItemModel()
-//                    .noLootTable(),
-//            BarrelBlock.class
-//    );
-//
-//
-//    public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
-//            "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
+    public static final BlockDefinition<TankBlock> CREATIVE_TANK = block(
+            "Creative Tank",
+            "creative_tank",
+            BlockDefinitionParams.defaultStone()
+                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockItemConstructor(TankItem::new)
+                    .withModel(TankPart.MODEL_GENERATOR)
+                    .withBlockEntityRendererItemModel()
+                    .noLootTable()
+    )
+            .withBlockRegistrationEvent((block, item) -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, vd) -> new ContainerItem.FluidHandler(stack, (TankItem) item), item);
+                });
+            });
+
+    public static final BlockDefinition<BarrelBlock> CREATIVE_BARREL = block(
+            "Creative Barrel",
+            "creative_barrel",
+            BlockDefinitionParams.defaultStone()
+                    .withBlockConstructor((p) -> new BarrelBlock(CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockItemConstructor(BarrelItem::new)
+                    .withModel((block, gen) -> {
+                        String name = gen.name(block);
+                        gen.simpleBlock(block, gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                    })
+                    .withBlockEntityRendererItemModel()
+                    .noLootTable()
+    );
+
+
+    public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
+            "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
 
     // Materials
     public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
@@ -139,13 +154,6 @@ public class MIBlock {
         BLOCK_DEFINITIONS.put(holder.getId(), def);
         return def;
     }
-
-    // TODO NEO
-//    public static <T extends Block> BlockDefinition<T> block(String englishName, String id,
-//            BlockBehaviour.Properties params,
-//            Class<T> blockClass) {
-//        return block(englishName, id, params);
-//    }
 
     public static BlockDefinition<Block> block(String englishName, String id) {
         return MIBlock.block(englishName, id, BlockDefinitionParams.defaultStone());

@@ -12,6 +12,9 @@ import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
+import aztech.modern_industrialization.items.armor.ClientKeyHandler;
+import aztech.modern_industrialization.items.armor.HudRenderer;
+import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.items.client.ClientConfigCardTooltip;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
@@ -34,6 +37,7 @@ import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -47,10 +51,16 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +71,23 @@ import java.util.function.Supplier;
 public class MIClient {
     @SubscribeEvent
     private static void init(FMLConstructModEvent ignored) {
+        var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
+        Objects.requireNonNull(modBus);
+
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient();
 
-        var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
-        Objects.requireNonNull(modBus);
+        NeoForge.EVENT_BUS.addListener(TickEvent.RenderTickEvent.class, event -> {
+            if (event.phase == TickEvent.Phase.START) {
+                JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance());
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(TickEvent.ClientTickEvent.class, event -> {
+            if (event.phase == TickEvent.Phase.END) {
+                ClientKeyHandler.onEndTick(Minecraft.getInstance());
+            }
+        });
 
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenClient.configure(
@@ -140,5 +161,17 @@ public class MIClient {
         event.register(BarrelTooltipData.class, BarrelTooltipComponent::new);
         event.register(ConfigCardItem.TooltipData.class, ClientConfigCardTooltip::new);
         event.register(SteamDrillItem.SteamDrillTooltipData.class, SteamDrillTooltipComponent::new);
+    }
+
+    @SubscribeEvent
+    private static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), MI.id("activation_status"), (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+            HudRenderer.onRenderHud(guiGraphics, partialTick);
+        });
+    }
+
+    @SubscribeEvent
+    private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(ClientKeyHandler.keyActivate);
     }
 }

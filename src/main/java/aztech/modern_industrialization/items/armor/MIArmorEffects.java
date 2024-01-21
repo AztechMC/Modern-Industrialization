@@ -23,19 +23,17 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import io.github.ladysnake.pal.AbilitySource;
-import io.github.ladysnake.pal.Pal;
-import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 
 public class MIArmorEffects {
     private MIArmorEffects() {
@@ -53,7 +51,10 @@ public class MIArmorEffects {
 
     public static boolean allowFlight(Player player) {
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        return allowFlight(chest);
+    }
 
+    public static boolean allowFlight(ItemStack chest) {
         if (chest.getItem() instanceof GraviChestPlateItem gsp && gsp.isActivated(chest) && gsp.getEnergy(chest) > 0) {
             return true;
         }
@@ -71,22 +72,35 @@ public class MIArmorEffects {
         return boots.getItem() == MIItem.RUBBER_BOOTS.asItem() || boots.getItem() == MIItem.QUANTUM_BOOTS.asItem();
     }
 
-    public static final AbilitySource SRC = Pal.getAbilitySource(new MIIdentifier("modernindustrialization"));
-
     public static void init() {
-        ServerTickEvents.START_WORLD_TICK.register(world -> {
-            for (var player : world.players()) {
-                if (allowFlight(player)) {
-                    SRC.grantTo(player, VanillaAbilities.ALLOW_FLYING);
-                } else {
-                    SRC.revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
+        NeoForge.EVENT_BUS.addListener(TickEvent.PlayerTickEvent.class, event -> {
+            if (event.phase == TickEvent.Phase.START && event.side.isServer()) {
+                if (allowFlight(event.player)) {
+                    event.player.getAbilities().mayfly = true;
+                    event.player.onUpdateAbilities();
                 }
             }
         });
 
-        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+        NeoForge.EVENT_BUS.addListener(LivingEquipmentChangeEvent.class, event -> {
+            if (event.getSlot() == EquipmentSlot.CHEST && allowFlight(event.getFrom()) && !allowFlight(event.getTo())) {
+                // Remove ability :P
+                if (event.getEntity() instanceof Player player) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.onUpdateAbilities();
+                }
+            }
+        });
+
+        NeoForge.EVENT_BUS.addListener(LivingDamageEvent.class, event -> {
+            var entity = event.getEntity();
+            var source = event.getSource();
+            float amount = event.getAmount();
+
             if (quantumArmorPreventsDamage(entity)) {
-                return false;
+                event.setCanceled(true);
+                return;
             }
 
             // Find a suitable stack that can "tank" the damage
@@ -110,9 +124,8 @@ public class MIArmorEffects {
                 int intAmount = (int) Math.ceil(amount);
                 final EquipmentSlot equipmentSlot = es;
                 tankingStack.hurtAndBreak(intAmount, entity, p -> entity.broadcastBreakEvent(equipmentSlot));
-                return false;
+                event.setCanceled(true);
             }
-            return true;
         });
     }
 }

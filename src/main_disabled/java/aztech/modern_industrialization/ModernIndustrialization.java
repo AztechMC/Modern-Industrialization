@@ -73,60 +73,16 @@ import org.apache.logging.log4j.Logger;
 
 public class ModernIndustrialization {
 
-    public static final String MOD_ID = "modern_industrialization";
-    public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
-
-    public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new MIIdentifier("general"));
-
-    // ScreenHandlerType
-    public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = Registry.register(BuiltInRegistries.MENU,
-            new MIIdentifier("machine"), new ExtendedScreenHandlerType<>(CommonProxy.INSTANCE::createClientMachineMenu));
-    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = Registry.register(BuiltInRegistries.MENU,
-            new MIIdentifier("forge_hammer"), new MenuType<>(ForgeHammerScreenHandler::new, FeatureFlags.VANILLA_SET));
-
     public static void initialize() {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_KEY, FabricItemGroup.builder()
-                .title(MIText.ModernIndustrialization.text())
-                .icon(() -> MIBlock.FORGE_HAMMER.asItem().getDefaultInstance())
-                .displayItems((params, output) -> {
-                    MIItem.ITEMS.values().forEach(output::accept);
-                })
-                .build());
 
-        MIMaterials.init();
-        MIMachineRecipeTypes.init();
-        SingleBlockCraftingMachines.init();
-        SingleBlockSpecialMachines.init();
-        MultiblockHatches.init();
-        MultiblockMachines.init();
-        KubeJSProxy.instance.fireRegisterMachinesEvent();
-        MIPipes.INSTANCE.setup();
-        setupFluids();
-        setupItems();
-        setupBlocks();
-        MIBlockEntityTypes.init();
         MIVillager.init();
-        FluidNuclearComponent.init();
 
         // fields.
-        setupPackets();
         setupFuels();
-        MIArmorEffects.init();
-        QuantumSword.init();
         setupWrench();
 
-        ChunkEventListeners.init();
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            MIKeyMap.clear(handler.player);
-        });
-        ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> {
-            var player = handler.getPlayer();
-            PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
-        });
         GuidebookEvents.init();
 
-        CommonProxy.initEvents();
         AECompatCondition.init();
 
         if (System.getProperty("modern_industrialization.autoTest") != null) {
@@ -134,48 +90,6 @@ public class ModernIndustrialization {
         }
 
         LOGGER.info("Modern Industrialization setup done!");
-    }
-
-    private static void setupItems() {
-        MIItem.ITEMS.entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().sortOrder)).forEach(entry -> {
-            Registry.register(BuiltInRegistries.ITEM, entry.getKey(), entry.getValue().asItem());
-            entry.getValue().onRegister();
-        });
-    }
-
-    private static void setupBlocks() {
-        for (Map.Entry<ResourceLocation, BlockDefinition<?>> entry : MIBlock.BLOCKS.entrySet()) {
-            Registry.register(BuiltInRegistries.BLOCK, entry.getKey(), entry.getValue().asBlock());
-            entry.getValue().onRegister();
-        }
-    }
-
-    private static void setupFluids() {
-        for (Map.Entry<ResourceLocation, FluidDefinition> entry : MIFluids.FLUIDS.entrySet()) {
-            Registry.register(BuiltInRegistries.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
-            Registry.register(BuiltInRegistries.FLUID, entry.getKey(), entry.getValue().asFluid());
-        }
-
-        if (MIConfig.getConfig().colorWaterLava) {
-            FluidVariantAttributes.enableColoredVanillaFluidNames();
-        }
-    }
-
-    private static void setupPackets() {
-        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.LOCK_ALL,
-                ConfigurableInventoryPacketHandlers.C2S.LOCK_ALL);
-        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,
-                ConfigurableInventoryPacketHandlers.C2S.SET_LOCKING_MODE);
-        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.DO_SLOT_DRAGGING,
-                ConfigurableInventoryPacketHandlers.C2S.DO_SLOT_DRAGGING);
-        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.ADJUST_SLOT_CAPACITY,
-                ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.ON_CHANGE_SHAPE);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE, MachinePackets.C2S.ON_FORGE_HAMMER_MOVE_RECIPE);
-        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
-        CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
-        CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }
 
     private static void addFuel(String id, int burnTicks) {

@@ -21,23 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.tank.creativetank;
+package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIBlockEntityTypes;
-import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
-import aztech.modern_industrialization.util.RenderHelper;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.minecraft.client.renderer.RenderType;
+import java.util.HashMap;
+import java.util.Map;
+import net.minecraft.world.entity.player.Player;
 
-@Environment(EnvType.CLIENT)
-public class CreativeTankClientSetup {
-    public static void setupClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK.asBlock(), RenderType.cutout());
-        TankRenderer.register(MIBlockEntityTypes.CREATIVE_TANK, 0x000000);
-        BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_TANK, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+public class MIKeyMap {
+    private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
+
+    static boolean isHoldingUp(Player player) {
+        return HOLDING_UP.getOrDefault(player, false);
+    }
+
+    public static void update(Player player, boolean up) {
+        HOLDING_UP.put(player, up);
+    }
+
+    public static void clear(Player player) {
+        HOLDING_UP.remove(player);
     }
 }

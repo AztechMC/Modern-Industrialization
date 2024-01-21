@@ -23,9 +23,11 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -86,10 +88,9 @@ public class EnergyApi {
         }
     }
 
-    public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks) {
+    public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks, Item[] allItems) {
         // Compat wrapper for TR energy
-        // TODO NEO FE compat config
-        if (true/*MIConfig.getConfig().enableBidirectionalEnergyCompat*/) {
+        if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {
             event.registerBlock(ILongEnergyStorage.BLOCK, (world, pos, state, blockEntity, context) -> {
                 if (IN_COMPAT.get()) {
                     return null;
@@ -116,61 +117,61 @@ public class EnergyApi {
                 }
             }, allBlocks);
 
-//            EnergyStorage.ITEM.registerFallback((stack, ctx) -> {
-//                if (IN_COMPAT.get()) {
-//                    return null;
-//                }
-//
-//                IN_COMPAT.set(true);
-//                try {
-//                    return ITEM.find(stack, ctx);
-//                } finally {
-//                    IN_COMPAT.set(false);
-//                }
-//            });
-//            ITEM.registerFallback((stack, ctx) -> {
-//                if (IN_COMPAT.get()) {
-//                    return null;
-//                }
-//
-//                IN_COMPAT.set(true);
-//                try {
-//                    return EnergyStorage.ITEM.find(stack, ctx);
-//                } finally {
-//                    IN_COMPAT.set(false);
-//                }
-//            });
+            event.registerItem(ILongEnergyStorage.ITEM, (stack, ignored) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    return stack.getCapability(ITEM);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            }, allItems);
+            event.registerItem(ITEM, (stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    return stack.getCapability(ILongEnergyStorage.ITEM);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            }, allItems);
         } else {
             event.registerBlock(SIDED, (world, pos, state, blockEntity, context) -> {
                 var trStorage = world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context);
                 return trStorage == null || !trStorage.canReceive() ? null : new InsertOnlyTrStorage(trStorage);
             }, allBlocks);
-//            ITEM.registerFallback((stack, ctx) -> {
-//                if (IN_COMPAT.get()) {
-//                    return null;
-//                }
-//
-//                IN_COMPAT.set(true);
-//                try {
-//                    EnergyStorage trStorage = EnergyStorage.ITEM.find(stack, ctx);
-//                    return trStorage == null || !trStorage.supportsInsertion() ? null : new LimitingEnergyStorage(trStorage, Long.MAX_VALUE, 0);
-//                } finally {
-//                    IN_COMPAT.set(false);
-//                }
-//            });
-//            EnergyStorage.ITEM.registerFallback((stack, ctx) -> {
-//                if (IN_COMPAT.get()) {
-//                    return null;
-//                }
-//
-//                IN_COMPAT.set(true);
-//                try {
-//                    EnergyStorage miStorage = ITEM.find(stack, ctx);
-//                    return miStorage == null || !miStorage.supportsExtraction() ? null : new LimitingEnergyStorage(miStorage, 0, Long.MAX_VALUE);
-//                } finally {
-//                    IN_COMPAT.set(false);
-//                }
-//            });
+            event.registerItem(ITEM, (stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    var trStorage = stack.getCapability(ILongEnergyStorage.ITEM);
+                    return trStorage == null || !trStorage.canReceive() ? null : new LimitingEnergyStorage(trStorage, Long.MAX_VALUE, 0);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            }, allItems);
+            event.registerItem(ILongEnergyStorage.ITEM, (stack, ctx) -> {
+                if (IN_COMPAT.get()) {
+                    return null;
+                }
+
+                IN_COMPAT.set(true);
+                try {
+                    var miStorage = stack.getCapability(ITEM);
+                    return miStorage == null || !miStorage.canExtract() ? null : new LimitingEnergyStorage(miStorage, 0, Long.MAX_VALUE);
+                } finally {
+                    IN_COMPAT.set(false);
+                }
+            }, allItems);
         }
     }
 

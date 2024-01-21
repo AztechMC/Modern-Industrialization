@@ -8,6 +8,7 @@ import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -38,8 +39,10 @@ public class MICapabilities {
         // Energy compat
         var allBlocks = StreamSupport.stream(BuiltInRegistries.BLOCK.spliterator(), false)
                 .toArray(Block[]::new);
-        ILongEnergyStorage.init(event, allBlocks);
-        EnergyApi.init(event, allBlocks);
+        var allItems = StreamSupport.stream(BuiltInRegistries.ITEM.spliterator(), false)
+                .toArray(Item[]::new);
+        ILongEnergyStorage.init(event, allBlocks, allItems);
+        EnergyApi.init(event, allBlocks, allItems);
     }
 
     public static void onEvent(Consumer<RegisterCapabilitiesEvent> consumer) {

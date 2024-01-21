@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.api.energy.SimpleEnergyItem;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -36,7 +37,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import team.reborn.energy.api.base.SimpleEnergyItem;
 
 public class PortableStorageUnit extends Item implements ItemContainingItemHelper {
 

@@ -1,11 +1,15 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.fluid.MIFluid;
+import aztech.modern_industrialization.items.armor.MIArmorEffects;
+import aztech.modern_industrialization.items.armor.MIKeyMap;
+import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MultiblockHatches;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
@@ -26,6 +30,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +58,17 @@ public class MI {
         SingleBlockSpecialMachines.init();
         MultiblockHatches.init();
         MultiblockMachines.init();
+        KubeJSProxy.instance.fireRegisterMachinesEvent();
 
         MIPipes.INSTANCE.setup();
 
         CommonProxy.initEvents();
         ChunkEventListeners.init();
         DebugCommands.init();
+        MIArmorEffects.init();
+
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
 
         modBus.addListener(FMLCommonSetupEvent.class, event -> {
             MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);

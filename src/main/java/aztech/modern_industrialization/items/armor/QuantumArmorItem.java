@@ -27,7 +27,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -93,9 +92,8 @@ public class QuantumArmorItem extends ArmorItem {
         }
     };
 
-    public QuantumArmorItem(ArmorItem.Type type, FabricItemSettings settings) {
-        // Can't be damaged!
-        super(MATERIAL, type, settings.customDamage((is, amt, e, cb) -> 0));
+    public QuantumArmorItem(ArmorItem.Type type, Properties settings) {
+        super(MATERIAL, type, settings);
         ITEMS.add(this);
     }
 

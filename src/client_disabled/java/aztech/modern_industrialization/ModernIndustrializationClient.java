@@ -78,20 +78,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     public void onInitializeClient() {
         MIStartup.onClientStartup();
 
-        setupScreens();
         MIFluidsRender.setupFluidRenders();
-        setupPackets();
-        CreativeTankClientSetup.setupClient();
-        CreativeBarrelClientSetup.setupClient();
         MachineRendering.init();
         MultiblockMachines.clientInit();
-        MultiblockErrorHighlight.init();
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(MachineOverlayClient::onBlockOutline);
-        (new MIPipesClient()).setupClient();
-        ClientKeyHandler.setup();
-        WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance()));
-        ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
-        HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
         VersionEvents.init();
         setupItemPredicates();
@@ -114,22 +103,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 MIDatagenServer.configure(gen, true);
             });
         }
-    }
-
-    @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })
-    private void setupScreens() {
-        MenuScreens.register(
-                (MenuType<? extends MachineMenuClient>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
-                MachineScreen::new);
-        MenuScreens.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
-    }
-
-    private void setupPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_ITEM_SLOT,
-                ConfigurableInventoryS2CPacketHandlers.UPDATE_ITEM_SLOT);
-        ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT,
-                ConfigurableInventoryS2CPacketHandlers.UPDATE_FLUID_SLOT);
-        ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, ClientMachinePackets.ON_COMPONENT_SYNC);
     }
 
     private void setupTooltips() {

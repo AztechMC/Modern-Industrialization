@@ -17,6 +17,7 @@ import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
+import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -67,6 +68,10 @@ public class MI {
         DebugCommands.init();
         MIArmorEffects.init();
 
+        if (System.getProperty("modern_industrialization.autoTest") != null) {
+            MIAutoTesting.init();
+        }
+
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
 
@@ -88,5 +93,7 @@ public class MI {
         });
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
+
+        LOGGER.info("Modern Industrialization setup done!");
     }
 }

@@ -65,7 +65,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
-// LBA
 public class ItemNetworkNode extends PipeNetworkNode {
     final List<ItemConnection> connections = new ArrayList<>();
     int inactiveTicks = 0;

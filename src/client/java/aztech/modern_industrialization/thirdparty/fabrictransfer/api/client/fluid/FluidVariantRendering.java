@@ -70,6 +70,9 @@ public final class FluidVariantRendering {
      */
     @Nullable
     public static TextureAtlasSprite getSprite(FluidVariant fluidVariant) {
+        if (fluidVariant.isBlank()) {
+            return null;
+        }
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(getExtensions(fluidVariant).getStillTexture(fluidVariant.toStack(1)));
     }

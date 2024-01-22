@@ -37,6 +37,10 @@ import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
+import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.*;
 import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
@@ -61,6 +65,7 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
@@ -74,9 +79,9 @@ public class MIPipes {
     public static final Supplier<MenuType<ItemPipeScreenHandler>> SCREEN_HANDLER_TYPE_ITEM_PIPE = MIRegistries.MENUS.register(
             "item_pipe",
             () -> IMenuTypeExtension.create(ItemPipeScreenHandler::new));
-//    public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = Registry.register(BuiltInRegistries.MENU,
-//            new MIIdentifier("fluid_pipe"),
-//            new ExtendedScreenHandlerType<>(FluidPipeScreenHandler::new));
+    public static final Supplier<MenuType<FluidPipeScreenHandler>> SCREEN_HANDLER_TYPE_FLUID_PIPE = MIRegistries.MENUS.register(
+            "fluid_pipe",
+            () -> IMenuTypeExtension.create(FluidPipeScreenHandler::new));
 
     public void setup() {
         BLOCK_ENTITY_TYPE_PIPE = MIRegistries.BLOCK_ENTITIES.register("pipe",
@@ -99,9 +104,6 @@ public class MIPipes {
 //                throw new RuntimeException(e);
 //            }
 //        }
-
-        // TODO NEO debug commands
-//        DebugCommands.init();
     }
 
     private static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
@@ -113,16 +115,17 @@ public class MIPipes {
     };
 
     private void registerFluidPipeType(PipeColor color) {
-        // TODO NEO fluid pipes
-//        String pipeId = color.prefix + "fluid_pipe";
-//        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
-//                FluidNetworkNode::new, color.color, true);
-//        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Fluid Pipe", pipeId,
-//                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())), SortOrder.PIPES);
-//        var item = itemDef.asItem();
-//        pipeItems.put(type, item);
-//        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
-//        TagsToGenerate.generateTag(MITags.FLUID_PIPES, item, "Fluid Pipes");
+        String pipeId = color.prefix + "fluid_pipe";
+        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
+                FluidNetworkNode::new, color.color, true);
+        var itemDef = MIItem.item(
+                color.englishNamePrefix + "Fluid Pipe",
+                pipeId,
+                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
+                ITEM_MODEL_GENERATOR,
+                SortOrder.PIPES);
+        pipeItems.put(type, itemDef::asItem);
+        TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
     }
 
     private void registerItemPipeType(PipeColor color) {

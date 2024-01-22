@@ -84,12 +84,6 @@ public class ModernIndustrialization {
         GuidebookEvents.init();
 
         AECompatCondition.init();
-
-        if (System.getProperty("modern_industrialization.autoTest") != null) {
-            MIAutoTesting.init();
-        }
-
-        LOGGER.info("Modern Industrialization setup done!");
     }
 
     private static void addFuel(String id, int burnTicks) {

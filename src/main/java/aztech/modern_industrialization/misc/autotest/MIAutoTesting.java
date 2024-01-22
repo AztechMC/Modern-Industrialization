@@ -21,23 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.fluid;
+package aztech.modern_industrialization.misc.autotest;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
- * A target to be used during a transfer operation.
+ * MI auto-testing. Can be enabled with "modern_industrialization.autoTest".
  */
-class FluidTarget {
-    final int priority;
-    final Storage<FluidVariant> storage;
+public class MIAutoTesting {
+    private static int ticks = 0;
 
-    // A temporary value used to sort fluid targets
-    long simulationResult;
+    public static void init() {
+        NeoForge.EVENT_BUS.addListener(TickEvent.ServerTickEvent.class, event -> {
+            if (event.phase != TickEvent.Phase.START) {
+                return;
+            }
+            ticks++;
 
-    public FluidTarget(int priority, Storage<FluidVariant> storage) {
-        this.priority = priority;
-        this.storage = storage;
+            if (ticks == 40) {
+                MixinEnvironment.getCurrentEnvironment().audit();
+                event.getServer().halt(false);
+            }
+        });
     }
 }

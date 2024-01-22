@@ -28,16 +28,13 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
-import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.context.ContainerItemContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
@@ -47,6 +44,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
@@ -88,7 +87,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         FluidVariant targetFluid = null;
         if (iface.getNetworkFluid().isBlank()) {
             // Want to set the fluid
-            FluidVariant fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(minecraft.player, menu).find(FluidStorage.ITEM));
+            FluidVariant fluid = FluidVariant.of(FluidUtil.getFluidContained(menu.getCarried()).orElse(FluidStack.EMPTY));
             if (fluid != null && !fluid.isBlank()) {
                 targetFluid = fluid;
             }
@@ -102,10 +101,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
     private void setNetworkFluid(FluidVariant fluidKey) {
         menu.iface.setNetworkFluid(fluidKey);
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeInt(menu.containerId);
-        fluidKey.toPacket(buf);
-        ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
+        new SetNetworkFluidPacket(menu.containerId, fluidKey).sendToServer();
     }
 
     private class NetworkFluidButton extends Button implements ReiDraggable {

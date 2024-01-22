@@ -33,6 +33,7 @@ import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
@@ -110,7 +111,7 @@ public class MIClient {
             MenuScreens.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
 
             MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), ItemPipeScreen::new);
-//        MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, FluidPipeScreen::new);
+            MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE.get(), FluidPipeScreen::new);
         });
     }
 

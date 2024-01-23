@@ -7,8 +7,12 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -21,10 +25,12 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.Comparator;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -54,6 +60,13 @@ public class MIRegistries {
         return IMenuTypeExtension.create(CommonProxy.INSTANCE::createClientMachineMenu);
     })::get;
 
+    // POIs
+    public static final DeferredRegister<PoiType> POIS = DeferredRegister.create(Registries.POINT_OF_INTEREST_TYPE, MI.ID);
+
+    public static final DeferredHolder<PoiType, PoiType> INDUSTRIALIST_POI = POIS.register("industrialist", () -> {
+        return new PoiType(Set.copyOf(MIBlock.FORGE_HAMMER.asBlock().getStateDefinition().getPossibleStates()), 1, 1);
+    });
+
     // Recipe serializers
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MI.ID);
 
@@ -77,11 +90,26 @@ public class MIRegistries {
             })
             .build());
 
+    // Villager professions
+    public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(Registries.VILLAGER_PROFESSION, MI.ID);
+
+    public static final Supplier<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
+        return new VillagerProfession(
+                INDUSTRIALIST_POI.getId().toString(),
+                e -> e.is(INDUSTRIALIST_POI.getId()),
+                e -> e.is(INDUSTRIALIST_POI.getId()),
+                ImmutableSet.of(),
+                ImmutableSet.of(),
+                SoundEvents.VILLAGER_WORK_TOOLSMITH);
+    });
+
     static void init(IEventBus modBus) {
         BLOCK_ENTITIES.register(modBus);
         MENUS.register(modBus);
+        POIS.register(modBus);
         RECIPE_SERIALIZERS.register(modBus);
         RECIPE_TYPES.register(modBus);
         TABS.register(modBus);
+        VILLAGER_PROFESSIONS.register(modBus);
     }
 }

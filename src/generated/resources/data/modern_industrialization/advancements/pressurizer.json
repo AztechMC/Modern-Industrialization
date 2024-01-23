@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:titanium_ingot",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:pressurizer"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.pressurizer.description"
+    },
+    "icon": {
+      "item": "modern_industrialization:pressurizer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.pressurizer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

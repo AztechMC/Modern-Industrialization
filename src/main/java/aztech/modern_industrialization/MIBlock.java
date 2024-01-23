@@ -33,6 +33,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
@@ -64,6 +65,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.world.level.material.MapColor.STONE;
 
@@ -148,7 +150,7 @@ public class MIBlock {
                 params.blockItemCtor,
                 params.modelGenerator,
                 params.itemModelGenerator,
-                params.lootTableGenerator,
+                params.blockLoot,
                 params.tags,
                 params.sortOrder);
         BLOCK_DEFINITIONS.put(holder.getId(), def);
@@ -176,7 +178,8 @@ public class MIBlock {
         public BiConsumer<Block, BaseModelProvider> modelGenerator;
         public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {
         };
-        public BiConsumer<Block, BlockLootSubProvider> lootTableGenerator;
+        @Nullable
+        public MIBlockLoot blockLoot;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
         public SortOrder sortOrder = SortOrder.BLOCKS_OTHERS;
 
@@ -187,13 +190,13 @@ public class MIBlock {
                 Function<BlockBehaviour.Properties, T> ctor,
                 BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
                 BiConsumer<Block, BaseModelProvider> modelGenerator,
-                BiConsumer<Block, BlockLootSubProvider> lootTableGenerator,
+                @Nullable MIBlockLoot blockLoot,
                 List<TagKey<Block>> tags) {
             this.props = properties;
             this.ctor = ctor;
             this.blockItemCtor = blockItemCtor;
             this.modelGenerator = modelGenerator;
-            this.lootTableGenerator = lootTableGenerator;
+            this.blockLoot = blockLoot;
             this.tags.addAll(tags);
         }
 
@@ -204,7 +207,7 @@ public class MIBlock {
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
             return new BlockDefinitionParams<>(properties, Block::new, BlockItem::new,
                     (block, modelGenerator) -> modelGenerator.simpleBlockWithItem(block, modelGenerator.cubeAll(block)),
-                    (block, lootGenerator) -> lootGenerator.dropSelf(block),
+                    new MIBlockLoot.DropSelf(),
                     List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
         }
 
@@ -213,7 +216,7 @@ public class MIBlock {
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
-            return new BlockDefinitionParams<>(props, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
+            return new BlockDefinitionParams<>(props, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.blockLoot, this.tags);
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
@@ -221,7 +224,7 @@ public class MIBlock {
                     p -> ctor.get(),
                     (BiFunction) this.blockItemCtor,
                     this.modelGenerator,
-                    this.lootTableGenerator,
+                    this.blockLoot,
                     this.tags);
         }
 
@@ -272,8 +275,8 @@ public class MIBlock {
             });
         }
 
-        public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLootSubProvider> lootTableGenerator) {
-            this.lootTableGenerator = lootTableGenerator;
+        public BlockDefinitionParams<T> withLoot(MIBlockLoot blockLoot) {
+            this.blockLoot = blockLoot;
             return this;
         }
 
@@ -284,7 +287,7 @@ public class MIBlock {
         }
 
         public BlockDefinitionParams<T> noLootTable() {
-            this.lootTableGenerator = null;
+            this.blockLoot = null;
             return this;
         }
 

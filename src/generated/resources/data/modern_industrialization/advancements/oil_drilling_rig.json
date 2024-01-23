@@ -1,0 +1,35 @@
+{
+  "parent": "modern_industrialization:electronic_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:oil_drilling_rig"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.oil_drilling_rig.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "item": "modern_industrialization:oil_drilling_rig"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.oil_drilling_rig"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

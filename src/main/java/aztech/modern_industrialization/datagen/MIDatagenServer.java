@@ -24,14 +24,27 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
+import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.ValidationContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -56,8 +69,9 @@ public class MIDatagenServer {
 //        aggregate.addProvider(CompatRecipesProvider::new);
 //        aggregate.addProvider(UpgradeProvider::new);
 //        aggregate.addProvider(VanillaCompatRecipesProvider::new);
-//
-//        aggregate.addProvider(BlockLootTableProvider::new);
+
+        gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
+                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK))));
 
         gen.addProvider(run, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
 
@@ -66,7 +80,8 @@ public class MIDatagenServer {
 //        aggregate.addProvider(MIPoiTypeTagProvider::new);
 
         var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
-//        aggregate.addProvider((FabricDataOutput packOutput) -> new MIAdvancementsProvider(packOutput, translationProvider));
+        gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(
+                new MIAdvancementsProvider(translationProvider))));
 
         // Must either remain separate or be made to use futures to wait for dependencies!
         gen.addProvider(run, translationProvider);

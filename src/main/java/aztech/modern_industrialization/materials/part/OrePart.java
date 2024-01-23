@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
+import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
@@ -109,9 +110,7 @@ public class OrePart implements PartKeyProvider {
                             itemPath,
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
-                                    // TODO NEO restore loot table
-                                    .withLootTable((block, lootGenerator) -> {})/*lootGenerator.add(block,
-                                            lootGenerator.createOreDrop(block, BuiltInRegistries.ITEM.get(new ResourceLocation(loot)))))*/
+                                    .withLoot(new MIBlockLoot.Ore(loot))
                                     .addMoreTags(List.of(Tags.Blocks.ORES))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)

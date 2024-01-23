@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:stainless_steel_ingot",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:kanthal_coil"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.kanthal_coil.description"
+    },
+    "icon": {
+      "item": "modern_industrialization:kanthal_coil"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.kanthal_coil"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

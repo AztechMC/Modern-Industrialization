@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;

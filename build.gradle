@@ -193,40 +193,28 @@ sourceSets {
 dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
 
-//    if (project.runtime_itemlist_mod == "jei") {
-//        modImplementation("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}") {
-//            exclude group: "mezz.jei"
-//        }
-//    } else {
-//        modCompileOnly("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}") {
-//            exclude group: "mezz.jei"
-//        }
-//    }
-//
-//    if (project.runtime_itemlist_mod == "rei") {
-//        modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-//            exclude(group: "net.fabricmc.fabric-api")
-//        }
-//    } else {
-//        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-//            exclude group: "net.fabricmc.fabric-api"
-//        }
-//    }
-//
-//    if (project.runtime_itemlist_mod == "emi") {
-//        modImplementation("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
-//            exclude group: "net.fabricmc.fabric-api"
-//        }
-//    } else {
-//        modCompileOnly("dev.emi:emi-fabric:${project.emi_version}+${project.emi_minecraft_version}") {
-//            exclude group: "net.fabricmc.fabric-api"
-//        }
-//    }
-//
-//    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi"])) {
-//        throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
-//    }
-//
+    if (project.runtime_itemlist_mod == "jei") {
+        implementation "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+    } else {
+        compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+    }
+
+    if (project.runtime_itemlist_mod == "rei") {
+        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    } else {
+        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    }
+
+    if (project.runtime_itemlist_mod == "emi") {
+        implementation "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+    } else {
+        compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+    }
+
+    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi"])) {
+        throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
+    }
+
 //    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }

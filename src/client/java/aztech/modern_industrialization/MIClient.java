@@ -57,6 +57,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.NeoForge;
@@ -105,14 +106,12 @@ public class MIClient {
     }
 
     @SubscribeEvent
-    private static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(MIRegistries.FORGE_HAMMER_MENU.get(), ForgeHammerScreen::new);
-            MenuScreens.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
+    private static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(MIRegistries.FORGE_HAMMER_MENU.get(), ForgeHammerScreen::new);
+        event.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
 
-            MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), ItemPipeScreen::new);
-            MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE.get(), FluidPipeScreen::new);
-        });
+        event.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), ItemPipeScreen::new);
+        event.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE.get(), FluidPipeScreen::new);
     }
 
     @SubscribeEvent

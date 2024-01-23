@@ -25,15 +25,12 @@ package aztech.modern_industrialization.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
-import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
-import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -43,6 +40,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScreen<?>> {
     @Override
@@ -50,7 +48,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
         var ingredient = typedIngredient.getIngredient();
         List<Target<I>> bounds = new ArrayList<>();
 
-        FluidVariant fk = ingredient instanceof IJeiFluidIngredient fs ? FluidVariant.of(fs.getFluid(), fs.getTag().orElse(null)) : null;
+        FluidVariant fk = ingredient instanceof FluidStack fs ? FluidVariant.of(fs) : null;
         ItemVariant ik = ingredient instanceof ItemStack is ? ItemVariant.of(is) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
@@ -98,12 +96,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
                         public void accept(I ingredient) {
                             if (dw.dragItem(ik, Simulation.ACT)) {
                                 int slotId = handler.slots.indexOf(slot);
-                                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                                buf.writeInt(handler.containerId);
-                                buf.writeVarInt(slotId);
-                                buf.writeBoolean(true);
-                                ik.toPacket(buf);
-                                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                                new DoSlotDraggingPacket(handler.containerId, slotId, ik).sendToServer();
                             }
                         }
                     });
@@ -119,12 +112,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
                         public void accept(I ingredient) {
                             if (dw.dragFluid(fk, Simulation.ACT)) {
                                 int slotId = handler.slots.indexOf(slot);
-                                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                                buf.writeInt(handler.containerId);
-                                buf.writeVarInt(slotId);
-                                buf.writeBoolean(false);
-                                fk.toPacket(buf);
-                                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                                new DoSlotDraggingPacket(handler.containerId, slotId, fk).sendToServer();
                             }
                         }
                     });

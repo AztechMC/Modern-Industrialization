@@ -25,8 +25,8 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
+import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.INuclearComponent;

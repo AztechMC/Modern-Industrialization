@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.viewer.impl.rei;
 
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
-import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
 import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
 import java.util.ArrayList;
@@ -36,8 +36,6 @@ import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
 import me.shedaniel.rei.api.client.gui.drag.DraggedAcceptorResult;
 import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -75,21 +73,11 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
             if (slot instanceof ReiDraggable dw) {
                 int slotId = handler.slots.indexOf(slot);
                 if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
-                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                    buf.writeInt(handler.containerId);
-                    buf.writeVarInt(slotId);
-                    buf.writeBoolean(true);
-                    ik.toPacket(buf);
-                    ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                    new DoSlotDraggingPacket(handler.containerId, slotId, ik).sendToServer();
                     return true;
                 }
                 if (fk != null && dw.dragFluid(fk, Simulation.ACT)) {
-                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                    buf.writeInt(handler.containerId);
-                    buf.writeVarInt(slotId);
-                    buf.writeBoolean(false);
-                    fk.toPacket(buf);
-                    ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                    new DoSlotDraggingPacket(handler.containerId, slotId, fk).sendToServer();
                     return true;
                 }
             }

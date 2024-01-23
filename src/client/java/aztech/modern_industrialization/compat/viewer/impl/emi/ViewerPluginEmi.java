@@ -21,44 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.viewer.impl.rei;
+package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.compat.viewer.usage.ViewerSetup;
-import java.util.ArrayList;
-import java.util.List;
-import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
-import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
-import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import dev.emi.emi.api.EmiEntrypoint;
+import dev.emi.emi.api.EmiPlugin;
+import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.stack.EmiStack;
 
-public class ViewerPluginRei implements REIClientPlugin {
-
-    private final List<ViewerCategoryRei<?>> categories = new ArrayList<>();
-
+@EmiEntrypoint
+public class ViewerPluginEmi implements EmiPlugin {
     @Override
-    public void registerCategories(CategoryRegistry registry) {
-        categories.clear(); // needed for reloads
-
+    public void register(EmiRegistry registry) {
         for (var category : ViewerSetup.setup()) {
-            categories.add(new ViewerCategoryRei<>(category));
-        }
+            var emiCategory = new ViewerCategoryEmi<>(category);
+            registry.addCategory(emiCategory);
 
-        registry.add(categories.toArray(new DisplayCategory[0]));
-
-        for (var category : categories) {
-            category.wrapped.buildWorkstations(items -> {
+            category.buildWorkstations(items -> {
                 for (var item : items) {
-                    registry.addWorkstations(category.identifier, EntryStacks.of(item));
+                    registry.addWorkstation(emiCategory, EmiStack.of(item));
                 }
             });
-        }
-    }
 
-    @Override
-    public void registerDisplays(DisplayRegistry registry) {
-        for (var category : categories) {
-            category.registerRecipes(registry);
+            emiCategory.registerRecipes(registry);
         }
     }
 }

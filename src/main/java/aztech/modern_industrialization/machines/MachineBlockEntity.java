@@ -66,7 +66,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -195,7 +194,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     public void openMenu(ServerPlayer player) {
-        NetworkHooks.openScreen(player, this, this::writeScreenOpeningData);
+        player.openMenu(this, this::writeScreenOpeningData);
     }
 
     protected abstract MachineModelClientData getMachineModelData();

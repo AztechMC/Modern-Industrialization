@@ -47,9 +47,9 @@ public class MIRegistries {
     // Menus
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MI.ID);
 
-    public static final Supplier<MenuType<? extends ForgeHammerScreenHandler>> FORGE_HAMMER_MENU = MENUS.register("forge_hammer", () -> {
+    public static final Supplier<MenuType<ForgeHammerScreenHandler>> FORGE_HAMMER_MENU = MENUS.register("forge_hammer", () -> {
         return new MenuType<>(ForgeHammerScreenHandler::new, FeatureFlags.VANILLA_SET);
-    })::get;
+    });
     public static final Supplier<MenuType<? extends MachineMenuCommon>> MACHINE_MENU = MENUS.register("machine", () -> {
         return IMenuTypeExtension.create(CommonProxy.INSTANCE::createClientMachineMenu);
     })::get;

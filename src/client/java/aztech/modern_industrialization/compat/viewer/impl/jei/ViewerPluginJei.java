@@ -28,6 +28,7 @@ import aztech.modern_industrialization.compat.viewer.usage.ViewerSetup;
 import java.util.ArrayList;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -35,6 +36,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
+@JeiPlugin
 public class ViewerPluginJei implements IModPlugin {
     private static final ResourceLocation ID = new MIIdentifier("viewer");
 

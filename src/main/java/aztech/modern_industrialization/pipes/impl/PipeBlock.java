@@ -67,7 +67,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
@@ -225,7 +224,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         if (!world.isClientSide) {
             if (!pipeEntity.customUse(partShape, player, hand) && !player.isShiftKeyDown()) {
                 var menuOpener = pipeEntity.getGui(partShape.type, partShape.direction);
-                NetworkHooks.openScreen((ServerPlayer) player, menuOpener, menuOpener::writeAdditionalData);
+                ((ServerPlayer) player).openMenu(menuOpener, menuOpener::writeAdditionalData);
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);

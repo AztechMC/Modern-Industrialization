@@ -33,6 +33,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,6 @@ public class MI {
     }
 
     public MI(IEventBus modBus) {
-        MIPackets.init();
-
         MIFluids.init(modBus);
         MIBlock.init(modBus);
         MIItem.init(modBus);
@@ -93,6 +92,7 @@ public class MI {
         });
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
+        modBus.addListener(RegisterPayloadHandlerEvent.class, MIPackets::init);
 
         LOGGER.info("Modern Industrialization setup done!");
     }

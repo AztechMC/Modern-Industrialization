@@ -2,29 +2,36 @@ package aztech.modern_industrialization.network;
 
 import aztech.modern_industrialization.proxy.CommonProxy;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.Objects;
 
-public interface BasePacket {
+public interface BasePacket extends CustomPacketPayload {
     void write(FriendlyByteBuf buf);
 
     void handle(Context ctx);
 
     default void sendToServer() {
-        MIPackets.CHANNEL.sendToServer(this);
+        PacketDistributor.SERVER.noArg().send(this);
     }
 
     default void sendToClient(ServerPlayer player) {
-        MIPackets.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), this);
+        PacketDistributor.PLAYER.with(player).send(this);
     }
 
-    record Context(Class<? extends BasePacket> clazz, NetworkEvent.Context inner) {
+    @Override
+    default ResourceLocation id() {
+        return MIPackets.packetLocations.get(getClass());
+    }
+
+    record Context(Class<? extends BasePacket> clazz, PlayPayloadContext inner) {
         public boolean isOnClient() {
-            return inner.getDirection().getReceptionSide().isClient();
+            return inner.flow().isClientbound();
         }
         public void assertOnServer() {
             if (isOnClient()) {
@@ -37,7 +44,7 @@ public interface BasePacket {
             }
         }
         public Player getPlayer() {
-            return isOnClient() ? CommonProxy.INSTANCE.getClientPlayer() : Objects.requireNonNull(inner.getSender());
+            return isOnClient() ? CommonProxy.INSTANCE.getClientPlayer() : Objects.requireNonNull(inner.player().get());
         }
     }
 }

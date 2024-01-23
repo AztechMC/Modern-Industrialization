@@ -53,6 +53,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -246,7 +247,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return recipe instanceof Recipe<?>r ? Optional.of(r.getId()) : Optional.empty();
+            return recipe instanceof RecipeHolder<?> r ? Optional.of(r.id()) : Optional.empty();
         }
     }
 

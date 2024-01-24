@@ -70,22 +70,17 @@ public class FluidDefinition extends Definition implements FluidLike {
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
                 id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
         fluidType = MIFluids.FLUID_TYPES.register(id,
-                () -> new MIFluidType(fluidBlock, FluidType.Properties.create()
-                        .descriptionId(fluidBlock.get().getDescriptionId())));
+                () -> {
+            var props = FluidType.Properties.create()
+                    .descriptionId(fluidBlock.get().getDescriptionId());
+            if (isGas) {
+                props.density(-1000); // Make it lighter than air!
+            }
+            return new MIFluidType(fluidBlock, props);
+        });
 
         this.fluidTexture = texture;
         this.opacity = opacity;
-
-        if (isGas) {
-            // TODO NEO this is now a tag
-//            FluidVariantAttributes.register(fluid, new FluidVariantAttributeHandler() {
-//                @Override
-//                public boolean isLighterThanAir(FluidVariant variant) {
-//                    return true;
-//                }
-//            });
-        }
-
     }
 
     @Override

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
@@ -76,7 +77,7 @@ public class PartTemplate implements PartKeyProvider {
         this.itemPathFormatter = itemPathFormatter;
     }
 
-    public static ItemLike createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
+    public static ItemDefinition<Item> createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
         return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part));
     }
 

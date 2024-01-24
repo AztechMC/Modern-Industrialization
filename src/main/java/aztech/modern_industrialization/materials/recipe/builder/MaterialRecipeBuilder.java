@@ -47,18 +47,4 @@ public interface MaterialRecipeBuilder {
      */
     @Deprecated
     void save(RecipeOutput recipeOutput);
-
-    // TODO NEO maybe delete
-    static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike pItemLike) {
-        return inventoryTrigger(ItemPredicate.Builder.item().of(pItemLike));
-    }
-
-    static Criterion<InventoryChangeTrigger.TriggerInstance> inventoryTrigger(ItemPredicate.Builder... pItems) {
-        return inventoryTrigger(Arrays.stream(pItems).map(ItemPredicate.Builder::build).<ItemPredicate>toArray(p_297943_ -> new ItemPredicate[p_297943_]));
-    }
-
-    static Criterion<InventoryChangeTrigger.TriggerInstance> inventoryTrigger(ItemPredicate... pPredicates) {
-        return CriteriaTriggers.INVENTORY_CHANGED
-                .createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.empty(), InventoryChangeTrigger.TriggerInstance.Slots.ANY, List.of(pPredicates)));
-    }
 }

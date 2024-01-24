@@ -10,6 +10,7 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.items.ConfigCardItem;
+import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
@@ -20,6 +21,7 @@ import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.machines.MachineOverlayClient;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
@@ -31,27 +33,37 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
+import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
+import aztech.modern_industrialization.util.TextHelper;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
@@ -60,9 +72,11 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +92,8 @@ public class MIClient {
 
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         MultiblockErrorHighlight.init();
-        MIPipesClient.setupClient();
+        MIPipesClient.setupClient(modBus);
+        VersionEvents.init(ModLoadingContext.get().getActiveContainer());
 
         NeoForge.EVENT_BUS.addListener(TickEvent.RenderTickEvent.class, event -> {
             if (event.phase == TickEvent.Phase.START) {
@@ -88,6 +103,30 @@ public class MIClient {
         NeoForge.EVENT_BUS.addListener(TickEvent.ClientTickEvent.class, event -> {
             if (event.phase == TickEvent.Phase.END) {
                 ClientKeyHandler.onEndTick(Minecraft.getInstance());
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(ItemTooltipEvent.class, event -> {
+            MITooltips.attachTooltip(event.getItemStack(), event.getToolTip());
+
+            // Apparently tooltips are accessed from the main menu, or something, hence the
+            // != null check
+            if (Minecraft.getInstance().level != null && !MIConfig.getConfig().disableFuelTooltips) {
+                try {
+                    int fuelTime = CommonHooks.getBurnTime(event.getItemStack(), null);
+                    if (fuelTime > 0) {
+                        long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
+                        event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+                    }
+                } catch (Exception e) {
+                    MI.LOGGER.warn("Could not show MI fuel tooltip.", e);
+                }
+            }
+
+            if (event.getFlags().isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
+                var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
+                for (ResourceLocation id : ids) {
+                    event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
+                }
             }
         });
 
@@ -103,6 +142,26 @@ public class MIClient {
         ModLoadingContext.get().registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get()));
+
+        // Warn if neither JEI nor REI is present!
+        if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
+                && !ModList.get().isLoaded("roughlyenoughitems")) {
+            NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> {
+                if (MIConfig.getConfig().enableNoEmiMessage) {
+                    event.getPlayer().displayClientMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD), false);
+                }
+            });
+        }
+
+        // TODO NEO: runtime datagen
+//        if (MIConfig.getConfig().datagenOnStartup) {
+//            RuntimeDataGen.run(gen -> {
+//                MIDatagenClient.configure(gen, true);
+//                MIDatagenServer.configure(gen, true);
+//            });
+//        }
+
+        MI.LOGGER.info("Modern Industrialization client setup done!");
     }
 
     @SubscribeEvent
@@ -173,5 +232,15 @@ public class MIClient {
     @SubscribeEvent
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(ClientKeyHandler.keyActivate);
+    }
+
+    @SubscribeEvent
+    private static void registerItemProperties(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
+                    (stack, level, entity, seed) -> {
+                        return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
+                    });
+        });
     }
 }

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks;
 
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
@@ -35,11 +36,10 @@ import org.jetbrains.annotations.Nullable;
 public interface TickableBlock extends EntityBlock {
     @Override
     default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        // TODO NEO
-//        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE)) {
-//            // Pipes don't tick on the client.
-//            return null;
-//        }
+        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE.get())) {
+            // Pipes don't tick on the client.
+            return null;
+        }
         return (w, p, s, be) -> {
             if (be instanceof Tickable) {
                 ((Tickable) be).tick();

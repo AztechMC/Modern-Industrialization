@@ -72,13 +72,7 @@ public class MachineRegistrationHelper {
                         .sortOrder(SortOrder.MACHINES)
                         .withBlockConstructor((s) -> new MachineBlock(ctor, s))
                         .withModel((block, gen) -> {
-                            // TODO NEO model gen
-                            // Item model is in code
-//                            gen.skipAutoItemBlock(block);
-                            // Add a single block state definition mapping to the item model (which is a code model that we provide).
-                            // TODO NEO model gen
-//                            gen.blockStateOutput.accept(
-//                                    BlockModelGenerators.createSimpleBlock(block, ModelLocationUtils.getModelLocation(block.asItem())));
+                            // Model generation is handled in the model provider already.
                         })
                         .isValidSpawn(MobSpawning.NO_SPAWN));
 

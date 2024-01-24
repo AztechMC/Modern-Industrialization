@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.*;
@@ -127,13 +128,12 @@ public class OverclockComponent implements IComponent {
 
     public List<Component> getTooltips() {
         var tooltips = new ArrayList<Component>();
-        // TODO NEO MI tooltips
-//        for (Catalyst catalyst : catalysts) {
-//
-//            var catalystItem = BuiltInRegistries.ITEM.get(catalyst.resourceLocation);
-//            tooltips.add(MITooltips.line(MIText.OverclockMachine).arg(catalystItem, MITooltips.ITEM_PARSER).arg(catalyst.multiplier)
-//                    .arg(catalyst.ticks).build());
-//        }
+        for (Catalyst catalyst : catalysts) {
+
+            var catalystItem = BuiltInRegistries.ITEM.get(catalyst.resourceLocation);
+            tooltips.add(MITooltips.line(MIText.OverclockMachine).arg(catalystItem, MITooltips.ITEM_PARSER).arg(catalyst.multiplier)
+                    .arg(catalyst.ticks).build());
+        }
         return tooltips;
     }
 

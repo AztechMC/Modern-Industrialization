@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO: data attachment support
+// TODO NEO: data attachment support
 public class ItemVariantImpl implements ItemVariant {
 	private static final Map<Item, ItemVariant> noTagCache = new ConcurrentHashMap<>();
 

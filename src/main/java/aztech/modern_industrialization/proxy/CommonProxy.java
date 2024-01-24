@@ -95,14 +95,11 @@ public class CommonProxy {
         return null;
     }
 
-    public void delayNextBlockAttack(Player player) {
-    }
-
     public boolean hasShiftDown() {
         return false;
     }
 
-    // TODO NEO is there a client-side version of this??
+    // In case there is ever a client-side specific version of this...
     public List<Component> getFluidTooltip(FluidVariant variant) {
         List<Component> list = new ArrayList<>();
         list.add(FluidVariantAttributes.getName(variant));
@@ -111,13 +108,6 @@ public class CommonProxy {
 
     public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
     }
-
-    // TODO NEO
-//    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
-//        ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, listener, buf, responseSender) -> {
-//            server.execute(handler.handlePacket(player, buf));
-//        });
-//    }
 
     public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
     }

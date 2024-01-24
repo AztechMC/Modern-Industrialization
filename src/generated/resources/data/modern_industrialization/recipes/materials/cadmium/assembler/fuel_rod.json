@@ -1,0 +1,39 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 16,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:soldering_alloy"
+    },
+    {
+      "amount": 100,
+      "fluid": "modern_industrialization:helium"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:blastproof_alloy_curved_plate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:large_motor"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:robot_arm"
+    },
+    {
+      "amount": 18,
+      "item": "modern_industrialization:cadmium_rod"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:cadmium_control_rod"
+    }
+  ]
+}

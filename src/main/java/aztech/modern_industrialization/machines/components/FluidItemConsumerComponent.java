@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -160,53 +161,52 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
 
         List<Component> returnList = new ArrayList<>();
 
-        // TODO NEO tooltips
-//        returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
-//                this.maxEuProduction,
-//                MITooltips.EU_PER_TICK_PARSER).build());
-//
-//        if (this.fluidEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
-//            if (this.fluidEUProductionMap.isStandardFuels()) {
-//                returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
-//            } else {
-//                var informationEntries = this.fluidEUProductionMap.getAllAcceptedWithEU();
-//
-//                if (informationEntries.size() == 1) {
-//                    var entry = informationEntries.iterator().next();
-//                    returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
-//                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-//                } else if (informationEntries.size() > 1) {
-//                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
-//                    for (var entry : informationEntries) {
-//                        returnList.add(
-//                                new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
-//                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-//                    }
-//                }
-//
-//            }
-//        }
-//
-//        if (this.itemEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
-//            if (this.itemEUProductionMap.isStandardFuels()) {
-//                returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
-//            } else {
-//                var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
-//                if (informationEntries.size() == 1) {
-//                    var entry = informationEntries.iterator().next();
-//                    returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
-//                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-//                } else {
-//                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
-//                    for (var entry : informationEntries) {
-//                        returnList.add(
-//                                new MITooltips.Line(MIText.AcceptFollowingItemEntry)
-//                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
-//                    }
-//                }
-//
-//            }
-//        }
+        returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
+                this.maxEuProduction,
+                MITooltips.EU_PER_TICK_PARSER).build());
+
+        if (this.fluidEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
+            if (this.fluidEUProductionMap.isStandardFuels()) {
+                returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
+            } else {
+                var informationEntries = this.fluidEUProductionMap.getAllAcceptedWithEU();
+
+                if (informationEntries.size() == 1) {
+                    var entry = informationEntries.iterator().next();
+                    returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
+                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                } else if (informationEntries.size() > 1) {
+                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
+                    for (var entry : informationEntries) {
+                        returnList.add(
+                                new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
+                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                    }
+                }
+
+            }
+        }
+
+        if (this.itemEUProductionMap.getNumberOfFuel() != NumberOfFuel.NONE) {
+            if (this.itemEUProductionMap.isStandardFuels()) {
+                returnList.add(new MITooltips.Line(MIText.AcceptAnyItemFuels).build());
+            } else {
+                var informationEntries = this.itemEUProductionMap.getAllAcceptedWithEU();
+                if (informationEntries.size() == 1) {
+                    var entry = informationEntries.iterator().next();
+                    returnList.add(new MITooltips.Line(MIText.AcceptSingleItem)
+                            .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                } else {
+                    returnList.add(new MITooltips.Line(MIText.ConsumesTheFollowing).build());
+                    for (var entry : informationEntries) {
+                        returnList.add(
+                                new MITooltips.Line(MIText.AcceptFollowingItemEntry)
+                                        .arg(entry.variant).arg(entry.eu, MITooltips.EU_PARSER).build());
+                    }
+                }
+
+            }
+        }
 
         return returnList;
     }

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "forge:plates/titanium"
+    },
+    "G": {
+      "tag": "forge:glass"
+    }
+  },
+  "pattern": [
+    "###",
+    "#G#",
+    "###"
+  ],
+  "result": {
+    "item": "modern_industrialization:titanium_tank"
+  }
+}

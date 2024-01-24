@@ -26,6 +26,8 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
@@ -160,10 +162,10 @@ public class PipeItem extends Item {
     }
 
     public boolean isFluidPipe() {
-        return false;// TODO NEO this.defaultData instanceof FluidNetworkData;
+        return this.defaultData instanceof FluidNetworkData;
     }
 
     public boolean isCable() {
-        return false; // TODO NEO this.defaultData instanceof ElectricityNetworkData;
+        return this.defaultData instanceof ElectricityNetworkData;
     }
 }

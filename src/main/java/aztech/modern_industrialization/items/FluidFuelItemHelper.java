@@ -46,28 +46,9 @@ public interface FluidFuelItemHelper {
         return FluidVariant.of(new ItemStorage(stack, 0).getFluid());
     }
 
-    // TODO NEO
-//    static void setFluid(ItemStack stack, FluidVariant fluid) {
-//        if (!fluid.isBlank()) {
-//            NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
-//        } else {
-//            stack.removeTagKey("fluid");
-//        }
-//    }
-
     static int getAmount(ItemStack stack) {
         return new ItemStorage(stack, 0).getFluid().getAmount();
     }
-
-    // TODO NEO
-//    static void setAmount(ItemStack stack, long amount) {
-//        if (amount != 0) {
-//            stack.getOrCreateTag().putLong("amt", amount);
-//        } else {
-//            stack.removeTagKey("amt");
-//            stack.removeTagKey("fluid");
-//        }
-//    }
 
     static void decrement(ItemStack stack) {
         new ItemStorage(stack, 0).drain(1, IFluidHandler.FluidAction.EXECUTE);

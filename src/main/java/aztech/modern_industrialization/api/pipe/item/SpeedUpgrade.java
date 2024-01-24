@@ -35,12 +35,4 @@ public class SpeedUpgrade {
 
     public final static Map<Item, Integer> UPGRADES = new IdentityHashMap<>();
 
-    static {
-        // TODO NEO
-//        UPGRADES.put(MIItem.MOTOR.asItem(), 2L);
-//        UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8L);
-//        UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32L);
-//        UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
-    }
-
 }

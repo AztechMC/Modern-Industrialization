@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.recipe;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessConditions;
-import aztech.modern_industrialization.util.JsonMapCodec;
 import com.google.gson.*;
 import java.util.*;
 import java.util.function.BiConsumer;

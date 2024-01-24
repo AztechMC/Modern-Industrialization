@@ -304,10 +304,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 return Objects.requireNonNullElse(pipe.camouflage, state);
             }
         } else {
-            // TODO NEO fix appearance on the client side
-//            if (((RenderAttachedBlockView) renderView).getBlockEntityRenderAttachment(pos) instanceof PipeBlockEntity.RenderAttachment att) {
-//                return Objects.requireNonNullElse(att.camouflage(), state);
-//            }
+            var manager = renderView.getModelDataManager();
+            if (manager != null) {
+                var data = manager.getAtOrEmpty(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+                if (data != null) {
+                    return Objects.requireNonNullElse(data.camouflage(), state);
+                }
+            }
         }
         return state;
     }

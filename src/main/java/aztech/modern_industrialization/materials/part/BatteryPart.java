@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.items.PortableStorageUnit;
 
 public class BatteryPart implements PartKeyProvider {
 
@@ -36,8 +37,9 @@ public class BatteryPart implements PartKeyProvider {
         return new PartTemplate("Battery", "battery").withRegister(
                 (partContext, part, itemPath, itemId, itemTag, englishName) -> {
                     var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-                    // TODO NEO portable storage unit
-//                    PortableStorageUnit.CAPACITY_PER_BATTERY.put(item, batteryCapacity);
+                    item.withItemRegistrationEvent(i -> {
+                        PortableStorageUnit.CAPACITY_PER_BATTERY.put(i, batteryCapacity);
+                    });
                 });
     }
 

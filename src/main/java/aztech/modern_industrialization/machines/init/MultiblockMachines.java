@@ -593,7 +593,7 @@ public class MultiblockMachines {
         clientInit();
     }
 
-    public static void clientInit() {
+    private static void clientInit() {
         MachineRegistrationHelper.addMachineModel("coke_oven", "coke_oven", MachineCasings.BRICKS, true, false, false);
         new Rei("Coke Oven", "coke_oven", MIMachineRecipeTypes.COKE_OVEN, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))

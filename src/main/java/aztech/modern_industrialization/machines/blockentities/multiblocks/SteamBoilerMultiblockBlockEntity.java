@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -150,15 +151,14 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     public List<Component> getTooltips() {
         List<Component> tooltips = fuelBurning.getTooltips();
 
-        // TODO NEO tooltips
-//        tooltips.add(new MITooltips.Line(MIText.ContinuousOperation).build());
-//
-//        if (highPressure) {
-//            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER)
-//                    .build());
-//        } else {
-//            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER).build());
-//        }
+        tooltips.add(new MITooltips.Line(MIText.ContinuousOperation).build());
+
+        if (highPressure) {
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER)
+                    .build());
+        } else {
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER).build());
+        }
 
         return tooltips;
     }

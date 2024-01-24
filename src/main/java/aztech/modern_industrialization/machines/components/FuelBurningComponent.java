@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -158,17 +159,16 @@ public class FuelBurningComponent implements IComponent {
 
     public List<Component> getTooltips() {
         List<Component> returnList = new ArrayList<>();
-        // TODO NEO tooltips
-//        returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
-//                this.maxEuProduction,
-//                MITooltips.EU_PER_TICK_PARSER)
-//                .arg(MIFluids.STEAM)
-//                .build());
-//
-//        if (burningEuMultiplier == 2) {
-//            returnList.add(
-//                    new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
-//        }
+        returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
+                this.maxEuProduction,
+                MITooltips.EU_PER_TICK_PARSER)
+                .arg(MIFluids.STEAM)
+                .build());
+
+        if (burningEuMultiplier == 2) {
+            returnList.add(
+                    new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
+        }
 
         return returnList;
     }

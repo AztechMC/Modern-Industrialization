@@ -27,11 +27,14 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
+import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
+import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
+import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
@@ -56,6 +59,8 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
+
+import static aztech.modern_industrialization.MIText.ModernIndustrialization;
 
 @SuppressWarnings("unused")
 public class MITooltips {
@@ -204,16 +209,15 @@ public class MITooltips {
 
     // Tooltips
 
-    // TODO NEO
-//    public static final TooltipAttachment BATTERIES = TooltipAttachment.of(
-//            (itemStack, item) -> {
-//                if (PortableStorageUnit.CAPACITY_PER_BATTERY.containsKey(item)) {
-//                    var capacity = PortableStorageUnit.CAPACITY_PER_BATTERY.get(itemStack.getItem());
-//                    return Optional.of(new Line(MIText.BatteryInStorageUnit).arg(capacity, EU_PARSER).build());
-//                } else {
-//                    return Optional.empty();
-//                }
-//            });
+    public static final TooltipAttachment BATTERIES = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (PortableStorageUnit.CAPACITY_PER_BATTERY.containsKey(item)) {
+                    var capacity = PortableStorageUnit.CAPACITY_PER_BATTERY.get(itemStack.getItem());
+                    return Optional.of(new Line(MIText.BatteryInStorageUnit).arg(capacity, EU_PARSER).build());
+                } else {
+                    return Optional.empty();
+                }
+            });
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
             (itemStack, item) -> {
@@ -238,30 +242,29 @@ public class MITooltips {
                 }
             });
 
-    // TODO NEO
-//    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
-//            (itemStack, item) -> {
-//                if (item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem()) {
-//                    return Optional.of(new Line(MIText.AllowCreativeFlight).build());
-//                } else {
-//                    return Optional.empty();
-//                }
-//            }).noShiftRequired();
-//
-//    public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
-//            (itemStack, item) -> {
-//                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
-//                    var energyStorage = ContainerItemContext.withConstant(itemStack).find(EnergyApi.ITEM);
-//                    if (energyStorage != null) {
-//                        long capacity = energyStorage.getCapacity();
-//                        if (capacity > 0) {
-//                            return Optional.of(new Line(MIText.EnergyStored)
-//                                    .arg(new NumberWithMax(energyStorage.getAmount(), capacity), EU_MAXED_PARSER).build());
-//                        }
-//                    }
-//                }
-//                return Optional.empty();
-//            }).noShiftRequired();
+    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem()) {
+                    return Optional.of(new Line(MIText.AllowCreativeFlight).build());
+                } else {
+                    return Optional.empty();
+                }
+            }).noShiftRequired();
+
+    public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
+            (itemStack, item) -> {
+                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(MI.ID)) {
+                    var energyStorage = itemStack.getCapability(EnergyApi.ITEM);
+                    if (energyStorage != null) {
+                        long capacity = energyStorage.getCapacity();
+                        if (capacity > 0) {
+                            return Optional.of(new Line(MIText.EnergyStored)
+                                    .arg(new NumberWithMax(energyStorage.getAmount(), capacity), EU_MAXED_PARSER).build());
+                        }
+                    }
+                }
+                return Optional.empty();
+            }).noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),
             new Line(MIText.LubricantTooltip).arg(LubricantHelper.mbPerTick));
@@ -279,46 +282,45 @@ public class MITooltips {
                 }
             });
 
-    // TODO NEO
-//    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultilines(
-//            (itemStack, item) -> {
-//                if (item instanceof NuclearAbsorbable) {
-//                    List<Component> tooltips = new LinkedList<>();
-//                    long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
-//                    tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs)
-//                            .arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
-//                    if (itemStack.getItem() instanceof NuclearFuel fuel) {
-//                        long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
-//                        tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
-//                    }
-//                    return Optional.of(tooltips);
-//                } else {
-//                    return Optional.empty();
-//                }
-//            });
-//
-//    public static final TooltipAttachment ORES = TooltipAttachment.ofMultilines(
-//            (itemStack, item) -> {
-//                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock) {
-//                    OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
-//                    List<Component> lines = new LinkedList<>();
-//                    MIConfig config = MIConfig.getConfig();
-//
-//                    if (config.enableDefaultOreGenTooltips) {
-//                        if (oreBlock.params.generate) {
-//                            lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
-//                            lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
-//                            lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
-//                        } else {
-//                            lines.add(new Line(MIText.OreNotGenerated).build());
-//                        }
-//
-//                        return Optional.of(lines);
-//                    }
-//                }
-//
-//                return Optional.empty();
-//            });
+    public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof NuclearAbsorbable) {
+                    List<Component> tooltips = new LinkedList<>();
+                    long remAbs = ((NuclearAbsorbable) itemStack.getItem()).getRemainingDesintegrations(itemStack);
+                    tooltips.add(new MITooltips.Line(MIText.RemAbsorption).arg(remAbs)
+                            .arg(((NuclearAbsorbable) itemStack.getItem()).desintegrationMax).build());
+                    if (itemStack.getItem() instanceof NuclearFuel fuel) {
+                        long totalEu = (long) fuel.totalEUbyDesintegration * fuel.desintegrationMax;
+                        tooltips.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+                    }
+                    return Optional.of(tooltips);
+                } else {
+                    return Optional.empty();
+                }
+            });
+
+    public static final TooltipAttachment ORES = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock) {
+                    OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
+                    List<Component> lines = new LinkedList<>();
+                    MIConfig config = MIConfig.getConfig();
+
+                    if (config.enableDefaultOreGenTooltips) {
+                        if (oreBlock.params.generate) {
+                            lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
+                            lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());
+                            lines.add(new Line(MIText.OreGenerationTooltipVeinSize).arg(oreBlock.params.veinSize).build());
+                        } else {
+                            lines.add(new Line(MIText.OreNotGenerated).build());
+                        }
+
+                        return Optional.of(lines);
+                    }
+                }
+
+                return Optional.empty();
+            });
 
     public static final TooltipAttachment REDSTONE_CONTROL_MODULE = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
@@ -365,28 +367,27 @@ public class MITooltips {
                 }
             });
 
-    // TODO NEO
-//    public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
-//            MIText.SteamDrillWaterHelp,
-//            MIText.SteamDrillFuelHelp,
-//            MIText.SteamDrillProfit,
-//            MIText.SteamDrillToggle);
-//
-//    public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
-//            MIText.ConfigCardHelpCamouflage1,
-//            MIText.ConfigCardHelpCamouflage2,
-//            MIText.ConfigCardHelpCamouflage3,
-//            MIText.ConfigCardHelpCamouflage4,
-//            MIText.ConfigCardHelpCamouflage5,
-//            MIText.ConfigCardHelpCamouflage6,
-//            MIText.ConfigCardHelpCamouflage7,
-//            MIText.ConfigCardHelpCamouflage8,
-//            MIText.ConfigCardHelpItems1,
-//            MIText.ConfigCardHelpItems2,
-//            MIText.ConfigCardHelpItems3,
-//            MIText.ConfigCardHelpItems4,
-//            MIText.ConfigCardHelpItems5,
-//            MIText.ConfigCardHelpClear);
+    public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
+            MIText.SteamDrillWaterHelp,
+            MIText.SteamDrillFuelHelp,
+            MIText.SteamDrillProfit,
+            MIText.SteamDrillToggle);
+
+    public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
+            MIText.ConfigCardHelpCamouflage1,
+            MIText.ConfigCardHelpCamouflage2,
+            MIText.ConfigCardHelpCamouflage3,
+            MIText.ConfigCardHelpCamouflage4,
+            MIText.ConfigCardHelpCamouflage5,
+            MIText.ConfigCardHelpCamouflage6,
+            MIText.ConfigCardHelpCamouflage7,
+            MIText.ConfigCardHelpCamouflage8,
+            MIText.ConfigCardHelpItems1,
+            MIText.ConfigCardHelpItems2,
+            MIText.ConfigCardHelpItems3,
+            MIText.ConfigCardHelpItems4,
+            MIText.ConfigCardHelpItems5,
+            MIText.ConfigCardHelpClear);
 
     // Long Tooltip with only text, no need of MIText
 
@@ -422,14 +423,12 @@ public class MITooltips {
     }
 
     static {
-        // TODO NEO
-//        add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
-//                "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
+        add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
+                "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
         add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
         add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
-        // TODO NEO
-//        add(MIBlock.TRASH_CAN, "Will delete any item or fluid sent into it.", "Can also be used to empty a fluid slot",
-//                "by Right-Clicking on it with a Trash Can");
+        add(MIBlock.TRASH_CAN, "Will delete any item or fluid sent into it.", "Can also be used to empty a fluid slot",
+                "by Right-Clicking on it with a Trash Can");
 
         add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe()), "pipe",
                 "Can be instantly retrieved by", "Right-Clicking with any Wrench.", "Use Shift + Right-Click to connect ",

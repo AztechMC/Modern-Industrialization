@@ -218,7 +218,6 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         return false;
     }
 
-    // TODO NEO model data
     @Override
     public final ModelData getModelData() {
         return ModelData.builder()

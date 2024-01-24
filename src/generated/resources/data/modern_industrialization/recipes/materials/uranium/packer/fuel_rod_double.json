@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:uranium_fuel_rod"
+    },
+    {
+      "amount": 1,
+      "tag": "c:nuclear_alloy_plates"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:uranium_fuel_rod_double"
+    }
+  ]
+}

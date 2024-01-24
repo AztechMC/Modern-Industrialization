@@ -111,8 +111,7 @@ public final class MaterialBuilder {
             @Override
             void apply(RecipeContext context) {
                 for (String recipeId : recipeIds) {
-                    // TODO NEO
-//                    context.removeRecipe(recipeId);
+                    context.removeRecipe(recipeId);
                 }
             }
         });

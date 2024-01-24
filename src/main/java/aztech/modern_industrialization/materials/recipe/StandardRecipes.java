@@ -36,6 +36,7 @@ import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Standard conversion recipes for all materials.
@@ -55,8 +56,7 @@ public final class StandardRecipes {
 
         new ShapedRecipeBuilder(ctx, ORE, 1, "deepslate_to_ore", "   ", " x ", "   ").addPart('x', ORE_DEEPSLATE);
 
-        // TODO NEO
-//        new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', CABLE).exportToAssembler();
+        new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', CABLE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE)
                 .exportToMachine(MIMachineRecipeTypes.PACKER);
 
@@ -70,12 +70,11 @@ public final class StandardRecipes {
 
         new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
 
-        // TODO NEO
-//        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
-//                .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
-//
-//        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
-//                .exportToAssembler();
+        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
+                .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
+
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', Tags.Items.GLASS)
+                .exportToAssembler();
         new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###")
                 .addTaggedPart('#', PLATE)
                 .addInput('b', "#c:wooden_barrels")
@@ -126,15 +125,14 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "double_ingot").addTaggedPartInput(INGOT, 2)
                 .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0f).addPartOutput(DOUBLE_INGOT, 1);
 
-        // TODO NEO
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2).addItemInput("#c:nuclear_alloy_plates", 1)
-//                .addPartOutput(FUEL_ROD_DOUBLE, 1);
-//
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#c:nuclear_alloy_plates", 2)
-//                .addPartInput(FUEL_ROD_DOUBLE, 2)
-//                .addPartOutput(FUEL_ROD_QUAD, 1);
-//        // UNPACKER
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, "coil").addTaggedPartInput(COIL, 1).addPartOutput(CABLE, 8);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2).addItemInput("#c:nuclear_alloy_plates", 1)
+                .addPartOutput(FUEL_ROD_DOUBLE, 1);
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#c:nuclear_alloy_plates", 2)
+                .addPartInput(FUEL_ROD_DOUBLE, 2)
+                .addPartOutput(FUEL_ROD_QUAD, 1);
+        // UNPACKER
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.UNPACKER, "coil").addTaggedPartInput(COIL, 1).addPartOutput(CABLE, 8);
 
         // WIREMILL
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.WIREMILL, "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
@@ -148,22 +146,21 @@ public final class StandardRecipes {
                 .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addFluidInput(MIFluids.SOLDERING_ALLOY, 75)
                 .addPartOutput(DRILL_HEAD, 1);
 
-        // TODO NEO
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_synthetic_rubber")
-//                .addTaggedPartInput(WIRE, 3)
-//                .addFluidInput(MIFluids.SYNTHETIC_RUBBER, 30)
-//                .addPartOutput(CABLE, 3);
-//
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_styrene_rubber")
-//                .addTaggedPartInput(WIRE, 3)
-//                .addFluidInput(MIFluids.STYRENE_BUTADIENE_RUBBER, 6)
-//                .addPartOutput(CABLE, 3);
-//
-//        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "fuel_rod", 16, 200)
-//                .addItemInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
-//                .addItemInput(MIItem.LARGE_MOTOR, 1).addItemInput(MIItem.ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)
-//                .addFluidInput(MIFluids.SOLDERING_ALLOY, 500).addFluidInput(MIFluids.HELIUM, 100)
-//                .addPartOutput(FUEL_ROD, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_synthetic_rubber")
+                .addTaggedPartInput(WIRE, 3)
+                .addFluidInput(MIFluids.SYNTHETIC_RUBBER, 30)
+                .addPartOutput(CABLE, 3);
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_styrene_rubber")
+                .addTaggedPartInput(WIRE, 3)
+                .addFluidInput(MIFluids.STYRENE_BUTADIENE_RUBBER, 6)
+                .addPartOutput(CABLE, 3);
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "fuel_rod", 16, 200)
+                .addItemInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
+                .addItemInput(MIItem.LARGE_MOTOR, 1).addItemInput(MIItem.ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)
+                .addFluidInput(MIFluids.SOLDERING_ALLOY, 500).addFluidInput(MIFluids.HELIUM, 100)
+                .addPartOutput(FUEL_ROD, 1);
 
         // HEAT EXCHANGER
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.HEAT_EXCHANGER, "hot_ingot", 8, 10).addPartInput(HOT_INGOT, 1)

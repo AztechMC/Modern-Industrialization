@@ -66,24 +66,10 @@ public class ClientProxy extends CommonProxy {
         return super.findUser(mainHand);
     }
 
-    // TODO NEO
-//    @Override
-//    public void delayNextBlockAttack(Player player) {
-//        if (player == Minecraft.getInstance().player) {
-//            // Add a 5 tick delay like vanilla.
-//            Minecraft.getInstance().gameMode.destroyDelay = 5;
-//        }
-//    }
-
     @Override
     public boolean hasShiftDown() {
         return Screen.hasShiftDown();
     }
-
-//    @Override
-//    public List<Component> getFluidTooltip(FluidVariant variant) {
-//        return FluidVariantRendering.getTooltip(variant);
-//    }
 
     @Override
     public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
@@ -94,15 +80,6 @@ public class ClientProxy extends CommonProxy {
             }
         });
     }
-
-//    @Override
-//    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
-//        super.registerUnsidedPacket(identifier, handler);
-//
-//        ClientPlayNetworking.registerGlobalReceiver(identifier, (mc, listener, buf, responseSender) -> {
-//            mc.execute(handler.handlePacket(mc.player, buf));
-//        });
-//    }
 
     @Override
     public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {

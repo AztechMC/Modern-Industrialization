@@ -29,6 +29,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
+import aztech.modern_industrialization.pipes.impl.PipeColorProvider;
 import aztech.modern_industrialization.pipes.impl.PipeMeshCache;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.Arrays;
@@ -53,15 +54,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class MIPipesClient {
     public static volatile boolean transparentCamouflage = false;
 
-    // TODO NEO
-    public static void setupClient() {
-//        ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
+    public static void setupClient(IEventBus modBus) {
+        modBus.addListener(RegisterColorHandlersEvent.Block.class, event -> {
+            event.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE.get());
+        });
         registerRenderers();
 
         NeoForge.EVENT_BUS.addListener(RenderHighlightEvent.Block.class, event -> {
@@ -83,6 +87,7 @@ public class MIPipesClient {
             }
         });
 
+        // TODO NEO
 //        ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
 //            if (result instanceof BlockHitResult bhr) {
 //                if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
@@ -110,8 +115,6 @@ public class MIPipesClient {
 //
 //            return true;
 //        });
-//
-//        BlockRenderLayerMap.INSTANCE.putBlock(MIPipes.BLOCK_PIPE, RenderType.cutout());
     }
 
     private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {

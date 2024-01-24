@@ -58,8 +58,7 @@ public class OreBlock extends Block {
         ItemStack handStack = player.getMainHandItem();
         if (handStack.getItem() == Items.BOOK) {
             handStack.shrink(1);
-            // TODO NEO
-//            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
+            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return super.use(state, world, pos, player, hand, hit);

@@ -27,13 +27,28 @@ import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import com.google.common.primitives.Ints;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.items.wrapper.ForwardingItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
 
@@ -41,78 +56,112 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
     }
 
+    private static boolean useBlock(BlockHitResult hitResult, InteractionHand hand, Player player, Level world) {
+        if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel
+                && hitResult.getDirection().getAxis().isHorizontal()) {
+
+            if (barrel.behaviour.isCreative()) {
+                ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
+                if (!currentInHand.isBlank() && barrel.isResourceBlank()) {
+                    barrel.setResource(currentInHand);
+                    return true;
+                }
+            }
+
+            if (!player.isShiftKeyDown()) {
+                // TODO NEO implement item-item storage API support
+//                if (stack.getItem() instanceof BarrelItem barrelItem) {
+//                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
+//                    if (StorageUtil.move(storage, barrelInserter, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+//                        return true;
+//                    }
+//                }
+                var handItem = player.getItemInHand(hand);
+                if (!handItem.isEmpty()) {
+                    try (var tx = Transaction.openOuter()) {
+                        long inserted = barrel.insert(ItemVariant.of(handItem), handItem.getCount(), tx, true);
+                        if (inserted > 0) {
+                            tx.commit();
+                            handItem.shrink((int) inserted);
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
+                if (!currentInHand.isBlank()) {
+                    try (var tx = Transaction.openOuter()) {
+                        long inserted = 0;
+                        for (int i = 0; i < Inventory.INVENTORY_SIZE; ++i) {
+                            ItemStack stack = player.getInventory().getItem(i);
+                            if (!currentInHand.matches(stack)) {
+                                continue;
+                            }
+
+                            long thisIter = barrel.insert(currentInHand, stack.getCount(), tx, true);
+                            inserted += thisIter;
+                            stack.shrink((int) thisIter);
+                        }
+                        if (inserted > 0) {
+                            tx.commit();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean attackBlock(BlockPos pos, Direction direction, InteractionHand hand, Player player, Level world) {
+        if (world.getBlockEntity(pos) instanceof BarrelBlockEntity barrel && direction.getAxis().isHorizontal()) {
+            if (!barrel.isEmpty()) {
+                ItemStack stack = player.getItemInHand(hand);
+
+                // TODO NEO implement item-item storage API support
+//                if (stack.getItem() instanceof BarrelItem barrelItem) {
+//                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
+//                    if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+//                        return InteractionResult.sidedSuccess(world.isClientSide);
+//                    }
+//                }
+
+                try (Transaction transaction = Transaction.openOuter()) {
+                    ItemVariant extractedResource = barrel.getResource();
+
+                    long extracted = barrel.extract(extractedResource,
+                            player.isShiftKeyDown() ? 1 : extractedResource.toStack().getMaxStackSize(),
+                            transaction);
+                    transaction.commit();
+
+                    player.getInventory().placeItemBackInInventory(extractedResource.toStack((int) extracted));
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void setupBarrelEvents() {
-        // TODO NEO barrel events
-//        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-//            if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel
-//                    && hitResult.getDirection().getAxis().isHorizontal()) {
-//
-//                if (barrel.behaviour.isCreative()) {
-//                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
-//                    if (!currentInHand.isBlank() && barrel.isResourceBlank()) {
-//                        barrel.setResource(currentInHand);
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
-//                    }
-//                }
-//
-//                // Build a special storage that ignores the lock for manual player insertion.
-//                InsertionOnlyStorage<ItemVariant> barrelInserter = (res, max, tx) -> barrel.insert(res, max, tx, true);
-//
-//                if (!player.isShiftKeyDown()) {
-//
-//                    ItemStack stack = player.getItemInHand(hand);
-//
-//                    if (stack.getItem() instanceof BarrelItem barrelItem) {
-//                        var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
-//                        if (StorageUtil.move(storage, barrelInserter, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                            return InteractionResult.sidedSuccess(world.isClientSide);
-//                        }
-//                    }
-//                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrelInserter,
-//                            (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
-//                    }
-//                } else {
-//                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
-//                    if (StorageUtil.move(PlayerInventoryStorage.of(player), barrelInserter, (itemVariant) -> itemVariant.equals(currentInHand),
-//                            Long.MAX_VALUE, null) > 0) {
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
-//                    }
-//                }
-//            }
-//            return InteractionResult.PASS;
-//        });
-//
-//        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-//            if (world.getBlockEntity(pos) instanceof BarrelBlockEntity barrel && direction.getAxis().isHorizontal()) {
-//                if (!barrel.isEmpty()) {
-//
-//                    ItemStack stack = player.getItemInHand(hand);
-//
-//                    if (stack.getItem() instanceof BarrelItem barrelItem) {
-//                        var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
-//                        if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                            return InteractionResult.sidedSuccess(world.isClientSide);
-//                        }
-//                    }
-//
-//                    try (Transaction transaction = Transaction.openOuter()) {
-//                        ItemVariant extractedResource = barrel.getResource();
-//
-//                        long extracted = barrel.extract(barrel.getResource(),
-//                                player.isShiftKeyDown() ? 1 : barrel.getResource().getItem().getMaxStackSize(),
-//                                transaction);
-//
-//                        PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
-//
-//                        transaction.commit();
-//                        CommonProxy.INSTANCE.delayNextBlockAttack(player);
-//                    }
-//                    return InteractionResult.sidedSuccess(world.isClientSide);
-//                }
-//            }
-//            return InteractionResult.PASS;
-//        });
+        NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
+            if (event.getUseBlock() == Event.Result.DENY) {
+                return;
+            }
+
+            if (useBlock(event.getHitVec(), event.getHand(), event.getEntity(), event.getLevel())) {
+                event.setCanceled(true);
+                event.setCancellationResult(InteractionResult.sidedSuccess(event.getSide().isClient()));
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.LeftClickBlock.class, event -> {
+            if (event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START) {
+                return;
+            }
+
+            if (attackBlock(event.getPos(), event.getFace(), event.getHand(), event.getEntity(), event.getLevel())) {
+                event.setCanceled(true);
+            }
+        });
     }
 
     public static BarrelStorage withStackCapacity(long stackCapacity) {

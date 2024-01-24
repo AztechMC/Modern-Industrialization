@@ -29,7 +29,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class MITags {
-    public static final TagKey<Item> WRENCHES = item("wrenches");
+    public static final TagKey<Item> WRENCHES = item("tools/wrench");
 
     public static final TagKey<Item> BARRELS = miItem("barrels");
     public static final TagKey<Item> TANKS = miItem("tanks");
@@ -37,8 +37,11 @@ public class MITags {
     public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
 
+    // TODO 1.21: should be in the tag rework
+    public static final TagKey<Item> SHULKER_BOXES = item("shulker_boxes");
+
     public static TagKey<Item> item(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation("c", path));
+        return TagKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation("forge", path));
     }
 
     public static TagKey<Item> miItem(String path) {

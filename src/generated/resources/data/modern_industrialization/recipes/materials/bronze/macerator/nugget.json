@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:bronze_nuggets"
+      "tag": "forge:nuggets/bronze"
     }
   ],
   "item_outputs": [

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:redstone_blocks"
+      "tag": "forge:storage_blocks/redstone"
     }
   ],
   "item_outputs": [

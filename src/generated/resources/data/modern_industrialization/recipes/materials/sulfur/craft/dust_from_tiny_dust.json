@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:sulfur_tiny_dusts"
+      "tag": "forge:tiny_dusts/sulfur"
     },
     "y": {
       "item": "modern_industrialization:sulfur_tiny_dust"

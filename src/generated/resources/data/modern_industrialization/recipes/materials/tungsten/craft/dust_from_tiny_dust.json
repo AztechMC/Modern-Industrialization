@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:tungsten_tiny_dusts"
+      "tag": "forge:tiny_dusts/tungsten"
     },
     "y": {
       "item": "modern_industrialization:tungsten_tiny_dust"

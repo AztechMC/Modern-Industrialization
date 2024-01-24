@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:le_mox_nuggets"
+      "tag": "forge:nuggets/le_mox"
     }
   ],
   "item_outputs": [

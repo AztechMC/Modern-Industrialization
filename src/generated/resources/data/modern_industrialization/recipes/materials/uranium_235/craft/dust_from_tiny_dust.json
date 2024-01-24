@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:uranium_235_tiny_dusts"
+      "tag": "forge:tiny_dusts/uranium_235"
     },
     "y": {
       "item": "modern_industrialization:uranium_235_tiny_dust"

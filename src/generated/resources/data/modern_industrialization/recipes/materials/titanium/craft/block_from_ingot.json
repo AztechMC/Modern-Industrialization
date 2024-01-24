@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:titanium_ingots"
+      "tag": "forge:ingots/titanium"
     },
     "y": {
       "item": "modern_industrialization:titanium_ingot"

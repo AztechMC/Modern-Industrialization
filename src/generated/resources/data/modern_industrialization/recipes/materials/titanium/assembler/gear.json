@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     },
     {
       "amount": 1,

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_uranium_ores"
+      "tag": "forge:raw_materials/uranium"
     },
     "y": {
       "item": "modern_industrialization:raw_uranium"

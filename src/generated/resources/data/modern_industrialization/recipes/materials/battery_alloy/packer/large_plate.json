@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:battery_alloy_plates"
+      "tag": "forge:plates/battery_alloy"
     }
   ],
   "item_outputs": [

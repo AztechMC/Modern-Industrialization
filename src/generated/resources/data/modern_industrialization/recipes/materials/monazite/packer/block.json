@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:monazite_dusts"
+      "tag": "forge:dusts/monazite"
     },
     {
       "amount": 1,

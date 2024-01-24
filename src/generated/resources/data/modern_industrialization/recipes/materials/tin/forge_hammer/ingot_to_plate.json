@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "count": 2,
   "ingredient": {
-    "tag": "c:tin_ingots"
+    "tag": "forge:ingots/tin"
   },
   "result": {
     "item": "modern_industrialization:tin_plate"

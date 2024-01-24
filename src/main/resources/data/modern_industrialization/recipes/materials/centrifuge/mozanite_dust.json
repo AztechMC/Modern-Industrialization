@@ -3,7 +3,7 @@
   "eu": 10,
   "duration": 2400,
   "item_inputs": {
-    "tag": "c:monazite_dusts",
+    "tag": "forge:dusts/monazite",
     "amount": 9
   },
     "item_outputs": [

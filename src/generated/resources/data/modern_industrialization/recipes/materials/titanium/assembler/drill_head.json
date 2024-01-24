@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     },
     {
       "amount": 2,
@@ -23,7 +23,7 @@
     },
     {
       "amount": 2,
-      "tag": "c:titanium_gears"
+      "tag": "forge:gears/titanium"
     }
   ],
   "item_outputs": [

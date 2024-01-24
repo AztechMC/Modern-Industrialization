@@ -34,7 +34,6 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 public class LubricantHelper {
 
     public static final int mbPerTick = 25;
-    private static final int dropPerTick = mbPerTick * 81;
 
     public static InteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {
         if (crafter.hasActiveRecipe()) {
@@ -42,7 +41,7 @@ public class LubricantHelper {
             int maxTick = crafter.getMaxEfficiencyTicks();
             int rem = maxTick - tick;
             if (rem > 0) {
-                int maxAllowedLubricant = rem * dropPerTick;
+                int maxAllowedLubricant = rem * mbPerTick;
                 FluidTank interactionTank = new FluidTank(maxAllowedLubricant, stack -> stack.getFluid() == MIFluids.LUBRICANT.asFluid());
                 var result = FluidUtil.tryEmptyContainer(player.getItemInHand(hand), interactionTank, maxAllowedLubricant, player, true);
 

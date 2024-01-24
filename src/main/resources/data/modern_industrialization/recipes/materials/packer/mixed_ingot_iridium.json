@@ -4,15 +4,15 @@
   "duration" : 200,
   "item_inputs" : [
     {
-      "tag" : "c:blastproof_alloy_ingots",
+      "tag" : "forge:ingots/blastproof_alloy",
       "amount" : 1
     },
     {
-      "tag" : "c:iridium_ingots",
+      "tag" : "forge:ingots/iridium",
       "amount" : 1
     },
     {
-      "tag" : "c:blastproof_alloy_ingots",
+      "tag" : "forge:ingots/blastproof_alloy",
       "amount" : 1
     }
   ],

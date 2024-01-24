@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "count": 2,
   "ingredient": {
-    "tag": "c:iron_ingots"
+    "tag": "forge:ingots/iron"
   },
   "result": {
     "item": "modern_industrialization:iron_double_ingot"

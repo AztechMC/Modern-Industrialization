@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:lead_ingots"
+      "tag": "forge:ingots/lead"
     },
     {
       "amount": 1,

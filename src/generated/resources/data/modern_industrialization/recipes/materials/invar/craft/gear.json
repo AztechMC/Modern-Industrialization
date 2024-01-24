@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "c:invar_plates"
+      "tag": "forge:plates/invar"
     },
     "R": {
       "item": "modern_industrialization:invar_ring"

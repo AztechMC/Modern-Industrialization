@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
   "ingredient": {
-    "tag": "c:gold_ingots"
+    "tag": "forge:ingots/gold"
   },
   "result": {
     "item": "modern_industrialization:gold_plate"

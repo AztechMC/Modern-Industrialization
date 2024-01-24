@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:invar_ingots"
+      "tag": "forge:ingots/invar"
     },
     "y": {
       "item": "modern_industrialization:invar_ingot"

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:plutonium_ingots"
+      "tag": "forge:ingots/plutonium"
     },
     "y": {
       "item": "modern_industrialization:plutonium_ingot"

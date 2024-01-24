@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:beryllium_tiny_dusts"
+      "tag": "forge:tiny_dusts/beryllium"
     },
     "y": {
       "item": "modern_industrialization:beryllium_tiny_dust"

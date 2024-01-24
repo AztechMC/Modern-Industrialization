@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:yttrium_tiny_dusts"
+      "tag": "forge:tiny_dusts/yttrium"
     },
     "y": {
       "item": "modern_industrialization:yttrium_tiny_dust"

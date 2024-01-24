@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:annealed_copper_nuggets"
+      "tag": "forge:nuggets/annealed_copper"
     },
     "y": {
       "item": "modern_industrialization:annealed_copper_nugget"

@@ -10,7 +10,7 @@
       "item": "modern_industrialization:copper_rotor"
     },
     "G": {
-      "tag": "c:copper_gears"
+      "tag": "forge:gears/copper"
     },
     "C": {
       "item": "modern_industrialization:bronze_machine_casing"
@@ -19,7 +19,7 @@
       "tag": "modern_industrialization:fluid_pipes"
     },
     "g" :{
-      "tag": "c:glass_blocks"
+      "tag": "forge:glass"
     }
   },
   "result": {

@@ -3,7 +3,7 @@
   "count": 3,
   "damage": 30,
   "ingredient": {
-    "tag": "c:raw_gold_ores"
+    "tag": "forge:raw_materials/gold"
   },
   "result": {
     "count": 4,

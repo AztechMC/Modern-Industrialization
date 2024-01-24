@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:electrum_nuggets"
+      "tag": "forge:nuggets/electrum"
     },
     "y": {
       "item": "modern_industrialization:electrum_nugget"

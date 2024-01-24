@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     },
     "R": {
       "item": "modern_industrialization:titanium_ring"

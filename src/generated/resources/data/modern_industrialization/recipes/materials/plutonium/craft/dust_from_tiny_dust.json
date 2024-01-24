@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:plutonium_tiny_dusts"
+      "tag": "forge:tiny_dusts/plutonium"
     },
     "y": {
       "item": "modern_industrialization:plutonium_tiny_dust"

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:chromium_plates"
+      "tag": "forge:plates/chromium"
     }
   ],
   "item_outputs": [

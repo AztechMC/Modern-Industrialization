@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_tungsten_ores"
+      "tag": "forge:raw_materials/tungsten"
     }
   ],
   "item_outputs": [

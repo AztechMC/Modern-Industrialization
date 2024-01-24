@@ -7,7 +7,7 @@
   ],
   "key": {
     "A" : {
-      "tag" : "c:bronze_plates"
+      "tag" : "forge:plates/bronze"
     },
     "H" : {
       "item" : "modern_industrialization:fire_clay_bricks"

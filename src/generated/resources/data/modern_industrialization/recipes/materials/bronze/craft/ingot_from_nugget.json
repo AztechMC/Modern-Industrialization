@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:bronze_nuggets"
+      "tag": "forge:nuggets/bronze"
     },
     "y": {
       "item": "modern_industrialization:bronze_nugget"

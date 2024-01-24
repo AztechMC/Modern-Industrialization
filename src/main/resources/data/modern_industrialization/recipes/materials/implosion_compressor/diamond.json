@@ -4,7 +4,7 @@
   "duration": 10,
   "item_inputs": [
     {
-      "tag": "c:diamond_dusts",
+      "tag": "forge:dusts/diamond",
       "amount": 1
     },
     {

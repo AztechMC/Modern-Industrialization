@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:invar_nuggets"
+      "tag": "forge:nuggets/invar"
     }
   ],
   "item_outputs": [

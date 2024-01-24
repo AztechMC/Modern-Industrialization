@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:iron_ingots"
+      "tag": "forge:ingots/iron"
     }
   ],
   "item_outputs": [

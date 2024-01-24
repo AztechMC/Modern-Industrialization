@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "c:iridium_plates"
+      "tag": "forge:plates/iridium"
     },
     "b": {
       "tag": "c:wooden_barrels"

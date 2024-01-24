@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:cupronickel_ingots"
+      "tag": "forge:ingots/cupronickel"
     },
     "y": {
       "item": "modern_industrialization:cupronickel_ingot"

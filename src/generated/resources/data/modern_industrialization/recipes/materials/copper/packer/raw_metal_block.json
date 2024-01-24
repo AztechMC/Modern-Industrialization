@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_copper_ores"
+      "tag": "forge:raw_materials/copper"
     }
   ],
   "item_outputs": [

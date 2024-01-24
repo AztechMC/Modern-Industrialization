@@ -16,7 +16,7 @@
       "item" : "modern_industrialization:aluminum_rotor"
     },
     "g" : {
-      "tag" : "c:invar_gears"
+      "tag" : "forge:gears/invar"
     }
   },
 

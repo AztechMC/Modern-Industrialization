@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     },
     "b": {
       "tag": "c:wooden_barrels"

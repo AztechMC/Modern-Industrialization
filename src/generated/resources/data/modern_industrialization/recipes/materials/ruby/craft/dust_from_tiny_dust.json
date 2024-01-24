@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:ruby_tiny_dusts"
+      "tag": "forge:tiny_dusts/ruby"
     },
     "y": {
       "item": "modern_industrialization:ruby_tiny_dust"

@@ -8,7 +8,7 @@
   "key":
   {
     "a" : {
-      "tag" : "c:battery_alloy_plates"
+      "tag" : "forge:plates/battery_alloy"
     },
     "c" : {
       "item" : "modern_industrialization:battery_alloy_curved_plate"

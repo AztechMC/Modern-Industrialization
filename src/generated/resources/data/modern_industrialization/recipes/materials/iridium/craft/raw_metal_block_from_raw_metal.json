@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_iridium_ores"
+      "tag": "forge:raw_materials/iridium"
     },
     "y": {
       "item": "modern_industrialization:raw_iridium"

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:quartz_tiny_dusts"
+      "tag": "forge:tiny_dusts/quartz"
     },
     "y": {
       "item": "modern_industrialization:quartz_tiny_dust"

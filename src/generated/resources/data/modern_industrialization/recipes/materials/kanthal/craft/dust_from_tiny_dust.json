@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:kanthal_tiny_dusts"
+      "tag": "forge:tiny_dusts/kanthal"
     },
     "y": {
       "item": "modern_industrialization:kanthal_tiny_dust"

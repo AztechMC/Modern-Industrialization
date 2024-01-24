@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:coal_ores"
+    "tag": "forge:ores/coal"
   },
   "result": {
     "count": 2,

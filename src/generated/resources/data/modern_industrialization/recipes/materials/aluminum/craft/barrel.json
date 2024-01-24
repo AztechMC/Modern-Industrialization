@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     },
     "b": {
       "tag": "c:wooden_barrels"

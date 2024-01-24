@@ -25,8 +25,12 @@ package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -104,22 +108,21 @@ public final class TranslationProvider implements DataProvider {
             addTranslation(definition.getTranslationKey(), definition.getEnglishName());
         }
 
-        // TODO NEO
-//        for (var entry : MITooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
-//            addTranslation(entry.getKey(), entry.getValue());
-//        }
-//
-//        for (var entry : ReiMachineRecipes.categories.entrySet()) {
-//            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
-//        }
-//
-//        for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
-//            addTranslation(entry.getKey(), entry.getValue());
-//        }
-//
-//        for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
-//            addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
-//        }
+        for (var entry : MITooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
+            addTranslation(entry.getKey(), entry.getValue());
+        }
+
+        for (var entry : ReiMachineRecipes.categories.entrySet()) {
+            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
+        }
+
+        for (var entry : TagsToGenerate.tagTranslations.entrySet()) {
+            addTranslation(entry.getKey(), entry.getValue());
+        }
+
+        for (var ebfTier : ElectricBlastFurnaceBlockEntity.tiers) {
+            addTranslation(ebfTier.getTranslationKey(), ebfTier.englishName());
+        }
 
         for (var cableTier : CableTier.allTiers()) {
             addTranslation(cableTier.shortEnglishKey(), cableTier.shortEnglishName);

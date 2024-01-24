@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:lignite_coal_tiny_dusts"
+      "tag": "forge:tiny_dusts/lignite_coal"
     }
   ],
   "item_outputs": [

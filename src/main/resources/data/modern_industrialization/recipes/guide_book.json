@@ -7,7 +7,7 @@
   ],
   "key": {
     "c": {
-      "tag": "c:copper_nuggets"
+      "tag": "forge:copper_nuggets"
     },
     "b": {
       "item": "minecraft:book"

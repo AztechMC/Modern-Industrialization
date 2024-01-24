@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:silver_ingots"
+      "tag": "forge:ingots/silver"
     },
     "y": {
       "item": "modern_industrialization:silver_ingot"

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:emerald_ores"
+      "tag": "forge:ores/emerald"
     }
   ],
   "item_outputs": [

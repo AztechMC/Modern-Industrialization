@@ -14,7 +14,7 @@
       "item" : "modern_industrialization:copper_fine_wire"
     },
     "C" : {
-      "tag" : "c:coal_dusts"
+      "tag" : "forge:dusts/coal"
     }
   },
 

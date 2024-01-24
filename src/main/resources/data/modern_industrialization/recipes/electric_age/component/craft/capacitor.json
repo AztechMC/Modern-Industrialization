@@ -8,7 +8,7 @@
   "key":
   {
     "P" : {
-      "tag" : "c:gold_plates"
+      "tag" : "forge:plates/gold"
     },
     "w" : {
       "item" : "modern_industrialization:copper_wire"

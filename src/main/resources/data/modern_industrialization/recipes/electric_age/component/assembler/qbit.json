@@ -9,11 +9,11 @@
         },
         {
 
-            "tag": "c:carbon_plates",
+            "tag": "forge:plates/carbon",
             "amount": 2
         },
         {
-            "tag": "c:glass_panes",
+            "tag": "forge:glass_panes",
             "amount": 2
         },
         {

@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:bronze_nuggets"
+    "tag": "forge:nuggets/bronze"
   },
   "result": {
     "item": "modern_industrialization:bronze_tiny_dust"

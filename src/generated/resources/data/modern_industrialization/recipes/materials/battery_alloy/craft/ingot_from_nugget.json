@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:battery_alloy_nuggets"
+      "tag": "forge:nuggets/battery_alloy"
     },
     "y": {
       "item": "modern_industrialization:battery_alloy_nugget"

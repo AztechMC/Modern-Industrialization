@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:silicon_blocks"
+      "tag": "forge:blocks/silicon"
     }
   ],
   "item_outputs": [

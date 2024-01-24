@@ -4,7 +4,7 @@
   "duration": 200,
   "item_inputs": [
     {
-    "tag": "c:sulfur_dusts",
+    "tag": "forge:dusts/sulfur",
     "amount": 1
     }
   ],

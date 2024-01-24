@@ -9,7 +9,7 @@
     },
     {
       "amount": 8,
-      "tag": "c:stainless_steel_plates"
+      "tag": "forge:plates/stainless_steel"
     }
   ],
   "item_outputs": [

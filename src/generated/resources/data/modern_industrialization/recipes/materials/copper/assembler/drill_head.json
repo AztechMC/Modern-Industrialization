@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:copper_plates"
+      "tag": "forge:plates/copper"
     },
     {
       "amount": 2,
@@ -23,7 +23,7 @@
     },
     {
       "amount": 2,
-      "tag": "c:copper_gears"
+      "tag": "forge:gears/copper"
     }
   ],
   "item_outputs": [

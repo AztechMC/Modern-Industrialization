@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 40,
   "ingredient": {
-    "tag": "c:copper_ingots"
+    "tag": "forge:ingots/copper"
   },
   "result": {
     "item": "modern_industrialization:copper_curved_plate"

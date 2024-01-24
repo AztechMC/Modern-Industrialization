@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:lignite_coal_ores"
+    "tag": "forge:lignite_coal_ores"
   },
   "result": {
     "count": 2,

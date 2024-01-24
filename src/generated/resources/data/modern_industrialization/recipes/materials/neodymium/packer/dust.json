@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:neodymium_tiny_dusts"
+      "tag": "forge:tiny_dusts/neodymium"
     }
   ],
   "item_outputs": [

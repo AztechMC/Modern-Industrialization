@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tin_plates"
+      "tag": "forge:plates/tin"
     }
   ],
   "item_outputs": [

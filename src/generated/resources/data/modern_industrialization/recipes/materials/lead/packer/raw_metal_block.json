@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_lead_ores"
+      "tag": "forge:raw_materials/lead"
     }
   ],
   "item_outputs": [

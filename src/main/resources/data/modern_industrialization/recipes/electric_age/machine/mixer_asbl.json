@@ -8,7 +8,7 @@
   "key":
   {
     "g": {
-      "tag" : "c:glass_blocks"
+      "tag" : "forge:glass"
     },
     "m" : {
       "item" : "modern_industrialization:motor"

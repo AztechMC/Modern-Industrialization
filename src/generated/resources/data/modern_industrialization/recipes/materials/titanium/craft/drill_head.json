@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "c:titanium_gears"
+      "tag": "forge:gears/titanium"
     },
     "R": {
       "item": "modern_industrialization:titanium_rod"
@@ -15,7 +15,7 @@
       "item": "modern_industrialization:titanium_curved_plate"
     },
     "p": {
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     }
   },
   "pattern": [

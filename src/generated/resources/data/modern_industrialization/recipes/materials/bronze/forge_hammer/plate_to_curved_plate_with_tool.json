@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
   "ingredient": {
-    "tag": "c:bronze_plates"
+    "tag": "forge:plates/bronze"
   },
   "result": {
     "item": "modern_industrialization:bronze_curved_plate"

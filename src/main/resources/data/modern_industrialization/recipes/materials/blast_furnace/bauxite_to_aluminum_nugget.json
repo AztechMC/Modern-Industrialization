@@ -3,7 +3,7 @@
   "eu": 32,
   "duration": 200,
   "item_inputs": {
-    "tag": "c:bauxite_dusts",
+    "tag": "forge:dusts/bauxite",
     "amount": 1
   },
   "item_outputs": {

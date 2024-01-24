@@ -9,7 +9,7 @@
   "key":
   {
     "A" : {
-      "tag" : "c:aluminum_plates"
+      "tag" : "forge:plates/aluminum"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_cable"

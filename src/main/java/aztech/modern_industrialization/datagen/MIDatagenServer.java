@@ -28,6 +28,9 @@ import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvide
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
+import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -75,9 +78,9 @@ public class MIDatagenServer {
 
         gen.addProvider(run, new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
 
-//        aggregate.addProvider(MIBlockTagProvider::new);
-//        aggregate.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
-//        aggregate.addProvider(MIPoiTypeTagProvider::new);
+        gen.addProvider(run, new MIBlockTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
+        gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
 
         var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
         gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(

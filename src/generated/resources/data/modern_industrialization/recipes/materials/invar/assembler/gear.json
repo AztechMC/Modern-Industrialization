@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:invar_plates"
+      "tag": "forge:plates/invar"
     },
     {
       "amount": 1,

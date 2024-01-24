@@ -3,7 +3,7 @@
   "eu": 32,
   "duration": 400,
   "item_inputs": {
-    "tag": "c:emerald_dusts",
+    "tag": "forge:dusts/emerald",
     "amount": 23
   },
   "item_outputs": [

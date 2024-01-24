@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:uranium_ingots"
+      "tag": "forge:ingots/uranium"
     }
   ],
   "item_outputs": [

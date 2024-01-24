@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:salt_tiny_dusts"
+      "tag": "forge:tiny_dusts/salt"
     },
     "y": {
       "item": "modern_industrialization:salt_tiny_dust"

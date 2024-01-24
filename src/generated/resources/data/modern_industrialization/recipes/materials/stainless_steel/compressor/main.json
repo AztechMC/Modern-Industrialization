@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:stainless_steel_ingots"
+      "tag": "forge:ingots/stainless_steel"
     }
   ],
   "item_outputs": [

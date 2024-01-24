@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:he_mox_tiny_dusts"
+      "tag": "forge:tiny_dusts/he_mox"
     },
     "y": {
       "item": "modern_industrialization:he_mox_tiny_dust"

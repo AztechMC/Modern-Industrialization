@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#forge:raw_materials/antimony",
+    "#forge:raw_materials/iridium",
+    "#forge:raw_materials/lead",
+    "#forge:raw_materials/nickel",
+    "#forge:raw_materials/platinum",
+    "#forge:raw_materials/silver",
+    "#forge:raw_materials/tin",
+    "#forge:raw_materials/titanium",
+    "#forge:raw_materials/tungsten",
+    "#forge:raw_materials/uranium"
+  ]
+}

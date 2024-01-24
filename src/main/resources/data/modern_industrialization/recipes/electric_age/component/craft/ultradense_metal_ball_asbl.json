@@ -10,10 +10,10 @@
       "item" : "modern_industrialization:tungsten_large_plate"
     },
     "l": {
-      "tag" : "c:lead_plates"
+      "tag" : "forge:plates/lead"
     },
     "I":{
-      "tag" : "c:iridium_plates"
+      "tag" : "forge:plates/iridium"
     }
   },
 

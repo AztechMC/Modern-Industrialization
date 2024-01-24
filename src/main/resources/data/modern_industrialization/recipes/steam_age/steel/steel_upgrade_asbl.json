@@ -10,7 +10,7 @@
       "tag": "modern_industrialization:fluid_pipes"
     },
     "G": {
-      "tag": "c:bronze_gears"
+      "tag": "forge:gears/bronze"
     },
     "R": {
       "item": "modern_industrialization:bronze_rotor"

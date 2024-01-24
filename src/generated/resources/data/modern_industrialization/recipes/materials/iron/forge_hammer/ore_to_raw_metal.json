@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:iron_ores"
+    "tag": "forge:ores/iron"
   },
   "result": {
     "count": 2,

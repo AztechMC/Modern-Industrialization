@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:monazite_dusts"
+      "tag": "forge:dusts/monazite"
     },
     "y": {
       "item": "modern_industrialization:monazite_dust"

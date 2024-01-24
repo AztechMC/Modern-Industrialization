@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:soldering_alloy_dusts"
+      "tag": "forge:dusts/soldering_alloy"
     },
     "y": {
       "item": "modern_industrialization:soldering_alloy_dust"

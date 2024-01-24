@@ -4,7 +4,7 @@
   "duration": 10,
   "item_inputs": [
     {
-      "tag": "c:gold_blocks",
+      "tag": "forge:blocks/gold",
       "amount": 64
     },
     {

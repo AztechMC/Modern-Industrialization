@@ -72,7 +72,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.redstoneControl = new RedstoneControlComponent();
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(85, 34, "arrow");
 
-        long capacity = 81000 * 256;
+        long capacity = FluidType.BUCKET_VOLUME * 256;
 
         List<ConfigurableFluidStack> fluidInput = Collections
                 .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER.asFluid()));

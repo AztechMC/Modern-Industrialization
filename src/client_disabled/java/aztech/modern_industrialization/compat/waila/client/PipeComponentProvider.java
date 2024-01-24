@@ -93,10 +93,10 @@ public class PipeComponentProvider implements IBlockComponentProvider {
 
             if (tag.contains("fluid")) {
                 FluidVariant fluid = FluidVariant.fromNbt(tag.getCompound("fluid"));
-                double stored = tag.getLong("amount") / 81.0;
-                double capacity = tag.getInt("capacity") / 81.0;
-                double transfer = tag.getLong("transfer") / 81.0;
-                double maxTransfer = tag.getLong("maxTransfer") / 81.0;
+                double stored = tag.getLong("amount");
+                double capacity = tag.getInt("capacity");
+                double transfer = tag.getLong("transfer");
+                double maxTransfer = tag.getLong("maxTransfer");
 
                 if (fluid.isBlank()) {
                     // Show "Empty"

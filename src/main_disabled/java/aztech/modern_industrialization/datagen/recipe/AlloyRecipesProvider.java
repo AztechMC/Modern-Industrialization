@@ -97,8 +97,8 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
                 for (int j = 0; j < n; j++) {
                     ShapelessRecipeJson.Ingredient dustIngredient = new ShapelessRecipeJson.Ingredient();
                     ShapelessRecipeJson.Ingredient tinyDustIngredient = new ShapelessRecipeJson.Ingredient();
-                    dustIngredient.tag = "c:" + ingredients.get(i) + "_dusts";
-                    tinyDustIngredient.tag = "c:" + ingredients.get(i) + "_tiny_dusts";
+                    dustIngredient.tag = "forge:dusts/" + ingredients.get(i);
+                    tinyDustIngredient.tag = "forge:tiny_dusts" + ingredients.get(i);
                     dusts.addIngredient(dustIngredient);
                     tinyDusts.addIngredient(tinyDustIngredient);
                 }

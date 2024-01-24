@@ -10,7 +10,7 @@
       "item": "modern_industrialization:forge_hammer"
     },
     "G": {
-      "tag": "c:copper_gears"
+      "tag": "forge:gears/copper"
     },
     "C": {
       "item": "modern_industrialization:bronze_machine_casing"

@@ -12,13 +12,13 @@
       "item" : "modern_industrialization:silicon_n_doped_plate"
     },
     "g" : {
-      "tag" : "c:glass_blocks"
+      "tag" : "forge:glass"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_fine_wire"
     },
     "P" :{
-      "tag" : "c:steel_plates"
+      "tag" : "forge:plates/steel"
     }
   },
 

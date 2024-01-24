@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:superconductor_plates"
+      "tag": "forge:plates/superconductor"
     }
   ],
   "item_outputs": [

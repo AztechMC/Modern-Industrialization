@@ -47,7 +47,7 @@ public sealed interface PartItemPathFormatter {
         @Override
         public String getPartItemTag(String materialName, PartKey partKey) {
             if (MIParts.TAGGED_PARTS.contains(partKey)) {
-                return "#c:" + materialName + "_" + partKey.key + "s";
+                return "#forge:%ss/%s".formatted(partKey.key, materialName);
             } else {
                 return idFromPath(getPartItemPath(materialName, partKey));
             }
@@ -69,7 +69,7 @@ public sealed interface PartItemPathFormatter {
         public String getPartItemTag(String materialName, PartKey partKey) {
             if (MIParts.TAGGED_PARTS.contains(partKey)) {
                 if (tag.contains("%s")) {
-                    return "#c:" + String.format(tag, materialName);
+                    return "#forge:" + String.format(tag, materialName);
                 } else {
                     return tag;
                 }

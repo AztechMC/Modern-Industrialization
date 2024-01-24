@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:redstone_ores"
+      "tag": "forge:ores/redstone"
     }
   ],
   "item_outputs": [

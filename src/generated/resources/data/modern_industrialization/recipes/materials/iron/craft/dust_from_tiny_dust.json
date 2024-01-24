@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:iron_tiny_dusts"
+      "tag": "forge:tiny_dusts/iron"
     },
     "y": {
       "item": "modern_industrialization:iron_tiny_dust"

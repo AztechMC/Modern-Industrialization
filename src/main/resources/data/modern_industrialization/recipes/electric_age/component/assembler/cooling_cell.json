@@ -12,7 +12,7 @@
             "amount": 2
         },
         {
-            "tag" :  "c:tin_plates",
+            "tag" :  "forge:plates/tin",
             "amount": 6
         }
     ],

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:battery_alloy_tiny_dusts"
+      "tag": "forge:tiny_dusts/battery_alloy"
     },
     "y": {
       "item": "modern_industrialization:battery_alloy_tiny_dust"

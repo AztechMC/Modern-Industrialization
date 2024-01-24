@@ -9,7 +9,7 @@
     },
     {
       "amount": 8,
-      "tag": "c:iridium_plates"
+      "tag": "forge:plates/iridium"
     }
   ],
   "item_outputs": [

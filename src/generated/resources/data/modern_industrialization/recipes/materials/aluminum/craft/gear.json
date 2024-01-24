@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     },
     "R": {
       "item": "modern_industrialization:aluminum_ring"

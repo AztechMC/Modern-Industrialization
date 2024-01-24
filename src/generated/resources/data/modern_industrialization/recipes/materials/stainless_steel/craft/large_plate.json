@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:stainless_steel_plates"
+      "tag": "forge:plates/stainless_steel"
     }
   },
   "pattern": [

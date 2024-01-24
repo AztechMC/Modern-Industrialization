@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:annealed_copper_tiny_dusts"
+      "tag": "forge:tiny_dusts/annealed_copper"
     },
     "y": {
       "item": "modern_industrialization:annealed_copper_tiny_dust"

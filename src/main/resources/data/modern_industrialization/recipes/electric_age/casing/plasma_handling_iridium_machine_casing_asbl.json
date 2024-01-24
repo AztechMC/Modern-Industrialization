@@ -7,7 +7,7 @@
   ],
   "key": {
     "A": {
-      "tag": "c:iridium_plates"
+      "tag": "forge:plates/iridium"
     },
     "C": {
       "item": "modern_industrialization:superconductor_coil"

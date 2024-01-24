@@ -3,7 +3,7 @@
   "eu": 8,
   "duration": 200,
   "item_inputs": {
-    "tag": "c:sodium_dusts",
+    "tag": "forge:dusts/sodium",
     "amount": 1
   },
   "fluid_inputs": [

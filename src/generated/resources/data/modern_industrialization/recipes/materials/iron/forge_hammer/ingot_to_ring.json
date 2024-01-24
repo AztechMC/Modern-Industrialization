@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:iron_ingots"
+    "tag": "forge:ingots/iron"
   },
   "result": {
     "item": "modern_industrialization:iron_ring"

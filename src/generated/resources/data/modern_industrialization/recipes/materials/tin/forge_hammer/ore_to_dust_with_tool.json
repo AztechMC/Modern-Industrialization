@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 50,
   "ingredient": {
-    "tag": "c:tin_ores"
+    "tag": "forge:tin_ores"
   },
   "result": {
     "count": 4,

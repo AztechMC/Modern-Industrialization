@@ -7,7 +7,7 @@
         "item": "modern_industrialization:coke_dust",
         "amount": 1},
       {
-        "tag": "c:sulfur_dusts",
+        "tag": "forge:dusts/sulfur",
         "amount": 1}
       ]
   ,

@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:bronze_ingots"
+    "tag": "forge:ingots/bronze"
   },
   "result": {
     "count": 2,

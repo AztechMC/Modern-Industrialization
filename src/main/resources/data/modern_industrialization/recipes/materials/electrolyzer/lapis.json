@@ -3,7 +3,7 @@
   "eu": 32,
   "duration": 2400,
   "item_inputs": {
-    "tag": "c:lapis_dusts",
+    "tag": "forge:dusts/lapis",
     "amount": 18
   },
   "item_outputs": [

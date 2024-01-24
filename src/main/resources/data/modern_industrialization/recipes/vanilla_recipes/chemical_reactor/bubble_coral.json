@@ -12,7 +12,7 @@
       "amount": 4
     },
     {
-      "tag": "c:salt_dusts",
+      "tag": "forge:dusts/salt",
       "amount": 4
     }
   ],

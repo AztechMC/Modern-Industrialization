@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:carbon_plates"
+      "tag": "forge:plates/carbon"
     }
   },
   "pattern": [

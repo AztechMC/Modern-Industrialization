@@ -9,7 +9,7 @@
     },
     {
       "amount": 8,
-      "tag": "c:titanium_plates"
+      "tag": "forge:plates/titanium"
     }
   ],
   "item_outputs": [

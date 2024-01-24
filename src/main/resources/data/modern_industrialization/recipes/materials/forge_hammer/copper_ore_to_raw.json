@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "c:copper_ores"
+    "tag": "forge:ores/copper"
   },
   "result": {
     "item": "minecraft:raw_copper",

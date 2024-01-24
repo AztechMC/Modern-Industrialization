@@ -4,15 +4,15 @@
   "duration": 400,
   "item_inputs": [
     {
-      "tag": "c:quartz_dusts",
+      "tag": "forge:dusts/quartz",
       "amount": 4
     },
     {
-      "tag": "c:beryllium_tiny_dusts",
+      "tag": "forge:tiny_dusts/beryllium",
       "amount": 3
     },
     {
-      "tag": "c:aluminum_tiny_dusts",
+      "tag": "forge:tiny_dusts/aluminum",
       "amount": 2
     }
   ],

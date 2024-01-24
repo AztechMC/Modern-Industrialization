@@ -132,9 +132,9 @@ public class FuelBurningComponent implements IComponent {
                     long euPerMb = FluidFuelRegistry.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
                     if (euPerMb != 0) {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
-                        long mbConsumed = Math.min(mbConsumedMax, stack.getAmount() / 81);
+                        long mbConsumed = Math.min(mbConsumedMax, stack.getAmount());
                         if (mbConsumed > 0) {
-                            stack.decrement(mbConsumed * 81);
+                            stack.decrement(mbConsumed);
                             burningEuBuffer += mbConsumed * euPerMb;
                             continue outer;
                         }

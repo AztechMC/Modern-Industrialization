@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "c:redstone_tiny_dusts"
+      "tag": "forge:tiny_dusts/redstone"
     },
     "y": {
       "item": "modern_industrialization:redstone_tiny_dust"

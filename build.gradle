@@ -440,20 +440,18 @@ if (System.getenv().get("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT"))
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.20.1"
-            addGameVersion "Fabric"
+            addGameVersion "1.20.4"
+            addGameVersion "NeoForge"
             addGameVersion "Java 17"
 
             relations {
-                requiredDependency "fabric-api"
                 requiredDependency "cloth-config"
                 optionalDependency "wthit"
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
-                embeddedLibrary "no-indium"
-                embeddedLibrary "patchouli-fabric"
-                embeddedLibrary "pal"
+                // TODO NEO: restore patchouli dep declaration
+                //embeddedLibrary "patchouli-fabric"
             }
             mainArtifact(jar.archiveFile) {
                 displayName = "Modern Industrialization v${version}"
@@ -476,18 +474,15 @@ modrinth {
     delegate.changelog = changelog
     versionType = releaseChannel
     uploadFile = jar
-    gameVersions = ["1.20.1"]
-    loaders = ["fabric"]
+    gameVersions = ["1.20.4"]
+    loaders = ["neoforge"]
     dependencies {
-        required.project "fabric-api"
         required.project "cloth-config"
         optional.project "wthit"
         optional.project "emi"
         optional.project "jei"
         optional.project "rei"
-        embedded.project "no-indium"
         embedded.project "patchouli"
-        // add "pal" (PlayerAbilityLib) when its on modrinth
     }
 }
 tasks.modrinth.onlyIf {

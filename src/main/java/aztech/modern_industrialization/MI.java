@@ -1,6 +1,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
@@ -97,6 +98,10 @@ public class MI {
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
         modBus.addListener(RegisterPayloadHandlerEvent.class, MIPackets::init);
+
+        if (MIConfig.loadAe2Compat()) {
+            MIAEAddon.init(modBus);
+        }
 
         LOGGER.info("Modern Industrialization setup done!");
     }

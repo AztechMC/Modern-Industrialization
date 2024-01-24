@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 3,
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:advanced_machine_hull"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:large_pump"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:aluminum_large_plate"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:vacuum_freezer"
+    }
+  ]
+}

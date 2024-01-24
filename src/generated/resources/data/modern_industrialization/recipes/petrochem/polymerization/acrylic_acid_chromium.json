@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 700,
+  "eu": 12,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:acrylic_acid"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 700,
+      "fluid": "modern_industrialization:acrylic_glue"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:chromium_tiny_dusts"
+    }
+  ]
+}

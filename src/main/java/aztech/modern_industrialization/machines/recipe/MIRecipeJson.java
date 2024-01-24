@@ -28,6 +28,7 @@ import aztech.modern_industrialization.definition.FluidLike;
 import java.util.ArrayList;
 import java.util.Map;
 
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +37,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 
@@ -90,12 +92,16 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addItemInput(String maybeTag, int amount, float probability) {
-        return addItemInput(maybeTag.startsWith("#")
-                ? Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))))
-                : Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag))),
-                amount,
-                probability
-                );
+        Ingredient ing;
+        if (maybeTag.startsWith("#")) {
+            ing = Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))));
+        } else {
+            if (!BuiltInRegistries.ITEM.containsKey(new ResourceLocation(maybeTag))) {
+                throw new RuntimeException("Could not find item " + maybeTag);
+            }
+            ing = Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag)));
+        }
+        return addItemInput(ing, amount, probability);
     }
 
     public T addItemInput(Ingredient ingredient, int amount, float probability) {
@@ -172,6 +178,15 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
 
     public T addFluidOutput(Fluid fluid, int amount, float probability) {
         return addFluidOutput(BuiltInRegistries.FLUID.getKey(fluid).toString(), amount, probability);
+    }
+
+    public static MIRecipeJson<?> assemblerFromShaped(ShapedRecipe recipe) {
+        return fromShaped(
+                MIMachineRecipeTypes.ASSEMBLER,
+                8, 200, 1,
+                recipe.result,
+                recipe.pattern.data().get().pattern().toArray(String[]::new),
+                recipe.pattern.data().get().key());
     }
 
     public static MIRecipeJson<?> fromShaped(

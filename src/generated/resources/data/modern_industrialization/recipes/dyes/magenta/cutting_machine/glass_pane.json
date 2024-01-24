@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:cutting_machine",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 1,
+      "fluid": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 6,
+      "item": "minecraft:magenta_stained_glass"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "item": "minecraft:magenta_stained_glass_pane"
+    }
+  ]
+}

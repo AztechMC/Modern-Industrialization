@@ -1,0 +1,33 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:small_heat_exchanger"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:turbo_machine_hull"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:stainless_steel_machine_casing_pipe"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:frostproof_machine_casing"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:heatproof_machine_casing"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:heat_exchanger"
+    }
+  ]
+}

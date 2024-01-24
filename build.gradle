@@ -225,37 +225,12 @@ dependencies {
 //    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
 //    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"
 //
-//    modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
-//
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
-//
-//    include modImplementation("dev.draylar:magna:${project.magna_version}") {
-//        exclude(group: "io.github.prospector")
-//        exclude(group: "me.shedaniel.cloth")
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
-//
-//    include modApi("teamreborn:energy:${project.tr_energy_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//        exclude group: "net.fabricmc", module: "fabric-loader"
-//    }
-//
-//    include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
-//
-//    // Include No Indium? https://github.com/Luligabi1/NoIndium
-//    include "me.luligabi:NoIndium:${project.no_indium_version}"
-//
-//    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//        exclude(group: "me.shedaniel")
-//    }
-//
+
+    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+
 //    // TODO 1.20: FTB stuff
 ////    modCompileOnly("dev.ftb.mods:ftb-quests-fabric:${project.ftb_quests_version}") {
 ////        exclude(group: "net.fabricmc.fabric-api")

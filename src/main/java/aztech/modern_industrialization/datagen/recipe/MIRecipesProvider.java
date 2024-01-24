@@ -24,16 +24,25 @@
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.materials.part.MaterialItemPart;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public abstract class MIRecipesProvider extends RecipeProvider {
-    public MIRecipesProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(packOutput, lookupProvider);
+    public MIRecipesProvider(PackOutput packOutput) {
+        super(packOutput, CompletableFuture.completedFuture(HolderLookup.Provider.create(Stream.of())));
     }
 
     protected static ResourceLocation id(String path) {

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:distillery",
+  "duration": 200,
+  "eu": 25,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:steam_cracked_light_fuel"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 300,
+      "fluid": "modern_industrialization:ethylene"
+    }
+  ]
+}

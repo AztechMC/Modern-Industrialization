@@ -25,12 +25,16 @@ package aztech.modern_industrialization.pipes.impl;
 
 import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Function;
 
 public class RotatedModelHelper {
     /**
@@ -57,12 +61,12 @@ public class RotatedModelHelper {
         };
     }
 
-    public static BakedModel[] loadRotatedModels(ResourceLocation modelId, ModelBaker modelBaker) {
+    public static BakedModel[] loadRotatedModels(ResourceLocation modelId, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> spriteGetter) {
         // Load side models
         BakedModel[] models = new BakedModel[6];
 
         for (int i = 0; i < 6; ++i) {
-            models[i] = modelBaker.bake(modelId, PIPE_BAKE_SETTINGS[i]);
+            models[i] = modelBaker.bake(modelId, PIPE_BAKE_SETTINGS[i], spriteGetter);
         }
 
         return models;

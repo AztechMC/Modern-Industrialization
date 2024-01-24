@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water",
+      "probability": 0.0
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:quartz"
+    },
+    {
+      "amount": 1,
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    {
+      "amount": 1,
+      "item": "minecraft:redstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "ae2:fluix_crystal"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
@@ -94,19 +95,18 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
-        // TODO NEO AE2 compat
-//        if (MIConfig.loadAe2Compat()) {
-//            try {
-//                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
-//                        .getMethod("onInitializePipes")
-//                        .invoke(null);
-//            } catch (ReflectiveOperationException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
+        if (MIConfig.loadAe2Compat()) {
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
+                        .getMethod("onInitializePipes")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    private static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
+    public static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
         // Delegate to block model
         modelGenerator.getBuilder(BuiltInRegistries.ITEM.getKey(item).getPath())
                 .customLoader(DelegatingModelBuilder::new)
@@ -124,7 +124,7 @@ public class MIPipes {
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
                 ITEM_MODEL_GENERATOR,
                 SortOrder.PIPES);
-        pipeItems.put(type, itemDef::asItem);
+        register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
     }
 
@@ -137,7 +137,7 @@ public class MIPipes {
                 prop -> new PipeItem(prop, type, new ItemNetworkData()),
                 ITEM_MODEL_GENERATOR,
                 SortOrder.PIPES);
-        pipeItems.put(type, itemDef::asItem);
+        register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
     }
 
@@ -151,7 +151,7 @@ public class MIPipes {
                 prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
                 ITEM_MODEL_GENERATOR,
                 SortOrder.CABLES.and(tier));
-        pipeItems.put(type, itemDef::asItem);
+        register(type, itemDef::asItem);
         ELECTRICITY_PIPE_TIER.put(type, tier);
     }
 

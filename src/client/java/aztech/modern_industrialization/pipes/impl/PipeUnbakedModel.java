@@ -46,8 +46,7 @@ public class PipeUnbakedModel implements IUnbakedGeometry<PipeUnbakedModel> {
 
         BakedModel[] meWireConnectors = null;
         if (MIConfig.loadAe2Compat()) {
-            // TODO NEO
-            //meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker);
+            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker, spriteGetter);
         }
 
         var blockAtlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);

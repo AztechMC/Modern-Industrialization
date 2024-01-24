@@ -81,7 +81,6 @@ public final class TranslationProvider implements DataProvider {
 
         addTranslation("entity.minecraft.villager.industrialist", "Industrialist");
 
-        addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
         addTranslation("key.modern_industrialization.activate", "Toggle Flight");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
         addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");

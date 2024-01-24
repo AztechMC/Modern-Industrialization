@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 700,
+  "eu": 12,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:vinyl_chloride"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 300,
+      "fluid": "modern_industrialization:polyvinyl_chloride"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 4,
+      "tag": "c:lead_tiny_dusts"
+    }
+  ]
+}

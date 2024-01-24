@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modern_industrialization:bronze_cutting_machine"
+    },
+    {
+      "item": "modern_industrialization:steel_upgrade"
+    }
+  ],
+  "result": {
+    "item": "modern_industrialization:steel_cutting_machine"
+  }
+}

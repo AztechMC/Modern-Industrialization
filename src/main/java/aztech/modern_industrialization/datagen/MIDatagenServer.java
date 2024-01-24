@@ -27,7 +27,17 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
+import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.DyeRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.HatchRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
+import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
@@ -58,20 +68,19 @@ public class MIDatagenServer {
             CompletableFuture<HolderLookup.Provider> lookupProvider,
             boolean run,
             boolean runtimeDatagen) {
-        // TODO NEO
-//        var aggregate = pack.addProvider(AggregateDataProvider.create("Server Data"));
-//
-//        aggregate.addProvider(PetrochemRecipesProvider::new);
-//        aggregate.addProvider(PlankRecipesProvider::new);
-//        aggregate.addProvider(HeatExchangerRecipesProvider::new);
-//        aggregate.addProvider(HatchRecipesProvider::new);
-//        aggregate.addProvider(AlloyRecipesProvider::new);
-        gen.addProvider(run, new MaterialRecipesProvider(gen.getPackOutput(), lookupProvider));
-//        aggregate.addProvider(DyeRecipesProvider::new);
-//        aggregate.addProvider(AssemblerRecipesProvider::new);
-//        aggregate.addProvider(CompatRecipesProvider::new);
-//        aggregate.addProvider(UpgradeProvider::new);
-//        aggregate.addProvider(VanillaCompatRecipesProvider::new);
+        var aggregate = gen.addProvider(run, new AggregateDataProvider(gen.getPackOutput(), "Server Data"));
+
+        aggregate.addProvider(PetrochemRecipesProvider::new);
+        aggregate.addProvider(PlankRecipesProvider::new);
+        aggregate.addProvider(HeatExchangerRecipesProvider::new);
+        aggregate.addProvider(HatchRecipesProvider::new);
+        aggregate.addProvider(AlloyRecipesProvider::new);
+        aggregate.addProvider(MaterialRecipesProvider::new);
+        aggregate.addProvider(DyeRecipesProvider::new);
+        aggregate.addProvider(AssemblerRecipesProvider::new);
+        aggregate.addProvider(CompatRecipesProvider::new);
+        aggregate.addProvider(UpgradeProvider::new);
+        aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
         gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
                 new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK))));

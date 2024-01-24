@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    {
+      "amount": 1,
+      "tag": "c:green_dyes"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:green_fluid_pipe"
+    }
+  ]
+}

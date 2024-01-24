@@ -19,6 +19,12 @@ versionRange="${neo_version_range}"
 ordering="AFTER"
 side="BOTH"
 
+[[dependencies.modern_industrialization]]
+modId="ae2"
+type="optional"
+ordering="AFTER"
+side="BOTH"
+
 #[[dependencies.modern_industrialization]]
 #modId="minecraft"
 #mandatory=true

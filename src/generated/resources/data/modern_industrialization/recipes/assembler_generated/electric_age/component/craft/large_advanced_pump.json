@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:processing_unit"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:titanium_rotor"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:large_advanced_motor"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:advanced_pump"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:large_advanced_pump"
+    }
+  ]
+}

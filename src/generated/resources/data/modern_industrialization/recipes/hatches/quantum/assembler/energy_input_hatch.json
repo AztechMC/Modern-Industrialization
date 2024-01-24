@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:superconductor_cable"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:quantum_machine_hull"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:superconductor_energy_input_hatch"
+    }
+  ]
+}

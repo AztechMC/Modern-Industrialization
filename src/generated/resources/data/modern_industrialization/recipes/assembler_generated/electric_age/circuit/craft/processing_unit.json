@@ -1,0 +1,33 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:digital_circuit"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:random_access_memory"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:memory_management_unit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:arithmetic_logic_unit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:processing_unit_board"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:processing_unit"
+    }
+  ]
+}

@@ -34,8 +34,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 
 public class MaterialRecipesProvider extends MIRecipesProvider {
 
-    public MaterialRecipesProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(packOutput, lookupProvider);
+    public MaterialRecipesProvider(PackOutput packOutput) {
+        super(packOutput);
     }
 
     @Override

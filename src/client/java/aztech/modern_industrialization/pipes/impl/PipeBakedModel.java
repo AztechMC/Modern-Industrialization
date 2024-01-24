@@ -156,8 +156,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
                         }
 
                         if (renderConnector) {
-                            // TODO NEO
-//                        meWireConnectors[direction.get3DDataValue()].emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
+                            ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
                         }
                     }
                 }

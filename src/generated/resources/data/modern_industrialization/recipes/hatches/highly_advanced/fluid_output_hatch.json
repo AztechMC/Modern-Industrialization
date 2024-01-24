@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "V": {
+      "item": "modern_industrialization:titanium_tank"
+    }
+  },
+  "pattern": [
+    "U",
+    "V"
+  ],
+  "result": {
+    "item": "modern_industrialization:highly_advanced_fluid_output_hatch"
+  }
+}

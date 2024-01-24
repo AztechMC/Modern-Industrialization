@@ -27,24 +27,32 @@ import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import org.slf4j.Logger;
 
 public class AggregateDataProvider implements DataProvider {
     private static final Logger LOGGER = LogUtils.getLogger();
 
+    private final PackOutput packOutput;
     private final String name;
     private final List<DataProvider> providers = new ArrayList<>();
 
-    public AggregateDataProvider(String name) {
+    public AggregateDataProvider(PackOutput packOutput, String name) {
+        this.packOutput = packOutput;
         this.name = name;
     }
 
-    public <T extends DataProvider> T addProvider(T provider) {
+    private <T extends DataProvider> T addProvider(T provider) {
         providers.add(provider);
         return provider;
+    }
+
+    public <T extends DataProvider> T addProvider(Function<PackOutput, T> providerConstructor) {
+        return addProvider(providerConstructor.apply(packOutput));
     }
 
     @Override

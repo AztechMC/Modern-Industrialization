@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "ae2:fluix_crystal"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "ae2:fluix_dust"
+    }
+  ]
+}

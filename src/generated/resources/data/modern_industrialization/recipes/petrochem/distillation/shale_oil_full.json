@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:distillation_tower",
+  "duration": 200,
+  "eu": 30,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:shale_oil"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 50,
+      "fluid": "modern_industrialization:helium"
+    },
+    {
+      "amount": 450,
+      "fluid": "modern_industrialization:sulfuric_crude_oil"
+    },
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:sulfuric_naphtha"
+    }
+  ]
+}

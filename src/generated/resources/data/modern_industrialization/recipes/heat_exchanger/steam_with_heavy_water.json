@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:heat_exchanger",
+  "duration": 300,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 16000,
+      "fluid": "modern_industrialization:steam"
+    },
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:heavy_water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1000,
+      "fluid": "minecraft:water"
+    },
+    {
+      "amount": 16000,
+      "fluid": "modern_industrialization:heavy_water_steam"
+    }
+  ]
+}

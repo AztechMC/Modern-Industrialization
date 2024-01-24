@@ -1,0 +1,4 @@
+{
+  "delegate": "modern_industrialization:block/pipe",
+  "loader": "modern_industrialization:delegate"
+}

@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "cookingtime": 100,
-  "experience": 0.7,
-  "ingredient": {
-    "item": "modern_industrialization:brick_dust"
-  },
-  "result": "minecraft:brick"
-}

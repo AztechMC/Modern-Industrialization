@@ -1,7 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "minecraft:nether_quartz_ore",
-    "modern_industrialization:quartz_ore"
-  ]
-}

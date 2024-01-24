@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 0.0,
-  "ingredient": {
-    "item": "modern_industrialization:stainless_steel_rod_magnetic"
-  },
-  "result": "modern_industrialization:stainless_steel_rod"
-}

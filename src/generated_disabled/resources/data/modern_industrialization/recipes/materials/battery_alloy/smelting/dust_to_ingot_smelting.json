@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:smelting",
-  "cookingtime": 200,
-  "experience": 0.7,
-  "ingredient": {
-    "item": "modern_industrialization:battery_alloy_dust"
-  },
-  "result": "modern_industrialization:battery_alloy_ingot"
-}

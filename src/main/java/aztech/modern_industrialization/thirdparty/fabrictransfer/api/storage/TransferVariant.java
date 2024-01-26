@@ -53,13 +53,6 @@ public interface TransferVariant<O> {
 	CompoundTag getNbt();
 
 	/**
-	 * Return true if this variant has a tag, false otherwise.
-	 */
-	default boolean hasNbt() {
-		return getNbt() != null;
-	}
-
-	/**
 	 * Return true if the tag of this variant matches the passed tag, and false otherwise.
 	 *
 	 * <p>Note: True is returned if both tags are {@code null}.
@@ -84,14 +77,6 @@ public interface TransferVariant<O> {
 	default CompoundTag copyNbt() {
 		CompoundTag nbt = getNbt();
 		return nbt == null ? null : nbt.copy();
-	}
-
-	/**
-	 * Return a copy of the tag of this variant, or a new compound if this variant doesn't have a tag.
-	 */
-	default CompoundTag copyOrCreateNbt() {
-		CompoundTag nbt = getNbt();
-		return nbt == null ? new CompoundTag() : nbt.copy();
 	}
 
 	/**

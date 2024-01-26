@@ -27,6 +27,8 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.
  *
@@ -45,28 +47,28 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 * Retrieve an ItemVariant with the item and tag of a stack.
 	 */
 	static ItemVariant of(ItemStack stack) {
-		return of(stack.getItem(), stack.getTag());
+		return of(stack.getItem(), stack.getTag(), stack.serializeAttachments());
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and without a tag.
 	 */
 	static ItemVariant of(ItemLike item) {
-		return of(item, null);
+		return of(item, null, null);
 	}
 
 	/**
 	 * Retrieve an ItemVariant with an item and an optional tag.
 	 */
-	static ItemVariant of(ItemLike item, @Nullable CompoundTag tag) {
-		return ItemVariantImpl.of(item.asItem(), tag);
+	static ItemVariant of(ItemLike item, @Nullable CompoundTag tag, @Nullable CompoundTag attachmentsTags) {
+		return ItemVariantImpl.of(item.asItem(), tag, attachmentsTags);
 	}
 
 	/**
 	 * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
 	 */
 	default boolean matches(ItemStack stack) {
-		return isOf(stack.getItem()) && nbtMatches(stack.getTag());
+		return isOf(stack.getItem()) && nbtMatches(stack.getTag()) && Objects.equals(getAttachments(), stack.serializeAttachments());
 	}
 
 	/**
@@ -75,6 +77,9 @@ public interface ItemVariant extends TransferVariant<Item> {
 	default Item getItem() {
 		return getObject();
 	}
+
+	@Nullable
+	CompoundTag getAttachments();
 
 	/**
 	 * Create a new item stack with count 1 from this variant.
@@ -90,7 +95,7 @@ public interface ItemVariant extends TransferVariant<Item> {
 	 */
 	default ItemStack toStack(int count) {
 		if (isBlank()) return ItemStack.EMPTY;
-		ItemStack stack = new ItemStack(getItem(), count);
+		ItemStack stack = new ItemStack(getItem(), count, getAttachments());
 		stack.setTag(copyNbt());
 		return stack;
 	}

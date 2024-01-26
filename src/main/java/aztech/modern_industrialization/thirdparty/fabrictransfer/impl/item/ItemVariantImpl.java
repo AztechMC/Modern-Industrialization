@@ -32,18 +32,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-// TODO NEO: data attachment support
 public class ItemVariantImpl implements ItemVariant {
 	private static final Map<Item, ItemVariant> noTagCache = new ConcurrentHashMap<>();
 
-	public static ItemVariant of(Item item, @Nullable CompoundTag tag) {
+	public static ItemVariant of(Item item, @Nullable CompoundTag tag, @Nullable CompoundTag attachmentsTag) {
 		Objects.requireNonNull(item, "Item may not be null.");
 
 		// Only tag-less or empty item variants are cached for now.
-		if (tag == null || item == Items.AIR) {
-			return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(i, null));
+		if ((tag == null && attachmentsTag == null) || item == Items.AIR) {
+			return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(i, null, null));
 		} else {
-			return new ItemVariantImpl(item, tag);
+			return new ItemVariantImpl(item, tag, attachmentsTag);
 		}
 	}
 
@@ -51,16 +50,14 @@ public class ItemVariantImpl implements ItemVariant {
 
 	private final Item item;
 	private final @Nullable CompoundTag nbt;
+	private final @Nullable CompoundTag attachments;
 	private final int hashCode;
-	/**
-	 * Lazily computed, equivalent to calling toStack(1). <b>MAKE SURE IT IS NEVER MODIFIED!</b>
-	 */
-	private volatile @Nullable ItemStack cachedStack = null;
 
-	public ItemVariantImpl(Item item, CompoundTag nbt) {
+	private ItemVariantImpl(Item item, CompoundTag nbt, CompoundTag attachmentsNbt) {
 		this.item = item;
 		this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
-		hashCode = Objects.hash(item, nbt);
+		this.attachments = attachmentsNbt == null ? null : attachmentsNbt.copy(); // defensive copy
+		hashCode = Objects.hash(item, nbt, attachmentsNbt);
 	}
 
 	@Override
@@ -72,6 +69,12 @@ public class ItemVariantImpl implements ItemVariant {
 	@Override
 	public CompoundTag getNbt() {
 		return nbt;
+	}
+
+	@Nullable
+	@Override
+	public CompoundTag getAttachments() {
+		return attachments;
 	}
 
 	@Override
@@ -88,6 +91,10 @@ public class ItemVariantImpl implements ItemVariant {
 			result.put("tag", nbt.copy());
 		}
 
+		if (attachments != null) {
+			result.put("attachments", attachments.copy());
+		}
+
 		return result;
 	}
 
@@ -95,7 +102,8 @@ public class ItemVariantImpl implements ItemVariant {
 		try {
 			Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(tag.getString("item")));
 			CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
-			return of(item, aTag);
+			CompoundTag attachmentsTag = tag.contains("attachments") ? tag.getCompound("attachments") : null;
+			return of(item, aTag, attachmentsTag);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.debug("Tried to load an invalid ItemVariant from NBT: {}", tag, runtimeException);
 			return ItemVariant.blank();
@@ -110,6 +118,7 @@ public class ItemVariantImpl implements ItemVariant {
 			buf.writeBoolean(true);
 			buf.writeVarInt(Item.getId(item));
 			buf.writeNbt(nbt);
+			buf.writeNbt(attachments);
 		}
 	}
 
@@ -119,13 +128,14 @@ public class ItemVariantImpl implements ItemVariant {
 		} else {
 			Item item = Item.byId(buf.readVarInt());
 			CompoundTag nbt = buf.readNbt();
-			return of(item, nbt);
+			CompoundTag attachments = buf.readNbt();
+			return of(item, nbt, attachments);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "ItemVariant{item=" + item + ", tag=" + nbt + '}';
+		return "ItemVariant{item=" + item + ", tag=" + nbt + ", attachments=" + attachments + '}';
 	}
 
 	@Override
@@ -136,22 +146,11 @@ public class ItemVariantImpl implements ItemVariant {
 
 		ItemVariantImpl ItemVariant = (ItemVariantImpl) o;
 		// fail fast with hash code
-		return hashCode == ItemVariant.hashCode && item == ItemVariant.item && nbtMatches(ItemVariant.nbt);
+		return hashCode == ItemVariant.hashCode && item == ItemVariant.item && nbtMatches(ItemVariant.nbt) && Objects.equals(attachments, ItemVariant.attachments);
 	}
 
 	@Override
 	public int hashCode() {
 		return hashCode;
-	}
-
-	public ItemStack getCachedStack() {
-		ItemStack ret = cachedStack;
-
-		if (ret == null) {
-			// multiple stacks could be created at the same time by different threads, but that is not an issue
-			cachedStack = ret = toStack();
-		}
-
-		return ret;
 	}
 }

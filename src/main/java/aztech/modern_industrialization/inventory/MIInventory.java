@@ -37,6 +37,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,13 +100,12 @@ public final class MIInventory implements IComponent {
         }
     }
 
-    // TODO NEO
     public void autoExtractFluids(Level world, BlockPos pos, Direction direction) {
-//        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
-//
-//        if (target != null) {
-//            StorageUtil.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
-//        }
+        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+
+        if (target != null) {
+            FluidUtil.tryFluidTransfer(target, fluidStorage.fluidHandler, Integer.MAX_VALUE, true);
+        }
     }
 
     public void autoInsertItems(Level world, BlockPos pos, Direction direction) {
@@ -115,13 +116,12 @@ public final class MIInventory implements IComponent {
         }
     }
 
-    // TODO NEO
     public void autoInsertFluids(Level world, BlockPos pos, Direction direction) {
-//        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
-//
-//        if (target != null) {
-//            StorageUtil.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);
-//        }
+        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+
+        if (target != null) {
+            FluidUtil.tryFluidTransfer(fluidStorage.fluidHandler, target, Integer.MAX_VALUE, true);
+        }
     }
 
     public void writeNbt(CompoundTag tag) {

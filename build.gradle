@@ -467,7 +467,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             forgeGradleIntegration = false
         }
         afterEvaluate {
-            tasks.named("curseforge${project.curseforge_project}").dependsOn jar
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn jar
         }
     }
 }

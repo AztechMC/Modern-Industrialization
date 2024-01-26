@@ -57,7 +57,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
         FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
-        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         @Nullable
         GuiEventListener element = gui.getChildAt(mouseX, mouseY).orElse(null);
         if (element instanceof ReiDraggable dw) {
@@ -94,7 +94,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
         FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
-        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
                 if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {

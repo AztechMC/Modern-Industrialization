@@ -350,6 +350,7 @@ tasks.withType(JavaCompile).configureEach {
 
 jar {
     from "LICENSE"
+    from sourceSets.client.output
 }
 
 // configure the maven publication

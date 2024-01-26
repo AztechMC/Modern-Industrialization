@@ -25,12 +25,8 @@ package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import java.util.*;
-
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import net.minecraft.core.registries.BuiltInRegistries;
+import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -204,7 +200,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     void populateResult() {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             RecipeHolder<ForgeHammerRecipe> current = this.availableRecipes.get(getSelectedRecipe());
-            if (current.value().hammerDamage() == 0 || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
+            if (current.value().hammerDamage() == 0
+                    || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
                 this.output.set(current.value().result().copy());
             } else {
                 this.output.set(ItemStack.EMPTY);
@@ -308,7 +305,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     public void moveRecipe(ResourceLocation recipeId, int fillAction, int amount) {
-        var recipeHolder = this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream().filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
+        var recipeHolder = this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream()
+                .filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
         if (recipeHolder == null) {
             return;
         }

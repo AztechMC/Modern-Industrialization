@@ -23,14 +23,12 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapelessRecipeBuilder;
 import java.util.List;
 import java.util.Set;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;

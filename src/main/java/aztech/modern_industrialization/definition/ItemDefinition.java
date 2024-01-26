@@ -26,7 +26,6 @@ package aztech.modern_industrialization.definition;
 import aztech.modern_industrialization.items.SortOrder;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;

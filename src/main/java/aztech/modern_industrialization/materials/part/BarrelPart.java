@@ -78,7 +78,8 @@ public class BarrelPart implements PartKeyProvider {
                                     .withBlockItemConstructor(BarrelItem::new)
                                     .withModel((block, gen) -> {
                                         String name = gen.name(block);
-                                        gen.simpleBlock(block, gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                                        gen.simpleBlock(block,
+                                                gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
                                     })
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
@@ -88,7 +89,7 @@ public class BarrelPart implements PartKeyProvider {
 
                     MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
                         var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
-                        //noinspection unchecked,rawtypes
+                        // noinspection unchecked,rawtypes
                         bet.setValue((BlockEntityType) ret);
                         return ret;
                     });

@@ -41,11 +41,10 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.stream.IntStream;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -295,7 +294,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
             return EmptyFluidHandler.INSTANCE;
         }
     }
-
 
     public FluidVariant getFluid() {
         return fluidStorage.getFluid();

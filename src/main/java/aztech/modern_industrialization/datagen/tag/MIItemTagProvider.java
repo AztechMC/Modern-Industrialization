@@ -53,7 +53,8 @@ import org.jetbrains.annotations.Nullable;
 public class MIItemTagProvider extends ItemTagsProvider {
     private final boolean runtimeDatagen;
 
-    public MIItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper, boolean runtimeDatagen) {
+    public MIItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+            @Nullable ExistingFileHelper existingFileHelper, boolean runtimeDatagen) {
         super(output, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()), MI.ID, existingFileHelper);
         this.runtimeDatagen = runtimeDatagen;
     }

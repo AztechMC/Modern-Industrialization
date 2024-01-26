@@ -40,7 +40,8 @@ import net.neoforged.neoforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworks extends MISavedData {
-    private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()), PipeNetworks::readNbt);
+    private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()),
+            PipeNetworks::readNbt);
     private static final String NAME = "modern_industrialization_pipe_networks";
 
     private final Map<PipeNetworkType, PipeNetworkManager> managers;

@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import java.util.List;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import com.google.common.primitives.Ints;
+import java.util.List;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;

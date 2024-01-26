@@ -32,6 +32,9 @@ import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.util.RenderHelper;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -42,10 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class ClientProxy extends CommonProxy {
     @Override

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

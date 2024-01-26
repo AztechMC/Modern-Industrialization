@@ -25,16 +25,11 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
-import java.util.List;
-
 import com.mojang.serialization.Codec;
-import net.minecraft.core.registries.BuiltInRegistries;
+import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 public record DimensionProcessCondition(ResourceKey<Level> dimension) implements MachineProcessCondition {

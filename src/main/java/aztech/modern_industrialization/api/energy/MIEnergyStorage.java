@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface MIEnergyStorage extends ILongEnergyStorage {

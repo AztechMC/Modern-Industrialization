@@ -24,11 +24,9 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.NbtHelper;
-import java.util.List;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import net.minecraft.nbt.CompoundTag;
+import aztech.modern_industrialization.util.FluidHelper;
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -36,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Helper class for fluid items that can only contain FluidFuels

@@ -24,12 +24,8 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.definition.FluidLike;
-
-import java.util.ArrayList;
-import java.util.Map;
-
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import net.minecraft.Util;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;

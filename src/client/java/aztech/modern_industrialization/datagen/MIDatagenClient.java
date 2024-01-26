@@ -26,11 +26,10 @@ package aztech.modern_industrialization.datagen;
 import aztech.modern_industrialization.datagen.model.MIModelProvider;
 import aztech.modern_industrialization.datagen.texture.MISpriteSourceProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-
-import java.util.concurrent.CompletableFuture;
 
 public class MIDatagenClient {
     public static void configure(

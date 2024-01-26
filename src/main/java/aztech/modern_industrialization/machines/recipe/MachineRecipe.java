@@ -25,23 +25,20 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
@@ -197,7 +194,7 @@ public class MachineRecipe implements Recipe<Container> {
                         INGREDIENT_CODEC.forGetter(itemInput -> itemInput.ingredient),
                         AMOUNT_CODEC.forGetter(itemInput -> itemInput.amount),
                         ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemInput -> itemInput.probability))
-                .apply(g, ItemInput::new));
+                        .apply(g, ItemInput::new));
 
         public final Ingredient ingredient;
         public final int amount;
@@ -224,7 +221,7 @@ public class MachineRecipe implements Recipe<Container> {
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidInput -> fluidInput.fluid),
                         MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(fluidInput -> fluidInput.amount),
                         ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidInput -> fluidInput.probability))
-                .apply(g, FluidInput::new));
+                        .apply(g, FluidInput::new));
 
         public final Fluid fluid;
         public final long amount;
@@ -243,7 +240,7 @@ public class MachineRecipe implements Recipe<Container> {
                         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(itemOutput -> itemOutput.item),
                         MIExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(itemOutput -> itemOutput.amount),
                         ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemOutput -> itemOutput.probability))
-                .apply(g, ItemOutput::new));
+                        .apply(g, ItemOutput::new));
 
         public final Item item;
         public final int amount;
@@ -264,9 +261,10 @@ public class MachineRecipe implements Recipe<Container> {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
-                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(fluidOutput -> fluidOutput.amount),
+                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
+                                .forGetter(fluidOutput -> fluidOutput.amount),
                         ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
-                .apply(g, FluidOutput::new));
+                        .apply(g, FluidOutput::new));
 
         public final Fluid fluid;
         public final long amount;

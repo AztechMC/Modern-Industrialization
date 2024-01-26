@@ -25,17 +25,15 @@ package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.ContainerItem;
-import java.util.List;
-import java.util.function.Consumer;
-
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import java.util.List;
+import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> extends BlockItem implements ContainerItem<T> {
 

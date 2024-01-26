@@ -25,18 +25,13 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
-import java.util.List;
-import java.util.Optional;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ExtraCodecs;
-import org.jetbrains.annotations.ApiStatus;
 
 public interface MachineProcessCondition {
     private static Codec<MachineProcessCondition> makeCodec(boolean syncToClient) {

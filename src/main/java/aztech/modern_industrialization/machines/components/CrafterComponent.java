@@ -39,6 +39,8 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -47,8 +49,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -217,7 +217,8 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null && (usedEnergy > 0 || recipeStarted) && isEnabled) {
             recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
-            eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT) : 0;
+            eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT)
+                    : 0;
             isActive = eu > 0;
             usedEnergy += eu;
 

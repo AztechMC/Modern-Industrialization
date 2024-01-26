@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
@@ -35,15 +36,12 @@ import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -211,12 +209,16 @@ public class SteamDrillItem
                 Pair<BlockPos, BlockPos> area = getArea(pos, facing);
                 List<ItemStack> totalDrops = new ArrayList<>();
                 BlockPos.betweenClosed(area.getFirst(), area.getSecond()).forEach(blockPos -> {
-                    if (world.getBlockEntity(blockPos) == null && world instanceof ServerLevel && miner instanceof ServerPlayer && !world.isEmptyBlock(blockPos)) {
+                    if (world.getBlockEntity(blockPos) == null && world instanceof ServerLevel && miner instanceof ServerPlayer
+                            && !world.isEmptyBlock(blockPos)) {
                         BlockState tempState = world.getBlockState(blockPos);
                         Block block = tempState.getBlock();
-                        if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL)) return;
-                        if (tempState.getDestroySpeed(world, blockPos) < 0) return;
-                        int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner, blockPos);
+                        if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
+                            return;
+                        if (tempState.getDestroySpeed(world, blockPos) < 0)
+                            return;
+                        int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+                                blockPos);
                         if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                             block.destroy(world, blockPos, tempState);
                             Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
@@ -239,7 +241,10 @@ public class SteamDrillItem
                 totalDrops.forEach(itemStack -> {
                     Block.popResource(world, miner.blockPosition(), itemStack);
                 });
-                world.getEntitiesOfClass(ExperienceOrb.class, new AABB(Vec3.atLowerCornerOf(area.getFirst()), Vec3.atLowerCornerOf(area.getSecond())).inflate(1)).forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(), miner.blockPosition().getZ()));
+                world.getEntitiesOfClass(ExperienceOrb.class,
+                        new AABB(Vec3.atLowerCornerOf(area.getFirst()), Vec3.atLowerCornerOf(area.getSecond())).inflate(1))
+                        .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
+                                miner.blockPosition().getZ()));
             }
         }
 

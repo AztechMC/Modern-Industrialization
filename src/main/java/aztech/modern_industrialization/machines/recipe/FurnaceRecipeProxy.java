@@ -23,12 +23,10 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import java.util.*;
-
 import aztech.modern_industrialization.MI;
+import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 
 public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {

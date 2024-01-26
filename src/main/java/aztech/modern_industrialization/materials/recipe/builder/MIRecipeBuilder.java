@@ -26,11 +26,11 @@ package aztech.modern_industrialization.materials.recipe.builder;
 import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
-import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 

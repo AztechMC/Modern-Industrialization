@@ -27,8 +27,6 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity> {
     private final int lockIconColor;

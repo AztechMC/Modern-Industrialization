@@ -1,21 +1,30 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ * MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2020 Azercoco & Technici4n
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package aztech.modern_industrialization.util;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -25,8 +34,6 @@ import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-
-import java.util.Arrays;
 
 public class ModelHelper {
     public static final @Nullable Direction[] DIRECTIONS_WITH_NULL = Arrays.copyOf(Direction.values(), 7);
@@ -63,41 +70,41 @@ public class ModelHelper {
 
     public static void square(Vector3f[] out, Direction nominalFace, float left, float bottom, float right, float top, float depth) {
         switch (nominalFace) {
-            case UP:
-                depth = 1 - depth;
-                top = 1 - top;
-                bottom = 1 - bottom;
+        case UP:
+            depth = 1 - depth;
+            top = 1 - top;
+            bottom = 1 - bottom;
 
-            case DOWN:
-                out[0].set(left, depth, top);
-                out[1].set(left, depth, bottom);
-                out[2].set(right, depth, bottom);
-                out[3].set(right, depth, top);
-                break;
+        case DOWN:
+            out[0].set(left, depth, top);
+            out[1].set(left, depth, bottom);
+            out[2].set(right, depth, bottom);
+            out[3].set(right, depth, top);
+            break;
 
-            case EAST:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
+        case EAST:
+            depth = 1 - depth;
+            left = 1 - left;
+            right = 1 - right;
 
-            case WEST:
-                out[0].set(depth, top, left);
-                out[1].set(depth, bottom, left);
-                out[2].set(depth, bottom, right);
-                out[3].set(depth, top, right);
-                break;
+        case WEST:
+            out[0].set(depth, top, left);
+            out[1].set(depth, bottom, left);
+            out[2].set(depth, bottom, right);
+            out[3].set(depth, top, right);
+            break;
 
-            case SOUTH:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
+        case SOUTH:
+            depth = 1 - depth;
+            left = 1 - left;
+            right = 1 - right;
 
-            case NORTH:
-                out[0].set(1 - left, top, depth);
-                out[1].set(1 - left, bottom, depth);
-                out[2].set(1 - right, bottom, depth);
-                out[3].set(1 - right, top, depth);
-                break;
+        case NORTH:
+            out[0].set(1 - left, top, depth);
+            out[1].set(1 - left, bottom, depth);
+            out[2].set(1 - right, bottom, depth);
+            out[3].set(1 - right, top, depth);
+            break;
         }
     }
 
@@ -110,15 +117,14 @@ public class ModelHelper {
         return uvs;
     }
 
-
     private static Vector2f lockUvs(Vector3f pos, Direction face) {
         return switch (face) {
-            case EAST -> new Vector2f(1 - pos.z(), 1 - pos.y());
-            case WEST -> new Vector2f(pos.z(), 1 - pos.y());
-            case NORTH -> new Vector2f(1 - pos.x(), 1 - pos.y());
-            case SOUTH -> new Vector2f(pos.x(), 1 - pos.y());
-            case DOWN -> new Vector2f(pos.x(), 1 - pos.z());
-            case UP -> new Vector2f(pos.x(), pos.z());
+        case EAST -> new Vector2f(1 - pos.z(), 1 - pos.y());
+        case WEST -> new Vector2f(pos.z(), 1 - pos.y());
+        case NORTH -> new Vector2f(1 - pos.x(), 1 - pos.y());
+        case SOUTH -> new Vector2f(pos.x(), 1 - pos.y());
+        case DOWN -> new Vector2f(pos.x(), 1 - pos.z());
+        case UP -> new Vector2f(pos.x(), pos.z());
         };
     }
 
@@ -137,15 +143,14 @@ public class ModelHelper {
         }
     }
 
-
-
     /**
      * The vanilla model transformation logic is closely coupled with model deserialization.
      * That does little good for modded model loaders and procedurally generated models.
      * This convenient construction method applies the same scaling factors used for vanilla models.
      * This means you can use values from a vanilla JSON file as inputs to this method.
      */
-    private static ItemTransform makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
+    private static ItemTransform makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY,
+            float translationZ, float scaleX, float scaleY, float scaleZ) {
         Vector3f translation = new Vector3f(translationX, translationY, translationZ);
         translation.mul(0.0625f);
         translation.set(Mth.clamp(translation.x, -5.0F, 5.0F), Mth.clamp(translation.y, -5.0F, 5.0F), Mth.clamp(translation.z, -5.0F, 5.0F));
@@ -163,5 +168,7 @@ public class ModelHelper {
      * Mimics the vanilla model transformation used for most vanilla blocks,
      * and should be suitable for most custom block-like models.
      */
-    public static final ItemTransforms MODEL_TRANSFORM_BLOCK = new ItemTransforms(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, ItemTransform.NO_TRANSFORM, TRANSFORM_BLOCK_GUI, TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED, ImmutableMap.of());
+    public static final ItemTransforms MODEL_TRANSFORM_BLOCK = new ItemTransforms(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
+            TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, ItemTransform.NO_TRANSFORM, TRANSFORM_BLOCK_GUI,
+            TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED, ImmutableMap.of());
 }

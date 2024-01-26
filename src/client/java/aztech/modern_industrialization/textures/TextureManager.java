@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;

@@ -31,8 +31,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.function.Supplier;
-
 public class MIBucketItem extends BucketItem {
 
     public final int color;

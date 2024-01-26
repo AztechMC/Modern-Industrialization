@@ -27,16 +27,14 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import java.util.List;
-
 import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
+import java.util.List;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -45,7 +43,8 @@ import org.jetbrains.annotations.NotNull;
 class MachineSlotLockingHandler implements TransferHandler {
     @Override
     public @NotNull Result handle(@NotNull Context context) {
-        if (!(context.getDisplay() instanceof ViewerCategoryRei.ViewerDisplay<?>d && d.recipe instanceof RecipeHolder<?> holder && holder.value() instanceof MachineRecipe recipe))
+        if (!(context.getDisplay() instanceof ViewerCategoryRei.ViewerDisplay<?>d && d.recipe instanceof RecipeHolder<?>holder
+                && holder.value() instanceof MachineRecipe recipe))
             return Result.createNotApplicable();
         if (!(context.getMenu() instanceof MachineMenuClient handler))
             return Result.createNotApplicable();

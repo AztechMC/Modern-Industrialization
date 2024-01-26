@@ -26,12 +26,10 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -43,7 +41,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -58,7 +55,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
 
 public class JetpackItem extends ArmorItem implements ActivatableChestItem {
     public static final int CAPACITY = 8 * FluidType.BUCKET_VOLUME;
@@ -165,7 +161,8 @@ public class JetpackItem extends ArmorItem implements ActivatableChestItem {
                         }
                     }
                     if (player instanceof ServerPlayer serverPlayer) {
-                        ObfuscationReflectionHelper.setPrivateValue(ServerGamePacketListenerImpl.class, serverPlayer.connection, 0, "aboveGroundTickCount");
+                        ObfuscationReflectionHelper.setPrivateValue(ServerGamePacketListenerImpl.class, serverPlayer.connection, 0,
+                                "aboveGroundTickCount");
                     }
                 }
             }

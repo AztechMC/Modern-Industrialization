@@ -24,9 +24,6 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
-import java.util.HashMap;
-import java.util.Map;
-
 import aztech.modern_industrialization.machines.guicomponents.AutoExtractClient;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
@@ -39,6 +36,8 @@ import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClie
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelectionClient;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanelClient;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBarClient;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponentsClient {

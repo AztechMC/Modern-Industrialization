@@ -59,7 +59,8 @@ public class MIAEAddon {
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
             p -> new PartItem<>(new Item.Properties(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {},
+            (item, gen) -> {
+            },
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 

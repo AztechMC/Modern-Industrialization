@@ -23,13 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import java.util.List;
-import java.util.Set;
-
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import com.google.common.primitives.Ints;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

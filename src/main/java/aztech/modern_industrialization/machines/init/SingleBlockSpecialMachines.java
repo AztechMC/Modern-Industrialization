@@ -30,7 +30,6 @@ import aztech.modern_industrialization.machines.blockentities.*;
 import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

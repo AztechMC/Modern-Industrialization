@@ -23,11 +23,10 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import java.util.Objects;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class MachineModelClientData {
     public static final ModelProperty<MachineModelClientData> KEY = new ModelProperty<>();
@@ -66,10 +65,13 @@ public class MachineModelClientData {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         MachineModelClientData that = (MachineModelClientData) o;
-        return isActive == that.isActive && itemAutoExtract == that.itemAutoExtract && fluidAutoExtract == that.fluidAutoExtract && Objects.equals(casing, that.casing) && frontDirection == that.frontDirection && outputDirection == that.outputDirection;
+        return isActive == that.isActive && itemAutoExtract == that.itemAutoExtract && fluidAutoExtract == that.fluidAutoExtract
+                && Objects.equals(casing, that.casing) && frontDirection == that.frontDirection && outputDirection == that.outputDirection;
     }
 
     @Override

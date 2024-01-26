@@ -24,17 +24,13 @@
 package aztech.modern_industrialization.datagen.loot;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.BlockDefinition;
-import aztech.modern_industrialization.pipes.MIPipes;
+import java.util.Set;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-
-import java.util.Set;
 
 public class BlockLootTableProvider extends BlockLootSubProvider {
     public BlockLootTableProvider() {

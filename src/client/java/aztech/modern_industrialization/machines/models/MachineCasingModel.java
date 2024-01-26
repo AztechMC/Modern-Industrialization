@@ -23,28 +23,16 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.util.ModelHelper;
 import java.util.*;
 import java.util.function.Function;
-
-import aztech.modern_industrialization.util.ModelHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
-import org.jetbrains.annotations.Nullable;
 
 public class MachineCasingModel {
     public static MachineCasingModel get(MachineCasing casing) {

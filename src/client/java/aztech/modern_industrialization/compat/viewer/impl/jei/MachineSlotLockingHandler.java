@@ -27,10 +27,9 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IRecipeCatalystLookup;
 import mezz.jei.api.recipe.RecipeType;
@@ -39,7 +38,6 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -50,7 +48,8 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
     private final mezz.jei.api.recipe.RecipeType<RecipeHolder<MachineRecipe>> type;
     private final IRecipeTransferHandlerHelper helper;
 
-    public MachineSlotLockingHandler(IRecipeTransferHandlerHelper helper, Supplier<IJeiRuntime> runtimeSupplier, RecipeType<RecipeHolder<MachineRecipe>> type) {
+    public MachineSlotLockingHandler(IRecipeTransferHandlerHelper helper, Supplier<IJeiRuntime> runtimeSupplier,
+            RecipeType<RecipeHolder<MachineRecipe>> type) {
         this.helper = helper;
         this.runtimeSupplier = runtimeSupplier;
         this.type = type;
@@ -80,7 +79,8 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(MachineMenuClient menu, RecipeHolder<MachineRecipe> recipe, IRecipeSlotsView recipeSlots, Player player,
+    public @Nullable IRecipeTransferError transferRecipe(MachineMenuClient menu, RecipeHolder<MachineRecipe> recipe, IRecipeSlotsView recipeSlots,
+            Player player,
             boolean maxTransfer, boolean doTransfer) {
         if (!canApply(menu))
             return helper.createInternalError();

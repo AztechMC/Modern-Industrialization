@@ -25,15 +25,11 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
-import java.util.List;
-
 import com.mojang.serialization.Codec;
+import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.biome.Biome;
 
 public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {

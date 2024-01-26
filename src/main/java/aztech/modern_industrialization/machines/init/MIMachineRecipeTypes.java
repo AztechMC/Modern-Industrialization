@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.CentrifugeMachineRecipeType;
@@ -35,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class MIMachineRecipeTypes {

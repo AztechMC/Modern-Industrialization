@@ -25,10 +25,10 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import java.util.ArrayList;
-import java.util.List;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;

@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
@@ -6,9 +29,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
-import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
-import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
@@ -22,7 +43,6 @@ import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.machines.MachineOverlayClient;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
@@ -31,8 +51,6 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighl
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
-import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
@@ -41,10 +59,13 @@ import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -52,7 +73,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
@@ -64,24 +84,17 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MIClient {
@@ -141,7 +154,8 @@ public class MIClient {
 
         ModLoadingContext.get().registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get()));
+                () -> new ConfigScreenHandler.ConfigScreenFactory(
+                        (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get()));
 
         // Warn if neither JEI nor REI is present!
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
@@ -188,7 +202,8 @@ public class MIClient {
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
-    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<BlockEntityType<U>> bet, BlockEntityRendererProvider<T> renderer) {
+    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<BlockEntityType<U>> bet,
+            BlockEntityRendererProvider<T> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }
 
@@ -224,9 +239,10 @@ public class MIClient {
 
     @SubscribeEvent
     private static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), MI.id("activation_status"), (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-            HudRenderer.onRenderHud(guiGraphics, partialTick);
-        });
+        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), MI.id("activation_status"),
+                (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+                    HudRenderer.onRenderHud(guiGraphics, partialTick);
+                });
     }
 
     @SubscribeEvent

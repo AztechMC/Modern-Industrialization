@@ -23,14 +23,12 @@
  */
 package aztech.modern_industrialization.blocks.storage;
 
-import java.util.List;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -39,7 +37,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.HitResult;
 
 public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
 
@@ -73,7 +70,6 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         return List.of(getStack(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY)));
     }
-
 
     @Override
     public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {

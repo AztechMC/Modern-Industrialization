@@ -25,10 +25,9 @@ package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
+import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import java.util.*;
 import java.util.function.Consumer;
-
-import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.Nullable;
 

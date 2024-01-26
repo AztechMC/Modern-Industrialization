@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.api.pipe.item;
 
-import aztech.modern_industrialization.MIItem;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import net.minecraft.world.item.Item;

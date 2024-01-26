@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.api.machine.component;
 
-import com.google.common.primitives.Ints;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
 
 public interface ItemAccess {

@@ -25,16 +25,12 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
-import java.util.List;
-import java.util.Locale;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
+import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 
@@ -43,7 +39,7 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
             g -> g.group(
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(c -> c.block),
                     StringRepresentable.fromEnum(RelativePosition::values).fieldOf("position").forGetter(c -> c.relativePosition))
-            .apply(g, AdjacentBlockProcessCondition::new));
+                    .apply(g, AdjacentBlockProcessCondition::new));
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {

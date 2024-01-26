@@ -27,12 +27,9 @@ import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
-import java.util.*;
-import java.util.function.Supplier;
-
 import aztech.modern_industrialization.thirdparty.fabricrendering.ModelHelper;
 import aztech.modern_industrialization.thirdparty.fabricrendering.SpriteFinder;
-import net.minecraft.client.Minecraft;
+import java.util.*;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -43,7 +40,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +47,6 @@ import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -103,7 +98,8 @@ public class PipeBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data,
+            @Nullable RenderType renderType) {
         List<BakedQuad> ret = null;
         var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
         var extraData = data.get(ExtraData.KEY);
@@ -279,7 +275,8 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
             return List.of(new PipeBakedModel(particleSprite, renderers, meWireConnectors, spriteFinder) {
                 @Override
-                public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+                public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data,
+                        @Nullable RenderType renderType) {
                     if (side != null) {
                         return List.of();
                     }

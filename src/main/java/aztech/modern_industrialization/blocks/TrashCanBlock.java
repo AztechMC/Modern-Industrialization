@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.MICapabilities;
-
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;

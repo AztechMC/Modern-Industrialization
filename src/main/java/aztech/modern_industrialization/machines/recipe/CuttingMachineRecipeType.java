@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machines.recipe;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
 public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {

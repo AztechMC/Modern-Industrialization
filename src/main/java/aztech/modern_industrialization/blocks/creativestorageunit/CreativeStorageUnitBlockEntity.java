@@ -49,7 +49,8 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
             for (Direction direction : Direction.values()) {
                 if (caches[direction.ordinal()] == null) {
-                    caches[direction.ordinal()] = BlockCapabilityCache.create(EnergyApi.SIDED, serverWorld, worldPosition.relative(direction), direction.getOpposite());
+                    caches[direction.ordinal()] = BlockCapabilityCache.create(EnergyApi.SIDED, serverWorld, worldPosition.relative(direction),
+                            direction.getOpposite());
                 }
 
                 var target = caches[direction.ordinal()].getCapability();

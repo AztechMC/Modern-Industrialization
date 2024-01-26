@@ -23,9 +23,8 @@
  */
 package aztech.modern_industrialization.compat.ftbquests;
 
-import java.util.UUID;
-
 import aztech.modern_industrialization.MIConfig;
+import java.util.UUID;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
 

@@ -26,7 +26,6 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.network.machines.UpdateFluidSlotPacket;
 import aztech.modern_industrialization.network.machines.UpdateItemSlotPacket;
 import aztech.modern_industrialization.util.Simulation;
-
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;

@@ -24,12 +24,10 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import aztech.modern_industrialization.network.machines.MachineComponentSyncPacket;
 import io.netty.buffer.Unpooled;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

@@ -25,11 +25,10 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.TransferHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import aztech.modern_industrialization.util.TransferHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -91,7 +90,8 @@ public final class MIInventory implements IComponent {
         boolean updateCache = outputCache == null || outputCache.context() != direction.getOpposite();
 
         if (updateCache) {
-            outputCache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, (ServerLevel) world, pos.relative(direction), direction.getOpposite());
+            outputCache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, (ServerLevel) world, pos.relative(direction),
+                    direction.getOpposite());
         }
 
         var target = outputCache.getCapability();

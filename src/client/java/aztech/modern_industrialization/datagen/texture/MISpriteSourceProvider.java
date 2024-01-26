@@ -23,9 +23,8 @@
  */
 package aztech.modern_industrialization.datagen.texture;
 
-import java.util.concurrent.CompletableFuture;
-
 import aztech.modern_industrialization.MI;
+import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

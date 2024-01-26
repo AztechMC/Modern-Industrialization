@@ -23,17 +23,7 @@
  */
 package aztech.modern_industrialization.materials.recipe.builder;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.level.ItemLike;
 
 public interface MaterialRecipeBuilder {
     String getRecipeId();

@@ -33,13 +33,10 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.IOFluidHandler;
 import aztech.modern_industrialization.util.NbtHelper;
-import com.google.common.base.MoreObjects;
 import java.util.*;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -48,7 +45,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -93,7 +89,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     private IFluidHandler getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
         if (connection.cache == null) {
-            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction), connection.direction.getOpposite());
+            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
+                    connection.direction.getOpposite());
         }
         var storage = connection.cache.getCapability();
         return Objects.requireNonNullElse(storage, EmptyFluidHandler.INSTANCE);

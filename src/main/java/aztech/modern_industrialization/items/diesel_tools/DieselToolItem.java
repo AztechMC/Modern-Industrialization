@@ -29,16 +29,13 @@ import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -66,7 +63,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.TierSortingRegistry;
-import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class DieselToolItem extends Item implements Vanishable, DynamicToolItem {
@@ -99,7 +95,8 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (isSupportedBlock(stack, state) && FluidFuelItemHelper.getAmount(stack) > 0 && TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state)) {
+        if (isSupportedBlock(stack, state) && FluidFuelItemHelper.getAmount(stack) > 0
+                && TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state)) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);

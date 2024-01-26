@@ -23,10 +23,9 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.pipes.impl.PipeRenderContext;
 import java.util.Collection;
 import java.util.function.Function;
-
-import aztech.modern_industrialization.pipes.impl.PipeRenderContext;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;

@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 /**

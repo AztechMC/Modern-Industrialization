@@ -25,10 +25,6 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 

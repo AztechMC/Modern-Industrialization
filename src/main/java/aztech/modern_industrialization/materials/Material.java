@@ -27,11 +27,10 @@ import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKey;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
-import net.minecraft.data.recipes.RecipeOutput;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 /**
  * A read-only material. Build with {@link MaterialBuilder}.

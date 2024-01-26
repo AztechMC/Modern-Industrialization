@@ -30,7 +30,6 @@ import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
-import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -163,7 +162,8 @@ public class PartTemplate implements PartKeyProvider {
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
                             .withModel((block, gen) -> {
                                 String name = gen.name(block);
-                                gen.simpleBlockWithItem(block, gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                                gen.simpleBlockWithItem(block,
+                                        gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
                             })
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)

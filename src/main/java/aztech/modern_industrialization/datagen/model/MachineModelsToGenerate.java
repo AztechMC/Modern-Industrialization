@@ -25,16 +25,14 @@ package aztech.modern_industrialization.datagen.model;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import com.google.gson.JsonObject;
-import net.minecraft.world.level.block.Block;
-
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class MachineModelsToGenerate {
     static final Map<String, MachineModelProperties> props = new HashMap<>();
 
-    public static void register(String machine, MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side, boolean active) {
+    public static void register(String machine, MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side,
+            boolean active) {
         props.put(machine, new MachineModelProperties(defaultCasing, overlay, front, top, side, active));
     }
 

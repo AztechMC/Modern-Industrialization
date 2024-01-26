@@ -26,7 +26,6 @@ package aztech.modern_industrialization.definition;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.fluid.MIBucketItem;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.fluid.MIFluidBlock;
@@ -38,8 +37,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
-
-import java.util.function.Supplier;
 
 public class FluidDefinition extends Definition implements FluidLike {
 
@@ -71,13 +68,13 @@ public class FluidDefinition extends Definition implements FluidLike {
                 id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
         fluidType = MIFluids.FLUID_TYPES.register(id,
                 () -> {
-            var props = FluidType.Properties.create()
-                    .descriptionId(fluidBlock.get().getDescriptionId());
-            if (isGas) {
-                props.density(-1000); // Make it lighter than air!
-            }
-            return new MIFluidType(fluidBlock, props);
-        });
+                    var props = FluidType.Properties.create()
+                            .descriptionId(fluidBlock.get().getDescriptionId());
+                    if (isGas) {
+                        props.density(-1000); // Make it lighter than air!
+                    }
+                    return new MIFluidType(fluidBlock, props);
+                });
 
         this.fluidTexture = texture;
         this.opacity = opacity;

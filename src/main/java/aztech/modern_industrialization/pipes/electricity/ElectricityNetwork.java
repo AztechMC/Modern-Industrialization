@@ -29,8 +29,6 @@ import aztech.modern_industrialization.pipes.PipeStatsCollector;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import java.util.*;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import net.minecraft.server.level.ServerLevel;
 
 public class ElectricityNetwork extends PipeNetwork {
@@ -70,7 +68,7 @@ public class ElectricityNetwork extends PipeNetwork {
         long inserted = transferForTargets(MIEnergyStorage::receive, storages, insertMaxAmount);
         networkAmount -= inserted;
 
-            stats.addValue(Math.max(extracted, inserted));
+        stats.addValue(Math.max(extracted, inserted));
 
         // Split energy evenly across the nodes
         for (var entry : iterateTickingNodes()) {

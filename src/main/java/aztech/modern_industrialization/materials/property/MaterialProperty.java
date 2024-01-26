@@ -26,12 +26,11 @@ package aztech.modern_industrialization.materials.property;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.set.MaterialSet;
+import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import org.jetbrains.annotations.Nullable;
 
 /**

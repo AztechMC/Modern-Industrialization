@@ -29,8 +29,8 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.p2p.CapabilityP2PTunnelPart;
 import aztech.modern_industrialization.api.energy.*;
-import java.util.List;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
+import java.util.List;
 
 public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnelPart, MIEnergyStorage> {
 

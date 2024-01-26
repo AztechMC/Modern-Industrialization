@@ -25,19 +25,17 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIRegistries;
-import aztech.modern_industrialization.MIVillager;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.PoiTypeTagsProvider;
 import net.minecraft.tags.PoiTypeTags;
-import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class MIPoiTypeTagProvider extends PoiTypeTagsProvider {
-    public MIPoiTypeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    public MIPoiTypeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+            @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, MI.ID, existingFileHelper);
     }
 

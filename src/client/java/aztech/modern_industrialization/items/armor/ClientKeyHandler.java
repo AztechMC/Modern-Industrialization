@@ -39,7 +39,8 @@ import org.lwjgl.glfw.GLFW;
  */
 public class ClientKeyHandler {
     private static boolean up = false;
-    public static KeyMapping keyActivate = new KeyMapping("key.modern_industrialization.activate", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization");
+    public static KeyMapping keyActivate = new KeyMapping("key.modern_industrialization.activate", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization");
 
     public static void onEndTick(Minecraft client) {
         updateState(client);

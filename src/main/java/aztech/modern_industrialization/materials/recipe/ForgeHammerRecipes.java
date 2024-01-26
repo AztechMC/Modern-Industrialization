@@ -24,13 +24,10 @@
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
-import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.ForgeHammerRecipeBuilder;
-import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import net.minecraft.world.item.ItemStack;
 
 /**

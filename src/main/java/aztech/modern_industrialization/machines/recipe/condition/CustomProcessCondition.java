@@ -25,24 +25,16 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import java.util.ArrayList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-
-import javax.swing.text.html.Option;
 
 public class CustomProcessCondition implements MachineProcessCondition {
     static final Map<String, Definition> definitions = new HashMap<>();
@@ -76,8 +68,9 @@ public class CustomProcessCondition implements MachineProcessCondition {
         return RecordCodecBuilder.create(
                 g -> g
                         .group(
-                            Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
-                            ComponentSerialization.CODEC.listOf().optionalFieldOf("description").forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
+                                Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
+                                ComponentSerialization.CODEC.listOf().optionalFieldOf("description")
+                                        .forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
                         .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
     }
 

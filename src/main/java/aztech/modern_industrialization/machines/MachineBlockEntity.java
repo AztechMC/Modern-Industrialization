@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -67,7 +66,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -284,13 +282,15 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public static void registerItemApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet, (be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage.itemHandler);
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
+                    (be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage.itemHandler);
         });
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage.fluidHandler);
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
+                    (be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage.fluidHandler);
         });
     }
 

@@ -23,14 +23,13 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import aztech.modern_industrialization.util.ModelHelper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -132,7 +131,8 @@ public class MachineBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
+            @NotNull ModelData extraData, @Nullable RenderType renderType) {
         var data = extraData.get(MachineModelClientData.KEY);
         if (data == null) {
             data = defaultData;

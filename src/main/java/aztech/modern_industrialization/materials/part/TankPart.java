@@ -27,7 +27,6 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MICapabilities;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
@@ -38,22 +37,13 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.ModelTemplate;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
+import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
@@ -107,7 +97,7 @@ public class TankPart implements PartKeyProvider {
 
                     MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
                         var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
-                        //noinspection unchecked,rawtypes
+                        // noinspection unchecked,rawtypes
                         bet.setValue((BlockEntityType) ret);
                         return ret;
                     });

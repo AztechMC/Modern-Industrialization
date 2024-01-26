@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;

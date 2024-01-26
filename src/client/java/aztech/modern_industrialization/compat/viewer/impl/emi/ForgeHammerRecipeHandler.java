@@ -72,9 +72,9 @@ class ForgeHammerRecipeHandler implements EmiRecipeHandler<ForgeHammerScreenHand
                 screen.getMenu().containerId,
                 recipe.getId(),
                 switch (action) {
-                    case FILL -> 0;
-                    case CURSOR -> 1;
-                    case QUICK_MOVE -> 2;
+                case FILL -> 0;
+                case CURSOR -> 1;
+                case QUICK_MOVE -> 2;
                 },
                 amount).sendToServer();
 

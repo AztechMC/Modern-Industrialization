@@ -23,21 +23,16 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.function.Consumer;
-
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;

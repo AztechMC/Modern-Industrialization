@@ -23,22 +23,16 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
-import aztech.modern_industrialization.machines.recipe.condition.MachineProcessConditions;
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapDecoder;
-import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -50,8 +44,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
@@ -72,13 +64,13 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         this.id = id;
         var baseCodec = MachineRecipe.codec(this);
         this.codec = MapCodec.of(baseCodec, baseCodec.flatMap(machineRecipe -> {
-                    try {
-                        validateRecipe(machineRecipe);
-                        return DataResult.success(machineRecipe);
-                    } catch (IllegalArgumentException e) {
-                        return DataResult.error(() -> "Failed to read machine recipe:" + e.getMessage());
-                    }
-                }), () -> "MachineRecipe[" + baseCodec + "]").codec();
+            try {
+                validateRecipe(machineRecipe);
+                return DataResult.success(machineRecipe);
+            } catch (IllegalArgumentException e) {
+                return DataResult.error(() -> "Failed to read machine recipe:" + e.getMessage());
+            }
+        }), () -> "MachineRecipe[" + baseCodec + "]").codec();
     }
 
     /**

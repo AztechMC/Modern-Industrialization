@@ -23,24 +23,16 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
-
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MIMaterials;
-import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.recipe.json.IMIRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import com.google.common.base.Preconditions;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;

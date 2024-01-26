@@ -23,18 +23,17 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
+
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.Tags;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.Tags;
 
 public class MIParts {
 

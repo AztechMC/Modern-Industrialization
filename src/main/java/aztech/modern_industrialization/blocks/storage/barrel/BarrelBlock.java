@@ -25,13 +25,9 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.items.ContainerItem;
-import aztech.modern_industrialization.proxy.CommonProxy;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import com.google.common.primitives.Ints;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -47,8 +43,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.items.wrapper.ForwardingItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
 

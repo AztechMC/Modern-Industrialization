@@ -56,7 +56,8 @@ public class RecipeConversions {
         return new RecipeHolder<>(id, recipe);
     }
 
-    public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
+    public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type,
+            RegistryAccess registryAccess) {
         ResourceLocation id = new ResourceLocation(holder.id().getNamespace(),
                 holder.id().getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();

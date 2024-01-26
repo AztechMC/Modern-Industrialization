@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization;
 
+import static net.minecraft.world.level.material.MapColor.STONE;
+
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
@@ -38,17 +40,13 @@ import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
-
+import aztech.modern_industrialization.materials.part.TankPart;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import aztech.modern_industrialization.materials.part.TankPart;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -66,8 +64,6 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
-
-import static net.minecraft.world.level.material.MapColor.STONE;
 
 @SuppressWarnings("unused")
 public class MIBlock {

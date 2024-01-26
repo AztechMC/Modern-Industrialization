@@ -33,7 +33,6 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
-
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
@@ -196,7 +195,8 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world, entry.getPos().relative(connection.direction), connection.direction.getOpposite());
+                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world,
+                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
                     }
                     var target = connection.cache.getCapability();
                     if (target != null && target.getSlots() > 0) {

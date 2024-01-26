@@ -31,9 +31,9 @@ import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.FluidState;
@@ -86,7 +86,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
                 if (pumpingTicks == OPERATION_TICKS) {
                     waterStack.setKey(FluidVariant.of(Fluids.WATER));
-                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * FluidType.BUCKET_VOLUME / 8, waterStack.getRemainingSpace()));
+                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * FluidType.BUCKET_VOLUME / 8,
+                            waterStack.getRemainingSpace()));
                     pumpingTicks = 0;
                 }
             }

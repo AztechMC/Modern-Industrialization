@@ -23,11 +23,9 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.world;
 
-import java.util.Set;
-
 import aztech.modern_industrialization.proxy.CommonProxy;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;

@@ -24,17 +24,10 @@
 package aztech.modern_industrialization.datagen.model;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.definition.BlockDefinition;
-import aztech.modern_industrialization.definition.FluidDefinition;
-import aztech.modern_industrialization.definition.ItemDefinition;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;

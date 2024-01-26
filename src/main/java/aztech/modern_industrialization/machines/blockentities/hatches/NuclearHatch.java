@@ -38,14 +38,13 @@ import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.nuclear.*;
-import com.google.common.base.Preconditions;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import com.google.common.base.Preconditions;
+import java.util.*;
+import java.util.stream.Collectors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -275,7 +274,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
             // Divide by 81 because the reactor was balanced back when the base fluid unit was 1/81000, but now it's 1/1000.
             // TODO NEO: maybe reconsider this?
-            double fluidConsumption = neutron * component.getNeutronProductProbability() * 1/81.0;
+            double fluidConsumption = neutron * component.getNeutronProductProbability() * 1 / 81.0;
             int actualRecipe = randIntFromDouble(fluidConsumption, this.getLevel().getRandom());
 
             if (simul) {
@@ -347,13 +346,15 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     public static void registerItemApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet, (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage.itemHandler : null);
+            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
+                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage.itemHandler : null);
         });
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage.fluidHandler : null);
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
+                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage.fluidHandler : null);
         });
     }
 

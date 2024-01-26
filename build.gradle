@@ -437,7 +437,7 @@ if (version.toLowerCase().contains("alpha")) {
 }
 
 // Publishing
-if (System.getenv().get("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
+if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
     curseforge {
         apiKey = System.getenv().get("CURSEFORGE_API_KEY")
         project {

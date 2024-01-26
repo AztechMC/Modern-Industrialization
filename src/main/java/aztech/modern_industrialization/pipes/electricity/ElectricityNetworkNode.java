@@ -33,30 +33,29 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockApiCache<MIEnergyStorage, @NotNull Direction>> caches = new ArrayList<>();
+    private final List<BlockCapabilityCache<MIEnergyStorage, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(ServerLevel world, BlockPos pos, CableTier cableTier, List<MIEnergyStorage> storages) {
         if (caches.size() != connections.size()) {
             caches.clear();
             for (Direction direction : connections) {
-                caches.add(BlockApiCache.create(EnergyApi.SIDED, world, pos.relative(direction)));
+                caches.add(BlockCapabilityCache.create(EnergyApi.SIDED, world, pos.relative(direction), direction.getOpposite()));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {
-            Direction targetDir = connections.get(i).getOpposite();
-            MIEnergyStorage storage = caches.get(i).find(targetDir);
+            MIEnergyStorage storage = caches.get(i).getCapability();
             if (storage == null || !storage.canConnect(cableTier)) {
                 continue;
             }
@@ -141,8 +140,8 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
-        var storage = EnergyApi.SIDED.find(world, pos.relative(direction), direction.getOpposite());
-        return storage != null && (storage.supportsInsertion() || storage.supportsExtraction());
+        var storage = world.getCapability(EnergyApi.SIDED, pos.relative(direction), direction.getOpposite());
+        return storage != null && (storage.canReceive() || storage.canExtract());
     }
 
     // Used in the Waila plugin

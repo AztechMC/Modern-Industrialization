@@ -38,11 +38,11 @@ public record RawMetalPart(boolean isBlock) implements PartKeyProvider {
         if (isBlock) {
             return part
                     .asBlock(SortOrder.RAW_ORE_BLOCKS, new TextureGenParams.RawMetal(true, set), 5, 6, 1)
-                    .withCustomPath("raw_%s_block", "raw_%s_blocks");
+                    .withCustomPath("raw_%s_block", "storage_blocks/raw_%s");
         } else {
             return part
                     .withTexture(new TextureGenParams.RawMetal(false, set))
-                    .withCustomPath("raw_%s", "raw_%s_ores");
+                    .withCustomPath("raw_%s", "raw_materials/%s");
         }
     }
 

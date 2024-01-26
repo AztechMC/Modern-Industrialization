@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/superconductor_ev_transformer"
+      "model": "modern_industrialization:block/superconductor_ev_transformer"
     }
   }
 }

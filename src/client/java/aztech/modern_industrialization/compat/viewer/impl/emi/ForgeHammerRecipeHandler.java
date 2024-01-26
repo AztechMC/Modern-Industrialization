@@ -25,14 +25,12 @@ package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.compat.viewer.usage.ForgeHammerCategory;
-import aztech.modern_industrialization.machines.MachinePackets;
+import aztech.modern_industrialization.network.machines.ForgeHammerMoveRecipePacket;
 import dev.emi.emi.api.EmiFillAction;
 import dev.emi.emi.api.EmiRecipeHandler;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
@@ -70,16 +68,15 @@ class ForgeHammerRecipeHandler implements EmiRecipeHandler<ForgeHammerScreenHand
 
     @Override
     public boolean performFill(EmiRecipe recipe, AbstractContainerScreen<ForgeHammerScreenHandler> screen, EmiFillAction action, int amount) {
-        var buf = PacketByteBufs.create();
-        buf.writeInt(screen.getMenu().containerId);
-        buf.writeResourceLocation(recipe.getId());
-        buf.writeByte(switch (action) {
-        case FILL -> 0;
-        case CURSOR -> 1;
-        case QUICK_MOVE -> 2;
-        });
-        buf.writeInt(amount);
-        ClientPlayNetworking.send(MachinePackets.C2S.FORGE_HAMMER_MOVE_RECIPE, buf);
+        new ForgeHammerMoveRecipePacket(
+                screen.getMenu().containerId,
+                recipe.getId(),
+                switch (action) {
+                case FILL -> 0;
+                case CURSOR -> 1;
+                case QUICK_MOVE -> 2;
+                },
+                amount).sendToServer();
 
         Minecraft.getInstance().setScreen(screen);
 

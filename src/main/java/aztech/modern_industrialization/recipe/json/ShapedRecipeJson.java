@@ -23,57 +23,40 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson extends RecipeJson {
+public class ShapedRecipeJson implements IMIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
-    public final Map<Character, ItemInput> key = new HashMap<>();
-    public final Result result;
-
-    public static class ItemInput {
-        public final String item;
-        public final String tag;
-
-        private ItemInput(String item, String tag) {
-            this.item = item;
-            this.tag = tag;
-        }
-
-        public static ItemInput withItem(String item) {
-            return new ItemInput(item, null);
-        }
-
-        public static ItemInput withTag(String tag) {
-            return new ItemInput(null, tag);
-        }
-    }
-
-    public static class Result {
-        public final String item;
-        public int count;
-
-        public Result(String item, int count) {
-            this.item = item;
-            this.count = count;
-        }
-    }
+    public final Map<Character, Ingredient> key = new HashMap<>();
+    public final ItemStack result;
 
     public ShapedRecipeJson(String resultItem, int count, String... pattern) {
         this.pattern = pattern;
-        this.result = new Result(resultItem, count);
+        this.result = new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(resultItem)), count);
     }
 
     public ShapedRecipeJson addInput(char key, String maybeTag) {
-        ItemInput input;
+        Ingredient input;
         if (maybeTag.startsWith("#")) {
-            input = ItemInput.withTag(maybeTag.substring(1));
+            input = Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))));
         } else {
-            input = ItemInput.withItem(maybeTag);
+            input = Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag)));
         }
         if (this.key.put(key, input) != null) {
             throw new IllegalStateException("Key mapping is already registered: " + key);
@@ -115,17 +98,17 @@ public class ShapedRecipeJson extends RecipeJson {
         }
     }
 
-    public MIRecipeJson<?> exportToAssembler() {
+    public MachineRecipeBuilder exportToAssembler() {
         return exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
     }
 
-    public MIRecipeJson<?> exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
-        if (result.count % division != 0) {
+    public MachineRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
+        if (result.getCount() % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        MIRecipeJson<?> assemblerJson = MIRecipeJson.create(machine, eu, duration).addItemOutput(result.item, result.count / division);
-        for (Map.Entry<Character, ItemInput> entry : key.entrySet()) {
+        var assemblerJson = new MachineRecipeBuilder(machine, eu, duration).addItemOutput(result.getItem(), result.getCount() / division);
+        for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {
                 for (char c : row.toCharArray()) {
@@ -139,14 +122,18 @@ public class ShapedRecipeJson extends RecipeJson {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }
 
-            ItemInput input = entry.getValue();
-            if (input.item != null) {
-                assemblerJson.addItemInput(input.item, count / division);
-            } else if (input.tag != null) {
-                assemblerJson.addItemInput("#" + input.tag, count / division);
-            }
+            assemblerJson.addItemInput(entry.getValue(), count / division, 1);
         }
 
         return assemblerJson;
+    }
+
+    @Override
+    public void offerTo(RecipeOutput recipeOutput, String path) {
+        recipeOutput.accept(MI.id(path), new ShapedRecipe(
+                "",
+                CraftingBookCategory.MISC,
+                ShapedRecipePattern.of(key, pattern),
+                result), null);
     }
 }

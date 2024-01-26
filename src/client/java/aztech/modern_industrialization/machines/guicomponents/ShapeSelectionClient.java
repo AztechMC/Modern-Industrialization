@@ -24,16 +24,15 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.network.machines.ChangeShapePacket;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
@@ -113,7 +112,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
 
                 // Left button
                 container.addButton(-panelWidth + borderSize + outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
-                    ClientPlayNetworking.send(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.encodeChangeShape(syncId, iCopy, true));
+                    new ChangeShapePacket(syncId, iCopy, true).sendToServer();
                 }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
                     if (currentData[iCopy] == 0) {
                         screen.blitButtonNoHighlight(button, guiGraphics, baseU, v + 12);
@@ -124,7 +123,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
 
                 // Right button
                 container.addButton(-btnSize - outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
-                    ClientPlayNetworking.send(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.encodeChangeShape(syncId, iCopy, false));
+                    new ChangeShapePacket(syncId, iCopy, false).sendToServer();
                 }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
                     if (currentData[iCopy] == line.numValues() - 1) {
                         screen.blitButtonNoHighlight(button, guiGraphics, baseU + 12, v + 12);

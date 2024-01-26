@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_silver_ores"
+      "tag": "forge:raw_materials/silver"
     },
     "y": {
       "item": "modern_industrialization:raw_silver"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:raw_silver_block"
   }
 }

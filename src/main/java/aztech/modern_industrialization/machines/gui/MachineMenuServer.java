@@ -24,11 +24,10 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.MachinePackets;
+import aztech.modern_industrialization.network.machines.MachineComponentSyncPacket;
+import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,11 +53,9 @@ public class MachineMenuServer extends MachineMenuCommon {
         for (int i = 0; i < blockEntity.guiComponents.size(); ++i) {
             GuiComponent.Server component = blockEntity.guiComponents.get(i);
             if (component.needsSync(trackedData.get(i))) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(i);
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 component.writeCurrentData(buf);
-                ServerPlayNetworking.send((ServerPlayer) playerInventory.player, MachinePackets.S2C.COMPONENT_SYNC, buf);
+                new MachineComponentSyncPacket(containerId, i, buf).sendToClient((ServerPlayer) playerInventory.player);
                 trackedData.set(i, component.copyData());
             }
         }
@@ -72,5 +69,10 @@ public class MachineMenuServer extends MachineMenuCommon {
         } else {
             return player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
         }
+    }
+
+    @Override
+    public void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf) {
+        throw new UnsupportedOperationException("Data can only be read on the client side!");
     }
 }

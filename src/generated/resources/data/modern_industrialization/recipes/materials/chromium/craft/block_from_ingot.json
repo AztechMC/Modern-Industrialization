@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:chromium_ingots"
+      "tag": "forge:ingots/chromium"
     },
     "y": {
       "item": "modern_industrialization:chromium_ingot"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:chromium_block"
   }
 }

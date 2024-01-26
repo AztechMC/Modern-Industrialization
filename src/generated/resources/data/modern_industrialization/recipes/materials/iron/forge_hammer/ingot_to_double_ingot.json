@@ -1,15 +1,10 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "item_inputs": [
-    {
-      "amount": 2,
-      "tag": "c:iron_ingots"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:iron_double_ingot"
-    }
-  ]
+  "count": 2,
+  "ingredient": {
+    "tag": "forge:ingots/iron"
+  },
+  "result": {
+    "item": "modern_industrialization:iron_double_ingot"
+  }
 }

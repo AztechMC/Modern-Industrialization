@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:blastproof_alloy_plates"
+      "tag": "forge:plates/blastproof_alloy"
     }
   ],
   "item_outputs": [

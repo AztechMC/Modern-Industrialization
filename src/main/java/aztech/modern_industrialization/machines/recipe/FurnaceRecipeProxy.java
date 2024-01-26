@@ -23,12 +23,10 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
-
+import aztech.modern_industrialization.MI;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 
 public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
@@ -37,14 +35,11 @@ public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
     }
 
     protected void fillRecipeList(Level world) {
-        Map<ResourceLocation, MachineRecipe> recipes = new HashMap<>();
-
-        for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
-            MachineRecipe recipe = RecipeConversions.of(smeltingRecipe, this, world.registryAccess());
-            recipes.put(recipe.id, recipe);
+        for (var smeltingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
+            var recipe = RecipeConversions.ofSmelting(smeltingRecipe, this, world.registryAccess());
+            recipeList.add(recipe);
         }
 
-        recipeList = new ArrayList<>(recipes.values());
-        recipeList.sort(Comparator.comparing(r -> r.getId().getNamespace().equals(MOD_ID) ? 0 : 1));
+        recipeList.sort(Comparator.comparing(r -> r.id().getNamespace().equals(MI.ID) ? 0 : 1));
     }
 }

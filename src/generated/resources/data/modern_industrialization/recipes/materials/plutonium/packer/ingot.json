@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:plutonium_nuggets"
+      "tag": "forge:nuggets/plutonium"
     }
   ],
   "item_outputs": [

@@ -23,24 +23,23 @@
  */
 package aztech.modern_industrialization.blocks.creativestorageunit;
 
-import aztech.modern_industrialization.MIBlockEntityTypes;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.util.Tickable;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements Tickable {
     @SuppressWarnings("unchecked")
-    private final BlockApiCache<MIEnergyStorage, Direction>[] caches = new BlockApiCache[6];
+    private final BlockCapabilityCache<MIEnergyStorage, Direction>[] caches = new BlockCapabilityCache[6];
 
     public CreativeStorageUnitBlockEntity(BlockPos pos, BlockState state) {
-        super(MIBlockEntityTypes.CREATIVE_STORAGE_UNIT, pos, state);
+        super(MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), pos, state);
     }
 
     @Override
@@ -50,15 +49,13 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
             for (Direction direction : Direction.values()) {
                 if (caches[direction.ordinal()] == null) {
-                    caches[direction.ordinal()] = BlockApiCache.create(EnergyApi.SIDED, serverWorld, worldPosition.relative(direction));
+                    caches[direction.ordinal()] = BlockCapabilityCache.create(EnergyApi.SIDED, serverWorld, worldPosition.relative(direction),
+                            direction.getOpposite());
                 }
 
-                var target = caches[direction.ordinal()].find(direction.getOpposite());
+                var target = caches[direction.ordinal()].getCapability();
                 if (target != null) {
-                    try (var tx = Transaction.openOuter()) {
-                        target.insert(Long.MAX_VALUE, tx);
-                        tx.commit();
-                    }
+                    target.receive(Long.MAX_VALUE, false);
                 }
             }
         }

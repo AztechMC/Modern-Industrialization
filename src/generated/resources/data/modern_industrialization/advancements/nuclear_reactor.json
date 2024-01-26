@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.nuclear_reactor.description"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:nuclear_reactor"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.nuclear_reactor"
     }

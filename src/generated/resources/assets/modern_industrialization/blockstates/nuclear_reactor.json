@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/nuclear_reactor"
+      "model": "modern_industrialization:block/nuclear_reactor"
     }
   }
 }

@@ -25,16 +25,16 @@ package aztech.modern_industrialization.misc.guidebook;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 public class GuidebookEvents {
     public static void init() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            var player = handler.player;
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
+            var player = event.getEntity();
             if (MIConfig.getConfig().spawnWithGuideBook) {
-                GuidebookPersistentState state = GuidebookPersistentState.get(player.server);
+                GuidebookPersistentState state = GuidebookPersistentState.get(player.getServer());
                 if (!state.hasPlayerReceivedGuidebook(player)) {
                     if (player.getInventory().add(new ItemStack(MIItem.GUIDE_BOOK))) {
                         state.addPlayerReceivedGuidebook(player);
@@ -43,9 +43,9 @@ public class GuidebookEvents {
             }
         });
 
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if (MIConfig.getConfig().respawnWithGuideBook) {
-                newPlayer.getInventory().add(new ItemStack(MIItem.GUIDE_BOOK));
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, event -> {
+            if (!event.isEndConquered() && MIConfig.getConfig().respawnWithGuideBook) {
+                event.getEntity().getInventory().add(new ItemStack(MIItem.GUIDE_BOOK));
             }
         });
     }

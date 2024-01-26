@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -40,18 +41,19 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.stream.IntStream;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
@@ -93,14 +95,16 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     public static void registerFluidAPI(BlockEntityType<?> bet) {
-        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> {
-            LargeTankMultiblockBlockEntity tank = ((LargeTankMultiblockBlockEntity) be);
-            if (tank.isShapeValid()) {
-                return tank.fluidStorage.getFluidStorage();
-            } else {
-                return Storage.empty();
-            }
-        }, bet);
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> {
+                LargeTankMultiblockBlockEntity tank = ((LargeTankMultiblockBlockEntity) be);
+                if (tank.isShapeValid()) {
+                    return tank.fluidStorage.getFluidHandler();
+                } else {
+                    return EmptyFluidHandler.INSTANCE;
+                }
+            });
+        });
     }
 
     private static ShapeTemplate buildShape(int index) {
@@ -109,8 +113,8 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeZ = Z_SIZES[getZComponent(index)];
 
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
-        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("steel_machine_casing")).asBlock());
-        SimpleMember glass = SimpleMember.forBlock(Blocks.GLASS);
+        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("steel_machine_casing")));
+        SimpleMember glass = SimpleMember.forBlock(() -> Blocks.GLASS);
         HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.LARGE_TANK).build();
 
         for (int x = -sizeX / 2; x <= sizeX / 2; x++) {
@@ -217,7 +221,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection);
 
     }
@@ -268,7 +272,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeY = Y_SIZES[yIndex];
         int sizeZ = Z_SIZES[zIndex];
         int volume = sizeX * sizeY * sizeZ;
-        return volume * BUCKET_PER_STRUCTURE_BLOCK * FluidConstants.BUCKET;
+        return volume * BUCKET_PER_STRUCTURE_BLOCK * FluidType.BUCKET_VOLUME;
     }
 
     private void onMatchSuccessful() {
@@ -283,8 +287,12 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
     }
 
-    public Storage<FluidVariant> getStorage() {
-        return fluidStorage.getFluidStorage();
+    public IFluidHandler getExposedFluidHandler() {
+        if (isShapeValid()) {
+            return fluidStorage.getFluidHandler();
+        } else {
+            return EmptyFluidHandler.INSTANCE;
+        }
     }
 
     public FluidVariant getFluid() {

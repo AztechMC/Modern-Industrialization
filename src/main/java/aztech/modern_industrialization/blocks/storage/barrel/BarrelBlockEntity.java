@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/hv_energy_input_hatch"
+      "model": "modern_industrialization:block/hv_energy_input_hatch"
     }
   }
 }

@@ -23,17 +23,21 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIRegistries;
+import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.widget.Bounds;
+import net.minecraft.world.inventory.MenuType;
 
+@EmiEntrypoint
 public class ManualPluginEmi implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
-        registry.addRecipeHandler(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, new ForgeHammerRecipeHandler());
-        registry.addRecipeHandler(ModernIndustrialization.SCREEN_HANDLER_MACHINE, new MachineRecipeHandler());
+        registry.addRecipeHandler(MIRegistries.FORGE_HAMMER_MENU.get(), new ForgeHammerRecipeHandler());
+        registry.addRecipeHandler((MenuType<MachineMenuCommon>) MIRegistries.MACHINE_MENU.get(), new MachineRecipeHandler());
 
         // We need a generic one because we want any subclass of MIHandledScreen
         registry.addGenericDragDropHandler(new MIDragDropHandler());

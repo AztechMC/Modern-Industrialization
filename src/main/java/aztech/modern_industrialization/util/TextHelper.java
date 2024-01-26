@@ -95,7 +95,7 @@ public class TextHelper {
     }
 
     public static MaxedAmount getMaxedAmount(double amount, double max) {
-        if (max < 100000) {
+        if (max < 1000) {
             return new MaxedAmount(getAmount(amount, 1), getAmount(max, 1), "");
         } else {
             int i = 0;

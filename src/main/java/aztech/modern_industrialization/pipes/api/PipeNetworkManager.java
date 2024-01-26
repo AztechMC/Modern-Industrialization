@@ -29,7 +29,6 @@ import aztech.modern_industrialization.util.WorldHelper;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -38,10 +37,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworkManager {
-    private static final boolean DEBUG_CHECKS = FabricLoader.getInstance().isDevelopmentEnvironment();
+    private static final boolean DEBUG_CHECKS = !FMLEnvironment.production;
 
     private final Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
     private final Map<BlockPos, Set<Direction>> links = new HashMap<>();

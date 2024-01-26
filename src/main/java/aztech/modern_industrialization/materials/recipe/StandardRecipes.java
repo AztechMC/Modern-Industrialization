@@ -35,8 +35,8 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * Standard conversion recipes for all materials.
@@ -73,7 +73,7 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
                 .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', Tags.Items.GLASS)
                 .exportToAssembler();
         new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###")
                 .addTaggedPart('#', PLATE)
@@ -106,10 +106,10 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "crushed_dust", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
                 .addTaggedPartInput(CRUSHED_DUST, 1)
-                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5f);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "raw_metal", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
                 .addTaggedPartInput(RAW_METAL, 1)
-                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5f);
         // COMPRESSOR
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "main").addTaggedPartInput(ctx.get(MAIN_PART), 1).addPartOutput(PLATE, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);
@@ -121,9 +121,9 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         // PACKER
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "block").addTaggedPartInput(ctx.get(MAIN_PART), 9)
-                .addItemInput(MIItem.PACKER_BLOCK_TEMPLATE, 1, 0.0).addPartOutput(BLOCK, 1);
+                .addItemInput(MIItem.PACKER_BLOCK_TEMPLATE, 1, 0.0f).addPartOutput(BLOCK, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "double_ingot").addTaggedPartInput(INGOT, 2)
-                .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
+                .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0f).addPartOutput(DOUBLE_INGOT, 1);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2).addItemInput("#c:nuclear_alloy_plates", 1)
                 .addPartOutput(FUEL_ROD_DOUBLE, 1);
@@ -169,8 +169,8 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);
-        new SmeltingRecipeBuilder(ctx, ROD_MAGNETIC, ROD, 0.0, false);
-        new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0, false);
+        new SmeltingRecipeBuilder(ctx, ROD_MAGNETIC, ROD, 0.0f, false);
+        new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0f, false);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.VACUUM_FREEZER, "hot_ingot", 32, 250).addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
 

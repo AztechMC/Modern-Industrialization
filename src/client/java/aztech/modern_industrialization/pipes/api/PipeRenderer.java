@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.pipes.impl.PipeRenderContext;
 import java.util.Collection;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -51,7 +51,7 @@ public interface PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+    void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
             CompoundTag customData);
 
     interface Factory {

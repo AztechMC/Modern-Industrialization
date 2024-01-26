@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/implosion_compressor"
+      "model": "modern_industrialization:block/implosion_compressor"
     }
   }
 }

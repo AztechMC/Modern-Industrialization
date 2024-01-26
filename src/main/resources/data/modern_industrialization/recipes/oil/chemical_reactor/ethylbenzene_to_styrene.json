@@ -13,7 +13,7 @@
     }
   ],
   "item_inputs": {
-    "tag": "c:iron_dusts",
+    "tag": "forge:dusts/iron",
     "amount": 1
   },
   "fluid_outputs": [

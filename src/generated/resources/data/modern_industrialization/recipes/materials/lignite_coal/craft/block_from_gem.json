@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
       "item": "modern_industrialization:lignite_coal"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:lignite_coal_block"
   }
 }

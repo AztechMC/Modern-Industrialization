@@ -17,11 +17,11 @@
     },
     {
       "amount": 3,
-      "tag": "c:steel_plates"
+      "tag": "forge:plates/steel"
     },
     {
       "amount": 1,
-      "tag": "c:steel_gears"
+      "tag": "forge:gears/steel"
     }
   ],
   "item_outputs": [

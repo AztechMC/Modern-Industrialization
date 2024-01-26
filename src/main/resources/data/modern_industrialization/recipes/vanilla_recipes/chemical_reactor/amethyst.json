@@ -4,11 +4,11 @@
   "duration": 400,
   "item_inputs": [
     {
-      "tag": "c:quartz_dusts",
+      "tag": "forge:dusts/quartz",
       "amount": 4
     },
     {
-      "tag": "c:iron_tiny_dusts",
+      "tag": "forge:tiny_dusts/iron",
       "amount": 1
     }
   ],

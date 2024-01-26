@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.steel_wiremill.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:steel_wiremill"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.steel_wiremill"
     }

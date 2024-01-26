@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/ev_storage_unit"
+      "model": "modern_industrialization:block/ev_storage_unit"
     }
   }
 }

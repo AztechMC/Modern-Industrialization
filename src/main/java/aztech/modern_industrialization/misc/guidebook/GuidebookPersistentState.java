@@ -25,15 +25,16 @@ package aztech.modern_industrialization.misc.guidebook;
 
 import aztech.modern_industrialization.util.MISavedData;
 import java.util.*;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 
 public class GuidebookPersistentState extends MISavedData {
+    private static final Factory<GuidebookPersistentState> FACTORY = new Factory<>(GuidebookPersistentState::new, GuidebookPersistentState::fromNbt);
     private static final String NAME = "modern_industrialization_guidebook";
     private final Set<String> receivedPlayers;
 
@@ -56,7 +57,7 @@ public class GuidebookPersistentState extends MISavedData {
 
     public static GuidebookPersistentState fromNbt(CompoundTag tag) {
         Set<String> receivedPlayers = new HashSet<>();
-        ListTag list = tag.getList("receivedPlayers", NbtType.STRING);
+        ListTag list = tag.getList("receivedPlayers", Tag.TAG_STRING);
         for (int i = 0; i < list.size(); ++i) {
             receivedPlayers.add(list.getString(i));
         }
@@ -75,6 +76,6 @@ public class GuidebookPersistentState extends MISavedData {
 
     public static GuidebookPersistentState get(MinecraftServer server) {
         ServerLevel world = server.getLevel(ServerLevel.OVERWORLD);
-        return world.getDataStorage().computeIfAbsent(GuidebookPersistentState::fromNbt, GuidebookPersistentState::new, NAME);
+        return world.getDataStorage().computeIfAbsent(FACTORY, NAME);
     }
 }

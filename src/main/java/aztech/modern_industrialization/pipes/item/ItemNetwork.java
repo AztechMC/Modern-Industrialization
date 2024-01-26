@@ -23,32 +23,26 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.util.StorageUtil2;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import java.util.function.Predicate;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemNetwork extends PipeNetwork {
     public static final int TICK_RATE = 60;
@@ -81,7 +75,7 @@ public class ItemNetwork extends PipeNetwork {
                     var queryPos = pos.relative(connection.direction);
                     var querySide = connection.direction.getOpposite();
 
-                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, queryPos, querySide);
+                    var source = world.getCapability(Capabilities.ItemHandler.BLOCK, queryPos, querySide);
 
                     if (source != null) {
                         extractionTargets.add(new ExtractionTarget(connection, source, queryPos, querySide));
@@ -94,44 +88,100 @@ public class ItemNetwork extends PipeNetwork {
 
         // Do the actual transfer.
         var insertTargets = getAggregatedInsertTargets(world);
-        var insertStorage = new CombinedStorage<>(insertTargets);
+        var insertStorage = new IItemSink.Combined(insertTargets);
         lastMovedItems = 0;
-        try (Transaction tx = Transaction.openOuter()) {
-            for (ExtractionTarget target : extractionTargets) {
-                // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
-                // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
-                while (insertTargets.size() > 0 && target.connection.extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
-                    insertTargets.remove(insertTargets.size() - 1);
-                }
-
-                try {
-                    lastMovedItems += StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough,
-                            target.connection.getMoves(), tx);
-                } catch (Exception exception) {
-                    var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
-                    crashReport.addCategory("Block being extracted from:")
-                            .setDetail("Dimension", world.dimension())
-                            .setDetail("Position", target.queryPos)
-                            .setDetail("Accessed from side", target.querySide);
-                    throw new ReportedException(crashReport);
-                }
+        for (ExtractionTarget target : extractionTargets) {
+            // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
+            // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
+            while (insertTargets.size() > 0 && target.connection.extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
+                insertTargets.remove(insertTargets.size() - 1);
             }
-            tx.commit();
+
+            try {
+                lastMovedItems += moveAll(world, target, insertStorage, target.connection::canStackMoveThrough,
+                        target.connection.getMoves());
+            } catch (Exception exception) {
+                var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
+                crashReport.addCategory("Block being extracted from:")
+                        .setDetail("Dimension", world.dimension())
+                        .setDetail("Position", target.queryPos)
+                        .setDetail("Accessed from side", target.querySide);
+                throw new ReportedException(crashReport);
+            }
         }
     }
 
     private static class ExtractionTarget {
         private final ItemNetworkNode.ItemConnection connection;
-        private final Storage<ItemVariant> storage;
+        private final IItemHandler storage;
         private final BlockPos queryPos;
         private final Direction querySide;
 
-        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> storage, BlockPos queryPos, Direction querySide) {
+        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, IItemHandler storage, BlockPos queryPos, Direction querySide) {
             this.connection = connection;
             this.storage = storage;
             this.queryPos = queryPos;
             this.querySide = querySide;
         }
+    }
+
+    private static int moveAll(ServerLevel world, ExtractionTarget target, IItemSink sink, Predicate<ItemStack> filter, int maxToMove) {
+        IItemHandler source = target.storage;
+        int moved = 0;
+
+        int sourceSlots = source.getSlots();
+        slotsLoop: for (int i = 0; i < sourceSlots; ++i) {
+            // Filter check
+            var stack = source.getStackInSlot(i);
+            if (!filter.test(stack)) {
+                continue;
+            }
+
+            // Repeated extraction because extractItem limits to max stack size
+            while (true) {
+                // Simulate first
+                var available = source.extractItem(i, maxToMove - moved, true);
+                if (available.isEmpty()) {
+                    continue slotsLoop;
+                }
+
+                int availableCount = available.getCount();
+                var simulateLeftover = sink.insertItem(available, true);
+                int canFit = availableCount - simulateLeftover.getCount();
+                if (canFit <= 0) {
+                    continue slotsLoop;
+                }
+
+                // Do!
+                var taken = source.extractItem(i, canFit, false);
+                int takenCount = taken.getCount();
+                var leftover = sink.insertItem(taken, false);
+
+                int movedThisTime = takenCount - leftover.getCount();
+                moved += movedThisTime;
+
+                if (!leftover.isEmpty()) {
+                    // Be nice and try to give the overflow back
+                    leftover = source.insertItem(i, leftover, false);
+
+                    // rest in pieces, little stacks
+                    if (!leftover.isEmpty()) {
+                        MI.LOGGER.error("Discarding overflowing item {}, extracted from block at position {} in {}, accessed from {} side".formatted(
+                                leftover, target.queryPos, world.dimension(), target.querySide));
+                    }
+                }
+
+                if (movedThisTime == 0) {
+                    break;
+                }
+            }
+
+            if (moved == maxToMove) {
+                break;
+            }
+        }
+
+        return moved;
     }
 
     /**
@@ -145,12 +195,13 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        connection.cache = BlockApiCache.create(ItemStorage.SIDED, world, entry.getPos().relative(connection.direction));
+                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world,
+                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
                     }
-                    Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
-                    if (target != null && target.supportsInsertion()) {
+                    var target = connection.cache.getCapability();
+                    if (target != null && target.getSlots() > 0) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
-                        InsertTarget it = new InsertTarget(connection, StorageUtil2.wrapInventory(target));
+                        InsertTarget it = new InsertTarget(connection, new IItemSink.HandlerWrapper(target));
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
                             bucket.whitelist.add(it);
@@ -202,19 +253,14 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private interface Aggregate extends InsertionOnlyStorage<ItemVariant> {
+    private interface Aggregate extends IItemSink {
         int getPriority();
-
-        @Override
-        default Iterator<StorageView<ItemVariant>> iterator() {
-            return Collections.emptyIterator();
-        }
     }
 
     private static class WhitelistAggregate implements Aggregate {
         private final int priority;
         // Used when the inserted item doesn't have NBT
-        private final Map<Item, List<Storage<ItemVariant>>> map = new IdentityHashMap<>();
+        private final Map<Item, List<IItemSink>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
@@ -224,9 +270,9 @@ public class ItemNetwork extends PipeNetwork {
             for (InsertTarget target : targets) {
                 if (target.connection.whitelist) {
                     ItemNetworkNode.ItemConnection conn = target.connection;
-                    for (ItemVariant variant : conn.stacksCache) {
-                        if (!variant.hasNbt()) {
-                            map.computeIfAbsent(variant.getItem(), v -> new ArrayList<>()).add(target.target);
+                    for (ItemStack stack : conn.stacks) {
+                        if (!stack.hasTag()) {
+                            map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
                         }
                     }
                 } else if (target.target instanceof WhitelistedItemStorage wis) {
@@ -242,27 +288,26 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-            if (resource.hasNbt()) {
-                return insertTargets(targets, resource, maxAmount, transaction);
+        public ItemStack insertItem(ItemStack stack, boolean simulate) {
+            if (stack.isEmpty()) {
+                return ItemStack.EMPTY;
             }
 
-            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-            long totalInserted = 0;
+            if (stack.hasTag()) {
+                return insertTargets(targets, stack, simulate);
+            }
 
-            List<Storage<ItemVariant>> targets = map.get(resource.getItem());
+            List<IItemSink> targets = map.get(stack.getItem());
             if (targets != null) {
-                for (Storage<ItemVariant> target : targets) {
-                    long inserted = target.insert(resource, maxAmount, transaction);
-                    maxAmount -= inserted;
-                    totalInserted += inserted;
-                    if (maxAmount == 0) {
+                for (IItemSink target : targets) {
+                    stack = target.insertItem(stack, simulate);
+                    if (stack.isEmpty()) {
                         break;
                     }
                 }
             }
 
-            return totalInserted;
+            return stack;
         }
 
         @Override
@@ -281,8 +326,8 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
-            return insertTargets(targets, resource, maxAmount, transaction);
+        public ItemStack insertItem(ItemStack stack, boolean simulate) {
+            return insertTargets(targets, stack, simulate);
         }
 
         @Override
@@ -291,24 +336,23 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static long insertTargets(List<InsertTarget> targets, ItemVariant resource, long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        long totalInserted = 0;
+    private static ItemStack insertTargets(List<InsertTarget> targets, ItemStack stack, boolean simulate) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
         for (InsertTarget target : targets) {
-            if (target.connection.canStackMoveThrough(resource)) {
-                long inserted = target.target.insert(resource, maxAmount, transaction);
-                maxAmount -= inserted;
-                totalInserted += inserted;
-                if (maxAmount == 0) {
+            if (target.connection.canStackMoveThrough(stack)) {
+                stack = target.target.insertItem(stack, simulate);
+                if (stack.isEmpty()) {
                     break;
                 }
             }
         }
 
-        return totalInserted;
+        return stack;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> target) {
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink target) {
     }
 }

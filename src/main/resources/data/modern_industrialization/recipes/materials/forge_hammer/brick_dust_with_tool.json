@@ -1,13 +1,10 @@
 {
-"type": "modern_industrialization:forge_hammer",
-"eu": 20,
-"duration": 0,
-"item_inputs": {
-"item": "minecraft:brick",
-"amount": 1
-},
-"item_outputs": {
-"item": "modern_industrialization:brick_dust",
-"amount": 1
-}
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 20,
+  "ingredient": {
+    "item": "minecraft:brick"
+  },
+  "result": {
+    "item": "modern_industrialization:brick_dust"
+  }
 }

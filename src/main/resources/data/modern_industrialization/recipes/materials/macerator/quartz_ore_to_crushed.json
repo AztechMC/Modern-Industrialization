@@ -3,7 +3,7 @@
   "eu": 2,
   "duration": 100,
   "item_inputs": {
-    "tag": "c:quartz_ores",
+    "tag": "forge:ores/quartz",
     "amount": 1
   },
   "item_outputs": {

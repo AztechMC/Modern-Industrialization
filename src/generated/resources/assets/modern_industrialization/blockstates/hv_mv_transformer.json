@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/hv_mv_transformer"
+      "model": "modern_industrialization:block/hv_mv_transformer"
     }
   }
 }

@@ -300,14 +300,14 @@ public final class SingleBlockCraftingMachines {
         }
         List<ConfigurableFluidStack> fluidInputStacks = new ArrayList<>();
         if (steamBuckets > 0) {
-            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000L * steamBuckets, MIFluids.STEAM.asFluid()));
+            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(1000L * steamBuckets, MIFluids.STEAM.asFluid()));
         }
         for (int i = 0; i < fluidInputCount; ++i) {
-            fluidInputStacks.add(ConfigurableFluidStack.standardInputSlot(81000L * ioBucketCapacity));
+            fluidInputStacks.add(ConfigurableFluidStack.standardInputSlot(1000L * ioBucketCapacity));
         }
         List<ConfigurableFluidStack> fluidOutputStacks = new ArrayList<>();
         for (int i = 0; i < fluidOutputCount; ++i) {
-            fluidOutputStacks.add(ConfigurableFluidStack.standardOutputSlot(81000L * ioBucketCapacity));
+            fluidOutputStacks.add(ConfigurableFluidStack.standardOutputSlot(1000L * ioBucketCapacity));
         }
 
         return new MachineInventoryComponent(itemInputStacks, itemOutputStacks, fluidInputStacks, fluidOutputStacks, itemPositions, fluidPositions);

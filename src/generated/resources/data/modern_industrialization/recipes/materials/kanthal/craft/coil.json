@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
       "item": "modern_industrialization:kanthal_cable"
@@ -11,7 +12,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:kanthal_coil"
   }
 }

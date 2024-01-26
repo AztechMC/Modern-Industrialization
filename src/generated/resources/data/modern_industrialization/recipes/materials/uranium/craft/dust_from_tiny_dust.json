@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:uranium_tiny_dusts"
+      "tag": "forge:tiny_dusts/uranium"
     },
     "y": {
       "item": "modern_industrialization:uranium_tiny_dust"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:uranium_dust"
   }
 }

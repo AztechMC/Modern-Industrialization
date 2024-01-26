@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:he_uranium_tiny_dusts"
+      "tag": "forge:tiny_dusts/he_uranium"
     }
   ],
   "item_outputs": [

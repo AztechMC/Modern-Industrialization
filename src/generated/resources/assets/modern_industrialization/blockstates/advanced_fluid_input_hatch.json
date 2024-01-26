@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/advanced_fluid_input_hatch"
+      "model": "modern_industrialization:block/advanced_fluid_input_hatch"
     }
   }
 }

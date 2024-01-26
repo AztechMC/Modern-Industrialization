@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 public interface TickableBlock extends EntityBlock {
     @Override
     default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE)) {
+        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE.get())) {
             // Pipes don't tick on the client.
             return null;
         }

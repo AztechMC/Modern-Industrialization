@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "d": {
       "tag": "c:pink_dyes"
@@ -12,7 +13,6 @@
     "pd"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:pink_item_pipe"
   }
 }

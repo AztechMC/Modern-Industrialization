@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:salt_dusts"
+      "tag": "forge:dusts/salt"
     },
     {
       "amount": 1,

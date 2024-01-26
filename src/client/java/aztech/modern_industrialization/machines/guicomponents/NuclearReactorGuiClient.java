@@ -25,9 +25,9 @@ package aztech.modern_industrialization.machines.guicomponents;
 
 import static aztech.modern_industrialization.nuclear.NeutronType.*;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.compat.viewer.usage.NeutronInteractionCategory;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -39,6 +39,9 @@ import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
@@ -46,9 +49,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -60,6 +60,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class NuclearReactorGuiClient implements GuiComponentClient {
+    public static final ResourceLocation TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
 
     private NuclearReactorGui.Data data;
 
@@ -436,11 +437,11 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                         button.renderVanilla(guiGraphics, mouseX, mouseY, delta);
 
                         if (neutronMode == FAST) {
-                            guiGraphics.blit(NeutronInteractionCategory.TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16);
+                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16);
                         } else if (neutronMode == NeutronType.THERMAL) {
-                            guiGraphics.blit(NeutronInteractionCategory.TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 160, 240, 16, 16);
+                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 160, 240, 16, 16);
                         } else if (neutronMode == BOTH) {
-                            guiGraphics.blit(NeutronInteractionCategory.TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 80, 240, 16, 16);
+                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 80, 240, 16, 16);
                         }
                     }, this::drawNeutronButton);
         }

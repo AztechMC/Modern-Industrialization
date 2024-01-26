@@ -33,10 +33,9 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.common.CommonHooks;
 
 public class FuelBurningComponent implements IComponent {
     /**
@@ -113,10 +112,10 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer < maxEuProduction) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
-                Item fuel = stack.getResource().getItem();
+                var fuel = stack.getResource().toStack((int) stack.getAmount());
                 if (ItemStackHelper.consumeFuel(stack, true)) {
-                    Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
-                    if (fuelTime != null && fuelTime > 0) {
+                    int fuelTime = CommonHooks.getBurnTime(fuel, null);
+                    if (fuelTime > 0) {
                         burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         ItemStackHelper.consumeFuel(stack, false);
                         continue outer;
@@ -133,9 +132,9 @@ public class FuelBurningComponent implements IComponent {
                     long euPerMb = FluidFuelRegistry.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
                     if (euPerMb != 0) {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
-                        long mbConsumed = Math.min(mbConsumedMax, stack.getAmount() / 81);
+                        long mbConsumed = Math.min(mbConsumedMax, stack.getAmount());
                         if (mbConsumed > 0) {
-                            stack.decrement(mbConsumed * 81);
+                            stack.decrement(mbConsumed);
                             burningEuBuffer += mbConsumed * euPerMb;
                             continue outer;
                         }

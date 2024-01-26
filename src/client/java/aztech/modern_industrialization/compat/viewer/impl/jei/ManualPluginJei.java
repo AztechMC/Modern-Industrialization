@@ -23,26 +23,29 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
+@JeiPlugin
 public class ManualPluginJei implements IModPlugin {
     private static final ResourceLocation ID = new MIIdentifier("manual");
 
     private IJeiRuntime jeiRuntime;
 
-    private RecipeType<MachineRecipe> getMachineCategory(String category) {
-        return RecipeType.create(ModernIndustrialization.MOD_ID, category, MachineRecipe.class);
+    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(String category) {
+        return RecipeType.create(MI.ID, category, (Class) RecipeHolder.class);
     }
 
     @Override

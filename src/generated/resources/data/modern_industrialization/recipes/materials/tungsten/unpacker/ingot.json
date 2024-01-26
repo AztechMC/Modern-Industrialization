@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tungsten_blocks"
+      "tag": "forge:blocks/tungsten"
     }
   ],
   "item_outputs": [

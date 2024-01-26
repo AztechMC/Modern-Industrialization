@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:silver_ingots"
+      "tag": "forge:ingots/silver"
     },
     "y": {
       "item": "modern_industrialization:silver_ingot"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:silver_block"
   }
 }

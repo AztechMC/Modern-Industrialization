@@ -25,6 +25,9 @@ package aztech.modern_industrialization.compat.viewer.impl.rei;
 
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,16 +46,13 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -246,7 +246,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return recipe instanceof Recipe<?>r ? Optional.of(r.getId()) : Optional.empty();
+            return recipe instanceof RecipeHolder<?>r ? Optional.of(r.id()) : Optional.empty();
         }
     }
 

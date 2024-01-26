@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:annealed_copper_ingots"
+      "tag": "forge:ingots/annealed_copper"
     },
     "y": {
       "item": "modern_industrialization:annealed_copper_ingot"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:annealed_copper_block"
   }
 }

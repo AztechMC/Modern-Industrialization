@@ -24,16 +24,16 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -101,7 +101,7 @@ public class NbtHelper {
 
     public static <T> void getList(CompoundTag tag, String key, List<T> list, Function<CompoundTag, T> decoder) {
         list.clear();
-        ListTag listTag = tag.getList(key, NbtType.COMPOUND);
+        ListTag listTag = tag.getList(key, Tag.TAG_COMPOUND);
         for (int i = 0; i < listTag.size(); ++i) {
             CompoundTag elementTag = listTag.getCompound(i);
             list.add(decoder.apply(elementTag));

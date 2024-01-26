@@ -25,22 +25,16 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
+import aztech.modern_industrialization.thirdparty.fabricrendering.Mesh;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MeshBuilder;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MeshBuilderImpl;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -73,18 +67,11 @@ public class PipeMeshCache implements PipeRenderer {
     }
 
     /**
-     * Custom material for the fluids.
-     */
-    private final RenderMaterial fluidMaterial;
-
-    /**
      * Create a new `PipeMeshCache`, and populate it.
      * 
      * @param innerQuads Whether to add inner quads, e.g. for fluid rendering.
      */
     public PipeMeshCache(Function<Material, TextureAtlasSprite> textureGetter, Material[] spriteIds, boolean innerQuads) {
-        Renderer renderer = Objects.requireNonNull(RendererAccess.INSTANCE.getRenderer());
-
         // Build the connection cache
         connectionMeshBuilder = key -> {
             int i = key.endpointType;
@@ -94,7 +81,7 @@ public class PipeMeshCache implements PipeRenderer {
 
             TextureAtlasSprite sprite = textureGetter.apply(spriteIds[i]);
 
-            MeshBuilder meshBuilder = renderer.meshBuilder();
+            MeshBuilder meshBuilder = new MeshBuilderImpl();
             PipeMeshBuilder pmb;
             if (innerQuads) {
                 pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
@@ -123,7 +110,7 @@ public class PipeMeshCache implements PipeRenderer {
             int logicalSlot = key.logicalSlot;
             int mask = key.bitmask;
 
-            MeshBuilder meshBuilder = renderer.meshBuilder();
+            MeshBuilder meshBuilder = new MeshBuilderImpl();
             for (Direction direction : Direction.values()) {
                 PipeMeshBuilder pmb;
                 if (innerQuads) {
@@ -136,8 +123,6 @@ public class PipeMeshCache implements PipeRenderer {
 
             return meshBuilder.build();
         };
-
-        fluidMaterial = renderer.materialFinder().blendMode(BlendMode.SOLID).emissive(true).ambientOcclusion(TriState.FALSE).find();
     }
 
     /**
@@ -149,7 +134,8 @@ public class PipeMeshCache implements PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+    public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot,
+            PipeEndpointType[][] connections,
             CompoundTag customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
@@ -182,7 +168,6 @@ public class PipeMeshCache implements PipeRenderer {
                     if (still != null) {
                         quad.spriteBake(still, MutableQuadView.BAKE_LOCK_UV);
                         quad.color(color, color, color, color);
-                        quad.material(fluidMaterial);
                         return true;
                     } else {
                         return false;

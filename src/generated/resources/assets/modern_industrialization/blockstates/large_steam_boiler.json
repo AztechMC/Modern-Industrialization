@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/large_steam_boiler"
+      "model": "modern_industrialization:block/large_steam_boiler"
     }
   }
 }

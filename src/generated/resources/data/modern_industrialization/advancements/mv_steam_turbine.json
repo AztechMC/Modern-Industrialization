@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.mv_steam_turbine.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:mv_steam_turbine"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.mv_steam_turbine"
     }

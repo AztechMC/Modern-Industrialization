@@ -23,10 +23,12 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
-import aztech.modern_industrialization.machines.recipe.condition.MachineProcessConditions;
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -38,32 +40,53 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
 
+    /**
+     * Creates a codec from a decoder.
+     * The returned codec can only decode, and will throw on any attempt to encode.
+     */
+    private static <A> MapCodec<A> decodeOnly(MapDecoder<A> decoder) {
+        return MapCodec.of(MapCodec.unit(() -> {
+            throw new UnsupportedOperationException("Cannot encode with decode-only codec! Decoder:" + decoder);
+        }), decoder, () -> "DecodeOnly[" + decoder + "]");
+    }
+
+    private final Codec<MachineRecipe> codec;
+
     public MachineRecipeType(ResourceLocation id) {
         this.id = id;
+        var baseCodec = MachineRecipe.codec(this);
+        this.codec = MapCodec.of(baseCodec, baseCodec.flatMap(machineRecipe -> {
+            try {
+                validateRecipe(machineRecipe);
+                return DataResult.success(machineRecipe);
+            } catch (IllegalArgumentException e) {
+                return DataResult.error(() -> "Failed to read machine recipe:" + e.getMessage());
+            }
+        }), () -> "MachineRecipe[" + baseCodec + "]").codec();
     }
 
     /**
      * Never modify or store the result!
      */
-    protected Collection<MachineRecipe> getManagerRecipes(Level world) {
+    protected Collection<RecipeHolder<MachineRecipe>> getManagerRecipes(Level world) {
         return world.getRecipeManager().getAllRecipesFor(this);
     }
 
-    public Collection<MachineRecipe> getRecipes(Level world) {
+    public Collection<RecipeHolder<MachineRecipe>> getRecipes(Level world) {
         return getManagerRecipes(world);
     }
 
     @Nullable
-    public MachineRecipe getRecipe(Level world, ResourceLocation id) {
-        return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+    public RecipeHolder<MachineRecipe> getRecipe(Level world, ResourceLocation id) {
+        return getRecipes(world).stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
     }
 
     /*
@@ -74,8 +97,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
      * recipes are sometimes reloaded. TODO: only rebuild when the recipes have been
      * reloaded
      */
-    private final Map<Item, List<MachineRecipe>> recipeCache = new HashMap<>();
-    private final List<MachineRecipe> fluidOnlyRecipes = new ArrayList<>();
+    private final Map<Item, List<RecipeHolder<MachineRecipe>>> recipeCache = new HashMap<>();
+    private final List<RecipeHolder<MachineRecipe>> fluidOnlyRecipes = new ArrayList<>();
     private long lastUpdate = 0;
     private static final long UPDATE_INTERVAL = 20 * 1000; // 20 seconds
 
@@ -91,13 +114,13 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         lastUpdate = time;
         recipeCache.clear();
         fluidOnlyRecipes.clear();
-        for (MachineRecipe recipe : getRecipes(world)) {
-            if (recipe.itemInputs.size() == 0) {
-                if (recipe.fluidInputs.size() > 0) {
+        for (RecipeHolder<MachineRecipe> recipe : getRecipes(world)) {
+            if (recipe.value().itemInputs.size() == 0) {
+                if (recipe.value().fluidInputs.size() > 0) {
                     fluidOnlyRecipes.add(recipe);
                 }
             } else {
-                for (Item inputItem : recipe.itemInputs.get(0).getInputItems()) {
+                for (Item inputItem : recipe.value().itemInputs.get(0).getInputItems()) {
                     recipeCache.putIfAbsent(inputItem, new ArrayList<>());
                     recipeCache.get(inputItem).add(recipe);
                 }
@@ -108,7 +131,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Get all recipes that are using some Item.
      */
-    public Collection<MachineRecipe> getMatchingRecipes(ServerLevel world, Item input) {
+    public Collection<RecipeHolder<MachineRecipe>> getMatchingRecipes(ServerLevel world, Item input) {
         updateRecipeCache(world);
         return Collections.unmodifiableCollection(recipeCache.getOrDefault(input, Collections.emptyList()));
     }
@@ -116,7 +139,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Get all recipes that are not using any input item.
      */
-    public Collection<MachineRecipe> getFluidOnlyRecipes(ServerLevel world) {
+    public Collection<RecipeHolder<MachineRecipe>> getFluidOnlyRecipes(ServerLevel world) {
         updateRecipeCache(world);
         return Collections.unmodifiableList(fluidOnlyRecipes);
     }
@@ -168,77 +191,11 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             throw new IllegalArgumentException("Must have at least one fluid or item input.");
         if (recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0)
             throw new IllegalArgumentException("Must have at least one fluid or item output.");
-
-        if (this == MIMachineRecipeTypes.FORGE_HAMMER) {
-            if (recipe.itemInputs.size() != 1)
-                throw new IllegalArgumentException("Must have exactly one item input.");
-            if (recipe.itemOutputs.size() != 1)
-                throw new IllegalArgumentException("Must have exactly one item output.");
-            if (recipe.itemInputs.get(0).probability != 1.0f || recipe.itemOutputs.get(0).probability != 1.0f)
-                throw new IllegalArgumentException("Chanced recipes are not supported for the forge hammer.");
-        }
     }
 
     @Override
-    public MachineRecipe fromJson(ResourceLocation id, JsonObject json) {
-        MachineRecipe recipe = new MachineRecipe(id, this);
-
-        if (this.id.equals(MIMachineRecipeTypes.FORGE_HAMMER.id)) {
-            recipe.eu = json.has("hammer_damage") ? readNonNegativeInt(json, "hammer_damage") : 0;
-            recipe.duration = 0;
-        } else {
-            recipe.eu = readPositiveInt(json, "eu");
-            recipe.duration = readPositiveInt(json, "duration");
-        }
-
-        recipe.itemInputs = readArray(json, "item_inputs", MachineRecipeType::readItemInput);
-        recipe.fluidInputs = readArray(json, "fluid_inputs", MachineRecipeType::readFluidInput);
-        recipe.itemOutputs = readArray(json, "item_outputs", MachineRecipeType::readItemOutput);
-        recipe.fluidOutputs = readArray(json, "fluid_outputs", MachineRecipeType::readFluidOutput);
-
-        recipe.conditions = readConditions(json);
-
-        validateRecipe(recipe);
-
-        return recipe;
-    }
-
-    private static int readPositiveInt(JsonObject json, String element) {
-        int x = GsonHelper.getAsInt(json, element);
-        if (x <= 0)
-            throw new IllegalArgumentException(element + " should be a positive integer.");
-        return x;
-    }
-
-    private static int readNonNegativeInt(JsonObject json, String element) {
-        int x = GsonHelper.getAsInt(json, element);
-        if (x < 0)
-            throw new IllegalArgumentException(element + " should be a positive integer.");
-        return x;
-    }
-
-    private static int readFluidAmount(JsonObject json, String element) {
-        double amountMb = GsonHelper.getAsDouble(json, element);
-        int amount = (int) Math.round(amountMb * 81);
-        if (amount < 0) {
-            throw new IllegalArgumentException(element + " should be a positive fluid amount.");
-        }
-        return amount;
-    }
-
-    private static float readProbability(JsonObject json, String element) {
-        if (GsonHelper.isValidPrimitive(json, element)) {
-            float x = GsonHelper.getAsFloat(json, element);
-            if (x < 0 || x > 1)
-                throw new IllegalArgumentException(element + " should be a float between 0 and 1.");
-            return x;
-        } else {
-            return 1;
-        }
-    }
-
-    private static ResourceLocation readIdentifier(JsonObject json, String element) {
-        return new ResourceLocation(GsonHelper.getAsString(json, element));
+    public Codec<MachineRecipe> codec() {
+        return codec;
     }
 
     private static <T> List<T> readArray(JsonObject json, String element, Function<JsonObject, T> reader) {
@@ -260,75 +217,6 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         }
     }
 
-    public static MachineRecipe.ItemInput readItemInput(JsonObject json) {
-        int amount = 1;
-        if (json.has("amount")) {
-            amount = readNonNegativeInt(json, "amount");
-        } else if (json.has("count")) {
-            amount = readNonNegativeInt(json, "count");
-        }
-        float probability = readProbability(json, "probability");
-        Ingredient ingredient;
-
-        if (json.has("ingredient")) {
-            ingredient = Ingredient.fromJson(json.get("ingredient"));
-        } else {
-            ingredient = Ingredient.fromJson(json);
-        }
-        return new MachineRecipe.ItemInput(ingredient, amount, probability);
-    }
-
-    private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
-        ResourceLocation id = readIdentifier(json, "fluid");
-        Fluid fluid = BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> {
-            throw new IllegalArgumentException("Fluid " + id + " does not exist.");
-        });
-        int amount = readFluidAmount(json, "amount");
-        float probability = readProbability(json, "probability");
-        return new MachineRecipe.FluidInput(fluid, amount, probability);
-    }
-
-    private static MachineRecipe.ItemOutput readItemOutput(JsonObject json) {
-        ResourceLocation id = readIdentifier(json, "item");
-        Item item = BuiltInRegistries.ITEM.getOptional(id).orElseThrow(() -> {
-            throw new IllegalArgumentException("Item " + id + " does not exist.");
-        });
-        int amount = 1;
-        if (json.has("amount")) {
-            amount = readPositiveInt(json, "amount");
-        }
-        float probability = readProbability(json, "probability");
-        return new MachineRecipe.ItemOutput(item, amount, probability);
-    }
-
-    private static MachineRecipe.FluidOutput readFluidOutput(JsonObject json) {
-        ResourceLocation id = readIdentifier(json, "fluid");
-        Fluid fluid = BuiltInRegistries.FLUID.getOptional(id).orElseThrow(() -> {
-            throw new IllegalArgumentException("Fluid " + id + " does not exist.");
-        });
-        int amount = readFluidAmount(json, "amount");
-        float probability = readProbability(json, "probability");
-        return new MachineRecipe.FluidOutput(fluid, amount, probability);
-    }
-
-    private static List<MachineProcessCondition> readConditions(JsonObject object) {
-        if (!object.has("process_conditions")) {
-            return List.of();
-        }
-        JsonArray array = GsonHelper.getAsJsonArray(object, "process_conditions");
-        List<MachineProcessCondition> conditions = new ArrayList<>(array.size());
-        for (var condJson : array) {
-            var obj = condJson.getAsJsonObject();
-            var id = new ResourceLocation(GsonHelper.getAsString(obj, "id"));
-            var serializer = MachineProcessConditions.get(id);
-            if (serializer == null) {
-                throw new IllegalArgumentException("Unknown machine process condition " + id);
-            }
-            conditions.add(serializer.fromJson(obj));
-        }
-        return conditions;
-    }
-
     private static <T> List<T> readList(FriendlyByteBuf buf, Function<FriendlyByteBuf, T> reader) {
         List<T> l = new ArrayList<>();
         int size = buf.readVarInt();
@@ -346,8 +234,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     }
 
     @Override
-    public MachineRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-        MachineRecipe recipe = new MachineRecipe(id, this);
+    public MachineRecipe fromNetwork(FriendlyByteBuf buf) {
+        MachineRecipe recipe = new MachineRecipe(this);
         recipe.eu = buf.readVarInt();
         recipe.duration = buf.readVarInt();
         recipe.itemInputs = readList(buf, b -> new MachineRecipe.ItemInput(Ingredient.fromNetwork(b), b.readVarInt(), b.readFloat()));
@@ -356,11 +244,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byId(b.readVarInt()), b.readVarInt(), b.readFloat()));
         recipe.fluidOutputs = readList(buf,
                 b -> new MachineRecipe.FluidOutput(BuiltInRegistries.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
-        recipe.conditions = readList(buf, b -> {
-            var serializer = MachineProcessConditions.get(b.readResourceLocation());
-            var json = b.readUtf();
-            return serializer.fromJson(JsonParser.parseString(json).getAsJsonObject());
-        });
+        recipe.conditions = readList(buf, b -> b.readJsonWithCodec(MachineProcessCondition.CODEC));
 
         return recipe;
     }
@@ -390,9 +274,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             buf.writeFloat(i.probability);
         });
         writeList(buf, recipe.conditions, (b, cond) -> {
-            var serializer = cond.getSerializer();
-            buf.writeResourceLocation(MachineProcessConditions.getId(serializer));
-            buf.writeUtf(serializer.toJson(cast(cond), true).toString());
+            buf.writeJsonWithCodec(MachineProcessCondition.CODEC, cond);
         });
     }
 

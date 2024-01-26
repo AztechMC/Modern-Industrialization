@@ -25,23 +25,20 @@ package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
-import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import dev.emi.emi.api.EmiDragDropHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -59,7 +56,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
         FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
-        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         @Nullable
         GuiEventListener element = gui.getChildAt(mouseX, mouseY).orElse(null);
         if (element instanceof ReiDraggable dw) {
@@ -75,21 +72,11 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         if (slot instanceof ReiDraggable dw) {
             int slotId = handler.slots.indexOf(slot);
             if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(handler.containerId);
-                buf.writeVarInt(slotId);
-                buf.writeBoolean(true);
-                ik.toPacket(buf);
-                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                new DoSlotDraggingPacket(handler.containerId, slotId, ik).sendToServer();
                 return true;
             }
             if (fk != null && dw.dragFluid(fk, Simulation.ACT)) {
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(handler.containerId);
-                buf.writeVarInt(slotId);
-                buf.writeBoolean(false);
-                fk.toPacket(buf);
-                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                new DoSlotDraggingPacket(handler.containerId, slotId, fk).sendToServer();
                 return true;
             }
         }
@@ -106,7 +93,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
         FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
-        ItemVariant ik = stack.getKey() instanceof Item i ? ItemVariant.of(i, stack.getNbt()) : null;
+        ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
                 if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {

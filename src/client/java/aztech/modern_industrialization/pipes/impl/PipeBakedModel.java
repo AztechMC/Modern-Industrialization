@@ -27,14 +27,10 @@ import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
+import aztech.modern_industrialization.thirdparty.fabricrendering.ModelHelper;
+import aztech.modern_industrialization.thirdparty.fabricrendering.SpriteFinder;
 import java.util.*;
-import java.util.function.Supplier;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -44,10 +40,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
+import net.neoforged.neoforge.client.model.IDynamicBakedModel;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -56,45 +55,83 @@ import org.joml.Vector3f;
  * The block is divided in five slots of width SIDE, three for the main pipes
  * and two for connection handling.
  */
-public class PipeBakedModel implements BakedModel, FabricBakedModel {
+public class PipeBakedModel implements IDynamicBakedModel {
+    private static final ChunkRenderTypeSet RENDER_TYPES_NORMAL = ChunkRenderTypeSet.of(RenderType.cutout(), RenderType.translucent());
+
     private final TextureAtlasSprite particleSprite;
     private final Map<PipeRenderer.Factory, PipeRenderer> renderers;
     private final BakedModel[] meWireConnectors;
-    private final RenderMaterial translucentMaterial;
+    private final SpriteFinder spriteFinder;
 
     public PipeBakedModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers,
-            @Nullable BakedModel[] meWireConnectors, RenderMaterial translucentMaterial) {
+            @Nullable BakedModel[] meWireConnectors, SpriteFinder spriteFinder) {
         this.particleSprite = particleSprite;
         this.renderers = renderers;
         this.meWireConnectors = meWireConnectors;
-        this.translucentMaterial = translucentMaterial;
+        this.spriteFinder = spriteFinder;
+    }
+
+    private record ExtraData(BlockAndTintGetter level, BlockPos pos) {
+        private static final ModelProperty<ExtraData> KEY = new ModelProperty<>();
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
+    public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        return modelData.derive()
+                .with(ExtraData.KEY, new ExtraData(level, pos))
+                .build();
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState state, BlockPos pos, Supplier<RandomSource> supplier,
-            RenderContext renderContext) {
-        var maybeAttachment = ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
-        if (maybeAttachment instanceof PipeBlockEntity.RenderAttachment attachment) {
-            var camouflage = attachment.camouflage();
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
 
-            if (camouflage == null || MIPipesClient.transparentCamouflage) {
+        if (attachment == null || attachment.camouflage() == null) {
+            return RENDER_TYPES_NORMAL;
+        } else {
+            return ChunkRenderTypeSet.all();
+        }
+    }
+
+    private static boolean checkRenderType(RenderType target, @Nullable RenderType type) {
+        return type == target || type == null;
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data,
+            @Nullable RenderType renderType) {
+        List<BakedQuad> ret = null;
+        var attachment = data.get(PipeBlockEntity.RenderAttachment.KEY);
+        var extraData = data.get(ExtraData.KEY);
+
+        if (attachment == null || extraData == null) {
+            return List.of();
+        }
+
+        var camouflage = attachment.camouflage();
+
+        if (camouflage == null || MIPipesClient.transparentCamouflage) {
+            var renderNormal = checkRenderType(RenderType.cutout(), renderType);
+            var renderFluid = checkRenderType(RenderType.translucent(), renderType);
+
+            if (renderNormal || renderFluid) {
+                var renderContext = new PipeRenderContext(spriteFinder, renderNormal, renderFluid);
+                ret = renderContext.quads;
+
                 int centerSlots = attachment.types().length;
                 for (int slot = 0; slot < centerSlots; slot++) {
                     // Set color
                     int color = attachment.types()[slot].getColor();
                     renderContext.pushTransform(getColorTransform(color));
 
-                    renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(blockRenderView, pos, renderContext, slot,
+                    renderers.get(PipeRenderer.get(attachment.types()[slot])).draw(extraData.level(), extraData.pos(), renderContext, slot,
                             attachment.renderedConnections(), attachment.customData()[slot]);
 
                     renderContext.popTransform();
                 }
+            }
 
+            if (renderNormal) {
                 boolean hasMeWire = false;
                 if (meWireConnectors != null) {
                     for (var type : attachment.types()) {
@@ -115,43 +152,46 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
                         }
 
                         if (renderConnector) {
-                            meWireConnectors[direction.get3DDataValue()].emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
+                            ret.addAll(meWireConnectors[direction.get3DDataValue()].getQuads(state, side, rand, data, renderType));
                         }
                     }
                 }
             }
-
-            if (camouflage != null) {
-                renderContext.pushTransform(quad -> {
-                    // Fix tinting
-                    if (quad.colorIndex() != -1) {
-                        var blockColorMap = Minecraft.getInstance().getBlockColors();
-
-                        int color = 0xFF000000 | blockColorMap.getColor(camouflage, blockRenderView, pos, quad.colorIndex());
-                        quad.colorIndex(-1);
-
-                        for (int vertex = 0; vertex < 4; ++vertex) {
-                            quad.color(vertex, multiplyColor(color, quad.color(vertex)));
-                        }
-                    }
-
-                    if (MIPipesClient.transparentCamouflage) {
-                        quad.material(translucentMaterial);
-
-                        for (int vertex = 0; vertex < 4; ++vertex) {
-                            quad.color(vertex, multiplyColor(0x9FFFFFFF, quad.color(vertex)));
-                        }
-                    }
-
-                    return true;
-                });
-
-                var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
-                camouflageModel.emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
-
-                renderContext.popTransform();
-            }
         }
+
+        if (camouflage != null) {
+            // TODO NEO
+//            renderContext.pushTransform(quad -> {
+//                // Fix tinting
+//                if (quad.colorIndex() != -1) {
+//                    var blockColorMap = Minecraft.getInstance().getBlockColors();
+//
+//                    int color = 0xFF000000 | blockColorMap.getColor(camouflage, blockRenderView, pos, quad.colorIndex());
+//                    quad.colorIndex(-1);
+//
+//                    for (int vertex = 0; vertex < 4; ++vertex) {
+//                        quad.color(vertex, multiplyColor(color, quad.color(vertex)));
+//                    }
+//                }
+//
+//                if (MIPipesClient.transparentCamouflage) {
+//                    quad.material(translucentMaterial);
+//
+//                    for (int vertex = 0; vertex < 4; ++vertex) {
+//                        quad.color(vertex, multiplyColor(0x9FFFFFFF, quad.color(vertex)));
+//                    }
+//                }
+//
+//                return true;
+//            });
+//
+//            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
+//            camouflageModel.emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
+//
+//            renderContext.popTransform();
+        }
+
+        return ret != null ? ret : List.of();
     }
 
     // Thank you Indigo!
@@ -170,26 +210,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
-    @Override
-    public void emitItemQuads(ItemStack itemStack, Supplier<RandomSource> supplier, RenderContext renderContext) {
-        Item item = itemStack.getItem();
-        if (item instanceof PipeItem) {
-            // TODO: remove allocation if it becomes an issue
-            PipeNetworkType type = ((PipeItem) item).type;
-            int color = type.getColor();
-            renderContext.pushTransform(getColorTransform(color));
-            renderContext.pushTransform(ITEM_TRANSFORM);
-
-            PipeEndpointType[][] connections = new PipeEndpointType[][] {
-                    { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
-            renderers.get(PipeRenderer.get(type)).draw(null, null, renderContext, 0, connections, new CompoundTag());
-
-            renderContext.popTransform();
-            renderContext.popTransform();
-        }
-    }
-
-    private static RenderContext.QuadTransform getColorTransform(int color) {
+    private static PipeRenderContext.QuadTransform getColorTransform(int color) {
         return quad -> {
             if (quad.tag() == 0) {
                 quad.color(color, color, color, color);
@@ -198,7 +219,7 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
         };
     }
 
-    private static final RenderContext.QuadTransform ITEM_TRANSFORM = quad -> {
+    private static final PipeRenderContext.QuadTransform ITEM_TRANSFORM = quad -> {
         // Scale pipe to make items look better
         for (int i = 0; i < 4; ++i) {
             Vector3f pos = quad.copyPos(i, null);
@@ -210,11 +231,6 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
         }
         return true;
     };
-
-    @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction face, RandomSource random) {
-        return Collections.emptyList();
-    }
 
     @Override
     public boolean useAmbientOcclusion() {
@@ -249,5 +265,39 @@ public class PipeBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
+    }
+
+    @Override
+    public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
+        if (itemStack.getItem() instanceof PipeItem pipe) {
+            PipeNetworkType type = pipe.type;
+            int color = type.getColor();
+
+            return List.of(new PipeBakedModel(particleSprite, renderers, meWireConnectors, spriteFinder) {
+                @Override
+                public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data,
+                        @Nullable RenderType renderType) {
+                    if (side != null) {
+                        return List.of();
+                    }
+
+                    var renderContext = new PipeRenderContext(spriteFinder, true, true);
+
+                    renderContext.pushTransform(getColorTransform(color));
+                    renderContext.pushTransform(ITEM_TRANSFORM);
+
+                    PipeEndpointType[][] connections = new PipeEndpointType[][] {
+                            { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
+                    renderers.get(PipeRenderer.get(type)).draw(null, null, renderContext, 0, connections, new CompoundTag());
+
+                    renderContext.popTransform();
+                    renderContext.popTransform();
+
+                    return renderContext.quads;
+                }
+            });
+        } else {
+            return List.of(this);
+        }
     }
 }

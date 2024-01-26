@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.MIClient;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
@@ -31,31 +32,26 @@ import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.UnsidedPacketHandler;
-import java.util.List;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
 public class ClientProxy extends CommonProxy {
+    @Override
+    public Player getClientPlayer() {
+        return Objects.requireNonNull(Minecraft.getInstance().player);
+    }
+
     @Override
     public @Nullable Player findUser(ItemStack mainHand) {
         if (Minecraft.getInstance().isSameThread()) {
@@ -70,45 +66,28 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void delayNextBlockAttack(Player player) {
-        if (player == Minecraft.getInstance().player) {
-            // Add a 5 tick delay like vanilla.
-            Minecraft.getInstance().gameMode.destroyDelay = 5;
-        }
-    }
-
-    @Override
     public boolean hasShiftDown() {
         return Screen.hasShiftDown();
     }
 
     @Override
-    public List<Component> getFluidTooltip(FluidVariant variant) {
-        return FluidVariantRendering.getTooltip(variant);
-    }
-
-    @Override
-    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
-        super.registerUnsidedPacket(identifier, handler);
-
-        ClientPlayNetworking.registerGlobalReceiver(identifier, (mc, listener, buf, responseSender) -> {
-            mc.execute(handler.handlePacket(mc.player, buf));
+    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
+        ((Consumer<IClientItemExtensions>) stupidClientProperties).accept(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return RenderHelper.BLOCK_AND_ENTITY_RENDERER;
+            }
         });
     }
 
     @Override
-    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
-            BlockEntityType<AbstractTankBlockEntity> blockEntityType, int meanRgb) {
-        BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
-        TankRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
-        BuiltinItemRendererRegistry.INSTANCE.register(tankItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+    public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new TankRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
     }
 
     @Override
-    public void registerPartBarrelClient(Block barrelBlock, Item barrelItem, String materialName, String itemPath,
-            BlockEntityType<BarrelBlockEntity> blockEntityType, int meanRgb) {
-        BarrelRenderer.register(blockEntityType, TextureHelper.getOverlayTextColor(meanRgb));
-        BuiltinItemRendererRegistry.INSTANCE.register(barrelItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
     }
 
     @Override

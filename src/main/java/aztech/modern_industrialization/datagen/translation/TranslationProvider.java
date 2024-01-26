@@ -43,20 +43,20 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 
 public final class TranslationProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
-    private final FabricDataOutput packOutput;
+    private final PackOutput packOutput;
     private final boolean runtimeDatagen;
     private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public TranslationProvider(FabricDataOutput packOutput, boolean runtimeDatagen) {
+    public TranslationProvider(PackOutput packOutput, boolean runtimeDatagen) {
         this.packOutput = packOutput;
         this.runtimeDatagen = runtimeDatagen;
     }
@@ -81,7 +81,6 @@ public final class TranslationProvider implements DataProvider {
 
         addTranslation("entity.minecraft.villager.industrialist", "Industrialist");
 
-        addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
         addTranslation("key.modern_industrialization.activate", "Toggle Flight");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
         addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");

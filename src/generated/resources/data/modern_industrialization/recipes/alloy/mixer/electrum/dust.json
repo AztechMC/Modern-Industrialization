@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:silver_dusts"
+      "tag": "forge:dusts/gold"
     },
     {
       "amount": 1,
-      "tag": "c:gold_dusts"
+      "tag": "forge:dusts/silver"
     }
   ],
   "item_outputs": [

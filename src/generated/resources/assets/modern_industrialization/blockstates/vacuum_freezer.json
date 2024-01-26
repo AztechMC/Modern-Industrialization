@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/vacuum_freezer"
+      "model": "modern_industrialization:block/vacuum_freezer"
     }
   }
 }

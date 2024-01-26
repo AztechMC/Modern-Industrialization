@@ -1,16 +1,12 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 15,
-  "item_inputs": [
-    {
-      "amount": 3,
-      "tag": "c:raw_tin_ores"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 4,
-      "item": "modern_industrialization:tin_dust"
-    }
-  ]
+  "count": 3,
+  "damage": 30,
+  "ingredient": {
+    "tag": "forge:raw_materials/tin"
+  },
+  "result": {
+    "count": 4,
+    "item": "modern_industrialization:tin_dust"
+  }
 }

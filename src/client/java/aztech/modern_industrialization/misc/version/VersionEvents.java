@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.misc.version;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,15 +33,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 public class VersionEvents {
@@ -58,7 +59,7 @@ public class VersionEvents {
     }
 
     private static Version fetchVersion(boolean isIncludeAlphaVersion) throws Exception {
-        String mcVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
+        String mcVersion = ModList.get().getModContainerById("minecraft").get().getModInfo().getVersion().toString();
 
         URLConnection connection;
         connection = new URL(url).openConnection();
@@ -99,13 +100,11 @@ public class VersionEvents {
         return null;
     }
 
-    public static void startVersionCheck(LocalPlayer player) {
+    public static void startVersionCheck(ModContainer miContainer, LocalPlayer player) {
         new Thread(() -> {
             try {
-                Optional<ModContainer> currentMod = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID);
                 if (MIConfig.getConfig().newVersionMessage) {
-                    ModContainer mod = currentMod.get();
-                    String currentVersion = mod.getMetadata().getVersion().getFriendlyString();
+                    String currentVersion = miContainer.getModInfo().getVersion().toString();
                     Version lastVersion = fetchVersion(currentVersion.contains(alphaPostfix));
 
                     if (lastVersion != null) {
@@ -130,14 +129,14 @@ public class VersionEvents {
                     }
                 }
             } catch (Exception e) {
-                ModernIndustrialization.LOGGER.error("Failed to get release information from Curseforge.", e);
+                MI.LOGGER.error("Failed to get release information from Curseforge.", e);
             }
         }, "Modern Industrialization Update Checker").start();
     }
 
-    public static void init() {
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            startVersionCheck(client.player);
+    public static void init(ModContainer miContainer) {
+        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> {
+            startVersionCheck(miContainer, event.getPlayer());
         });
     }
 }

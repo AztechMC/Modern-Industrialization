@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:battery_alloy_ingots"
+      "tag": "forge:ingots/battery_alloy"
     },
     {
       "amount": 1,

@@ -37,9 +37,9 @@ public final class SteamHelper {
         for (ConfigurableFluidStack stack : fluidStacks) {
             if (stack.getResource().getFluid() == MIFluids.STEAM.asFluid()) {
                 long amount = stack.getAmount();
-                long rem = Math.min(maxEu, amount / 81);
+                long rem = Math.min(maxEu, amount);
                 if (simulation.isActing()) {
-                    stack.decrement(rem * 81);
+                    stack.decrement(rem);
                 }
                 maxEu -= rem;
                 totalRem += rem;

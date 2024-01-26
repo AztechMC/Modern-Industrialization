@@ -1,15 +1,9 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "item_inputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:gold_double_ingot"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:gold_curved_plate"
-    }
-  ]
+  "ingredient": {
+    "item": "modern_industrialization:gold_double_ingot"
+  },
+  "result": {
+    "item": "modern_industrialization:gold_curved_plate"
+  }
 }

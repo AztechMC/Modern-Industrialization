@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:stainless_steel_tiny_dusts"
+      "tag": "forge:tiny_dusts/stainless_steel"
     }
   ],
   "item_outputs": [

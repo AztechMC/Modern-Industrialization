@@ -23,8 +23,9 @@
  */
 package aztech.modern_industrialization.datagen;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
-import aztech.modern_industrialization.datagen.dynreg.MIDynamicRegistriesProvider;
+import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
@@ -41,12 +42,25 @@ import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MIDatagenServer {
-    public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        var aggregate = pack.addProvider(AggregateDataProvider.create("Server Data"));
+    public static void configure(
+            DataGenerator gen,
+            ExistingFileHelper fileHelper,
+            CompletableFuture<HolderLookup.Provider> lookupProvider,
+            boolean run,
+            boolean runtimeDatagen) {
+        var aggregate = gen.addProvider(run, new AggregateDataProvider(gen.getPackOutput(), "Server Data"));
 
         aggregate.addProvider(PetrochemRecipesProvider::new);
         aggregate.addProvider(PlankRecipesProvider::new);
@@ -60,18 +74,21 @@ public class MIDatagenServer {
         aggregate.addProvider(UpgradeProvider::new);
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
-        aggregate.addProvider(BlockLootTableProvider::new);
+        gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
+                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK))));
 
-        aggregate.addProvider(MIDynamicRegistriesProvider::new);
+        gen.addProvider(run,
+                new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
 
-        aggregate.addProvider(MIBlockTagProvider::new);
-        aggregate.addProvider((packOutput, registriesFuture) -> new MIItemTagProvider(packOutput, registriesFuture, runtimeDatagen));
-        aggregate.addProvider(MIPoiTypeTagProvider::new);
+        gen.addProvider(run, new MIBlockTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
+        gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
 
-        var translationProvider = new TranslationProvider((FabricDataOutput) pack.output, runtimeDatagen);
-        aggregate.addProvider((FabricDataOutput packOutput) -> new MIAdvancementsProvider(packOutput, translationProvider));
+        var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
+        gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(
+                new MIAdvancementsProvider(translationProvider))));
 
         // Must either remain separate or be made to use futures to wait for dependencies!
-        pack.addProvider((FabricDataOutput ignored) -> translationProvider);
+        gen.addProvider(run, translationProvider);
     }
 }

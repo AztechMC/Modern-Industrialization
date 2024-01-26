@@ -4,12 +4,40 @@
   "eu": 2,
   "item_inputs": [
     {
-      "amount": 3,
-      "tag": "c:plutonium_tiny_dusts"
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
     },
     {
-      "amount": 6,
-      "tag": "c:uranium_238_tiny_dusts"
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/plutonium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/plutonium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/plutonium"
     }
   ],
   "item_outputs": [

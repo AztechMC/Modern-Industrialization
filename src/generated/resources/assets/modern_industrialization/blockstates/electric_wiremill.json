@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/electric_wiremill"
+      "model": "modern_industrialization:block/electric_wiremill"
     }
   }
 }

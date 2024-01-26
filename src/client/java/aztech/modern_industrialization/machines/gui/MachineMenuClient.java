@@ -86,4 +86,9 @@ public class MachineMenuClient extends MachineMenuCommon {
     public boolean stillValid(Player player) {
         return true;
     }
+
+    @Override
+    public void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf) {
+        components.get(componentIndex).readCurrentData(buf);
+    }
 }

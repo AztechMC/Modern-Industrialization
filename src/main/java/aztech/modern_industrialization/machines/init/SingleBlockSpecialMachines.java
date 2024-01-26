@@ -37,7 +37,6 @@ import java.util.Set;
 public class SingleBlockSpecialMachines {
 
     public static void init() {
-
         MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
         MachineRegistrationHelper.registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),

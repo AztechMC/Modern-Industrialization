@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:stainless_steel_plates"
+      "tag": "forge:plates/stainless_steel"
     },
     {
       "amount": 1,
@@ -13,7 +13,7 @@
     },
     {
       "amount": 4,
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     }
   ],
   "item_outputs": [

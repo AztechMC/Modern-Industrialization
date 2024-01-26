@@ -25,12 +25,10 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.blocks.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.models.MachineCasing;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,12 +47,6 @@ public class MachineBlock extends Block implements TickableBlock {
 
     private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
     private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
-
-    /**
-     * Used by the model loading code to identify machine models.
-     * TODO: refactor
-     */
-    public static final Map<String, MachineCasing> REGISTERED_MACHINES = new HashMap<>();
 
     public MachineBlock(BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor, Properties properties) {
         super(properties);
@@ -79,7 +71,7 @@ public class MachineBlock extends Block implements TickableBlock {
                     world.blockUpdated(pos, Blocks.AIR);
                     return beResult;
                 } else {
-                    machine.openMenu(player);
+                    machine.openMenu((ServerPlayer) player);
                 }
             }
             return InteractionResult.CONSUME;

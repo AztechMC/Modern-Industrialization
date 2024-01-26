@@ -29,10 +29,10 @@ import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -112,8 +112,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
+    public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
     }
 
     @Override
@@ -223,7 +223,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
         if (!world.isClientSide) {
             if (!pipeEntity.customUse(partShape, player, hand) && !player.isShiftKeyDown()) {
-                player.openMenu(pipeEntity.getGui(partShape.type, partShape.direction));
+                var menuOpener = pipeEntity.getGui(partShape.type, partShape.direction);
+                ((ServerPlayer) player).openMenu(menuOpener, menuOpener::writeAdditionalData);
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);
@@ -303,8 +304,12 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 return Objects.requireNonNullElse(pipe.camouflage, state);
             }
         } else {
-            if (((RenderAttachedBlockView) renderView).getBlockEntityRenderAttachment(pos) instanceof PipeBlockEntity.RenderAttachment att) {
-                return Objects.requireNonNullElse(att.camouflage(), state);
+            var manager = renderView.getModelDataManager();
+            if (manager != null) {
+                var data = manager.getAtOrEmpty(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+                if (data != null) {
+                    return Objects.requireNonNullElse(data.camouflage(), state);
+                }
             }
         }
         return state;

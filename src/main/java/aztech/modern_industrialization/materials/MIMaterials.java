@@ -138,15 +138,15 @@ public class MIMaterials {
 
     public static MaterialBuilder addVanillaMetal(boolean nugget, MaterialBuilder builder) {
         String n = builder.getMaterialName();
-        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
-                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
-                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
-                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
+        MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(INGOT, "#forge:ingots/" + n, "minecraft:" + n + "_ingot"))
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#forge:storage_blocks/" + n, "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#forge:ores/" + n, "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#forge:ores/deepslate/" + n, "minecraft:deepslate_" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL, "#forge:raw_materials/" + n, "minecraft:raw_" + n))
+                .addMaterialItemParts(MaterialItemPart.external(RAW_METAL_BLOCK, "#forge:storage_blocks/raw_" + n, "minecraft:raw_" + n + "_block"));
 
         if (nugget) {
-            res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#c:" + n + "_nuggets", "minecraft:" + n + "_nugget"));
+            res.addMaterialItemParts(MaterialItemPart.external(NUGGET, "#forge:nuggets/" + n, "minecraft:" + n + "_nugget"));
         }
         res.addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply);
 
@@ -160,9 +160,9 @@ public class MIMaterials {
     public static MaterialBuilder addVanillaGem(boolean compressor, String gemPath, MaterialBuilder builder) {
         String n = builder.getMaterialName();
         MaterialBuilder res = builder.addMaterialItemParts(MaterialItemPart.external(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
-                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-                .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
+                .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#forge:storage_blocks/" + n, "minecraft:" + n + "_block"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE, "#forge:ores/" + n, "minecraft:" + n + "_ore"))
+                .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#forge:ores/deepslate/" + n, "minecraft:deepslate_" + n + "_ore"));
 
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
 
@@ -248,9 +248,9 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xd20000)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(TINY_DUST, CRUSHED_DUST, BATTERY.of(CableTier.LV)).addMaterialItemParts(MaterialItemPart.external(DUST, "minecraft:redstone", "minecraft:redstone"))
-                        .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
-                        .addMaterialItemParts(MaterialItemPart.external(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
-                        .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
+                        .addMaterialItemParts(MaterialItemPart.external(BLOCK, "#forge:storage_blocks/redstone", "minecraft:redstone_block"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE, "#forge:ores/redstone", "minecraft:redstone_ore"))
+                        .addMaterialItemParts(MaterialItemPart.external(ORE_DEEPSLATE, "#forge:ores/redstone", "minecraft:deepslate_redstone_ore"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed"));
 

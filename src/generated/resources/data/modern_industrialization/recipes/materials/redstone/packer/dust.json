@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:redstone_tiny_dusts"
+      "tag": "forge:tiny_dusts/redstone"
     }
   ],
   "item_outputs": [

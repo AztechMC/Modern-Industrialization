@@ -9,7 +9,7 @@
       "item": "minecraft:bricks"
     },
     "p": {
-      "tag": "c:steel_plates"
+      "tag": "forge:plates/steel"
     }
   },
   "result": {

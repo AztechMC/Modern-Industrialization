@@ -30,6 +30,6 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class MIIdentifier extends ResourceLocation {
     public MIIdentifier(String path) {
-        super(ModernIndustrialization.MOD_ID, path);
+        super(MI.ID, path);
     }
 }

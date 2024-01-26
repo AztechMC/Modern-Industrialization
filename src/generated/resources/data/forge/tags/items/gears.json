@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#forge:gears/aluminum",
+    "#forge:gears/bronze",
+    "#forge:gears/copper",
+    "#forge:gears/gold",
+    "#forge:gears/invar",
+    "#forge:gears/iron",
+    "#forge:gears/stainless_steel",
+    "#forge:gears/steel",
+    "#forge:gears/tin",
+    "#forge:gears/titanium"
+  ]
+}

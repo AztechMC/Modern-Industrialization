@@ -24,7 +24,8 @@
 package aztech.modern_industrialization.util;
 
 import java.util.concurrent.atomic.AtomicLong;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 
 public class TickHelper {
     private static final AtomicLong currentTick = new AtomicLong();
@@ -34,8 +35,10 @@ public class TickHelper {
     }
 
     static {
-        ServerTickEvents.START_SERVER_TICK.register(server -> {
-            currentTick.incrementAndGet();
+        NeoForge.EVENT_BUS.addListener(TickEvent.ServerTickEvent.class, event -> {
+            if (event.phase == TickEvent.Phase.START) {
+                currentTick.incrementAndGet();
+            }
         });
     }
 }

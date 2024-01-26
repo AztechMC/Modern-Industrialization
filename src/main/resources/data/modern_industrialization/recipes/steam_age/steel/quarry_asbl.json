@@ -13,7 +13,7 @@
       "tag": "modern_industrialization:item_pipes"
     },
     "G": {
-      "tag": "c:steel_gears"
+      "tag": "forge:gears/steel"
     },
     "P": {
       "item": "modern_industrialization:invar_rotary_blade"

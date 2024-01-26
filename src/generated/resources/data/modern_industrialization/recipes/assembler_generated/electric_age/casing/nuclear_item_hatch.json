@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:nuclear_alloy_plates"
+      "tag": "forge:plates/nuclear_alloy"
     },
     {
       "amount": 1,

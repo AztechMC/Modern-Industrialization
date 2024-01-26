@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
-import aztech.modern_industrialization.MIBlockEntityTypes;
+import aztech.modern_industrialization.MIRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeBarrelBlockEntity extends BarrelBlockEntity {
 
     public CreativeBarrelBlockEntity(BlockPos pos, BlockState state) {
-        super(MIBlockEntityTypes.CREATIVE_BARREL, pos, state);
+        super(MIRegistries.CREATIVE_BARREL_BE.get(), pos, state);
     }
 
 }

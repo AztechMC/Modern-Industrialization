@@ -29,10 +29,8 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.p2p.CapabilityP2PTunnelPart;
 import aztech.modern_industrialization.api.energy.*;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import team.reborn.energy.api.EnergyStorage;
 
 public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnelPart, MIEnergyStorage> {
 
@@ -58,10 +56,10 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
 
     private class InputEnergyStorage implements MIEnergyStorage.NoExtract {
         @Override
-        public boolean supportsInsertion() {
+        public boolean canReceive() {
             for (var output : getOutputs()) {
                 try (var capabilityGuard = output.getAdjacentCapability()) {
-                    if (capabilityGuard.get().supportsInsertion()) {
+                    if (capabilityGuard.get().canReceive()) {
                         return true;
                     }
                 }
@@ -71,7 +69,7 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
         }
 
         @Override
-        public long insert(long maxAmount, TransactionContext transaction) {
+        public long receive(long maxAmount, boolean simulate) {
             StoragePreconditions.notNegative(maxAmount);
             long total = 0;
 
@@ -87,17 +85,19 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
 
             for (var target : getOutputs()) {
                 try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
-                    final EnergyStorage output = capabilityGuard.get();
+                    var output = capabilityGuard.get();
                     final long toSend = amountPerOutput + overflow;
 
-                    final long received = output.insert(toSend, transaction);
+                    final long received = output.receive(toSend, simulate);
 
                     overflow = toSend - received;
                     total += received;
                 }
             }
 
-            queueTunnelDrain(PowerUnits.TR, total, transaction);
+            if (!simulate) {
+                queueTunnelDrain(PowerUnits.RF, total);
+            }
 
             return total;
         }
@@ -132,17 +132,19 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
 
     private class OutputEnergyStorage implements MIEnergyStorage.NoInsert {
         @Override
-        public boolean supportsExtraction() {
+        public boolean canExtract() {
             try (var input = getInputCapability()) {
-                return input.get().supportsExtraction();
+                return input.get().canExtract();
             }
         }
 
         @Override
-        public long extract(long maxAmount, TransactionContext transaction) {
+        public long extract(long maxAmount, boolean simulate) {
             try (var input = getInputCapability()) {
-                long extracted = input.get().extract(maxAmount, transaction);
-                queueTunnelDrain(PowerUnits.TR, extracted, transaction);
+                long extracted = input.get().extract(maxAmount, simulate);
+                if (!simulate) {
+                    queueTunnelDrain(PowerUnits.RF, extracted);
+                }
                 return extracted;
             }
         }

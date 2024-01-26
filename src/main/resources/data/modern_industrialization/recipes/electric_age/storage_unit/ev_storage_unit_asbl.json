@@ -14,7 +14,7 @@
       "item" : "modern_industrialization:highly_advanced_machine_hull"
     },
     "L": {
-      "tag" : "c:battery_alloy_plates"
+      "tag" : "forge:plates/battery_alloy"
     }
 
   },

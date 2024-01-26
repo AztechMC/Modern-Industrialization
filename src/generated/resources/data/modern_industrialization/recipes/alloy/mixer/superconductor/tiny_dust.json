@@ -4,20 +4,40 @@
   "eu": 2,
   "item_inputs": [
     {
-      "amount": 2,
-      "tag": "c:neodymium_tiny_dusts"
-    },
-    {
-      "amount": 3,
-      "tag": "c:annealed_copper_tiny_dusts"
-    },
-    {
-      "amount": 3,
-      "tag": "c:yttrium_tiny_dusts"
+      "amount": 1,
+      "tag": "forge:tiny_dusts/iridium"
     },
     {
       "amount": 1,
-      "tag": "c:iridium_tiny_dusts"
+      "tag": "forge:tiny_dusts/annealed_copper"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/annealed_copper"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/annealed_copper"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/yttrium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/yttrium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/yttrium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/neodymium"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/neodymium"
     }
   ],
   "item_outputs": [

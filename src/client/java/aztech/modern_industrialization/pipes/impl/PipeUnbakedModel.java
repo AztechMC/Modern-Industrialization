@@ -23,59 +23,57 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
-import java.util.Collection;
+import aztech.modern_industrialization.thirdparty.fabricrendering.SpriteFinderImpl;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-public class PipeUnbakedModel implements UnbakedModel {
-    private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = new MIIdentifier("part/me_wire_connector");
+public class PipeUnbakedModel implements IUnbakedGeometry<PipeUnbakedModel> {
+    public static final ResourceLocation LOADER_ID = MI.id("pipe");
+    public static final IGeometryLoader<PipeUnbakedModel> LOADER = (object, context) -> {
+        return new PipeUnbakedModel();
+    };
+
+    private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
     private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation("minecraft:block/iron_block"));
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return MIConfig.loadAe2Compat() ? List.of(ME_WIRE_CONNECTOR_MODEL) : List.of();
-    }
-
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
-    }
-
-    @Nullable
-    @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
+            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         Map<PipeRenderer.Factory, PipeRenderer> renderers = new IdentityHashMap<>();
         for (PipeRenderer.Factory rendererFactory : MIPipesClient.RENDERERS) {
             renderers.put(rendererFactory, rendererFactory.create(spriteGetter));
         }
 
-        @Nullable
         BakedModel[] meWireConnectors = null;
         if (MIConfig.loadAe2Compat()) {
-            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker);
+            meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, baker, spriteGetter);
         }
+
+        var blockAtlas = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS);
+        var spriteFinder = new SpriteFinderImpl(blockAtlas.getTextures(), blockAtlas);
 
         return new PipeBakedModel(
                 spriteGetter.apply(PARTICLE_SPRITE),
                 renderers,
                 meWireConnectors,
-                RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(BlendMode.TRANSLUCENT).find());
+                spriteFinder);
     }
 }

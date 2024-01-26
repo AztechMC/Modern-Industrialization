@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:raw_iron_ores"
+      "tag": "forge:raw_materials/iron"
     }
   ],
   "item_outputs": [

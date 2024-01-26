@@ -22,10 +22,6 @@ jobs:
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-    - name: Validate AW
-      run: ./gradlew validateAccessWidener
-    - name: Generate assets
-      run: ./gradlew runData
     - name: Build with Gradle
       run: ./gradlew build
       env:
@@ -35,11 +31,11 @@ jobs:
         rm -rf run || echo "no run directory to remove"
         mkdir run
         echo eula=true >> run/eula.txt
-        ./gradlew runAutoTestServer --stacktrace
-        ! grep -q FATAL run/logs/latest.log
-        ! grep -q JsonSyntaxException run/logs/latest.log
+        ./gradlew runAutotestServer --stacktrace
+        ! grep -q FATAL runs/server/logs/latest.log
+        ! grep -q JsonSyntaxException runs/server/logs/latest.log
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: modern-industrialization ${{ steps.var.outputs.commit_hash }}
+        name: Modern Industrialization ${{ steps.var.outputs.commit_hash }}
         path: build/libs

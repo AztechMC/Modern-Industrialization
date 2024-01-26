@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.replicator.description"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:replicator"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.replicator"
     }

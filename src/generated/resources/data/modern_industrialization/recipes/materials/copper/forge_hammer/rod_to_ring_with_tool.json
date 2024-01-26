@@ -1,16 +1,10 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 10,
-  "item_inputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:copper_rod"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:copper_ring"
-    }
-  ]
+  "damage": 20,
+  "ingredient": {
+    "item": "modern_industrialization:copper_rod"
+  },
+  "result": {
+    "item": "modern_industrialization:copper_ring"
+  }
 }

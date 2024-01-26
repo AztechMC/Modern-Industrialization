@@ -36,13 +36,9 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,12 +62,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * The BlockEntity for a pipe.
  */
-public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, RenderAttachmentBlockEntity, WrenchableBlockEntity {
+public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     private static final VoxelShape[] ME_WIRE_CONNECTOR_SHAPES;
@@ -123,7 +122,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     public PipeBlockEntity(BlockPos pos, BlockState state) {
-        super(MIPipes.BLOCK_ENTITY_TYPE_PIPE, pos, state);
+        super(MIPipes.BLOCK_ENTITY_TYPE_PIPE.get(), pos, state);
     }
 
     void updateConnections() {
@@ -343,16 +342,12 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
         if (!player.getAbilities().instabuild && itemChanged) {
             var itemToUse = newCamouflage.getBlock().asItem();
-            var inv = PlayerInventoryStorage.of(player);
-            var toExtract = StorageUtil.findExtractableResource(inv, v -> v.isOf(itemToUse), null);
-            try (var tx = Transaction.openOuter()) {
-                if (toExtract == null || inv.extract(toExtract, 1, tx) != 1) {
-                    player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
-                            .arg(newCamouflage, MITooltips.BLOCK_STATE_PARSER).build().withStyle(ChatFormatting.RED), true);
-                    return true; // return true to prevent other interactions
-                }
+            var extracted = TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), s -> s.is(itemToUse), 1);
 
-                tx.commit();
+            if (extracted.isEmpty()) {
+                player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
+                        .arg(newCamouflage, MITooltips.BLOCK_STATE_PARSER).build().withStyle(ChatFormatting.RED), true);
+                return true; // return true to prevent other interactions
             }
         }
 
@@ -369,7 +364,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return false;
     }
 
-    public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {
+    public IPipeMenuProvider getGui(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
                 return pipe.getConnectionGui(direction, this);
@@ -442,6 +437,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             }
             rebuildCollisionShape();
 
+            requestModelDataUpdate();
             WorldHelper.forceChunkRemesh(level, worldPosition);
         }
     }
@@ -491,7 +487,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public Object getRenderAttachmentData() {
+    public ModelData getModelData() {
         PipeNetworkType[] types = new PipeNetworkType[connections.size()];
         PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
         CompoundTag[] customData = new CompoundTag[connections.size()];
@@ -502,7 +498,9 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             customData[i] = this.customData.get(entry.getKey());
             i++;
         }
-        return new RenderAttachment(camouflage, types, renderedConnections, customData);
+        return ModelData.builder()
+                .with(RenderAttachment.KEY, new RenderAttachment(camouflage, types, renderedConnections, customData))
+                .build();
     }
 
     @Override
@@ -540,6 +538,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             PipeNetworkType[] types,
             PipeEndpointType[][] renderedConnections,
             CompoundTag[] customData) {
+        public static final ModelProperty<RenderAttachment> KEY = new ModelProperty<>();
     }
 
     /**

@@ -32,6 +32,8 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getL
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
@@ -40,7 +42,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
@@ -49,6 +50,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public class DebugCommands {
     private static final SuggestionProvider<CommandSourceStack> PIPE_TYPES_SUGGESTION_PROVIDER = (context, builder) -> {
@@ -57,12 +60,12 @@ public class DebugCommands {
 
     // @formatter:off
     public static void init() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> {
+        NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, event -> {
             if (!MIConfig.getConfig().enableDebugCommands) {
                 return;
             }
 
-            dispatcher.register(literal("mi")
+            event.getDispatcher().register(literal("mi")
                     .requires(source -> source.hasPermission(4))
                     .then(literal("pipes")
                             .then(argument("pos", blockPos())
@@ -91,6 +94,12 @@ public class DebugCommands {
                                     return dumpStats(ctx.getSource().getPlayerOrException());
                                 })
                             )
+                            .then(literal("build_multiblock")
+                                    .then(argument("controller_pos", blockPos())
+                                            .executes(ctx -> {
+                                                return buildMultiblock(ctx.getSource(), getLoadedBlockPos(ctx, "controller_pos"));
+                                            }))
+                            )
                     )
             );
         });
@@ -99,7 +108,7 @@ public class DebugCommands {
 
     private static int clearPipes(CommandSourceStack src, BlockPos pos) {
         // Clear pipe block first (if possible, hopefully yes)
-        if (src.getLevel().getBlockState(pos).is(MIPipes.BLOCK_PIPE)) {
+        if (src.getLevel().getBlockState(pos).is(MIPipes.BLOCK_PIPE.get())) {
             src.getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
 
@@ -159,6 +168,21 @@ public class DebugCommands {
     private static int dumpStats(ServerPlayer player) {
         player.displayClientMessage(Component.literal(
                 PlayerStatisticsData.get(player.server).get(player).toTag().toString()), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int buildMultiblock(CommandSourceStack src, BlockPos controllerPos) {
+        var be = src.getLevel().getBlockEntity(controllerPos);
+        if (be instanceof MultiblockMachineBlockEntity multiblock) {
+            var shape = multiblock.getActiveShape();
+            var shapeMatcher = new ShapeMatcher(src.getLevel(), controllerPos, multiblock.orientation.facingDirection, shape);
+            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
+
+            src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(
+                    controllerPos, updatedBlocks)), true);
+        } else {
+            src.sendFailure(Component.literal("Block at position %s is not a multiblock controller.".formatted(controllerPos)));
+        }
         return Command.SINGLE_SUCCESS;
     }
 }

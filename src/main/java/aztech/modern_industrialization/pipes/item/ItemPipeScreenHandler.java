@@ -25,16 +25,16 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
+import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
+import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
+import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.pipes.impl.PipePackets;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -60,7 +60,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     }
 
     public ItemPipeScreenHandler(int syncId, Inventory playerInventory, ItemPipeInterface pipeInterface) {
-        super(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, syncId);
+        super(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), syncId);
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
@@ -142,33 +142,19 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
             ServerPlayer serverPlayer = (ServerPlayer) playerInventory.player;
             if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeBoolean(trackedWhitelist);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_WHITELIST, buf);
+                new SetItemWhitelistPacket(containerId, trackedWhitelist).sendToClient(serverPlayer);
             }
             if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(trackedType);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
+                new SetConnectionTypePacket(containerId, trackedType).sendToClient(serverPlayer);
             }
             if (trackedPriority0 != pipeInterface.getPriority(0)) {
                 trackedPriority0 = pipeInterface.getPriority(0);
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(0);
-                buf.writeInt(trackedPriority0);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+                new SetPriorityPacket(containerId, 0, trackedPriority0).sendToClient(serverPlayer);
             }
             if (trackedPriority1 != pipeInterface.getPriority(1)) {
                 trackedPriority1 = pipeInterface.getPriority(1);
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(1);
-                buf.writeInt(trackedPriority1);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+                new SetPriorityPacket(containerId, 1, trackedPriority1).sendToClient(serverPlayer);
             }
         }
     }
@@ -230,7 +216,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0L) != 0L;
+            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0) != 0;
         }
 
         @Override

@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:le_uranium_ingots"
+      "tag": "forge:ingots/le_uranium"
     },
     "y": {
       "item": "modern_industrialization:le_uranium_ingot"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:le_uranium_block"
   }
 }

@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.machines.init;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.CentrifugeMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
@@ -33,8 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class MIMachineRecipeTypes {
@@ -49,7 +48,6 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType DISTILLERY = create("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType ELECTROLYZER = create("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType FURNACE = create("furnace", FurnaceRecipeProxy::new);
-    public static final MachineRecipeType FORGE_HAMMER = create("forge_hammer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MACERATOR = create("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MIXER = create("mixer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType PACKER = create("packer").withItemInputs().withItemOutputs();
@@ -86,9 +84,9 @@ public class MIMachineRecipeTypes {
     }
 
     private static MachineRecipeType create(String name, Function<ResourceLocation, MachineRecipeType> ctor) {
-        MachineRecipeType type = ctor.apply(new MIIdentifier(name));
-        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, type.getId(), type);
-        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.getId(), type);
+        MachineRecipeType type = ctor.apply(MI.id(name));
+        MIRegistries.RECIPE_SERIALIZERS.register(name, () -> type);
+        MIRegistries.RECIPE_TYPES.register(name, () -> type);
         recipeTypes.add(type);
         return type;
     }

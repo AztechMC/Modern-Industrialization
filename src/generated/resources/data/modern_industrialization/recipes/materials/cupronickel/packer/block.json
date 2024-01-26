@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:cupronickel_ingots"
+      "tag": "forge:ingots/cupronickel"
     },
     {
       "amount": 1,

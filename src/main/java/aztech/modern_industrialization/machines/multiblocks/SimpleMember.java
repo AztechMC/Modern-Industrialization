@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -41,34 +42,24 @@ public interface SimpleMember {
 
     BlockState getPreviewState();
 
-    static SimpleMember forBlock(Block block) {
+    static SimpleMember forBlock(Supplier<? extends Block> block) {
         Objects.requireNonNull(block);
 
         return new SimpleMember() {
             @Override
             public boolean matchesState(BlockState state) {
-                return state.is(block);
+                return state.is(block.get());
             }
 
             @Override
             public BlockState getPreviewState() {
-                return block.defaultBlockState();
+                return block.get().defaultBlockState();
             }
         };
     }
 
     static SimpleMember forBlockId(ResourceLocation id) {
-        return new SimpleMember() {
-            @Override
-            public boolean matchesState(BlockState state) {
-                return BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(id);
-            }
-
-            @Override
-            public BlockState getPreviewState() {
-                return BuiltInRegistries.BLOCK.get(id).defaultBlockState();
-            }
-        };
+        return forBlock(() -> BuiltInRegistries.BLOCK.get(id));
     }
 
     static SimpleMember forBlockState(BlockState state) {

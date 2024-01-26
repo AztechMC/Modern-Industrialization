@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.machine.holder.FluidStorageComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -35,12 +36,12 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.ChatFormatting;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComponentHolder {
@@ -59,7 +60,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     }
 
     @Override
-    public void openMenu(Player player) {
+    public void openMenu(ServerPlayer player) {
         if (controller != null) {
             controller.openMenu(player);
         } else {
@@ -81,6 +82,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     public void unlink() {
         super.unlink();
         controller = null;
+        invalidateCapabilities();
     }
 
     @Override
@@ -90,13 +92,16 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
 
     public void setController(LargeTankMultiblockBlockEntity controller) {
         this.controller = controller;
+        invalidateCapabilities();
     }
 
-    private Storage<FluidVariant> getStorage() {
-        return controller == null ? Storage.empty() : controller.getStorage();
+    private IFluidHandler getStorage() {
+        return controller == null ? EmptyFluidHandler.INSTANCE : controller.getExposedFluidHandler();
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
-        FluidStorage.SIDED.registerForBlockEntity((be, direction) -> ((LargeTankHatch) be).getStorage(), bet);
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> ((LargeTankHatch) be).getStorage());
+        });
     }
 }

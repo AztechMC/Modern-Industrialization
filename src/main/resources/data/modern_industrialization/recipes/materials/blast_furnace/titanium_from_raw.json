@@ -3,7 +3,7 @@
   "eu": 128,
   "duration": 400,
   "item_inputs": {
-    "tag": "c:raw_titanium_ores",
+    "tag": "forge:raw_materials/titanium",
     "amount": 3
   },
   "fluid_inputs": {

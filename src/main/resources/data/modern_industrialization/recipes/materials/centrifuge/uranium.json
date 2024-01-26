@@ -5,7 +5,7 @@
   "duration": 6000,
 
   "item_inputs": {
-    "tag": "c:uranium_dusts",
+    "tag": "forge:dusts/uranium",
     "amount": 9
   },
 

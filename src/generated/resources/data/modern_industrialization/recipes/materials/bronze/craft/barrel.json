@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
-      "tag": "c:bronze_plates"
+      "tag": "forge:plates/bronze"
     },
     "b": {
       "tag": "c:wooden_barrels"
@@ -14,7 +15,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:bronze_barrel"
   }
 }

@@ -26,38 +26,35 @@ package aztech.modern_industrialization.materials.part;
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MICapabilities;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
+import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import java.util.Optional;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.BiConsumer;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.ModelTemplate;
-import net.minecraft.data.models.model.TextureMapping;
-import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
 
-    public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
-        var textureSlot = TextureSlot.create("0");
-        var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath()));
-        gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
+    public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
+        gen.simpleBlock(block, gen.models()
+                .getBuilder(gen.blockTexture(block).getPath())
+                .parent(gen.models().getExistingFile(gen.modLoc("base/tank")))
+                .texture("0", gen.blockTexture(block).toString()));
     };
 
     @Override
@@ -75,7 +72,7 @@ public class TankPart implements PartKeyProvider {
 
     public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity, @Nullable String maybePathOverridden) {
         MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
-        long capacity = FluidConstants.BUCKET * bucketCapacity;
+        long capacity = FluidType.BUCKET_VOLUME * bucketCapacity;
 
         PartTemplate tank = new PartTemplate(englishNameFormatter, key())
                 .asBlock(SortOrder.TANKS, new TextureGenParams.SimpleRecoloredBlock())
@@ -96,21 +93,23 @@ public class TankPart implements PartKeyProvider {
                                     .noLootTable()
                                     .sortOrder(SortOrder.TANKS.and(bucketCapacity)));
 
-                    TankBlock block = blockDefinition.asBlock();
-                    TankItem item = (TankItem) blockDefinition.asItem();
+                    TagsToGenerate.generateTag(MITags.TANKS, blockDefinition, "Tanks");
 
-                    TagsToGenerate.generateTag(MITags.TANKS, item, "Tanks");
+                    MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
+                        var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
+                        // noinspection unchecked,rawtypes
+                        bet.setValue((BlockEntityType) ret);
+                        return ret;
+                    });
 
-                    // noinspection unchecked,rawtypes
-                    bet.setValue((BlockEntityType) Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, itemId,
-                            FabricBlockEntityTypeBuilder.create(
-                                    block.factory::newBlockEntity, block).build(null)));
-                    // Fluid API
-                    FluidStorage.SIDED.registerSelf(bet.getValue());
-                    item.registerItemApi();
+                    MICapabilities.onEvent(event -> {
+                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> new SlotFluidHandler(be));
 
-                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue(),
-                            partContext.get(MEAN_RGB));
+                        var item = (TankItem) blockDefinition.asItem();
+                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
+                    });
+
+                    CommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));
                 });
 
         if (maybePathOverridden != null) {

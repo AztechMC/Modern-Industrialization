@@ -24,17 +24,13 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
+import aztech.modern_industrialization.thirdparty.fabricrendering.QuadBuffer;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -58,7 +54,6 @@ public class MultiblockTankBER extends MultiblockMachineBER {
 
             VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
 
-            FluidVariantRenderHandler handler = FluidVariantRendering.getHandlerOrDefault(fluid.getFluid());
             TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
 
             int[] cornerPosition = tankBlockEntity.getCornerPosition();
@@ -76,7 +71,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             float topHeight = fullness;
             float bottomHeight = 0;
             // Render gas from top to bottom
-            if (FluidVariantAttributes.isLighterThanAir(fluid)) {
+            if (fluid.getFluid().getFluidType().isLighterThanAir()) {
                 topHeight = 1;
                 bottomHeight = 1 - fullness;
             }
@@ -88,10 +83,10 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             int[] maxs = new int[] { maxX, maxY, maxZ };
             Vec3i[] dirs = new Vec3i[] { Direction.EAST.getNormal(), Direction.UP.getNormal(), Direction.SOUTH.getNormal() };
 
-            Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+            var emitter = new QuadBuffer();
 
             for (Direction direction : Direction.values()) {
-                QuadEmitter emitter = renderer.meshBuilder().getEmitter();
+                emitter.clear();
                 ms.pushPose();
 
                 int u_index = direction.getAxis() == Direction.Axis.X ? 2 : 0;
@@ -141,7 +136,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
                         emitter.color(-1, -1, -1, -1);
 
-                        int color = handler.getColor(fluid, be.getLevel(),
+                        int color = FluidVariantRendering.getColor(fluid, be.getLevel(),
                                 BlockPos.containing(be.getBlockPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
                                         be.getBlockPos().getY() + originY + offset_u.getY() * u + offset_v.getY() * v,
                                         be.getBlockPos().getZ() + originZ + offset_u.getZ() * u + offset_v.getZ() * v));

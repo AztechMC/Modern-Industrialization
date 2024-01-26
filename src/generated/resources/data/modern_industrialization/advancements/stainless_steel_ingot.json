@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.stainless_steel_ingot.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:stainless_steel_ingot"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.stainless_steel_ingot"
     }

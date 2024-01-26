@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.textures;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
@@ -42,12 +42,13 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.Util;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public final class MITextures {
 
     public static CompletableFuture<?> offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
-            ResourceProvider manager) {
+            ResourceProvider manager, ExistingFileHelper fileHelper) {
         TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
 
         // Texture generation runs in two phases:
@@ -63,7 +64,7 @@ public final class MITextures {
             var meanRgb = material.get(MaterialProperty.MEAN_RGB);
 
             if (meanRgb == 0) {
-                ModernIndustrialization.LOGGER.error("Missing mean RGB for material {}", material.name);
+                MI.LOGGER.error("Missing mean RGB for material {}", material.name);
                 continue;
             }
 
@@ -74,7 +75,7 @@ public final class MITextures {
             }
         }
 
-        for (FluidDefinition fluid : MIFluids.FLUIDS.values()) {
+        for (FluidDefinition fluid : MIFluids.FLUID_DEFINITIONS.values()) {
             defer.accept(() -> registerFluidTextures(mtm, fluid));
         }
 
@@ -121,7 +122,10 @@ public final class MITextures {
                     // Do second phase work
                     return mtm.doEndWork();
                 }, Util.backgroundExecutor())
-                .thenRun(() -> ModernIndustrialization.LOGGER.info("I used the png to destroy the png."));
+                .thenRun(() -> {
+                    mtm.markTexturesAsGenerated(fileHelper);
+                })
+                .thenRun(() -> MI.LOGGER.info("I used the png to destroy the png."));
     }
 
     private static String getTemplate(String materialSet, String part, String suffix) {
@@ -166,7 +170,7 @@ public final class MITextures {
     }
 
     public static void logTextureGenerationError(Throwable throwable, String path, String materialSet, String part) {
-        ModernIndustrialization.LOGGER.warn(
+        MI.LOGGER.warn(
                 String.format("Failed to generate item part texture for path %s, material set %s, partTemplate %s", path, materialSet, part),
                 throwable);
     }

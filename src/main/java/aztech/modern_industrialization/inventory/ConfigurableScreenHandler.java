@@ -23,19 +23,17 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.network.machines.UpdateFluidSlotPacket;
+import aztech.modern_industrialization.network.machines.UpdateItemSlotPacket;
 import aztech.modern_industrialization.util.Simulation;
-import io.netty.buffer.Unpooled;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -53,7 +51,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     private static final int PLAYER_SLOTS = 36;
     public boolean lockingMode = false;
     protected Inventory playerInventory;
-    protected MIInventory inventory;
+    public final MIInventory inventory;
     private List<ConfigurableItemStack> trackedItems;
     private List<ConfigurableFluidStack> trackedFluids;
     // Groups slots together to avoid shift-click splitting a stack across to unrelated subinventories.
@@ -83,21 +81,15 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
             for (int i = 0; i < trackedItems.size(); i++) {
                 if (!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
                     trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
-                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                    buf.writeInt(containerId);
-                    buf.writeInt(i);
-                    buf.writeNbt(trackedItems.get(i).toNbt());
-                    ServerPlayNetworking.send(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
+                    new UpdateItemSlotPacket(containerId, i, trackedItems.get(i))
+                            .sendToClient(player);
                 }
             }
             for (int i = 0; i < trackedFluids.size(); i++) {
                 if (!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
                     trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
-                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                    buf.writeInt(containerId);
-                    buf.writeInt(i);
-                    buf.writeNbt(trackedFluids.get(i).toNbt());
-                    ServerPlayNetworking.send(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
+                    new UpdateFluidSlotPacket(containerId, i, trackedFluids.get(i))
+                            .sendToClient(player);
                 }
             }
         }
@@ -116,7 +108,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    fluidSlot.playerInteract(ContainerItemContext.ofPlayerCursor(player, this), player, true);
+                    fluidSlot.playerInteract(createCarriedSlotAccess(), player, true);
                 }
                 return;
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
@@ -154,8 +146,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
                 // try to shift-click fluid first
-                var playerInvStorage = PlayerInventoryStorage.of(player);
-                var ctx = ContainerItemContext.ofPlayerSlot(player, playerInvStorage.getSlot(slot.getContainerSlot()));
+                var ctx = SlotAccess.forContainer(player.getInventory(), slot.getContainerSlot());
                 for (var maybeFluidSlot : slots) {
                     if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
                             && fluidSlot.playerInteract(ctx, player, false)) {

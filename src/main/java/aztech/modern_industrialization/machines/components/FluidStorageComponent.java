@@ -25,10 +25,12 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleVariantStorage;
 import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidStorageComponent implements IComponent, FluidAccess {
 
@@ -45,9 +47,14 @@ public class FluidStorageComponent implements IComponent, FluidAccess {
             return capacity;
         }
     };
+    private final IFluidHandler fluidHandler = new SlotFluidHandler(singleStorageVariant);
 
     public SingleVariantStorage<FluidVariant> getFluidStorage() {
         return singleStorageVariant;
+    }
+
+    public IFluidHandler getFluidHandler() {
+        return fluidHandler;
     }
 
     @Override

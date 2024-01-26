@@ -25,21 +25,19 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
-import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import com.google.gson.Gson;
-import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
 
 public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements MaterialRecipeBuilder {
-    private static final Gson GSON = new Gson();
-
-    public transient final String recipeId;
-    private transient final MaterialBuilder.RecipeContext context;
-    private transient boolean canceled = false;
+    public final String recipeId;
+    private final MaterialBuilder.RecipeContext context;
+    private boolean canceled = false;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, int eu, int duration) {
         super(type, eu, duration);
@@ -51,7 +49,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String recipeSuffix,
             MIRecipeJson<?> otherWithSameRecipeData) {
         super(otherWithSameRecipeData);
-        this.recipeId = this.machineRecipeType.getPath() + "/" + recipeSuffix;
+        this.recipeId = BuiltInRegistries.RECIPE_TYPE.getKey(this.recipe.getType()).getPath() + "/" + recipeSuffix;
         this.context = context;
         context.addRecipe(this);
     }
@@ -105,11 +103,11 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return this;
     }
 
-    public MIRecipeBuilder addPartOutput(PartKeyProvider part, int amount, double probability) {
+    public MIRecipeBuilder addPartOutput(PartKeyProvider part, int amount, float probability) {
         return addPartOutput(context.getPart(part), amount, probability);
     }
 
-    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount, double probability) {
+    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount, float probability) {
         if (part == null) {
             canceled = true;
         } else {
@@ -133,11 +131,10 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     }
 
     @Override
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            this.offerTo(consumer, fullId);
+            recipeOutput.accept(MI.id(fullId), recipe, null);
         }
     }
-
 }

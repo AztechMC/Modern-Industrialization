@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
-      "tag": "c:aluminum_gears"
+      "tag": "forge:gears/aluminum"
     },
     "R": {
       "item": "modern_industrialization:aluminum_rod"
@@ -14,7 +15,7 @@
       "item": "modern_industrialization:aluminum_curved_plate"
     },
     "p": {
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     }
   },
   "pattern": [
@@ -23,7 +24,6 @@
     "bGb"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:aluminum_drill_head"
   }
 }

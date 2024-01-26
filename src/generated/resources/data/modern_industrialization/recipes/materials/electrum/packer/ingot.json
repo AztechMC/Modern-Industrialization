@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:electrum_nuggets"
+      "tag": "forge:nuggets/electrum"
     }
   ],
   "item_outputs": [

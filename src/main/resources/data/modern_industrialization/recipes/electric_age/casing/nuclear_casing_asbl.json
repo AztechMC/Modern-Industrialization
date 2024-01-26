@@ -7,7 +7,7 @@
   ],
   "key": {
     "A" : {
-      "tag": "c:nuclear_alloy_plates"
+      "tag": "forge:plates/nuclear_alloy"
     },
 
     "C" : {

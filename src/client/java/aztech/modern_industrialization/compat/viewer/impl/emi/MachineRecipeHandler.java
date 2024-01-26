@@ -25,23 +25,21 @@ package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
 import dev.emi.emi.api.EmiFillAction;
 import dev.emi.emi.api.EmiRecipeHandler;
 import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import java.util.List;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
@@ -63,7 +61,8 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe instanceof ViewerCategoryEmi.ViewerRecipe r && r.recipe instanceof MachineRecipe;
+        return recipe instanceof ViewerCategoryEmi.ViewerRecipe r && r.recipe instanceof RecipeHolder<?>holder
+                && holder.value() instanceof MachineRecipe;
     }
 
     @Override
@@ -103,10 +102,7 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return false;
         if (doTransfer) {
-            FriendlyByteBuf buf = PacketByteBufs.create();
-            buf.writeInt(handler.containerId);
-            buf.writeResourceLocation(recipe.getId());
-            ClientPlayNetworking.send(MachinePackets.C2S.REI_LOCK_SLOTS, buf);
+            new ReiLockSlotsPacket(handler.containerId, recipe.getId()).sendToServer();
 
             Minecraft.getInstance().setScreen(screen);
         }

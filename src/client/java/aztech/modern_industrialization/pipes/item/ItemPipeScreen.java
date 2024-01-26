@@ -27,19 +27,16 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.DynamicTooltip;
+import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
-import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -60,10 +57,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         addRenderableWidget(new WhitelistButton(this.leftPos, this.topPos, widget -> {
             boolean newWhitelist = !menu.pipeInterface.isWhitelist();
             menu.pipeInterface.setWhitelist(newWhitelist);
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeInt(menu.containerId);
-            buf.writeBoolean(newWhitelist);
-            ClientPlayNetworking.send(PipePackets.SET_ITEM_WHITELIST, buf);
+            new SetItemWhitelistPacket(menu.containerId, newWhitelist).sendToServer();
         }, () -> {
             List<Component> lines = new ArrayList<>();
             if (menu.pipeInterface.isWhitelist()) {

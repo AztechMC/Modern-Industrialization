@@ -31,13 +31,14 @@ import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
@@ -76,7 +77,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         if (!level.isClientSide) {
             List<ConfigurableFluidStack> fluidStacks = getInventory().getFluidStacks();
             ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
-            if (waterStack.getRemainingSpace() < 81000 / 8) {
+            if (waterStack.getRemainingSpace() < FluidType.BUCKET_VOLUME / 8) {
                 updateActive(false);
             } else {
                 long eu = consumeEu(1);
@@ -85,7 +86,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
                 if (pumpingTicks == OPERATION_TICKS) {
                     waterStack.setKey(FluidVariant.of(Fluids.WATER));
-                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * 81000 / 8, waterStack.getRemainingSpace()));
+                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * FluidType.BUCKET_VOLUME / 8,
+                            waterStack.getRemainingSpace()));
                     pumpingTicks = 0;
                 }
             }

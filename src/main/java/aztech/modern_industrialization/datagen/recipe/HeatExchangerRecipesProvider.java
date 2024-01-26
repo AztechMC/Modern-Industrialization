@@ -27,15 +27,14 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluids;
 
 public class HeatExchangerRecipesProvider extends MIRecipesProvider {
 
-    public HeatExchangerRecipesProvider(FabricDataOutput packOutput) {
+    public HeatExchangerRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
 
@@ -50,7 +49,7 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         FluidLike[] hots = { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM };
         FluidLike[] cold = { FluidLike.of(Fluids.WATER), MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
         int[] amount = { 1, 1, 8, 8 };
@@ -62,7 +61,7 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
             for (int j = 0; j < cold.length; j++) {
                 if (i != j) {
 
-                    MIRecipeJson recipe = MIRecipeJson.create(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
+                    var recipe = new MachineRecipeBuilder(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
 
                     String path = "heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
                             + fluidToString(cold[j], false);

@@ -13,7 +13,7 @@
     },
     {
       "amount": 2,
-      "tag": "c:battery_alloy_plates"
+      "tag": "forge:plates/battery_alloy"
     }
   ],
   "item_outputs": [

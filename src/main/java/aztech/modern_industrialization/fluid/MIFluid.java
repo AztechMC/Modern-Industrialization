@@ -23,35 +23,40 @@
  */
 package aztech.modern_industrialization.fluid;
 
+import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.fluids.FluidType;
 
 /**
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
  */
 public class MIFluid extends Fluid {
 
-    public final MIFluidBlock block;
+    private final Supplier<MIFluidBlock> block;
+    private final ItemLike bucketItem;
+    private final Supplier<MIFluidType> fluidType;
     public final int color;
-    private BucketItem bucketItem;
 
-    public MIFluid(MIFluidBlock block, int color) {
+    public MIFluid(Supplier<MIFluidBlock> block, ItemLike bucketItem, Supplier<MIFluidType> fluidType, int color) {
         this.block = block;
+        this.bucketItem = bucketItem;
+        this.fluidType = fluidType;
         this.color = color;
     }
 
     @Override
     public Item getBucket() {
-        return bucketItem;
+        return bucketItem.asItem();
     }
 
     @Override
@@ -86,7 +91,7 @@ public class MIFluid extends Fluid {
 
     @Override
     protected BlockState createLegacyBlock(FluidState state) {
-        return block.defaultBlockState();
+        return block.get().defaultBlockState();
     }
 
     @Override
@@ -104,7 +109,8 @@ public class MIFluid extends Fluid {
         return null;
     }
 
-    public void setBucketItem(BucketItem bucketItem) {
-        this.bucketItem = bucketItem;
+    @Override
+    public FluidType getFluidType() {
+        return fluidType.get();
     }
 }

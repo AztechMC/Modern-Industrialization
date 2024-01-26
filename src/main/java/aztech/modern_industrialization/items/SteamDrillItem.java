@@ -26,35 +26,36 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import dev.draylar.magna.Magna;
-import dev.draylar.magna.api.MagnaTool;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -66,16 +67,25 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +97,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SteamDrillItem
         extends Item
-        implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper {
+        implements DynamicToolItem, ItemContainingItemHelper {
 
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
@@ -96,8 +106,8 @@ public class SteamDrillItem
         }
 
         public boolean canInsert(ItemVariant item) {
-            Integer burnTicks = FuelRegistry.INSTANCE.get(item.getItem());
-            return burnTicks != null && burnTicks > 0;
+            int burnTicks = CommonHooks.getBurnTime(item.toStack(), null);
+            return burnTicks > 0;
         }
 
     };
@@ -122,30 +132,32 @@ public class SteamDrillItem
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
-        return false;
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return !newStack.is(this) || slotChanged;
     }
 
     @Override
-    public boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
-        return canUse(newStack);
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return !newStack.is(this) || !canUse(newStack);
     }
 
     @Override
-    public boolean isSuitableFor(ItemStack stack, BlockState state) {
-        int requiredLevel = MiningLevelManager.getRequiredMiningLevel(state);
-        return requiredLevel <= 4 && canUse(stack) && isSupportedBlock(stack, state);
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        if (isSupportedBlock(stack, state) && canUse(stack) && TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state)) {
+            return true;
+        }
+        return super.isCorrectToolForDrops(stack, state);
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         if (canUse(stack)) {
-            if (isSuitableFor(stack, state)) {
+            if (isCorrectToolForDrops(stack, state)) {
                 float speed = 4.0f;
 
                 Player player = CommonProxy.INSTANCE.findUser(stack);
 
-                if (Magna.CONFIG.breakSingleBlockWhenSneaking && player != null && player.isShiftKeyDown()) {
+                if (player != null && player.isShiftKeyDown()) {
                     speed *= 4f;
                 }
                 return speed;
@@ -158,26 +170,84 @@ public class SteamDrillItem
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot == EquipmentSlot.MAINHAND && canUse(stack)) {
             return ItemHelper.createToolModifiers(5);
         }
         return ImmutableMultimap.of();
     }
 
-    @Override
-    public int getRadius(ItemStack stack) {
-        return 1;
+    public static Pair<BlockPos, BlockPos> getArea(BlockPos pos, Direction hitFace) {
+        int face = hitFace.get3DDataValue();
+        var right = GeometryHelper.FACE_RIGHT[face];
+        int rx = (int) right.x(), ry = (int) right.y(), rz = (int) right.z();
+        var up = GeometryHelper.FACE_UP[face];
+        int ux = (int) up.x(), uy = (int) up.y(), uz = (int) up.z();
+        return Pair.of(
+                pos.offset(rx + ux, ry + uy, rz + uz),
+                pos.offset(-rx - ux, -ry - uy, -rz - uz));
     }
 
-    @Override
-    public boolean playBreakEffects() {
-        return true;
+    private static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {
+        Vec3 vec3d = living.getEyePosition(partialTicks);
+        Vec3 vec3d1 = living.getViewVector(partialTicks);
+        Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
+        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
     }
 
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
+
+        // Thanks to Buuz for this code, from ItemInfinityDrill
+        // TODO NEO reimplement drill outline
+        if (miner instanceof Player p && !p.isShiftKeyDown()) {
+            HitResult rayTraceResult = rayTraceSimple(world, miner, 16, 0);
+            if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
+                BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
+                Direction facing = blockResult.getDirection();
+                Pair<BlockPos, BlockPos> area = getArea(pos, facing);
+                List<ItemStack> totalDrops = new ArrayList<>();
+                BlockPos.betweenClosed(area.getFirst(), area.getSecond()).forEach(blockPos -> {
+                    if (world.getBlockEntity(blockPos) == null && world instanceof ServerLevel && miner instanceof ServerPlayer
+                            && !world.isEmptyBlock(blockPos)) {
+                        BlockState tempState = world.getBlockState(blockPos);
+                        Block block = tempState.getBlock();
+                        if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
+                            return;
+                        if (tempState.getDestroySpeed(world, blockPos) < 0)
+                            return;
+                        int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+                                blockPos);
+                        if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
+                            block.destroy(world, blockPos, tempState);
+                            Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
+                                boolean combined = false;
+                                for (ItemStack drop : totalDrops) {
+                                    if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {
+                                        drop.setCount(drop.getCount() + itemStack.getCount());
+                                        combined = true;
+                                        break;
+                                    }
+                                }
+                                if (!combined) {
+                                    totalDrops.add(itemStack);
+                                }
+                            });
+                            block.popExperience((ServerLevel) world, blockPos, xp);
+                        }
+                    }
+                });
+                totalDrops.forEach(itemStack -> {
+                    Block.popResource(world, miner.blockPosition(), itemStack);
+                });
+                world.getEntitiesOfClass(ExperienceOrb.class,
+                        new AABB(Vec3.atLowerCornerOf(area.getFirst()), Vec3.atLowerCornerOf(area.getSecond())).inflate(1))
+                        .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
+                                miner.blockPosition().getZ()));
+            }
+        }
+
         return true;
     }
 
@@ -272,24 +342,15 @@ public class SteamDrillItem
     }
 
     private int consumeFuel(ItemStack stack, Simulation simulation) {
-        Integer burnTicks = FuelRegistry.INSTANCE.get(getResource(stack).getItem());
-        if (burnTicks != null && burnTicks > 0) {
+        int burnTicks = CommonHooks.getBurnTime(getResource(stack).toStack(), null);
+        if (burnTicks > 0) {
             if (simulation.isActing()) {
-                Item burnt = getResource(stack).getItem();
+                var burnt = getResource(stack).toStack();
                 setAmount(stack, getAmount(stack) - 1);
 
                 if (burnt.hasCraftingRemainingItem()) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        var storage = GenericItemStorage.of(stack, this);
-                        storage.insert(
-                                ItemVariant.of(burnt.getCraftingRemainingItem()),
-                                1,
-                                tx,
-                                true,
-                                true);
-                        tx.commit();
-                    }
-
+                    new ItemHandler(stack, this)
+                            .insertItem(0, burnt.getCraftingRemainingItem(), false, true, true);
                 }
             }
             return burnTicks;
@@ -298,7 +359,12 @@ public class SteamDrillItem
     }
 
     @Override
-    public Reference2IntMap<Enchantment> getEnchantments(ItemStack stack) {
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        return getAllEnchantments(stack).getOrDefault(enchantment, 0);
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
         Reference2IntMap<Enchantment> map = new Reference2IntOpenHashMap<>();
         if (!isNotSilkTouch(stack)) {
             map.put(Enchantments.SILK_TOUCH, 1);
@@ -338,17 +404,17 @@ public class SteamDrillItem
     }
 
     private boolean tryFillWater(Player player, ItemStack barrelLike, ItemStack fillSource) {
-        var otherStorage = ContainerItemContext.withConstant(fillSource).find(FluidStorage.ITEM);
+        var otherStorage = fillSource.getCapability(Capabilities.FluidHandler.ITEM);
 
         if (otherStorage != null) {
             long totalWater = 0;
-            for (var view : otherStorage) {
-                if (view.getResource().isOf(Fluids.WATER)) {
-                    totalWater += view.getAmount();
+            for (int tank = 0; tank < otherStorage.getTanks(); ++tank) {
+                if (otherStorage.getFluidInTank(tank).getFluid() == Fluids.WATER) {
+                    totalWater += otherStorage.getFluidInTank(tank).getAmount();
                 }
             }
 
-            if (totalWater * fillSource.getCount() >= FluidConstants.BUCKET) {
+            if (totalWater * fillSource.getCount() >= FluidType.BUCKET_VOLUME) {
                 fillWater(player, barrelLike);
                 return true;
             }
@@ -372,6 +438,8 @@ public class SteamDrillItem
         if (data.burnTicks > 0) {
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
+
+        // TODO NEO add active mode (silk touch vs fortune)
     }
 
     @Override

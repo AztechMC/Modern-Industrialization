@@ -25,8 +25,8 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
+import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.INuclearComponent;
@@ -35,10 +35,10 @@ import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -49,7 +49,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
-    public static final ResourceLocation TEXTURE_ATLAS = new ResourceLocation(ModernIndustrialization.MOD_ID, "textures/gui/rei/texture_atlas.png");
+    public static final ResourceLocation TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
     private static final ResourceLocation PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");
 
     private final int centerX;

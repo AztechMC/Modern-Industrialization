@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "U": {
       "item": "modern_industrialization:quantum_machine_hull"
@@ -13,7 +14,6 @@
     "V"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:superconductor_energy_output_hatch"
   }
 }

@@ -23,19 +23,15 @@
  */
 package aztech.modern_industrialization.machines;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import aztech.modern_industrialization.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.ModelHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -45,9 +41,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -56,6 +52,7 @@ import org.jetbrains.annotations.Nullable;
 public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T> {
     private final BlockModelShaper blockModels;
     private BlockState lastBlockState = null;
+    @Nullable
     private MachineBakedModel model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
@@ -72,17 +69,11 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
         if (cachedQuads[cachedQuadIndex] == null) {
-            Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-
-            TextureAtlasSprite sprite = MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
+            TextureAtlasSprite sprite = model == null ? null : MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
-                emitter.material(model.cutoutMaterial);
-                emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.
-                emitter.cullFace(d);
-                emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-                emitter.color(-1, -1, -1, -1);
-                cachedQuads[cachedQuadIndex] = emitter.toBakedQuad(sprite);
+                var vc = new QuadBakingVertexConsumer.Buffered();
+                ModelHelper.emitSprite(vc, d, sprite, -2e-4f); // non-active face is -1e-6f, so we override it.
+                cachedQuads[cachedQuadIndex] = vc.getQuad();
             } else {
                 cachedQuads[cachedQuadIndex] = NO_QUAD;
             }
@@ -92,32 +83,13 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         return quad == NO_QUAD ? null : (BakedQuad) quad;
     }
 
-    private static final Field FORWARDING_BAKED_MODEL_WRAPPED;
-    static {
-        try {
-            FORWARDING_BAKED_MODEL_WRAPPED = ForwardingBakedModel.class.getDeclaredField("wrapped");
-            FORWARDING_BAKED_MODEL_WRAPPED.setAccessible(true);
-        } catch (ReflectiveOperationException reflectiveException) {
-            throw new RuntimeException("Failed to find ForwardingBakedModel field \"wrapped\"", reflectiveException);
-        }
-    }
-
+    @Nullable
     private MachineBakedModel getMachineModel(BlockState state) {
-        var model = blockModels.getBlockModel(state);
-
-        while (true) {
-            if (model instanceof MachineBakedModel mbm) {
-                return mbm;
-            } else if (model instanceof ForwardingBakedModel fbm) {
-                // When mods like Continuity are used, it's possible that the machine model is behind some delegate.
-                try {
-                    model = (BakedModel) FORWARDING_BAKED_MODEL_WRAPPED.get(fbm);
-                } catch (ReflectiveOperationException reflectiveException) {
-                    throw new RuntimeException("Failed to read machine model", reflectiveException);
-                }
-            } else {
-                throw new RuntimeException("Couldn't find for model for machine %s, wrong model is present: %s".formatted(state, model));
-            }
+        if (blockModels.getBlockModel(state) instanceof MachineBakedModel mbm) {
+            return mbm;
+        } else {
+            MI.LOGGER.warn("Model {} should have been a MachineBakedModel, but was {}", state, blockModels.getBlockModel(state).getClass());
+            return null;
         }
     }
 
@@ -132,7 +104,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
             throw new IllegalStateException("Tried to use the same machine BER with two block states: " + state + " and " + lastBlockState);
         }
 
-        MachineModelClientData data = entity.getModelData();
+        MachineModelClientData data = entity.getMachineModelData();
         if (data.isActive) {
             VertexConsumer vc = vcp.getBuffer(RenderType.cutout());
 

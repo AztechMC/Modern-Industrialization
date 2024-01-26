@@ -38,20 +38,17 @@ import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -71,7 +68,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.redstoneControl = new RedstoneControlComponent();
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(85, 34, "arrow");
 
-        long capacity = 81000 * 256;
+        long capacity = FluidType.BUCKET_VOLUME * 256;
 
         List<ConfigurableFluidStack> fluidInput = Collections
                 .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER.asFluid()));
@@ -108,7 +105,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
@@ -125,10 +122,10 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 return false;
             }
             // check that the item doesn't contain uu matter
-            Storage<FluidVariant> fluidItem = ContainerItemContext.withConstant(itemVariant, 1).find(FluidStorage.ITEM);
+            var fluidItem = itemVariant.toStack().getCapability(Capabilities.FluidHandler.ITEM);
             if (fluidItem != null) {
-                for (var view : fluidItem) {
-                    if (view.getResource().isOf(MIFluids.UU_MATER.asFluid())) {
+                for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
+                    if (fluidItem.getFluidInTank(tank).getFluid() == MIFluids.UU_MATER.asFluid()) {
                         return false;
                     }
                 }
@@ -139,9 +136,9 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
                 long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
-                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATER.variant(), FluidConstants.BUCKET / 10, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
 
-                if (inserted == 1 && uuMatterExtraced == FluidConstants.BUCKET / 10) {
+                if (inserted == 1 && uuMatterExtraced == FluidType.BUCKET_VOLUME / 10) {
                     if (!simulate) {
                         tx.commit();
                     }

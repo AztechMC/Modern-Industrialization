@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/superconductor_energy_output_hatch"
+      "model": "modern_industrialization:block/superconductor_energy_output_hatch"
     }
   }
 }

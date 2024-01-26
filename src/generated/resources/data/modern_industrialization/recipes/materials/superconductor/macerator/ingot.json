@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:superconductor_ingots"
+      "tag": "forge:ingots/superconductor"
     }
   ],
   "item_outputs": [

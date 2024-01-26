@@ -5,11 +5,39 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:uranium_235_tiny_dusts"
+      "tag": "forge:tiny_dusts/uranium_238"
     },
     {
-      "amount": 8,
-      "tag": "c:uranium_238_tiny_dusts"
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/uranium_235"
     }
   ],
   "item_outputs": [

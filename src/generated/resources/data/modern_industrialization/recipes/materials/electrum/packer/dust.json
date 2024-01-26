@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:electrum_tiny_dusts"
+      "tag": "forge:tiny_dusts/electrum"
     }
   ],
   "item_outputs": [

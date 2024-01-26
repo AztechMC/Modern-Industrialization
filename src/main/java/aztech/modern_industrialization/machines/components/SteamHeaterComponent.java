@@ -26,9 +26,14 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIFluidStorage;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import it.unimi.dsi.fastutil.objects.Reference2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -50,6 +55,11 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     public final boolean requiresContinuousOperation;
     public static final double INPUT_ENERGY_RATIO_FOR_STARTUP = 0.8; // only if requires continuous operation
+
+    /**
+     * Amount of steam for which we already consumed the water.
+     */
+    private final Reference2LongMap<Fluid> steamBuffer = new Reference2LongOpenHashMap<>();
 
     public SteamHeaterComponent(double temperatureMax, long maxEuProduction, long euPerDegree) {
         this(maxEuProduction, maxEuProduction, euPerDegree, true, false, false);
@@ -108,7 +118,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
         FluidVariant steamKey = FluidVariant.of(steam);
 
         if (getTemperature() > 100d) {
-            long steamProduction = (long) (81 * (getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
+            long steamProduction = (long) ((getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
 
             try (Transaction tx = Transaction.openOuter()) {
                 long inserted;
@@ -116,20 +126,50 @@ public class SteamHeaterComponent extends TemperatureComponent {
                     inserted = output.insertAllSlot(steamKey, steamProduction, simul);
                 }
                 if (inserted > 0) {
-                    long extracted = input.extractAllSlot(waterKey, inserted / STEAM_TO_WATER, tx);
-                    if (extracted > 0) {
-                        if (output.insertAllSlot(steamKey, extracted * STEAM_TO_WATER, tx) == extracted * STEAM_TO_WATER) {
-                            double euProduced = extracted * STEAM_TO_WATER * euPerSteamMb / 81d;
-                            decreaseTemperature(euProduced / euPerDegree);
-                            tx.commit();
-                            return euProduced;
-                        } else {
-                            throw new IllegalStateException("Steam Component : Logic bug: failed to insert");
-                        }
-                    }
+                    // Round water consumption up
+                    long waterToUse = (inserted - steamBuffer.getLong(steam) + STEAM_TO_WATER - 1) / STEAM_TO_WATER;
+                    // Extract water
+                    long extracted = input.extractAllSlot(waterKey, waterToUse, tx);
+                    // Add to steam buffer
+                    steamBuffer.mergeLong(steam, extracted * STEAM_TO_WATER, Long::sum);
+
+                    // Produce steam
+                    long producedSteam = output.insertAllSlot(steamKey, Math.min(steamProduction, steamBuffer.getLong(steam)), tx);
+                    steamBuffer.mergeLong(steam, -producedSteam, Long::sum);
+
+                    double euProduced = producedSteam * euPerSteamMb;
+                    decreaseTemperature(euProduced / euPerDegree);
+                    tx.commit();
+                    return euProduced;
                 }
             }
         }
         return 0;
+    }
+
+    @Override
+    public void writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
+
+        var buffer = new CompoundTag();
+        for (var entry : steamBuffer.reference2LongEntrySet()) {
+            if (entry.getLongValue() != 0) {
+                buffer.putLong(entry.getKey().toString(), entry.getLongValue());
+            }
+        }
+        tag.put("steamBuffer", buffer);
+    }
+
+    @Override
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
+
+        var steamBuffer = tag.getCompound("steamBuffer");
+        for (var key : steamBuffer.getAllKeys()) {
+            var fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(key));
+            if (fluid != Fluids.EMPTY) {
+                this.steamBuffer.put(fluid, steamBuffer.getLong(key));
+            }
+        }
     }
 }

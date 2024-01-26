@@ -25,24 +25,23 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import aztech.modern_industrialization.recipe.json.ShapelessRecipeJson;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
+import aztech.modern_industrialization.recipe.json.ShapelessRecipeBuilder;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 public class UpgradeProvider extends MIRecipesProvider {
 
-    public UpgradeProvider(FabricDataOutput packOutput) {
+    public UpgradeProvider(PackOutput packOutput) {
         super(packOutput);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         buildSteelUpgrades(consumer);
         buildQuantumUpgrades(consumer);
     }
@@ -51,22 +50,24 @@ public class UpgradeProvider extends MIRecipesProvider {
             "boiler" };
     private static final Set<String> STEEL_NO_UNPACKER = Set.of("furnace", "boiler");
 
-    private void buildSteelUpgrades(Consumer<FinishedRecipe> consumer) {
+    private void buildSteelUpgrades(RecipeOutput consumer) {
         Item upgrade = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_upgrade"));
 
         for (String machine : STEEL_UPGRADE_MACHINES) {
             Item bronze = BuiltInRegistries.ITEM.get(new MIIdentifier("bronze_" + machine));
             Item steel = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_" + machine));
 
-            var recipe = new ShapelessRecipeJson(steel, 1).addIngredient(bronze).addIngredient(upgrade);
+            var recipe = ShapelessRecipeBuilder.shapeless(steel)
+                    .requires(bronze)
+                    .requires(upgrade);
             recipe.offerTo(consumer, "upgrade/craft/steel/" + machine);
 
-            MIRecipeJson<?> recipePacker = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput(bronze, 1)
+            var recipePacker = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput(bronze, 1)
                     .addItemInput(upgrade, 1).addItemOutput(steel, 1);
             recipePacker.offerTo(consumer, "upgrade/packer/steel/" + machine);
 
             if (!STEEL_NO_UNPACKER.contains(machine)) {
-                MIRecipeJson<?> recipeUnpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
+                var recipeUnpacker = new MachineRecipeBuilder(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
                         .addItemOutput(upgrade, 1).addItemInput(steel, 1);
                 recipeUnpacker.offerTo(consumer, "upgrade/unpacker/steel/" + machine);
             }
@@ -75,9 +76,9 @@ public class UpgradeProvider extends MIRecipesProvider {
 
     private static final List<String> QUANTUM_ITEMS = List.of("helmet", "chestplate", "leggings", "boots", "sword");
 
-    private void buildQuantumUpgrades(Consumer<FinishedRecipe> consumer) {
+    private void buildQuantumUpgrades(RecipeOutput consumer) {
         for (var itemType : QUANTUM_ITEMS) {
-            MIRecipeJson<?> packerRecipe = MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 1_000_000, 200)
+            var packerRecipe = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 1_000_000, 200)
                     .addItemInput("minecraft:netherite_" + itemType, 1)
                     .addItemInput("modern_industrialization:quantum_upgrade", 1)
                     .addItemOutput("modern_industrialization:quantum_" + itemType, 1);

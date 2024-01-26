@@ -25,37 +25,48 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.MIRecipeJson;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
-import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import com.google.gson.Gson;
-import java.util.function.Consumer;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
-    private static final Gson GSON = new Gson();
-
     public final String recipeId;
     private final MaterialBuilder.RecipeContext context;
     private boolean canceled = false;
     private final String id;
-    private final ShapedRecipeJson json;
+    private final ItemStack result;
+    private final String[] pattern;
+    private final Map<Character, Ingredient> inputs = new HashMap<>();
 
     public ShapedRecipeBuilder(MaterialBuilder.RecipeContext context, PartKeyProvider result, int count, String id, String... pattern) {
         this.recipeId = "craft/" + id;
         this.context = context;
         this.id = id;
-        if (context.getPart(result) == null) {
-            this.json = null;
+        var output = context.getPart(result);
+        if (output == null) {
+            this.result = null;
+            this.pattern = null;
             canceled = true;
         } else {
-            this.json = new ShapedRecipeJson(context.getPart(result).getItemId(), count, pattern);
+            this.result = new ItemStack(output.asItem(), count);
+            this.pattern = pattern;
         }
         context.addRecipe(this);
     }
@@ -84,7 +95,13 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
 
     public ShapedRecipeBuilder addInput(char key, String maybeTag) {
         if (!canceled) {
-            json.addInput(key, maybeTag);
+            if (inputs.containsKey(key)) {
+                throw new IllegalArgumentException("Key mapping is already registered: " + key);
+            }
+            Ingredient ingredient = maybeTag.startsWith("#")
+                    ? Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))))
+                    : Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag)));
+            inputs.put(key, ingredient);
         }
         return this;
     }
@@ -103,7 +120,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
 
     public ShapedRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (!canceled) {
-            new MIRecipeBuilder(context, id, json.exportToMachine(machine, eu, duration, division));
+            new MIRecipeBuilder(context, id, MIRecipeJson.fromShaped(machine, eu, duration, division, result, pattern, inputs));
         }
 
         return this;
@@ -128,11 +145,14 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     @Override
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
-            json.validate();
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            json.offerTo(consumer, fullId);
+            recipeOutput.accept(MI.id(fullId), new ShapedRecipe(
+                    "",
+                    CraftingBookCategory.MISC,
+                    ShapedRecipePattern.of(inputs, pattern),
+                    result), null);
         }
     }
 }

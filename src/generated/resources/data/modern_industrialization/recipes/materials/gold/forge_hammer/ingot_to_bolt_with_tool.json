@@ -1,16 +1,11 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 30,
-  "item_inputs": [
-    {
-      "amount": 1,
-      "tag": "c:gold_ingots"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 4,
-      "item": "modern_industrialization:gold_bolt"
-    }
-  ]
+  "damage": 60,
+  "ingredient": {
+    "tag": "forge:ingots/gold"
+  },
+  "result": {
+    "count": 4,
+    "item": "modern_industrialization:gold_bolt"
+  }
 }

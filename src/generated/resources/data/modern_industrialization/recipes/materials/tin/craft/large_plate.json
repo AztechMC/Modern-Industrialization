@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:tin_plates"
+      "tag": "forge:plates/tin"
     }
   },
   "pattern": [
@@ -10,7 +11,6 @@
     "xx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:tin_large_plate"
   }
 }

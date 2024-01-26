@@ -43,6 +43,7 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -67,7 +68,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         super(bep, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build(),
                 new OrientationComponent.Params(false, false, false));
 
-        int capacity = 81000 * (bronze ? 8 : 16);
+        int capacity = FluidType.BUCKET_VOLUME * (bronze ? 8 : 16);
 
         List<ConfigurableItemStack> itemStacks = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(INPUT_SLOT_X, INPUT_SLOT_Y).build();
@@ -97,7 +98,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(bronze ? MachineCasings.BRICKED_BRONZE : MachineCasings.BRICKED_STEEL);
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

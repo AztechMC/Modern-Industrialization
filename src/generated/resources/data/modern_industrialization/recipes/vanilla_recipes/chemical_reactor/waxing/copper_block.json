@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:wax"
+      "item": "minecraft:copper_block"
     },
     {
       "amount": 1,
-      "item": "minecraft:copper_block"
+      "item": "modern_industrialization:wax"
     }
   ],
   "item_outputs": [

@@ -26,6 +26,7 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.SimpleEnergyItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
@@ -37,22 +38,26 @@ import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import team.reborn.energy.api.base.SimpleEnergyItem;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
 public final class MIItem {
-    public static Map<ResourceLocation, ItemDefinition<?>> ITEMS = new LinkedHashMap<>();
+    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MI.ID);
+    public static final SortedMap<ResourceLocation, ItemDefinition<?>> ITEM_DEFINITIONS = new TreeMap<>();
+
+    public static void init(IEventBus modBus) {
+        ITEMS.register(modBus);
+    }
 
     // @formatter:off
     // Guide book first so people read it!
@@ -67,8 +72,8 @@ public final class MIItem {
     // Steam tier stuff
     public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", STEAM_TIER);
     public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", STEAM_TIER);
-    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)), STEAM_TIER);
-    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)), STEAM_TIER);
+    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
+    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
 
     // Mechanical components: motors
     public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER);
@@ -115,7 +120,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> NOT_GATE = item("NOT Gate", "not_gate", ITEMS_OTHER);
 
     // EV circuits
-    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.maxCount(1)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.stacksTo(1)), ITEMS_OTHER);
     public static final ItemDefinition<Item> MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon", ITEMS_OTHER);
     public static final ItemDefinition<Item> SILICON_WAFER = item("Silicon Wafer", "silicon_wafer", ITEMS_OTHER);
     public static final ItemDefinition<Item> ARITHMETIC_LOGIC_UNIT = item("Arithmetic Logic Unit", "arithmetic_logic_unit", ITEMS_OTHER);
@@ -123,7 +128,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
 
     // Quantum circuits
-    // TODO 1.21: Change item id to "qubit"
+    // TODO NEO: Change item id to "qubit"
     public static final ItemDefinition<Item> QUBIT = item("Qubit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
     public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
     public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
@@ -134,7 +139,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> ADVANCED_UPGRADE = item("Advanced Upgrade", "advanced_upgrade", ITEMS_OTHER);
     public static final ItemDefinition<Item> TURBO_UPGRADE = item("Turbo Upgrade", "turbo_upgrade", (p) -> new Item(p.rarity(Rarity.UNCOMMON)), ITEMS_OTHER);
     public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.maxCount(1).rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.stacksTo(1).rarity(Rarity.RARE)), ITEMS_OTHER);
 
     public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_OTHER);
 
@@ -144,19 +149,41 @@ public final class MIItem {
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 
     public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+            .withItemRegistrationEvent((item) -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                });
+            });
     public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
-            .withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+            .withItemRegistrationEvent((item) -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                });
+            });
 
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
-            .withItemRegistrationEvent(item -> EnergyApi.ITEM.registerForItems((stack, ctx) -> SimpleEnergyItem.createStorage(ctx, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item));
+            .withItemRegistrationEvent(item -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> SimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                });
+            });
 
     // Armor
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, s.maxCount(1)), ITEMS_OTHER);
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.maxCount(1)), ITEMS_OTHER);
-    public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER).withItemRegistrationEvent((item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
+    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, s.stacksTo(1)), ITEMS_OTHER);
+    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.stacksTo(1)), ITEMS_OTHER);
+    public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                MICapabilities.onEvent(event -> {
+                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, JetpackItem.CAPACITY), item);
+                });
+            });
 
-    public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER);
+    public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
+            .withItemRegistrationEvent(item -> {
+                MICapabilities.onEvent(event -> {
+                    SimpleEnergyItem.registerStorage(event, item);
+                });
+            });
 
     public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new);
     public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(ArmorItem.Type.HELMET, s), ITEMS_OTHER);
@@ -186,29 +213,23 @@ public final class MIItem {
     public static <T extends Item> ItemDefinition<T> item(
             String englishName,
             String path,
-            Function<? super FabricItemSettings, T> ctor,
-            BiConsumer<Item, ItemModelGenerators> modelGenerator,
+            Function<Item.Properties, T> ctor,
+            BiConsumer<Item, ItemModelProvider> modelGenerator,
             SortOrder sortOrder) {
 
-        T item = ctor.apply(new FabricItemSettings());
-        ItemDefinition<T> definition = new ItemDefinition<>(englishName, path, item, modelGenerator, sortOrder);
-
-        if (ITEMS.put(definition.getId(), definition) != null) {
-            throw new IllegalArgumentException("Item id already taken : " + definition.getId());
-        }
-
-        return definition;
+        var holder = ITEMS.registerItem(path, ctor);
+        var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
+        ITEM_DEFINITIONS.put(holder.getId(), def);
+        return def;
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
     }
 
     public static ItemDefinition<Item> itemHandheld(String englishName, String path) {
@@ -220,20 +241,21 @@ public final class MIItem {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
         }, sortOrder);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor) {
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor) {
         return itemHandheld(englishName, path, ctor, ITEMS_OTHER);
     }
 
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor,
+    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, p -> ctor.apply(p.maxCount(1)), (item, modelGenerator) -> modelGenerator.generateFlatItem(item,
-                ModelTemplates.FLAT_HANDHELD_ITEM), sortOrder);
+        return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
+            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(new ResourceLocation("minecraft:item/handheld")));
+        }, sortOrder);
     }
 
     private MIItem() {

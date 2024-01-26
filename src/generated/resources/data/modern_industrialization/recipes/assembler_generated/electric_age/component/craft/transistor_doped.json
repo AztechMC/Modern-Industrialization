@@ -17,7 +17,7 @@
     },
     {
       "amount": 3,
-      "tag": "c:steel_plates"
+      "tag": "forge:plates/steel"
     }
   ],
   "item_outputs": [

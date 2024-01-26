@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "U": {
       "item": "modern_industrialization:aluminum_cable"
@@ -13,7 +14,6 @@
     "V"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:hv_energy_input_hatch"
   }
 }

@@ -23,21 +23,23 @@
  */
 package aztech.modern_industrialization.datagen;
 
-import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
-import aztech.modern_industrialization.datagen.model.ModelProvider;
-import aztech.modern_industrialization.datagen.texture.SpriteSourceProvider;
+import aztech.modern_industrialization.datagen.model.MIModelProvider;
+import aztech.modern_industrialization.datagen.texture.MISpriteSourceProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MIDatagenClient {
-    public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        var aggregate = pack.addProvider(AggregateDataProvider.create("Client Resources"));
-
-        aggregate.addProvider(MachineModelsProvider::new);
-        aggregate.addProvider(ModelProvider::new);
-        aggregate.addProvider(SpriteSourceProvider::new);
-
-        pack.addProvider((FabricDataOutput packOutput) -> new TexturesProvider(packOutput, runtimeDatagen));
+    public static void configure(
+            DataGenerator gen,
+            ExistingFileHelper fileHelper,
+            CompletableFuture<HolderLookup.Provider> lookupProvider,
+            boolean run,
+            boolean runtimeDatagen) {
+        gen.addProvider(run, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), fileHelper, runtimeDatagen));
+        gen.addProvider(run, new MIModelProvider(gen.getPackOutput(), fileHelper));
     }
 }

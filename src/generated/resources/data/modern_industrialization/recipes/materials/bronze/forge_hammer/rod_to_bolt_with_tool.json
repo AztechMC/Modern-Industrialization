@@ -1,16 +1,11 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 10,
-  "item_inputs": [
-    {
-      "amount": 1,
-      "item": "modern_industrialization:bronze_rod"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 2,
-      "item": "modern_industrialization:bronze_bolt"
-    }
-  ]
+  "damage": 20,
+  "ingredient": {
+    "item": "modern_industrialization:bronze_rod"
+  },
+  "result": {
+    "count": 2,
+    "item": "modern_industrialization:bronze_bolt"
+  }
 }

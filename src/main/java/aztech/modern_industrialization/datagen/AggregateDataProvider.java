@@ -27,42 +27,32 @@ import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import org.slf4j.Logger;
 
 public class AggregateDataProvider implements DataProvider {
-    public static FabricDataGenerator.Pack.RegistryDependentFactory<AggregateDataProvider> create(String name) {
-        return (packOutput, registriesFuture) -> new AggregateDataProvider(name, packOutput, registriesFuture);
-    }
-
     private static final Logger LOGGER = LogUtils.getLogger();
 
+    private final PackOutput packOutput;
     private final String name;
-    private final FabricDataOutput packOutput;
-    private final CompletableFuture<HolderLookup.Provider> registriesFuture;
     private final List<DataProvider> providers = new ArrayList<>();
 
-    private AggregateDataProvider(String name, FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-        this.name = name;
+    public AggregateDataProvider(PackOutput packOutput, String name) {
         this.packOutput = packOutput;
-        this.registriesFuture = registriesFuture;
+        this.name = name;
     }
 
-    public <T extends DataProvider> T addProvider(FabricDataGenerator.Pack.Factory<T> factory) {
-        var provider = factory.create(packOutput);
+    private <T extends DataProvider> T addProvider(T provider) {
         providers.add(provider);
         return provider;
     }
 
-    public <T extends DataProvider> T addProvider(FabricDataGenerator.Pack.RegistryDependentFactory<T> factory) {
-        var provider = factory.create(packOutput, registriesFuture);
-        providers.add(provider);
-        return provider;
+    public <T extends DataProvider> T addProvider(Function<PackOutput, T> providerConstructor) {
+        return addProvider(providerConstructor.apply(packOutput));
     }
 
     @Override

@@ -9,7 +9,7 @@
     },
     {
       "amount": 2,
-      "tag": "c:steel_gears"
+      "tag": "forge:gears/steel"
     }
   ],
   "item_outputs": [

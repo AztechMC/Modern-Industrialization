@@ -25,28 +25,29 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.items.ForgeTool;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
-public class ForgeHammerCategory extends ViewerCategory<MachineRecipe> {
+public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammerRecipe>> {
     public static final ResourceLocation ID = new MIIdentifier("forge_hammer");
 
     private final int startPointX;
     private final int startPointY;
 
     protected ForgeHammerCategory() {
-        super(MachineRecipe.class, ID, MIBlock.FORGE_HAMMER.asBlock().getName(),
+        super((Class) RecipeHolder.class, ID, MIBlock.FORGE_HAMMER.asBlock().getName(),
                 MIBlock.FORGE_HAMMER.asItem().getDefaultInstance(), 150, 40);
 
         this.startPointX = width / 2 - 25;
@@ -59,36 +60,37 @@ public class ForgeHammerCategory extends ViewerCategory<MachineRecipe> {
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<MachineRecipe> consumer) {
-        recipeManager.getAllRecipesFor(MIMachineRecipeTypes.FORGE_HAMMER)
+    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<ForgeHammerRecipe>> consumer) {
+        recipeManager.getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())
                 .stream()
-                .sorted(Comparator.comparing(MachineRecipe::getId))
+                .sorted(Comparator.comparing(RecipeHolder::id))
                 .forEach(consumer);
     }
 
     @Override
-    public void buildLayout(MachineRecipe recipe, LayoutBuilder builder) {
-        MachineRecipe.ItemInput input = recipe.itemInputs.get(0);
-        MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);
+    public void buildLayout(RecipeHolder<ForgeHammerRecipe> holder, LayoutBuilder builder) {
+        var recipe = holder.value();
 
-        builder.inputSlot(startPointX + 5, startPointY + 6).ingredient(input.ingredient, input.amount, 1);
+        builder.inputSlot(startPointX + 5, startPointY + 6).ingredient(recipe.ingredient(), recipe.count(), 1);
 
-        if (recipe.eu > 0) {
+        if (recipe.hammerDamage() > 0) {
             builder.inputSlot(startPointX - 23, startPointY + 6).ingredient(Ingredient.of(ForgeTool.TAG), 1, 1).removeBackground().markCatalyst();
         }
 
-        builder.outputSlot(startPointX + 62, startPointY + 6).item(output.getStack());
+        builder.outputSlot(startPointX + 62, startPointY + 6).item(recipe.result());
     }
 
     @Override
-    public void buildWidgets(MachineRecipe recipe, WidgetList widgets) {
+    public void buildWidgets(RecipeHolder<ForgeHammerRecipe> holder, WidgetList widgets) {
+        var recipe = holder.value();
+
         // Draw arrow
         widgets.arrow(startPointX + 27, startPointY + 4);
 
         // Draw hammer
         widgets.texture(ForgeHammerScreen.FORGE_HAMMER_GUI, startPointX - 24, startPointY + 5, 7, 32, 18, 18);
 
-        Component text = recipe.eu > 0 ? MIText.DurabilityCost.text(recipe.eu) : MIText.NoToolRequired.text();
+        Component text = recipe.hammerDamage() > 0 ? MIText.DurabilityCost.text(recipe.hammerDamage()) : MIText.NoToolRequired.text();
         widgets.secondaryText(text, startPointX - 24, 28);
     }
 }

@@ -25,19 +25,18 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import java.util.ArrayList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 public class CustomProcessCondition implements MachineProcessCondition {
-    public static final Serde SERIALIZER = new Serde();
-
     static final Map<String, Definition> definitions = new HashMap<>();
 
     public static void onReload() {
@@ -64,6 +63,19 @@ public class CustomProcessCondition implements MachineProcessCondition {
             BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate,
             List<Component> description) {
     }
+
+    private static Codec<CustomProcessCondition> makeCodec(boolean syncToClient) {
+        return RecordCodecBuilder.create(
+                g -> g
+                        .group(
+                                Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
+                                ComponentSerialization.CODEC.listOf().optionalFieldOf("description")
+                                        .forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
+                        .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
+    }
+
+    static final Codec<CustomProcessCondition> CODEC = makeCodec(false);
+    private static final Codec<CustomProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
 
     public CustomProcessCondition(String id) {
         var definition = definitions.get(id);
@@ -93,41 +105,7 @@ public class CustomProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public Serializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    private static class Serde implements Serializer<CustomProcessCondition> {
-        @Override
-        public CustomProcessCondition fromJson(JsonObject json) {
-            var id = json.get("custom_id").getAsString();
-
-            if (json.has("description")) {
-                List<Component> description = new ArrayList<>();
-                for (var element : json.getAsJsonArray("description")) {
-                    description.add(Component.Serializer.fromJson(element));
-                }
-
-                return new CustomProcessCondition(id, description);
-            } else {
-                return new CustomProcessCondition(id);
-            }
-        }
-
-        @Override
-        public JsonObject toJson(CustomProcessCondition condition, boolean syncToClient) {
-            var obj = new JsonObject();
-            obj.addProperty("custom_id", condition.id);
-
-            if (syncToClient) {
-                var description = new JsonArray();
-                for (var line : condition.description) {
-                    description.add(Component.Serializer.toJsonTree(line));
-                }
-                obj.add("description", description);
-            }
-
-            return obj;
-        }
+    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+        return syncToClient ? CODEC_FOR_SYNC : CODEC;
     }
 }

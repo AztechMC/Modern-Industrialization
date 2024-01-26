@@ -3,7 +3,7 @@
   "eu": 128,
   "duration": 1200,
   "item_inputs": {
-    "tag": "c:superconductor_dusts",
+    "tag": "forge:dusts/superconductor",
     "amount": 1
   },
   "item_outputs": {

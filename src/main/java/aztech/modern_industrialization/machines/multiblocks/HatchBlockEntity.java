@@ -100,7 +100,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineCasing casing = isMatched() ? MachineCasings.get(matchedCasing) : null;
         MachineModelClientData data = new MachineModelClientData(casing);
         orientation.writeModelData(data);

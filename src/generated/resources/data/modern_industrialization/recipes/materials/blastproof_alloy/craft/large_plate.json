@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:blastproof_alloy_plates"
+      "tag": "forge:plates/blastproof_alloy"
     }
   },
   "pattern": [
@@ -10,7 +11,6 @@
     "xx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:blastproof_alloy_large_plate"
   }
 }

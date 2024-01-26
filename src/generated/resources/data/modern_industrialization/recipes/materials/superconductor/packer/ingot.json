@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:superconductor_nuggets"
+      "tag": "forge:nuggets/superconductor"
     }
   ],
   "item_outputs": [

@@ -9,7 +9,7 @@
       "item": "modern_industrialization:iron_double_ingot"
     },
     "p": {
-      "tag": "c:steel_plates"
+      "tag": "forge:plates/steel"
     }
   },
   "result": {

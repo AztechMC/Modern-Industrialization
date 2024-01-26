@@ -31,7 +31,9 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.forge.REIPluginClient;
 
+@REIPluginClient
 public class ViewerPluginRei implements REIClientPlugin {
 
     private final List<ViewerCategoryRei<?>> categories = new ArrayList<>();

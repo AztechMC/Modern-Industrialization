@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "P": {
-      "tag": "c:tin_plates"
+      "tag": "forge:plates/tin"
     },
     "R": {
       "item": "modern_industrialization:tin_ring"
@@ -17,7 +18,6 @@
     "PbP"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:tin_gear"
   }
 }

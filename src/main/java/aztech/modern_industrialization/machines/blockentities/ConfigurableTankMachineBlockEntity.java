@@ -37,7 +37,7 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -49,7 +49,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
 
         List<ConfigurableFluidStack> stacks = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
-            stacks.add(ConfigurableFluidStack.standardIOSlot(16 * FluidConstants.BUCKET, true));
+            stacks.add(ConfigurableFluidStack.standardIOSlot(16 * FluidType.BUCKET_VOLUME, true));
         }
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlots(68, 20, 3, 3).build();
         inventory = new MIInventory(Collections.emptyList(), stacks, SlotPositions.empty(), fluidPositions);
@@ -64,7 +64,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.CONFIGURABLE_TANK);
         orientation.writeModelData(data);
         return data;

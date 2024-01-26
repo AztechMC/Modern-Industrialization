@@ -1,9 +1,0 @@
-{
-  "default_overlays": {
-    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
-    "front": "modern_industrialization:block/machines/electric_storage/overlay_front",
-    "item_auto": "modern_industrialization:block/overlays/item_auto",
-    "output": "modern_industrialization:block/overlays/output",
-    "side": "modern_industrialization:block/machines/electric_storage/overlay_side"
-  }
-}

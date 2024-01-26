@@ -7,10 +7,10 @@
     ],
   "key": {
     "d" : {
-      "tag" : "c:diamond_dusts"
+      "tag" : "forge:dusts/diamond"
     },
     "G": {
-      "tag" : "c:invar_gears"
+      "tag" : "forge:gears/invar"
     }
   },
   "result": {

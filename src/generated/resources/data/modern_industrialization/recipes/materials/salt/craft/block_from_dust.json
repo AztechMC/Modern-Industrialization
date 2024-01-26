@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:salt_dusts"
+      "tag": "forge:dusts/salt"
     },
     "y": {
       "item": "modern_industrialization:salt_dust"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:salt_block"
   }
 }

@@ -71,10 +71,11 @@ public class PlayerStatisticsData extends MISavedData {
     }
 
     private static final String NAME = "modern_industrialization_player_stats";
+    private static final Factory<PlayerStatisticsData> FACTORY = new Factory<>(PlayerStatisticsData::new, PlayerStatisticsData::new);
 
     public static PlayerStatisticsData get(MinecraftServer server) {
         var overworld = server.getLevel(ServerLevel.OVERWORLD);
         Objects.requireNonNull(overworld, "Couldn't find overworld");
-        return overworld.getDataStorage().computeIfAbsent(PlayerStatisticsData::new, PlayerStatisticsData::new, NAME);
+        return overworld.getDataStorage().computeIfAbsent(FACTORY, NAME);
     }
 }

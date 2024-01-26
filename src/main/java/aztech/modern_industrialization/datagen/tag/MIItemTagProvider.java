@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.datagen.tag;
 
 import appeng.api.features.P2PTunnelAttunement;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
@@ -32,29 +34,29 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
-public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
+public class MIItemTagProvider extends ItemTagsProvider {
     private final boolean runtimeDatagen;
 
-    public MIItemTagProvider(FabricDataOutput packOutput, CompletableFuture<HolderLookup.Provider> registriesFuture, boolean runtimeDatagen) {
-        super(packOutput, registriesFuture);
+    public MIItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
+            @Nullable ExistingFileHelper existingFileHelper, boolean runtimeDatagen) {
+        super(output, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()), MI.ID, existingFileHelper);
         this.runtimeDatagen = runtimeDatagen;
-    }
-
-    @Override
-    protected FabricTagBuilder tag(TagKey<Item> tag) {
-        return getOrCreateTagBuilder(tag);
     }
 
     @Override
@@ -66,9 +68,9 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
             var tagId = new ResourceLocation(entry.getKey());
             for (var item : entry.getValue()) {
                 if (optional) {
-                    tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item));
+                    tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item.asItem()));
                 } else {
-                    tag(key(tagId)).add(item);
+                    tag(key(tagId)).add(item.asItem());
                 }
             }
         }
@@ -76,7 +78,7 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
             var tagId = new ResourceLocation(entry.getKey());
             for (var tag : entry.getValue()) {
-                tag(key(tagId)).forceAddTag(key(tag));
+                tag(key(tagId)).addTag(key(tag));
             }
         }
 
@@ -89,11 +91,24 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
                 .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
-                .forceAddTag(ConventionalItemTags.SHULKER_BOXES)
+                .addTag(MITags.SHULKER_BOXES)
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
 
-        if (FabricLoader.getInstance().isModLoaded("ae2") && !runtimeDatagen) {
+        // Have no idea why there is such a tag but go add it
+        tag(Tags.Items.ORES_QUARTZ).add(BuiltInRegistries.ITEM.get(new MIIdentifier("quartz_ore")));
+
+        tag(key("forge:tools/shears")).add(MIItem.DIESEL_CHAINSAW.asItem());
+        tag(MITags.WRENCHES).add(MIItem.WRENCH.asItem());
+        tag(ItemTags.AXES).add(MIItem.DIESEL_CHAINSAW.asItem());
+        tag(ItemTags.HOES).add(MIItem.DIESEL_CHAINSAW.asItem());
+        tag(ItemTags.PICKAXES).add(MIItem.STEAM_MINING_DRILL.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
+        tag(ItemTags.SHOVELS).add(MIItem.STEAM_MINING_DRILL.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
+        tag(ItemTags.SWORDS).add(MIItem.DIESEL_CHAINSAW.asItem());
+
+        tag(ItemTags.COALS).add(ResourceKey.create(Registries.ITEM, MI.id("lignite_coal")));
+
+        if (ModList.get().isLoaded("ae2") && !runtimeDatagen) {
             tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
                     .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
         }
@@ -108,34 +123,23 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
     }
 
     private void generatedConventionTag() {
-        tag(key("c:iron_nuggets")).add(Items.IRON_NUGGET);
-        tag(key("c:iron_blocks")).add(Items.IRON_BLOCK);
-        tag(key("c:iron_ores")).forceAddTag(ItemTags.IRON_ORES);
-
-        tag(key("c:copper_blocks")).add(Items.COPPER_BLOCK);
-        tag(key("c:copper_ores")).forceAddTag(ItemTags.COPPER_ORES);
-
-        tag(key("c:gold_nuggets")).add(Items.GOLD_NUGGET);
-        tag(key("c:gold_blocks")).add(Items.GOLD_BLOCK);
-        tag(key("c:gold_ores")).forceAddTag(ItemTags.GOLD_ORES);
-
-        tag(key("c:coal_blocks")).add(Items.COAL_BLOCK);
-        tag(key("c:coal_ores")).forceAddTag(ItemTags.COAL_ORES);
-
-        tag(key("c:redstone_blocks")).add(Items.REDSTONE_BLOCK);
-        tag(key("c:redstone_ores")).forceAddTag(ItemTags.REDSTONE_ORES);
-
-        tag(key("c:emerald_blocks")).add(Items.EMERALD_BLOCK);
-        tag(key("c:emerald_ores")).forceAddTag(ItemTags.EMERALD_ORES);
-
-        tag(key("c:diamond_blocks")).add(Items.DIAMOND_BLOCK);
-        tag(key("c:diamond_ores")).forceAddTag(ItemTags.DIAMOND_ORES);
-
-        tag(key("c:lapis_blocks")).add(Items.LAPIS_BLOCK);
-        tag(key("c:lapis_ores")).forceAddTag(ItemTags.LAPIS_ORES);
-
-        tag(key("c:quartz_ores")).add(Items.NETHER_QUARTZ_ORE);
-
-        tag(key("c:wooden_barrels")).add(Items.BARREL);
+        tag(MITags.SHULKER_BOXES)
+                .add(Items.SHULKER_BOX)
+                .add(Items.WHITE_SHULKER_BOX)
+                .add(Items.ORANGE_SHULKER_BOX)
+                .add(Items.MAGENTA_SHULKER_BOX)
+                .add(Items.LIGHT_BLUE_SHULKER_BOX)
+                .add(Items.YELLOW_SHULKER_BOX)
+                .add(Items.LIME_SHULKER_BOX)
+                .add(Items.PINK_SHULKER_BOX)
+                .add(Items.GRAY_SHULKER_BOX)
+                .add(Items.LIGHT_GRAY_SHULKER_BOX)
+                .add(Items.CYAN_SHULKER_BOX)
+                .add(Items.PURPLE_SHULKER_BOX)
+                .add(Items.BLUE_SHULKER_BOX)
+                .add(Items.BROWN_SHULKER_BOX)
+                .add(Items.GREEN_SHULKER_BOX)
+                .add(Items.RED_SHULKER_BOX)
+                .add(Items.BLACK_SHULKER_BOX);
     }
 }

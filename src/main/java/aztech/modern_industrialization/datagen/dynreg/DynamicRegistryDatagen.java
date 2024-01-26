@@ -24,19 +24,37 @@
 package aztech.modern_industrialization.datagen.dynreg;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.resources.ResourceKey;
 
 public final class DynamicRegistryDatagen {
-    private static final List<Consumer<RegistrySetBuilder>> actions = new ArrayList<>();
+    private static final List<Runnable> actions = new ArrayList<>();
+    private static final Map<ResourceKey<? extends Registry<?>>, List<RegistrySetBuilder.RegistryBootstrap<?>>> entries = new LinkedHashMap<>();
 
-    public static void addAction(Consumer<RegistrySetBuilder> action) {
+    public static void addAction(Runnable action) {
         actions.add(action);
     }
 
-    public static void run(RegistrySetBuilder builder) {
-        actions.forEach(action -> action.accept(builder));
+    public static <T> void add(ResourceKey<? extends Registry<T>> registry, RegistrySetBuilder.RegistryBootstrap<T> bootstrap) {
+        entries.computeIfAbsent(registry, k -> new ArrayList<>()).add(bootstrap);
+    }
+
+    public static RegistrySetBuilder getBuilder() {
+        var builder = new RegistrySetBuilder();
+        actions.forEach(Runnable::run);
+        for (var entry : entries.entrySet()) {
+            builder.add((ResourceKey) entry.getKey(), ctx -> {
+                for (var bootstrap : entry.getValue()) {
+                    bootstrap.run((BootstapContext) ctx);
+                }
+            });
+        }
+        return builder;
     }
 
     private DynamicRegistryDatagen() {

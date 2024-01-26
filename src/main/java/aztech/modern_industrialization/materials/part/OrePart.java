@@ -29,22 +29,20 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
+import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import java.util.List;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.SoundType;
@@ -54,6 +52,9 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class OrePart implements PartKeyProvider {
 
@@ -108,13 +109,11 @@ public class OrePart implements PartKeyProvider {
                             itemPath,
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
-                                    .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
-                                            lootGenerator.createOreDrop(block, BuiltInRegistries.ITEM.get(new ResourceLocation(loot)))))
-                                    .addMoreTags(List.of(ConventionalBlockTags.ORES))
+                                    .withLoot(new MIBlockLoot.Ore(loot))
+                                    .addMoreTags(List.of(Tags.Blocks.ORES))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
-                                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE),
-                            OreBlock.class);
+                                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE));
 
                     // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
                     // (i.e. the drop is raw ore).
@@ -122,10 +121,10 @@ public class OrePart implements PartKeyProvider {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
-                    String tag = "c:" + partContext.getMaterialName() + "_ores";
+                    String tag = "forge:ores/" + partContext.getMaterialName();
 
-                    TagsToGenerate.generateTag(tag, oreBlockBlockDefinition.asItem(), partContext.getMaterialEnglishName() + " Ores");
-                    TagsToGenerate.addTagToTag(tag, ConventionalItemTags.ORES.location().toString(), "Ores");
+                    TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
+                    TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
 
                     if (oreParams.generate) {
                         ResourceLocation oreGenId = new MIIdentifier(
@@ -133,28 +132,34 @@ public class OrePart implements PartKeyProvider {
 
                         var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);
                         var placedFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, oreGenId);
+                        var modifierKey = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, oreGenId);
 
-                        DynamicRegistryDatagen.addAction(builder -> {
+                        DynamicRegistryDatagen.addAction(() -> {
                             var ruleTest = new TagMatchTest(deepslate ? BlockTags.DEEPSLATE_ORE_REPLACEABLES : BlockTags.STONE_ORE_REPLACEABLES);
 
                             var target = List.of(
                                     OreConfiguration.target(ruleTest, oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
-                            builder.add(Registries.CONFIGURED_FEATURE, context -> {
+                            DynamicRegistryDatagen.add(Registries.CONFIGURED_FEATURE, context -> {
                                 FeatureUtils.register(context, featureKey, Feature.ORE, new OreConfiguration(target, oreParams.veinSize));
                             });
 
-                            builder.add(Registries.PLACED_FEATURE, context -> {
+                            DynamicRegistryDatagen.add(Registries.PLACED_FEATURE, context -> {
                                 var holder = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(featureKey);
                                 var placement = OrePlacements.commonOrePlacement(
                                         oreParams.veinsPerChunk,
                                         HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)));
                                 PlacementUtils.register(context, placedFeatureKey, holder, placement);
                             });
-                        });
 
-                        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
-                                placedFeatureKey);
+                            DynamicRegistryDatagen.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
+                                var modifier = new BiomeModifiers.AddFeaturesBiomeModifier(
+                                        context.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                        HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(placedFeatureKey)),
+                                        GenerationStep.Decoration.UNDERGROUND_ORES);
+                                context.register(modifierKey, modifier);
+                            });
+                        });
                     }
 
                 })

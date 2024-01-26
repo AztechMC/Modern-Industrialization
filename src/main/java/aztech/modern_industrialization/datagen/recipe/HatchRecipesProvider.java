@@ -24,22 +24,21 @@
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.recipe.json.MIRecipeJson;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 
 public class HatchRecipesProvider extends MIRecipesProvider {
 
     private static final String pathPrefix = "hatches/";
 
-    public HatchRecipesProvider(FabricDataOutput packOutput) {
+    public HatchRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
 
         String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced", "quantum" };
         String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium", "" };
@@ -78,9 +77,9 @@ public class HatchRecipesProvider extends MIRecipesProvider {
                         ShapedRecipeJson craft = new ShapedRecipeJson(AB[k], 1, "U", "V").addInput('U', k == 0 ? other : casing).addInput('V',
                                 k == 1 ? other : casing);
 
-                        MIRecipeJson craftAsbl = craft.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
+                        MachineRecipeBuilder craftAsbl = craft.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
 
-                        MIRecipeJson unpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 200).addItemOutput(casing, 1)
+                        MachineRecipeBuilder unpacker = new MachineRecipeBuilder(MIMachineRecipeTypes.UNPACKER, 2, 200).addItemOutput(casing, 1)
                                 .addItemOutput(other, 1).addItemInput(AB[k], 1);
 
                         ShapedRecipeJson craftFromOther = new ShapedRecipeJson(AB[k], 1, "U").addInput('U', AB[(k + 1) % 2]);

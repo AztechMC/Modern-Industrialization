@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:iron_plates"
+      "tag": "forge:plates/iron"
     },
     {
       "amount": 1,

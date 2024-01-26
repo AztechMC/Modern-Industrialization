@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 /**
  * Base class for all MI saved data to make them more resistant to crashes while writing. Thank you RS for the idea!
  */
+// TODO remove when NeoForge implements robust saving
 public abstract class MISavedData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -51,7 +52,7 @@ public abstract class MISavedData extends SavedData {
         NbtUtils.addCurrentDataVersion(compoundTag);
         try {
             // Write to temp file first.
-            NbtIo.writeCompressed(compoundTag, tempFile);
+            NbtIo.writeCompressed(compoundTag, tempFile.toPath());
             // Delete old file.
             if (file.exists()) {
                 if (!file.delete()) {

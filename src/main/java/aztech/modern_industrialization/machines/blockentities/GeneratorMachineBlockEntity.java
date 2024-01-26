@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import static aztech.modern_industrialization.machines.components.FluidItemConsumerComponent.NumberOfFuel.*;
 
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
@@ -117,9 +118,9 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             }
 
             if (numberOfFluid == MANY) {
-                fluidStacks = List.of(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
+                fluidStacks = List.of(ConfigurableFluidStack.standardInputSlot(fluidCapacity));
             } else {
-                fluidStacks = List.of(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity,
+                fluidStacks = List.of(ConfigurableFluidStack.lockedInputSlot(fluidCapacity,
                         fluidItemConsumer.fluidEUProductionMap.getAllAccepted().iterator().next()));
             }
 
@@ -163,7 +164,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
@@ -195,14 +196,16 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
-            GeneratorMachineBlockEntity abe = (GeneratorMachineBlockEntity) be;
-            if (abe.orientation.outputDirection == direction) {
-                return abe.extractable;
-            } else {
-                return null;
-            }
-        }, bet);
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(EnergyApi.SIDED, bet, (be, direction) -> {
+                GeneratorMachineBlockEntity abe = (GeneratorMachineBlockEntity) be;
+                if (abe.orientation.outputDirection == direction) {
+                    return abe.extractable;
+                } else {
+                    return null;
+                }
+            });
+        });
     }
 
     @Override

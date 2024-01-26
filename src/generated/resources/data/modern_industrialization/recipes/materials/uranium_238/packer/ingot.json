@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:uranium_238_nuggets"
+      "tag": "forge:nuggets/uranium_238"
     }
   ],
   "item_outputs": [

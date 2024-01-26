@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:chromium_ingots"
+      "tag": "forge:ingots/chromium"
     },
     {
       "amount": 1,

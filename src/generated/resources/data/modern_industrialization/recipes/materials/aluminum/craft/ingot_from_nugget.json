@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:aluminum_nuggets"
+      "tag": "forge:nuggets/aluminum"
     },
     "y": {
       "item": "modern_industrialization:aluminum_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:aluminum_ingot"
   }
 }

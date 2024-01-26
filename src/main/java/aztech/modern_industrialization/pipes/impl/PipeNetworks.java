@@ -28,16 +28,22 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.MISavedData;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworks extends MISavedData {
+    private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()),
+            PipeNetworks::readNbt);
     private static final String NAME = "modern_industrialization_pipe_networks";
+
     private final Map<PipeNetworkType, PipeNetworkManager> managers;
     private final Map<Long, List<Runnable>> loadPipesByChunk = new HashMap<>();
 
@@ -76,7 +82,7 @@ public class PipeNetworks extends MISavedData {
     }
 
     public static PipeNetworks get(ServerLevel world) {
-        PipeNetworks networks = world.getDataStorage().computeIfAbsent(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
+        PipeNetworks networks = world.getDataStorage().computeIfAbsent(FACTORY, NAME);
         networks.setDirty();
         return networks;
     }
@@ -93,7 +99,12 @@ public class PipeNetworks extends MISavedData {
     }
 
     static {
-        ServerTickEvents.END_WORLD_TICK.register(world -> {
+        NeoForge.EVENT_BUS.addListener(TickEvent.LevelTickEvent.class, event -> {
+            if (event.side != LogicalSide.SERVER || event.phase != TickEvent.Phase.END) {
+                return;
+            }
+
+            var world = (ServerLevel) event.level;
             PipeNetworks networks = PipeNetworks.get(world);
 
             // Load pipes

@@ -24,19 +24,19 @@
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.List;
-import mezz.jei.api.fabric.constants.FabricTypes;
-import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 class JeiSlotUtil {
     private JeiSlotUtil() {
@@ -45,7 +45,7 @@ class JeiSlotUtil {
     public static void customizeTooltip(IRecipeSlotBuilder slot, float probability) {
         slot.addTooltipCallback((recipeSlotView, tooltip) -> {
             // Add amounts for fluids to the tooltip
-            recipeSlotView.getDisplayedIngredient(FabricTypes.FLUID_STACK)
+            recipeSlotView.getDisplayedIngredient(NeoForgeTypes.FLUID_STACK)
                     .ifPresent(fluidIngredient -> {
                         tooltip.add(1, FluidHelper.getFluidAmount(fluidIngredient.getAmount()));
                     });
@@ -63,19 +63,15 @@ class JeiSlotUtil {
      * and also clear any amount tooltip.
      */
     public static void overrideFluidRenderer(IRecipeSlotBuilder slot) {
-        slot.setCustomRenderer(FabricTypes.FLUID_STACK, new IIngredientRenderer<>() {
+        slot.setCustomRenderer(NeoForgeTypes.FLUID_STACK, new IIngredientRenderer<>() {
             @Override
-            public void render(GuiGraphics guiGraphics, IJeiFluidIngredient ingredient) {
-                RenderHelper.drawFluidInGui(guiGraphics, getVariant(ingredient), 0, 0);
+            public void render(GuiGraphics guiGraphics, FluidStack ingredient) {
+                RenderHelper.drawFluidInGui(guiGraphics, FluidVariant.of(ingredient), 0, 0);
             }
 
             @Override
-            public List<Component> getTooltip(IJeiFluidIngredient ingredient, TooltipFlag tooltipFlag) {
-                return FluidVariantRendering.getTooltip(getVariant(ingredient), tooltipFlag);
-            }
-
-            private FluidVariant getVariant(IJeiFluidIngredient ingredient) {
-                return FluidVariant.of(ingredient.getFluid(), ingredient.getTag().orElse(null));
+            public List<Component> getTooltip(FluidStack ingredient, TooltipFlag tooltipFlag) {
+                return FluidVariantRendering.getTooltip(FluidVariant.of(ingredient), tooltipFlag);
             }
         });
     }

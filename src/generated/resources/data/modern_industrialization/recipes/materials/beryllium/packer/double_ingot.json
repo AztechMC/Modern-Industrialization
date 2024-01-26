@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:beryllium_ingots"
+      "tag": "forge:ingots/beryllium"
     },
     {
       "amount": 1,

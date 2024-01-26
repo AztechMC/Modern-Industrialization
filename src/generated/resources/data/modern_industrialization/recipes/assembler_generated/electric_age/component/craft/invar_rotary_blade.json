@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:diamond_dusts"
+      "tag": "forge:dusts/diamond"
     },
     {
       "amount": 1,
-      "tag": "c:invar_gears"
+      "tag": "forge:gears/invar"
     }
   ],
   "item_outputs": [

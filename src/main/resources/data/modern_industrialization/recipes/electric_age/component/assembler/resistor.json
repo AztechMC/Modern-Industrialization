@@ -8,7 +8,7 @@
             "amount": 2
         },
         {
-            "tag": "c:coal_dusts",
+            "tag": "forge:dusts/coal",
             "amount": 1
         }
     ],

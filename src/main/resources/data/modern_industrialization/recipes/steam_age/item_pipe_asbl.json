@@ -10,7 +10,7 @@
       "item" : "modern_industrialization:bronze_curved_plate"
     },
     "G" : {
-      "tag" : "c:steel_gears"
+      "tag" : "forge:gears/steel"
     }
   },
   "result": {

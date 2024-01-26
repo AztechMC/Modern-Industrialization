@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/steam_quarry"
+      "model": "modern_industrialization:block/steam_quarry"
     }
   }
 }

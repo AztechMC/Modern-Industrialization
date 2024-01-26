@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tin_ingots"
+      "tag": "forge:ingots/tin"
     }
   ],
   "item_outputs": [

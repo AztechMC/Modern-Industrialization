@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/large_tank_hatch"
+      "model": "modern_industrialization:block/large_tank_hatch"
     }
   }
 }

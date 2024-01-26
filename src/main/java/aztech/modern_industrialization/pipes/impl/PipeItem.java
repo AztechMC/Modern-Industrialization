@@ -46,7 +46,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class PipeItem extends Item {
-    final PipeNetworkType type;
+    public final PipeNetworkType type;
     public final PipeNetworkData defaultData;
 
     public PipeItem(Properties settings, PipeNetworkType type, PipeNetworkData defaultData) {
@@ -140,7 +140,7 @@ public class PipeItem extends Item {
             boolean waterLog = context.getLevel().getFluidState(pos).getType() == Fluids.WATER;
 
             // neighbor update is handled later
-            world.setBlock(pos, MIPipes.BLOCK_PIPE.defaultBlockState().setValue(PipeBlock.WATERLOGGED, waterLog), 3);
+            world.setBlock(pos, MIPipes.BLOCK_PIPE.get().defaultBlockState().setValue(PipeBlock.WATERLOGGED, waterLog), 3);
             if (!world.isClientSide()) {
                 PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
                 pipeBe.addPipe(type, defaultData.clone());
@@ -151,7 +151,7 @@ public class PipeItem extends Item {
     }
 
     private static boolean canPlace(UseOnContext ctx, BlockPos pos) {
-        BlockState state = MIPipes.BLOCK_PIPE.defaultBlockState();
+        BlockState state = MIPipes.BLOCK_PIPE.get().defaultBlockState();
         CollisionContext shapeContext = ctx.getPlayer() == null ? CollisionContext.empty() : CollisionContext.of(ctx.getPlayer());
         return ctx.getLevel().getBlockState(pos).canBeReplaced(new BlockPlaceContext(ctx)) && state.canSurvive(ctx.getLevel(), pos)
                 && ctx.getLevel().isUnobstructed(state, pos, shapeContext);

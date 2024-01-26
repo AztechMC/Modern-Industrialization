@@ -33,7 +33,7 @@ package aztech.modern_industrialization.datagen.texture;
 // - if override exists: copy from override
 // - else: generate
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.resource.FastPathPackResources;
 import aztech.modern_industrialization.textures.MITextures;
 import com.google.common.hash.Hashing;
@@ -45,21 +45,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.VanillaPackResourcesBuilder;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatagen) implements DataProvider {
+public record TexturesProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper, boolean runtimeDatagen) implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
@@ -69,12 +69,10 @@ public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatag
 
         if (runtimeDatagen) {
             // MI jar
-            ModContainer container = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-            packs.add(ModNioResourcePack.create("mi:runtimedatagen", container, null, PackType.CLIENT_RESOURCES,
-                    ResourcePackActivationType.ALWAYS_ENABLED));
+            packs.add(new PathPackResources("mi:runtimedatagen", ModList.get().getModFileById(MI.ID).getFile().getSecureJar().getRootPath(), true));
 
             // extra_datagen_resources folder
-            var extra = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization").resolve("extra_datagen_resources");
+            var extra = FMLPaths.GAMEDIR.get().resolve("modern_industrialization").resolve("extra_datagen_resources");
             packs.add(new FastPathPackResources("extra", extra, true));
         } else {
             var nonGeneratedResources = packOutput.getOutputFolder().resolve("../../main/resources");
@@ -110,7 +108,8 @@ public record TexturesProvider(FabricDataOutput packOutput, boolean runtimeDatag
                         return generated;
                     }
                     return fallbackResourceProvider.getResource(resourceLocation);
-                })
+                },
+                existingFileHelper)
                 .whenComplete((result, throwable) -> outputPack.close());
     }
 

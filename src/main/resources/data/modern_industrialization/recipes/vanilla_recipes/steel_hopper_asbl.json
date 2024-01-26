@@ -10,7 +10,7 @@
       "item": "minecraft:chest"
     },
     "p": {
-      "tag": "c:steel_plates"
+      "tag": "forge:plates/steel"
     }
   },
   "result": {

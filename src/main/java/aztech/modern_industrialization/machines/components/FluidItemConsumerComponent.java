@@ -33,7 +33,6 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import java.util.stream.Collectors;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.CommonHooks;
 
 /**
  * A component that turns fluids and/or item into energy.
@@ -121,8 +121,8 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
             Fluid fluid = stack.getResource().getFluid();
             if (fluidEUProductionMap.accept(fluid) && stack.getAmount() > 0) {
                 long fuelEu = fluidEUProductionMap.getEuProduction(fluid);
-                long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu * 81, stack.getAmount());
-                euProduced += usedDroplets * fuelEu / 81;
+                long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
+                euProduced += usedDroplets * fuelEu;
                 stack.decrement(usedDroplets);
 
                 if (euProduced >= maxEuProduced) {
@@ -301,8 +301,9 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
         return new EUProductionMap<>() {
             @Override
             public long getEuProduction(Item variant) {
-                Integer eu = FuelRegistryImpl.INSTANCE.get(variant);
-                return eu == null ? 0 : eu * FuelBurningComponent.EU_PER_BURN_TICK;
+                // TODO NEO NBT-aware fuels
+                int burnTime = CommonHooks.getBurnTime(variant.getDefaultInstance(), null);
+                return burnTime <= 0 ? 0 : burnTime * FuelBurningComponent.EU_PER_BURN_TICK;
             }
 
             @Override

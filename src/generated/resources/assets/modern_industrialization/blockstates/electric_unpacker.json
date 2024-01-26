@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/electric_unpacker"
+      "model": "modern_industrialization:block/electric_unpacker"
     }
   }
 }

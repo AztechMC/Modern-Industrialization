@@ -23,13 +23,16 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
-import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
@@ -44,43 +47,40 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
-import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.*;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.core.Registry;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Block BLOCK_PIPE = new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f));
-    public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
-    private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
+    public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.register("pipe",
+            () -> new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f)));
+    public static Supplier<BlockEntityType<PipeBlockEntity>> BLOCK_ENTITY_TYPE_PIPE;
+    private final Map<PipeNetworkType, Supplier<PipeItem>> pipeItems = new HashMap<>();
 
-    public static final Map<PipeItem, CableTier> ELECTRICITY_PIPE_TIER = new HashMap<>();
+    public static final Map<PipeNetworkType, CableTier> ELECTRICITY_PIPE_TIER = new HashMap<>();
 
-    public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = Registry.register(BuiltInRegistries.MENU,
-            new MIIdentifier("item_pipe"),
-            new ExtendedScreenHandlerType<>(ItemPipeScreenHandler::new));
-    public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = Registry.register(BuiltInRegistries.MENU,
-            new MIIdentifier("fluid_pipe"),
-            new ExtendedScreenHandlerType<>(FluidPipeScreenHandler::new));
-
-    public static final Set<ResourceLocation> ITEM_PIPE_MODELS = new HashSet<>();
+    public static final Supplier<MenuType<ItemPipeScreenHandler>> SCREEN_HANDLER_TYPE_ITEM_PIPE = MIRegistries.MENUS.register(
+            "item_pipe",
+            () -> IMenuTypeExtension.create(ItemPipeScreenHandler::new));
+    public static final Supplier<MenuType<FluidPipeScreenHandler>> SCREEN_HANDLER_TYPE_FLUID_PIPE = MIRegistries.MENUS.register(
+            "fluid_pipe",
+            () -> IMenuTypeExtension.create(FluidPipeScreenHandler::new));
 
     public void setup() {
-        Registry.register(BuiltInRegistries.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
-        BLOCK_ENTITY_TYPE_PIPE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
-                FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
+        BLOCK_ENTITY_TYPE_PIPE = MIRegistries.BLOCK_ENTITIES.register("pipe",
+                () -> BlockEntityType.Builder.of(PipeBlockEntity::new, BLOCK_PIPE.get()).build(null));
 
         for (PipeColor color : PipeColor.values()) {
             registerFluidPipeType(color);
@@ -98,47 +98,58 @@ public class MIPipes {
                 throw new RuntimeException(e);
             }
         }
-
-        registerPackets();
-        DebugCommands.init();
     }
+
+    public static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
+        // Delegate to block model
+        modelGenerator.getBuilder(BuiltInRegistries.ITEM.getKey(item).getPath())
+                .customLoader(DelegatingModelBuilder::new)
+                .delegate(modelGenerator.getExistingFile(MI.id("block/pipe")))
+                .end();
+    };
 
     private void registerFluidPipeType(PipeColor color) {
         String pipeId = color.prefix + "fluid_pipe";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
+        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
                 FluidNetworkNode::new, color.color, true);
-        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Fluid Pipe", pipeId,
-                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())), SortOrder.PIPES);
-        var item = itemDef.asItem();
-        pipeItems.put(type, item);
-        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.FLUID_PIPES, item, "Fluid Pipes");
+        var itemDef = MIItem.item(
+                color.englishNamePrefix + "Fluid Pipe",
+                pipeId,
+                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
+                ITEM_MODEL_GENERATOR,
+                SortOrder.PIPES);
+        register(type, itemDef::asItem);
+        TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
     }
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
-        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Item Pipe", pipeId, prop -> new PipeItem(prop, type, new ItemNetworkData()),
+        var itemDef = MIItem.item(
+                color.englishNamePrefix + "Item Pipe",
+                pipeId,
+                prop -> new PipeItem(prop, type, new ItemNetworkData()),
+                ITEM_MODEL_GENERATOR,
                 SortOrder.PIPES);
-        var item = itemDef.asItem();
-        pipeItems.put(type, item);
-        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.ITEM_PIPES, item, "Item Pipes");
+        register(type, itemDef::asItem);
+        TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
     }
 
     public void registerCableType(String englishName, String name, int color, CableTier tier) {
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false);
-        var itemDef = MIItem.itemNoModel(englishName, cableId, prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
+        var itemDef = MIItem.item(
+                englishName,
+                cableId,
+                prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
+                ITEM_MODEL_GENERATOR,
                 SortOrder.CABLES.and(tier));
-        var item = itemDef.asItem();
-        pipeItems.put(type, item);
-        ELECTRICITY_PIPE_TIER.put(item, tier);
-        ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + cableId));
+        register(type, itemDef::asItem);
+        ELECTRICITY_PIPE_TIER.put(type, tier);
     }
 
-    public void register(PipeNetworkType type, PipeItem item) {
+    public void register(PipeNetworkType type, Supplier<PipeItem> item) {
         if (pipeItems.containsKey(type)) {
             throw new IllegalStateException("Type " + type + " already registered");
         }
@@ -147,13 +158,6 @@ public class MIPipes {
     }
 
     public PipeItem getPipeItem(PipeNetworkType type) {
-        return pipeItems.get(type);
-    }
-
-    public void registerPackets() {
-        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
-        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE);
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.INCREMENT_PRIORITY, PipePackets.ON_INCREMENT_PRIORITY);
-        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID);
+        return pipeItems.get(type).get();
     }
 }

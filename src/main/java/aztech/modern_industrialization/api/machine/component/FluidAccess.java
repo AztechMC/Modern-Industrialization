@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.api.machine.component;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 
 public interface FluidAccess {
     FluidVariant getVariant();

@@ -24,14 +24,10 @@
 package aztech.modern_industrialization.items.tools;
 
 import java.util.List;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -42,38 +38,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class QuantumSword extends Item {
-    public QuantumSword(FabricItemSettings settings) {
-        super(settings.customDamage((is, amt, e, cb) -> 0));
+    public QuantumSword(Properties settings) {
+        super(settings);
     }
 
-    public static void init() {
-        /**
-         * This way of attacking skips vanilla's attacking to allow for attacking
-         * even if the player has zero attack damage because of stuff like weakness effect or attribute modifiers
-         */
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (player.isSpectator()) {
-                return InteractionResult.PASS;
-            }
-            if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().getItem() instanceof QuantumSword quantumSword) {
-                if (entity instanceof LivingEntity livingEntity) {
-                    quantumSword.onHurtEnemy(player.getMainHandItem(), livingEntity, player);
-                } else {
-                    entity.kill();
-                }
-                return InteractionResult.SUCCESS;
-            } else {
-                return InteractionResult.PASS;
-            }
-        });
-    }
-
-    private void onHurtEnemy(ItemStack stack, LivingEntity target, Player attacker) {
-        target.hurt(attacker.level().damageSources().source(DamageTypes.GENERIC_KILL, attacker), Float.MAX_VALUE);
+    private void onHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        var damageSources = attacker.level().damageSources();
+        target.hurt(new DamageSource(damageSources.genericKill().typeHolder(), attacker), Float.MAX_VALUE);
 
         // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
         // advancement
         // TODO: same for phantoms
+    }
+
+    @Override
+    public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
+        onHurtEnemy(pStack, pTarget, pAttacker);
+        return true;
     }
 
     @Override

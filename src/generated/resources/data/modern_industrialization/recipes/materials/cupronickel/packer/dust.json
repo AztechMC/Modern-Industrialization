@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:cupronickel_tiny_dusts"
+      "tag": "forge:tiny_dusts/cupronickel"
     }
   ],
   "item_outputs": [

@@ -24,15 +24,13 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.network.machines.SetAutoExtractPacket;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -79,11 +77,7 @@ public class AutoExtractClient implements GuiComponentClient {
             container.addButton(u, syncId -> {
                 boolean newExtract = !extractStatus[index];
                 extractStatus[index] = newExtract;
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(syncId);
-                buf.writeBoolean(isItem);
-                buf.writeBoolean(newExtract);
-                ClientPlayNetworking.send(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
+                new SetAutoExtractPacket(syncId, isItem, newExtract).sendToServer();
             }, () -> {
                 List<Component> lines = new ArrayList<>();
                 if (extractStatus[index]) {

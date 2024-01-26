@@ -4,12 +4,16 @@
   "eu": 2,
   "item_inputs": [
     {
-      "amount": 2,
-      "tag": "c:iron_tiny_dusts"
+      "amount": 1,
+      "tag": "forge:tiny_dusts/iron"
     },
     {
       "amount": 1,
-      "tag": "c:nickel_tiny_dusts"
+      "tag": "forge:tiny_dusts/iron"
+    },
+    {
+      "amount": 1,
+      "tag": "forge:tiny_dusts/nickel"
     }
   ],
   "item_outputs": [

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:copper_tiny_dusts"
+      "tag": "forge:tiny_dusts/copper"
     }
   ],
   "item_outputs": [

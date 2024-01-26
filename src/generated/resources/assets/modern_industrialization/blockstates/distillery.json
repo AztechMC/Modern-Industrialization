@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/distillery"
+      "model": "modern_industrialization:block/distillery"
     }
   }
 }

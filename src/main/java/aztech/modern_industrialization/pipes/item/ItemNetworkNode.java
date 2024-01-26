@@ -29,20 +29,16 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.items.ConfigCardItem;
+import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.TransferHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -52,17 +48,20 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
-// LBA
 public class ItemNetworkNode extends PipeNetworkNode {
     final List<ItemConnection> connections = new ArrayList<>();
     int inactiveTicks = 0;
@@ -85,7 +84,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.relative(direction);
-        return ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite()) != null;
+        return world.getCapability(Capabilities.ItemHandler.BLOCK, adjPos, direction.getOpposite()) != null;
     }
 
     @Override
@@ -190,7 +189,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
+    public IPipeMenuProvider getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
             if (connection.direction == guiDirection) {
                 return connection.new ScreenHandlerFactory(helper, getType().getIdentifier());
@@ -239,10 +238,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
         private PipeEndpointType type;
         boolean whitelist = true;
         int insertPriority, extractPriority;
-        private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
-        final Set<ItemVariant> stacksCache = new HashSet<>();
+        final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
+        final Map<Item, List<ItemStack>> stacksCache = new IdentityHashMap<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
-        BlockApiCache<Storage<ItemVariant>, Direction> cache = null;
+        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
             this.direction = direction;
@@ -258,9 +257,22 @@ public class ItemNetworkNode extends PipeNetworkNode {
             stacksCache.clear();
             for (ItemStack stack : stacks) {
                 if (!stack.isEmpty()) {
-                    stacksCache.add(ItemVariant.of(stack));
+                    stacksCache.computeIfAbsent(stack.getItem(), k -> new ArrayList<>()).add(stack);
                 }
             }
+        }
+
+        private boolean isInCache(ItemStack stack) {
+            var list = stacksCache.get(stack.getItem());
+            if (list == null) {
+                return false;
+            }
+            for (ItemStack cachedStack : list) {
+                if (ItemStack.isSameItemSameTags(cachedStack, stack)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         boolean canInsert() {
@@ -271,12 +283,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        boolean canStackMoveThrough(ItemVariant key) {
-            return stacksCache.contains(key) == whitelist;
+        boolean canStackMoveThrough(ItemStack stack) {
+            return isInCache(stack) == whitelist;
         }
 
-        long getMoves() {
-            return 16 + (SpeedUpgrade.UPGRADES.getOrDefault(upgradeStack.getItem(), 0L) * upgradeStack.getCount());
+        int getMoves() {
+            return 16 + (SpeedUpgrade.UPGRADES.getOrDefault(upgradeStack.getItem(), 0) * upgradeStack.getCount());
         }
 
         private void dropUpgrades(Level world, BlockPos pos) {
@@ -348,14 +360,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
-            try (var tx = Transaction.openOuter()) {
-                int extracted = (int) PlayerInventoryStorage.of(player).extract(what, maxAmount, tx);
-                tx.commit();
-                return extracted;
-            }
+            return TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), what::matches, maxAmount).getCount();
         }
 
-        private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
+        private class ScreenHandlerFactory implements IPipeMenuProvider {
             private final ItemPipeInterface iface;
             private final ResourceLocation pipeType;
 
@@ -448,7 +456,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             @Override
-            public void writeScreenOpeningData(ServerPlayer serverPlayerEntity, FriendlyByteBuf packetByteBuf) {
+            public void writeAdditionalData(FriendlyByteBuf packetByteBuf) {
                 iface.toBuf(packetByteBuf);
             }
         }

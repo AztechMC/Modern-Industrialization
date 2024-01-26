@@ -3,7 +3,7 @@
   "eu": 4,
   "duration": 300,
   "item_inputs": {
-    "tag": "c:sulfur_dusts",
+    "tag": "forge:dusts/sulfur",
     "amount": 1
   },
   "fluid_inputs": {

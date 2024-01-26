@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/assembler"
+      "model": "modern_industrialization:block/assembler"
     }
   }
 }

@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:copper_plates"
+      "tag": "forge:plates/copper"
     }
   ],
   "item_outputs": [

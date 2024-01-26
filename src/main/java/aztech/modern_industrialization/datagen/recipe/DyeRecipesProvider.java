@@ -25,21 +25,20 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.recipe.json.MIRecipeJson;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import java.util.function.Consumer;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 
 public class DyeRecipesProvider extends MIRecipesProvider {
-    public DyeRecipesProvider(FabricDataOutput packOutput) {
+    public DyeRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         for (DyeColor color : DyeColor.values()) {
             String pathPrefix = "dyes/" + color.getName() + "/";
             // 16 item pipes with dye in the center
@@ -73,64 +72,64 @@ public class DyeRecipesProvider extends MIRecipesProvider {
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes")
                     .offerTo(consumer, pathPrefix + "craft/fluid_pipe_1");
             // generate dyes with synthetic oil
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
                     .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addItemOutput("minecraft:" + color.getName() + "_dye", 1)
                     .offerTo(consumer, pathPrefix + "mixer/synthetic_oil");
             // generate dyes with benzene
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.BENZENE, 25)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.BENZENE, 25)
                     .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addItemOutput("minecraft:" + color.getName() + "_dye", 1)
                     .offerTo(consumer, pathPrefix + "mixer/benzene");
 
             // wool
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#minecraft:wool", 8).addItemOutput("minecraft:" + color.getName() + "_wool", 8)
                     .offerTo(consumer, pathPrefix + "mixer/wool");
 
             // glass
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#c:glass_blocks", 8)
                     .addItemOutput("minecraft:" + color.getName() + "_stained_glass", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass");
 
             // glassPane
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#c:glass_panes", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass_pane");
 
             // shulker Box
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#c:shulker_boxes", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
                     .offerTo(consumer, pathPrefix + "mixer/shulker_box");
 
             // bed
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#minecraft:beds", 1)
                     .addItemOutput("minecraft:" + color.getName() + "_bed", 1)
                     .offerTo(consumer, pathPrefix + "mixer/bed");
 
             // candle
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#minecraft:candles", 1).addItemOutput("minecraft:" + color.getName() + "_candle", 1)
                     .offerTo(consumer, pathPrefix + "mixer/candle");
 
             // carpet
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput("#minecraft:wool_carpets", 8).addItemOutput("minecraft:" + color.getName() + "_carpet", 8)
                     .offerTo(consumer, pathPrefix + "mixer/carpet");
 
             // terracotta
-            MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
                     .addItemInput(ItemTags.TERRACOTTA, 8).addItemOutput("minecraft:" + color.getName() + "_terracotta", 8)
                     .offerTo(consumer, pathPrefix + "mixer/terracotta");
 
             // glass pane cutting
-            MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                     .addItemInput("minecraft:" + color.getName() + "_stained_glass", 6)
                     .addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 16)
                     .offerTo(consumer, pathPrefix + "cutting_machine/glass_pane");
 
             // carpet cutting
-            MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+            new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                     .addItemInput("minecraft:" + color.getName() + "_wool", 1)
                     .addItemOutput("minecraft:" + color.getName() + "_carpet", 4)
                     .offerTo(consumer, pathPrefix + "cutting_machine/carpet");

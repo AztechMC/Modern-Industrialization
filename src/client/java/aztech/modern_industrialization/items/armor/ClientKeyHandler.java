@@ -23,32 +23,24 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.network.armor.ActivateChestPacket;
+import aztech.modern_industrialization.network.armor.UpdateKeysPacket;
 import com.mojang.blaze3d.platform.InputConstants;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
 /*
  * Borrowed from Iron Jetpacks! https://github.com/shedaniel/IronJetpacks/blob/1.16/src/main/java/com/blakebr0/ironjetpacks/handler/KeyBindingsHandler.java
  */
-@Environment(EnvType.CLIENT)
 public class ClientKeyHandler {
     private static boolean up = false;
-    private static KeyMapping keyActivate;
-
-    public static void setup() {
-        keyActivate = KeyBindingHelper.registerKeyBinding(
-                new KeyMapping("key.modern_industrialization.activate", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization"));
-    }
+    public static KeyMapping keyActivate = new KeyMapping("key.modern_industrialization.activate", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization");
 
     public static void onEndTick(Minecraft client) {
         updateState(client);
@@ -63,10 +55,8 @@ public class ClientKeyHandler {
         if (chest.getItem() instanceof ActivatableChestItem activatable) {
             while (keyActivate.consumeClick()) {
                 boolean activated = !activatable.isActivated(chest);
-                ArmorPackets.activateChest(client.player, activated);
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-                buf.writeBoolean(activated);
-                ClientPlayNetworking.send(ArmorPackets.ACTIVATE_CHEST, buf);
+                ActivateChestPacket.activateChest(client.player, activated);
+                new ActivateChestPacket(activated).sendToServer();
             }
         }
     }
@@ -82,9 +72,7 @@ public class ClientKeyHandler {
             up = upNow;
 
             MIKeyMap.update(client.player, up);
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeBoolean(up);
-            ClientPlayNetworking.send(ArmorPackets.UPDATE_KEYS, buf);
+            new UpdateKeysPacket(up).sendToServer();
         }
     }
 }

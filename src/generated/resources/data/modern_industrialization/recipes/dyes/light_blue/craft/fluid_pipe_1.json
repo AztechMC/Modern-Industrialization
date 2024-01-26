@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "d": {
       "tag": "c:light_blue_dyes"
@@ -12,7 +13,6 @@
     "pd"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:light_blue_fluid_pipe"
   }
 }

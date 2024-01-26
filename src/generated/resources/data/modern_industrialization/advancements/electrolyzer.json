@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.electrolyzer.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:electrolyzer"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.electrolyzer"
     }

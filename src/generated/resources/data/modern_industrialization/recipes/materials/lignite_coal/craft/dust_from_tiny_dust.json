@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:lignite_coal_tiny_dusts"
+      "tag": "forge:tiny_dusts/lignite_coal"
     },
     "y": {
       "item": "modern_industrialization:lignite_coal_tiny_dust"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:lignite_coal_dust"
   }
 }

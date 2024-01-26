@@ -4,11 +4,11 @@
   "duration": 400,
   "item_inputs": [
     {
-      "tag" : "c:silicon_plates",
+      "tag" : "forge:plates/silicon",
       "amount": 1
     },
     {
-      "tag" : "c:antimony_tiny_dusts",
+      "tag" : "forge:tiny_dusts/antimony",
       "amount": 1
     }
   ],

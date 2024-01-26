@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/mv_diesel_generator"
+      "model": "modern_industrialization:block/mv_diesel_generator"
     }
   }
 }

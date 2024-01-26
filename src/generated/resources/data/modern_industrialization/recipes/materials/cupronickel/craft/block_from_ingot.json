@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:cupronickel_ingots"
+      "tag": "forge:ingots/cupronickel"
     },
     "y": {
       "item": "modern_industrialization:cupronickel_ingot"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:cupronickel_block"
   }
 }

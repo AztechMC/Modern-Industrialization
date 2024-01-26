@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
-      "tag": "c:stainless_steel_gears"
+      "tag": "forge:gears/stainless_steel"
     },
     "R": {
       "item": "modern_industrialization:stainless_steel_rod"
@@ -14,7 +15,7 @@
       "item": "modern_industrialization:stainless_steel_curved_plate"
     },
     "p": {
-      "tag": "c:stainless_steel_plates"
+      "tag": "forge:plates/stainless_steel"
     }
   },
   "pattern": [
@@ -23,7 +24,6 @@
     "bGb"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:stainless_steel_drill_head"
   }
 }

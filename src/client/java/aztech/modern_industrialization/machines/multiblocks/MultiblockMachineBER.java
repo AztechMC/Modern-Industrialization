@@ -38,6 +38,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockMachineBlockEntity> {
@@ -114,5 +115,15 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(MultiblockMachineBlockEntity pBlockEntity) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(MultiblockMachineBlockEntity blockEntity) {
+        return INFINITE_EXTENT_AABB;
     }
 }

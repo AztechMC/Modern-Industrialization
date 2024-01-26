@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": [
     {
       "item": "minecraft:cut_copper"
@@ -9,7 +10,6 @@
     }
   ],
   "result": {
-    "count": 1,
     "item": "minecraft:waxed_cut_copper"
   }
 }

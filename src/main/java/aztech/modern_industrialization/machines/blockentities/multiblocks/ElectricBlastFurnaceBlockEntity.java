@@ -94,7 +94,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
 
         for (int i = 0; i < tiers.size(); ++i) {
             var tier = tiers.get(i);
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("heatproof_machine_casing")).asBlock());
+            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("heatproof_machine_casing")));
             SimpleMember coilsBlocks = SimpleMember.forBlockId(tier.coilBlockId());
             HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)

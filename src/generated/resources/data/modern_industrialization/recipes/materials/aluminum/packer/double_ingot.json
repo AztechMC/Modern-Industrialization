@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:aluminum_ingots"
+      "tag": "forge:ingots/aluminum"
     },
     {
       "amount": 1,

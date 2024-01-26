@@ -23,17 +23,17 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

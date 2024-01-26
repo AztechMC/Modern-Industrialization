@@ -26,19 +26,13 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -47,7 +41,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -60,18 +53,25 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.fluids.FluidType;
 
-public class JetpackItem extends ArmorItem implements FabricElytraItem, ActivatableChestItem {
-    public static final int CAPACITY = 8 * 81000;
+public class JetpackItem extends ArmorItem implements ActivatableChestItem {
+    public static final int CAPACITY = 8 * FluidType.BUCKET_VOLUME;
 
     public JetpackItem(Properties settings) {
         super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
-    public boolean useCustomElytra(LivingEntity entity, ItemStack stack, boolean tickElytra) {
+    public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         return isActivated(stack) && FluidFuelItemHelper.getAmount(stack) > 0;
+    }
+
+    @Override
+    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+        // Fluid consumption is handled in the armor tick.
+        return true;
     }
 
     private static ArmorMaterial buildMaterial() {
@@ -161,7 +161,8 @@ public class JetpackItem extends ArmorItem implements FabricElytraItem, Activata
                         }
                     }
                     if (player instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.connection.aboveGroundTickCount = 0;
+                        ObfuscationReflectionHelper.setPrivateValue(ServerGamePacketListenerImpl.class, serverPlayer.connection, 0,
+                                "aboveGroundTickCount");
                     }
                 }
             }
@@ -210,32 +211,34 @@ public class JetpackItem extends ArmorItem implements FabricElytraItem, Activata
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack otherStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
-        if (clickType == ClickAction.SECONDARY) {
-            Storage<FluidVariant> jetpackStorage = getStackStorage(stack, player);
-            Storage<FluidVariant> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.containerMenu).find(FluidStorage.ITEM);
-
-            return StorageUtil.move(cursorStorage, jetpackStorage, fk -> true, Long.MAX_VALUE, null) > 0;
-        }
+        // TODO NEO jetpack filling in inventory
+//        if (clickType == ClickAction.SECONDARY) {
+//            Storage<FluidVariant> jetpackStorage = getStackStorage(stack, player);
+//            Storage<FluidVariant> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.containerMenu).find(FluidStorage.ITEM);
+//
+//            return StorageUtil.move(cursorStorage, jetpackStorage, fk -> true, Long.MAX_VALUE, null) > 0;
+//        }
         return false;
     }
 
-    @Nullable
-    private static Storage<FluidVariant> getStackStorage(ItemStack stack, Player player) {
-        Inventory inventory = player.getInventory();
-        ContainerItemContext context = null;
-
-        for (int i = 0; i < inventory.getContainerSize(); ++i) {
-            if (inventory.getItem(i) == stack) {
-                InventoryStorage wrapper = PlayerInventoryStorage.of(inventory);
-                context = ContainerItemContext.ofPlayerSlot(player, wrapper.getSlots().get(i));
-                break;
-            }
-        }
-
-        if (context != null) {
-            return context.find(FluidStorage.ITEM);
-        } else {
-            return null;
-        }
-    }
+    // TODO NEO
+//    @Nullable
+//    private static Storage<FluidVariant> getStackStorage(ItemStack stack, Player player) {
+//        Inventory inventory = player.getInventory();
+//        ContainerItemContext context = null;
+//
+//        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+//            if (inventory.getItem(i) == stack) {
+//                InventoryStorage wrapper = PlayerInventoryStorage.of(inventory);
+//                context = ContainerItemContext.ofPlayerSlot(player, wrapper.getSlots().get(i));
+//                break;
+//            }
+//        }
+//
+//        if (context != null) {
+//            return context.find(FluidStorage.ITEM);
+//        } else {
+//            return null;
+//        }
+//    }
 }

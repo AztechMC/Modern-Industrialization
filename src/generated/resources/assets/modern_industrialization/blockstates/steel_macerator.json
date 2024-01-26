@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/steel_macerator"
+      "model": "modern_industrialization:block/steel_macerator"
     }
   }
 }

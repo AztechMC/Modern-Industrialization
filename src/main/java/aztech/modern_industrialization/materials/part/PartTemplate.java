@@ -26,11 +26,12 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
-import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class PartTemplate implements PartKeyProvider {
 
@@ -75,11 +76,11 @@ public class PartTemplate implements PartKeyProvider {
         this.itemPathFormatter = itemPathFormatter;
     }
 
-    public static Item createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
-        return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part)).asItem();
+    public static ItemDefinition<Item> createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, PartKey part) {
+        return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part));
     }
 
-    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, Item item) {
+    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, ItemLike item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
@@ -97,14 +98,36 @@ public class PartTemplate implements PartKeyProvider {
     }
 
     private static String getTagEnglishName(MaterialBuilder.PartContext context, String tag) {
-        var path = tag.split(":")[1];
-        // A bit hacky, but this is done to preserve weird capitalization, for example for LE Uranium
-        path = path.replace(context.getMaterialName(), context.getMaterialEnglishName());
-        path = path.replace('_', ' ');
+        var parts = tag.split(":")[1].split("/");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Tag " + tag + " has more than 2 slash-separated parts");
+        }
+
         var sb = new StringBuilder();
+
+        var part = parts[0];
+        var material = parts[1];
+        boolean rawOre = false;
+
+        if (material.startsWith("raw_")) {
+            // Hacky fix for raw ores...
+            sb.append("Raw ");
+            material = material.substring(4);
+            part = "ores";
+        }
+
+        if (!material.equals(context.getMaterialName())) {
+            throw new IllegalArgumentException("Tag " + tag + " does not contain the material name after slash: " + context.getMaterialName());
+        }
+
+        part = part.replace('_', ' ');
+
+        sb.append(context.getMaterialEnglishName());
+        sb.append(' ');
+
         boolean capitalize = true;
 
-        for (char c : path.toCharArray()) {
+        for (char c : part.toCharArray()) {
             if (c == ' ') {
                 sb.append(c);
                 capitalize = true;
@@ -139,7 +162,7 @@ public class PartTemplate implements PartKeyProvider {
 
             );
 
-            setupTag(partContext, part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition);
 
         };
         return new PartTemplate(englishNameFormatter, partKey, blockRegister, textureGenParams, itemPathFormatter);
@@ -159,13 +182,17 @@ public class PartTemplate implements PartKeyProvider {
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
-                            .withModel(TexturedModel.COLUMN)
+                            .withModel((block, gen) -> {
+                                String name = gen.name(block);
+                                gen.simpleBlockWithItem(block,
+                                        gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                            })
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)
 
             );
 
-            setupTag(partContext, part, itemTag, blockDefinition.asItem());
+            setupTag(partContext, part, itemTag, blockDefinition);
 
         };
         return new PartTemplate(englishNameFormatter, partKey, columnBlockRegister, new TextureGenParams.ColumnBlock(), itemPathFormatter);

@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:bronze_nuggets"
+      "tag": "forge:nuggets/bronze"
     },
     "y": {
       "item": "modern_industrialization:bronze_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:bronze_ingot"
   }
 }

@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     },
     {
       "amount": 1,
-      "tag": "c:aluminum_gears"
+      "tag": "forge:gears/aluminum"
     }
   ],
   "item_outputs": [

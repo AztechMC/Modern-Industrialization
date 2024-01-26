@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.compat.sodium;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MI;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 public class SodiumCompat {
@@ -42,10 +42,10 @@ public class SodiumCompat {
                     Class.forName("me.jellysquid.mods.sodium.client.render.texture.SpriteUtil"),
                     "markSpriteActive",
                     MethodType.methodType(void.class, TextureAtlasSprite.class));
-            ModernIndustrialization.LOGGER.info("Loaded Modern Industrialization Sodium active sprite compat.");
+            MI.LOGGER.info("Loaded Modern Industrialization Sodium active sprite compat.");
         } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            if (FabricLoader.getInstance().isModLoaded("sodium")) {
-                ModernIndustrialization.LOGGER.error("Failed to load Modern Industrialization Sodium active sprite compat.", e);
+            if (ModList.get().isLoaded("embeddium")) {
+                MI.LOGGER.error("Failed to load Modern Industrialization Sodium active sprite compat.", e);
             }
         }
 

@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_lead_ores"
+      "tag": "forge:raw_materials/lead"
     },
     "y": {
       "item": "modern_industrialization:raw_lead"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:raw_lead_block"
   }
 }

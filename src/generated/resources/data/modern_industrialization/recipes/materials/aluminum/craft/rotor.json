@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "modern_industrialization:aluminum_blade"
@@ -17,7 +18,6 @@
     "bBb"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:aluminum_rotor"
   }
 }

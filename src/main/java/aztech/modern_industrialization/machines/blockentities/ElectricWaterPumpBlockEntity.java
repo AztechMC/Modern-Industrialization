@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
@@ -40,12 +41,13 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity implements EnergyComponentHolder {
     public ElectricWaterPumpBlockEntity(BEP bep) {
         super(bep, "electric_water_pump");
 
-        long capacity = 81000 * 32;
+        long capacity = FluidType.BUCKET_VOLUME * 32;
         this.inventory = new MIInventory(Collections.emptyList(),
                 Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
@@ -86,7 +88,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     @Override
-    protected MachineModelClientData getModelData() {
+    protected MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
@@ -99,6 +101,8 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable, bet);
+        MICapabilities.onEvent(event -> {
+            event.registerBlockEntity(EnergyApi.SIDED, bet, (be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable);
+        });
     }
 }

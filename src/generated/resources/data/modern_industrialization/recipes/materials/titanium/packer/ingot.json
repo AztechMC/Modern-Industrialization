@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:titanium_nuggets"
+      "tag": "forge:nuggets/titanium"
     }
   ],
   "item_outputs": [

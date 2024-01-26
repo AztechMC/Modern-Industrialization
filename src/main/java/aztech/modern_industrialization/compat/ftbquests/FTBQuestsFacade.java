@@ -25,14 +25,14 @@ package aztech.modern_industrialization.compat.ftbquests;
 
 import aztech.modern_industrialization.MIConfig;
 import java.util.UUID;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.item.Item;
+import net.neoforged.fml.ModList;
 
 public interface FTBQuestsFacade {
     FTBQuestsFacade INSTANCE = getInstance();
 
     private static FTBQuestsFacade getInstance() {
-        if (FabricLoader.getInstance().isModLoaded("ftbquests") && MIConfig.getConfig().enableFtbQuestsIntegration) {
+        if (ModList.get().isLoaded("ftbquests") && MIConfig.getConfig().enableFtbQuestsIntegration) {
             try {
                 return Class.forName("aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacadeImpl")
                         .asSubclass(FTBQuestsFacade.class).getConstructor().newInstance();

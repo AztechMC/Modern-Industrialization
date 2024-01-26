@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_tungsten_ores"
+      "tag": "forge:raw_materials/tungsten"
     },
     "y": {
       "item": "modern_industrialization:raw_tungsten"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:raw_tungsten_block"
   }
 }

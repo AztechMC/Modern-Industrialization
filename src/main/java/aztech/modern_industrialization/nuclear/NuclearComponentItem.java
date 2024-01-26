@@ -26,7 +26,7 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.world.item.Item;
 
 public class NuclearComponentItem extends Item implements INuclearComponent<ItemVariant> {
@@ -45,7 +45,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent<Item
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
             INeutronBehaviour neutronBehaviour) {
         return MIItem
-                .item(englishName, id, (settings) -> new NuclearComponentItem(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour),
+                .item(englishName, id, (settings) -> new NuclearComponentItem(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour),
                         SortOrder.ITEMS_OTHER);
     }
 

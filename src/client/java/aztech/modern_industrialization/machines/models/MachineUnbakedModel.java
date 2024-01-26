@@ -23,44 +23,41 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import aztech.modern_industrialization.MI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.io.BufferedReader;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineUnbakedModel implements UnbakedModel {
-    private static final ResourceLocation BASE_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
+public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
+    public static final ResourceLocation LOADER_ID = MI.id("machine");
+    public static final IGeometryLoader<MachineUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
+        return new MachineUnbakedModel(jsonObject);
+    };
 
-    public static MachineUnbakedModel deserialize(MachineCasing baseCasing, BufferedReader jsonModelReader) {
-        var element = JsonParser.parseReader(jsonModelReader);
-        return new MachineUnbakedModel(baseCasing, element.getAsJsonObject());
-    }
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 
     private final MachineCasing baseCasing;
     private final Material[] defaultOverlays;
     private final Map<String, Material[]> tieredOverlays = new HashMap<>();
 
-    private MachineUnbakedModel(MachineCasing baseCasing, JsonObject obj) {
-        this.baseCasing = baseCasing;
+    private MachineUnbakedModel(JsonObject obj) {
+        this.baseCasing = MachineCasings.get(GsonHelper.getAsString(obj, "casing"));
 
         var defaultOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(obj, "default_overlays"), null);
         this.defaultOverlays = defaultOverlaysJson.toSpriteIds();
@@ -73,25 +70,14 @@ public class MachineUnbakedModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return List.of(BASE_BLOCK_MODEL);
-    }
-
-    @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
-    }
-
-    @Nullable
-    @Override
-    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state, ResourceLocation location) {
-        var cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(BlendMode.CUTOUT_MIPPED).find();
-
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
+            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
         var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }
-        return new MachineBakedModel(cutoutMaterial, baseCasing, defaultOverlays, tieredOverlays);
+        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays);
     }
 
     private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, Material[] ids) {

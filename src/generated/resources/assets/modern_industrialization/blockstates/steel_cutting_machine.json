@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/steel_cutting_machine"
+      "model": "modern_industrialization:block/steel_cutting_machine"
     }
   }
 }

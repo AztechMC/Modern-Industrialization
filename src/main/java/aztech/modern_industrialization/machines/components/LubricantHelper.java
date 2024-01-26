@@ -24,21 +24,15 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class LubricantHelper {
 
     public static final int mbPerTick = 25;
-    private static final int dropPerTick = mbPerTick * 81;
 
     public static InteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {
         if (crafter.hasActiveRecipe()) {
@@ -46,19 +40,13 @@ public class LubricantHelper {
             int maxTick = crafter.getMaxEfficiencyTicks();
             int rem = maxTick - tick;
             if (rem > 0) {
-                Storage<FluidVariant> handIo = FluidStorage.ITEM.find(player.getItemInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
-                if (handIo != null) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        long extracted = handIo.extract(MIFluids.LUBRICANT.variant(), (long) rem * dropPerTick, tx);
-                        long addedTicks = (extracted + dropPerTick - 1) / dropPerTick;
+                int maxAllowedLubricant = rem * mbPerTick;
+                FluidTank interactionTank = new FluidTank(maxAllowedLubricant, stack -> stack.getFluid() == MIFluids.LUBRICANT.asFluid());
+                var result = FluidUtil.tryEmptyContainer(player.getItemInHand(hand), interactionTank, maxAllowedLubricant, player, true);
 
-                        if (addedTicks > 0) {
-                            player.playNotifySound(FluidVariantAttributes.getFillSound(MIFluids.LUBRICANT.variant()), SoundSource.BLOCKS, 1, 1);
-                            crafter.increaseEfficiencyTicks((int) addedTicks);
-                            tx.commit();
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
+                if (result.isSuccess()) {
+                    crafter.increaseEfficiencyTicks(interactionTank.getFluidAmount());
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

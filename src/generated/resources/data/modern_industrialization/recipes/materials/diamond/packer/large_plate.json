@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:diamond_plates"
+      "tag": "forge:plates/diamond"
     }
   ],
   "item_outputs": [

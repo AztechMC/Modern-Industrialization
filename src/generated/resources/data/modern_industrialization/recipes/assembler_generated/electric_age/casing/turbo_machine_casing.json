@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:stainless_steel_plates"
+      "tag": "forge:plates/stainless_steel"
     },
     {
       "amount": 1,

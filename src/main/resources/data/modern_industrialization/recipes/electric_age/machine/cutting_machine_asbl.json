@@ -11,7 +11,7 @@
       "item" : "modern_industrialization:invar_rotary_blade"
     },
     "g" : {
-      "tag" : "c:glass_blocks"
+      "tag" : "forge:glass"
     },
     "H" :{
       "item" : "modern_industrialization:basic_machine_hull"

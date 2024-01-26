@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:iron_plates"
+      "tag": "forge:plates/iron"
     }
   },
   "pattern": [
@@ -10,7 +11,6 @@
     "xx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:iron_large_plate"
   }
 }

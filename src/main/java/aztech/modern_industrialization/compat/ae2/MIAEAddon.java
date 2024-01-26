@@ -24,17 +24,19 @@
 package aztech.modern_industrialization.compat.ae2;
 
 import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.inventories.PartApiLookup;
 import appeng.api.parts.PartModels;
+import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.util.AEColor;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.*;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetwork;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkData;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkNode;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.PipeColor;
@@ -42,10 +44,9 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class MIAEAddon {
     static {
@@ -54,15 +55,28 @@ public class MIAEAddon {
         }
     }
 
-    public static final Item ENERGY_P2P_TUNNEL = new PartItem<>(
-            new FabricItemSettings(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
+    public static final ItemDefinition<PartItem<EnergyP2PTunnelPart>> ENERGY_P2P_TUNNEL = MIItem.item(
+            "EU P2P Tunnel",
+            "energy_p2p_tunnel",
+            p -> new PartItem<>(new Item.Properties(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
+            (item, gen) -> {
+            },
+            SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-        var item = Registry.register(BuiltInRegistries.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
-        P2PTunnelAttunement.registerAttunementTag(item);
-        PartApiLookup.register(EnergyApi.SIDED, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
+
+        modBus.addListener(MIAEAddon::commonSetup);
+        modBus.addListener(MIAEAddon::registerPartCapabilities);
+    }
+
+    public static void commonSetup(FMLCommonSetupEvent event) {
+        P2PTunnelAttunement.registerAttunementTag(ENERGY_P2P_TUNNEL);
+    }
+
+    public static void registerPartCapabilities(RegisterPartCapabilitiesEvent event) {
+        event.register(EnergyApi.SIDED, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
     }
 
     public static void onInitializePipes() {
@@ -87,14 +101,20 @@ public class MIAEAddon {
         };
 
         var pipeId = color.prefix + "me_wire";
-        var type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new MENetwork(id, data, aeColor),
-                MENetworkNode::new, color.color, false);
+        var type = PipeNetworkType.register(
+                new MIIdentifier(pipeId),
+                (id, data) -> new MENetwork(id, data, aeColor),
+                MENetworkNode::new,
+                color.color,
+                false);
         PIPES.add(type);
-        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "ME Wire", pipeId,
-                prop -> new PipeItem(prop, type, new MENetworkData()), SortOrder.PIPES);
-        var item = itemDef.asItem();
-        MIPipes.INSTANCE.register(type, item);
-        MIPipes.ITEM_PIPE_MODELS.add(new MIIdentifier("item/" + pipeId));
-        TagsToGenerate.generateTag(MITags.ME_WIRES, item, "ME Wires");
+        var itemDef = MIItem.item(
+                color.englishNamePrefix + "ME Wire",
+                pipeId,
+                prop -> new PipeItem(prop, type, new MENetworkData()),
+                MIPipes.ITEM_MODEL_GENERATOR,
+                SortOrder.PIPES);
+        MIPipes.INSTANCE.register(type, itemDef::asItem);
+        TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires");
     }
 }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/steel_water_pump"
+      "model": "modern_industrialization:block/steel_water_pump"
     }
   }
 }

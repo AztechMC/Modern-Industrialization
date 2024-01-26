@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:neodymium_blocks"
+      "tag": "forge:blocks/neodymium"
     }
   ],
   "item_outputs": [

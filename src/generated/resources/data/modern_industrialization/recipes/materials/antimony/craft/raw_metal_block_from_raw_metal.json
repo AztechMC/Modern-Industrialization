@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_antimony_ores"
+      "tag": "forge:raw_materials/antimony"
     },
     "y": {
       "item": "modern_industrialization:raw_antimony"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:raw_antimony_block"
   }
 }

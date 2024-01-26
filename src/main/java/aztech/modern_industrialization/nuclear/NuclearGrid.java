@@ -45,7 +45,6 @@ public final class NuclearGrid {
         return sizeY;
     }
 
-    // TODO: remove optional
     @Nullable
     public INuclearTile getNuclearTile(int x, int y) {
         return hatchesGrid[x][y];

@@ -23,39 +23,51 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.world;
 
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Set;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 public class ChunkEventListeners {
     public static ChunkPosMultiMap<ChunkEventListener> listeners = new ChunkPosMultiMap<>();
-    private static MinecraftServer server = null;
 
     public static void init() {
-        ServerLifecycleEvents.SERVER_STARTING.register(minecraftServer -> server = minecraftServer);
-        ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> server = null);
-        ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> serverStopCleanup());
+        NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, event -> serverStopCleanup());
 
-        ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
+        NeoForge.EVENT_BUS.addListener(ChunkEvent.Load.class, event -> {
+            if (event.getLevel().isClientSide()) {
+                return;
+            }
+
             ensureServerThread();
-            Set<ChunkEventListener> cels = listeners.get(world, chunk.getPos());
+            Set<ChunkEventListener> cels = listeners.get(event.getLevel(), event.getChunk().getPos());
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
                     cel.onLoad();
                 }
             }
         });
-        ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
+        NeoForge.EVENT_BUS.addListener(ChunkEvent.Unload.class, event -> {
+            if (event.getLevel().isClientSide()) {
+                return;
+            }
+
             ensureServerThread();
-            Set<ChunkEventListener> cels = listeners.get(world, chunk.getPos());
+            Set<ChunkEventListener> cels = listeners.get(event.getLevel(), event.getChunk().getPos());
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
                     cel.onUnload();
                 }
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(BlockEvent.NeighborNotifyEvent.class, event -> {
+            if (event.getLevel() instanceof Level level) {
+                onBlockStateChange(level, new ChunkPos(event.getPos()), event.getPos());
             }
         });
     }
@@ -63,7 +75,7 @@ public class ChunkEventListeners {
     public static void onBlockStateChange(Level world, ChunkPos chunkPos, BlockPos pos) {
         // We skip block state changes that happen outside of the server thread.
         // Hopefully that won't cause problems.
-        if (server.isSameThread()) {
+        if (CommonProxy.getCurrentServer().isSameThread()) {
             Set<ChunkEventListener> cels = listeners.get(world, chunkPos);
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -74,7 +86,7 @@ public class ChunkEventListeners {
     }
 
     private static void ensureServerThread() {
-        if (!server.isSameThread()) {
+        if (!CommonProxy.getCurrentServer().isSameThread()) {
             throw new RuntimeException("Thread is not server thread!");
         }
     }

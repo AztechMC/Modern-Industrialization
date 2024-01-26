@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "modern_industrialization:bronze_curved_plate"
     },
     "P": {
-      "item": "magenta_stained_glass_pane"
+      "item": "minecraft:magenta_stained_glass_pane"
     },
     "r": {
       "item": "modern_industrialization:copper_rotor"

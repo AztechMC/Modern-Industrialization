@@ -9,7 +9,7 @@
     },
     {
       "amount": 8,
-      "tag": "c:aluminum_plates"
+      "tag": "forge:plates/aluminum"
     }
   ],
   "item_outputs": [

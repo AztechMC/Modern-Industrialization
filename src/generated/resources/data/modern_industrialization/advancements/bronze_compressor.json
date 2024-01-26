@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.modern_industrialization.bronze_compressor.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "modern_industrialization:bronze_compressor"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.modern_industrialization.bronze_compressor"
     }

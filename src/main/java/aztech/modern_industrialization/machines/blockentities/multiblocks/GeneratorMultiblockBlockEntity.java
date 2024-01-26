@@ -102,7 +102,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected final MachineModelClientData getModelData() {
+    protected final MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActiveComponent.isActive);
     }
 

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:kanthal_ingots"
+      "tag": "forge:ingots/kanthal"
     }
   ],
   "item_outputs": [

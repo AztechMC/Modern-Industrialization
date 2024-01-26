@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "U": {
       "item": "modern_industrialization:highly_advanced_item_output_hatch"
@@ -9,7 +10,6 @@
     "U"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:highly_advanced_item_input_hatch"
   }
 }

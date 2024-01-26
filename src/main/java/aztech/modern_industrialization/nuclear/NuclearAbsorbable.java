@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -35,7 +35,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
 
     public final int desintegrationMax;
 
-    public NuclearAbsorbable(FabricItemSettings settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
+    public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         super(settings, maxTemperature, heatConduction, neutronBehaviour);
         this.desintegrationMax = desintegrationMax;
@@ -51,13 +51,12 @@ public class NuclearAbsorbable extends NuclearComponentItem {
         tag.putInt("desRem", value);
     }
 
-    public static NuclearComponentItem of(String englishName, String id, int maxTemperature, double heatConduction,
+    public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
             INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         return MIItem.item(englishName, id,
-                (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
-                SortOrder.ITEMS_OTHER)
-                .asItem();
+                (settings) -> new NuclearAbsorbable(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
+                SortOrder.ITEMS_OTHER);
     }
 
     public double getDurabilityBarProgress(ItemStack stack) {

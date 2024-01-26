@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:silicon_tiny_dusts"
+      "tag": "forge:tiny_dusts/silicon"
     }
   ],
   "item_outputs": [

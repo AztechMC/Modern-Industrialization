@@ -1,0 +1,13 @@
+{
+  "casing": "ev",
+  "default_overlays": {
+    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+    "front": "modern_industrialization:block/machines/replicator/overlay_front",
+    "front_active": "modern_industrialization:block/machines/replicator/overlay_front_active",
+    "item_auto": "modern_industrialization:block/overlays/item_auto",
+    "output": "modern_industrialization:block/overlays/output",
+    "side": "modern_industrialization:block/machines/replicator/overlay_side",
+    "side_active": "modern_industrialization:block/machines/replicator/overlay_side_active"
+  },
+  "loader": "modern_industrialization:machine"
+}

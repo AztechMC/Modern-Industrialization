@@ -25,9 +25,9 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;

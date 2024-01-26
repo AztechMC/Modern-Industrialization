@@ -186,6 +186,20 @@ public class ShapeMatcher implements ChunkEventListener {
         }
     }
 
+    public int buildMultiblock(Level level) {
+        int setBlocks = 0;
+
+        for (var entry : simpleMembers.entrySet()) {
+            var current = level.getBlockState(entry.getKey());
+            if (!entry.getValue().matchesState(current)) {
+                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState());
+                ++setBlocks;
+            }
+        }
+
+        return setBlocks;
+    }
+
     @Override
     public void onBlockUpdate(BlockPos pos) {
         if (simpleMembers.containsKey(pos)) {

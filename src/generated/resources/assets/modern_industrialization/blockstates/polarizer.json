@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/polarizer"
+      "model": "modern_industrialization:block/polarizer"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
-  "fabric:load_conditions": [
+  "neoforge:conditions": [
     {
-      "condition": "modern_industrialization:ae_compat_loaded"
+      "type": "modern_industrialization:ae_compat_loaded"
     }
   ],
   "type": "modern_industrialization:mixer",

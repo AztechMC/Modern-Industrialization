@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 3,
-      "tag": "c:bronze_gears"
+      "tag": "forge:gears/bronze"
     },
     {
       "amount": 1,

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:he_mox_ingots"
+      "tag": "forge:ingots/he_mox"
     },
     {
       "amount": 1,

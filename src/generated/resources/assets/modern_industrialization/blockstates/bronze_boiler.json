@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/bronze_boiler"
+      "model": "modern_industrialization:block/bronze_boiler"
     }
   }
 }

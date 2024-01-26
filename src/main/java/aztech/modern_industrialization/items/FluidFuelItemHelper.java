@@ -24,103 +24,50 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 /**
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
     static FluidVariant getFluid(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        return tag == null ? FluidVariant.blank() : NbtHelper.getFluidCompatible(tag, "fluid");
+        return FluidVariant.of(new ItemStorage(stack, 0).getFluid());
     }
 
-    static void setFluid(ItemStack stack, FluidVariant fluid) {
-        if (!fluid.isBlank()) {
-            NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
-        } else {
-            stack.removeTagKey("fluid");
-        }
-    }
-
-    static long getAmount(ItemStack stack) {
-        if (getFluid(stack).isBlank()) {
-            return 0;
-        }
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            return tag.getLong("amt");
-        } else {
-            return 0;
-        }
-    }
-
-    static void setAmount(ItemStack stack, long amount) {
-        if (amount != 0) {
-            stack.getOrCreateTag().putLong("amt", amount);
-        } else {
-            stack.removeTagKey("amt");
-            stack.removeTagKey("fluid");
-        }
+    static int getAmount(ItemStack stack) {
+        return new ItemStorage(stack, 0).getFluid().getAmount();
     }
 
     static void decrement(ItemStack stack) {
-        long amount = getAmount(stack);
-        if (amount > 0) {
-            setAmount(stack, Math.max(0, amount - 81));
-        }
+        new ItemStorage(stack, 0).drain(1, IFluidHandler.FluidAction.EXECUTE);
     }
 
-    class ItemStorage extends SingleVariantItemStorage<FluidVariant> {
-        private final long capacity;
-
-        public ItemStorage(long capacity, ContainerItemContext ctx) {
-            super(ctx);
-            this.capacity = capacity;
+    class ItemStorage extends FluidHandlerItemStack {
+        public ItemStorage(ItemStack container, int capacity) {
+            super(container, capacity);
         }
 
         @Override
-        protected FluidVariant getBlankResource() {
-            return FluidVariant.blank();
+        public boolean canFillFluidType(FluidStack fluid) {
+            return FluidFuelRegistry.getEu(fluid.getFluid()) > 0;
         }
 
         @Override
-        protected FluidVariant getResource(ItemVariant currentVariant) {
-            return getFluid(currentVariant.toStack());
-        }
-
-        @Override
-        protected long getAmount(ItemVariant currentVariant) {
-            return FluidFuelItemHelper.getAmount(currentVariant.toStack());
-        }
-
-        @Override
-        protected long getCapacity(FluidVariant variant) {
-            return capacity;
-        }
-
-        @Override
-        protected ItemVariant getUpdatedVariant(ItemVariant currentVariant, FluidVariant newResource, long newAmount) {
-            ItemStack stack = currentVariant.toStack();
-            setFluid(stack, newResource);
-            setAmount(stack, newAmount);
-            return ItemVariant.of(stack);
-        }
-
-        @Override
-        protected boolean canInsert(FluidVariant resource) {
-            return FluidFuelRegistry.getEu(resource.getFluid()) > 0;
+        protected void setFluid(FluidStack fluid) {
+            if (fluid.isEmpty()) {
+                this.setContainerToEmpty();
+            } else {
+                super.setFluid(fluid);
+            }
         }
     }
 

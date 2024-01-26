@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 
 public interface INuclearComponent<T extends TransferVariant> {
 

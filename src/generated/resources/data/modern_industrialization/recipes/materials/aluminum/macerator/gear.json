@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:aluminum_gears"
+      "tag": "forge:gears/aluminum"
     }
   ],
   "item_outputs": [

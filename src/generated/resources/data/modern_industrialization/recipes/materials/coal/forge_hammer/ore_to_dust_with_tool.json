@@ -1,16 +1,11 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 25,
-  "item_inputs": [
-    {
-      "amount": 1,
-      "tag": "c:coal_ores"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 4,
-      "item": "modern_industrialization:coal_dust"
-    }
-  ]
+  "damage": 50,
+  "ingredient": {
+    "tag": "forge:ores/coal"
+  },
+  "result": {
+    "count": 4,
+    "item": "modern_industrialization:coal_dust"
+  }
 }

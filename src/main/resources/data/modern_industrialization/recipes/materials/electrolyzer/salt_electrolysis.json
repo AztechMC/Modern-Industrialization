@@ -3,7 +3,7 @@
   "eu": 8,
   "duration": 400,
   "item_inputs": {
-    "tag": "c:salt_dusts",
+    "tag": "forge:dusts/salt",
     "amount": 2
   },
   "item_outputs": {

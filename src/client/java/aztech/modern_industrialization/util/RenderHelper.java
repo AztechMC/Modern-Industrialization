@@ -26,6 +26,11 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
+import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
+import aztech.modern_industrialization.thirdparty.fabricrendering.QuadBuffer;
+import aztech.modern_industrialization.thirdparty.fabricrendering.QuadEmitter;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -39,19 +44,10 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -66,6 +62,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -95,25 +92,16 @@ public class RenderHelper {
     static {
         OVERLAY_QUADS = Suppliers.memoize(() -> {
             var overlayQuads = new BakedQuad[24];
-            Renderer r = RendererAccess.INSTANCE.getRenderer();
-            RenderMaterial material = r.materialFinder().blendMode(BlendMode.SOLID).find();
+            QuadEmitter emitter = new QuadBuffer();
             for (Direction direction : Direction.values()) {
-                QuadEmitter emitter;
-                emitter = r.meshBuilder().getEmitter();
+                emitter.emit();
                 emitter.square(direction, 0, 0, 1, W, 0);
-                emitter.material(material);
                 overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(null);
-                emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, 1 - W, 1, 1, 0);
-                emitter.material(material);
                 overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(null);
-                emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 0, W, W, 1 - W, 0);
-                emitter.material(material);
                 overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(null);
-                emitter = r.meshBuilder().getEmitter();
                 emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
-                emitter.material(material);
                 overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(null);
             }
             return overlayQuads;
@@ -132,10 +120,8 @@ public class RenderHelper {
     static {
         CUBE_QUADS = Suppliers.memoize(() -> {
             var cubeQuads = new BakedQuad[6];
-            Renderer r = RendererAccess.INSTANCE.getRenderer();
             for (Direction direction : Direction.values()) {
-                QuadEmitter emitter;
-                emitter = r.meshBuilder().getEmitter();
+                QuadEmitter emitter = new QuadBuffer();
                 emitter.square(direction, 0, 0, 1, 1, 0);
                 cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(null);
             }
@@ -150,7 +136,7 @@ public class RenderHelper {
         drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
     }
 
-    public static void drawFluidInTank(Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
+    public static void drawFluidInTank(@Nullable Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
         VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid, world, pos);
@@ -166,14 +152,14 @@ public class RenderHelper {
         float topHeight = fill;
         float bottomHeight = TANK_W;
         // Render gas from top to bottom
-        if (FluidVariantAttributes.isLighterThanAir(fluid)) {
+        if (fluid.getFluid().getFluidType().isLighterThanAir()) {
             topHeight = 1 - TANK_W;
             bottomHeight = 1 - fill;
         }
 
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+        var emitter = new QuadBuffer();
         for (Direction direction : Direction.values()) {
-            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
+            emitter.emit();
 
             if (direction.getAxis().isVertical()) {
                 emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
@@ -429,7 +415,7 @@ public class RenderHelper {
         float g = (colorRgb >> 8 & 255) / 255.0F;
         float b = (colorRgb & 255) / 255.0F;
 
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+        var emitter = new QuadBuffer();
         for (Direction direction : Direction.values()) {
             if (direction.getAxis().isVertical() ||
             // Note: level can be null from builtin item renderer
@@ -438,8 +424,7 @@ public class RenderHelper {
                 continue;
             }
 
-            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-
+            emitter.emit();
             emitter.square(direction, 1, 0, 0, 1, 1.015f);
             emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
 
@@ -449,24 +434,28 @@ public class RenderHelper {
         }
     }
 
-    public static final BuiltinItemRendererRegistry.DynamicItemRenderer BLOCK_AND_ENTITY_RENDERER = (stack, mode, matrices, vertexConsumers, light,
-            overlay) -> {
-        if (!(stack.getItem() instanceof BlockItem blockItem)) {
-            throw new IllegalArgumentException("Stack must be a block item!");
-        }
-        if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
-            throw new IllegalArgumentException("Block must be an entity block!");
-        }
+    public static final BlockEntityWithoutLevelRenderer BLOCK_AND_ENTITY_RENDERER = new BlockEntityWithoutLevelRenderer(null, null) {
+        @Override
+        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
+                int overlay) {
+            if (!(stack.getItem() instanceof BlockItem blockItem)) {
+                throw new IllegalArgumentException("Stack must be a block item!");
+            }
+            if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
+                throw new IllegalArgumentException("Block must be an entity block!");
+            }
 
-        var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
-        var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
-        Objects.requireNonNull(fakeBlockEntity).load(tag);
+            var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
+            var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
+            Objects.requireNonNull(fakeBlockEntity).load(tag);
 
-        // Render the base block first
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
-        // Render additional data using the block entity renderer
-        var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
-        Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
+            // Render the base block first
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
+            // Render additional data using the block entity renderer
+            var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
+            Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light,
+                    overlay);
+        }
     };
 
     public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,

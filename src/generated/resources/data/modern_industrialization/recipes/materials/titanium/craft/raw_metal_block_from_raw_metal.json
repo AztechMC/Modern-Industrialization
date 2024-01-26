@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:raw_titanium_ores"
+      "tag": "forge:raw_materials/titanium"
     },
     "y": {
       "item": "modern_industrialization:raw_titanium"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:raw_titanium_block"
   }
 }

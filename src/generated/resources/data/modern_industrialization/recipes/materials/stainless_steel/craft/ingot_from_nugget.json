@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:stainless_steel_nuggets"
+      "tag": "forge:nuggets/stainless_steel"
     },
     "y": {
       "item": "modern_industrialization:stainless_steel_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:stainless_steel_ingot"
   }
 }

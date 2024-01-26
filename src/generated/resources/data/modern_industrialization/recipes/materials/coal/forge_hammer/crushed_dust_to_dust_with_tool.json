@@ -1,16 +1,12 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "hammer_damage": 15,
-  "item_inputs": [
-    {
-      "amount": 3,
-      "item": "modern_industrialization:coal_crushed_dust"
-    }
-  ],
-  "item_outputs": [
-    {
-      "amount": 4,
-      "item": "modern_industrialization:coal_dust"
-    }
-  ]
+  "count": 3,
+  "damage": 30,
+  "ingredient": {
+    "item": "modern_industrialization:coal_crushed_dust"
+  },
+  "result": {
+    "count": 4,
+    "item": "modern_industrialization:coal_dust"
+  }
 }

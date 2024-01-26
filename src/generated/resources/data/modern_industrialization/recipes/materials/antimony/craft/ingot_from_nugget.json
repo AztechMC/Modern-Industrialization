@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:antimony_nuggets"
+      "tag": "forge:nuggets/antimony"
     },
     "y": {
       "item": "modern_industrialization:antimony_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:antimony_ingot"
   }
 }

@@ -7,7 +7,7 @@
   ],
   "key": {
     "G": {
-      "tag": "c:bronze_gears"
+      "tag": "forge:gears/bronze"
     },
     "C": {
       "item": "modern_industrialization:steel_machine_casing"

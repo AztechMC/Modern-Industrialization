@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nickel_ingots"
+      "tag": "forge:ingots/nickel"
     },
     {
       "amount": 1,

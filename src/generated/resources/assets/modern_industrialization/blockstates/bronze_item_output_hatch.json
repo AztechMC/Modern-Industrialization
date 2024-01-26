@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/bronze_item_output_hatch"
+      "model": "modern_industrialization:block/bronze_item_output_hatch"
     }
   }
 }

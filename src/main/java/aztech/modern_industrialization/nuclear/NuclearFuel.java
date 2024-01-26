@@ -25,10 +25,10 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +52,7 @@ public class NuclearFuel extends NuclearAbsorbable {
             double neutronMultiplicationFactor, double directEnergyFactor, int size) {
     }
 
-    public NuclearFuel(FabricItemSettings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+    public NuclearFuel(Properties settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
@@ -63,7 +63,7 @@ public class NuclearFuel extends NuclearAbsorbable {
         return 25 * (int) (temperature / 25d);
     }
 
-    private NuclearFuel(FabricItemSettings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+    private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
@@ -81,12 +81,11 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     }
 
-    public static NuclearFuel of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
+    public static ItemDefinition<NuclearFuel> of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
             String depletedVersionId) {
         return MIItem
-                .item(englishName, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId),
-                        SortOrder.ITEMS_OTHER)
-                .asItem();
+                .item(englishName, id, (settings) -> new NuclearFuel(settings.stacksTo(1), params, neutronBehaviour, depletedVersionId),
+                        SortOrder.ITEMS_OTHER);
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:item/bronze_furnace"
+      "model": "modern_industrialization:block/bronze_furnace"
     }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "casing": "lv",
+  "default_overlays": {
+    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+    "front": "modern_industrialization:block/machines/polarizer/overlay_front",
+    "front_active": "modern_industrialization:block/machines/polarizer/overlay_front_active",
+    "item_auto": "modern_industrialization:block/overlays/item_auto",
+    "output": "modern_industrialization:block/overlays/output",
+    "top": "modern_industrialization:block/machines/polarizer/overlay_top",
+    "top_active": "modern_industrialization:block/machines/polarizer/overlay_top_active"
+  },
+  "loader": "modern_industrialization:machine"
+}

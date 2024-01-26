@@ -30,13 +30,25 @@ import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.FluidTexture;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 // @formatter:off
 @SuppressWarnings("unused")
 public class MIFluids {
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, MI.ID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MI.ID);
+    public static final SortedMap<ResourceLocation, FluidDefinition> FLUID_DEFINITIONS = new TreeMap<>();
 
-    public static SortedMap<ResourceLocation, FluidDefinition> FLUIDS = new TreeMap<>();
+    public static void init(IEventBus modBus) {
+        FLUIDS.register(modBus);
+        FLUID_TYPES.register(modBus);
+    }
 
     public static final FluidDefinition ACETYLENE = fluid("Acetylene", "acetylene", 0xff603405, true);
     public static final FluidDefinition ACRYLIC_ACID = fluid("Acrylic Acid", "acrylic_acid", 0xff1bdeb5, MEDIUM_OPACITY);
@@ -116,8 +128,8 @@ public class MIFluids {
     }
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, FluidTexture texture,  boolean isGas){
-        FluidDefinition definition =  new FluidDefinition(englishName, id, color, opacity, texture, isGas);
-        if (FLUIDS.put(definition.getId(), definition) != null) {
+        var definition = new FluidDefinition(englishName, id, color, opacity, texture, isGas);
+        if (FLUID_DEFINITIONS.put(definition.getId(), definition) != null) {
             throw new IllegalArgumentException("Fluid id already taken : " + definition.getId());
         }
         return definition;

@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfigurableStack<T, K>> implements Storage<K> {
     final List<S> stacks;

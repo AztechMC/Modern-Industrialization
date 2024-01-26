@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:iridium_nuggets"
+      "tag": "forge:nuggets/iridium"
     },
     "y": {
       "item": "modern_industrialization:iridium_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:iridium_ingot"
   }
 }

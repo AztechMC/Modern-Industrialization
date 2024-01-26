@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
       "item": "minecraft:deepslate_redstone_ore"
@@ -11,7 +12,6 @@
     "   "
   ],
   "result": {
-    "count": 1,
     "item": "minecraft:redstone_ore"
   }
 }

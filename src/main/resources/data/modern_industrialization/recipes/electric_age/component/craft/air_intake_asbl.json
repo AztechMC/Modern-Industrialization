@@ -8,13 +8,13 @@
   "key":
   {
     "r" : {
-      "tag" : "c:stainless_steel_plates"
+      "tag" : "forge:plates/stainless_steel"
     },
     "R" : {
       "item" : "modern_industrialization:stainless_steel_rotor"
     },
     "a" :{
-      "tag" : "c:aluminum_plates"
+      "tag" : "forge:plates/aluminum"
     }
   },
 

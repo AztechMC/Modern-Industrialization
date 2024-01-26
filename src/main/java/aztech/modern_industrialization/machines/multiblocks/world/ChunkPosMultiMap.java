@@ -28,17 +28,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
 public class ChunkPosMultiMap<T> {
-    private final Map<Level, HashMap<ChunkPos, Set<T>>> storage = new HashMap<>();
+    private final Map<LevelAccessor, HashMap<ChunkPos, Set<T>>> storage = new HashMap<>();
 
-    public final void add(Level world, ChunkPos chunkPos, T t) {
+    public final void add(LevelAccessor world, ChunkPos chunkPos, T t) {
         storage.computeIfAbsent(world, w -> new HashMap<>()).computeIfAbsent(chunkPos, p -> new HashSet<>()).add(t);
     }
 
-    public final void remove(Level world, ChunkPos chunkPos, T t) {
+    public final void remove(LevelAccessor world, ChunkPos chunkPos, T t) {
         Map<ChunkPos, Set<T>> chunkPosMap = storage.get(world);
         Set<T> tSet = chunkPosMap.get(chunkPos);
 
@@ -56,7 +56,7 @@ public class ChunkPosMultiMap<T> {
     }
 
     @Nullable
-    public final Set<T> get(Level world, ChunkPos chunkPos) {
+    public final Set<T> get(LevelAccessor world, ChunkPos chunkPos) {
         Map<ChunkPos, Set<T>> chunkPosSetMap = storage.get(world);
         if (chunkPosSetMap == null) {
             return null;

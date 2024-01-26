@@ -30,11 +30,11 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
 public class MultiblockInventoryComponent implements CrafterComponent.Inventory, InventoryAccess {
     private final List<ConfigurableItemStack> itemInputs = new ArrayList<>();

@@ -25,23 +25,16 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
-public class DimensionProcessCondition implements MachineProcessCondition {
-    public static final Serde SERIALIZER = new Serde();
-
-    private final ResourceKey<Level> dimension;
-
-    public DimensionProcessCondition(ResourceLocation dimension) {
-        this.dimension = ResourceKey.create(Registries.DIMENSION, dimension);
-    }
+public record DimensionProcessCondition(ResourceKey<Level> dimension) implements MachineProcessCondition {
+    static final Codec<DimensionProcessCondition> CODEC = ResourceKey.codec(Registries.DIMENSION)
+            .xmap(DimensionProcessCondition::new, DimensionProcessCondition::dimension);
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
@@ -56,21 +49,7 @@ public class DimensionProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public Serializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    private static class Serde implements Serializer<DimensionProcessCondition> {
-        @Override
-        public DimensionProcessCondition fromJson(JsonObject json) {
-            return new DimensionProcessCondition(new ResourceLocation(GsonHelper.getAsString(json, "dimension")));
-        }
-
-        @Override
-        public JsonObject toJson(DimensionProcessCondition condition, boolean syncToClient) {
-            var obj = new JsonObject();
-            obj.addProperty("dimension", condition.dimension.location().toString());
-            return obj;
-        }
+    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+        return CODEC;
     }
 }

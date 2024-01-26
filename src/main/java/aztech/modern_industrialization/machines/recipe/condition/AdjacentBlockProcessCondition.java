@@ -25,28 +25,21 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
+import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 
-public class AdjacentBlockProcessCondition implements MachineProcessCondition {
-    public static final Serde SERIALIZER = new Serde();
-
-    private final Block block;
-    private final RelativePosition relativePosition;
-
-    public AdjacentBlockProcessCondition(Block block, String relativePosition) {
-        this.block = block;
-        this.relativePosition = switch (relativePosition) {
-        case "below" -> RelativePosition.BELOW;
-        case "behind" -> RelativePosition.BEHIND;
-        default -> throw new IllegalArgumentException("Invalid position: " + relativePosition);
-        };
-    }
+public record AdjacentBlockProcessCondition(Block block, RelativePosition relativePosition) implements MachineProcessCondition {
+    static final Codec<AdjacentBlockProcessCondition> CODEC = RecordCodecBuilder.create(
+            g -> g.group(
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(c -> c.block),
+                    StringRepresentable.fromEnum(RelativePosition::values).fieldOf("position").forGetter(c -> c.relativePosition))
+                    .apply(g, AdjacentBlockProcessCondition::new));
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
@@ -70,35 +63,22 @@ public class AdjacentBlockProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public Serializer<?> getSerializer() {
-        return SERIALIZER;
-    }
-
-    private static class Serde implements Serializer<AdjacentBlockProcessCondition> {
-        @Override
-        public AdjacentBlockProcessCondition fromJson(JsonObject json) {
-            var blockId = new ResourceLocation(GsonHelper.getAsString(json, "block"));
-            var block = BuiltInRegistries.BLOCK.getOptional(blockId).orElseThrow(() -> new IllegalArgumentException("Invalid block: " + blockId));
-            var pos = GsonHelper.getAsString(json, "position");
-            return new AdjacentBlockProcessCondition(block, pos);
-        }
-
-        @Override
-        public JsonObject toJson(AdjacentBlockProcessCondition condition, boolean syncToClient) {
-            var obj = new JsonObject();
-            obj.addProperty("block", BuiltInRegistries.BLOCK.getKey(condition.block).toString());
-            obj.addProperty("position", condition.relativePosition.toString());
-            return obj;
-        }
+    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+        return CODEC;
     }
 }
 
-enum RelativePosition {
+enum RelativePosition implements StringRepresentable {
     BELOW,
     BEHIND;
 
     @Override
     public String toString() {
         return super.toString().toLowerCase();
+    }
+
+    @Override
+    public String getSerializedName() {
+        return toString().toLowerCase(Locale.ROOT);
     }
 }

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:carbon_dusts"
+      "tag": "forge:dusts/carbon"
     }
   ],
   "item_outputs": [

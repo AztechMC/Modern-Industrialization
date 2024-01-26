@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "x": {
-      "tag": "c:uranium_235_nuggets"
+      "tag": "forge:nuggets/uranium_235"
     },
     "y": {
       "item": "modern_industrialization:uranium_235_nugget"
@@ -14,7 +15,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "item": "modern_industrialization:uranium_235_ingot"
   }
 }

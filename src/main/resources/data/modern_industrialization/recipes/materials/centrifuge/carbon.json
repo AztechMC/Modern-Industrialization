@@ -3,7 +3,7 @@
   "eu": 16,
   "duration": 400,
   "item_inputs": {
-    "tag": "c:coal_dusts",
+    "tag": "forge:dusts/coal",
     "amount": 1
   },
   "item_outputs": {

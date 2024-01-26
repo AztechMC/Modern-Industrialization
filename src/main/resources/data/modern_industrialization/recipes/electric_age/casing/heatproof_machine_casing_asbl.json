@@ -7,10 +7,10 @@
   ],
   "key": {
     "P": {
-      "tag": "c:invar_plates"
+      "tag": "forge:plates/invar"
     },
     "G" : {
-      "tag" : "c:invar_gears"
+      "tag" : "forge:gears/invar"
     }
   },
   "result": {

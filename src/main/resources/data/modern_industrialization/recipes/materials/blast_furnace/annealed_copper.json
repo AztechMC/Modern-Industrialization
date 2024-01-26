@@ -3,7 +3,7 @@
   "eu": 64,
   "duration": 600,
   "item_inputs": {
-    "tag": "c:copper_dusts",
+    "tag": "forge:dusts/copper",
     "amount": 1
   },
   "fluid_inputs":{

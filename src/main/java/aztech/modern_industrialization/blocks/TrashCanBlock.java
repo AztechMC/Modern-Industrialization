@@ -23,18 +23,16 @@
  */
 package aztech.modern_industrialization.blocks;
 
-import com.google.common.base.Preconditions;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Properties;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import aztech.modern_industrialization.MICapabilities;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class TrashCanBlock extends Block {
     public TrashCanBlock(Properties properties) {
@@ -42,36 +40,98 @@ public class TrashCanBlock extends Block {
 
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Storage<T> trashStorage() {
-        return TRASH;
+    private static class TrashItemHandler implements IItemHandler {
+        private static final TrashItemHandler INSTANCE = new TrashItemHandler();
+
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return true;
+        }
     }
 
-    @SuppressWarnings("rawtypes")
-    private static final Storage TRASH = new TrashStorage();
+    private static class TrashFluidHandler implements IFluidHandler {
+        private static final TrashFluidHandler INSTANCE = new TrashFluidHandler();
 
-    @SuppressWarnings("rawtypes")
-    private static class TrashStorage implements InsertionOnlyStorage {
         @Override
-        public long insert(Object o, long maxAmount, TransactionContext transaction) {
-            Preconditions.checkArgument(maxAmount >= 0);
-            return maxAmount;
+        public int getTanks() {
+            return 1;
         }
 
         @Override
-        public Iterator<StorageView> iterator() {
-            return Collections.emptyIterator();
+        public @NotNull FluidStack getFluidInTank(int tank) {
+            return FluidStack.EMPTY;
         }
 
         @Override
-        public long getVersion() {
-            return 0;
+        public int getTankCapacity(int tank) {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+            return true;
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return resource.getAmount();
+        }
+
+        @Override
+        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+    }
+
+    private static class TrashFluidHandlerItem extends TrashFluidHandler implements IFluidHandlerItem {
+        private final ItemStack container;
+
+        private TrashFluidHandlerItem(ItemStack container) {
+            this.container = container;
+        }
+
+        @Override
+        public @NotNull ItemStack getContainer() {
+            return container;
         }
     }
 
     public static void onRegister(Block block, Item blockItem) {
-        ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
-        FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
-        FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), blockItem);
+        MICapabilities.onEvent(event -> {
+            event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, be, direction) -> TrashItemHandler.INSTANCE, block);
+            event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ctx) -> TrashItemHandler.INSTANCE, blockItem);
+            event.registerBlock(Capabilities.FluidHandler.BLOCK, (level, pos, state, be, direction) -> TrashFluidHandler.INSTANCE, block);
+            event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new TrashFluidHandlerItem(stack), blockItem);
+        });
     }
 }

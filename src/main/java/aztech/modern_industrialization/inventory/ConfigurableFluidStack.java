@@ -25,28 +25,28 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 
 /**
  * A fluid stack that can be configured.
@@ -269,55 +269,50 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             return isPlayerLocked() ? 90 : isMachineLocked() ? 126 : 18;
         }
 
-        /**
-         * Interact with this slot, return true if something happened.
-         */
-        public boolean playerInteract(ContainerItemContext context, Player player, boolean allowSlotExtract) {
-            var io = context.find(FluidStorage.ITEM);
-            if (io != null) {
-                // Extract first
-                long previousAmount = amount;
-                try (Transaction transaction = Transaction.openOuter()) {
-                    for (StorageView<FluidVariant> view : io) {
-                        FluidVariant fluid = view.getResource();
-                        if (!fluid.isBlank() && canInsertFluid(fluid)) {
-                            try (Transaction tx = transaction.openNested()) {
-                                long extracted = view.extract(fluid, getRemainingSpace(), tx);
-                                if (extracted > 0) {
-                                    player.playNotifySound(FluidVariantAttributes.getEmptySound(fluid), SoundSource.BLOCKS, 1, 1);
-                                    tx.commit();
-                                    increment(extracted);
-                                    setKey(fluid);
-                                }
-                            }
-                        }
-                    }
-                    transaction.commit();
-                }
-                if (previousAmount != amount) {
-                    // TODO: markDirty?
-                    return true;
-                }
-
-                if (!allowSlotExtract) {
-                    return false;
-                }
-
-                // Otherwise insert
-                FluidVariant fluid = getResource();
-                if (!fluid.isBlank() && canExtractFluid(fluid)) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        long inserted = io.insert(fluid, getAmount(), tx);
-                        if (inserted > 0) {
-                            decrement(inserted);
-                            player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
-                            tx.commit();
-                            // TODO: markDirty?
-                            return true;
-                        }
-                    }
-                }
+        public boolean playerInteract(SlotAccess slot, Player player, boolean allowSlotExtract) {
+            var fluidHandlerItem = slot.get().getCapability(Capabilities.FluidHandler.ITEM);
+            if (fluidHandlerItem == null) {
+                return false;
             }
+
+            // Copy contents into temporary IFluidHandler
+            var slotTank = new FluidTank(Ints.saturatedCast(getCapacity()), fs -> canInsertFluid(FluidVariant.of(fs)));
+            slotTank.setFluid(getVariant().toStack(Ints.saturatedCast(getAmount())));
+
+            // Extract first
+            var extractResult = FluidUtil.tryEmptyContainerAndStow(
+                    slot.get(),
+                    slotTank,
+                    new PlayerMainInvWrapper(player.getInventory()),
+                    Integer.MAX_VALUE,
+                    player,
+                    true);
+            if (extractResult.isSuccess()) {
+                slot.set(extractResult.getResult());
+                setKey(FluidVariant.of(slotTank.getFluid()));
+                setAmount(slotTank.getFluidAmount());
+                return true;
+            }
+
+            // Otherwise insert
+            if (!allowSlotExtract || isEmpty() || !canExtractFluid(getVariant())) {
+                return false;
+            }
+
+            var insertResult = FluidUtil.tryFillContainerAndStow(
+                    slot.get(),
+                    slotTank,
+                    new PlayerMainInvWrapper(player.getInventory()),
+                    Integer.MAX_VALUE,
+                    player,
+                    true);
+            if (insertResult.isSuccess()) {
+                slot.set(insertResult.getResult());
+                setKey(FluidVariant.of(slotTank.getFluid()));
+                setAmount(slotTank.getFluidAmount());
+                return true;
+            }
+
             return false;
         }
     }

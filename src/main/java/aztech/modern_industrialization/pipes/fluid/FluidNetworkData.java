@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.nbt.CompoundTag;
 
 public class FluidNetworkData extends PipeNetworkData {

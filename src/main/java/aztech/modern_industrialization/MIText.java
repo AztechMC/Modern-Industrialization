@@ -255,7 +255,7 @@ public enum MIText {
     private final List<String> additionalTranslationsKey;
 
     MIText(String englishText, String... additionalTranslationKey) {
-        this.root = "text." + aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
+        this.root = "text." + MI.ID;
         this.englishText = englishText;
         this.additionalTranslationsKey = List.of(additionalTranslationKey);
     }

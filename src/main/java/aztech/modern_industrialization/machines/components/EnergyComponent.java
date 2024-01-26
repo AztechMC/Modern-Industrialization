@@ -31,8 +31,6 @@ import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -40,23 +38,6 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
     private long storedEu;
     private final Supplier<Long> capacity;
     private final BlockEntity blockEntity; // used to call setChanged()
-
-    private final SnapshotParticipant<Long> participant = new SnapshotParticipant<>() {
-        @Override
-        protected Long createSnapshot() {
-            return storedEu;
-        }
-
-        @Override
-        protected void readSnapshot(Long snapshot) {
-            storedEu = snapshot;
-        }
-
-        @Override
-        protected void onFinalCommit() {
-            blockEntity.setChanged();
-        }
-    };
 
     public EnergyComponent(BlockEntity blockEntity, Supplier<Long> capacity) {
         this.capacity = capacity;
@@ -131,21 +112,22 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
     public MIEnergyStorage buildInsertable(Predicate<CableTier> canInsert) {
         return new EnergyStorage() {
             @Override
-            public long insert(long maxAmount, TransactionContext transaction) {
-                Preconditions.checkArgument(maxAmount >= 0, "May not insert < 0 energy.");
-                long inserted = Math.min(maxAmount, capacity.get() - getEu());
-                participant.updateSnapshots(transaction);
-                storedEu += inserted;
-                return inserted;
+            public long receive(long maxReceive, boolean simulate) {
+                return insertEu(maxReceive, simulate ? Simulation.SIMULATE : Simulation.ACT);
             }
 
             @Override
-            public long extract(long maxAmount, TransactionContext transaction) {
+            public boolean canReceive() {
+                return true;
+            }
+
+            @Override
+            public long extract(long maxExtract, boolean simulate) {
                 return 0;
             }
 
             @Override
-            public boolean supportsExtraction() {
+            public boolean canExtract() {
                 return false;
             }
 
@@ -159,22 +141,23 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
     public MIEnergyStorage buildExtractable(Predicate<CableTier> canExtract) {
         return new EnergyStorage() {
             @Override
-            public long insert(long maxAmount, TransactionContext transaction) {
+            public long receive(long maxReceive, boolean simulate) {
                 return 0;
             }
 
             @Override
-            public boolean supportsInsertion() {
+            public boolean canReceive() {
                 return false;
             }
 
             @Override
-            public long extract(long maxAmount, TransactionContext transaction) {
-                Preconditions.checkArgument(maxAmount >= 0, "May not extract < 0 energy.");
-                long extracted = Math.min(maxAmount, getEu());
-                participant.updateSnapshots(transaction);
-                storedEu -= extracted;
-                return extracted;
+            public long extract(long maxExtract, boolean simulate) {
+                return consumeEu(maxExtract, simulate ? Simulation.SIMULATE : Simulation.ACT);
+            }
+
+            @Override
+            public boolean canExtract() {
+                return true;
             }
 
             @Override
@@ -183,5 +166,4 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
             }
         };
     }
-
 }

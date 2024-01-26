@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 /**
@@ -39,12 +40,12 @@ public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
 
     private long lastUpdate = 0;
     private static final long UPDATE_INTERVAL = 20 * 1000;
-    protected List<MachineRecipe> recipeList = new ArrayList<>();
+    protected List<RecipeHolder<MachineRecipe>> recipeList = new ArrayList<>();
 
     protected abstract void fillRecipeList(Level world);
 
     @Override
-    public Collection<MachineRecipe> getRecipes(Level world) {
+    public Collection<RecipeHolder<MachineRecipe>> getRecipes(Level world) {
         long time = System.currentTimeMillis();
         if (time - lastUpdate > UPDATE_INTERVAL) {
             lastUpdate = time;

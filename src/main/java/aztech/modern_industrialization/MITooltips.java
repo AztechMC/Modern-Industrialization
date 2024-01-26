@@ -45,9 +45,6 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -177,7 +174,7 @@ public class MITooltips {
     public static final Parser<Fluid> FLUID_PARSER = new Parser<>() {
         @Override
         public Component parse(Fluid fluid) {
-            return FluidVariantAttributes.getName(FluidVariant.of(fluid));
+            return fluid.getFluidType().getDescription();
         }
     };
 
@@ -221,8 +218,8 @@ public class MITooltips {
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe)) {
-                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
+                if (item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe.type)) {
+                    var tier = MIPipes.ELECTRICITY_PIPE_TIER.get(pipe.type);
                     return Optional.of(new Line(MIText.EuCable).arg(tier.shortEnglishName()).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build());
                 } else {
                     return Optional.empty();
@@ -253,8 +250,8 @@ public class MITooltips {
 
     public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(ModernIndustrialization.MOD_ID)) {
-                    var energyStorage = ContainerItemContext.withConstant(itemStack).find(EnergyApi.ITEM);
+                if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(MI.ID)) {
+                    var energyStorage = itemStack.getCapability(EnergyApi.ITEM);
                     if (energyStorage != null) {
                         long capacity = energyStorage.getCapacity();
                         if (capacity > 0) {

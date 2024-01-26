@@ -25,25 +25,35 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import org.jetbrains.annotations.ApiStatus;
 
 public interface MachineProcessCondition {
+    private static Codec<MachineProcessCondition> makeCodec(boolean syncToClient) {
+        return ResourceLocation.CODEC
+                .<Codec<? extends MachineProcessCondition>>flatXmap(
+                        resLoc -> Optional.ofNullable(MachineProcessConditions.get(resLoc))
+                                .map(DataResult::success)
+                                .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition " + resLoc)),
+                        codec -> Optional.ofNullable(MachineProcessConditions.getId(codec))
+                                .map(DataResult::success)
+                                .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition codec " + codec)))
+                .dispatch(cond -> cond.codec(syncToClient), c -> c);
+    }
+
+    Codec<MachineProcessCondition> CODEC = makeCodec(false);
+    Codec<MachineProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
+
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
 
     void appendDescription(List<Component> list);
 
-    Serializer<?> getSerializer();
-
-    @ApiStatus.NonExtendable
-    default JsonObject toJson() {
-        var obj = ((Serializer) getSerializer()).toJson(this, false);
-        obj.addProperty("id", MachineProcessConditions.getId(getSerializer()).toString());
-        return obj;
-    }
+    Codec<? extends MachineProcessCondition> codec(boolean syncToClient);
 
     interface Context {
         MachineBlockEntity getBlockEntity();
@@ -51,14 +61,5 @@ public interface MachineProcessCondition {
         default ServerLevel getLevel() {
             return (ServerLevel) getBlockEntity().getLevel();
         }
-    }
-
-    interface Serializer<T extends MachineProcessCondition> {
-        T fromJson(JsonObject json);
-
-        /**
-         * @param syncToClient False if writing to datapack, true if writing to client.
-         */
-        JsonObject toJson(T condition, boolean syncToClient);
     }
 }

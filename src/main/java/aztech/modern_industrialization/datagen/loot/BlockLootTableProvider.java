@@ -24,33 +24,41 @@
 package aztech.modern_industrialization.datagen.loot;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.BlockDefinition;
-import aztech.modern_industrialization.pipes.MIPipes;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import java.util.Set;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
 
-public class BlockLootTableProvider extends FabricBlockLootTableProvider {
+public class BlockLootTableProvider extends BlockLootSubProvider {
+    public BlockLootTableProvider() {
+        super(Set.of(), FeatureFlags.VANILLA_SET);
+    }
 
-    public BlockLootTableProvider(FabricDataOutput packOutput) {
-        super(packOutput);
+    @Override
+    protected Iterable<Block> getKnownBlocks() {
+        return MIBlock.BLOCK_DEFINITIONS.values()
+                .stream()
+                .filter(x -> x.blockLoot != null)
+                .<Block>map(BlockDefinition::asBlock)
+                .toList();
     }
 
     @Override
     public void generate() {
-        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
-            if (blockDefinition.lootTableGenerator != null) {
-                blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
-            } else {
-                excludeFromStrictValidation(blockDefinition.block);
+        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCK_DEFINITIONS.values()) {
+            if (blockDefinition.blockLoot == null) {
+                continue;
             }
-        }
 
-        // Loot is dynamic
-        excludeFromStrictValidation(MIPipes.BLOCK_PIPE);
-        // No drops for these
-        for (var fluid : MIFluids.FLUIDS.values()) {
-            excludeFromStrictValidation(fluid.fluidBlock);
+            var block = blockDefinition.asBlock();
+            if (blockDefinition.blockLoot instanceof MIBlockLoot.DropSelf) {
+                dropSelf(block);
+            } else if (blockDefinition.blockLoot instanceof MIBlockLoot.Ore ore) {
+                add(block, createOreDrop(block, BuiltInRegistries.ITEM.get(new ResourceLocation(ore.loot()))));
+            }
         }
     }
 }

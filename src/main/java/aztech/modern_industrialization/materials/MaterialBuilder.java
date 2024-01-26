@@ -28,7 +28,7 @@ import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import java.util.*;
 import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.Nullable;
 
 public final class MaterialBuilder {
@@ -131,7 +131,7 @@ public final class MaterialBuilder {
         return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput output) {
         Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
         RecipeContext recipeContext = new RecipeContext(recipesMap);
         for (RecipeAction action : recipesActions) {
@@ -139,7 +139,7 @@ public final class MaterialBuilder {
         }
         for (MaterialRecipeBuilder builder : recipesMap.values()) {
             // noinspection deprecation
-            builder.save(consumer);
+            builder.save(output);
         }
     }
 

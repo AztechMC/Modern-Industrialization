@@ -23,13 +23,14 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotGroup;
 import java.util.List;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
@@ -38,7 +39,7 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
 
     MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
             List<? extends GuiComponent.Common> guiComponents) {
-        super(ModernIndustrialization.SCREEN_HANDLER_MACHINE, syncId, playerInventory, inventory);
+        super(MIRegistries.MACHINE_MENU.get(), syncId, playerInventory, inventory);
         this.guiParams = guiParams;
 
         // Player inventory slots
@@ -80,4 +81,6 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
     public MachineGuiParameters getGuiParams() {
         return guiParams;
     }
+
+    public abstract void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf);
 }

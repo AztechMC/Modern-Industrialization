@@ -1,0 +1,18 @@
+{
+  "values": [
+    "#forge:ores/antimony",
+    "#forge:ores/bauxite",
+    "#forge:ores/iridium",
+    "#forge:ores/lead",
+    "#forge:ores/lignite_coal",
+    "#forge:ores/monazite",
+    "#forge:ores/nickel",
+    "#forge:ores/platinum",
+    "#forge:ores/quartz",
+    "#forge:ores/salt",
+    "#forge:ores/tin",
+    "#forge:ores/titanium",
+    "#forge:ores/tungsten",
+    "#forge:ores/uranium"
+  ]
+}

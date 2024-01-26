@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import static aztech.modern_industrialization.util.Simulation.ACT;
 import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.component.CrafterAccess;
 import aztech.modern_industrialization.api.machine.component.InventoryAccess;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
@@ -39,6 +39,8 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -47,14 +49,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
@@ -120,7 +121,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     private final Inventory inventory;
     private final Behavior behavior;
 
-    private MachineRecipe activeRecipe = null;
+    private RecipeHolder<MachineRecipe> activeRecipe = null;
     private ResourceLocation delayedActiveRecipe;
 
     private long usedEnergy;
@@ -182,7 +183,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     @Override
     public long getBaseRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
-        return activeRecipe.eu;
+        return activeRecipe.value().eu;
     }
 
     /**
@@ -215,14 +216,15 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null && (usedEnergy > 0 || recipeStarted) && isEnabled) {
-            recipeMaxEu = getRecipeMaxEu(activeRecipe.eu, recipeEnergy, efficiencyTicks);
-            eu = activeRecipe.conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT) : 0;
+            recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
+            eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT)
+                    : 0;
             isActive = eu > 0;
             usedEnergy += eu;
 
             if (usedEnergy == recipeEnergy) {
-                putItemOutputs(activeRecipe, false, false);
-                putFluidOutputs(activeRecipe, false, false);
+                putItemOutputs(activeRecipe.value(), false, false);
+                putFluidOutputs(activeRecipe.value(), false, false);
                 clearLocks();
                 usedEnergy = 0;
                 finishedRecipe = true;
@@ -235,7 +237,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             if (previousBaseEu != behavior.getBaseRecipeEu() || previousMaxEu != behavior.getMaxRecipeEu()) {
                 previousBaseEu = behavior.getBaseRecipeEu();
                 previousMaxEu = behavior.getMaxRecipeEu();
-                maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(activeRecipe);
+                maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(activeRecipe.value());
                 efficiencyTicks = Math.min(efficiencyTicks, maxEfficiencyTicks);
             }
 
@@ -275,10 +277,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         loadDelayedActiveRecipe();
 
         if (activeRecipe != null) {
-            if (putItemOutputs(activeRecipe, true, false) && putFluidOutputs(activeRecipe, true, false)) {
+            if (putItemOutputs(activeRecipe.value(), true, false) && putFluidOutputs(activeRecipe.value(), true, false)) {
                 // Relock stacks
-                putItemOutputs(activeRecipe, true, true);
-                putFluidOutputs(activeRecipe, true, true);
+                putItemOutputs(activeRecipe.value(), true, true);
+                putFluidOutputs(activeRecipe.value(), true, true);
             } else {
                 return false;
             }
@@ -301,27 +303,27 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     private boolean updateActiveRecipe() {
         // Only then can we run the iteration over the recipes
-        for (MachineRecipe recipe : getRecipes()) {
-            if (behavior.banRecipe(recipe))
+        for (RecipeHolder<MachineRecipe> recipe : getRecipes()) {
+            if (behavior.banRecipe(recipe.value()))
                 continue;
-            if (tryStartRecipe(recipe)) {
+            if (tryStartRecipe(recipe.value())) {
                 // Make sure we recalculate the max efficiency ticks if the recipe changes or if
                 // the efficiency has reached 0 (the latter is to recalculate the efficiency for
                 // 0.3.6 worlds without having to break and replace the machines)
                 if (activeRecipe != recipe || efficiencyTicks == 0) {
-                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe);
+                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.value());
                 }
                 activeRecipe = recipe;
                 usedEnergy = 0;
-                recipeEnergy = recipe.getTotalEu();
-                recipeMaxEu = getRecipeMaxEu(recipe.eu, recipeEnergy, efficiencyTicks);
+                recipeEnergy = recipe.value().getTotalEu();
+                recipeMaxEu = getRecipeMaxEu(recipe.value().eu, recipeEnergy, efficiencyTicks);
                 return true;
             }
         }
         return false;
     }
 
-    private Iterable<MachineRecipe> getRecipes() {
+    private Iterable<RecipeHolder<MachineRecipe>> getRecipes() {
         if (efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
@@ -339,7 +341,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
             ServerLevel serverWorld = (ServerLevel) behavior.getCrafterWorld();
             MachineRecipeType recipeType = behavior.recipeType();
-            List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
+            List<RecipeHolder<MachineRecipe>> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
             for (ConfigurableItemStack stack : inventory.getItemInputs()) {
                 if (!stack.isEmpty()) {
                     recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getResource().getItem()));
@@ -389,7 +391,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         tag.putLong("recipeEnergy", this.recipeEnergy);
         tag.putLong("recipeMaxEu", this.recipeMaxEu);
         if (activeRecipe != null) {
-            tag.putString("activeRecipe", this.activeRecipe.getId().toString());
+            tag.putString("activeRecipe", this.activeRecipe.id().toString());
         } else if (delayedActiveRecipe != null) {
             tag.putString("activeRecipe", this.delayedActiveRecipe.toString());
         }
@@ -404,7 +406,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new ResourceLocation(tag.getString("activeRecipe")) : null;
         if (delayedActiveRecipe == null && usedEnergy > 0) {
             usedEnergy = 0;
-            ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
+            MI.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
         }
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
@@ -609,13 +611,13 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
-        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes(behavior.getCrafterWorld()).stream()
-                .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
+        Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipes(behavior.getCrafterWorld()).stream()
+                .filter(recipe -> recipe.id().equals(recipeId)).findFirst();
         if (optionalMachineRecipe.isEmpty())
             return;
-        MachineRecipe recipe = optionalMachineRecipe.get();
+        var recipe = optionalMachineRecipe.get();
         // ITEM INPUTS
-        outer: for (MachineRecipe.ItemInput input : recipe.itemInputs) {
+        outer: for (MachineRecipe.ItemInput input : recipe.value().itemInputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
                 if (input.matches(new ItemStack(stack.getLockedInstance())))
                     continue outer;
@@ -633,7 +635,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                 // Find the first match that is an item from MI (useful for ingots for example)
                 for (Item item : input.getInputItems()) {
                     ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                    if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                    if (id.getNamespace().equals(MI.ID)) {
                         targetItem = item;
                         break;
                     }
@@ -651,7 +653,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             }
         }
         // ITEM OUTPUTS
-        outer: for (MachineRecipe.ItemOutput output : recipe.itemOutputs) {
+        outer: for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
                 if (stack.getLockedInstance() == output.item)
                     continue outer;
@@ -660,7 +662,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
 
         // FLUID INPUTS
-        outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
+        outer: for (MachineRecipe.FluidInput input : recipe.value().fluidInputs) {
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
                 if (stack.isLockedTo(input.fluid))
                     continue outer;
@@ -668,7 +670,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             AbstractConfigurableStack.playerLockNoOverride(input.fluid, this.inventory.getFluidInputs());
         }
         // FLUID OUTPUTS
-        outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+        outer: for (MachineRecipe.FluidOutput output : recipe.value().fluidOutputs) {
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
                 if (stack.isLockedTo(output.fluid))
                     continue outer;
@@ -677,7 +679,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
 
         // LOCK ITEMS
-        if (recipe.itemInputs.size() > 0 || recipe.itemOutputs.size() > 0) {
+        if (recipe.value().itemInputs.size() > 0 || recipe.value().itemOutputs.size() > 0) {
             lockAll(this.inventory.getItemInputs());
             lockAll(this.inventory.getItemOutputs());
         }

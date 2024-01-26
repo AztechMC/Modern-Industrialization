@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
+import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
+import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
+import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.pipes.impl.PipePackets;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -49,7 +49,7 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
     }
 
     public FluidPipeScreenHandler(int syncId, Inventory playerInventory, FluidPipeInterface iface) {
-        super(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, syncId);
+        super(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE.get(), syncId);
         this.iface = iface;
         this.playerInventory = playerInventory;
         this.trackedNetworkFluid = iface.getNetworkFluid();
@@ -72,25 +72,15 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
             ServerPlayer serverPlayer = (ServerPlayer) playerInventory.player;
             if (!trackedNetworkFluid.equals(iface.getNetworkFluid())) {
                 trackedNetworkFluid = iface.getNetworkFluid();
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                trackedNetworkFluid.toPacket(buf);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_NETWORK_FLUID, buf);
+                new SetNetworkFluidPacket(containerId, trackedNetworkFluid).sendToClient(serverPlayer);
             }
             if (trackedType != iface.getConnectionType()) {
                 trackedType = iface.getConnectionType();
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(trackedType);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
+                new SetConnectionTypePacket(containerId, trackedType).sendToClient(serverPlayer);
             }
             if (trackedPriority != iface.getPriority(0)) {
                 trackedPriority = iface.getPriority(0);
-                FriendlyByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(containerId);
-                buf.writeInt(0);
-                buf.writeInt(trackedPriority);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+                new SetPriorityPacket(containerId, 0, trackedPriority).sendToClient(serverPlayer);
             }
         }
     }

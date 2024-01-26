@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:raw_antimony_blocks"
+      "tag": "forge:storage_blocks/raw_antimony"
     }
   ],
   "item_outputs": [

@@ -215,9 +215,11 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-//    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
+    compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
+    runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+    jarJar("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
+        jarJar.ranged(it, "[$project.patchouli_version,)")
+    }
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
@@ -353,6 +355,12 @@ jar {
     from sourceSets.client.output
 }
 
+// TODO: shouldn't NG handle this automatically?
+tasks.named("jarJar") {
+    from "LICENSE"
+    from sourceSets.client.output
+}
+
 // configure the maven publication
 publishing {
     publications {
@@ -456,10 +464,9 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
-                // TODO NEO: restore patchouli dep declaration
-                //embeddedLibrary "patchouli-fabric"
+                embeddedLibrary "patchouli"
             }
-            mainArtifact(jar.archiveFile) {
+            mainArtifact(tasks.named("jarJar").flatMap { it.archiveFile }) {
                 displayName = "Modern Industrialization v${version}"
             }
         }
@@ -467,7 +474,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             forgeGradleIntegration = false
         }
         afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn jar
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jarJar
         }
     }
 }
@@ -479,7 +486,7 @@ modrinth {
     versionName = "Modern Industrialization v${version}"
     delegate.changelog = changelog
     versionType = releaseChannel
-    uploadFile = jar
+    uploadFile = tasks.jarJar
     gameVersions = ["1.20.4"]
     loaders = ["neoforge"]
     dependencies {

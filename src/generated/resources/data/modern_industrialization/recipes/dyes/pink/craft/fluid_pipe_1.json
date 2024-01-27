@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:pink_dyes"
+      "tag": "forge:dyes/pink"
     },
     "p": {
       "tag": "modern_industrialization:fluid_pipes"

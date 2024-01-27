@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:nickel_ores"
+      "tag": "forge:ores/nickel"
     }
   ],
   "item_outputs": [

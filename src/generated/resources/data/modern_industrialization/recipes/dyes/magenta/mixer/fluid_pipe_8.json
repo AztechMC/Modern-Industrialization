@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:magenta_dyes"
+      "tag": "forge:dyes/magenta"
     }
   ],
   "item_outputs": [

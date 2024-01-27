@@ -14,7 +14,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:green_dyes"
+      "tag": "forge:dyes/green"
     }
   ],
   "item_outputs": [

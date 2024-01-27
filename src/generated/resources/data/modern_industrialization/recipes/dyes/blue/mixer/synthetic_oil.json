@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "c:blue_dyes"
+      "tag": "forge:dyes/blue"
     }
   ],
   "item_outputs": [

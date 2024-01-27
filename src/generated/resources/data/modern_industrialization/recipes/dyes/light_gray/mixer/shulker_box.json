@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:light_gray_dyes"
+      "tag": "forge:dyes/light_gray"
     },
     {
       "amount": 1,
-      "tag": "c:shulker_boxes"
+      "tag": "forge:shulker_boxes"
     }
   ],
   "item_outputs": [

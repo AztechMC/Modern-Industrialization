@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "forge:tin_ores"
+    "tag": "forge:ores/tin"
   },
   "result": {
     "count": 2,

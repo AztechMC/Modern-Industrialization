@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:gray_dyes"
+      "tag": "forge:dyes/gray"
     }
   ],
   "item_outputs": [

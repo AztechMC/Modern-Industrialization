@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:orange_dyes"
+      "tag": "forge:dyes/orange"
     },
     "p": {
       "tag": "modern_industrialization:fluid_pipes"

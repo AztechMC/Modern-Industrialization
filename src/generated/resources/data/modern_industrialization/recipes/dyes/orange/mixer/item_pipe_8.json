@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:orange_dyes"
+      "tag": "forge:dyes/orange"
     }
   ],
   "item_outputs": [

@@ -6,7 +6,7 @@
       "tag": "forge:plates/aluminum"
     },
     "b": {
-      "tag": "c:wooden_barrels"
+      "tag": "forge:barrels/wooden"
     }
   },
   "pattern": [

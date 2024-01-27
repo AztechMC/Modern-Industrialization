@@ -14,7 +14,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:white_dyes"
+      "tag": "forge:dyes/white"
     }
   ],
   "item_outputs": [

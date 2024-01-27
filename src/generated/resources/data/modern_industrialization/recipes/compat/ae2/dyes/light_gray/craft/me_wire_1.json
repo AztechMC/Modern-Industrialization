@@ -8,7 +8,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:light_gray_dyes"
+      "tag": "forge:dyes/light_gray"
     },
     "p": {
       "tag": "modern_industrialization:me_wires"

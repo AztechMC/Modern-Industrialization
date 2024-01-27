@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:white_dyes"
+      "tag": "forge:dyes/white"
     },
     "p": {
       "tag": "modern_industrialization:item_pipes"

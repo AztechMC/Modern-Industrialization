@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:brown_dyes"
+      "tag": "forge:dyes/brown"
     }
   ],
   "item_outputs": [

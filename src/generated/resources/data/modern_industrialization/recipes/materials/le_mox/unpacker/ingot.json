@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:blocks/le_mox"
+      "tag": "forge:storage_blocks/le_mox"
     }
   ],
   "item_outputs": [

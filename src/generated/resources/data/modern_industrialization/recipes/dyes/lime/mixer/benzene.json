@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "c:lime_dyes"
+      "tag": "forge:dyes/lime"
     }
   ],
   "item_outputs": [

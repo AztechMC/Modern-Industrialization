@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:magenta_dyes"
+      "tag": "forge:dyes/magenta"
     },
     "p": {
       "tag": "modern_industrialization:item_pipes"

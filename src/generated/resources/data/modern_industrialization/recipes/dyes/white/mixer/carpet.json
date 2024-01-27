@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:white_dyes"
+      "tag": "forge:dyes/white"
     },
     {
       "amount": 8,

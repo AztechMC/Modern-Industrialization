@@ -131,7 +131,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
 
         for (var kind : PolymerizationKind.values()) {
             new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
-                    .addItemInput("#c:" + kind.catalystMaterial + "_tiny_dusts", kind.inputTinyDust)
+                    .addItemInput("#forge:tiny_dusts/" + kind.catalystMaterial, kind.inputTinyDust)
                     .addFluidInput(input, 500)
                     .addFluidOutput(output, kind.outputMillis)
                     .offerTo(consumer, "petrochem/polymerization/" + baseNameInput + "_" + kind.name().toLowerCase());

@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:cyan_dyes"
+      "tag": "forge:dyes/cyan"
     },
     {
       "amount": 1,
-      "tag": "c:shulker_boxes"
+      "tag": "forge:shulker_boxes"
     }
   ],
   "item_outputs": [

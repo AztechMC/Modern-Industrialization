@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:lime_dyes"
+      "tag": "forge:dyes/lime"
     },
     "p": {
       "tag": "modern_industrialization:item_pipes"

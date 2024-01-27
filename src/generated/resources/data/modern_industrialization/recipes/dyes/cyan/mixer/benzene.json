@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "c:cyan_dyes"
+      "tag": "forge:dyes/cyan"
     }
   ],
   "item_outputs": [

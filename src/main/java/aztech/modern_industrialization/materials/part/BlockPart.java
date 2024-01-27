@@ -29,7 +29,9 @@ import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 public class BlockPart implements PartKeyProvider {
 
     public PartTemplate of(MaterialBlockSet set) {
-        return new PartTemplate("Block of %s", key()).asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
+        return new PartTemplate("Block of %s", key())
+                .withCustomPath("%s_block", "storage_blocks/%s")
+                .asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
     }
 
     @Override

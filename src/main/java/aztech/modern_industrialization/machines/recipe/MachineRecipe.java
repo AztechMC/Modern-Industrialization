@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -168,7 +169,7 @@ public class MachineRecipe implements Recipe<Container> {
                         Ingredient.CODEC_NONEMPTY.fieldOf("ingredient"))
                 .xmap(
                         des -> {
-                            return des.map(x -> x.map(Ingredient::of, Ingredient::of), x -> x);
+                            return des.map(x -> x.map(Ingredient::of, tagKey -> ingredientFromTagKey(tagKey)), x -> x);
                         },
                         ing -> {
                             if (ing.values.length == 1) {
@@ -180,6 +181,14 @@ public class MachineRecipe implements Recipe<Container> {
                             }
                             return Either.right(ing);
                         });
+
+        /**
+         * Sadly, Ingredient.of(tagKey) resolves the ingredient to check if it's empty for some reason.
+         */
+        private static Ingredient ingredientFromTagKey(TagKey<Item> tagKey) {
+            return new Ingredient(Stream.of(new Ingredient.TagValue(tagKey))) {
+            };
+        }
 
         private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
                 .mapWithAlternative(

@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:yellow_dyes"
+      "tag": "forge:dyes/yellow"
     }
   ],
   "item_outputs": [

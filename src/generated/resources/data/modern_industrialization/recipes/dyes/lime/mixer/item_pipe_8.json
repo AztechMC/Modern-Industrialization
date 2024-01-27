@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:lime_dyes"
+      "tag": "forge:dyes/lime"
     }
   ],
   "item_outputs": [

@@ -164,7 +164,7 @@ public class OrePart implements PartKeyProvider {
 
                 })
                 .withTexture(new TextureGenParams.Ore(deepslate, oreParams.set))
-                .withCustomPath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
+                .withCustomPath((deepslate ? "deepslate_" : "") + "%s_ore", "ores/%s");
     }
 
     public List<PartTemplate> ofAll(OrePartParams params) {

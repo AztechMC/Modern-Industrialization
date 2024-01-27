@@ -14,7 +14,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:pink_dyes"
+      "tag": "forge:dyes/pink"
     }
   ],
   "item_outputs": [

@@ -14,7 +14,7 @@
       "tag": "ae2:glass_cable"
     },
     "d": {
-      "tag": "c:white_dyes"
+      "tag": "forge:dyes/white"
     },
     "q": {
       "item": "ae2:quartz_fiber"

@@ -9,11 +9,11 @@
     },
     {
       "amount": 1,
-      "tag": "c:green_dyes"
+      "tag": "forge:dyes/green"
     },
     {
       "amount": 2,
-      "tag": "c:steel_gears"
+      "tag": "forge:gears/steel"
     }
   ],
   "item_outputs": [

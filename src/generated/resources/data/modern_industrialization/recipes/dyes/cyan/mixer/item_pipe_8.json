@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:cyan_dyes"
+      "tag": "forge:dyes/cyan"
     }
   ],
   "item_outputs": [

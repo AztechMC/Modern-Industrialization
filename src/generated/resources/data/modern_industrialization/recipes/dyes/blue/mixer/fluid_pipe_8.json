@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:blue_dyes"
+      "tag": "forge:dyes/blue"
     }
   ],
   "item_outputs": [

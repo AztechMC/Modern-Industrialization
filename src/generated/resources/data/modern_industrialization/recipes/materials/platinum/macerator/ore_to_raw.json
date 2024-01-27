@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:platinum_ores"
+      "tag": "forge:ores/platinum"
     }
   ],
   "item_outputs": [

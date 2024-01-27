@@ -14,7 +14,7 @@
       "tag": "ae2:glass_cable"
     },
     "d": {
-      "tag": "c:light_blue_dyes"
+      "tag": "forge:dyes/light_blue"
     },
     "q": {
       "item": "ae2:quartz_fiber"

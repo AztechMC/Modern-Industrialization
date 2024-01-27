@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "c:brown_dyes"
+      "tag": "forge:dyes/brown"
     }
   ],
   "item_outputs": [

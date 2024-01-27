@@ -8,7 +8,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "c:red_dyes"
+      "tag": "forge:dyes/red"
     },
     "p": {
       "tag": "modern_industrialization:me_wires"

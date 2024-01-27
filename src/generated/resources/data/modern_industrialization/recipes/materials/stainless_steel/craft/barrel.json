@@ -6,7 +6,7 @@
       "tag": "forge:plates/stainless_steel"
     },
     "b": {
-      "tag": "c:wooden_barrels"
+      "tag": "forge:barrels/wooden"
     }
   },
   "pattern": [

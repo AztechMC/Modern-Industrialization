@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "tag": "c:purple_dyes"
+      "tag": "forge:dyes/purple"
     }
   ],
   "item_outputs": [

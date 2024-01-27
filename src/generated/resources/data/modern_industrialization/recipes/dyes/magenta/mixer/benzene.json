@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "c:magenta_dyes"
+      "tag": "forge:dyes/magenta"
     }
   ],
   "item_outputs": [

@@ -39,6 +39,7 @@ import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
@@ -81,6 +82,7 @@ public class MIDatagenServer {
                 new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
 
         gen.addProvider(run, new MIBlockTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new MIFluidTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
         gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
         gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
 

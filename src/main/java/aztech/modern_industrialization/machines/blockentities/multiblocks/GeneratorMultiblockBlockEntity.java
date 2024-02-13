@@ -133,14 +133,15 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     public long insertEnergy(long value, Simulation simulation) {
         long rem = value;
-        long inserted = 0;
+        long allInserted = 0;
         for (EnergyComponent e : energyOutputs) {
             if (rem > 0) {
-                inserted += e.insertEu(rem, simulation);
-                rem -= inserted;
+                long outputInserted = e.insertEu(rem, simulation);
+                allInserted += outputInserted;
+                rem -= outputInserted;
             }
         }
-        return inserted;
+        return allInserted;
     }
 
     protected final void link() {

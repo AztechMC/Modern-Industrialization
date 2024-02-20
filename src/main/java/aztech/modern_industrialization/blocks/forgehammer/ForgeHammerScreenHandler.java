@@ -170,7 +170,11 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         if (!input.getItem().isEmpty()) {
             Set<ItemVariant> outputs = new HashSet<>();
 
-            for (var holder : this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())) {
+            var recipes = new ArrayList<>(this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()));
+            // Process recipes with hammer damage first, duplicates will be filtered by output!
+            recipes.sort(Comparator.comparing(h -> -h.value().hammerDamage()));
+
+            for (var holder : recipes) {
                 ForgeHammerRecipe recipe = holder.value();
 
                 if (recipe.ingredient().test(input.getItem()) && recipe.count() <= input.getItem().getCount()) {

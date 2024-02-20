@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
+import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
@@ -85,6 +86,8 @@ public class MIDatagenServer {
         gen.addProvider(run, new MIFluidTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
         gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
         gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+
+        gen.addProvider(run, new MIDataMapProvider(gen.getPackOutput(), lookupProvider));
 
         var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
         gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(

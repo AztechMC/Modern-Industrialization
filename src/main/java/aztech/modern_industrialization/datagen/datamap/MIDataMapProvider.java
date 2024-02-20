@@ -21,31 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization;
+package aztech.modern_industrialization.datagen.datamap;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import net.minecraft.core.registries.BuiltInRegistries;
+import aztech.modern_industrialization.MI;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.neoforged.neoforge.common.data.DataMapProvider;
+import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
+import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
-public class MIFuels {
-    private static final Map<Item, Integer> fuels = new IdentityHashMap<>();
-    private static final TagKey<Item> COAL_DUSTS = ItemTags.create(new ResourceLocation("forge:dusts/coal"));
+public class MIDataMapProvider extends DataMapProvider {
+    public MIDataMapProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider);
+    }
 
-    /**
-     * Call in common setup!
-     */
-    public static void init() {
+    private void addFuel(String path, int value) {
+        builder(NeoForgeDataMaps.FURNACE_FUELS).add(MI.id(path), new FurnaceFuel(value), false);
+    }
+
+    @Override
+    protected void gather() {
         addFuel("coke", 6400);
         addFuel("coke_dust", 6400);
-        addFuel("coke_block", Short.MAX_VALUE); // F*** YOU VANILLA ! (Should be 6400*9 but it overflows ...)
+        addFuel("coke_block", 6400 * 9);
         addFuel("coal_crushed_dust", 1600);
+        builder(NeoForgeDataMaps.FURNACE_FUELS)
+                .add(ItemTags.create(new ResourceLocation("forge:dusts/coal")), new FurnaceFuel(1600), false);
         addFuel("coal_tiny_dust", 160);
         addFuel("lignite_coal", 1600);
         addFuel("lignite_coal_block", 16000);
@@ -54,24 +58,5 @@ public class MIFuels {
         addFuel("lignite_coal_tiny_dust", 160);
         addFuel("carbon_dust", 6400);
         addFuel("carbon_tiny_dust", 640);
-
-        NeoForge.EVENT_BUS.addListener(FurnaceFuelBurnTimeEvent.class, event -> {
-            var burnTime = fuels.get(event.getItemStack().getItem());
-            if (burnTime != null) {
-                event.setBurnTime(burnTime);
-            }
-
-            if (event.getItemStack().is(COAL_DUSTS)) {
-                event.setBurnTime(1600);
-            }
-        });
-    }
-
-    private static void addFuel(String id, int burnTicks) {
-        Item item = BuiltInRegistries.ITEM.get(new MIIdentifier(id));
-        if (item == Items.AIR) {
-            throw new IllegalArgumentException("Couldn't find item " + id);
-        }
-        fuels.put(item, burnTicks);
     }
 }

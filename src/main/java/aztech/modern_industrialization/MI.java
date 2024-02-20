@@ -135,7 +135,6 @@ public class MI {
 
             FluidFuelRegistry.init();
             FluidNuclearComponent.init();
-            MIFuels.init();
 
             SpeedUpgrade.UPGRADES.put(MIItem.MOTOR.asItem(), 2);
             SpeedUpgrade.UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8);

@@ -458,7 +458,7 @@
   "cable_tier_short.modern_industrialization.superconductor": "Superconductor",
   "ebf_tier.modern_industrialization.cupronickel_coil": "Cupronickel",
   "ebf_tier.modern_industrialization.kanthal_coil": "Kanthal",
-  "entity.minecraft.villager.industrialist": "Industrialist",
+  "entity.minecraft.villager.modern_industrialization.industrialist": "Industrialist",
   "item.modern_industrialization.acetylene_bucket": "Acetylene Bucket",
   "item.modern_industrialization.acrylic_acid_bucket": "Acrylic Acid Bucket",
   "item.modern_industrialization.acrylic_glue_bucket": "Acrylic Glue Bucket",

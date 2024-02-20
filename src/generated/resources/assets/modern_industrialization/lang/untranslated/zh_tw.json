@@ -523,7 +523,7 @@
   "cable_tier_short.modern_industrialization.superconductor": "[UNTRANSLATED] Superconductor",
   "ebf_tier.modern_industrialization.cupronickel_coil": "[UNTRANSLATED] Cupronickel",
   "ebf_tier.modern_industrialization.kanthal_coil": "[UNTRANSLATED] Kanthal",
-  "entity.minecraft.villager.industrialist": "[UNTRANSLATED] Industrialist",
+  "entity.minecraft.villager.modern_industrialization.industrialist": "[UNTRANSLATED] Industrialist",
   "item.modern_industrialization.acetylene_bucket": "[UNTRANSLATED] Acetylene Bucket",
   "item.modern_industrialization.acrylic_acid_bucket": "[UNTRANSLATED] Acrylic Acid Bucket",
   "item.modern_industrialization.acrylic_glue_bucket": "[UNTRANSLATED] Acrylic Glue Bucket",

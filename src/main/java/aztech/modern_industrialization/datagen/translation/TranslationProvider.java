@@ -79,7 +79,7 @@ public final class TranslationProvider implements DataProvider {
         addTranslation("book.modern_industrialization.subtitle",
                 "Modern Industrialization");
 
-        addTranslation("entity.minecraft.villager.industrialist", "Industrialist");
+        addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
 
         addTranslation("key.modern_industrialization.activate", "Toggle Flight");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");

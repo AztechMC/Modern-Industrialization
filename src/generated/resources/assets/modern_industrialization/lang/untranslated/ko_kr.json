@@ -518,7 +518,7 @@
   "cable_tier_short.modern_industrialization.superconductor": "[UNTRANSLATED] Superconductor",
   "ebf_tier.modern_industrialization.cupronickel_coil": "[UNTRANSLATED] Cupronickel",
   "ebf_tier.modern_industrialization.kanthal_coil": "[UNTRANSLATED] Kanthal",
-  "entity.minecraft.villager.industrialist": "[UNTRANSLATED] Industrialist",
+  "entity.minecraft.villager.modern_industrialization.industrialist": "[UNTRANSLATED] Industrialist",
   "item.modern_industrialization.MOX_crushed_dust": "[UNUSED, PLEASE REMOVE] 분쇄된 Mox 가루",
   "item.modern_industrialization.MOX_dust": "[UNUSED, PLEASE REMOVE] Mox 가루",
   "item.modern_industrialization.MOX_ingot": "[UNUSED, PLEASE REMOVE] Mox 주괴",

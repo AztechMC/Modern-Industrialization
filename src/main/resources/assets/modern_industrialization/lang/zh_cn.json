@@ -454,7 +454,7 @@
   "cable_tier_short.modern_industrialization.superconductor": "超导压",
   "ebf_tier.modern_industrialization.cupronickel_coil": "白铜级",
   "ebf_tier.modern_industrialization.kanthal_coil": "铁铬铝合金级",
-  "entity.minecraft.villager.industrialist": "工人",
+  "entity.minecraft.villager.modern_industrialization.industrialist": "工人",
   "item.modern_industrialization.acetylene_bucket": "乙炔桶",
   "item.modern_industrialization.acrylic_acid_bucket": "丙烯酸桶",
   "item.modern_industrialization.acrylic_glue_bucket": "丙烯酸胶桶",

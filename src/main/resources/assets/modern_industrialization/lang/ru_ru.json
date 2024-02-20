@@ -452,7 +452,7 @@
   "cable_tier_short.modern_industrialization.superconductor": "Сверхпроводник",
   "ebf_tier.modern_industrialization.cupronickel_coil": "Купроникель",
   "ebf_tier.modern_industrialization.kanthal_coil": "Фехраль",
-  "entity.minecraft.villager.industrialist": "Промышленник",
+  "entity.minecraft.villager.modern_industrialization.industrialist": "Промышленник",
   "item.modern_industrialization.acetylene_bucket": "Ведро ацетилена",
   "item.modern_industrialization.acrylic_acid_bucket": "Ведро акриловая кислоты",
   "item.modern_industrialization.acrylic_glue_bucket": "Ведро акрилового клея",

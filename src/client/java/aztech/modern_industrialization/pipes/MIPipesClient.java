@@ -25,6 +25,8 @@ package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
@@ -36,22 +38,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class MIPipesClient {
-    public static volatile boolean transparentCamouflage = false;
-
     public static void setupClient(IEventBus modBus) {
         modBus.addListener(RegisterColorHandlersEvent.Block.class, event -> {
             event.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE.get());
@@ -77,34 +80,18 @@ public class MIPipesClient {
             }
         });
 
-        // TODO NEO
-//        ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
-//            if (result instanceof BlockHitResult bhr) {
-//                if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
-//                    if (pipe.hasCamouflage()) {
-//                        return pipe.getCamouflageStack();
-//                    }
-//
-//                    var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
-//                    return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
-//                }
-//            }
-//
-//            return ItemStack.EMPTY;
-//        });
+        NeoForge.EVENT_BUS.addListener(InputEvent.MouseScrollingEvent.class, event -> {
+            var player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-//        InGameMouseScrollCallback.EVENT.register((player, direction) -> {
-//            if (player.isShiftKeyDown() && MIItem.CONFIG_CARD.is(player.getItemInHand(InteractionHand.MAIN_HAND))) {
-//                // noinspection NonAtomicOperationOnVolatileField
-//                transparentCamouflage = !transparentCamouflage;
-//                Minecraft.getInstance().levelRenderer.allChanged();
-//                var miText = transparentCamouflage ? MIText.TransparentCamouflageEnabled : MIText.TransparentCamouflageDisabled;
-//                player.displayClientMessage(miText.text(), true);
-//                return false;
-//            }
-//
-//            return true;
-//        });
+            if (player.isShiftKeyDown() && MIItem.CONFIG_CARD.is(player.getItemInHand(InteractionHand.MAIN_HAND))) {
+                // noinspection NonAtomicOperationOnVolatileField
+                MIPipes.transparentCamouflage = !MIPipes.transparentCamouflage;
+                Minecraft.getInstance().levelRenderer.allChanged();
+                var miText = MIPipes.transparentCamouflage ? MIText.TransparentCamouflageEnabled : MIText.TransparentCamouflageDisabled;
+                player.displayClientMessage(miText.text(), true);
+                event.setCanceled(true);
+            }
+        });
     }
 
     private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {

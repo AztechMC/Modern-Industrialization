@@ -67,6 +67,7 @@ public class MIPipes {
     public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.register("pipe",
             () -> new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f)));
     public static Supplier<BlockEntityType<PipeBlockEntity>> BLOCK_ENTITY_TYPE_PIPE;
+    public static volatile boolean transparentCamouflage = false;
     private final Map<PipeNetworkType, Supplier<PipeItem>> pipeItems = new HashMap<>();
 
     public static final Map<PipeNetworkType, CableTier> ELECTRICITY_PIPE_TIER = new HashMap<>();

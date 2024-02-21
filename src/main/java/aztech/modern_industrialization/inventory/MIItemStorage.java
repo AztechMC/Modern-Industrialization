@@ -79,6 +79,10 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
             }
 
             var stack = stacks.get(slot);
+            if (!stack.pipesInsert) {
+                return item;
+            }
+
             ItemVariant resource = ItemVariant.of(item);
 
             boolean isSlotEmpty = stack.getAmount() == 0 && stack.getLockedInstance() == null;

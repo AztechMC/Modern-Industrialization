@@ -1697,7 +1697,7 @@
   "text.modern_industrialization.BaseDurationSeconds": "[UNTRANSLATED] %s sec",
   "text.modern_industrialization.BaseEuRecipe": "[UNTRANSLATED] Recipe Base : %s",
   "text.modern_industrialization.BaseEuTotal": "[UNTRANSLATED] Total : %s",
-  "text.modern_industrialization.BaseEuTotalStored": "[UNTRANSLATED] Total Energy Stored : %s",
+  "text.modern_industrialization.BaseEuTotalStored": "[UNTRANSLATED] Total Energy Stored : %s EU",
   "text.modern_industrialization.BatteryInStorageUnit": "[UNTRANSLATED] Insert in a Portable Storage Unit to add %s of capacity",
   "text.modern_industrialization.Blacklist": "[UNTRANSLATED] Blacklist mode enabled",
   "text.modern_industrialization.BookSubtitle": "[UNTRANSLATED] Technology For Newbies",

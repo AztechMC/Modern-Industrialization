@@ -47,7 +47,7 @@ public class MIConfig implements ConfigData {
     @EnglishTranslation(value = "Disable display of Fuel EU in tooltips")
     public boolean disableFuelTooltips = false;
     @EnglishTranslation(value = "Disable display of Item Tag in tooltips")
-    public boolean disableItemTagTooltips = false;
+    public boolean disableItemTagTooltips = FMLEnvironment.production;
     @EnglishTranslation(value = "Display when a new version is available")
     public boolean newVersionMessage = true;
     @EnglishTranslation(value = "Show valid positions in multiblocks when holding a hatch")

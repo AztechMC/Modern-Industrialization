@@ -50,7 +50,7 @@ public enum MIText {
     BaseDurationSeconds("%s sec"),
     BaseEuRecipe("Recipe Base : %s"),
     BaseEuTotal("Total : %s"),
-    BaseEuTotalStored("Total Energy Stored : %s"),
+    BaseEuTotalStored("Total Energy Stored : %s EU"),
     BatteryInStorageUnit("Insert in a Portable Storage Unit to add %s of capacity"),
     Blacklist("Blacklist mode enabled"),
     BookSubtitle("Technology For Newbies"),

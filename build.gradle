@@ -51,6 +51,7 @@ repositories {
         url "https://modmaven.dev"
         content {
             includeGroup "appeng"
+            includeGroup "dev.technici4n"
             includeGroup "mezz.jei"
         }
     }
@@ -193,6 +194,10 @@ sourceSets {
 dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
 
+    implementation jarJar("dev.technici4n:GrandPower:${project.grandpower_version}") {
+        jarJar.ranged(it, "[$project.grandpower_version,)")
+    }
+
     if (project.runtime_itemlist_mod == "jei") {
         implementation "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     } else {
@@ -303,6 +308,7 @@ processResources {
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
+            grandpower_version_range: grandpower_version_range,
     ]
     inputs.properties replaceProperties
 
@@ -464,6 +470,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
+                embeddedLibrary "grandpower"
                 embeddedLibrary "patchouli"
             }
             mainArtifact(tasks.named("jarJar").flatMap { it.archiveFile }) {

@@ -25,6 +25,9 @@ package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
+import dev.technici4n.grandpower.api.DelegatingEnergyStorage;
+import dev.technici4n.grandpower.api.ILongEnergyStorage;
+import dev.technici4n.grandpower.api.LimitingEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;

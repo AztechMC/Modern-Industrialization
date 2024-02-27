@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface MIEnergyStorage extends ILongEnergyStorage {

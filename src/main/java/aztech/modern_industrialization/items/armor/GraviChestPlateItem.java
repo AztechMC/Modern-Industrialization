@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.api.energy.SimpleEnergyItem;
+import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -36,7 +36,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
-public class GraviChestPlateItem extends ArmorItem implements ActivatableChestItem, SimpleEnergyItem {
+public class GraviChestPlateItem extends ArmorItem implements ActivatableChestItem, ISimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
         super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.EPIC));
     }

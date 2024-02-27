@@ -26,7 +26,6 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.SimpleEnergyItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
@@ -38,6 +37,7 @@ import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
@@ -164,7 +164,7 @@ public final class MIItem {
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> SimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
@@ -181,7 +181,7 @@ public final class MIItem {
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    SimpleEnergyItem.registerStorage(event, item);
+                    ISimpleEnergyItem.registerStorage(event, item);
                 });
             });
 

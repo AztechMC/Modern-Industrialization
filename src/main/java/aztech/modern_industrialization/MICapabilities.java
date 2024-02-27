@@ -24,7 +24,6 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.ILongEnergyStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
 import java.util.ArrayList;
@@ -60,7 +59,6 @@ public class MICapabilities {
                 .toArray(Block[]::new);
         var allItems = StreamSupport.stream(BuiltInRegistries.ITEM.spliterator(), false)
                 .toArray(Item[]::new);
-        ILongEnergyStorage.init(event, allBlocks, allItems);
         EnergyApi.init(event, allBlocks, allItems);
     }
 

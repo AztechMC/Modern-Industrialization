@@ -94,7 +94,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
-        this.orientation = new OrientationComponent(orientationParams);
+        this.orientation = new OrientationComponent(orientationParams, this);
         this.placedBy = new PlacedByComponent();
 
         registerComponents(orientation, placedBy);

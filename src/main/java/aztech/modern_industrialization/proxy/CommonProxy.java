@@ -64,15 +64,11 @@ public class CommonProxy {
         }
     }
 
-    private static MinecraftServer currentServer = null;
+    private static MinecraftServer currentServer = null; // note: will be null in multiplayer client
 
     public static void initEvents() {
         NeoForge.EVENT_BUS.addListener(ServerAboutToStartEvent.class, e -> currentServer = e.getServer());
         NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, e -> currentServer = null);
-    }
-
-    public static MinecraftServer getCurrentServer() {
-        return currentServer;
     }
 
     public Player getClientPlayer() {

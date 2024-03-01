@@ -25,7 +25,6 @@ package aztech.modern_industrialization.stats;
 
 import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.ftbteams.FTBTeamsFacade;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
@@ -42,6 +41,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
@@ -86,17 +86,17 @@ public class PlayerStatistics {
         usedItems.computeIfAbsent(what.asItem(), i -> new StatisticValue()).add(amount);
     }
 
-    public void addProducedItems(ItemLike what, long amount) {
+    public void addProducedItems(Level level, ItemLike what, long amount) {
         var item = what.asItem();
         producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
 
         if (uuid != null) {
             FTBQuestsFacade.INSTANCE.addCompleted(uuid, item, amount);
 
-            awardStat(what, amount);
+            awardStat(level, what, amount);
 
             for (var otherTeamMember : FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid)) {
-                data.get(otherTeamMember).awardStat(what, amount);
+                data.get(otherTeamMember).awardStat(level, what, amount);
             }
         }
     }
@@ -109,10 +109,10 @@ public class PlayerStatistics {
         producedFluids.computeIfAbsent(what, i -> new StatisticValue()).add(amount);
     }
 
-    private void awardStat(ItemLike what, long amount) {
+    private void awardStat(Level level, ItemLike what, long amount) {
         Objects.requireNonNull(uuid);
 
-        var player = CommonProxy.getCurrentServer().getPlayerList().getPlayer(uuid);
+        var player = level.getPlayerByUUID(uuid);
 
         if (player != null) {
             player.awardStat(Stats.ITEM_CRAFTED.get(what.asItem()), Ints.saturatedCast(amount));

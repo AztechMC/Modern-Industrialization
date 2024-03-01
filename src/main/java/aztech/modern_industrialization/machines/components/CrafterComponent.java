@@ -523,7 +523,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                             locksToToggle.add(stackId - 1);
                             lockItems.add(output.item);
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedItems(output.item, ins);
+                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.item, ins);
                             }
                         }
                         if (remainingAmount == 0)

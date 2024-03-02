@@ -55,8 +55,11 @@ public class MachineMenuServer extends MachineMenuCommon {
             if (component.needsSync(trackedData.get(i))) {
                 FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 component.writeCurrentData(buf);
-                new MachineComponentSyncPacket(containerId, i, buf).sendToClient((ServerPlayer) playerInventory.player);
+                byte[] bytes = new byte[buf.writerIndex()];
+                buf.readBytes(bytes);
+                new MachineComponentSyncPacket(containerId, i, bytes).sendToClient((ServerPlayer) playerInventory.player);
                 trackedData.set(i, component.copyData());
+                buf.release();
             }
         }
     }

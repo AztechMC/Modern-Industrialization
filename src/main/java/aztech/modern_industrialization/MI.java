@@ -48,7 +48,10 @@ import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
@@ -101,6 +104,11 @@ public class MI {
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
+            var player = (ServerPlayer) event.getEntity();
+            var server = Objects.requireNonNull(player.getServer());
+            PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
+        });
         NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
 
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {

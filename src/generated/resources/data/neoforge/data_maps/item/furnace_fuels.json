@@ -24,6 +24,9 @@
     "modern_industrialization:coke_dust": {
       "burn_time": 6400
     },
+    "modern_industrialization:guidebook": {
+      "burn_time": 300
+    },
     "modern_industrialization:lignite_coal": {
       "burn_time": 1600
     },

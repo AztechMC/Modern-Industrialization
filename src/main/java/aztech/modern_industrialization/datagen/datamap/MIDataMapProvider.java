@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen.datamap;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIItem;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -58,5 +59,6 @@ public class MIDataMapProvider extends DataMapProvider {
         addFuel("lignite_coal_tiny_dust", 160);
         addFuel("carbon_dust", 6400);
         addFuel("carbon_tiny_dust", 640);
+        addFuel(MIItem.GUIDE_BOOK.path(), 300);
     }
 }

@@ -45,6 +45,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -276,7 +277,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         long getMoves() {
-            return 16 + (SpeedUpgrade.UPGRADES.getOrDefault(upgradeStack.getItem(), 0L) * upgradeStack.getCount());
+            return 16 + (SpeedUpgrade.UPGRADES.getOrDefault(BuiltInRegistries.ITEM.getKey(upgradeStack.getItem()), 0L) * upgradeStack.getCount());
         }
 
         private void dropUpgrades(Level world, BlockPos pos) {

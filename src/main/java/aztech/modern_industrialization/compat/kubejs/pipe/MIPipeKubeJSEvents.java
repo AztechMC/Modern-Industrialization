@@ -21,31 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.pipe.item;
+package aztech.modern_industrialization.compat.kubejs.pipe;
 
-import aztech.modern_industrialization.MIItem;
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
 
-/**
- * A speed upgrade for an item pipe
- */
-public class SpeedUpgrade {
+public interface MIPipeKubeJSEvents {
+    EventGroup EVENT_GROUP = EventGroup.of("MIPipeEvents");
 
-    public static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
-
-    static void registerUpgrade(Item item, long speed) {
-        UPGRADES.put(BuiltInRegistries.ITEM.getKey(item), speed);
-    }
-
-    static {
-        registerUpgrade(MIItem.MOTOR.asItem(), 2L);
-        registerUpgrade(MIItem.LARGE_MOTOR.asItem(), 8L);
-        registerUpgrade(MIItem.ADVANCED_MOTOR.asItem(), 32L);
-        registerUpgrade(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
-    }
-
+    EventHandler MODIFY_MOTORS = EVENT_GROUP.startup("modifyMotors", () -> ModifyMotorsEventJS.class);
 }

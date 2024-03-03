@@ -35,6 +35,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -230,7 +231,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0L) != 0L;
+            return SpeedUpgrade.UPGRADES.getOrDefault(BuiltInRegistries.ITEM.getKey(stack.getItem()), 0L) != 0L;
         }
 
         @Override

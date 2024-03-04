@@ -13,7 +13,7 @@ MIRegistrationEvents.registerMotors(event => {
 Example script that makes Large Motor add +32 Items per 3 seconds:
 ```js
 MIRegistrationEvents.registerMotors(event => {
-    event.register("modern_industrialization:large_motor", 32)
+    event.modify("modern_industrialization:large_motor", 32)
 })
 ```
 ## Removing a motor

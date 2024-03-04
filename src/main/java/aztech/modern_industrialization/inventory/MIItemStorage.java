@@ -85,7 +85,6 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
 
             ItemVariant resource = ItemVariant.of(item);
 
-            boolean isSlotEmpty = stack.getAmount() == 0 && stack.getLockedInstance() == null;
             boolean canInsert;
 
             if (stack.getAmount() == 0) {
@@ -107,7 +106,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
                 return inserted == item.getCount() ? ItemStack.EMPTY : resource.toStack((int) (item.getCount() - inserted));
             }
 
-            return ItemStack.EMPTY;
+            return item;
         }
 
         @Override

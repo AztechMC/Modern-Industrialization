@@ -209,6 +209,7 @@ dependencies {
     } else {
         compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     }
+    compileOnly "me.shedaniel:REIPluginCompatibilities-forge-annotations:${project.rei_annotations_version}"
 
     if (project.runtime_itemlist_mod == "emi") {
         implementation "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"

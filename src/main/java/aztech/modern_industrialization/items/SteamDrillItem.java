@@ -33,13 +33,13 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -71,6 +71,7 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -138,7 +139,7 @@ public class SteamDrillItem
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return !newStack.is(this) || !canUse(newStack);
+        return !newStack.is(this) || !canUse(newStack) || CommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
     }
 
     @Override
@@ -177,18 +178,58 @@ public class SteamDrillItem
         return ImmutableMultimap.of();
     }
 
-    public static Pair<BlockPos, BlockPos> getArea(BlockPos pos, Direction hitFace) {
+    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {
+    }
+
+    @Nullable
+    public static Area getArea(BlockGetter level, Player player) {
+        if (player.isShiftKeyDown()) {
+            return null; // No area mining on sneak.
+        }
+
+        HitResult rayTraceResult = rayTraceSimple(level, player, 0);
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
+            Direction facing = blockResult.getDirection();
+            return getArea(blockResult.getBlockPos(), facing);
+        }
+        return null;
+    }
+
+    private static Area getArea(BlockPos pos, Direction hitFace) {
         int face = hitFace.get3DDataValue();
         var right = GeometryHelper.FACE_RIGHT[face];
         int rx = (int) right.x(), ry = (int) right.y(), rz = (int) right.z();
         var up = GeometryHelper.FACE_UP[face];
         int ux = (int) up.x(), uy = (int) up.y(), uz = (int) up.z();
-        return Pair.of(
+        return new Area(
+                pos,
                 pos.offset(rx + ux, ry + uy, rz + uz),
                 pos.offset(-rx - ux, -ry - uy, -rz - uz));
     }
 
-    private static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {
+    public static void forEachMineableBlock(BlockGetter world, Area area, LivingEntity miner, BiConsumer<BlockPos, BlockState> callback) {
+        BlockPos.betweenClosed(area.corner1(), area.corner2()).forEach(blockPos -> {
+            if (world.getBlockEntity(blockPos) != null && !area.center().equals(blockPos)) {
+                return; // No block entities unless it's the center block.
+            }
+            if (!(miner instanceof Player)) {
+                return;
+            }
+
+            BlockState tempState = world.getBlockState(blockPos);
+            if (tempState.isAir())
+                return;
+            if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
+                return;
+            if (tempState.getDestroySpeed(world, blockPos) < 0)
+                return;
+            callback.accept(blockPos, tempState);
+        });
+    }
+
+    private static HitResult rayTraceSimple(BlockGetter world, Player living, float partialTicks) {
+        double blockReachDistance = living.getBlockReach();
         Vec3 vec3d = living.getEyePosition(partialTicks);
         Vec3 vec3d1 = living.getViewVector(partialTicks);
         Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
@@ -199,54 +240,45 @@ public class SteamDrillItem
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
 
-        // Thanks to Buuz for this code, from ItemInfinityDrill
-        // TODO NEO reimplement drill outline
-        if (miner instanceof Player p && !p.isShiftKeyDown()) {
-            HitResult rayTraceResult = rayTraceSimple(world, miner, 16, 0);
-            if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
-                BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
-                Direction facing = blockResult.getDirection();
-                Pair<BlockPos, BlockPos> area = getArea(pos, facing);
-                List<ItemStack> totalDrops = new ArrayList<>();
-                BlockPos.betweenClosed(area.getFirst(), area.getSecond()).forEach(blockPos -> {
-                    if (world.getBlockEntity(blockPos) == null && world instanceof ServerLevel && miner instanceof ServerPlayer
-                            && !world.isEmptyBlock(blockPos)) {
-                        BlockState tempState = world.getBlockState(blockPos);
-                        Block block = tempState.getBlock();
-                        if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
-                            return;
-                        if (tempState.getDestroySpeed(world, blockPos) < 0)
-                            return;
-                        int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
-                                blockPos);
-                        if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
-                            block.destroy(world, blockPos, tempState);
-                            Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
-                                boolean combined = false;
-                                for (ItemStack drop : totalDrops) {
-                                    if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {
-                                        drop.setCount(drop.getCount() + itemStack.getCount());
-                                        combined = true;
-                                        break;
-                                    }
-                                }
-                                if (!combined) {
-                                    totalDrops.add(itemStack);
-                                }
-                            });
-                            block.popExperience((ServerLevel) world, blockPos, xp);
+        if (!(miner instanceof Player p)) {
+            return false;
+        }
+
+        var area = getArea(world, p);
+        if (area == null) {
+            return false;
+        }
+
+        List<ItemStack> totalDrops = new ArrayList<>();
+        forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
+            Block block = tempState.getBlock();
+            int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+                    blockPos);
+            if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
+                block.destroy(world, blockPos, tempState);
+                Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
+                    boolean combined = false;
+                    for (ItemStack drop : totalDrops) {
+                        if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {
+                            drop.setCount(drop.getCount() + itemStack.getCount());
+                            combined = true;
+                            break;
                         }
                     }
+                    if (!combined) {
+                        totalDrops.add(itemStack);
+                    }
                 });
-                totalDrops.forEach(itemStack -> {
-                    Block.popResource(world, miner.blockPosition(), itemStack);
-                });
-                world.getEntitiesOfClass(ExperienceOrb.class,
-                        new AABB(Vec3.atLowerCornerOf(area.getFirst()), Vec3.atLowerCornerOf(area.getSecond())).inflate(1))
-                        .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
-                                miner.blockPosition().getZ()));
+                block.popExperience((ServerLevel) world, blockPos, xp);
             }
-        }
+        });
+        totalDrops.forEach(itemStack -> {
+            Block.popResource(world, miner.blockPosition(), itemStack);
+        });
+        world.getEntitiesOfClass(ExperienceOrb.class,
+                new AABB(Vec3.atLowerCornerOf(area.corner1()), Vec3.atLowerCornerOf(area.corner2())).inflate(1))
+                .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
+                        miner.blockPosition().getZ()));
 
         return true;
     }

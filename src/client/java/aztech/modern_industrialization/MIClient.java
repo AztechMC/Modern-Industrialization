@@ -32,6 +32,7 @@ import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
+import aztech.modern_industrialization.items.SteamDrillHighlight;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
@@ -103,6 +104,7 @@ public class MIClient {
         var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
         Objects.requireNonNull(modBus);
 
+        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);

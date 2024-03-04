@@ -33,6 +33,7 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -136,6 +137,8 @@ public class MI {
         });
         // Setup after, so wrench has priority
         BarrelBlock.setupBarrelEvents();
+
+        SteamDrillHooks.init();
 
         modBus.addListener(FMLCommonSetupEvent.class, event -> {
             MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);

@@ -404,6 +404,11 @@ public class SteamDrillItem
         return map;
     }
 
+    @Override
+    public boolean isFoil(ItemStack pStack) {
+        return !getAllEnchantments(pStack).isEmpty();
+    }
+
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         if (tag != null) {
@@ -471,7 +476,9 @@ public class SteamDrillItem
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
 
-        // TODO NEO add active mode (silk touch vs fortune)
+        if (!isNotSilkTouch(stack)) {
+            tooltip.add(Enchantments.SILK_TOUCH.getFullname(1));
+        }
     }
 
     @Override

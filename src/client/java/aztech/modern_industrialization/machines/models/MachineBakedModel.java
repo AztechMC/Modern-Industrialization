@@ -81,18 +81,18 @@ public class MachineBakedModel implements IDynamicBakedModel {
                 // Machine overlays
                 TextureAtlasSprite sprite = getSprite(sprites, d, clientData.frontDirection, false);
                 if (sprite != null) {
-                    ModelHelper.emitSprite(vc, d, sprite, -1e-6f);
+                    ModelHelper.emitSprite(vc, d, sprite, 0);
                 }
             }
 
             // Output overlays
             if (clientData.outputDirection != null && d == clientData.outputDirection) {
-                ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[24], -3e-4f);
+                ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[24], 0);
                 if (clientData.itemAutoExtract) {
-                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[25], -3e-4f);
+                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[25], 0);
                 }
                 if (clientData.fluidAutoExtract) {
-                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[26], -3e-4f);
+                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[26], 0);
                 }
             }
 

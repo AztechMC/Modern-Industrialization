@@ -174,7 +174,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean ignoreFilter, boolean ignoreLock) {
             if (stack.isEmpty() || slot != 0) {
-                return ItemStack.EMPTY;
+                return stack;
             }
 
             if (containerItem.getBehaviour().isCreative()) {
@@ -194,12 +194,12 @@ public interface ContainerItem<T extends TransferVariant<?>> {
                     return stack.copyWithCount(stack.getCount() - inserted);
                 }
             }
-            return ItemStack.EMPTY;
+            return stack;
         }
 
         @Override
         public ItemStack extractItem(int slot, int maxAmount, boolean simulate) {
-            if (slot == 0 || maxAmount <= 0 || isResourceBlank()) {
+            if (slot != 0 || maxAmount <= 0 || isResourceBlank()) {
                 return ItemStack.EMPTY;
             }
 

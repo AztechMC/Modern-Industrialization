@@ -90,6 +90,10 @@ public class CommonProxy {
         return null;
     }
 
+    public boolean shouldSteamDrillForceBreakReset() {
+        return false;
+    }
+
     public boolean hasShiftDown() {
         return false;
     }

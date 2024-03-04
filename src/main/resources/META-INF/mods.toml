@@ -12,6 +12,9 @@ logoFile="assets/modern_industrialization/milogo.png"
 authors="Azerococo,Technici4n"
 description='''A modern industrial mod for Minecraft.'''
 
+[[mixins]]
+config="modern_industrialization.mixins.json"
+
 [[dependencies.modern_industrialization]]
 modId="neoforge"
 type="required"

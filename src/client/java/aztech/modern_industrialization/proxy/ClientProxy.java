@@ -28,6 +28,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.textures.TextureHelper;
@@ -43,6 +44,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,6 +65,16 @@ public class ClientProxy extends CommonProxy {
             return null;
         }
         return super.findUser(mainHand);
+    }
+
+    @Override
+    public boolean shouldSteamDrillForceBreakReset() {
+        if (Minecraft.getInstance().isSameThread()) {
+            if (Minecraft.getInstance().hitResult instanceof BlockHitResult bhr) {
+                return bhr.getDirection() != SteamDrillHooks.breakingSide;
+            }
+        }
+        return false;
     }
 
     @Override

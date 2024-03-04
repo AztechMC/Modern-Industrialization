@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.pipe;
+package aztech.modern_industrialization.compat.kubejs.motor;
 
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
-import dev.latvian.mods.kubejs.event.EventJS;
-import net.minecraft.resources.ResourceLocation;
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
 
-public class ModifyMotorsEventJS extends EventJS {
-    public void addMotor(ResourceLocation id, long upgrade) {
-        SpeedUpgrade.UPGRADES.put(id, upgrade);
-    }
+public interface MIPipeKubeJSEvents {
+    EventGroup EVENT_GROUP = EventGroup.of("MIPipeEvents");
 
-    public void removeMotor(ResourceLocation id) {
-        SpeedUpgrade.UPGRADES.remove(id);
-    }
+    EventHandler REGISTER = EVENT_GROUP.startup("registerMotors", () -> RegisterMotorsEventJS.class);
+    EventHandler MODIFY_MOTORS = EVENT_GROUP.startup("modifyMotors", () -> ModifyMotorsEventJS.class);
+
 }

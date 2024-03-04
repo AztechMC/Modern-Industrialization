@@ -21,34 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.pipe.item;
+package aztech.modern_industrialization.compat.kubejs.motor;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.core.registries.BuiltInRegistries;
+import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
-/**
- * A speed upgrade for an item pipe
- */
-public class SpeedUpgrade {
-
-    public static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
-
-    static void registerUpgrade(Item item, long speed) {
-        UPGRADES.put(BuiltInRegistries.ITEM.getKey(item), speed);
+public class RegisterMotorsEventJS extends EventJS {
+    public void register(ResourceLocation id, long upgrade) {
+        if (SpeedUpgrade.UPGRADES.containsKey(id)) {
+            throw new IllegalArgumentException("Duplicate registration of motor " + id);
+        }
+        SpeedUpgrade.UPGRADES.put(id, upgrade);
     }
-
-    static {
-        registerUpgrade(MIItem.MOTOR.asItem(), 2L);
-        registerUpgrade(MIItem.LARGE_MOTOR.asItem(), 8L);
-        registerUpgrade(MIItem.ADVANCED_MOTOR.asItem(), 32L);
-        registerUpgrade(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
-
-        KubeJSProxy.instance.fireRegisterAndModifyMotorsEvents();
-    }
-
 }

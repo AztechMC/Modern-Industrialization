@@ -26,7 +26,7 @@ package aztech.modern_industrialization.compat.kubejs;
 import aztech.modern_industrialization.MIStartup;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.pipe.MIPipeKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.motor.MIPipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeSchema;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;

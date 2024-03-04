@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.motor;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
 import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.resources.ResourceLocation;
 
-public class ModifyMotorsEventJS extends EventJS {
-    public void modifyMotor(ResourceLocation id, long upgrade) {
-        if (!SpeedUpgrade.UPGRADES.containsKey(id)) {
-            throw new IllegalArgumentException("No such motor: " + id);
+public class RegisterMotorsEventJS extends EventJS {
+    public void register(ResourceLocation id, long upgrade) {
+        if (SpeedUpgrade.UPGRADES.containsKey(id)) {
+            throw new IllegalArgumentException("Duplicate registration of motor " + id);
+        }
+        if (upgrade <= 0) {
+            throw new IllegalArgumentException("Motor " + id + " must have positive speed, given: " + upgrade);
         }
         SpeedUpgrade.UPGRADES.put(id, upgrade);
     }
 
-    public void removeMotor(ResourceLocation id) {
+    public void modify(ResourceLocation id, long upgrade) {
+        if (!SpeedUpgrade.UPGRADES.containsKey(id)) {
+            throw new IllegalArgumentException("No such motor: " + id);
+        }
+        if (upgrade <= 0) {
+            throw new IllegalArgumentException("Motor " + id + " must have positive speed, given: " + upgrade);
+        }
+        SpeedUpgrade.UPGRADES.put(id, upgrade);
+    }
+
+    public void remove(ResourceLocation id) {
         if (!SpeedUpgrade.UPGRADES.containsKey(id)) {
             throw new IllegalArgumentException("No such motor: " + id);
         }

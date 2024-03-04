@@ -36,7 +36,7 @@ import net.minecraft.world.item.Item;
  */
 public class SpeedUpgrade {
 
-    public static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
+    public final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
 
     static void registerUpgrade(Item item, long speed) {
         UPGRADES.put(BuiltInRegistries.ITEM.getKey(item), speed);
@@ -48,7 +48,7 @@ public class SpeedUpgrade {
         registerUpgrade(MIItem.ADVANCED_MOTOR.asItem(), 32L);
         registerUpgrade(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
 
-        KubeJSProxy.instance.fireRegisterAndModifyMotorsEvents();
+        KubeJSProxy.instance.fireRegisterMotorsEvents();
     }
 
 }

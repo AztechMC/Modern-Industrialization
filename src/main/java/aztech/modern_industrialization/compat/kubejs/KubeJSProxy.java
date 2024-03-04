@@ -55,7 +55,7 @@ public class KubeJSProxy {
     public void fireRegisterUpgradesEvent() {
     }
 
-    public void fireRegisterAndModifyMotorsEvents() {
+    public void fireRegisterMotorsEvents() {
     }
 
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,

@@ -132,8 +132,11 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        // TODO NEO should add a tooltip for the enchantment
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
+
+        for (var entry : getAllEnchantments(stack).entrySet()) {
+            tooltip.add(entry.getKey().getFullname(entry.getValue()));
+        }
     }
 
     @Override
@@ -262,6 +265,11 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
             }
         }
         return map;
+    }
+
+    @Override
+    public boolean isFoil(ItemStack pStack) {
+        return !getAllEnchantments(pStack).isEmpty();
     }
 
     private static class StrippingAccess extends AxeItem {

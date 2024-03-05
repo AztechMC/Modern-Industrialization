@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MITags;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -46,5 +47,7 @@ public class MIFluidTagProvider extends FluidTagsProvider {
                 tag(Tags.Fluids.GASEOUS).add(def.asFluid());
             }
         }
+
+        tag(MITags.CREOSOTE).add(MIFluids.CREOSOTE.asFluid());
     }
 }

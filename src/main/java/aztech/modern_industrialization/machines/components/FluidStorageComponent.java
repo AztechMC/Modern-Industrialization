@@ -85,7 +85,7 @@ public class FluidStorageComponent implements IComponent, FluidAccess {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"));
         singleStorageVariant.amount = tag.getLong("amount");
         capacity = tag.getLong("capacity");

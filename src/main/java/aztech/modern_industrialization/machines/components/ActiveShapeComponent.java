@@ -64,7 +64,7 @@ public class ActiveShapeComponent implements IComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         activeShape = tag.getInt("activeShape");
     }
 }

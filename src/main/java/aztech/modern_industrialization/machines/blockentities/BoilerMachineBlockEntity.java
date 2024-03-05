@@ -57,7 +57,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     public static final int OUTPUT_SLOT_Y = 32;
 
     private final MIInventory inventory;
-    private final boolean bronze;
+    public final boolean bronze;
 
     private final SteamHeaterComponent steamHeater;
     private final FuelBurningComponent fuelBurning;

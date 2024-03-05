@@ -18,6 +18,7 @@
     "description": {
       "translate": "advancements.modern_industrialization.steam_quarry.description"
     },
+    "frame": "goal",
     "icon": {
       "item": "modern_industrialization:steam_quarry"
     },

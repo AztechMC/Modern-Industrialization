@@ -253,9 +253,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final void load(CompoundTag tag) {
+        load(tag, false);
+    }
+
+    public final void load(CompoundTag tag, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
             for (IComponent component : icomponents) {
-                component.readNbt(tag);
+                component.readNbt(tag, isUpgradingMachine);
             }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");

@@ -88,7 +88,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
 
             @Override
-            public void readNbt(CompoundTag tag) {
+            public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
                 progressTick = tag.getInt("progressTick");
             }
         });

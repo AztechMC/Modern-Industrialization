@@ -49,7 +49,7 @@ public class OrientationComponent implements IComponent {
         this.machine = machine;
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
         if (params.hasOutput) {
             outputDirection = Direction.from3DDataValue(tag.getInt("outputDirection"));

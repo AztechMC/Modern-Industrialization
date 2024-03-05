@@ -63,7 +63,7 @@ public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         for (K key : keys) {
             String keyString = key.toString();
             if (tag.contains(keyString)) {

@@ -161,8 +161,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
-        super.readNbt(tag);
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+        super.readNbt(tag, isUpgradingMachine);
 
         var steamBuffer = tag.getCompound("steamBuffer");
         for (var key : steamBuffer.getAllKeys()) {

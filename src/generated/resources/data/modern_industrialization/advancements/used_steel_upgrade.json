@@ -1,0 +1,25 @@
+{
+  "parent": "modern_industrialization:steel_machine_casing",
+  "criteria": {
+    "used_steel_upgrade": {
+      "trigger": "modern_industrialization:used_steel_upgrade"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.used_steel_upgrade.description"
+    },
+    "icon": {
+      "item": "modern_industrialization:steel_upgrade"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.used_steel_upgrade"
+    }
+  },
+  "requirements": [
+    [
+      "used_steel_upgrade"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

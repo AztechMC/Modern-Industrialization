@@ -58,7 +58,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
             }
 
             @Override
-            public void readNbt(CompoundTag tag) {
+            public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
                 pumpingTicks = tag.getInt("pumpingTicks");
             }
         });

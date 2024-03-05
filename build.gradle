@@ -213,6 +213,8 @@ dependencies {
 
     if (project.runtime_itemlist_mod == "emi") {
         implementation "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+        // Add JEI so that we can use EMI's builtin compat layer
+        runtimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     } else {
         compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
     }

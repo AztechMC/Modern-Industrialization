@@ -35,6 +35,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.util.ExtraCodecs;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 public class MIExtraCodecs {
     public static final Codec<Float> FLOAT_01 = Codec.floatRange(0, 1);
@@ -55,10 +57,11 @@ public class MIExtraCodecs {
     }
 
     /**
-     * A codec that can accept a single element, or a list of elements.
+     * A codec that can accept a single element, or a list of potentially conditional elements.
      */
     public static <T> MapCodec<List<T>> maybeList(Codec<T> elementCodec, String field) {
-        var maybeListCodec = ExtraCodecs.either(elementCodec, elementCodec.listOf())
+        var listCodec = NeoForgeExtraCodecs.listWithOptionalElements(ConditionalOps.createConditionalCodec(elementCodec));
+        var maybeListCodec = ExtraCodecs.either(elementCodec, listCodec)
                 .xmap(either -> either.map(List::of, Function.identity()), Either::right);
         return ExtraCodecs.strictOptionalField(maybeListCodec, field, List.of());
     }

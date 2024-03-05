@@ -28,7 +28,6 @@ import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapDecoder;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -47,17 +46,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
-
-    /**
-     * Creates a codec from a decoder.
-     * The returned codec can only decode, and will throw on any attempt to encode.
-     */
-    private static <A> MapCodec<A> decodeOnly(MapDecoder<A> decoder) {
-        return MapCodec.of(MapCodec.unit(() -> {
-            throw new UnsupportedOperationException("Cannot encode with decode-only codec! Decoder:" + decoder);
-        }), decoder, () -> "DecodeOnly[" + decoder + "]");
-    }
-
     private final Codec<MachineRecipe> codec;
 
     public MachineRecipeType(ResourceLocation id) {

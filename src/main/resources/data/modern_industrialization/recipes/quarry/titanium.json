@@ -17,6 +17,14 @@
       "item": "modern_industrialization:iridium_ore",
       "amount": 1,
       "probability": 0.05
+    },
+    {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "mekanism" }
+      ],
+      "item": "mekanism:fluorite_ore",
+      "amount": 1,
+      "probability": 0.3
     }
   ]
 }

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.stats;
 
+import aztech.modern_industrialization.compat.argonauts.ArgonautsFacade;
 import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.ftbteams.FTBTeamsFacade;
 import com.google.common.primitives.Ints;
@@ -87,6 +88,7 @@ public class PlayerStatistics {
     }
 
     public void addProducedItems(Level level, ItemLike what, long amount) {
+        var server = Objects.requireNonNull(level.getServer());
         var item = what.asItem();
         producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
 
@@ -97,6 +99,10 @@ public class PlayerStatistics {
 
             for (var otherTeamMember : FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid)) {
                 data.get(otherTeamMember).awardStat(level, what, amount);
+            }
+
+            for (var otherGuildMember : ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(server, uuid)) {
+                data.get(otherGuildMember).awardStat(level, what, amount);
             }
         }
     }

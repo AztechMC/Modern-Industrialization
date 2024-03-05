@@ -42,6 +42,14 @@
       "item": "minecraft:redstone_ore",
       "amount": 1,
       "probability": 0.2
+    },
+    {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "mekanism" }
+      ],
+      "item": "mekanism:osmium_ore",
+      "amount": 1,
+      "probability": 0.12
     }
   ]
 }

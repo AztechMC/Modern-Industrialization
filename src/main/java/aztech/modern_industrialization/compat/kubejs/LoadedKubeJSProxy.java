@@ -34,6 +34,7 @@ import aztech.modern_industrialization.compat.kubejs.registration.RegisterCableT
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidFuelsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidNeutronInteractionsEventJS;
 import aztech.modern_industrialization.compat.kubejs.registration.RegisterFluidsEventJS;
+import aztech.modern_industrialization.compat.kubejs.registration.RegisterMotorsEventJS;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -78,6 +79,11 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     @Override
     public void fireRegisterUpgradesEvent() {
         MIMachineKubeJSEvents.REGISTER_UPGRADES.post(new RegisterUpgradesEventJS());
+    }
+
+    @Override
+    public void fireRegisterMotorsEvents() {
+        MIRegistrationKubeJSEvents.REGISTER_MOTORS.post(new RegisterMotorsEventJS());
     }
 
     @Override

@@ -342,8 +342,9 @@ public class MITooltips {
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (SpeedUpgrade.UPGRADES.containsKey(item)) {
-                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(item)).build());
+                if (SpeedUpgrade.UPGRADES.containsKey(BuiltInRegistries.ITEM.getKey(item))) {
+                    return Optional
+                            .of(new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(BuiltInRegistries.ITEM.getKey(item))).build());
                 } else {
                     return Optional.empty();
                 }

@@ -24,8 +24,11 @@
 package aztech.modern_industrialization.api.pipe.item;
 
 import aztech.modern_industrialization.MIItem;
-import java.util.IdentityHashMap;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 /**
@@ -33,13 +36,19 @@ import net.minecraft.world.item.Item;
  */
 public class SpeedUpgrade {
 
-    public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
+    public final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
+
+    static void registerUpgrade(Item item, long speed) {
+        UPGRADES.put(BuiltInRegistries.ITEM.getKey(item), speed);
+    }
 
     static {
-        UPGRADES.put(MIItem.MOTOR.asItem(), 2L);
-        UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8L);
-        UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32L);
-        UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
+        registerUpgrade(MIItem.MOTOR.asItem(), 2L);
+        registerUpgrade(MIItem.LARGE_MOTOR.asItem(), 8L);
+        registerUpgrade(MIItem.ADVANCED_MOTOR.asItem(), 32L);
+        registerUpgrade(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
+
+        KubeJSProxy.instance.fireRegisterMotorsEvents();
     }
 
 }

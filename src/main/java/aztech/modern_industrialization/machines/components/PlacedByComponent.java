@@ -42,7 +42,7 @@ public class PlacedByComponent implements IComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         try {
             placerId = UUID.fromString(tag.getString("placer"));
         } catch (IllegalArgumentException iae) {

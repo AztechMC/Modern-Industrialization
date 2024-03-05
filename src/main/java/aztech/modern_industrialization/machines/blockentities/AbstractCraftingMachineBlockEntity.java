@@ -62,7 +62,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     protected final CrafterComponent crafter;
 
     private final MachineRecipeType type;
-    protected final MachineTier tier;
+    public final MachineTier tier;
     protected IsActiveComponent isActiveComponent;
 
     @Override

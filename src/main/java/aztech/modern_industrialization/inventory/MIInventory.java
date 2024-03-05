@@ -129,12 +129,19 @@ public final class MIInventory implements IComponent {
         NbtHelper.putList(tag, "fluids", fluidStorage.stacks, ConfigurableFluidStack::toNbt);
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 
         NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::new);
         NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::new);
+
+        if (isUpgradingMachine) {
+            // Increase fluid slot capacities if upgrading
+            for (int i = 0; i < newFluidStacks.size() && i < fluidStorage.stacks.size(); ++i) {
+                newFluidStacks.get(i).setCapacity(fluidStorage.stacks.get(i).getCapacity());
+            }
+        }
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
         SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);

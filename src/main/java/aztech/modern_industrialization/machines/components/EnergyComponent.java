@@ -67,7 +67,7 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
         tag.putLong("storedEu", getEu());
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         setEu(tag.getLong("storedEu"), false);
     }
 

@@ -21,45 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components;
+package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.machines.IComponent;
-import net.minecraft.nbt.CompoundTag;
+import java.util.function.Supplier;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class TemperatureComponent implements IComponent {
-
-    private double temperature;
-    public final double temperatureMax;
-
-    public TemperatureComponent(double temperatureMax) {
-        this.temperatureMax = temperatureMax;
+public final class MIAdvancementTriggers {
+    private MIAdvancementTriggers() {
     }
 
-    public void setTemperature(double temp) {
-        this.temperature = temp;
-        this.temperature = Math.min(Math.max(temperature, 0), temperatureMax);
-    }
+    // Triggers
+    private static final DeferredRegister<CriterionTrigger<?>> DR = DeferredRegister.create(Registries.TRIGGER_TYPE, MI.ID);
 
-    public void increaseTemperature(double temp) {
-        setTemperature(getTemperature() + temp);
-    }
+    public static final Supplier<PlayerTrigger> USED_STEEL_UPGRADE = DR.register("used_steel_upgrade", PlayerTrigger::new);
 
-    public void decreaseTemperature(double temp) {
-        setTemperature(getTemperature() - temp);
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.putDouble("temperature", temperature);
-
-    }
-
-    @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
-        setTemperature(tag.getDouble("temperature"));
+    public static void init(IEventBus modBus) {
+        DR.register(modBus);
     }
 }

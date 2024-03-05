@@ -96,7 +96,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         euBuffer = tag.getLong("euBuffer");
     }
 

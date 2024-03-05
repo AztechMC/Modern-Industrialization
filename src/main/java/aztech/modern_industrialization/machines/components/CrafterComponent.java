@@ -399,7 +399,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");

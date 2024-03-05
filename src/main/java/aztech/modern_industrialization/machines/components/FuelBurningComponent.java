@@ -152,7 +152,7 @@ public class FuelBurningComponent implements IComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
     }
 

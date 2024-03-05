@@ -78,6 +78,7 @@ public class MI {
     }
 
     public MI(IEventBus modBus) {
+        MIAdvancementTriggers.init(modBus);
         MIFluids.init(modBus);
         MIBlock.init(modBus);
         MIItem.init(modBus);

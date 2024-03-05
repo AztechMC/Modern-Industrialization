@@ -55,7 +55,7 @@ public class RedstoneControlComponent implements IComponent.ServerOnly, Dropable
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
         controlModule = ItemStack.of(tag.getCompound("redstoneModuleStack"));
     }
 

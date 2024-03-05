@@ -160,6 +160,7 @@ repositories {
     maven {
         url "https://maven.teamresourceful.com/repository/maven-public/"
         content {
+            includeGroup "com.teamresourceful"
             includeGroup "com.teamresourceful.resourcefullib"
             includeGroup "earth.terrarium.argonauts"
         }

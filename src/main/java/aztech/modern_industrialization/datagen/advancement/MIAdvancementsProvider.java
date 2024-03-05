@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIAdvancementTriggers;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -52,6 +53,18 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         return trigger.get().createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
     }
 
+    private Component translateTitle(String path, String englishName) {
+        var titleKey = "advancements.modern_industrialization." + path;
+        translations.addTranslation(titleKey, englishName);
+        return Component.translatable(titleKey);
+    }
+
+    private Component translateDescription(String path, String englishDescription) {
+        var descKey = "advancements.modern_industrialization." + path + ".description";
+        translations.addTranslation(descKey, englishDescription);
+        return Component.translatable(descKey);
+    }
+
     private class Builder extends Advancement.Builder {
         private final String path;
 
@@ -64,6 +77,12 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
             return (Builder) super.sendsTelemetryEvent();
         }
 
+        @Override
+        public Builder display(ItemLike pIcon, Component pTitle, Component pDescription, @Nullable ResourceLocation pBackground,
+                AdvancementType pType, boolean pShowToast, boolean pAnnounceChat, boolean pHidden) {
+            return (Builder) super.display(pIcon, pTitle, pDescription, pBackground, pType, pShowToast, pAnnounceChat, pHidden);
+        }
+
         public Builder display(
                 ItemLike icon,
                 String titleEnglishName,
@@ -73,16 +92,10 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
                 boolean pShowToast,
                 boolean pAnnounceChat,
                 boolean pHidden) {
-            var titleKey = "advancements.modern_industrialization." + path;
-            var descKey = "advancements.modern_industrialization." + path + ".description";
-
-            translations.addTranslation(titleKey, titleEnglishName);
-            translations.addTranslation(descKey, englishDescription);
-
-            return (Builder) this.display(
+            return this.display(
                     icon,
-                    Component.translatable(titleKey),
-                    Component.translatable(descKey),
+                    translateTitle(path, titleEnglishName),
+                    translateDescription(path, englishDescription),
                     pBackground,
                     pType,
                     pShowToast,
@@ -111,8 +124,19 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
 
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer, ExistingFileHelper existingFileHelper) {
+        var guidebook = newBuilder("guidebook")
+                .display(MIItem.GUIDE_BOOK,
+                        MIText.ModernIndustrialization.text(),
+                        translateDescription("guidebook", "Welcome to Modern Industrialization! Make sure to check out the guidebook."),
+                        MI.id("textures/block/fire_clay_bricks.png"),
+                        AdvancementType.TASK,
+                        false,
+                        false,
+                        false)
+                .addCriterion("logged_in", createSimpleCriterion(MIAdvancementTriggers.PLAYER_LOGGED_IN))
+                .save(consumer, existingFileHelper);
+
         // @formatter:off
-        var guidebook = createBasic(consumer, "guidebook", null, "Modern Industrialization", "Obtain the Modern Industrialization guidebook.", existingFileHelper);
         var forgeHammer = createBasic(consumer, "forge_hammer", guidebook, AdvancementType.GOAL, "Is This A Forge Mod?", "Craft a Forge Hammer and start exploring the mod.", existingFileHelper);
         var steamMiningDrill = createBasic(consumer, "steam_mining_drill", forgeHammer, AdvancementType.GOAL, "Getting That 3x3 Going", "Craft a Steam Mining Drill", existingFileHelper);
         var fireClayBricks = createBasic(consumer, "fire_clay_bricks", forgeHammer, "Almost Steam?", "Craft Fire Clay Bricks", existingFileHelper);
@@ -201,29 +225,23 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         // @formatter:on
     }
 
-    private AdvancementHolder createBasic(Consumer<AdvancementHolder> consumer, String item, @Nullable AdvancementHolder parent,
+    private AdvancementHolder createBasic(Consumer<AdvancementHolder> consumer, String item, AdvancementHolder parent,
             String titleEnglishName, String englishDescription, ExistingFileHelper existingFileHelper) {
         return createBasic(consumer, item, parent, AdvancementType.TASK, titleEnglishName, englishDescription, existingFileHelper);
     }
 
-    private AdvancementHolder createBasic(Consumer<AdvancementHolder> consumer, String itemId, @Nullable AdvancementHolder parent,
+    private AdvancementHolder createBasic(Consumer<AdvancementHolder> consumer, String itemId, AdvancementHolder parent,
             AdvancementType frame, String titleEnglishName, String englishDescription, ExistingFileHelper existingFileHelper) {
         var item = BuiltInRegistries.ITEM.get(new MIIdentifier(itemId));
 
         var advancementTask = newBuilder(itemId);
-        ResourceLocation background = null;
 
-        if (parent != null) {
-            advancementTask.parent(parent);
-        } else {
-            background = new MIIdentifier("textures/block/fire_clay_bricks.png");
-        }
-
+        advancementTask.parent(parent);
         advancementTask.display(
                 item,
                 titleEnglishName,
                 englishDescription,
-                background,
+                null,
                 frame,
                 true,
                 true,

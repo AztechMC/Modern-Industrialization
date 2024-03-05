@@ -1,19 +1,11 @@
 {
   "criteria": {
-    "checkInv": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "modern_industrialization:guidebook"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
+    "logged_in": {
+      "trigger": "modern_industrialization:player_logged_in"
     }
   },
   "display": {
+    "announce_to_chat": false,
     "background": "modern_industrialization:textures/block/fire_clay_bricks.png",
     "description": {
       "translate": "advancements.modern_industrialization.guidebook.description"
@@ -21,13 +13,14 @@
     "icon": {
       "item": "modern_industrialization:guidebook"
     },
+    "show_toast": false,
     "title": {
-      "translate": "advancements.modern_industrialization.guidebook"
+      "translate": "text.modern_industrialization.ModernIndustrialization"
     }
   },
   "requirements": [
     [
-      "checkInv"
+      "logged_in"
     ]
   ],
   "sends_telemetry_event": true

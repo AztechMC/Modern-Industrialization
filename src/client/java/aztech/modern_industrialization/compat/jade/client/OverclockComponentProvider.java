@@ -21,23 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.client;
+package aztech.modern_industrialization.compat.jade.client;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IBlockComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.ITooltip;
-import mcp.mobius.waila.api.component.BarComponent;
-import mcp.mobius.waila.api.component.PairComponent;
-import mcp.mobius.waila.api.component.WrappedComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.config.IPluginConfig;
+import snownee.jade.api.ui.BoxStyle;
+import snownee.jade.api.ui.IElementHelper;
 
 public class OverclockComponentProvider implements IBlockComponentProvider {
+    @Override
+    public ResourceLocation getUid() {
+        return MI.id("overclock");
+    }
 
     @Override
-    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
-        CompoundTag tag = accessor.getData().raw();
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+        CompoundTag tag = accessor.getServerData();
         if (tag.contains("efficiencyTicks") && tag.contains("maxEfficiencyTicks") && tag.contains("baseRecipeEu")
                 && tag.contains("currentRecipeEu")) {
 
@@ -47,13 +52,19 @@ public class OverclockComponentProvider implements IBlockComponentProvider {
             long currentEu = tag.getLong("currentRecipeEu");
 
             double mult = (double) currentEu / baseRecipeEu;
+            var helper = IElementHelper.get();
 
-            tooltip.addLine(new PairComponent(
-                    new WrappedComponent(MIText.Efficiency.text()),
-                    new BarComponent(MIWailaClientPlugin.ratio(efficiencyTicks, maxEfficiencyTicks), 0xFF61C928,
-                            MIWailaClientPlugin.fraction(efficiencyTicks, maxEfficiencyTicks))));
+            tooltip.add(helper.progress(
+                    MIJadeClientPlugin.ratio(efficiencyTicks, maxEfficiencyTicks),
+                    MIJadeClientPlugin.textAndRatio(
+                            MIText.Efficiency.text(),
+                            String.valueOf(efficiencyTicks),
+                            String.valueOf(maxEfficiencyTicks)),
+                    helper.progressStyle().color(0xFF61C928, 0xFF438C1C).textColor(-1),
+                    BoxStyle.getNestedBox(),
+                    true));
 
-            tooltip.addLine(new WrappedComponent(MIText.EuTOverclocked.text(
+            tooltip.add(helper.text(MIText.EuTOverclocked.text(
                     String.format("%.1f", mult), String.format("%d", currentEu))));
         }
     }

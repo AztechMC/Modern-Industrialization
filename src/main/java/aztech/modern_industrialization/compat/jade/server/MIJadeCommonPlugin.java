@@ -21,23 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.server;
+package aztech.modern_industrialization.compat.jade.server;
 
-import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
-import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import snownee.jade.api.IWailaCommonRegistration;
+import snownee.jade.api.IWailaPlugin;
+import snownee.jade.api.WailaPlugin;
+import snownee.jade.api.fluid.JadeFluidObject;
 
-public class MIWailaServerPlugin implements IWailaPlugin {
+@WailaPlugin
+public class MIJadeCommonPlugin implements IWailaPlugin {
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new MachineComponentProvider(), MachineBlockEntity.class);
-        r.addBlockData(new TankFluidProvider(), AbstractTankBlockEntity.class);
-        r.addBlockData(new StorageItemProvider(), AbstractStorageBlockEntity.class);
+    public void register(IWailaCommonRegistration registration) {
+        registration.registerBlockDataProvider(new OverclockComponentProvider(), MachineBlockEntity.class);
 
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-        r.addBlockData(new OverclockComponentProvider(), MachineBlockEntity.class);
+        registration.registerBlockDataProvider(new PipeDataProvider(), PipeBlockEntity.class);
+
+        registration.registerEnergyStorage(new MachineComponentProvider.Energy(), MachineBlockEntity.class);
+        registration.registerFluidStorage(new MachineComponentProvider.Fluids(), MachineBlockEntity.class);
+        registration.registerItemStorage(new MachineComponentProvider.Items(), MachineBlockEntity.class);
+        registration.registerProgress(new MachineComponentProvider.Progress(), MachineBlockEntity.class);
+    }
+
+    public static JadeFluidObject fluidStack(FluidVariant variant, long amount) {
+        return JadeFluidObject.of(variant.getFluid(), amount, variant.copyNbt());
     }
 }

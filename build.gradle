@@ -37,14 +37,6 @@ repositories {
     maven {
         url 'https://maven.blamejared.com'
     }
-    // for WTHIT
-    maven {
-        url "https://maven2.bai.lol"
-        content {
-            includeGroup "lol.bai"
-            includeGroup "mcp.mobius.waila"
-        }
-    }
     // for AE2 and JEI
     maven {
         name "Modmaven"
@@ -231,10 +223,8 @@ dependencies {
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
-//    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
-//    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
-//    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"
-//
+    implementation("curse.maven:jade-324717:${project.jade_file_id}")
+
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }

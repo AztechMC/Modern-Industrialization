@@ -517,6 +517,8 @@
   "cable_tier_short.modern_industrialization.lv": "[UNTRANSLATED] LV",
   "cable_tier_short.modern_industrialization.mv": "[UNTRANSLATED] MV",
   "cable_tier_short.modern_industrialization.superconductor": "[UNTRANSLATED] Superconductor",
+  "config.jade.plugin_modern_industrialization.overclock": "[UNTRANSLATED] Machine Overclock",
+  "config.jade.plugin_modern_industrialization.pipe": "[UNTRANSLATED] Pipe Information",
   "ebf_tier.modern_industrialization.cupronickel_coil": "[UNTRANSLATED] Cupronickel",
   "ebf_tier.modern_industrialization.kanthal_coil": "[UNTRANSLATED] Kanthal",
   "entity.minecraft.villager.modern_industrialization.industrialist": "[UNTRANSLATED] Industrialist",

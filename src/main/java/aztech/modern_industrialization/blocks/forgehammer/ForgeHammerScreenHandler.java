@@ -107,12 +107,48 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         // This ensures that the whole item is always removed from the slot, even if someone right-clicks the output slot.
         // (Instead of leaving half the result behind, which gets overridden by the next recipe).
         this.output = new Slot(new ResultContainer(), 0, 143, 32) {
+            // The stack passed to `onTake` is not meaningful.
+            // Hence, we need this crappy hack to track the real amount of removed items for stats.
+            // Similar to the handling in `ResultSlot`.
+            private int removeCount = 0;
+
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
 
             @Override
+            public ItemStack remove(int pAmount) {
+                var stack = super.remove(pAmount);
+                // Do not increment by pAmount, it's not correct!
+                // We might remove more since we always remove the full stack.
+                // See https://bugs.mojang.com/browse/MC-269175.
+                removeCount += stack.getCount();
+                return stack;
+            }
+
+            @Override
+            protected void onQuickCraft(ItemStack pStack, int pAmount) {
+                this.removeCount += pAmount;
+                checkTakeAchievements(pStack);
+            }
+
+            @Override
+            protected void onSwapCraft(int pNumItemsCrafted) {
+                this.removeCount += pNumItemsCrafted;
+            }
+
+            @Override
+            protected void checkTakeAchievements(ItemStack pStack) {
+                // Do not trust the stack parameter!!
+                if (this.removeCount > 0) {
+                    pStack.onCraftedBy(player.level(), player, this.removeCount);
+                    this.removeCount = 0;
+                }
+            }
+
+            @Override
             public void onTake(Player player, ItemStack stack) {
+                checkTakeAchievements(stack);
                 ForgeHammerScreenHandler.this.onCraft();
                 // Don't play the sound multiple times within the same tick
                 // Prevents the sound being played a lot when shift-clicking the output into your inventory

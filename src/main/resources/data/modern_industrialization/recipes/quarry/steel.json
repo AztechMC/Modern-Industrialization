@@ -52,6 +52,14 @@
       "item": "modern_industrialization:quartz_ore",
       "amount": 1,
       "probability": 0.2
+    },
+    {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "powah" }
+      ],
+      "item": "powah:uraninite_ore",
+      "amount": 1,
+      "probability": 0.08
     }
   ]
 }

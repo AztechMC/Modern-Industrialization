@@ -4,10 +4,10 @@
   "duration": 200,
   "fluid_inputs": {
     "fluid": "modern_industrialization:raw_synthetic_oil",
-    "amount": 111.11
+    "amount": 100
   },
   "fluid_outputs": {
     "fluid": "modern_industrialization:synthetic_oil",
-    "amount": 111.11
+    "amount": 100
   }
 }

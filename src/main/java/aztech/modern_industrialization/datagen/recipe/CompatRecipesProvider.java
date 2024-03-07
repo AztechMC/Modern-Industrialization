@@ -92,7 +92,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
             addCompatRecipe(type + "_processor", new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 200)
                     .addItemInput("ae2:printed_" + type + "_processor", 1)
                     .addItemInput("ae2:printed_silicon", 1)
-                    .addFluidInput(MIFluids.MOLTEN_REDSTONE, 100)
+                    .addFluidInput(MIFluids.MOLTEN_REDSTONE, 90)
                     .addItemOutput("ae2:" + type + "_processor", 1));
         }
 

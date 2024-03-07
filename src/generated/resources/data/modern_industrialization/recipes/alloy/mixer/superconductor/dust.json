@@ -8,35 +8,15 @@
       "tag": "forge:dusts/iridium"
     },
     {
-      "amount": 1,
+      "amount": 3,
       "tag": "forge:dusts/annealed_copper"
     },
     {
-      "amount": 1,
-      "tag": "forge:dusts/annealed_copper"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/annealed_copper"
-    },
-    {
-      "amount": 1,
+      "amount": 3,
       "tag": "forge:dusts/yttrium"
     },
     {
-      "amount": 1,
-      "tag": "forge:dusts/yttrium"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/yttrium"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/neodymium"
-    },
-    {
-      "amount": 1,
+      "amount": 2,
       "tag": "forge:dusts/neodymium"
     }
   ],

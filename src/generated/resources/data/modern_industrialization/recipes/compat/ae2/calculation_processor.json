@@ -10,7 +10,7 @@
   "eu": 8,
   "fluid_inputs": [
     {
-      "amount": 100,
+      "amount": 90,
       "fluid": "modern_industrialization:molten_redstone"
     }
   ],

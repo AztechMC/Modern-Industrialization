@@ -4,27 +4,7 @@
   "eu": 2,
   "item_inputs": [
     {
-      "amount": 1,
-      "tag": "forge:dusts/iron"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/iron"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/iron"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/iron"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/iron"
-    },
-    {
-      "amount": 1,
+      "amount": 6,
       "tag": "forge:dusts/iron"
     },
     {

@@ -8,15 +8,7 @@
       "tag": "forge:dusts/tin"
     },
     {
-      "amount": 1,
-      "tag": "forge:dusts/copper"
-    },
-    {
-      "amount": 1,
-      "tag": "forge:dusts/copper"
-    },
-    {
-      "amount": 1,
+      "amount": 3,
       "tag": "forge:dusts/copper"
     }
   ],

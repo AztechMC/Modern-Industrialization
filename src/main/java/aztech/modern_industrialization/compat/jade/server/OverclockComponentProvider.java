@@ -21,25 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.server;
+package aztech.modern_industrialization.compat.jade.server;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
-import aztech.modern_industrialization.machines.MachineBlockEntity;
-import mcp.mobius.waila.api.IDataProvider;
-import mcp.mobius.waila.api.IDataWriter;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerAccessor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IServerDataProvider;
 
-public class OverclockComponentProvider implements IDataProvider<MachineBlockEntity> {
+public class OverclockComponentProvider implements IServerDataProvider<BlockAccessor> {
     @Override
-    public void appendData(IDataWriter data, IServerAccessor<MachineBlockEntity> accessor, IPluginConfig config) {
+    public ResourceLocation getUid() {
+        return MI.id("overclock");
+    }
+
+    @Override
+    public void appendServerData(CompoundTag data, BlockAccessor accessor) {
         if (accessor.getTarget() instanceof CrafterComponentHolder crafterComponentHolder) {
             var crafterComponent = crafterComponentHolder.getCrafterComponent();
             if (crafterComponent.hasActiveRecipe() && crafterComponent.getMaxEfficiencyTicks() > 0) {
-                data.raw().putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
-                data.raw().putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
-                data.raw().putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
-                data.raw().putLong("currentRecipeEu", crafterComponent.getCurrentRecipeEu());
+                data.putInt("efficiencyTicks", crafterComponent.getEfficiencyTicks());
+                data.putInt("maxEfficiencyTicks", crafterComponent.getMaxEfficiencyTicks());
+                data.putLong("baseRecipeEu", crafterComponent.getBaseRecipeEu());
+                data.putLong("currentRecipeEu", crafterComponent.getCurrentRecipeEu());
             }
         }
     }

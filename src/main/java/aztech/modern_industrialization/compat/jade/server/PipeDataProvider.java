@@ -21,23 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila.server;
+package aztech.modern_industrialization.compat.jade.server;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
-import mcp.mobius.waila.api.IDataProvider;
-import mcp.mobius.waila.api.IDataWriter;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerAccessor;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IServerDataProvider;
 
-public class PipeDataProvider implements IDataProvider<PipeBlockEntity> {
+public class PipeDataProvider implements IServerDataProvider<BlockAccessor> {
     @Override
-    public void appendData(IDataWriter data, IServerAccessor<PipeBlockEntity> accessor, IPluginConfig config) {
-        for (PipeNetworkNode node : accessor.getTarget().getNodes()) {
+    public ResourceLocation getUid() {
+        return MI.id("pipe");
+    }
+
+    @Override
+    public void appendServerData(CompoundTag data, BlockAccessor accessor) {
+        var be = (PipeBlockEntity) accessor.getBlockEntity();
+
+        for (PipeNetworkNode node : be.getNodes()) {
             CompoundTag pipeData = new CompoundTag();
 
             if (node instanceof FluidNetworkNode fluidNode) {
@@ -63,7 +70,7 @@ public class PipeDataProvider implements IDataProvider<PipeBlockEntity> {
                 pipeData.putInt("pulse", info.pulse());
             }
 
-            data.raw().put(node.getType().getIdentifier().toString(), pipeData);
+            data.put(node.getType().getIdentifier().toString(), pipeData);
         }
     }
 }

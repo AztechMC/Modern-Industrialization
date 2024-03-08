@@ -172,8 +172,8 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                         MIJadeClientPlugin.ratio(transfer, maxTransfer),
                         MIJadeClientPlugin.textAndRatio(
                                 MIText.NetworkTransfer.text(),
-                                String.valueOf(transfer),
-                                String.valueOf(maxTransfer)),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(transfer, "", false)),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxTransfer, " EU/t", false))),
                         helper.progressStyle().color(-5636096, -10092544).textColor(-1),
                         BoxStyle.getNestedBox(),
                         true));
@@ -187,16 +187,17 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 double maxDelay = ItemNetwork.TICK_RATE / 20.0;
 
                 // Delay
-                // TODO: disable smooth progress when possible with the Jade API
                 tooltip.add(helper.progress(
                         MIJadeClientPlugin.ratio(delay, maxDelay),
                         MIJadeClientPlugin.textAndRatio(
                                 MIText.NetworkDelay.text(),
-                                String.valueOf(delay),
-                                String.valueOf(maxDelay)),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(delay + 0.3, "", false)),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxDelay, " s", false))),
                         helper.progressStyle().color(0xFFFFD14A, 0xFFCCA73B).textColor(-1),
                         BoxStyle.getNestedBox(),
-                        true));
+                        false)
+                        .tag(MI.id("pipe/items/delay")) // tag to give the progress bar its own interpolation
+                );
 
                 // Moved items
                 tooltip.add(

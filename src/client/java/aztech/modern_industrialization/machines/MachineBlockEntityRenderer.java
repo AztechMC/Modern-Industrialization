@@ -78,7 +78,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
             TextureAtlasSprite sprite = MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
                 emitter.material(model.cutoutMaterial);
-                emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.
+                emitter.square(d, 0, 0, 1, 1, -4e-4f); // non-active face is -2e-4f
                 emitter.cullFace(d);
                 emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
                 emitter.color(-1, -1, -1, -1);

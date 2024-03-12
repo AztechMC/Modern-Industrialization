@@ -35,7 +35,7 @@ public sealed interface TextureGenParams {
     record Block(MaterialBlockSet blockSet) implements TextureGenParams {
     }
 
-    record CasingBlock(boolean isBasicMaterialCasing) implements TextureGenParams {
+    record CasingBlock() implements TextureGenParams {
     }
 
     record ColumnBlock() implements TextureGenParams {

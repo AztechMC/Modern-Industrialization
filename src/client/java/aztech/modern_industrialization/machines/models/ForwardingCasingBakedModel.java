@@ -21,25 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen;
+package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.datagen.model.MachineCasingsProvider;
-import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
-import aztech.modern_industrialization.datagen.model.ModelProvider;
-import aztech.modern_industrialization.datagen.texture.SpriteSourceProvider;
-import aztech.modern_industrialization.datagen.texture.TexturesProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class MIDatagenClient {
-    public static void configure(FabricDataGenerator.Pack pack, boolean runtimeDatagen) {
-        var aggregate = pack.addProvider(AggregateDataProvider.create("Client Resources"));
+public class ForwardingCasingBakedModel extends ForwardingBakedModel {
+    private final BlockState targetState;
 
-        aggregate.addProvider(MachineCasingsProvider::new);
-        aggregate.addProvider(MachineModelsProvider::new);
-        aggregate.addProvider(ModelProvider::new);
-        aggregate.addProvider(SpriteSourceProvider::new);
+    public ForwardingCasingBakedModel(BlockState targetState, BakedModel delegate) {
+        this.targetState = targetState;
+        this.wrapped = delegate;
+    }
 
-        pack.addProvider((FabricDataOutput packOutput) -> new TexturesProvider(packOutput, runtimeDatagen));
+    public BlockState getTargetState() {
+        return targetState;
     }
 }

@@ -71,8 +71,8 @@ class PartTextureGenerator {
 
         if (params instanceof TextureGenParams.Block block) {
             processBlock(block.blockSet());
-        } else if (params instanceof TextureGenParams.CasingBlock casing) {
-            processCasing(part, casing.isBasicMaterialCasing());
+        } else if (params instanceof TextureGenParams.CasingBlock) {
+            processCasing(part);
         } else if (params instanceof TextureGenParams.ColumnBlock) {
             processColumn(part);
         } else if (params instanceof TextureGenParams.DepletedNuclear) {
@@ -106,14 +106,8 @@ class PartTextureGenerator {
         }
     }
 
-    private void processCasing(PartKeyProvider part, boolean isBasicMaterialCasing) throws IOException {
+    private void processCasing(PartKeyProvider part) throws IOException {
         try (NativeImage image = MITextures.generateTexture(mtm, part.key().key, material.get(SET).name, coloramp)) {
-
-            if (isBasicMaterialCasing) {
-                MITextures.casingFromTexture(mtm, materialName, image);
-            } else {
-                MITextures.casingFromTexture(mtm, itemPath, image);
-            }
             MITextures.appendTexture(mtm, image, itemPath, true);
         }
     }

@@ -103,20 +103,10 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-    // for reach entity attributes, required by Magna
     maven {
-        url = "https://maven.jamieswhiteshirt.com/libs-release/"
+        url "https://maven.ftb.dev/snapshots"
         content {
-            includeGroup "com.jamieswhiteshirt"
-        }
-    }
-    // for PlayerAbilityLib
-    maven {
-        name = 'Ladysnake Mods'
-        url = 'https://maven.ladysnake.org/releases'
-        content {
-            includeGroup 'io.github.ladysnake'
-            includeGroupByRegex 'io\\.github\\.onyxstudios.*'
+            includeGroup "dev.ftb.mods"
         }
     }
     maven {
@@ -237,10 +227,7 @@ dependencies {
 ////        exclude(group: "net.fabricmc.fabric-api")
 ////        exclude(group: "me.shedaniel")
 ////    }
-//    modImplementation("dev.ftb.mods:ftb-teams-fabric:${project.ftb_teams_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//        exclude(group: "me.shedaniel")
-//    }
+    compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
 }
 
 minecraft.accessTransformers.file file("src/main/resources/META-INF/accesstransformer.cfg")

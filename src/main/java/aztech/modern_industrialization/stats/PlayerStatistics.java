@@ -29,9 +29,11 @@ import aztech.modern_industrialization.compat.ftbteams.FTBTeamsFacade;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -55,6 +57,8 @@ public class PlayerStatistics {
     private final UUID uuid;
     private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
     private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
+
+    private static final Set<UUID> uuidCache = new HashSet<>();
 
     // Items produced while the player was offline... this is used to award vanilla stats when the player comes back online.
     private final Reference2LongMap<Item> pendingCraftedStats = new Reference2LongOpenHashMap<>();
@@ -97,13 +101,15 @@ public class PlayerStatistics {
 
             awardStat(level, what, amount);
 
-            for (var otherTeamMember : FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid)) {
-                data.get(otherTeamMember).awardStat(level, what, amount);
-            }
+            // Make sure we only award the stats to other players once even if they have both FTB Teams and Argonauts.
+            uuidCache.clear();
+            uuidCache.addAll(FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid));
+            uuidCache.addAll(ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(server, uuid));
 
-            for (var otherGuildMember : ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(server, uuid)) {
-                data.get(otherGuildMember).awardStat(level, what, amount);
+            for (var uuid : uuidCache) {
+                data.get(uuid).awardStat(level, what, amount);
             }
+            uuidCache.clear();
         }
     }
 

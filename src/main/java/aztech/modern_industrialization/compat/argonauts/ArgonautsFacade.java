@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.argonauts;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
@@ -44,5 +45,5 @@ public interface ArgonautsFacade {
         return (ms, uuid) -> List.of();
     }
 
-    Iterable<UUID> getOtherPlayersInGuild(MinecraftServer server, UUID playerUuid);
+    Collection<UUID> getOtherPlayersInGuild(MinecraftServer server, UUID playerUuid);
 }

@@ -32,11 +32,12 @@ import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeT
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,21 +46,31 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 public final class MachineRendering {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static void init() {
-        for (var casing : MachineCasings.registeredCasings.values()) {
-            casing.model = new MachineCasingModel(casing.name);
-        }
+    public static ResourceLocation getCasingModelId(MachineCasing casing) {
+        return new MIIdentifier("machine_casing/" + casing.name);
+    }
 
+    public static BakedModel getCasingModel(MachineCasing casing) {
+        return Minecraft.getInstance().getModelManager().getModel(getCasingModelId(casing));
+    }
+
+    public static void init() {
         for (var blockDef : MIBlock.BLOCKS.values()) {
             if (blockDef.asBlock() instanceof MachineBlock machine) {
                 registerBer(machine);
@@ -70,8 +81,7 @@ public final class MachineRendering {
                 MachineRendering::prepareUnbakedModels,
                 (modelsToResolve, pluginCtx) -> {
                     for (var casing : MachineCasings.registeredCasings.values()) {
-                        var casingModel = (MachineCasingModel) casing.model;
-                        pluginCtx.addModels(casingModel.id);
+                        pluginCtx.addModels(getCasingModelId(casing));
                     }
 
                     pluginCtx.resolveModel().register(ctx -> {
@@ -98,45 +108,101 @@ public final class MachineRendering {
         }
     }
 
+    private static List<CompletableFuture<Pair<ResourceLocation, @Nullable UnbakedModel>>> startLoadingMachineModels(ResourceManager resourceManager,
+            Executor executor) {
+        List<CompletableFuture<Pair<ResourceLocation, @Nullable UnbakedModel>>> futures = new ArrayList<>();
+
+        for (var entry : MachineBlock.REGISTERED_MACHINES.entrySet()) {
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                var machine = entry.getKey();
+                var casing = entry.getValue();
+
+                try (var resource = resourceManager.getResource(new MIIdentifier("models/machine/" + machine + ".json")).get()
+                        .openAsReader()) {
+                    // Use item id for the model id, the blockstate file also redirects to it.
+                    return Pair.of(new MIIdentifier("item/" + machine), MachineUnbakedModel.deserialize(casing, resource));
+                } catch (IOException exception) {
+                    LOGGER.error("Failed to find machine model json for machine " + machine, exception);
+                } catch (RuntimeException exception) {
+                    LOGGER.error("Failed to load machine model json for machine " + machine, exception);
+                }
+                return null;
+            }, executor));
+        }
+
+        return futures;
+    }
+
+    private static List<CompletableFuture<Pair<ResourceLocation, @Nullable UnbakedModel>>> startLoadingCasingModels(ResourceManager resourceManager,
+            Executor executor) {
+        List<CompletableFuture<Pair<ResourceLocation, @Nullable UnbakedModel>>> futures = new ArrayList<>();
+
+        for (var casing : MachineCasings.registeredCasings.values()) {
+            futures.add(CompletableFuture.supplyAsync(() -> {
+                var jsonLocation = getCasingModelId(casing).withPath(p -> "models/" + p + ".json");
+                var resource = resourceManager.getResource(jsonLocation);
+
+                UnbakedModel unbakedModel;
+                if (resource.isEmpty()) {
+                    // No resource, assume it's a standard BlockModel with top, side and bottom textures.
+                    try {
+                        unbakedModel = BlockModel.fromString("""
+                                {
+                                    "parent": "block/cube",
+                                    "textures": {
+                                        "side": "modern_industrialization:block/casings/%s/side",
+                                        "particle": "#side",
+                                        "up": "modern_industrialization:block/casings/%s/top",
+                                        "down": "modern_industrialization:block/casings/%s/bottom",
+                                        "north": "#side",
+                                        "south": "#side",
+                                        "west": "#side",
+                                        "east": "#side"
+                                    }
+                                }
+                                """.formatted(casing.name, casing.name, casing.name));
+                    } catch (RuntimeException exception) {
+                        LOGGER.error("Failed to construct default casing model: " + casing.name, exception);
+                        return null;
+                    }
+                } else {
+                    try (var stream = resource.get().openAsReader()) {
+                        var json = JsonParser.parseReader(stream).getAsJsonObject();
+
+                        var blockId = GsonHelper.getAsString(json, "block");
+                        var block = BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(blockId))
+                                .orElseThrow(() -> new JsonSyntaxException("Expected \"block\" to be a block, was unknown string " + blockId));
+                        unbakedModel = new ForwardingCasingUnbakedModel(block.defaultBlockState());
+                    } catch (IOException exception) {
+                        LOGGER.error("Failed to load casing model json for casing " + casing.name, exception);
+                        return null;
+                    } catch (RuntimeException exception) {
+                        LOGGER.error("Failed to parse casing model json for casing " + casing.name, exception);
+                        return null;
+                    }
+                }
+
+                return Pair.of(getCasingModelId(casing), unbakedModel);
+            }, executor));
+        }
+
+        return futures;
+    }
+
     /**
      * Load all machine jsons in parallel.
      */
     private static CompletableFuture<Map<ResourceLocation, UnbakedModel>> prepareUnbakedModels(ResourceManager resourceManager, Executor executor) {
-        return CompletableFuture.completedFuture(MachineBlock.REGISTERED_MACHINES)
-                .thenComposeAsync(machinesToLoad -> {
-                    List<CompletableFuture<Pair<ResourceLocation, MachineUnbakedModel>>> futures = new ArrayList<>();
+        return CompletableFuture.completedFuture(Boolean.TRUE)
+                .thenComposeAsync(ignored -> {
+                    List<CompletableFuture<Pair<ResourceLocation, @Nullable UnbakedModel>>> modelFutures = new ArrayList<>();
 
-                    for (var entry : machinesToLoad.entrySet()) {
-                        futures.add(CompletableFuture.supplyAsync(() -> {
-                            var machine = entry.getKey();
-                            var casing = entry.getValue();
+                    modelFutures.addAll(startLoadingMachineModels(resourceManager, executor));
+                    modelFutures.addAll(startLoadingCasingModels(resourceManager, executor));
 
-                            try (var resource = resourceManager.getResource(new MIIdentifier("models/machine/" + machine + ".json")).get()
-                                    .openAsReader()) {
-                                // Use item id for the model id, the blockstate file also redirects to it.
-                                return Pair.of(new MIIdentifier("item/" + machine), MachineUnbakedModel.deserialize(casing, resource));
-                            } catch (IOException exception) {
-                                LOGGER.error("Failed to find machine model json for machine " + machine, exception);
-                            } catch (RuntimeException exception) {
-                                LOGGER.error("Failed to load machine model json for machine " + machine, exception);
-                            }
-                            return null;
-                        }, executor));
-                    }
-
-                    return Util.sequence(futures)
+                    return Util.sequence(modelFutures)
                             .thenApply(list -> list.stream().filter(Objects::nonNull).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)));
-                }, executor)
-                .thenApply(machineModels -> {
-                    Map<ResourceLocation, UnbakedModel> unbakedModels = new HashMap<>(machineModels);
-
-                    for (var casing : MachineCasings.registeredCasings.values()) {
-                        var casingModel = (MachineCasingModel) casing.model;
-                        unbakedModels.put(casingModel.id, casingModel);
-                    }
-
-                    return unbakedModels;
-                });
+                }, executor);
     }
 
     private MachineRendering() {

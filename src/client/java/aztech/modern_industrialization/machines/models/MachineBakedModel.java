@@ -64,6 +64,10 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         this.tieredOverlays = tieredOverlays;
     }
 
+    public MachineCasing getBaseCasing() {
+        return baseCasing;
+    }
+
     @Override
     public boolean isVanillaAdapter() {
         return false;
@@ -76,14 +80,16 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
             if (attachment instanceof MachineModelClientData clientData) {
                 MachineCasing casing = clientData.casing == null ? baseCasing : clientData.casing;
-                var sprites = renderBase(renderContext, casing, clientData.frontDirection);
+                MachineRendering.getCasingModel(casing).emitBlockQuads(blockRenderView, blockState, blockPos, supplier, renderContext);
+
+                var sprites = renderOverlays(renderContext, casing, clientData.frontDirection);
                 if (clientData.outputDirection != null) {
-                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[24], 3e-4f);
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[24], 5e-4f);
                     if (clientData.itemAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[25], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[25], 5e-4f);
                     }
                     if (clientData.fluidAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[26], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[26], 5e-4f);
                     }
                 }
             }
@@ -92,19 +98,17 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack itemStack, Supplier<RandomSource> supplier, RenderContext renderContext) {
-        renderBase(renderContext, baseCasing, Direction.NORTH);
+        MachineRendering.getCasingModel(baseCasing).emitItemQuads(itemStack, supplier, renderContext);
+        renderOverlays(renderContext, baseCasing, Direction.NORTH);
     }
 
-    private TextureAtlasSprite[] renderBase(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
-        // Casing
-        MachineCasingModel.get(casing).getMesh().outputTo(renderContext.getEmitter());
-        // Machine overlays
+    private TextureAtlasSprite[] renderOverlays(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
         var sprites = getSprites(casing);
         QuadEmitter emitter = renderContext.getEmitter();
         for (Direction d : DIRECTIONS) {
             TextureAtlasSprite sprite = getSprite(sprites, d, facingDirection, false);
             if (sprite != null) {
-                emitSprite(emitter, d, sprite, 1e-6f);
+                emitSprite(emitter, d, sprite, 2e-4f);
             }
         }
         return sprites;
@@ -176,7 +180,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return MachineCasingModel.get(baseCasing).getSideSprite();
+        return MachineRendering.getCasingModel(baseCasing).getParticleIcon();
     }
 
     @Override

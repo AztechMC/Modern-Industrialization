@@ -4,8 +4,21 @@ Each machine model in MI consists of two parts:
 - A set of overlays: extra textures applied on some sides.
 
 ## Casing models
+Casing models can either be based on a set of textures, or pull their model directly from a block
+
+### Texture-based
 The top, side and bottom textures of a casing must be `modern_industrialization:textures/block/casings/<casing name>/{top,side,bottom}.png`.
 The textures are loaded automatically for all registered casings, hence there is no JSON model for casings.
+
+### Block-based
+To use a block's model for a casing, you must define a JSON file at `modern_industrialization:models/machine_casing/<casing name>.json`.
+That file must only contain a single `block` key, telling MI which block to use for the casing.
+```json5
+{
+  "block": "<block id to use for the casing>"
+}
+```
+**Connected textures applied to the target block (for example with Athena) will be applied to the casing.** 
 
 ## Machine models
 A machine model JSON file defines which overlays are applied on which sides of the machine.

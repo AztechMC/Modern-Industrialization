@@ -78,21 +78,6 @@ public final class MITextures {
             defer.accept(() -> registerFluidTextures(mtm, fluid));
         }
 
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "lv", mtm.getAssetAsTexture("modern_industrialization:textures/block/basic_machine_hull.png")));
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "mv", mtm.getAssetAsTexture("modern_industrialization:textures/block/advanced_machine_hull.png")));
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "hv", mtm.getAssetAsTexture("modern_industrialization:textures/block/turbo_machine_hull.png")));
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "ev",
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/highly_advanced_machine_hull.png")));
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "superconductor",
-                mtm.getAssetAsTexture("modern_industrialization:textures/block/quantum_machine_hull.png")));
-        mtm.runAtEnd(
-                () -> casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/block/nuclear_machine_casing.png")));
-
-        mtm.runAtEnd(
-                () -> casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));
-
-        mtm.runAtEnd(() -> casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png")));
-
         mtm.runAtEnd(() -> casingFromTextureBricked(mtm, "bricked_bronze",
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/bronze_machine_casing.png"),
                 mtm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")));

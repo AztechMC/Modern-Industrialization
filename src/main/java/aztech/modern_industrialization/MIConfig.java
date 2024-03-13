@@ -82,17 +82,23 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Maximum height of the Distillation Tower multiblock (Restart needed)")
     public int maxDistillationTowerHeight = 9;
+    @EnglishTranslation(value = "Enable inter-machine connected textures. (Requires a suitable resource pack)")
+    public boolean enableInterMachineConnectedTextures = false;
 
     @ConfigEntry.Gui.Excluded
-    private transient static boolean registered = false;
+    private transient volatile static MIConfig instance = null;
 
     public static synchronized MIConfig getConfig() {
-        if (!registered) {
-            AutoConfig.register(MIConfig.class, Toml4jConfigSerializer::new);
-            registered = true;
+        MIConfig config = instance;
+        if (config == null) {
+            synchronized (MIConfig.class) {
+                config = instance;
+                if (config == null) {
+                    instance = config = AutoConfig.register(MIConfig.class, Toml4jConfigSerializer::new).getConfig();
+                }
+            }
         }
-
-        return AutoConfig.getConfigHolder(MIConfig.class).getConfig();
+        return config;
     }
 
     public static boolean loadAe2Compat() {

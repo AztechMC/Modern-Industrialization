@@ -23,20 +23,24 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.util.ModelHelper;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
@@ -48,13 +52,20 @@ import org.jetbrains.annotations.Nullable;
 public class MachineBakedModel implements IDynamicBakedModel {
     private static final ChunkRenderTypeSet CUTOUT_MIPPED = ChunkRenderTypeSet.of(RenderType.cutoutMipped());
 
+    public static final String CASING_FOLDER = "machine_casing";
+
+    public static ResourceLocation getCasingModelId(MachineCasing casing) {
+        return MI.id(CASING_FOLDER + "/" + casing.name);
+    }
+
+    public static BakedModel getCasingModel(MachineCasing casing) {
+        return Minecraft.getInstance().getModelManager().getModel(getCasingModelId(casing));
+    }
+
     private final MachineCasing baseCasing;
     private final TextureAtlasSprite[] defaultOverlays;
     private final Map<String, TextureAtlasSprite[]> tieredOverlays;
     private final MachineModelClientData defaultData;
-
-    private final LoadingCache<MachineModelClientData, List<List<BakedQuad>>> quadsCache = CacheBuilder.newBuilder()
-            .build(CacheLoader.from(this::buildQuads));
 
     MachineBakedModel(MachineCasing baseCasing,
             TextureAtlasSprite[] defaultOverlays,
@@ -65,41 +76,8 @@ public class MachineBakedModel implements IDynamicBakedModel {
         this.defaultData = new MachineModelClientData(baseCasing, Direction.NORTH);
     }
 
-    private List<List<BakedQuad>> buildQuads(MachineModelClientData clientData) {
-        MachineCasing casing = clientData.casing == null ? baseCasing : clientData.casing;
-        var sprites = getSprites(casing);
-
-        List<List<BakedQuad>> quadLists = new ArrayList<>(7);
-        for (int i = 0; i <= 6; ++i) {
-            Direction d = ModelHelper.DIRECTIONS_WITH_NULL[i];
-            List<BakedQuad> quads = new ArrayList<>();
-            var vc = new QuadBakingVertexConsumer(quads::add);
-
-            if (d != null) {
-                // Casing
-                quads.add(MachineCasingModel.get(casing).getQuad(d));
-                // Machine overlays
-                TextureAtlasSprite sprite = getSprite(sprites, d, clientData.frontDirection, false);
-                if (sprite != null) {
-                    ModelHelper.emitSprite(vc, d, sprite, 0);
-                }
-            }
-
-            // Output overlays
-            if (clientData.outputDirection != null && d == clientData.outputDirection) {
-                ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[24], 0);
-                if (clientData.itemAutoExtract) {
-                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[25], 0);
-                }
-                if (clientData.fluidAutoExtract) {
-                    ModelHelper.emitSprite(vc, clientData.outputDirection, sprites[26], 0);
-                }
-            }
-
-            quadLists.add(List.copyOf(quads));
-        }
-
-        return quadLists;
+    public MachineCasing getBaseCasing() {
+        return baseCasing;
     }
 
     public TextureAtlasSprite[] getSprites(@Nullable MachineCasing casing) {
@@ -131,6 +109,17 @@ public class MachineBakedModel implements IDynamicBakedModel {
     }
 
     @Override
+    public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
+        var machineData = modelData.get(MachineModelClientData.KEY);
+        if (machineData == null) {
+            return modelData;
+        }
+
+        MachineCasing casing = Objects.requireNonNullElse(machineData.casing, baseCasing);
+        return getCasingModel(casing).getModelData(level, pos, state, modelData);
+    }
+
+    @Override
     public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand,
             @NotNull ModelData extraData, @Nullable RenderType renderType) {
         var data = extraData.get(MachineModelClientData.KEY);
@@ -138,7 +127,34 @@ public class MachineBakedModel implements IDynamicBakedModel {
             data = defaultData;
         }
 
-        return quadsCache.getUnchecked(data).get(ModelHelper.nullableDirectionIndex(side));
+        MachineCasing casing = Objects.requireNonNullElse(data.casing, baseCasing);
+        var sprites = getSprites(casing);
+
+        List<BakedQuad> quads = new ArrayList<>();
+        var vc = new QuadBakingVertexConsumer(quads::add);
+
+        if (side != null) {
+            // Casing
+            quads.addAll(getCasingModel(casing).getQuads(state, side, rand, extraData, renderType));
+            // Machine overlays
+            TextureAtlasSprite sprite = getSprite(sprites, side, data.frontDirection, false);
+            if (sprite != null) {
+                ModelHelper.emitSprite(vc, side, sprite, -2e-4f);
+            }
+        }
+
+        // Output overlays
+        if (data.outputDirection != null && side == data.outputDirection) {
+            ModelHelper.emitSprite(vc, data.outputDirection, sprites[24], -5e-4f);
+            if (data.itemAutoExtract) {
+                ModelHelper.emitSprite(vc, data.outputDirection, sprites[25], -5e-4f);
+            }
+            if (data.fluidAutoExtract) {
+                ModelHelper.emitSprite(vc, data.outputDirection, sprites[26], -5e-4f);
+            }
+        }
+
+        return quads;
     }
 
     @Override
@@ -163,7 +179,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return MachineCasingModel.get(baseCasing).getSideSprite();
+        return getCasingModel(baseCasing).getParticleIcon();
     }
 
     @Override

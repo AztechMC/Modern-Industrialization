@@ -4,8 +4,30 @@ Each machine model in MI consists of two parts:
 - A set of overlays: extra textures applied on some sides.
 
 ## Casing models
-The top, side and bottom textures of a casing must be `modern_industrialization:textures/block/casings/<casing name>/{top,side,bottom}.png`.
-The textures are loaded automatically for all registered casings, hence there is no JSON model for casings.
+Casing models can either be a normal block model, or pull their model directly from a block.
+They are located at `modern_industrialization:models/machine_casing/<casing name>.json`.
+
+### Normal model
+Place a standard block model at `modern_industrialization:models/machine_casing/<casing name>.json`, for example:
+```json5
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "modern_industrialization:block/casings/configurable_tank"
+  }
+}
+```
+
+### Pull the model from a block
+To use a block's model for a casing, you must use the `modern_industrialization:use_block_model` loader.
+You must also define a single `block` key, telling MI which block to use for the casing.
+```json5
+{
+  "block": "<block id to use for the casing>",
+  "loader": "modern_industrialization:use_block_model"
+}
+```
+**Connected textures applied to the target block (for example with Athena) will be applied to the casing.** 
 
 ## Machine models
 A machine model JSON file defines which overlays are applied on which sides of the machine.
@@ -14,6 +36,10 @@ The JSON file must be located at `modern_industrialization:models/machine/<machi
 Example JSON:
 ```json5
 {
+  // The loader must always be "modern_industrialization:machine".
+  "loader": "modern_industrialization:machine",
+  // Casing to use for the model. Will be used by all machines except for multiblock hatches linked to a controller.
+  "casing": "<casing name>",
   // Set of overlays to use for all casings unless overridden below.
   "default_overlays": {
     // Top overlays

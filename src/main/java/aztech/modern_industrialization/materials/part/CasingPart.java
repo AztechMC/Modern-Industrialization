@@ -43,7 +43,7 @@ public class CasingPart implements PartKeyProvider {
 
     public PartTemplate of(PartEnglishNameFormatter formatter, @Nullable String path, float resistance) {
         PartTemplate regPart = new PartTemplate(formatter, this.key)
-                .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(this.equals(MIParts.MACHINE_CASING)), 5, resistance, 1, false);
+                .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(), 5, resistance, 1, false);
         if (path != null) {
             return regPart.withCustomPath(path, path);
         }

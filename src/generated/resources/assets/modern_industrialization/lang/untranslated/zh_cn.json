@@ -1768,6 +1768,7 @@
   "text.autoconfig.modern_industrialization.option.enableDefaultOreGenTooltips": "[UNTRANSLATED] Enable the default ore generation tooltips. Set this to false if you change the ore features in a datapack.",
   "text.autoconfig.modern_industrialization.option.enableFtbQuestsIntegration": "[UNTRANSLATED] Enable the FTB Quests integration, if present (Restart needed)",
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "手持接口仓时在多方块结构中显示有效位置",
+  "text.autoconfig.modern_industrialization.option.enableInterMachineConnectedTextures": "[UNTRANSLATED] Enable inter-machine connected textures. (Requires a suitable resource pack)",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "若没有按装EMI、JEI、REI，在登录时发送通知",
   "text.autoconfig.modern_industrialization.option.generateOres": "[UNUSED, PLEASE REMOVE] 启用全部矿物生成（需要重新启动）",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "加载位于modern_industrialization/generated_resources的额外资源",

@@ -23,10 +23,19 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-public class MachineCasing {
-    public final String name;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.BakedModelWrapper;
 
-    MachineCasing(String name) {
-        this.name = name;
+public class UseBlockModelBakedModel extends BakedModelWrapper<BakedModel> {
+    private final BlockState targetState;
+
+    public UseBlockModelBakedModel(BlockState targetState, BakedModel stateModel) {
+        super(stateModel);
+        this.targetState = targetState;
+    }
+
+    public BlockState getTargetState() {
+        return targetState;
     }
 }

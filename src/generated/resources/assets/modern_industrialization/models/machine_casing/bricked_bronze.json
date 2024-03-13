@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "modern_industrialization:block/fire_clay_bricks",
+    "side": "modern_industrialization:block/casings/bricked_bronze",
+    "top": "modern_industrialization:block/bronze_machine_casing"
+  }
+}

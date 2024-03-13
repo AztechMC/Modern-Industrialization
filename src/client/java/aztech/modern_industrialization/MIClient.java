@@ -46,8 +46,10 @@ import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeT
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
+import aztech.modern_industrialization.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineUnbakedModel;
+import aztech.modern_industrialization.machines.models.UseBlockModelUnbakedModel;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -192,14 +194,16 @@ public class MIClient {
     @SubscribeEvent
     private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(DelegatingModelBuilder.LOADER_ID, DelegatingUnbakedModel.LOADER);
-        event.register(MachineCasingHolderModel.LOADER_ID, MachineCasingHolderModel.LOADER);
         event.register(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.LOADER);
         event.register(PipeUnbakedModel.LOADER_ID, PipeUnbakedModel.LOADER);
+        event.register(UseBlockModelUnbakedModel.LOADER_ID, UseBlockModelUnbakedModel.LOADER);
     }
 
     @SubscribeEvent
     private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(MachineCasingHolderModel.MODEL_ID);
+        for (var casing : MachineCasings.registeredCasings.values()) {
+            event.register(MachineBakedModel.getCasingModelId(casing));
+        }
     }
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();

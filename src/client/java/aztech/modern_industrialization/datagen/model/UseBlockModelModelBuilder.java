@@ -21,27 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen;
+package aztech.modern_industrialization.datagen.model;
 
-import aztech.modern_industrialization.datagen.model.MIModelProvider;
-import aztech.modern_industrialization.datagen.model.MachineCasingsProvider;
-import aztech.modern_industrialization.datagen.texture.MISpriteSourceProvider;
-import aztech.modern_industrialization.datagen.texture.TexturesProvider;
-import java.util.concurrent.CompletableFuture;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
+import aztech.modern_industrialization.machines.models.UseBlockModelUnbakedModel;
+import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class MIDatagenClient {
-    public static void configure(
-            DataGenerator gen,
-            ExistingFileHelper fileHelper,
-            CompletableFuture<HolderLookup.Provider> lookupProvider,
-            boolean run,
-            boolean runtimeDatagen) {
-        gen.addProvider(run, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
-        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), fileHelper, runtimeDatagen));
-        gen.addProvider(run, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));
-        gen.addProvider(run, new MIModelProvider(gen.getPackOutput(), fileHelper));
+public class UseBlockModelModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
+    private final Block targetBlock;
+
+    protected UseBlockModelModelBuilder(Block targetBlock, T parent, ExistingFileHelper existingFileHelper) {
+        super(UseBlockModelUnbakedModel.LOADER_ID, parent, existingFileHelper, false);
+
+        this.targetBlock = targetBlock;
+    }
+
+    @Override
+    public JsonObject toJson(JsonObject json) {
+        var ret = super.toJson(json);
+        ret.addProperty("block", BuiltInRegistries.BLOCK.getKey(targetBlock).toString());
+        return ret;
     }
 }

@@ -44,8 +44,9 @@ public class LubricantHelper {
                 FluidTank interactionTank = new FluidTank(maxAllowedLubricant, stack -> stack.getFluid() == MIFluids.LUBRICANT.asFluid());
                 var result = FluidUtil.tryEmptyContainer(player.getItemInHand(hand), interactionTank, maxAllowedLubricant, player, true);
 
-                if (result.isSuccess()) {
-                    crafter.increaseEfficiencyTicks(interactionTank.getFluidAmount());
+                if (result.isSuccess() && interactionTank.getFluidAmount() >= mbPerTick) {
+                    crafter.increaseEfficiencyTicks(interactionTank.getFluidAmount() / mbPerTick);
+                    player.setItemInHand(hand, result.getResult());
                     return InteractionResult.SUCCESS;
                 }
             }

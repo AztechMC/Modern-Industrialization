@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -37,7 +38,6 @@ import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import java.util.List;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.Capabilities;
 
 public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHolder {
 
@@ -97,7 +97,7 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, bet, (be, direction) -> {
+            event.registerBlockEntity(EnergyApi.SIDED, bet, (be, direction) -> {
                 EnergyHatch eh = (EnergyHatch) be;
                 if (eh.input) {
                     return eh.insertable;

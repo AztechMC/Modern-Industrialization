@@ -50,6 +50,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBakedModel implements IDynamicBakedModel {
+    public static float Z_OFFSET = 5e-4f; // Cannot be lower due to Embeddium compact vertex format
+
     private static final ChunkRenderTypeSet CUTOUT_MIPPED = ChunkRenderTypeSet.of(RenderType.cutoutMipped());
 
     public static final String CASING_FOLDER = "machine_casing";
@@ -139,18 +141,18 @@ public class MachineBakedModel implements IDynamicBakedModel {
             // Machine overlays
             TextureAtlasSprite sprite = getSprite(sprites, side, data.frontDirection, false);
             if (sprite != null) {
-                ModelHelper.emitSprite(vc, side, sprite, -2e-4f);
+                ModelHelper.emitSprite(vc, side, sprite, -Z_OFFSET);
             }
         }
 
         // Output overlays
         if (data.outputDirection != null && side == data.outputDirection) {
-            ModelHelper.emitSprite(vc, data.outputDirection, sprites[24], -5e-4f);
+            ModelHelper.emitSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET);
             if (data.itemAutoExtract) {
-                ModelHelper.emitSprite(vc, data.outputDirection, sprites[25], -5e-4f);
+                ModelHelper.emitSprite(vc, data.outputDirection, sprites[25], -3 * Z_OFFSET);
             }
             if (data.fluidAutoExtract) {
-                ModelHelper.emitSprite(vc, data.outputDirection, sprites[26], -5e-4f);
+                ModelHelper.emitSprite(vc, data.outputDirection, sprites[26], -3 * Z_OFFSET);
             }
         }
 

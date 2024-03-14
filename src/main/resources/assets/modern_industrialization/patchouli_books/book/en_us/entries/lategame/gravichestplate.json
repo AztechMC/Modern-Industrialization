@@ -1,12 +1,12 @@
 {
-  "name": "GraviChestPlate",
+  "name": "Gravichestplate",
   "category": "modern_industrialization:endgame",
   "icon": "modern_industrialization:gravichestplate",
   "pages": [
     {
       "type": "spotlight",
       "item": "modern_industrialization:gravichestplate",
-      "text": "The GraviChestPlate uses advanced superconductor technology to invert the gravitational field around the player wearing it.$(br2)It uses EU, and can be charged by right-clicking a block that can output energy."
+      "text": "The Gravichestplate uses advanced superconductor technology to invert the gravitational field around the player wearing it.$(br2)It uses EU, and can be charged by right-clicking a Storage Unit or Transformer."
     },
     {
       "type": "text",

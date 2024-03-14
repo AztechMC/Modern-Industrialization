@@ -181,7 +181,7 @@ public final class MIItem {
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    ISimpleEnergyItem.registerStorage(event, item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 

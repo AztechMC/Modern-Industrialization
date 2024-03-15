@@ -48,6 +48,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBakedModel implements BakedModel, FabricBakedModel {
+    public static float Z_OFFSET = 5e-4f; // Cannot be lower due to Embeddium compact vertex format
+
     private static final Direction[] DIRECTIONS = Direction.values();
 
     public final RenderMaterial cutoutMaterial;
@@ -84,12 +86,12 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
                 var sprites = renderOverlays(renderContext, casing, clientData.frontDirection);
                 if (clientData.outputDirection != null) {
-                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[24], 5e-4f);
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[24], 3 * Z_OFFSET);
                     if (clientData.itemAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[25], 5e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[25], 3 * Z_OFFSET);
                     }
                     if (clientData.fluidAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[26], 5e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[26], 3 * Z_OFFSET);
                     }
                 }
             }
@@ -108,7 +110,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         for (Direction d : DIRECTIONS) {
             TextureAtlasSprite sprite = getSprite(sprites, d, facingDirection, false);
             if (sprite != null) {
-                emitSprite(emitter, d, sprite, 2e-4f);
+                emitSprite(emitter, d, sprite, Z_OFFSET);
             }
         }
         return sprites;

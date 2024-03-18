@@ -246,7 +246,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         Slot slot = hoveredSlot;
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-            FluidVariant renderedKey = stack.isPlayerLocked() ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
+            FluidVariant renderedKey = stack.getLockedInstance() != null ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
             List<Component> tooltip = new ArrayList<>(
                     FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
 

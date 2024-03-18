@@ -57,7 +57,7 @@ public record UpdateItemSlotPacket(int syncId, int stackId, ConfigurableItemStac
                 Slot slot = csh.slots.get(i);
                 if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot is) {
                     if (is.getConfStack() == oldStack) {
-                        csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
+                        csh.updateSlot(i, newStack.new ConfigurableItemSlot(is));
                         return;
                     }
                 }

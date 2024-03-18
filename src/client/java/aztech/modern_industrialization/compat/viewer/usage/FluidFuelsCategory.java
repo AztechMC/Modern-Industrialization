@@ -27,11 +27,13 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
@@ -52,7 +54,11 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Fluid> consumer) {
-        FluidFuelRegistry.getRegisteredFluids().forEach(consumer);
+        for (var fluid : registryAccess.registryOrThrow(Registries.FLUID)) {
+            if (fluid.builtInRegistryHolder().getData(MIDataMaps.FLUID_FUELS) != null) {
+                consumer.accept(fluid);
+            }
+        }
     }
 
     @Override
@@ -62,7 +68,7 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
 
     @Override
     public void buildWidgets(Fluid recipe, WidgetList widgets) {
-        int totalEnergy = FluidFuelRegistry.getEu(recipe);
+        int totalEnergy = FluidFuel.getEu(recipe);
         Component text = MIText.EuInDieselGenerator.text(totalEnergy);
         widgets.secondaryText(text, 40, 14);
     }

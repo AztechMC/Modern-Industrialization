@@ -31,9 +31,10 @@ copy the relevant file from that folder to the main language folder,
 and modify it to remove the erroring entries.
 
 ## Creating an addon for Modern Industrialization
-Everything in the `aztechmc.modern_industrialization.api` package is the stable public API,
-which will not change during a major Minecraft version. (Unless stated otherwise in the documentation of the relevant files).
+Everything in the `aztechmc.modern_industrialization.api` package is the stable public API.
+It will not change during a major Minecraft version, except for members marked as `@ApiStatus.Internal`.
 
+The API is still a bit rough, and we are open to suggestions.
 If you need more things to be exposed please come discuss the features you need on our Discord.
 The link is on CurseForge.
 

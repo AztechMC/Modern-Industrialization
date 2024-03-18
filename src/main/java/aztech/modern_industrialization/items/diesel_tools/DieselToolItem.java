@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.items.diesel_tools;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
@@ -114,7 +114,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
         long amount = FluidFuelItemHelper.getAmount(stack);
         if (amount > 0) {
             FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
-            int burnTicks = FluidFuelRegistry.getEu(fluid.getFluid());
+            int burnTicks = FluidFuel.getEu(fluid.getFluid());
             if (burnTicks > 0) {
                 return 1.0f + burnTicks / 8.0f;
             }
@@ -125,7 +125,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
-            return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
+            return ItemHelper.createToolModifiers(damage * FluidFuel.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
         }
         return ImmutableMultimap.of();
     }

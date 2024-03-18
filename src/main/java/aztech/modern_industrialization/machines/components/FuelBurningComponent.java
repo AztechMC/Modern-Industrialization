@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
@@ -129,7 +129,7 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
-                    long euPerMb = FluidFuelRegistry.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
+                    long euPerMb = FluidFuel.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
                     if (euPerMb != 0) {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
                         long mbConsumed = Math.min(mbConsumedMax, stack.getAmount());

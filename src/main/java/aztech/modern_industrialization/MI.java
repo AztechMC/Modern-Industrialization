@@ -23,8 +23,7 @@
  */
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
@@ -65,6 +64,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,13 +145,7 @@ public class MI {
             MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);
             MIItem.ITEM_DEFINITIONS.values().forEach(ItemDefinition::onRegister);
 
-            FluidFuelRegistry.init();
             FluidNuclearComponent.init();
-
-            SpeedUpgrade.UPGRADES.put(MIItem.MOTOR.asItem(), 2);
-            SpeedUpgrade.UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8);
-            SpeedUpgrade.UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32);
-            SpeedUpgrade.UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64);
         });
 
         modBus.addListener(GatherDataEvent.class, event -> {
@@ -165,6 +159,11 @@ public class MI {
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
         modBus.addListener(RegisterPayloadHandlerEvent.class, MIPackets::init);
+
+        modBus.addListener(RegisterDataMapTypesEvent.class, event -> {
+            event.register(MIDataMaps.FLUID_FUELS);
+            event.register(MIDataMaps.ITEM_PIPE_UPGRADES);
+        });
 
         if (MIConfig.loadAe2Compat()) {
             MIAEAddon.init(modBus);

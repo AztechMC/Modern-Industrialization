@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
@@ -58,7 +58,7 @@ public interface FluidFuelItemHelper {
 
         @Override
         public boolean canFillFluidType(FluidStack fluid) {
-            return FluidFuelRegistry.getEu(fluid.getFluid()) > 0;
+            return fluid.getFluidHolder().getData(MIDataMaps.FLUID_FUELS) != null;
         }
 
         @Override

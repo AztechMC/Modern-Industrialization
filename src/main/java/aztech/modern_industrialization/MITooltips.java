@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
@@ -339,12 +339,12 @@ public class MITooltips {
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (SpeedUpgrade.UPGRADES.containsKey(item)) {
-                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(item)).build());
+                var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
+                if (upgrade != null) {
+                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
                 } else {
                     return Optional.empty();
                 }
-
             });
 
     public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultilines(

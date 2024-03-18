@@ -25,6 +25,7 @@ jobs:
         with:
           arguments: publishAllPublicationsToModmavenRepository
         env:
+          MI_VERSION: ${{ github.event.release.tag_name }}
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
       - name: Upload to Curseforge

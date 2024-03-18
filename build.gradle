@@ -12,6 +12,12 @@ plugins {
 version = System.getenv("MI_VERSION")
         ? System.getenv("MI_VERSION")
         : "0.0.0-local"
+group = "aztech"
+base {
+    archivesName = "Modern-Industrialization"
+}
+
+logger.lifecycle("Modern Industrialization version ${version}")
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -177,7 +183,7 @@ sourceSets {
 dependencies {
     implementation "net.neoforged:neoforge:${project.neo_version}"
 
-    implementation jarJar("dev.technici4n:GrandPower:${project.grandpower_version}") {
+    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}") {
         jarJar.ranged(it, "[$project.grandpower_version,)")
     }
 
@@ -344,7 +350,6 @@ jar {
     from sourceSets.client.output
 }
 
-// TODO: shouldn't NG handle this automatically?
 tasks.named("jarJar") {
     from "LICENSE"
     from sourceSets.client.output
@@ -360,8 +365,14 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+        maven {
+            credentials {
+                username = System.getenv("MODMAVEN_USER")
+                password = System.getenv("MODMAVEN_PASSWORD")
+            }
+            name = "modmaven"
+            url = "https://modmaven.dev/artifactory/local-releases/"
+        }
     }
 }
 

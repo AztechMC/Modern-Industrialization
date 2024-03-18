@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -324,7 +324,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
         return new EUProductionMap<>() {
             @Override
             public long getEuProduction(Fluid variant) {
-                return FluidFuelRegistry.getEu(variant);
+                return FluidFuel.getEu(variant);
             }
 
             @Override

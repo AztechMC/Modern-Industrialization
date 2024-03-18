@@ -21,17 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.pipe.item;
+package aztech.modern_industrialization.api.datamaps;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+import aztech.modern_industrialization.MI;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
-/**
- * A speed upgrade for an item pipe
- */
-public class SpeedUpgrade {
+public final class MIDataMaps {
+    public static final DataMapType<Fluid, FluidFuel> FLUID_FUELS = DataMapType
+            .builder(
+                    MI.id("fluid_fuels"), Registries.FLUID, FluidFuel.CODEC)
+            .synced(FluidFuel.CODEC, true)
+            .build();
 
-    public final static Map<Item, Integer> UPGRADES = new IdentityHashMap<>();
+    /**
+     * Items that can be added to item pipes, to increase the maximum amount of items moved at once.
+     */
+    public static final DataMapType<Item, ItemPipeUpgrade> ITEM_PIPE_UPGRADES = DataMapType
+            .builder(
+                    MI.id("item_pipe_upgrades"), Registries.ITEM, ItemPipeUpgrade.CODEC)
+            .synced(ItemPipeUpgrade.CODEC, true)
+            .build();
 
+    private MIDataMaps() {
+    }
 }

@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.ApiStatus;
 
 public class EnergyApi {
     public static final BlockCapability<MIEnergyStorage, Direction> SIDED = BlockCapability
@@ -89,6 +90,7 @@ public class EnergyApi {
         }
     }
 
+    @ApiStatus.Internal
     public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks, Item[] allItems) {
         // Compat wrapper for TR energy
         if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {

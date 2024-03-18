@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -144,12 +144,12 @@ public class JetpackItem extends ArmorItem implements ActivatableChestItem {
                         // Boost forward if fall flying
                         Vec3 playerFacing = player.getLookAngle();
                         Vec3 playerVelocity = player.getDeltaMovement();
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid()) / 200.0);
+                        double maxSpeed = Math.sqrt(FluidFuel.getEu(fluid.getFluid()) / 200.0);
                         double attenuationFactor = 0.5;
                         player.setDeltaMovement(playerVelocity.scale(attenuationFactor).add(playerFacing.scale(maxSpeed)));
                     } else {
                         // Otherwise boost vertically
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid()) / 200.0);
+                        double maxSpeed = Math.sqrt(FluidFuel.getEu(fluid.getFluid()) / 200.0);
                         double acceleration = 0.25;
                         Vec3 v = player.getDeltaMovement();
                         if (v.y < maxSpeed) {

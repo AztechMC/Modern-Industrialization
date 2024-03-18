@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
@@ -216,7 +216,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0) != 0;
+            return stack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES) != null;
         }
 
         @Override

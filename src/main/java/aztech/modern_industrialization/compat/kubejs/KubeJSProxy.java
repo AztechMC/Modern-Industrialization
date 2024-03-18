@@ -40,9 +40,6 @@ public class KubeJSProxy {
     public void fireRegisterFluidsEvent() {
     }
 
-    public void fireRegisterFluidFuelsEvent() {
-    }
-
     public void fireRegisterRecipeTypesEvent() {
     }
 

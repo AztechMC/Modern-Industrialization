@@ -69,6 +69,15 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         }
     }
 
+    public void updateSlot(int index, Slot slot) {
+        var existingSlot = getSlot(index);
+        var slotGroup = slotGroups.remove(existingSlot);
+        if (slotGroup != null) {
+            slotGroups.put(slot, slotGroup);
+        }
+        this.slots.set(index, slot);
+    }
+
     protected Slot addSlot(Slot slot, SlotGroup slotGroup) {
         slotGroups.put(slot, slotGroup);
         slotGroupIndices.add(slotGroup);

@@ -57,7 +57,7 @@ public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidSt
                 Slot slot = csh.slots.get(i);
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fs) {
                     if (fs.getConfStack() == oldStack) {
-                        csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
+                        csh.updateSlot(i, newStack.new ConfigurableFluidSlot(fs));
                         return;
                     }
                 }

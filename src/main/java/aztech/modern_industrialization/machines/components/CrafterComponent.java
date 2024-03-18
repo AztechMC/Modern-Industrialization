@@ -619,7 +619,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // ITEM INPUTS
         outer: for (MachineRecipe.ItemInput input : recipe.value().itemInputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                if (input.matches(new ItemStack(stack.getLockedInstance())))
+                if (stack.getLockedInstance() != null && input.matches(new ItemStack(stack.getLockedInstance())))
                     continue outer;
             }
             Item targetItem = null;
@@ -682,6 +682,11 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         if (recipe.value().itemInputs.size() > 0 || recipe.value().itemOutputs.size() > 0) {
             lockAll(this.inventory.getItemInputs());
             lockAll(this.inventory.getItemOutputs());
+        }
+        // LOCK FLUIDS
+        if (recipe.value().fluidInputs.size() > 0 || recipe.value().fluidOutputs.size() > 0) {
+            lockAll(this.inventory.getFluidInputs());
+            lockAll(this.inventory.getFluidOutputs());
         }
     }
 

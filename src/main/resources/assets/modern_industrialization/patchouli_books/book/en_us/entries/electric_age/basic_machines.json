@@ -15,7 +15,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/configurable_chest_asbl",
-      "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 27 configurable slots, and auto-extract functionality! Very useful for automation!"
+      "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 27 configurable slots, and auto-eject functionality! Very useful for automation!"
     },
     {
       "type": "crafting",

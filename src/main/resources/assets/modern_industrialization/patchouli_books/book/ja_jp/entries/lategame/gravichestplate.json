@@ -1,0 +1,17 @@
+{
+  "name": "グラビティチェストプレート",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:gravichestplate",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:gravichestplate",
+      "text": "GraviChestPlateは、先進的超伝導体技術により装着したプレーヤーの周囲の重力場を反転させる。$(br2)EUを使用しており、エネルギーを出力できるブロックを右クリックすることで充電できる。"
+    },
+    {
+      "type": "text",
+      "text": "なお現在のグラビティチェストプレート技術は飛行を可能とし落下によるダメージを防ぐが、他の種類のダメージは防げない。$(br2)Modern Industrializationのエンジニアは解決策を見つけようとしているが、研究開発は予想以上に時間がかかっている。"
+    }
+  ],
+  "sortnum": 300
+}

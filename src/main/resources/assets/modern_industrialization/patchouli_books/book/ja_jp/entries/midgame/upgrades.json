@@ -1,0 +1,20 @@
+{
+  "name": "アップグレード！",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:basic_upgrade",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Overclock Upgrades",
+      "item": "modern_industrialization:basic_upgrade",
+      "text": "通常の電動機械のオーバークロックの上限は32 EU/t、電動マルチブロックのオーバークロックの上限は128 EU/tであることを知っていただろうか？$(br2)機械やマルチブロックのメニューからアップグレードを追加して最大オーバークロックを増やすことが可能だ！詳細な数値についてはREIを確認のこと。"
+    },
+    {
+      "type": "spotlight",
+      "title": "Machine Hull Upgrades",
+      "item": "modern_industrialization:advanced_machine_hull",
+      "text": "君にもできる！上級機械外装を持って機械を右クリックすることでMV級に変更することができ、今や機械はMVケーブルにしか接続しないようになる。機械外装はユーザーインターフェースからも設定、あるいは除去することができる。"
+    }
+  ],
+  "sortnum": 200
+}

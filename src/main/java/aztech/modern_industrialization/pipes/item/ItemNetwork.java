@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
@@ -36,7 +35,6 @@ import java.util.function.Predicate;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +64,7 @@ public class ItemNetwork extends PipeNetwork {
     }
 
     private void doNetworkTransfer(ServerLevel world) {
-        List<ExtractionTarget> extractionTargets = new ArrayList<>();
+        List<ExtractionSource> extractionSources = new ArrayList<>();
         for (var entry : iterateTickingNodes()) {
             BlockPos pos = entry.getPos();
             ItemNetworkNode itemNode = (ItemNetworkNode) entry.getNode();
@@ -78,105 +76,53 @@ public class ItemNetwork extends PipeNetwork {
                     var source = world.getCapability(Capabilities.ItemHandler.BLOCK, queryPos, querySide);
 
                     if (source != null) {
-                        extractionTargets.add(new ExtractionTarget(connection, source, queryPos, querySide));
+                        extractionSources.add(new ExtractionSource(connection, source, queryPos, querySide));
                     }
                 }
             }
         }
         // Lower priority extracts first.
-        extractionTargets.sort(Comparator.comparing(et -> et.connection.extractPriority));
+        extractionSources.sort(Comparator.comparing(et -> et.connection().extractPriority));
 
         // Do the actual transfer.
         var insertTargets = getAggregatedInsertTargets(world);
-        var insertStorage = new IItemSink.Combined(insertTargets);
         lastMovedItems = 0;
-        for (ExtractionTarget target : extractionTargets) {
+        for (ExtractionSource target : extractionSources) {
             // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
             // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
-            while (insertTargets.size() > 0 && target.connection.extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
+            while (insertTargets.size() > 0 && target.connection().extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
                 insertTargets.remove(insertTargets.size() - 1);
             }
 
             try {
-                lastMovedItems += moveAll(world, target, insertStorage, target.connection::canStackMoveThrough,
-                        target.connection.getMoves());
+                lastMovedItems += moveAll(world, target, insertTargets, target.connection()::canStackMoveThrough,
+                        target.connection().getMoves());
             } catch (Exception exception) {
                 var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
                 crashReport.addCategory("Block being extracted from:")
                         .setDetail("Dimension", world.dimension())
-                        .setDetail("Position", target.queryPos)
-                        .setDetail("Accessed from side", target.querySide);
+                        .setDetail("Position", target.queryPos())
+                        .setDetail("Accessed from side", target.querySide());
                 throw new ReportedException(crashReport);
             }
         }
     }
 
-    private static class ExtractionTarget {
-        private final ItemNetworkNode.ItemConnection connection;
-        private final IItemHandler storage;
-        private final BlockPos queryPos;
-        private final Direction querySide;
-
-        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, IItemHandler storage, BlockPos queryPos, Direction querySide) {
-            this.connection = connection;
-            this.storage = storage;
-            this.queryPos = queryPos;
-            this.querySide = querySide;
-        }
-    }
-
-    private static int moveAll(ServerLevel world, ExtractionTarget target, IItemSink sink, Predicate<ItemStack> filter, int maxToMove) {
-        IItemHandler source = target.storage;
+    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends IItemSink> sinks, Predicate<ItemStack> filter,
+            int maxToMove) {
+        IItemHandler source = target.storage();
         int moved = 0;
 
         int sourceSlots = source.getSlots();
-        slotsLoop: for (int i = 0; i < sourceSlots; ++i) {
+        for (int i = 0; i < sourceSlots; ++i) {
             // Filter check
             var stack = source.getStackInSlot(i);
-            if (!filter.test(stack)) {
+            if (stack.isEmpty() || !filter.test(stack)) {
                 continue;
             }
 
-            // Repeated extraction because extractItem limits to max stack size
-            while (true) {
-                // Simulate first
-                var available = source.extractItem(i, maxToMove - moved, true);
-                if (available.isEmpty()) {
-                    continue slotsLoop;
-                }
-
-                int availableCount = available.getCount();
-                var simulateLeftover = sink.insertItem(available, true);
-                int canFit = availableCount - simulateLeftover.getCount();
-                if (canFit <= 0) {
-                    continue slotsLoop;
-                }
-
-                // Do!
-                var taken = source.extractItem(i, canFit, false);
-                int takenCount = taken.getCount();
-                var leftover = sink.insertItem(taken, false);
-
-                int movedThisTime = takenCount - leftover.getCount();
-                moved += movedThisTime;
-
-                if (!leftover.isEmpty()) {
-                    // Be nice and try to give the overflow back
-                    leftover = source.insertItem(i, leftover, false);
-
-                    // rest in pieces, little stacks
-                    if (!leftover.isEmpty()) {
-                        MI.LOGGER.error("Discarding overflowing item {}, extracted from block at position {} in {}, accessed from {} side".formatted(
-                                leftover, target.queryPos, world.dimension(), target.querySide));
-                    }
-                }
-
-                if (movedThisTime == 0) {
-                    break;
-                }
-            }
-
-            if (moved == maxToMove) {
+            moved += IItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
+            if (moved >= maxToMove) {
                 break;
             }
         }
@@ -288,26 +234,18 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public ItemStack insertItem(ItemStack stack, boolean simulate) {
-            if (stack.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
+        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
+            var stack = source.storage().getStackInSlot(sourceSlot);
 
             if (stack.hasTag()) {
-                return insertTargets(targets, stack, simulate);
+                return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 
             List<IItemSink> targets = map.get(stack.getItem());
             if (targets != null) {
-                for (IItemSink target : targets) {
-                    stack = target.insertItem(stack, simulate);
-                    if (stack.isEmpty()) {
-                        break;
-                    }
-                }
+                return IItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
             }
-
-            return stack;
+            return 0;
         }
 
         @Override
@@ -326,8 +264,8 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public ItemStack insertItem(ItemStack stack, boolean simulate) {
-            return insertTargets(targets, stack, simulate);
+        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
+            return insertTargets(targets, world, source, sourceSlot, maxAmount);
         }
 
         @Override
@@ -336,21 +274,24 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static ItemStack insertTargets(List<InsertTarget> targets, ItemStack stack, boolean simulate) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
+    private static int insertTargets(List<InsertTarget> targets, ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
+        int moved = 0;
 
         for (InsertTarget target : targets) {
+            var stack = source.storage().getStackInSlot(sourceSlot);
+            if (stack.isEmpty()) {
+                break;
+            }
+
             if (target.connection.canStackMoveThrough(stack)) {
-                stack = target.target.insertItem(stack, simulate);
-                if (stack.isEmpty()) {
+                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved);
+                if (moved >= maxAmount) {
                     break;
                 }
             }
         }
 
-        return stack;
+        return moved;
     }
 
     private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink target) {

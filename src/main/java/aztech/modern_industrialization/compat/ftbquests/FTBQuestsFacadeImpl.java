@@ -23,32 +23,40 @@
  */
 package aztech.modern_industrialization.compat.ftbquests;
 
+import dev.ftb.mods.ftbquests.item.MissingItem;
+import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
+import dev.ftb.mods.ftbquests.quest.task.ItemTask;
+import dev.ftb.mods.ftbteams.api.FTBTeamsAPI;
 import java.util.UUID;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class FTBQuestsFacadeImpl implements FTBQuestsFacade {
     @Override
     public void addCompleted(UUID uuid, Item item, long amount) {
-        // TODO 1.20: wait for FTB Quests update
-//        var file = ServerQuestFile.INSTANCE;
-//        var data = file.getNullableTeamData(FTBTeamsAPI.getPlayerTeamID(uuid));
-//
-//        if (data == null || data.isLocked()) {
-//            return;
-//        }
-//
-//        ItemStack stack = new ItemStack(item, (int) amount);
-//
-//        for (var task : file.getSubmitTasks()) {
-//            if (task instanceof ItemTask itemTask && data.canStartTasks(task.quest)) {
-//                if (data.isCompleted(task) || itemTask.item.getItem() instanceof MissingItem || item instanceof MissingItem) {
-//                    continue;
-//                }
-//
-//                if (!task.consumesResources() && itemTask.test(stack)) {
-//                    data.addProgress(task, amount);
-//                }
-//            }
-//        }
+        var file = ServerQuestFile.INSTANCE;
+        var team = FTBTeamsAPI.api().getManager().getTeamForPlayerID(uuid).orElse(null);
+        if (team == null) {
+            return;
+        }
+        var data = file.getNullableTeamData(team.getId());
+
+        if (data == null || data.isLocked()) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(item, (int) amount);
+
+        for (var task : file.getSubmitTasks()) {
+            if (task instanceof ItemTask itemTask && data.canStartTasks(task.getQuest())) {
+                if (data.isCompleted(task) || itemTask.getItemStack().getItem() instanceof MissingItem || item instanceof MissingItem) {
+                    continue;
+                }
+
+                if (!task.consumesResources() && itemTask.test(stack)) {
+                    data.addProgress(task, amount);
+                }
+            }
+        }
     }
 }

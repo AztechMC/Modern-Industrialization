@@ -29,6 +29,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 
 public class LubricantHelper {
 
@@ -42,7 +43,13 @@ public class LubricantHelper {
             if (rem > 0) {
                 int maxAllowedLubricant = rem * mbPerTick;
                 FluidTank interactionTank = new FluidTank(maxAllowedLubricant, stack -> stack.getFluid() == MIFluids.LUBRICANT.asFluid());
-                var result = FluidUtil.tryEmptyContainer(player.getItemInHand(hand), interactionTank, maxAllowedLubricant, player, true);
+                var result = FluidUtil.tryEmptyContainerAndStow(
+                        player.getItemInHand(hand),
+                        interactionTank,
+                        new PlayerMainInvWrapper(player.getInventory()),
+                        maxAllowedLubricant,
+                        player,
+                        true);
 
                 if (result.isSuccess() && interactionTank.getFluidAmount() >= mbPerTick) {
                     crafter.increaseEfficiencyTicks(interactionTank.getFluidAmount() / mbPerTick);

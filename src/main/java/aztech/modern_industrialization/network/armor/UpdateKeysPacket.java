@@ -25,17 +25,14 @@ package aztech.modern_industrialization.network.armor;
 
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.network.BasePacket;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public record UpdateKeysPacket(boolean up) implements BasePacket {
-    public UpdateKeysPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeBoolean(up);
-    }
+    public static final StreamCodec<ByteBuf, UpdateKeysPacket> STREAM_CODEC = ByteBufCodecs.BOOL
+            .map(UpdateKeysPacket::new, UpdateKeysPacket::up);
 
     @Override
     public void handle(Context ctx) {

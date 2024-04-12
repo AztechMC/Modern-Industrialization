@@ -24,22 +24,24 @@
 package aztech.modern_industrialization.network.pipes;
 
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record IncrementPriorityPacket(int syncId, int channel, int delta) implements BasePacket {
-    public IncrementPriorityPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readVarInt());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(channel);
-        buf.writeVarInt(delta);
-    }
+    public static final StreamCodec<ByteBuf, IncrementPriorityPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            IncrementPriorityPacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            IncrementPriorityPacket::channel,
+            ByteBufCodecs.VAR_INT,
+            IncrementPriorityPacket::delta,
+            IncrementPriorityPacket::new);
 
     @Override
     public void handle(Context ctx) {

@@ -25,19 +25,20 @@ package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record SetLockingModePacket(int syncId, boolean lockingMode) implements BasePacket {
-    public SetLockingModePacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeBoolean(lockingMode);
-    }
+    public static final StreamCodec<ByteBuf, SetLockingModePacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            SetLockingModePacket::syncId,
+            ByteBufCodecs.BOOL,
+            SetLockingModePacket::lockingMode,
+            SetLockingModePacket::new);
 
     @Override
     public void handle(Context ctx) {

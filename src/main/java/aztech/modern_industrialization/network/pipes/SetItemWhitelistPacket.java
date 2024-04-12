@@ -24,20 +24,21 @@
 package aztech.modern_industrialization.network.pipes;
 
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record SetItemWhitelistPacket(int syncId, boolean whitelist) implements BasePacket {
-    public SetItemWhitelistPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeBoolean(whitelist);
-    }
+    public static final StreamCodec<ByteBuf, SetItemWhitelistPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            SetItemWhitelistPacket::syncId,
+            ByteBufCodecs.BOOL,
+            SetItemWhitelistPacket::whitelist,
+            SetItemWhitelistPacket::new);
 
     @Override
     public void handle(Context ctx) {

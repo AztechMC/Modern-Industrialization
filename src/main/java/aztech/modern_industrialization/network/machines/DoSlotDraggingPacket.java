@@ -29,9 +29,13 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, @Nullable ItemVariant itemVariant,
         @Nullable FluidVariant fluidVariant) implements BasePacket {
@@ -43,7 +47,7 @@ public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, 
         this(containerId, slotId, false, null, fluidVariant);
     }
 
-    public DoSlotDraggingPacket(FriendlyByteBuf buf) {
+    private DoSlotDraggingPacket(FriendlyByteBuf buf) {
         this(buf.readInt(), buf.readVarInt(), buf.readBoolean(), buf);
     }
 
@@ -51,7 +55,9 @@ public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, 
         this(containerId, slotId, isItem, isItem ? ItemVariant.fromPacket(buf) : null, isItem ? null : FluidVariant.fromPacket(buf));
     }
 
-    @Override
+    public static StreamCodec<RegistryFriendlyByteBuf, DoSlotDraggingPacket> STREAM_CODEC = StreamCodec.ofMember(
+            DoSlotDraggingPacket::write, DoSlotDraggingPacket::new);
+
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(containerId);
         buf.writeVarInt(slotId);

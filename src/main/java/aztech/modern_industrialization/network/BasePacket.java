@@ -34,8 +34,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public interface BasePacket extends CustomPacketPayload {
-    void write(FriendlyByteBuf buf);
-
     void handle(Context ctx);
 
     default void sendToServer() {
@@ -47,8 +45,8 @@ public interface BasePacket extends CustomPacketPayload {
     }
 
     @Override
-    default ResourceLocation id() {
-        return MIPackets.packetLocations.get(getClass());
+    default Type<? extends CustomPacketPayload> type() {
+        return MIPackets.packetTypes.get(getClass());
     }
 
     record Context(Class<? extends BasePacket> clazz, PlayPayloadContext inner) {

@@ -27,20 +27,20 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ReiLockSlotsPacket(int containedId, ResourceLocation recipeId) implements BasePacket {
-    public ReiLockSlotsPacket(FriendlyByteBuf buf) {
-        this(buf.readInt(), buf.readResourceLocation());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(containedId);
-        buf.writeResourceLocation(recipeId);
-    }
+    public static final StreamCodec<ByteBuf, ReiLockSlotsPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            ReiLockSlotsPacket::containedId,
+            ResourceLocation.STREAM_CODEC,
+            ReiLockSlotsPacket::recipeId,
+            ReiLockSlotsPacket::new);
 
     @Override
     public void handle(Context ctx) {

@@ -46,47 +46,51 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.network.FriendlyByteBuf;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class MIPackets {
-    static final Map<Class<? extends BasePacket>, ResourceLocation> packetLocations = new HashMap<>();
+    static final Map<Class<? extends BasePacket>, CustomPacketPayload.Type<?>> packetTypes = new HashMap<>();
     private static final List<Registration<?>> registrations = new ArrayList<>();
 
-    private record Registration<P extends BasePacket> (ResourceLocation resourceLocation, Class<P> clazz,
-            FriendlyByteBuf.Reader<P> packetConstructor) {
+    private record Registration<P extends BasePacket> (CustomPacketPayload.Type<P> packetType, Class<P> clazz,
+            StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {
     }
 
-    private static <P extends BasePacket> void register(String path, Class<P> clazz, FriendlyByteBuf.Reader<P> packetConstructor) {
-        packetLocations.put(clazz, MI.id(path));
-        registrations.add(new Registration<>(MI.id(path), clazz, packetConstructor));
+    private static <P extends BasePacket> void register(String path, Class<P> clazz, StreamCodec<? super RegistryFriendlyByteBuf, P> packetConstructor) {
+        var type = new CustomPacketPayload.Type<P>(MI.id(path));
+        packetTypes.put(clazz, type);
+        registrations.add(new Registration<>(type, clazz, packetConstructor));
     }
 
     static {
         // Armor
-        register("activate_chest", ActivateChestPacket.class, ActivateChestPacket::new);
-        register("update_keys", UpdateKeysPacket.class, UpdateKeysPacket::new);
+        register("activate_chest", ActivateChestPacket.class, ActivateChestPacket.STREAM_CODEC);
+        register("update_keys", UpdateKeysPacket.class, UpdateKeysPacket.STREAM_CODEC);
         // Configurable inventory
-        register("adjust_slot_capacity", AdjustSlotCapacityPacket.class, AdjustSlotCapacityPacket::new);
-        register("do_slot_dragging", DoSlotDraggingPacket.class, DoSlotDraggingPacket::new);
-        register("lock_all", LockAllPacket.class, LockAllPacket::new);
-        register("machine_component_sync", MachineComponentSyncPacket.class, MachineComponentSyncPacket::new);
-        register("set_locking_mode", SetLockingModePacket.class, SetLockingModePacket::new);
-        register("update_fluid_slot", UpdateFluidSlotPacket.class, UpdateFluidSlotPacket::new);
-        register("update_item_slot", UpdateItemSlotPacket.class, UpdateItemSlotPacket::new);
+        register("adjust_slot_capacity", AdjustSlotCapacityPacket.class, AdjustSlotCapacityPacket.STREAM_CODEC);
+        register("do_slot_dragging", DoSlotDraggingPacket.class, DoSlotDraggingPacket.STREAM_CODEC);
+        register("lock_all", LockAllPacket.class, LockAllPacket.STREAM_CODEC);
+        register("machine_component_sync", MachineComponentSyncPacket.class, MachineComponentSyncPacket.STREAM_CODEC);
+        register("set_locking_mode", SetLockingModePacket.class, SetLockingModePacket.STREAM_CODEC);
+        register("update_fluid_slot", UpdateFluidSlotPacket.class, UpdateFluidSlotPacket.STREAM_CODEC);
+        register("update_item_slot", UpdateItemSlotPacket.class, UpdateItemSlotPacket.STREAM_CODEC);
         // Machine
-        register("change_shape", ChangeShapePacket.class, ChangeShapePacket::new);
-        register("forge_hammer_move_recipe", ForgeHammerMoveRecipePacket.class, ForgeHammerMoveRecipePacket::new);
-        register("rei_lock_slots", ReiLockSlotsPacket.class, ReiLockSlotsPacket::new);
-        register("set_auto_extract", SetAutoExtractPacket.class, SetAutoExtractPacket::new);
+        register("change_shape", ChangeShapePacket.class, ChangeShapePacket.STREAM_CODEC);
+        register("forge_hammer_move_recipe", ForgeHammerMoveRecipePacket.class, ForgeHammerMoveRecipePacket.STREAM_CODEC);
+        register("rei_lock_slots", ReiLockSlotsPacket.class, ReiLockSlotsPacket.STREAM_CODEC);
+        register("set_auto_extract", SetAutoExtractPacket.class, SetAutoExtractPacket.STREAM_CODEC);
         // Pipes
-        register("increment_priority", IncrementPriorityPacket.class, IncrementPriorityPacket::new);
-        register("set_connection_type", SetConnectionTypePacket.class, SetConnectionTypePacket::new);
-        register("set_item_whitelist", SetItemWhitelistPacket.class, SetItemWhitelistPacket::new);
-        register("set_network_fluid", SetNetworkFluidPacket.class, SetNetworkFluidPacket::new);
-        register("set_priority", SetPriorityPacket.class, SetPriorityPacket::new);
+        register("increment_priority", IncrementPriorityPacket.class, IncrementPriorityPacket.STREAM_CODEC);
+        register("set_connection_type", SetConnectionTypePacket.class, SetConnectionTypePacket.STREAM_CODEC);
+        register("set_item_whitelist", SetItemWhitelistPacket.class, SetItemWhitelistPacket.STREAM_CODEC);
+        register("set_network_fluid", SetNetworkFluidPacket.class, SetNetworkFluidPacket.STREAM_CODEC);
+        register("set_priority", SetPriorityPacket.class, SetPriorityPacket.STREAM_CODEC);
     }
 
     public static void init(RegisterPayloadHandlerEvent event) {
@@ -98,7 +102,7 @@ public class MIPackets {
     }
 
     private static <P extends BasePacket> void register(IPayloadRegistrar registrar, Registration<P> reg) {
-        registrar.play(reg.resourceLocation, reg.packetConstructor, (packet, context) -> {
+        registrar.play(reg.packetType, reg.packetCodec, (packet, context) -> {
             context.workHandler().execute(() -> {
                 packet.handle(new BasePacket.Context(reg.clazz, context));
             });

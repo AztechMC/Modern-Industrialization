@@ -27,15 +27,18 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateItemSlotPacket(int syncId, int stackId, ConfigurableItemStack newStack) implements BasePacket {
+    public static final StreamCodec<FriendlyByteBuf, UpdateItemSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
+            UpdateItemSlotPacket::write, UpdateItemSlotPacket::new);
+
     public UpdateItemSlotPacket(FriendlyByteBuf buf) {
         this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableItemStack(buf.readNbt()));
     }
 
-    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeByte(syncId);
         buf.writeVarInt(stackId);

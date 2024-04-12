@@ -25,20 +25,18 @@ package aztech.modern_industrialization.network.armor;
 
 import aztech.modern_industrialization.items.armor.ActivatableChestItem;
 import aztech.modern_industrialization.network.BasePacket;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public record ActivateChestPacket(boolean activated) implements BasePacket {
-    public ActivateChestPacket(FriendlyByteBuf buf) {
-        this(buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeBoolean(activated);
-    }
+    public static final StreamCodec<ByteBuf, ActivateChestPacket> STREAM_CODEC = ByteBufCodecs.BOOL
+            .map(ActivateChestPacket::new, ActivateChestPacket::activated);
 
     @Override
     public void handle(Context ctx) {

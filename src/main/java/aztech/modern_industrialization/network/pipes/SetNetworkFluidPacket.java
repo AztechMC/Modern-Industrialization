@@ -27,14 +27,17 @@ import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record SetNetworkFluidPacket(int syncId, FluidVariant fluid) implements BasePacket {
+    public static final StreamCodec<FriendlyByteBuf, SetNetworkFluidPacket> STREAM_CODEC = StreamCodec.ofMember(
+            SetNetworkFluidPacket::write, SetNetworkFluidPacket::new);
+
     public SetNetworkFluidPacket(FriendlyByteBuf buf) {
         this(buf.readUnsignedByte(), FluidVariant.fromPacket(buf));
     }
 
-    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeByte(syncId);
         fluid.toPacket(buf);

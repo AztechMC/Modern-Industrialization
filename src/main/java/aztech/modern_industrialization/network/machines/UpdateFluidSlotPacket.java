@@ -27,15 +27,18 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidStack newStack) implements BasePacket {
+    public static final StreamCodec<FriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
+            UpdateFluidSlotPacket::write, UpdateFluidSlotPacket::new);
+
     public UpdateFluidSlotPacket(FriendlyByteBuf buf) {
         this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableFluidStack(buf.readNbt()));
     }
 
-    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeByte(syncId);
         buf.writeVarInt(stackId);

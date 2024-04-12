@@ -27,20 +27,22 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftButton) implements BasePacket {
-    public ChangeShapePacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readBoolean());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(shapeLine);
-        buf.writeBoolean(clickedLeftButton);
-    }
+    public static final StreamCodec<ByteBuf, ChangeShapePacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            ChangeShapePacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            ChangeShapePacket::shapeLine,
+            ByteBufCodecs.BOOL,
+            ChangeShapePacket::clickedLeftButton,
+            ChangeShapePacket::new);
 
     @Override
     public void handle(Context ctx) {

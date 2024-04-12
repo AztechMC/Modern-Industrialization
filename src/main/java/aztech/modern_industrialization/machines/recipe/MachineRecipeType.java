@@ -34,6 +34,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.GsonHelper;
@@ -46,7 +48,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
-    private final Codec<MachineRecipe> codec;
+    private final MapCodec<MachineRecipe> codec;
+    private final StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec;
 
     public MachineRecipeType(ResourceLocation id) {
         this.id = id;
@@ -58,7 +61,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             } catch (IllegalArgumentException e) {
                 return DataResult.error(() -> "Failed to read machine recipe:" + e.getMessage());
             }
-        }), () -> "MachineRecipe[" + baseCodec + "]").codec();
+        }), () -> "MachineRecipe[" + baseCodec + "]");
+        this.streamCodec = MachineRecipe.streamCodec(this);
     }
 
     /**
@@ -182,91 +186,12 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     }
 
     @Override
-    public Codec<MachineRecipe> codec() {
+    public MapCodec<MachineRecipe> codec() {
         return codec;
     }
 
-    private static <T> List<T> readArray(JsonObject json, String element, Function<JsonObject, T> reader) {
-        if (!GsonHelper.isArrayNode(json, element)) {
-            // If there is no array, try to parse a single element object instead.
-            JsonElement backupObject = json.get(element);
-            if (backupObject != null && backupObject.isJsonObject()) {
-                return Arrays.asList(reader.apply(backupObject.getAsJsonObject()));
-            } else {
-                return Collections.emptyList();
-            }
-        } else {
-            JsonArray array = GsonHelper.getAsJsonArray(json, element);
-            JsonObject[] objects = new JsonObject[array.size()];
-            for (int i = 0; i < objects.length; i++) {
-                objects[i] = array.get(i).getAsJsonObject();
-            }
-            return Arrays.stream(objects).map(reader).collect(Collectors.toList());
-        }
-    }
-
-    private static <T> List<T> readList(FriendlyByteBuf buf, Function<FriendlyByteBuf, T> reader) {
-        List<T> l = new ArrayList<>();
-        int size = buf.readVarInt();
-        for (int i = 0; i < size; ++i) {
-            l.add(reader.apply(buf));
-        }
-        return l;
-    }
-
-    private static <T> void writeList(FriendlyByteBuf buf, List<T> list, BiConsumer<FriendlyByteBuf, T> writer) {
-        buf.writeVarInt(list.size());
-        for (T t : list) {
-            writer.accept(buf, t);
-        }
-    }
-
     @Override
-    public MachineRecipe fromNetwork(FriendlyByteBuf buf) {
-        MachineRecipe recipe = new MachineRecipe(this);
-        recipe.eu = buf.readVarInt();
-        recipe.duration = buf.readVarInt();
-        recipe.itemInputs = readList(buf, b -> new MachineRecipe.ItemInput(Ingredient.fromNetwork(b), b.readVarInt(), b.readFloat()));
-        recipe.fluidInputs = readList(buf,
-                b -> new MachineRecipe.FluidInput(BuiltInRegistries.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
-        recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byId(b.readVarInt()), b.readVarInt(), b.readFloat()));
-        recipe.fluidOutputs = readList(buf,
-                b -> new MachineRecipe.FluidOutput(BuiltInRegistries.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
-        recipe.conditions = readList(buf, b -> b.readJsonWithCodec(MachineProcessCondition.CODEC));
-
-        return recipe;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf, MachineRecipe recipe) {
-        buf.writeVarInt(recipe.eu);
-        buf.writeVarInt(recipe.duration);
-        writeList(buf, recipe.itemInputs, (b, i) -> {
-            i.ingredient.toNetwork(buf);
-            buf.writeVarInt(i.amount);
-            buf.writeFloat(i.probability);
-        });
-        writeList(buf, recipe.fluidInputs, (b, i) -> {
-            buf.writeVarInt(BuiltInRegistries.FLUID.getId(i.fluid));
-            buf.writeVarLong(i.amount);
-            buf.writeFloat(i.probability);
-        });
-        writeList(buf, recipe.itemOutputs, (b, i) -> {
-            buf.writeVarInt(Item.getId(i.item));
-            buf.writeVarInt(i.amount);
-            buf.writeFloat(i.probability);
-        });
-        writeList(buf, recipe.fluidOutputs, (b, i) -> {
-            buf.writeVarInt(BuiltInRegistries.FLUID.getId(i.fluid));
-            buf.writeVarLong(i.amount);
-            buf.writeFloat(i.probability);
-        });
-        writeList(buf, recipe.conditions, (b, cond) -> {
-            buf.writeJsonWithCodec(MachineProcessCondition.CODEC, cond);
-        });
-    }
-
-    private static <T> T cast(Object object) {
-        return (T) object;
+    public StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec() {
+        return streamCodec;
     }
 }

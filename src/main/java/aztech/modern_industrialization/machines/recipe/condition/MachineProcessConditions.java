@@ -27,13 +27,14 @@ import aztech.modern_industrialization.MIIdentifier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public final class MachineProcessConditions {
-    private static final BiMap<ResourceLocation, Codec<? extends MachineProcessCondition>> MAP = HashBiMap.create();
+    private static final BiMap<ResourceLocation, MapCodec<? extends MachineProcessCondition>> MAP = HashBiMap.create();
 
-    public static void register(ResourceLocation id, Codec<? extends MachineProcessCondition> serializer) {
+    public static void register(ResourceLocation id, MapCodec<? extends MachineProcessCondition> serializer) {
         if (MAP.get(id) != null || MAP.inverse().get(serializer) != null) {
             throw new IllegalArgumentException("Duplicate registration for process condition " + id);
         }
@@ -42,11 +43,11 @@ public final class MachineProcessConditions {
     }
 
     @Nullable
-    public static Codec<? extends MachineProcessCondition> get(ResourceLocation id) {
+    public static MapCodec<? extends MachineProcessCondition> get(ResourceLocation id) {
         return MAP.get(id);
     }
 
-    public static ResourceLocation getId(Codec<? extends MachineProcessCondition> serializer) {
+    public static ResourceLocation getId(MapCodec<? extends MachineProcessCondition> serializer) {
         return MAP.inverse().get(serializer);
     }
 

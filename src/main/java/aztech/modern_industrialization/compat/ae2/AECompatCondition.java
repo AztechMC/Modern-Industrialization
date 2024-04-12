@@ -32,7 +32,7 @@ public class AECompatCondition implements ICondition {
     private static final boolean LOAD_COMPAT = MIConfig.loadAe2Compat();
 
     public static final AECompatCondition INSTANCE = new AECompatCondition();
-    public static final Codec<AECompatCondition> CODEC = MapCodec.unit(INSTANCE).stable().codec();
+    public static final MapCodec<AECompatCondition> CODEC = MapCodec.unit(INSTANCE).stable();
 
     @Override
     public boolean test(IContext context) {
@@ -40,7 +40,7 @@ public class AECompatCondition implements ICondition {
     }
 
     @Override
-    public Codec<? extends ICondition> codec() {
+    public MapCodec<? extends ICondition> codec() {
         return CODEC;
     }
 }

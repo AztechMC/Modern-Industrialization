@@ -61,9 +61,9 @@ public class MIExtraCodecs {
      */
     public static <T> MapCodec<List<T>> maybeList(Codec<T> elementCodec, String field) {
         var listCodec = NeoForgeExtraCodecs.listWithOptionalElements(ConditionalOps.createConditionalCodec(elementCodec));
-        var maybeListCodec = ExtraCodecs.either(elementCodec, listCodec)
+        var maybeListCodec = Codec.either(elementCodec, listCodec)
                 .xmap(either -> either.map(List::of, Function.identity()), Either::right);
-        return ExtraCodecs.strictOptionalField(maybeListCodec, field, List.of());
+        return maybeListCodec.optionalFieldOf(field, List.of());
     }
 
     public static <F, S> MapCodec<Either<F, S>> xor(MapCodec<F> first, MapCodec<S> second) {
@@ -71,7 +71,7 @@ public class MIExtraCodecs {
     }
 
     public static <T> MapCodec<T> optionalFieldAlwaysWrite(Codec<T> baseCodec, String field, T defaultValue) {
-        return ExtraCodecs.strictOptionalField(baseCodec, field)
+        return baseCodec.optionalFieldOf(field)
                 .xmap(read -> read.orElse(defaultValue), Optional::of);
     }
 

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.recipe.condition;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +36,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 
 public record AdjacentBlockProcessCondition(Block block, RelativePosition relativePosition) implements MachineProcessCondition {
-    static final Codec<AdjacentBlockProcessCondition> CODEC = RecordCodecBuilder.create(
+    static final MapCodec<AdjacentBlockProcessCondition> CODEC = RecordCodecBuilder.mapCodec(
             g -> g.group(
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(c -> c.block),
                     StringRepresentable.fromEnum(RelativePosition::values).fieldOf("position").forGetter(c -> c.relativePosition))
@@ -63,7 +64,7 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
     }
 
     @Override
-    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
         return CODEC;
     }
 }

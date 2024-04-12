@@ -36,6 +36,8 @@ import com.mojang.serialization.Codec;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -72,10 +74,10 @@ public class MIRegistries {
             });
 
     // Conditions
-    public static final DeferredRegister<Codec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.CONDITION_SERIALIZERS,
+    public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.CONDITION_SERIALIZERS,
             MI.ID);
 
-    public static final Supplier<Codec<AECompatCondition>> AE_COMPAT_CONDITION = CONDITIONS.register("ae_compat_loaded",
+    public static final Supplier<MapCodec<AECompatCondition>> AE_COMPAT_CONDITION = CONDITIONS.register("ae_compat_loaded",
             () -> AECompatCondition.CODEC);
 
     // Menus

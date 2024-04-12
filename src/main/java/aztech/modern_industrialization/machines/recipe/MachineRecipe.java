@@ -36,10 +36,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.sun.jna.platform.win32.WinDef;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
@@ -52,6 +58,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public class MachineRecipe implements Recipe<Container> {
     public static MapCodec<MachineRecipe> codec(MachineRecipeType type) {
@@ -77,6 +84,35 @@ public class MachineRecipe implements Recipe<Container> {
                             return ret;
                         }));
 
+    }
+
+    public static StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec(MachineRecipeType type) {
+        return NeoForgeStreamCodecs.composite(
+                ByteBufCodecs.VAR_INT,
+                r -> r.eu,
+                ByteBufCodecs.VAR_INT,
+                r -> r.duration,
+                ItemInput.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                r -> r.itemInputs,
+                FluidInput.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                r -> r.fluidInputs,
+                ItemOutput.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                r -> r.itemOutputs,
+                FluidOutput.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                r -> r.fluidOutputs,
+                MachineProcessCondition.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                r -> r.conditions,
+                (eu, duration, itemInputs, fluidInputs, itemOutputs, fluidOutputs, conditions) -> {
+                    var ret = new MachineRecipe(type);
+                    ret.eu = eu;
+                    ret.duration = duration;
+                    ret.itemInputs = itemInputs;
+                    ret.fluidInputs = fluidInputs;
+                    ret.itemOutputs = itemOutputs;
+                    ret.fluidOutputs = fluidOutputs;
+                    ret.conditions = conditions;
+                    return ret;
+                });
     }
 
     final MachineRecipeType type;
@@ -108,7 +144,7 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(Container inv, HolderLookup.Provider registryAccess) {
         throw new UnsupportedOperationException();
     }
 
@@ -132,7 +168,7 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
         for (ItemOutput o : itemOutputs) {
             if (o.probability == 1) {
                 return new ItemStack(o.item, o.amount);
@@ -160,7 +196,7 @@ public class MachineRecipe implements Recipe<Container> {
         return true;
     }
 
-    public static class ItemInput {
+    public record ItemInput(Ingredient ingredient, int amount, float probability) {
         private static final MapCodec<Ingredient> INGREDIENT_CODEC = MIExtraCodecs
                 .xor(
                         MIExtraCodecs.xor(
@@ -192,28 +228,27 @@ public class MachineRecipe implements Recipe<Container> {
 
         private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
                 .mapWithAlternative(
-                        ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount"),
-                        ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "count"))
+                        ExtraCodecs.POSITIVE_INT.optionalFieldOf("amount"),
+                        ExtraCodecs.POSITIVE_INT.optionalFieldOf("count"))
                 .xmap(
                         deserialized -> deserialized.orElse(1),
                         Optional::of);
 
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        INGREDIENT_CODEC.forGetter(itemInput -> itemInput.ingredient),
-                        AMOUNT_CODEC.forGetter(itemInput -> itemInput.amount),
-                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemInput -> itemInput.probability))
+                        INGREDIENT_CODEC.forGetter(ItemInput::ingredient),
+                        AMOUNT_CODEC.forGetter(ItemInput::amount),
+                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(ItemInput::probability))
                         .apply(g, ItemInput::new));
 
-        public final Ingredient ingredient;
-        public final int amount;
-        public final float probability;
-
-        public ItemInput(Ingredient ingredient, int amount, float probability) {
-            this.ingredient = ingredient;
-            this.amount = amount;
-            this.probability = probability;
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, ItemInput> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.CONTENTS_STREAM_CODEC,
+                ItemInput::ingredient,
+                ByteBufCodecs.VAR_INT,
+                ItemInput::amount,
+                ByteBufCodecs.FLOAT,
+                ItemInput::probability,
+                ItemInput::new);
 
         public boolean matches(ItemStack otherStack) {
             return ingredient.test(otherStack);
@@ -224,65 +259,62 @@ public class MachineRecipe implements Recipe<Container> {
         }
     }
 
-    public static class FluidInput {
+    public record FluidInput(Fluid fluid, long amount, float probability) {
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidInput -> fluidInput.fluid),
-                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(fluidInput -> fluidInput.amount),
-                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidInput -> fluidInput.probability))
+                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(FluidInput::fluid),
+                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
+                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
 
-        public final Fluid fluid;
-        public final long amount;
-        public final float probability;
-
-        public FluidInput(Fluid fluid, long amount, float probability) {
-            this.fluid = fluid;
-            this.amount = amount;
-            this.probability = probability;
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, FluidInput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.FLUID),
+                FluidInput::fluid,
+                ByteBufCodecs.VAR_LONG,
+                FluidInput::amount,
+                ByteBufCodecs.FLOAT,
+                FluidInput::probability,
+                FluidInput::new);
     }
 
-    public static class ItemOutput {
+    public record ItemOutput(Item item, int amount, float probability) {
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(itemOutput -> itemOutput.item),
                         MIExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(itemOutput -> itemOutput.amount),
-                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(itemOutput -> itemOutput.probability))
+                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(itemOutput -> itemOutput.probability))
                         .apply(g, ItemOutput::new));
 
-        public final Item item;
-        public final int amount;
-        public final float probability;
-
-        public ItemOutput(Item item, int amount, float probability) {
-            this.item = item;
-            this.amount = amount;
-            this.probability = probability;
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, ItemOutput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.ITEM),
+                ItemOutput::item,
+                ByteBufCodecs.VAR_INT,
+                ItemOutput::amount,
+                ByteBufCodecs.FLOAT,
+                ItemOutput::probability,
+                ItemOutput::new);
 
         public ItemStack getStack() {
             return new ItemStack(item, amount);
         }
     }
 
-    public static class FluidOutput {
+    public record FluidOutput(Fluid fluid, long amount, float probability) {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
                         MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
                                 .forGetter(fluidOutput -> fluidOutput.amount),
-                        ExtraCodecs.strictOptionalField(MIExtraCodecs.FLOAT_01, "probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
+                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
                         .apply(g, FluidOutput::new));
 
-        public final Fluid fluid;
-        public final long amount;
-        public final float probability;
-
-        public FluidOutput(Fluid fluid, long amount, float probability) {
-            this.fluid = fluid;
-            this.amount = amount;
-            this.probability = probability;
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, FluidOutput> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.registry(Registries.FLUID),
+                FluidOutput::fluid,
+                ByteBufCodecs.VAR_LONG,
+                FluidOutput::amount,
+                ByteBufCodecs.FLOAT,
+                FluidOutput::probability,
+                FluidOutput::new);
     }
 }

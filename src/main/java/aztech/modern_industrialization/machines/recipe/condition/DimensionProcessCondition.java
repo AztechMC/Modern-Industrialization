@@ -27,13 +27,16 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import java.util.List;
+
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 public record DimensionProcessCondition(ResourceKey<Level> dimension) implements MachineProcessCondition {
-    static final Codec<DimensionProcessCondition> CODEC = ResourceKey.codec(Registries.DIMENSION)
+    static final MapCodec<DimensionProcessCondition> CODEC = ResourceKey.codec(Registries.DIMENSION)
+            .fieldOf("dimension")
             .xmap(DimensionProcessCondition::new, DimensionProcessCondition::dimension);
 
     @Override
@@ -49,7 +52,7 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
     }
 
     @Override
-    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
         return CODEC;
     }
 }

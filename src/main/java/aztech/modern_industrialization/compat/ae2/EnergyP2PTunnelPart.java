@@ -96,7 +96,7 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
             }
 
             if (!simulate) {
-                queueTunnelDrain(PowerUnits.RF, total);
+                queueTunnelDrain(PowerUnits.FE, total);
             }
 
             return total;
@@ -143,7 +143,7 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
             try (var input = getInputCapability()) {
                 long extracted = input.get().extract(maxAmount, simulate);
                 if (!simulate) {
-                    queueTunnelDrain(PowerUnits.RF, extracted);
+                    queueTunnelDrain(PowerUnits.FE, extracted);
                 }
                 return extracted;
             }

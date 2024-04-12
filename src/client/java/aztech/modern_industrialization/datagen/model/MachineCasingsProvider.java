@@ -37,8 +37,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -91,6 +93,10 @@ public class MachineCasingsProvider implements DataProvider {
         imitateBlock.accept(MachineCasings.SOLID_TITANIUM, MIMaterials.TITANIUM.getPart(MIParts.MACHINE_CASING_SPECIAL).asBlock());
         imitateBlock.accept(MachineCasings.NUCLEAR, MIMaterials.NUCLEAR_ALLOY.getPart(MIParts.MACHINE_CASING_SPECIAL).asBlock());
         imitateBlock.accept(MachineCasings.PLASMA_HANDLING_IRIDIUM, MIMaterials.IRIDIUM.getPart(MIParts.MACHINE_CASING_SPECIAL).asBlock());
+
+        for (var entry : MachineCasingImitations.imitationsToGenerate.entrySet()) {
+            imitateBlock.accept(entry.getKey(), BuiltInRegistries.BLOCK.getOrThrow(ResourceKey.create(Registries.BLOCK, entry.getValue())));
+        }
     }
 
     @Override

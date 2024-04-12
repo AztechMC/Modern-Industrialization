@@ -31,7 +31,10 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
@@ -71,6 +74,10 @@ public class MachineCasingsProvider extends ModelProvider<BlockModelBuilder> {
         cubeBottomTop(MachineCasings.BRICKED_STEEL, "block/casings/bricked_steel", "block/fire_clay_bricks", "block/steel_machine_casing");
         cubeAll(MachineCasings.CONFIGURABLE_TANK, "block/casings/configurable_tank");
         cubeAll(MachineCasings.STEEL_CRATE, "block/casings/steel_crate");
+
+        for (var entry : MachineCasingImitations.imitationsToGenerate.entrySet()) {
+            imitateBlock(entry.getKey(), BuiltInRegistries.BLOCK.getOrThrow(ResourceKey.create(Registries.BLOCK, entry.getValue())));
+        }
     }
 
     private void imitateBlock(MachineCasing casing, Block block) {

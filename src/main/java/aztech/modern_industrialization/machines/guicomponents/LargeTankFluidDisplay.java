@@ -27,7 +27,8 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class LargeTankFluidDisplay {
@@ -52,12 +53,12 @@ public class LargeTankFluidDisplay {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             Data fluidData = fluidDataSupplier.get();
             fluidData.fluid.toPacket(buf);
             buf.writeLong(fluidData.amount);

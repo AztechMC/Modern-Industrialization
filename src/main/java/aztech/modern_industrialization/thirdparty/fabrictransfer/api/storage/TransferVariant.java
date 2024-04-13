@@ -53,41 +53,10 @@ public interface TransferVariant<O> {
     O getObject();
 
     /**
-     * Return the underlying tag.
-     *
-     * <p>
-     * <b>NEVER MUTATE THIS NBT TAG</b>, if you need to mutate it you can use {@link #copyNbt()} to retrieve a copy instead.
-     */
-    @Nullable
-    CompoundTag getNbt();
-
-    /**
-     * Return true if the tag of this variant matches the passed tag, and false otherwise.
-     *
-     * <p>
-     * Note: True is returned if both tags are {@code null}.
-     */
-    default boolean nbtMatches(@Nullable CompoundTag other) {
-        return Objects.equals(getNbt(), other);
-    }
-
-    /**
      * Return {@code true} if the object of this variant matches the passed fluid.
      */
     default boolean isOf(O object) {
         return getObject() == object;
-    }
-
-    /**
-     * Return a copy of the tag of this variant, or {@code null} if this variant doesn't have a tag.
-     *
-     * <p>
-     * Note: Use {@link #nbtMatches} if you only need to check for custom tag equality, or {@link #getNbt()} if you don't need to mutate the tag.
-     */
-    @Nullable
-    default CompoundTag copyNbt() {
-        CompoundTag nbt = getNbt();
-        return nbt == null ? null : nbt.copy();
     }
 
     /**

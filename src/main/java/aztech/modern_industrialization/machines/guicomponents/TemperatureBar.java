@@ -26,7 +26,8 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBar {
@@ -50,7 +51,7 @@ public class TemperatureBar {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             buf.writeInt(params.temperatureMax);
@@ -58,7 +59,7 @@ public class TemperatureBar {
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             buf.writeInt(temperatureSupplier.get());
         }
 

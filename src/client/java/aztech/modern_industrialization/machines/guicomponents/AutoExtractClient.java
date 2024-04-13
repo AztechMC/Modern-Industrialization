@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 public class AutoExtractClient implements GuiComponentClient {
@@ -40,7 +41,7 @@ public class AutoExtractClient implements GuiComponentClient {
     final boolean hasExtractItems, hasExtractFluids;
     boolean[] extractStatus = new boolean[2];
 
-    public AutoExtractClient(FriendlyByteBuf buf) {
+    public AutoExtractClient(RegistryFriendlyByteBuf buf) {
         displayAsInsert = buf.readBoolean();
         hasExtractItems = buf.readBoolean();
         hasExtractFluids = buf.readBoolean();
@@ -48,7 +49,7 @@ public class AutoExtractClient implements GuiComponentClient {
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         extractStatus[0] = buf.readBoolean();
         extractStatus[1] = buf.readBoolean();
     }

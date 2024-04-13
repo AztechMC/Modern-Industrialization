@@ -37,17 +37,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class LargeTankFluidDisplayClient implements GuiComponentClient {
 
     LargeTankFluidDisplay.Data fluidData;
 
-    public LargeTankFluidDisplayClient(FriendlyByteBuf buf) {
+    public LargeTankFluidDisplayClient(RegistryFriendlyByteBuf buf) {
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         fluidData = new LargeTankFluidDisplay.Data(FluidVariant.fromPacket(buf), buf.readLong(), buf.readLong());
     }
 

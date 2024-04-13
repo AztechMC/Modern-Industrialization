@@ -35,19 +35,20 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 public class EnergyBarClient implements GuiComponentClient {
     final EnergyBar.Parameters params;
     long eu, maxEu;
 
-    public EnergyBarClient(FriendlyByteBuf buf) {
+    public EnergyBarClient(RegistryFriendlyByteBuf buf) {
         this.params = new EnergyBar.Parameters(buf.readInt(), buf.readInt());
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         eu = buf.readLong();
         maxEu = buf.readLong();
     }

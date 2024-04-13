@@ -28,8 +28,10 @@ import aztech.modern_industrialization.machines.gui.GuiComponent;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.stream.IntStream;
-import net.minecraft.network.FriendlyByteBuf;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 
 public class ShapeSelection {
@@ -78,12 +80,12 @@ public class ShapeSelection {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeVarInt(lines.size());
             for (var line : lines) {
                 buf.writeVarInt(line.numValues);
                 for (var component : line.translations) {
-                    buf.writeComponent(component);
+                    ComponentSerialization.STREAM_CODEC.encode(buf, component);
                 }
                 buf.writeBoolean(line.useArrows);
             }
@@ -91,7 +93,7 @@ public class ShapeSelection {
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             for (int i = 0; i < lines.size(); ++i) {
                 buf.writeVarInt(behavior.getCurrentIndex(i));
             }

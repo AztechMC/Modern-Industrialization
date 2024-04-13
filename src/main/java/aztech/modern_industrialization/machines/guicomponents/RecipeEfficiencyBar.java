@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecipeEfficiencyBar {
@@ -61,14 +61,14 @@ public class RecipeEfficiencyBar {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             if (crafter.hasActiveRecipe()) {
                 buf.writeBoolean(true);
                 buf.writeInt(crafter.getEfficiencyTicks());

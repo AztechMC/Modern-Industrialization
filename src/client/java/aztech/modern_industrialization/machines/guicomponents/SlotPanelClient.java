@@ -35,6 +35,7 @@ import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -44,7 +45,7 @@ import net.minecraft.world.item.ItemStack;
 public class SlotPanelClient implements GuiComponentClient {
     private final List<SlotPanel.SlotType> slotTypes = new ArrayList<>();
 
-    public SlotPanelClient(FriendlyByteBuf buf) {
+    public SlotPanelClient(RegistryFriendlyByteBuf buf) {
         int slotCount = buf.readVarInt();
         for (int i = 0; i < slotCount; ++i) {
             slotTypes.add(buf.readEnum(SlotPanel.SlotType.class));
@@ -52,7 +53,7 @@ public class SlotPanelClient implements GuiComponentClient {
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
     }
 
     @Override

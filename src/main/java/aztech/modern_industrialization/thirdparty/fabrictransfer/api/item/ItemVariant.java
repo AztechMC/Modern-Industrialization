@@ -85,9 +85,6 @@ public interface ItemVariant extends TransferVariant<Item> {
         return getObject();
     }
 
-    @Nullable
-    CompoundTag getAttachments();
-
     /**
      * Create a new item stack with count 1 from this variant.
      */
@@ -100,13 +97,7 @@ public interface ItemVariant extends TransferVariant<Item> {
      *
      * @param count The count of the returned stack. It may lead to counts higher than maximum stack size.
      */
-    default ItemStack toStack(int count) {
-        if (isBlank())
-            return ItemStack.EMPTY;
-        ItemStack stack = new ItemStack(getItem(), count, getAttachments());
-        stack.setTag(copyNbt());
-        return stack;
-    }
+    ItemStack toStack(int count);
 
     /**
      * Deserialize a variant from an NBT compound tag, assuming it was serialized using

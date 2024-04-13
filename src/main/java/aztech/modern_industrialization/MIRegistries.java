@@ -32,7 +32,7 @@ import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.serialization.Codec;
+
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;

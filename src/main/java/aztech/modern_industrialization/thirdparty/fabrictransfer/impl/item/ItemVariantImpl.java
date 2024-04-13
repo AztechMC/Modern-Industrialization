@@ -27,11 +27,15 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -40,34 +44,37 @@ import org.slf4j.LoggerFactory;
 public class ItemVariantImpl implements ItemVariant {
     private static final Map<Item, ItemVariant> noTagCache = new ConcurrentHashMap<>();
 
-    public static ItemVariant of(Item item, @Nullable CompoundTag tag, @Nullable CompoundTag attachmentsTag) {
+    public static ItemVariant of(Item item) {
         Objects.requireNonNull(item, "Item may not be null.");
 
         // Only tag-less or empty item variants are cached for now.
-        if ((tag == null && attachmentsTag == null) || item == Items.AIR) {
-            return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(i, null, null));
+        if (patch.isEmpty() || item == Items.AIR) {
+            return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(new ItemStack(i)));
         } else {
-            return new ItemVariantImpl(item, tag, attachmentsTag);
+            return of() new ItemVariantImpl(item, tag, attachmentsTag);
         }
+    }
+
+    public static ItemVariant of(ItemStack stack) {
+        Objects.requireNonNull(stack);
+
+        // Only tag-less or empty item variants are cached for now.
+        if (stack.getComponents().getComponentsPatch())
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/item");
 
-    private final Item item;
-    private final @Nullable CompoundTag nbt;
-    private final @Nullable CompoundTag attachments;
+    private final ItemStack stack;
     private final int hashCode;
 
-    private ItemVariantImpl(Item item, CompoundTag nbt, CompoundTag attachmentsNbt) {
-        this.item = item;
-        this.nbt = nbt == null ? null : nbt.copy(); // defensive copy
-        this.attachments = attachmentsNbt == null ? null : attachmentsNbt.copy(); // defensive copy
-        hashCode = Objects.hash(item, nbt, attachmentsNbt);
+    private ItemVariantImpl(ItemStack stack) {
+        this.stack = stack.copyWithCount(1); // defensive copy
+        hashCode = ItemStack.hashItemAndComponents(stack);
     }
 
     @Override
     public Item getObject() {
-        return item;
+        return stack.getItem();
     }
 
     @Nullable

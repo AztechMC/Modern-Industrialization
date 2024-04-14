@@ -51,7 +51,6 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -405,7 +404,7 @@ public class RenderHelper {
     }
 
     public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
-        VertexConsumer vc = vertexConsumers.getBuffer(RenderType.cutout());
+        VertexConsumer vc = vertexConsumers.getBuffer(Sheets.cutoutBlockSheet());
         var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
         // draw the sprite on each face
 

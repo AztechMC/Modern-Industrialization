@@ -29,7 +29,6 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -65,15 +64,9 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
         ItemVariant item = entity.getResource();
 
         if (!item.isBlank()) {
-
-            String amount;
-            if (entity.behaviour.isCreative()) {
-                amount = "∞";
-            } else {
-                amount = String.valueOf(entity.getAmount());
-            }
-
             ItemStack toRender = item.toStack();
+
+            int sideMask = 0;
 
             for (int i = 0; i < 4; i++) {
                 var direction = Direction.from2DDataValue(i);
@@ -83,26 +76,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
                     continue;
                 }
 
-                String itemName = toRender.getHoverName().getString();
-                matrices.pushPose();
-                Font textRenderer = Minecraft.getInstance().font;
-                matrices.translate(0.5, 1.14, 0.5);
-                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
-                matrices.translate(0, 0.15, -0.505);
-                matrices.scale(-0.01f, -0.01F, -0.01f);
-
-                // Adjust width
-                final int maxWidth = 100;
-                if (textRenderer.width(itemName) > maxWidth) {
-                    itemName = textRenderer.plainSubstrByWidth(itemName, maxWidth - textRenderer.width("...")) + "...";
-                }
-
-                float xPosition = (float) (-textRenderer.width(itemName) / 2);
-                textRenderer.drawInBatch(itemName, xPosition, -4f + 40, itemNameColor, false, matrices.last().pose(), vertexConsumers,
-                        Font.DisplayMode.NORMAL, 0, RenderHelper.FULL_LIGHT);
-
-                matrices.popPose();
-
+                sideMask |= 1 << i;
                 // Thanks TechReborn for rendering code
 
                 matrices.pushPose();
@@ -118,21 +92,9 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
                         OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, entity.getLevel(), 0);
 
                 matrices.popPose();
-
-                matrices.pushPose();
-                matrices.translate(0.5, 0.5, 0.5);
-                matrices.mulPose(Axis.YP.rotationDegrees((2 - i) * 90F));
-                matrices.translate(0, 0.0875, -0.505);
-                matrices.scale(-0.01f, -0.01F, -0.01f);
-
-                xPosition = (float) (-textRenderer.width(amount) / 2);
-                textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers,
-                        Font.DisplayMode.NORMAL, 0, RenderHelper.FULL_LIGHT);
-
-                matrices.popPose();
             }
 
+            DeferredBarrelTextRenderer.enqueueBarrelForRendering(pos, sideMask, itemNameColor);
         }
     }
-
 }

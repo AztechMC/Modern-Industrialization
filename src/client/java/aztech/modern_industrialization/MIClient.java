@@ -26,6 +26,7 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
+import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
@@ -108,6 +109,7 @@ public class MIClient {
 
         NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
+        DeferredBarrelTextRenderer.init();
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());

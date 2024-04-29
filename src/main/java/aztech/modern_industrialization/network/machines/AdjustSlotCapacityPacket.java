@@ -27,13 +27,13 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record AdjustSlotCapacityPacket(int syncId, int slotId, boolean isIncrease, boolean isShiftDown) implements BasePacket {
+
     public static final StreamCodec<ByteBuf, AdjustSlotCapacityPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             AdjustSlotCapacityPacket::syncId,

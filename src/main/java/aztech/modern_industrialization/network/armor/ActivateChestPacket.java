@@ -26,8 +26,6 @@ package aztech.modern_industrialization.network.armor;
 import aztech.modern_industrialization.items.armor.ActivatableChestItem;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;

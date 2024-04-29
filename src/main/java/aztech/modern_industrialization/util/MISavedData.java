@@ -26,6 +26,7 @@ package aztech.modern_industrialization.util;
 import com.mojang.logging.LogUtils;
 import java.io.File;
 import java.io.IOException;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
@@ -40,7 +41,7 @@ public abstract class MISavedData extends SavedData {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     @Override
-    public void save(File file) {
+    public void save(File file, HolderLookup.Provider registries) {
         if (!this.isDirty()) {
             return;
         }
@@ -48,7 +49,7 @@ public abstract class MISavedData extends SavedData {
         File tempFile = file.toPath().getParent().resolve(file.getName() + ".temp").toFile();
 
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("data", this.save(new CompoundTag()));
+        compoundTag.put("data", this.save(new CompoundTag(), registries));
         NbtUtils.addCurrentDataVersion(compoundTag);
         try {
             // Write to temp file first.

@@ -25,13 +25,8 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import net.minecraft.world.item.ItemStack;
 
 public class ItemStackHelper {
-    public static boolean areEqualIgnoreCount(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameTags(s1, s2);
-    }
-
     /**
      * Try to consume the fuel in the stack.
      * 

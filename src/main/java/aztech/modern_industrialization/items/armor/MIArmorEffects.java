@@ -31,9 +31,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class MIArmorEffects {
     private MIArmorEffects() {
@@ -73,11 +73,12 @@ public class MIArmorEffects {
     }
 
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(TickEvent.PlayerTickEvent.class, event -> {
-            if (event.phase == TickEvent.Phase.START && event.side.isServer()) {
-                if (allowFlight(event.player)) {
-                    event.player.getAbilities().mayfly = true;
-                    event.player.onUpdateAbilities();
+        NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, event -> {
+            var player = event.getEntity();
+            if (!player.level().isClientSide()) {
+                if (allowFlight(player)) {
+                    player.getAbilities().mayfly = true;
+                    player.onUpdateAbilities();
                 }
             }
         });
@@ -122,8 +123,7 @@ public class MIArmorEffects {
             // Have the stack tank the damage
             if (tankingStack != null) {
                 int intAmount = (int) Math.ceil(amount);
-                final EquipmentSlot equipmentSlot = es;
-                tankingStack.hurtAndBreak(intAmount, entity, p -> entity.broadcastBreakEvent(equipmentSlot));
+                tankingStack.hurtAndBreak(intAmount, entity, es);
                 event.setCanceled(true);
             }
         });

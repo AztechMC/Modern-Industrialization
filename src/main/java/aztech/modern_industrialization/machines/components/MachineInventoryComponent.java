@@ -31,6 +31,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.IComponent;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent.ServerOnly {
@@ -99,13 +100,13 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        this.inventory.writeNbt(tag);
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        this.inventory.writeNbt(tag, registries);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
-        this.inventory.readNbt(tag, isUpgradingMachine);
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+        this.inventory.readNbt(tag, registries, isUpgradingMachine);
         this.inventory.addListener(listener, null);
     }
 }

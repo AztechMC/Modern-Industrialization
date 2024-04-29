@@ -85,7 +85,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
             var helper = IElementHelper.get();
 
             if (tag.contains("fluid")) {
-                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompound("fluid"));
+                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompound("fluid"), accessor.getLevel().registryAccess());
                 long stored = tag.getLong("amount");
                 long capacity = tag.getInt("capacity");
                 long transfer = tag.getLong("transfer");

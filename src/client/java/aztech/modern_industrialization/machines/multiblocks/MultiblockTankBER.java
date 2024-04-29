@@ -144,7 +144,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         float g = ((color >> 8) & 255) / 256f;
                         float b = (color & 255) / 256f;
 
-                        vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                        vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
 
                         ms.translate(offset_v.getX(), offset_v.getY(), offset_v.getZ());
                     }

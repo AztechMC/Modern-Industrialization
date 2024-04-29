@@ -34,6 +34,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -125,7 +126,7 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putByte("connections", NbtHelper.encodeDirections(connections));
         if (mainNode != null) {
             mainNode.saveToNBT(tag);
@@ -134,7 +135,7 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         connections.clear();
         connections.addAll(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
         updateNode();

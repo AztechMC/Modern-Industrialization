@@ -26,7 +26,6 @@ package aztech.modern_industrialization.network.armor;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 

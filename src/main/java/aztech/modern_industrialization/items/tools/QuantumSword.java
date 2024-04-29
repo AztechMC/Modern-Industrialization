@@ -35,7 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class QuantumSword extends Item {
     public QuantumSword(Properties settings) {
@@ -63,7 +62,7 @@ public class QuantumSword extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
         list.add(Component.empty());
         list.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
         String infinity = "\u221e";

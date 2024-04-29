@@ -180,7 +180,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             if (resource.isBlank()) {
                 return stackCapacity * 64;
             } else {
-                return stackCapacity * resource.getItem().getMaxStackSize();
+                return stackCapacity * resource.getMaxStackSize();
             }
         }
 

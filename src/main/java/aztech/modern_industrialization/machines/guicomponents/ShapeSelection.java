@@ -28,7 +28,6 @@ import aztech.modern_industrialization.machines.gui.GuiComponent;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.stream.IntStream;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;

@@ -46,13 +46,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class MIPackets {
     static final Map<Class<? extends BasePacket>, CustomPacketPayload.Type<?>> packetTypes = new HashMap<>();
@@ -62,7 +60,8 @@ public class MIPackets {
             StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {
     }
 
-    private static <P extends BasePacket> void register(String path, Class<P> clazz, StreamCodec<? super RegistryFriendlyByteBuf, P> packetConstructor) {
+    private static <P extends BasePacket> void register(String path, Class<P> clazz,
+            StreamCodec<? super RegistryFriendlyByteBuf, P> packetConstructor) {
         var type = new CustomPacketPayload.Type<P>(MI.id(path));
         packetTypes.put(clazz, type);
         registrations.add(new Registration<>(type, clazz, packetConstructor));
@@ -93,19 +92,17 @@ public class MIPackets {
         register("set_priority", SetPriorityPacket.class, SetPriorityPacket.STREAM_CODEC);
     }
 
-    public static void init(RegisterPayloadHandlerEvent event) {
-        var registrar = event.registrar(MI.ID);
+    public static void init(RegisterPayloadHandlersEvent event) {
+        var registrar = event.registrar("1");
 
         for (var reg : registrations) {
             register(registrar, reg);
         }
     }
 
-    private static <P extends BasePacket> void register(IPayloadRegistrar registrar, Registration<P> reg) {
-        registrar.play(reg.packetType, reg.packetCodec, (packet, context) -> {
-            context.workHandler().execute(() -> {
-                packet.handle(new BasePacket.Context(reg.clazz, context));
-            });
+    private static <P extends BasePacket> void register(PayloadRegistrar registrar, Registration<P> reg) {
+        registrar.playBidirectional(reg.packetType, reg.packetCodec, (packet, context) -> {
+            packet.handle(new BasePacket.Context(reg.clazz, context));
         });
     }
 }

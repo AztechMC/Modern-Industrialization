@@ -29,7 +29,7 @@ import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +53,7 @@ public class MachineMenuServer extends MachineMenuCommon {
         for (int i = 0; i < blockEntity.guiComponents.size(); ++i) {
             GuiComponent.Server component = blockEntity.guiComponents.get(i);
             if (component.needsSync(trackedData.get(i))) {
-                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+                var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), blockEntity.getLevel().registryAccess());
                 component.writeCurrentData(buf);
                 byte[] bytes = new byte[buf.writerIndex()];
                 buf.readBytes(bytes);
@@ -75,7 +75,7 @@ public class MachineMenuServer extends MachineMenuCommon {
     }
 
     @Override
-    public void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf) {
+    public void readClientComponentSyncData(int componentIndex, RegistryFriendlyByteBuf buf) {
         throw new UnsupportedOperationException("Data can only be read on the client side!");
     }
 }

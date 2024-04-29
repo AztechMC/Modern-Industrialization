@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.recipe.condition;
 import aztech.modern_industrialization.MIIdentifier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;

@@ -35,6 +35,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -53,12 +54,12 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new IComponent() {
             @Override
-            public void writeNbt(CompoundTag tag) {
+            public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("pumpingTicks", pumpingTicks);
             }
 
             @Override
-            public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+            public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
                 pumpingTicks = tag.getInt("pumpingTicks");
             }
         });

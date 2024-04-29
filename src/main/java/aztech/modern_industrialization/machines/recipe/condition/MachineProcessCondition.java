@@ -27,11 +27,10 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import java.util.List;
-import java.util.Optional;
-
 import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

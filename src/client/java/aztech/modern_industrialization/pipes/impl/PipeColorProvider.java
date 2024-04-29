@@ -33,8 +33,8 @@ import org.jetbrains.annotations.Nullable;
 public class PipeColorProvider implements BlockColor {
     @Override
     public int getColor(BlockState state, @Nullable BlockAndTintGetter world, @Nullable BlockPos pos, int tintIndex) {
-        if (pos != null && world != null && world.getModelDataManager() != null) {
-            var data = world.getModelDataManager().getAtOrEmpty(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+        if (pos != null && world != null) {
+            var data = world.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
             if (data == null)
                 return -1;
 

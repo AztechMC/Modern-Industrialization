@@ -52,9 +52,8 @@ public class SteamDrillHighlight {
         MutableObject<VoxelShape> fullShape = new MutableObject<>(Shapes.empty());
 
         SteamDrillItem.forEachMineableBlock(player.level(), area, player, (blockPos, state) -> {
-            // Call on Block directly to skip our BlockStateBase mixin...
-            @SuppressWarnings("deprecation")
-            float destroyProgress = state.getBlock().getDestroyProgress(state, player, player.level(), blockPos);
+            // Use raw method to skip our BlockStateBase mixin...
+            float destroyProgress = SteamDrillHooks.getDestroyProgressRaw(state, player, player.level(), blockPos);
             if (destroyProgress <= 1e-9) {
                 return;
             }

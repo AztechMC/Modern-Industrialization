@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.misc.autotest;
 
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
 /**
@@ -34,10 +34,7 @@ public class MIAutoTesting {
     private static int ticks = 0;
 
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(TickEvent.ServerTickEvent.class, event -> {
-            if (event.phase != TickEvent.Phase.START) {
-                return;
-            }
+        NeoForge.EVENT_BUS.addListener(ServerTickEvent.Pre.class, event -> {
             ticks++;
 
             if (ticks == 40) {

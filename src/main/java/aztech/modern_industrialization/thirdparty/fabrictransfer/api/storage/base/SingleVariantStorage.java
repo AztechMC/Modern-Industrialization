@@ -27,7 +27,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
-import net.minecraft.nbt.CompoundTag;
 
 /**
  * A storage that can store a single transfer variant at any given time.
@@ -74,15 +73,6 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
      */
     protected boolean canExtract(T variant) {
         return true;
-    }
-
-    /**
-     * Simple implementation of writing to NBT. Other formats are allowed, this is just a convenient suggestion.
-     */
-    // Reading from NBT is not provided because it would need to call the static FluidVariant/ItemVariant.fromNbt
-    public void writeNbt(CompoundTag nbt) {
-        nbt.put("variant", variant.toNbt());
-        nbt.putLong("amount", amount);
     }
 
     @Override

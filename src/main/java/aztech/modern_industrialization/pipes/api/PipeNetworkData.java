@@ -23,12 +23,13 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public abstract class PipeNetworkData {
     public abstract PipeNetworkData clone();
 
-    public abstract void fromTag(CompoundTag tag);
+    public abstract void fromTag(CompoundTag tag, HolderLookup.Provider registries);
 
-    public abstract CompoundTag toTag(CompoundTag tag);
+    public abstract CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries);
 }

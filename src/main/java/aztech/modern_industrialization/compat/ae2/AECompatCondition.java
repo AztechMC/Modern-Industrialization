@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.ae2;
 
 import aztech.modern_industrialization.MIConfig;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.conditions.ICondition;
 

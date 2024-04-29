@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -121,7 +122,7 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
      * @return The energy stored in the stack. Count is ignored.
      */
     public long getStoredEnergy(ItemStack stack) {
-        return ISimpleEnergyItem.getStoredEnergyUnchecked(stack);
+        return ISimpleEnergyItem.getStoredEnergyUnchecked(stack, MIComponents.ENERGY.get());
     }
 
     /**
@@ -129,6 +130,6 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
      * It's up to callers to ensure that the new amount is >= 0 and <= capacity.
      */
     public void setStoredEnergy(ItemStack stack, long newAmount) {
-        ISimpleEnergyItem.setStoredEnergyUnchecked(stack, newAmount);
+        ISimpleEnergyItem.setStoredEnergyUnchecked(stack, MIComponents.ENERGY.get(), newAmount);
     }
 }

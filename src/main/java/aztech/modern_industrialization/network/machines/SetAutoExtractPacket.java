@@ -30,11 +30,11 @@ import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract) implements BasePacket {
+
     public static final StreamCodec<ByteBuf, SetAutoExtractPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             SetAutoExtractPacket::syncId,

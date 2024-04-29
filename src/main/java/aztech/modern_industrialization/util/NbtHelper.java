@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -41,9 +42,9 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 public class NbtHelper {
-    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid) {
+    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid, HolderLookup.Provider registries) {
         CompoundTag savedTag = new CompoundTag();
-        savedTag.put("fk", fluid.toNbt());
+        savedTag.put("fk", fluid.toNbt(registries));
         tag.put(key, savedTag);
     }
 
@@ -123,7 +124,7 @@ public class NbtHelper {
         }
     }
 
-    public static FluidVariant getFluidCompatible(CompoundTag tag, String key) {
+    public static FluidVariant getFluidCompatible(CompoundTag tag, String key, HolderLookup.Provider registries) {
         if (tag == null || !tag.contains(key))
             return FluidVariant.blank();
 
@@ -132,7 +133,7 @@ public class NbtHelper {
         } else {
             CompoundTag compound = tag.getCompound(key);
             if (compound.contains("fk")) {
-                return FluidVariant.fromNbt(compound.getCompound("fk"));
+                return FluidVariant.fromNbt(compound.getCompound("fk"), registries);
             } else {
                 return FluidVariant.of(readLbaTag(tag.getCompound(key)));
             }

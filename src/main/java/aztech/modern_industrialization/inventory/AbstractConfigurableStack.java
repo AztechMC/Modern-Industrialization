@@ -34,6 +34,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -68,8 +69,8 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.pipesExtract = other.pipesExtract;
     }
 
-    public AbstractConfigurableStack(CompoundTag tag) {
-        this.key = readVariantFromNbt(tag.getCompound("key"));
+    public AbstractConfigurableStack(CompoundTag tag, HolderLookup.Provider registries) {
+        this.key = readVariantFromNbt(tag.getCompound("key"), registries);
         this.amount = tag.getLong("amount");
         if (tag.contains("locked")) {
             this.lockedInstance = getRegistry().get(new ResourceLocation(tag.getString("locked")));
@@ -101,7 +102,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     protected abstract Registry<T> getRegistry();
 
-    protected abstract K readVariantFromNbt(CompoundTag compound);
+    protected abstract K readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries);
 
     protected abstract long getRemainingCapacityFor(K key);
 
@@ -326,9 +327,9 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         notifyListeners();
     }
 
-    public CompoundTag toNbt() {
+    public CompoundTag toNbt(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        tag.put("key", key.toNbt());
+        tag.put("key", key.toNbt(registries));
         tag.putLong("amount", amount);
         if (lockedInstance != null) {
             tag.putString("locked", getRegistry().getKey(lockedInstance).toString());

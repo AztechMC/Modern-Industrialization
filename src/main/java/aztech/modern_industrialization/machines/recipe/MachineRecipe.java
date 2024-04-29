@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.recipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import aztech.modern_industrialization.util.MIExtraCodecs;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,18 +34,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import com.sun.jna.platform.win32.WinDef;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -197,34 +191,6 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
-        private static final MapCodec<Ingredient> INGREDIENT_CODEC = MIExtraCodecs
-                .xor(
-                        MIExtraCodecs.xor(
-                                ItemStack.SINGLE_ITEM_CODEC.fieldOf("item"),
-                                TagKey.codec(Registries.ITEM).fieldOf("tag")),
-                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient"))
-                .xmap(
-                        des -> {
-                            return des.map(x -> x.map(Ingredient::of, tagKey -> ingredientFromTagKey(tagKey)), x -> x);
-                        },
-                        ing -> {
-                            if (ing.values.length == 1) {
-                                if (ing.values[0] instanceof Ingredient.ItemValue itemValue) {
-                                    return Either.left(Either.left(itemValue.item()));
-                                } else if (ing.values[0] instanceof Ingredient.TagValue tagValue) {
-                                    return Either.left(Either.right(tagValue.tag()));
-                                }
-                            }
-                            return Either.right(ing);
-                        });
-
-        /**
-         * Sadly, Ingredient.of(tagKey) resolves the ingredient to check if it's empty for some reason.
-         */
-        private static Ingredient ingredientFromTagKey(TagKey<Item> tagKey) {
-            return new Ingredient(Stream.of(new Ingredient.TagValue(tagKey))) {
-            };
-        }
 
         private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
                 .mapWithAlternative(
@@ -236,7 +202,7 @@ public class MachineRecipe implements Recipe<Container> {
 
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        INGREDIENT_CODEC.forGetter(ItemInput::ingredient),
+                        Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
                         AMOUNT_CODEC.forGetter(ItemInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(ItemInput::probability))
                         .apply(g, ItemInput::new));
@@ -263,7 +229,7 @@ public class MachineRecipe implements Recipe<Container> {
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(FluidInput::fluid),
-                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
+                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
 
@@ -278,10 +244,12 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public record ItemOutput(Item item, int amount, float probability) {
+
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(itemOutput -> itemOutput.item),
-                        MIExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(itemOutput -> itemOutput.amount),
+                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1)
+                                .forGetter(itemOutput -> itemOutput.amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(itemOutput -> itemOutput.probability))
                         .apply(g, ItemOutput::new));
 
@@ -303,7 +271,7 @@ public class MachineRecipe implements Recipe<Container> {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
-                        MIExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
+                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
                                 .forGetter(fluidOutput -> fluidOutput.amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
                         .apply(g, FluidOutput::new));

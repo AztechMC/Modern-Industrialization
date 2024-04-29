@@ -58,7 +58,7 @@ public class GuideBookItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(MIText.BookSubtitle.text().setStyle(TextHelper.GRAY_TEXT));
     }
 }

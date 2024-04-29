@@ -25,10 +25,10 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
-import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -38,13 +38,14 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TransferHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -133,13 +134,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
             // Apply memory card in the off-hand.
             var offHandItem = player.getOffhandItem();
             if (MIItem.CONFIG_CARD.is(offHandItem)) {
-                conn.applyConfig(pipe, offHandItem.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG), player);
+                conn.applyConfig(pipe, offHandItem.get(MIComponents.SAVED_CONFIG), player);
             }
         }
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         for (ItemConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
@@ -147,9 +148,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
             connectionTag.putInt("insertPriority", connection.insertPriority);
             connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].save(new CompoundTag()));
+                connectionTag.put(Integer.toString(i), connection.stacks[i].save(registries));
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.save(new CompoundTag()));
+            connectionTag.put("upgradeStack", connection.upgradeStack.save(registries));
             tag.put(connection.direction.toString(), connectionTag);
         }
         tag.putInt("inactiveTicks", inactiveTicks);
@@ -157,7 +158,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
                 CompoundTag connectionTag = tag.getCompound(direction.toString());
@@ -167,26 +168,35 @@ public class ItemNetworkNode extends PipeNetworkNode {
                         insertPriority, extractPriority);
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                    connection.stacks[i] = ItemStack.of(connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i] = ItemStack.parseOptional(registries, connectionTag.getCompound(Integer.toString(i)));
                     if (!connection.stacks[i].isEmpty()) {
                         connection.stacks[i].setCount(1);
                     }
                 }
                 connection.refreshStacksCache();
-                connection.upgradeStack = ItemStack.of(connectionTag.getCompound("upgradeStack"));
+                connection.upgradeStack = ItemStack.parseOptional(registries, connectionTag.getCompound("upgradeStack"));
                 connections.add(connection);
             }
         }
         inactiveTicks = tag.getInt("inactiveTicks");
     }
 
-    private static PipeEndpointType decodeConnectionType(int i) {
+    public static PipeEndpointType decodeConnectionType(int i) {
         return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
     }
 
-    private static int encodeConnectionType(PipeEndpointType connection) {
+    public static int encodeConnectionType(PipeEndpointType connection) {
         return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
     }
+
+    public static final Codec<PipeEndpointType> CONNECTION_TYPE_CODEC = Codec.INT.comapFlatMap(
+            i -> switch (i) {
+            case 0 -> DataResult.success(BLOCK_IN);
+            case 1 -> DataResult.success(BLOCK_IN_OUT);
+            case 2 -> DataResult.success(BLOCK_OUT);
+            default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
+            },
+            ItemNetworkNode::encodeConnectionType);
 
     @Override
     public IPipeMenuProvider getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
@@ -221,11 +231,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             if (player.isShiftKeyDown()) {
-                stack.removeTagKey(ConfigCardItem.TAG_CAMOUFLAGE);
-                stack.getOrCreateTag().put(ConfigCardItem.TAG_SAVEDCONFIG, conn.getConfig());
+                stack.remove(MIComponents.CAMOUFLAGE);
+                stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
                 player.displayClientMessage(MIText.ConfigCardSet.text(), true);
-            } else if (stack.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG) != null) {
-                conn.applyConfig(pipe, stack.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG), player);
+            } else if (stack.has(MIComponents.SAVED_CONFIG)) {
+                conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
                 player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
             }
             return true;
@@ -268,7 +278,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 return false;
             }
             for (ItemStack cachedStack : list) {
-                if (ItemStack.isSameItemSameTags(cachedStack, stack)) {
+                if (ItemStack.isSameItemSameComponents(cachedStack, stack)) {
                     return true;
                 }
             }
@@ -300,41 +310,39 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        CompoundTag getConfig() {
-            CompoundTag tag = new CompoundTag();
-            tag.putInt("connectionType", encodeConnectionType(type));
-            tag.putBoolean("whitelist", whitelist);
-            tag.putInt("insertPriority", insertPriority);
-            tag.putInt("extractPriority", extractPriority);
-            ListTag filterTag = new ListTag();
+        SavedItemPipeConfig getConfig() {
+            List<ItemStack> filters = new ArrayList<>();
             for (ItemStack itemStack : stacks) {
-                filterTag.add(itemStack.save(new CompoundTag()));
+                filters.add(itemStack.copy());
             }
-            tag.put("filter", filterTag);
-            tag.put("upgrade", upgradeStack.save(new CompoundTag()));
-            return tag;
+            return new SavedItemPipeConfig(
+                    type,
+                    whitelist,
+                    insertPriority,
+                    extractPriority,
+                    filters,
+                    upgradeStack.copy());
         }
 
-        void applyConfig(PipeBlockEntity pipe, @Nullable CompoundTag tag, Player player) {
-            if (tag == null) {
+        void applyConfig(PipeBlockEntity pipe, @Nullable SavedItemPipeConfig config, Player player) {
+            if (config == null) {
                 return;
             }
-            var decodedType = decodeConnectionType(tag.getInt("connectionType"));
-            boolean remesh = decodedType != type;
-            type = decodedType;
-            whitelist = tag.getBoolean("whitelist");
-            insertPriority = tag.getInt("insertPriority");
-            extractPriority = tag.getInt("extractPriority");
-            ListTag filterTag = tag.getList("filter", Tag.TAG_COMPOUND);
+            boolean remesh = config.connectionType() != type;
+            type = config.connectionType();
+            whitelist = config.whitelist();
+            insertPriority = config.insertPriority();
+            extractPriority = config.extractPriority();
+            List<ItemStack> filterStacks = config.filter();
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                stacks[i] = ItemStack.of(filterTag.getCompound(i));
+                stacks[i] = filterStacks.get(i).copy();
                 if (!stacks[i].isEmpty()) {
                     stacks[i].setCount(1);
                 }
             }
             refreshStacksCache();
 
-            ItemStack requestedUpgrade = ItemStack.of(tag.getCompound("upgrade"));
+            ItemStack requestedUpgrade = config.upgrade().copy();
             if (player.getAbilities().instabuild) {
                 // Creative mode -> apply upgrades immediately
                 upgradeStack = requestedUpgrade;
@@ -458,7 +466,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             @Override
-            public void writeAdditionalData(FriendlyByteBuf packetByteBuf) {
+            public void writeAdditionalData(RegistryFriendlyByteBuf packetByteBuf) {
                 iface.toBuf(packetByteBuf);
             }
         }

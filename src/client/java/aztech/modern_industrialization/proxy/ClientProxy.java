@@ -126,7 +126,7 @@ public class ClientProxy extends CommonProxy {
             }
         }
 
-        var modelData = renderView.getModelDataManager().getAtOrEmpty(pos);
+        var modelData = renderView.getModelData(pos);
         var clientData = modelData.get(MachineModelClientData.KEY);
         if (clientData == null) {
             // Not a machine's data!

@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -386,7 +388,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("usedEnergy", this.usedEnergy);
         tag.putLong("recipeEnergy", this.recipeEnergy);
         tag.putLong("recipeMaxEu", this.recipeMaxEu);
@@ -399,7 +401,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
@@ -505,8 +507,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
-                        int remainingCapacity = simulate || output.probability() < 1 ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item()))
-                                : output.item().getMaxStackSize() - (int) stack.getAmount();
+                        int remainingCapacity = simulate || output.probability() < 1
+                                ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item()))
+                                : output.item().components().getOrDefault(DataComponents.MAX_STACK_SIZE, 1) - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (key.isBlank()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item()))) {

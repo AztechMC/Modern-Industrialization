@@ -28,7 +28,7 @@ import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,21 +52,19 @@ public class OreBlock extends Block {
         this.materialName = materialName;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack handStack = player.getMainHandItem();
+    protected ItemInteractionResult useItemOn(ItemStack handStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
         if (handStack.getItem() == Items.BOOK) {
             handStack.shrink(1);
             player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
-        return super.use(state, world, pos, player, hand, hit);
+        return super.useItemOn(handStack, state, world, pos, player, hand, hit);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean bl) {
+    protected void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean bl) {
         super.spawnAfterBreak(state, world, pos, stack, bl);
         if (bl && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
             int i = this.params.xpDropped.sample(world.random);

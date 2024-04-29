@@ -206,7 +206,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 ItemStack targetStack = targetSlot.getItem();
 
                 if (filter.test(targetSlot) && targetSlot.mayPlace(sourceStack)
-                        && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.isSameItemSameTags(targetStack, sourceStack))) {
+                        && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.isSameItemSameComponents(targetStack, sourceStack))) {
                     int maxInsert = targetSlot.getMaxStackSize(sourceStack) - targetStack.getCount();
                     if (maxInsert > 0) {
                         ItemStack newTargetStack = sourceStack.split(maxInsert);

@@ -24,9 +24,11 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
@@ -40,8 +42,19 @@ public final class SteamDrillHooks {
     private SteamDrillHooks() {
     }
 
+    private static final ThreadLocal<Boolean> canOverride = ThreadLocal.withInitial(() -> true);
+
+    public static float getDestroyProgressRaw(BlockState state, Player pPlayer, BlockGetter pLevel, BlockPos pPos) {
+        canOverride.set(false);
+        try {
+            return state.getDestroyProgress(pPlayer, pLevel, pPos);
+        } finally {
+            canOverride.set(true);
+        }
+    }
+
     public static void overrideDestroyProgress(Player pPlayer, BlockGetter pLevel, CallbackInfoReturnable<Float> cir) {
-        if (!MIItem.STEAM_MINING_DRILL.is(pPlayer.getMainHandItem())) {
+        if (!MIItem.STEAM_MINING_DRILL.is(pPlayer.getMainHandItem()) || !canOverride.get()) {
             return;
         }
 
@@ -54,9 +67,8 @@ public final class SteamDrillHooks {
         MutableBoolean foundAny = new MutableBoolean(false);
 
         SteamDrillItem.forEachMineableBlock(pLevel, area, pPlayer, (blockPos, state) -> {
-            // Call on Block directly to avoid infinite recursion...
-            @SuppressWarnings("deprecation")
-            float destroyProgress = state.getBlock().getDestroyProgress(state, pPlayer, pLevel, blockPos);
+            // Disable this hook during the call to avoid infinite recursion...
+            float destroyProgress = getDestroyProgressRaw(state, pPlayer, pLevel, blockPos);
 
             if (destroyProgress > 1e-9) {
                 foundAny.setTrue();

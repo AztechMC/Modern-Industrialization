@@ -48,7 +48,7 @@ import snownee.jade.api.view.ProgressView;
 import snownee.jade.api.view.ViewGroup;
 
 public abstract sealed class MachineComponentProvider<S, C>
-        implements IServerExtensionProvider<MachineBlockEntity, S>, IClientExtensionProvider<S, C> {
+        implements IServerExtensionProvider<S>, IClientExtensionProvider<S, C> {
     @Override
     public ResourceLocation getUid() {
         return MI.id("machine");
@@ -56,8 +56,8 @@ public abstract sealed class MachineComponentProvider<S, C>
 
     public static final class Energy extends MachineComponentProvider<CompoundTag, EnergyView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor, MachineBlockEntity machine) {
-            if (machine instanceof EnergyListComponentHolder holder) {
+        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+            if (accessor.getTarget() instanceof EnergyListComponentHolder holder) {
                 var components = holder.getEnergyComponents();
 
                 if (!components.isEmpty()) {
@@ -72,7 +72,7 @@ public abstract sealed class MachineComponentProvider<S, C>
                     // TODO: set unit to EU once supported by the Jade API
                     return List.of(new ViewGroup<>(List.of(EnergyView.of(stored, capacity))));
                 }
-            } else if (machine instanceof EnergyComponentHolder holder) {
+            } else if (accessor.getTarget() instanceof EnergyComponentHolder holder) {
                 var component = holder.getEnergyComponent();
                 return List.of(new ViewGroup<>(List.of(EnergyView.of(component.getEu(), component.getCapacity()))));
             }
@@ -89,7 +89,8 @@ public abstract sealed class MachineComponentProvider<S, C>
 
     public static final class Fluids extends MachineComponentProvider<CompoundTag, FluidView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor, MachineBlockEntity machine) {
+        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+            var machine = (MachineBlockEntity) accessor.getTarget();
             if (machine instanceof MultiblockInventoryComponentHolder holder) {
                 var component = holder.getMultiblockInventoryComponent();
                 var inputs = component.getFluidInputs();
@@ -136,7 +137,8 @@ public abstract sealed class MachineComponentProvider<S, C>
 
     public static final class Items extends MachineComponentProvider<ItemStack, ItemView> {
         @Override
-        public List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor, MachineBlockEntity machine) {
+        public List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
+            var machine = (MachineBlockEntity) accessor.getTarget();
             if (machine instanceof MultiblockInventoryComponentHolder holder) {
                 var component = holder.getMultiblockInventoryComponent();
                 var inputs = component.getItemInputs();
@@ -172,8 +174,8 @@ public abstract sealed class MachineComponentProvider<S, C>
     // TODO: probably needs to be rewritten to be standalone for a better display
     public static final class Progress extends MachineComponentProvider<CompoundTag, ProgressView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor, MachineBlockEntity machine) {
-            if (machine instanceof CrafterComponentHolder holder) {
+        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+            if (accessor.getTarget() instanceof CrafterComponentHolder holder) {
                 var component = holder.getCrafterComponent();
                 var progress = component.getProgress();
 

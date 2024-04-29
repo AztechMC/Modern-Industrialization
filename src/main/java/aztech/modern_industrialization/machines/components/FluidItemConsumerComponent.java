@@ -34,6 +34,7 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -91,12 +92,12 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("euBuffer", euBuffer);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         euBuffer = tag.getLong("euBuffer");
     }
 

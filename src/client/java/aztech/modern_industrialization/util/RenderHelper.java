@@ -59,7 +59,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -169,7 +168,7 @@ public class RenderHelper {
 
             emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.color(-1, -1, -1, -1);
-            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, 1, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 
@@ -430,7 +429,7 @@ public class RenderHelper {
 
             vc.putBulkData(matrices.last(),
                     emitter.toBakedQuad(sprite),
-                    r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                    r, g, b, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
 
@@ -446,8 +445,8 @@ public class RenderHelper {
             }
 
             var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
-            var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
-            Objects.requireNonNull(fakeBlockEntity).load(tag);
+            Objects.requireNonNull(fakeBlockEntity);
+            fakeBlockEntity.applyComponentsFromItemStack(stack);
 
             // Render the base block first
             Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);

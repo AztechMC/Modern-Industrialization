@@ -23,9 +23,13 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
+import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,17 +43,22 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
+    public DataComponentType<ResourceStorage<ItemVariant>> componentType() {
+        return MIComponents.ITEM_STORAGE.get();
+    }
+
+    @Override
     public ItemVariant getBlankResource() {
         return ItemVariant.blank();
     }
 
     @Override
-    public ItemVariant loadResource(CompoundTag tag) {
-        return ItemVariant.fromNbt(tag.getCompound("item"));
+    public ItemVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
+        return ItemVariant.fromNbt(tag.getCompound("item"), registries);
     }
 
     @Override
-    public void saveResource(ItemVariant resource, CompoundTag tag) {
-        tag.put("item", resource.toNbt());
+    public void saveResource(ItemVariant resource, CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("item", resource.toNbt(registries));
     }
 }

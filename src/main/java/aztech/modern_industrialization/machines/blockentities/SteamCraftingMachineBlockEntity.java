@@ -38,7 +38,7 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
@@ -70,8 +70,8 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     }
 
     @Override
-    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
-        InteractionResult result = super.onUse(player, hand, face);
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var result = super.useItemOn(player, hand, face);
         if (!result.consumesAction()) {
             return overclockComponent.onUse(this, player, hand);
         }

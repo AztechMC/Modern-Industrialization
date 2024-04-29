@@ -25,6 +25,7 @@ package aztech.modern_industrialization.misc.guidebook;
 
 import aztech.modern_industrialization.util.MISavedData;
 import java.util.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -55,7 +56,7 @@ public class GuidebookPersistentState extends MISavedData {
         setDirty();
     }
 
-    public static GuidebookPersistentState fromNbt(CompoundTag tag) {
+    public static GuidebookPersistentState fromNbt(CompoundTag tag, HolderLookup.Provider registries) {
         Set<String> receivedPlayers = new HashSet<>();
         ListTag list = tag.getList("receivedPlayers", Tag.TAG_STRING);
         for (int i = 0; i < list.size(); ++i) {
@@ -65,7 +66,7 @@ public class GuidebookPersistentState extends MISavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         ListTag list = new ListTag();
         for (String receivedPlayer : receivedPlayers) {
             list.add(StringTag.valueOf(receivedPlayer));

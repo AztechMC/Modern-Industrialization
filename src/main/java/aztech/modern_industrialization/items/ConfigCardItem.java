@@ -23,17 +23,13 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -50,11 +46,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
 
 public class ConfigCardItem extends Item {
     public static final String TAG_SAVEDCONFIG = "savedconfig";
-    public static final String TAG_CAMOUFLAGE = "camouflage";
 
     public ConfigCardItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -68,10 +62,10 @@ public class ConfigCardItem extends Item {
             var usedHand = c.getHand();
 
             if (hitState.getBlock() instanceof PipeBlock pipe) {
-                var pipeUseResult = pipe.use(c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(), c.getPlayer(),
-                        c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
+                var pipeUseResult = pipe.useItemOn(c.getItemInHand(), c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(),
+                        c.getPlayer(), c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
                 if (pipeUseResult.consumesAction()) {
-                    return pipeUseResult;
+                    return pipeUseResult.result();
                 }
             }
 
@@ -85,8 +79,8 @@ public class ConfigCardItem extends Item {
 
     public static boolean setCamouflage(Player player, InteractionHand usedHand, BlockState hitState) {
         if (CamouflageHelper.isReasonableCamouflage(hitState)) {
-            player.getItemInHand(usedHand).removeTagKey(TAG_SAVEDCONFIG);
-            player.getItemInHand(usedHand).getOrCreateTag().put(TAG_CAMOUFLAGE, NbtUtils.writeBlockState(hitState));
+            player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
+            player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);
             player.displayClientMessage(
                     MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build(), true);
             return true;
@@ -97,8 +91,8 @@ public class ConfigCardItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
-            player.getItemInHand(usedHand).removeTagKey(TAG_SAVEDCONFIG);
-            player.getItemInHand(usedHand).removeTagKey(TAG_CAMOUFLAGE);
+            player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
+            player.getItemInHand(usedHand).remove(MIComponents.CAMOUFLAGE);
             player.displayClientMessage(MIText.ConfigCardCleared.text(), true);
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
         }
@@ -106,10 +100,10 @@ public class ConfigCardItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        var savedConfigTag = stack.getTagElement(TAG_SAVEDCONFIG);
-        if (savedConfigTag != null) {
-            var filterSize = readItemPipeFilter(savedConfigTag).size();
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+        var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
+        if (savedConfig != null) {
+            var filterSize = savedConfig.filter().size();
             MutableComponent component;
             if (filterSize == 0) {
                 component = MIText.ConfigCardConfiguredNoItems.text();
@@ -126,34 +120,15 @@ public class ConfigCardItem extends Item {
         }
     }
 
-    private static List<ItemStack> readItemPipeFilter(CompoundTag tag) {
-        List<ItemStack> stacks = new ArrayList<>();
-        var filterTag = tag.getList("filter", Tag.TAG_COMPOUND);
-        for (int i = 0; i < filterTag.size(); ++i) {
-            var filterStack = ItemStack.of(filterTag.getCompound(i));
-            if (!filterStack.isEmpty()) {
-                filterStack.setCount(1);
-                stacks.add(filterStack);
-            }
-        }
-        return stacks;
-    }
-
     public static BlockState readCamouflage(ItemStack stack) {
-        var tag = stack.getTag();
-        if (tag != null) {
-            var coverTag = tag.getCompound(TAG_CAMOUFLAGE);
-            return NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), coverTag);
-        } else {
-            return Blocks.AIR.defaultBlockState();
-        }
+        return stack.getOrDefault(MIComponents.CAMOUFLAGE, Blocks.AIR.defaultBlockState());
     }
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        var savedConfigTag = stack.getTagElement(TAG_SAVEDCONFIG);
-        if (savedConfigTag != null) {
-            var stacks = readItemPipeFilter(savedConfigTag);
+        var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
+        if (savedConfig != null) {
+            var stacks = savedConfig.filter();
             return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
         }
 

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.nuclear.*;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 

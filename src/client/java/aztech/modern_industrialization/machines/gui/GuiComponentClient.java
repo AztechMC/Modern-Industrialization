@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
 /**

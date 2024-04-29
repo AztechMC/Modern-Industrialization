@@ -24,16 +24,22 @@
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.item;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferApiImpl;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.item.ItemVariantImpl;
-import java.util.Objects;
+import com.mojang.serialization.Codec;
+import java.util.Optional;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * An immutable count-less ItemStack, i.e. an immutable association of an item and an optional NBT compound tag.
@@ -43,6 +49,11 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
+    Codec<ItemVariant> CODEC = ExtraCodecs.optionalEmptyMap(
+            ItemStack.SINGLE_ITEM_CODEC.xmap(ItemVariant::of, ItemVariant::toStack))
+            .xmap(o -> o.orElse(ItemVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
+    StreamCodec<RegistryFriendlyByteBuf, ItemVariant> STREAM_CODEC = ItemStack.STREAM_CODEC.map(ItemVariant::of, ItemVariant::toStack);
+
     /**
      * Retrieve a blank ItemVariant.
      */
@@ -54,29 +65,20 @@ public interface ItemVariant extends TransferVariant<Item> {
      * Retrieve an ItemVariant with the item and tag of a stack.
      */
     static ItemVariant of(ItemStack stack) {
-        return of(stack.getItem(), stack.getTag(), stack.serializeAttachments());
+        return ItemVariantImpl.of(stack);
     }
 
     /**
      * Retrieve an ItemVariant with an item and without a tag.
      */
     static ItemVariant of(ItemLike item) {
-        return of(item, null, null);
-    }
-
-    /**
-     * Retrieve an ItemVariant with an item and an optional tag.
-     */
-    static ItemVariant of(ItemLike item, @Nullable CompoundTag tag, @Nullable CompoundTag attachmentsTags) {
-        return ItemVariantImpl.of(item.asItem(), tag, attachmentsTags);
+        return ItemVariantImpl.of(item.asItem());
     }
 
     /**
      * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
      */
-    default boolean matches(ItemStack stack) {
-        return isOf(stack.getItem()) && nbtMatches(stack.getTag()) && Objects.equals(getAttachments(), stack.serializeAttachments());
-    }
+    boolean matches(ItemStack stack);
 
     /**
      * Return the item of this variant.
@@ -99,20 +101,33 @@ public interface ItemVariant extends TransferVariant<Item> {
      */
     ItemStack toStack(int count);
 
+    int getMaxStackSize();
+
+    @Override
+    default Tag toNbt(HolderLookup.Provider registries) {
+        return CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+    }
+
     /**
      * Deserialize a variant from an NBT compound tag, assuming it was serialized using
      * {@link #toNbt}. If an error occurs during deserialization, it will be logged
      * with the DEBUG level, and a blank variant will be returned.
      */
-    static ItemVariant fromNbt(CompoundTag nbt) {
-        return ItemVariantImpl.fromNbt(nbt);
+    static ItemVariant fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
+        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(TransferApiImpl.LOGGER::error)
+                .orElse(blank());
+    }
+
+    @Override
+    default void toPacket(RegistryFriendlyByteBuf buf) {
+        STREAM_CODEC.encode(buf, this);
     }
 
     /**
      * Write a variant from a packet byte buffer, assuming it was serialized using
      * {@link #toPacket}.
      */
-    static ItemVariant fromPacket(FriendlyByteBuf buf) {
-        return ItemVariantImpl.fromPacket(buf);
+    static ItemVariant fromPacket(RegistryFriendlyByteBuf buf) {
+        return STREAM_CODEC.decode(buf);
     }
 }

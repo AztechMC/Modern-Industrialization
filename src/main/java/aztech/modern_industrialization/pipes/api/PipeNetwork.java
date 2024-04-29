@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.api;
 
 import java.util.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -48,14 +49,14 @@ public abstract class PipeNetwork {
         this.data = data;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         id = tag.getInt("id");
-        data.fromTag(tag.getCompound("data"));
+        data.fromTag(tag.getCompound("data"), registries);
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("id", id);
-        tag.put("data", data.toTag(new CompoundTag()));
+        tag.put("data", data.toTag(new CompoundTag(), registries));
         return tag;
     }
 

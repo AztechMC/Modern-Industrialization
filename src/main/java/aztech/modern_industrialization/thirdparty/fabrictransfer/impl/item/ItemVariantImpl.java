@@ -27,17 +27,9 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,19 +39,18 @@ public class ItemVariantImpl implements ItemVariant {
     public static ItemVariant of(Item item) {
         Objects.requireNonNull(item, "Item may not be null.");
 
-        // Only tag-less or empty item variants are cached for now.
-        if (patch.isEmpty() || item == Items.AIR) {
-            return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(new ItemStack(i)));
-        } else {
-            return of() new ItemVariantImpl(item, tag, attachmentsTag);
-        }
+        return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(new ItemStack(i)));
     }
 
     public static ItemVariant of(ItemStack stack) {
         Objects.requireNonNull(stack);
 
         // Only tag-less or empty item variants are cached for now.
-        if (stack.getComponents().getComponentsPatch())
+        if (stack.isComponentsPatchEmpty() || stack.isEmpty()) {
+            return of(stack.getItem());
+        } else {
+            return new ItemVariantImpl(stack);
+        }
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger("fabric-transfer-api-v1/item");
@@ -77,77 +68,34 @@ public class ItemVariantImpl implements ItemVariant {
         return stack.getItem();
     }
 
-    @Nullable
     @Override
-    public CompoundTag getNbt() {
-        return nbt;
+    public DataComponentPatch getComponentsPatch() {
+        return this.stack.getComponentsPatch();
     }
 
-    @Nullable
     @Override
-    public CompoundTag getAttachments() {
-        return attachments;
+    public boolean matches(ItemStack stack) {
+        return ItemStack.isSameItemSameComponents(this.stack, stack);
+    }
+
+    @Override
+    public ItemStack toStack(int count) {
+        return this.stack.copyWithCount(count);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return this.stack.getMaxStackSize();
     }
 
     @Override
     public boolean isBlank() {
-        return item == Items.AIR;
-    }
-
-    @Override
-    public CompoundTag toNbt() {
-        CompoundTag result = new CompoundTag();
-        result.putString("item", BuiltInRegistries.ITEM.getKey(item).toString());
-
-        if (nbt != null) {
-            result.put("tag", nbt.copy());
-        }
-
-        if (attachments != null) {
-            result.put("attachments", attachments.copy());
-        }
-
-        return result;
-    }
-
-    public static ItemVariant fromNbt(CompoundTag tag) {
-        try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(tag.getString("item")));
-            CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
-            CompoundTag attachmentsTag = tag.contains("attachments") ? tag.getCompound("attachments") : null;
-            return of(item, aTag, attachmentsTag);
-        } catch (RuntimeException runtimeException) {
-            LOGGER.debug("Tried to load an invalid ItemVariant from NBT: {}", tag, runtimeException);
-            return ItemVariant.blank();
-        }
-    }
-
-    @Override
-    public void toPacket(FriendlyByteBuf buf) {
-        if (isBlank()) {
-            buf.writeBoolean(false);
-        } else {
-            buf.writeBoolean(true);
-            buf.writeVarInt(Item.getId(item));
-            buf.writeNbt(nbt);
-            buf.writeNbt(attachments);
-        }
-    }
-
-    public static ItemVariant fromPacket(FriendlyByteBuf buf) {
-        if (!buf.readBoolean()) {
-            return ItemVariant.blank();
-        } else {
-            Item item = Item.byId(buf.readVarInt());
-            CompoundTag nbt = buf.readNbt();
-            CompoundTag attachments = buf.readNbt();
-            return of(item, nbt, attachments);
-        }
+        return this.stack.isEmpty();
     }
 
     @Override
     public String toString() {
-        return "ItemVariant{item=" + item + ", tag=" + nbt + ", attachments=" + attachments + '}';
+        return "ItemVariant{stack=" + stack + '}';
     }
 
     @Override
@@ -158,10 +106,9 @@ public class ItemVariantImpl implements ItemVariant {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        ItemVariantImpl ItemVariant = (ItemVariantImpl) o;
+        ItemVariantImpl itemVariant = (ItemVariantImpl) o;
         // fail fast with hash code
-        return hashCode == ItemVariant.hashCode && item == ItemVariant.item && nbtMatches(ItemVariant.nbt)
-                && Objects.equals(attachments, ItemVariant.attachments);
+        return hashCode == itemVariant.hashCode && matches(itemVariant.stack);
     }
 
     @Override

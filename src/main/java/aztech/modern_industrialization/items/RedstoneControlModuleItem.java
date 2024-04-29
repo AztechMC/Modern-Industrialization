@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +33,7 @@ import net.minecraft.world.level.Level;
 
 public class RedstoneControlModuleItem extends Item {
     public RedstoneControlModuleItem(Properties properties) {
-        super(properties);
+        super(properties.component(MIComponents.LOW_SIGNAL, false));
     }
 
     @Override
@@ -42,17 +43,11 @@ public class RedstoneControlModuleItem extends Item {
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
-    private static final String SIGNAL_KEY = "low_signal";
-
     public static boolean isRequiresLowSignal(ItemStack stack) {
-        return stack.getTagElement(SIGNAL_KEY) != null;
+        return stack.getOrDefault(MIComponents.LOW_SIGNAL, false);
     }
 
     public static void setRequiresLowSignal(ItemStack stack, boolean requiresLowSignal) {
-        if (requiresLowSignal) {
-            stack.getOrCreateTagElement(SIGNAL_KEY);
-        } else {
-            stack.removeTagKey(SIGNAL_KEY);
-        }
+        stack.set(MIComponents.LOW_SIGNAL, requiresLowSignal);
     }
 }

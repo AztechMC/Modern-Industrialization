@@ -27,13 +27,13 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandl
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ForgeHammerMoveRecipePacket(int containedId, ResourceLocation recipeId, int fillAction, int amount) implements BasePacket {
+
     public static final StreamCodec<ByteBuf, ForgeHammerMoveRecipePacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             ForgeHammerMoveRecipePacket::containedId,

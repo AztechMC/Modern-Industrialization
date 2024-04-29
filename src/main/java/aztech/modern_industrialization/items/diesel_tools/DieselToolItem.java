@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.diesel_tools;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
@@ -30,14 +31,9 @@ import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -45,16 +41,15 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -62,15 +57,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class DieselToolItem extends Item implements Vanishable, DynamicToolItem {
+public class DieselToolItem extends Item implements DynamicToolItem {
     public static final int CAPACITY = 4 * FluidType.BUCKET_VOLUME;
     private final double damage;
 
     public DieselToolItem(Properties settings, double damage) {
-        super(settings.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(settings.stacksTo(1).rarity(Rarity.UNCOMMON).component(MIComponents.SILK_TOUCH, true));
         this.damage = damage;
     }
 
@@ -96,7 +90,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (isSupportedBlock(stack, state) && FluidFuelItemHelper.getAmount(stack) > 0
-                && TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state)) {
+                && !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops())) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);
@@ -123,19 +117,19 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
-            return ItemHelper.createToolModifiers(damage * FluidFuel.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
+    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+        if (FluidFuelItemHelper.getAmount(stack) > 0) {
+            return ItemHelper.getToolModifiers(damage * FluidFuel.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
         }
-        return ImmutableMultimap.of();
+        return ItemAttributeModifiers.EMPTY;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
 
         for (var entry : getAllEnchantments(stack).entrySet()) {
-            tooltip.add(entry.getKey().getFullname(entry.getValue()));
+            tooltip.add(entry.getKey().value().getFullname(entry.getValue()));
         }
     }
 
@@ -165,16 +159,11 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     }
 
     private static boolean isFortune(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        return tag != null && tag.getBoolean("fortune");
+        return !stack.getOrDefault(MIComponents.SILK_TOUCH, false);
     }
 
     private static void setFortune(ItemStack stack, boolean fortune) {
-        if (fortune) {
-            stack.getOrCreateTag().putBoolean("fortune", true);
-        } else {
-            stack.removeTagKey("fortune");
-        }
+        stack.set(MIComponents.SILK_TOUCH, !fortune);
     }
 
     @Override
@@ -251,20 +240,20 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
 
     @Override
     public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        return getAllEnchantments(stack).getOrDefault(enchantment, 0);
+        return getAllEnchantments(stack).getLevel(enchantment);
     }
 
     @Override
-    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
-        Reference2IntMap<Enchantment> map = new Reference2IntArrayMap<>();
+    public ItemEnchantments getAllEnchantments(ItemStack stack) {
+        var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
             if (!isFortune(stack)) {
-                map.put(Enchantments.SILK_TOUCH, Enchantments.SILK_TOUCH.getMaxLevel());
+                map.set(Enchantments.SILK_TOUCH, Enchantments.SILK_TOUCH.getMaxLevel());
             } else {
-                map.put(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_FORTUNE.getMaxLevel());
+                map.set(Enchantments.FORTUNE, Enchantments.FORTUNE.getMaxLevel());
             }
         }
-        return map;
+        return map.toImmutable();
     }
 
     @Override
@@ -273,8 +262,8 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     }
 
     private static class StrippingAccess extends AxeItem {
-        private StrippingAccess(Tier material, float attackDamage, float attackSpeed, Properties settings) {
-            super(material, attackDamage, attackSpeed, settings);
+        private StrippingAccess(Tier material, Properties settings) {
+            super(material, settings);
         }
 
         public static Map<Block, Block> getStrippedBlocks() {
@@ -283,8 +272,8 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
     }
 
     private static class PathingAccess extends ShovelItem {
-        private PathingAccess(Tier material, float attackDamage, float attackSpeed, Properties settings) {
-            super(material, attackDamage, attackSpeed, settings);
+        private PathingAccess(Tier material, Properties settings) {
+            super(material, settings);
         }
 
         public static Map<Block, BlockState> getPathStates() {
@@ -299,7 +288,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicToolItem 
         int costMb = (int) (defaultMb / speedMultiplier);
 
         if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
-            if (stack.is(Tags.Items.SHEARS) && interactionTarget instanceof Shearable shearable) {
+            if (stack.is(Tags.Items.TOOLS_SHEARS) && interactionTarget instanceof Shearable shearable) {
                 if (!interactionTarget.level().isClientSide && shearable.readyForShearing()) {
                     shearable.shear(SoundSource.PLAYERS);
                     interactionTarget.gameEvent(GameEvent.SHEAR, player);

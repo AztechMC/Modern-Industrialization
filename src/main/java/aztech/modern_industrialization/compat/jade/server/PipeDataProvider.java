@@ -49,7 +49,7 @@ public class PipeDataProvider implements IServerDataProvider<BlockAccessor> {
 
             if (node instanceof FluidNetworkNode fluidNode) {
                 var info = fluidNode.collectNetworkInfo();
-                pipeData.put("fluid", info.fluid().toNbt());
+                pipeData.put("fluid", info.fluid().toNbt(be.getLevel().registryAccess()));
                 pipeData.putLong("amount", info.stored());
                 pipeData.putLong("capacity", info.capacity());
                 pipeData.putLong("transfer", info.transfer());

@@ -228,15 +228,15 @@ dependencies {
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
-    implementation("curse.maven:jade-324717:${project.jade_file_id}")
+    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
 
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
-    implementation "earth.terrarium.argonauts:argonauts-neoforge-${project.minecraft_version}:${project.argonauts_version}"
-    implementation "earth.terrarium.athena:athena-neoforge-${project.minecraft_version}:${project.athena_version}"
+    compileOnly "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
+    compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
@@ -261,8 +261,6 @@ runs {
 
         modSource project.sourceSets.main
         modSource project.sourceSets.client
-
-        jvmArgument "-XX:+AllowEnhancedClassRedefinition"
     }
 
     client {
@@ -306,7 +304,7 @@ processResources {
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
 }

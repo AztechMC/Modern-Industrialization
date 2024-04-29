@@ -29,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.Slot
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleVariantStorage;
 import com.google.common.base.Preconditions;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -78,15 +79,15 @@ public class FluidStorageComponent implements IComponent, FluidAccess {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.put("fluid", singleStorageVariant.variant.toNbt());
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("fluid", singleStorageVariant.variant.toNbt(registries));
         tag.putLong("amount", singleStorageVariant.amount);
         tag.putLong("capacity", capacity);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
-        singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"));
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+        singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"), registries);
         singleStorageVariant.amount = tag.getLong("amount");
         capacity = tag.getLong("capacity");
     }

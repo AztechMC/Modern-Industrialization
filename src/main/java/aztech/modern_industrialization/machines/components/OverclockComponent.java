@@ -28,13 +28,14 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -49,7 +50,7 @@ public class OverclockComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         for (var entry : tickMap.entrySet()) {
             var multiplierKey = String.format("overclock%.2f", entry.getKey().doubleValue());
             tag.putInt(multiplierKey, entry.getValue().value);
@@ -57,7 +58,7 @@ public class OverclockComponent implements IComponent {
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         for (Catalyst catalyst : catalysts) {
             var multiplierKey = String.format("overclock%.2f", catalyst.multiplier);
             if (tag.contains(multiplierKey) && !tickMap.containsKey(catalyst.multiplier)) {
@@ -74,7 +75,7 @@ public class OverclockComponent implements IComponent {
         return 0;
     }
 
-    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         var resourceInHand = BuiltInRegistries.ITEM.getKey(stackInHand.getItem());
 
@@ -95,11 +96,11 @@ public class OverclockComponent implements IComponent {
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
-                return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
+                return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public void tick(MachineBlockEntity be) {

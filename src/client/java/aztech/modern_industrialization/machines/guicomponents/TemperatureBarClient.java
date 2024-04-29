@@ -30,19 +30,19 @@ import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class TemperatureBarClient implements GuiComponentClient {
     public final TemperatureBar.Parameters params;
     public int temperature;
 
-    public TemperatureBarClient(FriendlyByteBuf buf) {
+    public TemperatureBarClient(RegistryFriendlyByteBuf buf) {
         this.params = new TemperatureBar.Parameters(buf.readInt(), buf.readInt(), buf.readInt());
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         this.temperature = buf.readInt();
     }
 

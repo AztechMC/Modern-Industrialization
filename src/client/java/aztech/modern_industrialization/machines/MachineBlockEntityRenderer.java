@@ -112,7 +112,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 BakedQuad quad = getCachedQuad(data, d);
                 if (quad != null) {
                     int faceLight = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockState(), entity.getBlockPos().relative(d));
-                    vc.putBulkData(matrices.last(), quad, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.NO_OVERLAY);
+                    vc.putBulkData(matrices.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.NO_OVERLAY);
 
                     SodiumCompat.markSpriteActive(quad.getSprite());
                 }

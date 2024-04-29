@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
 
     public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
-        super(settings, maxTemperature, heatConduction, neutronBehaviour);
+        super(settings.component(MIComponents.REMAINING_DISINTEGRATIONS, desintegrationMax), maxTemperature, heatConduction, neutronBehaviour);
         this.desintegrationMax = desintegrationMax;
     }
 
@@ -47,8 +47,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
                     String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
         }
 
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("desRem", value);
+        stack.set(MIComponents.REMAINING_DISINTEGRATIONS, value);
     }
 
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
@@ -81,11 +80,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     public int getRemainingDesintegrations(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return desintegrationMax;
-        }
-        return tag.getInt("desRem");
+        return stack.getOrDefault(MIComponents.REMAINING_DISINTEGRATIONS, 0);
     }
 
     protected static int randIntFromDouble(double value, RandomSource rand) {

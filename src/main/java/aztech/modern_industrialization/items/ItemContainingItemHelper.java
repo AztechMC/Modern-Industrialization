@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -78,7 +80,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         // Try to empty barrel into otherStack
         var heldStack = barrelHandler.getStackInSlot(0);
         if (!heldStack.isEmpty()) {
-            if (otherStack.getValue().isEmpty() || ItemStack.isSameItemSameTags(heldStack, otherStack.getValue())) {
+            if (otherStack.getValue().isEmpty() || ItemStack.isSameItemSameComponents(heldStack, otherStack.getValue())) {
                 var extracted = barrelHandler.extractItem(0, heldStack.getMaxStackSize() - otherStack.getValue().getCount(), false);
                 extracted.grow(otherStack.getValue().getCount()); // Grow by existing items
                 otherStack.setValue(extracted);
@@ -90,18 +92,12 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
     }
 
     @Override
-    default ItemVariant getResource(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("BlockEntityTag");
-        if (tag != null) {
-            return ItemVariant.fromNbt(tag.getCompound("item"));
-        } else {
-            return ItemVariant.blank();
-        }
+    default DataComponentType<ResourceStorage<ItemVariant>> getComponentType() {
+        return MIComponents.ITEM_STORAGE.get();
     }
 
     @Override
-    default void setResourceNoClean(ItemStack stack, ItemVariant item) {
-        stack.getOrCreateTagElement("BlockEntityTag").put("item", item.toNbt());
-        onChange(stack);
+    default ResourceStorage<ItemVariant> getDefaultComponent() {
+        return ResourceStorage.ITEM_EMPTY;
     }
 }

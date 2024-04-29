@@ -51,19 +51,19 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         this((MachineRecipeType) otherWithSameData.recipe.getType(), otherWithSameData.recipe.eu, otherWithSameData.recipe.duration);
 
         for (MachineRecipe.ItemInput itemInput : otherWithSameData.recipe.itemInputs) {
-            recipe.itemInputs.add(new MachineRecipe.ItemInput(itemInput.ingredient, itemInput.amount, itemInput.probability));
+            recipe.itemInputs.add(new MachineRecipe.ItemInput(itemInput.ingredient(), itemInput.amount(), itemInput.probability()));
         }
 
         for (MachineRecipe.FluidInput fluidInput : otherWithSameData.recipe.fluidInputs) {
-            recipe.fluidInputs.add(new MachineRecipe.FluidInput(fluidInput.fluid, fluidInput.amount, fluidInput.probability));
+            recipe.fluidInputs.add(new MachineRecipe.FluidInput(fluidInput.fluid(), fluidInput.amount(), fluidInput.probability()));
         }
 
         for (MachineRecipe.ItemOutput itemOutput : otherWithSameData.recipe.itemOutputs) {
-            recipe.itemOutputs.add(new MachineRecipe.ItemOutput(itemOutput.item, itemOutput.amount, itemOutput.probability));
+            recipe.itemOutputs.add(new MachineRecipe.ItemOutput(itemOutput.item(), itemOutput.amount(), itemOutput.probability()));
         }
 
         for (MachineRecipe.FluidOutput fluidOutput : otherWithSameData.recipe.fluidOutputs) {
-            recipe.fluidOutputs.add(new MachineRecipe.FluidOutput(fluidOutput.fluid, fluidOutput.amount, fluidOutput.probability));
+            recipe.fluidOutputs.add(new MachineRecipe.FluidOutput(fluidOutput.fluid(), fluidOutput.amount(), fluidOutput.probability()));
         }
     }
 

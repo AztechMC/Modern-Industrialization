@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.inventory.SlotGroup;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.Slot;
@@ -62,13 +62,13 @@ public final class GuiComponent {
          * Write the initial data to the packet byte buf, used only when the screen is
          * opened.
          */
-        void writeInitialData(FriendlyByteBuf buf);
+        void writeInitialData(RegistryFriendlyByteBuf buf);
 
         /**
          * Write the current data to the packet byte buf, used when syncing after the
          * screen was opened.
          */
-        void writeCurrentData(FriendlyByteBuf buf);
+        void writeCurrentData(RegistryFriendlyByteBuf buf);
 
         /**
          * Return the id of the component. Must match that of the {@code GuiComponentClient}
@@ -92,7 +92,7 @@ public final class GuiComponent {
         }
 
         @Override
-        default void writeCurrentData(FriendlyByteBuf buf) {
+        default void writeCurrentData(RegistryFriendlyByteBuf buf) {
         }
     }
 }

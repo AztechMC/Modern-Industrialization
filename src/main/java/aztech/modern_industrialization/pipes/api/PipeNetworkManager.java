@@ -31,12 +31,13 @@ import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
@@ -342,13 +343,13 @@ public class PipeNetworkManager {
         }
     }
 
-    public void fromNbt(CompoundTag tag) {
+    public void fromNbt(CompoundTag tag, HolderLookup.Provider registries) {
         // networks
         ListTag networksTag = tag.getList("networks", new CompoundTag().getId());
         for (Tag networkTag : networksTag) {
             PipeNetwork network = type.getNetworkCtor().apply(-1, null);
             network.manager = this;
-            network.fromTag((CompoundTag) networkTag);
+            network.fromTag((CompoundTag) networkTag, registries);
             networks.add(network);
         }
 
@@ -371,11 +372,11 @@ public class PipeNetworkManager {
         checkStateCoherence();
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         // networks
         List<CompoundTag> networksTags = new ArrayList<>();
         for (PipeNetwork network : networks) {
-            networksTags.add(network.toTag(new CompoundTag()));
+            networksTags.add(network.toTag(new CompoundTag(), registries));
         }
         ListTag networksTag = new ListTag();
         networksTag.addAll(networksTags);

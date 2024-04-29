@@ -24,27 +24,27 @@
 package aztech.modern_industrialization.network.pipes;
 
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public record SetConnectionTypePacket(int syncId, int type) implements BasePacket {
-    public SetConnectionTypePacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt());
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(type);
-    }
+public record SetConnectionTypePacket(int syncId, int connectionType) implements BasePacket {
+    public static final StreamCodec<ByteBuf, SetConnectionTypePacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            SetConnectionTypePacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            SetConnectionTypePacket::connectionType,
+            SetConnectionTypePacket::new);
 
     @Override
     public void handle(Context ctx) {
         AbstractContainerMenu handler = ctx.getPlayer().containerMenu;
         if (handler.containerId == syncId) {
-            ((PipeScreenHandler) handler).getInterface(ConnectionTypeInterface.class).setConnectionType(type);
+            ((PipeScreenHandler) handler).getInterface(ConnectionTypeInterface.class).setConnectionType(connectionType);
         }
     }
 }

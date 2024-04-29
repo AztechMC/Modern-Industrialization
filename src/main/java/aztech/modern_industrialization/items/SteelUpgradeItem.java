@@ -74,7 +74,7 @@ public class SteelUpgradeItem extends Item {
         if (context.getLevel().isClientSide()) {
             context.getLevel().setBlockAndUpdate(context.getClickedPos(), newState);
         } else {
-            CompoundTag bronzeData = machineBe.saveWithoutMetadata();
+            CompoundTag bronzeData = machineBe.saveWithoutMetadata(context.getLevel().registryAccess());
             // Remove BE to prevent duplicated items from dropping
             context.getLevel().removeBlockEntity(context.getClickedPos());
             // Update to new block
@@ -85,7 +85,7 @@ public class SteelUpgradeItem extends Item {
                 throw new RuntimeException("Upgraded machine should be a MachineBlockEntity, found " + newBe);
             }
 
-            newMachine.load(bronzeData, true);
+            newMachine.load(bronzeData, context.getLevel().registryAccess(), true);
 
             // Give out the advancement
             if (context.getPlayer() instanceof ServerPlayer sp) {

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
+import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MultiblockHatches;
@@ -63,7 +64,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,10 +80,12 @@ public class MI {
 
     public MI(IEventBus modBus) {
         MIAdvancementTriggers.init(modBus);
+        MIComponents.init(modBus);
         MIFluids.init(modBus);
         MIBlock.init(modBus);
         MIItem.init(modBus);
         MIRegistries.init(modBus);
+        MIArmorMaterials.init(modBus);
         MIMaterials.init();
 
         MIMachineRecipeTypes.init();
@@ -158,7 +161,7 @@ public class MI {
         });
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
-        modBus.addListener(RegisterPayloadHandlerEvent.class, MIPackets::init);
+        modBus.addListener(RegisterPayloadHandlersEvent.class, MIPackets::init);
 
         modBus.addListener(RegisterDataMapTypesEvent.class, event -> {
             event.register(MIDataMaps.FLUID_FUELS);

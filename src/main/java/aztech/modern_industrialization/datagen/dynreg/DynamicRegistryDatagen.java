@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 
 public final class DynamicRegistryDatagen {
@@ -50,7 +50,7 @@ public final class DynamicRegistryDatagen {
         for (var entry : entries.entrySet()) {
             builder.add((ResourceKey) entry.getKey(), ctx -> {
                 for (var bootstrap : entry.getValue()) {
-                    bootstrap.run((BootstapContext) ctx);
+                    bootstrap.run((BootstrapContext) ctx);
                 }
             });
         }

@@ -32,7 +32,7 @@ import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -72,10 +72,11 @@ public class MIRegistries {
             });
 
     // Conditions
-    public static final DeferredRegister<Codec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.CONDITION_SERIALIZERS,
+    public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS = DeferredRegister.create(
+            NeoForgeRegistries.CONDITION_SERIALIZERS,
             MI.ID);
 
-    public static final Supplier<Codec<AECompatCondition>> AE_COMPAT_CONDITION = CONDITIONS.register("ae_compat_loaded",
+    public static final Supplier<MapCodec<AECompatCondition>> AE_COMPAT_CONDITION = CONDITIONS.register("ae_compat_loaded",
             () -> AECompatCondition.CODEC);
 
     // Menus

@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 
 public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {
-    static final Codec<BiomeProcessCondition> CODEC = ResourceKey.codec(Registries.BIOME)
+    static final MapCodec<BiomeProcessCondition> CODEC = ResourceKey.codec(Registries.BIOME)
+            .fieldOf("biome")
             .xmap(BiomeProcessCondition::new, BiomeProcessCondition::biome);
 
     @Override
@@ -50,7 +51,7 @@ public record BiomeProcessCondition(ResourceKey<Biome> biome) implements Machine
     }
 
     @Override
-    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
         return CODEC;
     }
 }

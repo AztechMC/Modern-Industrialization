@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.ae2;
 
 import aztech.modern_industrialization.MIConfig;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
@@ -32,7 +31,7 @@ public class AECompatCondition implements ICondition {
     private static final boolean LOAD_COMPAT = MIConfig.loadAe2Compat();
 
     public static final AECompatCondition INSTANCE = new AECompatCondition();
-    public static final Codec<AECompatCondition> CODEC = MapCodec.unit(INSTANCE).stable().codec();
+    public static final MapCodec<AECompatCondition> CODEC = MapCodec.unit(INSTANCE).stable();
 
     @Override
     public boolean test(IContext context) {
@@ -40,7 +39,7 @@ public class AECompatCondition implements ICondition {
     }
 
     @Override
-    public Codec<? extends ICondition> codec() {
+    public MapCodec<? extends ICondition> codec() {
         return CODEC;
     }
 }

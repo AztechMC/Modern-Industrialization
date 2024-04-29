@@ -34,6 +34,7 @@ import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -108,8 +109,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         this.capacity = other.capacity;
     }
 
-    public ConfigurableFluidStack(CompoundTag compound) {
-        super(compound);
+    public ConfigurableFluidStack(CompoundTag compound, HolderLookup.Provider registries) {
+        super(compound, registries);
         this.capacity = compound.getLong("capacity");
     }
 
@@ -157,8 +158,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected FluidVariant readVariantFromNbt(CompoundTag compound) {
-        return FluidVariant.fromNbt(compound);
+    protected FluidVariant readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries) {
+        return FluidVariant.fromNbt(compound, registries);
     }
 
     public long getCapacity() {
@@ -189,8 +190,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return capacity - amount;
     }
 
-    public CompoundTag toNbt() {
-        CompoundTag tag = super.toNbt();
+    public CompoundTag toNbt(HolderLookup.Provider registries) {
+        CompoundTag tag = super.toNbt(registries);
         tag.putLong("capacity", capacity);
         return tag;
     }

@@ -39,9 +39,10 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -159,7 +160,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
@@ -171,7 +172,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         amount = tag.getLong("amount_ftl");
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
@@ -301,16 +302,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
             }
 
             @Override
-            public void writeAdditionalData(FriendlyByteBuf buf) {
+            public void writeAdditionalData(RegistryFriendlyByteBuf buf) {
                 iface.toBuf(buf);
             }
         }
     }
 
     @Override
-    public CompoundTag writeCustomData() {
+    public CompoundTag writeCustomData(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid);
+        NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid, registries);
         return tag;
     }
 

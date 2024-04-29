@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class ProgressBar {
@@ -52,7 +52,7 @@ public class ProgressBar {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             buf.writeUtf(params.progressBarType);
@@ -61,7 +61,7 @@ public class ProgressBar {
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             buf.writeFloat(progressSupplier.get());
         }
 

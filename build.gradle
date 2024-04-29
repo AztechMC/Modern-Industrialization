@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.81'
+    id 'net.neoforged.gradle.userdev' version '7.0.105'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -19,13 +19,13 @@ base {
 
 logger.lifecycle("Modern Industrialization version ${version}")
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.matching("jetbrains")
+        languageVersion = JavaLanguageVersion.of(21)
+        vendor = JvmVendorSpec.MICROSOFT //JvmVendorSpec.matching("jetbrains")
     }
 
     withSourcesJar()
@@ -154,6 +154,14 @@ repositories {
             includeGroup "earth.terrarium.athena"
         }
     }
+    maven { // TODO remove
+        name 'Maven for PR #794' // https://github.com/neoforged/NeoForge/pull/794
+        url 'https://prmaven.neoforged.net/NeoForge/pr794'
+        content {
+            includeModule('net.neoforged', 'testframework')
+            includeModule('net.neoforged', 'neoforge')
+        }
+    }
     mavenLocal()
 }
 
@@ -208,7 +216,7 @@ dependencies {
         compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
     }
 
-    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi"])) {
+    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "none"])) {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
@@ -220,15 +228,15 @@ dependencies {
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
-    implementation("curse.maven:jade-324717:${project.jade_file_id}")
+    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
 
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
-    implementation "earth.terrarium.argonauts:argonauts-neoforge-${project.minecraft_version}:${project.argonauts_version}"
-    implementation "earth.terrarium.athena:athena-neoforge-${project.minecraft_version}:${project.athena_version}"
+    compileOnly "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
+    compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
@@ -253,8 +261,6 @@ runs {
 
         modSource project.sourceSets.main
         modSource project.sourceSets.client
-
-        jvmArgument "-XX:+AllowEnhancedClassRedefinition"
     }
 
     client {
@@ -298,7 +304,7 @@ processResources {
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
 }
@@ -453,7 +459,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
 
             addGameVersion "1.20.4"
             addGameVersion "NeoForge"
-            addGameVersion "Java 17"
+            addGameVersion "Java 21"
 
             relations {
                 requiredDependency "cloth-config"

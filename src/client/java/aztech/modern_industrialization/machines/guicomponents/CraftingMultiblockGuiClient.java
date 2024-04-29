@@ -32,7 +32,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class CraftingMultiblockGuiClient implements GuiComponentClient {
     public boolean isShapeValid;
@@ -43,12 +43,12 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     long currentRecipeEu;
     long baseRecipeEu;
 
-    public CraftingMultiblockGuiClient(FriendlyByteBuf buf) {
+    public CraftingMultiblockGuiClient(RegistryFriendlyByteBuf buf) {
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         isShapeValid = buf.readBoolean();
         if (isShapeValid) {
             hasActiveRecipe = buf.readBoolean();

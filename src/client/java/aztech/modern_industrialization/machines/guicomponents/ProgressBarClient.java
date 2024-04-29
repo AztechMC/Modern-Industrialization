@@ -27,13 +27,13 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class ProgressBarClient implements GuiComponentClient {
     public final ProgressBar.Parameters params;
     public float progress;
 
-    public ProgressBarClient(FriendlyByteBuf buf) {
+    public ProgressBarClient(RegistryFriendlyByteBuf buf) {
         this.params = new ProgressBar.Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readBoolean());
         readCurrentData(buf);
     }
@@ -55,7 +55,7 @@ public class ProgressBarClient implements GuiComponentClient {
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         this.progress = buf.readFloat();
     }
 

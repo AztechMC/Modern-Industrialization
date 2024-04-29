@@ -30,8 +30,8 @@ import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
+import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
-import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
@@ -164,13 +164,13 @@ public final class MIItem {
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
     // Armor
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, s.stacksTo(1)), ITEMS_OTHER);
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.stacksTo(1)), ITEMS_OTHER);
+    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.HELMET, s.stacksTo(1).durability(400)), ITEMS_OTHER);
+    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.BOOTS, s.stacksTo(1).durability(400)), ITEMS_OTHER);
     public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
@@ -181,7 +181,7 @@ public final class MIItem {
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
@@ -194,7 +194,7 @@ public final class MIItem {
     // Material-like items
     public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));
     public static final ItemDefinition<Item> MIXED_INGOT_BLASTPROOF = item("Mixed Blastproof Ingot", "mixed_ingot_blastproof", MATERIALS.and("blastproof"));
-    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium", s -> new Item(s.food(new FoodProperties.Builder().nutrition(20).saturationMod(1).build())), MATERIALS.and("iridium"));
+    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium", s -> new Item(s.food(new FoodProperties.Builder().nutrition(20).saturationModifier(1).build())), MATERIALS.and("iridium"));
     public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
 
     // Others

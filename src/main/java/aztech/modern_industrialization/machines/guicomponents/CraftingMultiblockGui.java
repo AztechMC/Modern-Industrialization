@@ -27,7 +27,7 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGui {
@@ -71,12 +71,12 @@ public class CraftingMultiblockGui {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             if (isShapeValid.get()) {
                 buf.writeBoolean(true);
                 if (crafter.hasActiveRecipe()) {

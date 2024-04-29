@@ -23,10 +23,14 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
+import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,13 +45,18 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     @Override
-    public FluidVariant loadResource(CompoundTag tag) {
-        return NbtHelper.getFluidCompatible(tag, "fluid");
+    public DataComponentType<ResourceStorage<FluidVariant>> componentType() {
+        return MIComponents.FLUID_STORAGE.get();
     }
 
     @Override
-    public void saveResource(FluidVariant resource, CompoundTag tag) {
-        NbtHelper.putFluid(tag, "fluid", getResource());
+    public FluidVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
+        return NbtHelper.getFluidCompatible(tag, "fluid", registries);
+    }
+
+    @Override
+    public void saveResource(FluidVariant resource, CompoundTag tag, HolderLookup.Provider registries) {
+        NbtHelper.putFluid(tag, "fluid", getResource(), registries);
     }
 
     @Override

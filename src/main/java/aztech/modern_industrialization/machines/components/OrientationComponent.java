@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,7 +50,7 @@ public class OrientationComponent implements IComponent {
         this.machine = machine;
     }
 
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
         if (params.hasOutput) {
             outputDirection = Direction.from3DDataValue(tag.getInt("outputDirection"));
@@ -58,7 +59,7 @@ public class OrientationComponent implements IComponent {
         extractFluids = tag.getBoolean("extractFluids");
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("facingDirection", facingDirection.get3DDataValue());
         if (params.hasOutput) {
             tag.putInt("outputDirection", outputDirection.get3DDataValue());

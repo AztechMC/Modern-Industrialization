@@ -28,6 +28,7 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -62,9 +63,9 @@ public abstract class PipeNetworkNode {
         return null;
     }
 
-    public abstract CompoundTag toTag(CompoundTag tag);
+    public abstract CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries);
 
-    public abstract void fromTag(CompoundTag tag);
+    public abstract void fromTag(CompoundTag tag, HolderLookup.Provider registries);
 
     public final PipeNetworkType getType() {
         return network.manager.getType();
@@ -74,7 +75,7 @@ public abstract class PipeNetworkNode {
         return network.manager;
     }
 
-    public CompoundTag writeCustomData() {
+    public CompoundTag writeCustomData(HolderLookup.Provider registries) {
         return new CompoundTag();
     }
 

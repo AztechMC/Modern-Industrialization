@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -46,12 +47,12 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putBoolean("shapeValid", shapeValid);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         shapeValid = tag.getBoolean("shapeValid");
     }
 }

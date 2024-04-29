@@ -28,13 +28,13 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,29 +61,22 @@ public class CasingComponent implements IComponent, DropableComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.put("casing", casingStack.save(new CompoundTag()));
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("casing", casingStack.save(registries));
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
-        // legacy saving by CableTier name
-        // TODO 1.21: remove
-        if (tag.contains("casing", Tag.TAG_STRING)) {
-            var tier = CableTier.getTier(tag.getString("casing"));
-            setCasingStack(BuiltInRegistries.ITEM.get(tier.itemKey).getDefaultInstance());
-        } else {
-            setCasingStack(ItemStack.of(tag.getCompound("casing")));
-        }
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+        setCasingStack(ItemStack.parseOptional(registries, tag.getCompound("casing")));
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putString("casing", currentTier.name);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         currentTier = CableTier.getTier(tag.getString("casing"));
     }
 
@@ -91,7 +84,7 @@ public class CasingComponent implements IComponent, DropableComponent {
         Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), casingStack);
     }
 
-    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.getCount() >= 1) {
             var newTier = getCasingTier(stackInHand.getItem());
@@ -110,10 +103,10 @@ public class CasingComponent implements IComponent, DropableComponent {
                 be.getLevel().updateNeighborsAt(be.getBlockPos(), Blocks.AIR);
                 // Play a nice sound :)
                 playCasingPlaceSound(be);
-                return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
+                return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     private void playCasingPlaceSound(MachineBlockEntity be) {

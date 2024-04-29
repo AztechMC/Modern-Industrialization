@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -35,7 +35,7 @@ public class LubricantHelper {
 
     public static final int mbPerTick = 25;
 
-    public static InteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {
+    public static ItemInteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {
         if (crafter.hasActiveRecipe()) {
             int tick = crafter.getEfficiencyTicks();
             int maxTick = crafter.getMaxEfficiencyTicks();
@@ -54,10 +54,10 @@ public class LubricantHelper {
                 if (result.isSuccess() && interactionTank.getFluidAmount() >= mbPerTick) {
                     crafter.increaseEfficiencyTicks(interactionTank.getFluidAmount() / mbPerTick);
                     player.setItemInHand(hand, result.getResult());
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

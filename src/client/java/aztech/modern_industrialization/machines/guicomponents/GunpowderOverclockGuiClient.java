@@ -30,19 +30,19 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class GunpowderOverclockGuiClient implements GuiComponentClient {
     final GunpowderOverclockGui.Parameters params;
     int remTick;
 
-    public GunpowderOverclockGuiClient(FriendlyByteBuf buf) {
+    public GunpowderOverclockGuiClient(RegistryFriendlyByteBuf buf) {
         this.params = new GunpowderOverclockGui.Parameters(buf.readInt(), buf.readInt());
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         remTick = buf.readInt();
     }
 

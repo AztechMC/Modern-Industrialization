@@ -25,20 +25,23 @@ package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public record MachineComponentSyncPacket(int syncId, int componentIndex, byte[] data) implements BasePacket {
-    public MachineComponentSyncPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readByteArray());
-    }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(componentIndex);
-        buf.writeByteArray(data);
-    }
+    public static final StreamCodec<ByteBuf, MachineComponentSyncPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            MachineComponentSyncPacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            MachineComponentSyncPacket::componentIndex,
+            ByteBufCodecs.BYTE_ARRAY,
+            MachineComponentSyncPacket::data,
+            MachineComponentSyncPacket::new);
 
     @Override
     public void handle(Context ctx) {
@@ -46,7 +49,7 @@ public record MachineComponentSyncPacket(int syncId, int componentIndex, byte[] 
 
         if (ctx.getPlayer().containerMenu.containerId == syncId) {
             var screenHandler = (MachineMenuCommon) ctx.getPlayer().containerMenu;
-            var buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+            var buf = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), ctx.getPlayer().registryAccess());
             try {
                 screenHandler.readClientComponentSyncData(componentIndex, buf);
             } finally {

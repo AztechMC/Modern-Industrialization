@@ -46,6 +46,6 @@ public class MIJadeCommonPlugin implements IWailaPlugin {
     }
 
     public static JadeFluidObject fluidStack(FluidVariant variant, long amount) {
-        return JadeFluidObject.of(variant.getFluid(), amount, variant.copyNbt());
+        return JadeFluidObject.of(variant.getFluid(), amount, variant.getComponentsPatch());
     }
 }

@@ -23,16 +23,19 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
 public class ForgeTool extends TieredItem {
 
@@ -65,8 +68,8 @@ public class ForgeTool extends TieredItem {
             }
 
             @Override
-            public int getLevel() {
-                return normalTier.getLevel();
+            public TagKey<Block> getIncorrectBlocksForDrops() {
+                return normalTier.getIncorrectBlocksForDrops();
             }
 
             @Override
@@ -104,8 +107,8 @@ public class ForgeTool extends TieredItem {
         }
 
         @Override
-        public int getLevel() {
-            return 2;
+        public TagKey<Block> getIncorrectBlocksForDrops() {
+            return BlockTags.create(MI.id("incorrect_for_steel_tool")); // this probably doesn't matter...
         }
 
         @Override

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import java.util.UUID;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,14 +36,14 @@ public class PlacedByComponent implements IComponent {
     public UUID placerId = null;
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         if (placerId != null) {
             tag.putString("placer", placerId.toString());
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         try {
             placerId = UUID.fromString(tag.getString("placer"));
         } catch (IllegalArgumentException iae) {

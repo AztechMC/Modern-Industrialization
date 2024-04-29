@@ -36,7 +36,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -218,16 +218,17 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         if (pipeEntity.tryApplyCamouflage(player, hand)) {
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return ItemInteractionResult.sidedSuccess(world.isClientSide());
         }
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
         if (partShape == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!world.isClientSide) {
@@ -236,7 +237,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 ((ServerPlayer) player).openMenu(menuOpener, menuOpener::writeAdditionalData);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return ItemInteractionResult.sidedSuccess(world.isClientSide);
     }
 
     @SuppressWarnings("deprecation")
@@ -288,15 +289,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {
             if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
                 pipe.stateReplaced = true;
@@ -313,12 +312,9 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 return Objects.requireNonNullElse(pipe.camouflage, state);
             }
         } else {
-            var manager = renderView.getModelDataManager();
-            if (manager != null) {
-                var data = manager.getAtOrEmpty(pos).get(PipeBlockEntity.RenderAttachment.KEY);
-                if (data != null) {
-                    return Objects.requireNonNullElse(data.camouflage(), state);
-                }
+            var data = renderView.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+            if (data != null) {
+                return Objects.requireNonNullElse(data.camouflage(), state);
             }
         }
         return state;

@@ -37,6 +37,7 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.Objects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -47,14 +48,14 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
         registerComponents(new IComponent.ClientOnly() {
             @Override
-            public void writeClientNbt(CompoundTag tag) {
+            public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 if (matchedCasing != null) {
                     tag.putString("matchedCasing", matchedCasing);
                 }
             }
 
             @Override
-            public void readClientNbt(CompoundTag tag) {
+            public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 matchedCasing = tag.contains("matchedCasing") ? tag.getString("matchedCasing") : null;
             }
         });

@@ -27,7 +27,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -58,9 +57,7 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
         if (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked()) {
-            CompoundTag tag = new CompoundTag();
-            tag.put("BlockEntityTag", storageBlockEntity.saveWithoutMetadata());
-            stack.setTag(tag);
+            storageBlockEntity.saveToItem(stack, storageBlockEntity.getLevel().registryAccess());
         }
         return stack;
     }

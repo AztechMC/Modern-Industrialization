@@ -217,7 +217,7 @@ public class ItemNetwork extends PipeNetwork {
                 if (target.connection.whitelist) {
                     ItemNetworkNode.ItemConnection conn = target.connection;
                     for (ItemStack stack : conn.stacks) {
-                        if (!stack.hasTag()) {
+                        if (stack.isComponentsPatchEmpty()) {
                             map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
                         }
                     }
@@ -237,7 +237,7 @@ public class ItemNetwork extends PipeNetwork {
         public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
             var stack = source.storage().getStackInSlot(sourceSlot);
 
-            if (stack.hasTag()) {
+            if (!stack.isComponentsPatchEmpty()) {
                 return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 

@@ -35,6 +35,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -160,7 +161,7 @@ public class PipeMeshCache implements PipeRenderer {
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
-            FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid");
+            FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid", Minecraft.getInstance().player.registryAccess());
             TextureAtlasSprite still = FluidVariantRendering.getSprite(fluid);
             int color = FluidVariantRendering.getColor(fluid, view, pos);
             ctx.pushTransform(quad -> {

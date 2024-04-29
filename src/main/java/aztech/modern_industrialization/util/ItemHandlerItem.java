@@ -78,7 +78,7 @@ public class ItemHandlerItem extends ForwardingItemHandler {
 
         // Replace stack, and stow away the new result
         var newStack = this.slot.get();
-        if (ItemStack.isSameItemSameTags(stackCopy, newStack)) {
+        if (ItemStack.isSameItemSameComponents(stackCopy, newStack)) {
             stackCopy.grow(1);
         } else if (!newStack.isEmpty()) {
             // TODO stow

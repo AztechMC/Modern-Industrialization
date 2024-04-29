@@ -23,33 +23,28 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +55,8 @@ public class JetpackItem extends ArmorItem implements ActivatableChestItem {
     public static final int CAPACITY = 8 * FluidType.BUCKET_VOLUME;
 
     public JetpackItem(Properties settings) {
-        super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(MIArmorMaterials.DIESEL_JETPACK, Type.CHESTPLATE,
+                settings.stacksTo(1).rarity(Rarity.UNCOMMON).component(MIComponents.ACTIVATED.get(), false));
     }
 
     @Override
@@ -72,55 +68,6 @@ public class JetpackItem extends ArmorItem implements ActivatableChestItem {
     public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
         // Fluid consumption is handled in the armor tick.
         return true;
-    }
-
-    private static ArmorMaterial buildMaterial() {
-        return new ArmorMaterial() {
-            @Override
-            public int getDurabilityForType(Type type) {
-                return 0;
-            }
-
-            @Override
-            public int getDefenseForType(Type type) {
-                return 0;
-            }
-
-            @Override
-            public int getEnchantmentValue() {
-                return 0;
-            }
-
-            @Override
-            public SoundEvent getEquipSound() {
-                return SoundEvents.ARMOR_EQUIP_GENERIC;
-            }
-
-            @Override
-            public Ingredient getRepairIngredient() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return "modern_industrialization:diesel_jetpack";
-            }
-
-            @Override
-            public float getToughness() {
-                return 0;
-            }
-
-            @Override
-            public float getKnockbackResistance() {
-                return 0;
-            }
-
-            @Override
-            public String toString() {
-                return getName().replace("/", ":");
-            }
-        };
     }
 
     @Override
@@ -199,13 +146,13 @@ public class JetpackItem extends ArmorItem implements ActivatableChestItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-        return ImmutableMultimap.of();
+    public ItemAttributeModifiers getDefaultAttributeModifiers() {
+        return ItemAttributeModifiers.EMPTY;
     }
 
     @Override

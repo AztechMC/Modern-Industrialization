@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.resource;
 
+import com.mojang.logging.LogUtils;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
@@ -31,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import net.minecraft.FileUtil;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -42,8 +44,8 @@ import org.jetbrains.annotations.Nullable;
 public class FastPathPackResources extends PathPackResources {
     private final Path root;
 
-    public FastPathPackResources(String name, Path root, boolean isBuiltin) {
-        super(name, root, isBuiltin);
+    public FastPathPackResources(PackLocationInfo locationInfo, Path root) {
+        super(locationInfo, root);
         this.root = root;
     }
 
@@ -55,10 +57,11 @@ public class FastPathPackResources extends PathPackResources {
     }
 
     public static IoSupplier<InputStream> getResource(ResourceLocation location, Path path) {
-        return FileUtil.decomposePath(location.getPath()).get().map(list -> {
+        return FileUtil.decomposePath(location.getPath()).mapOrElse(list -> {
             Path path2 = FileUtil.resolvePath(path, list);
             return returnFileIfExists(path2);
-        }, partialResult -> {
+        }, error -> {
+            LogUtils.getLogger().error("Invalid path {}: {}", path, error.message());
             return null;
         });
     }

@@ -32,7 +32,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,13 +40,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class MachineMenuClient extends MachineMenuCommon {
     @SuppressWarnings("ConstantConditions")
-    public static MachineMenuClient create(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+    public static MachineMenuClient create(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         // Inventory
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         CompoundTag tag = buf.readNbt();
-        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::new);
-        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::new);
+        NbtHelper.getList(tag, "items", itemStacks, t -> new ConfigurableItemStack(t, buf.registryAccess()));
+        NbtHelper.getList(tag, "fluids", fluidStacks, t -> new ConfigurableFluidStack(t, buf.registryAccess()));
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);
@@ -88,7 +88,7 @@ public class MachineMenuClient extends MachineMenuCommon {
     }
 
     @Override
-    public void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf) {
+    public void readClientComponentSyncData(int componentIndex, RegistryFriendlyByteBuf buf) {
         components.get(componentIndex).readCurrentData(buf);
     }
 }

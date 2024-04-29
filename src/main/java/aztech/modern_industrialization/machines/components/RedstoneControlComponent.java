@@ -28,10 +28,11 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -50,19 +51,19 @@ public class RedstoneControlComponent implements IComponent.ServerOnly, Dropable
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.put("redstoneModuleStack", controlModule.save(new CompoundTag()));
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("redstoneModuleStack", controlModule.save(registries));
     }
 
     @Override
-    public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
-        controlModule = ItemStack.of(tag.getCompound("redstoneModuleStack"));
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+        controlModule = ItemStack.parseOptional(registries, tag.getCompound("redstoneModuleStack"));
     }
 
-    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.isEmpty()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (MIItem.REDSTONE_CONTROL_MODULE.is(stackInHand) && controlModule.isEmpty()) {
             controlModule = stackInHand.copy();
@@ -70,10 +71,10 @@ public class RedstoneControlComponent implements IComponent.ServerOnly, Dropable
             stackInHand.shrink(1);
 
             be.setChanged();
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -49,14 +50,14 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     public ConfigurableItemStack() {
     }
 
-    public ConfigurableItemStack(CompoundTag compound) {
-        super(compound);
+    public ConfigurableItemStack(CompoundTag compound, HolderLookup.Provider registries) {
+        super(compound, registries);
         this.adjustedCapacity = compound.getInt("adjCap");
     }
 
     @Override
-    public CompoundTag toNbt() {
-        CompoundTag nbt = super.toNbt();
+    public CompoundTag toNbt(HolderLookup.Provider registries) {
+        CompoundTag nbt = super.toNbt(registries);
         nbt.putInt("adjCap", this.adjustedCapacity);
         return nbt;
     }
@@ -133,18 +134,18 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    protected ItemVariant readVariantFromNbt(CompoundTag compound) {
-        return ItemVariant.fromNbt(compound);
+    protected ItemVariant readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries) {
+        return ItemVariant.fromNbt(compound, registries);
     }
 
     @Override
     public long getCapacity() {
-        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxStackSize());
+        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getMaxStackSize());
     }
 
     @Override
     public long getRemainingCapacityFor(ItemVariant key) {
-        return Math.min(key.getItem().getMaxStackSize(), adjustedCapacity) - amount;
+        return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
     }
 
     @Override

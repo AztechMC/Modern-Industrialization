@@ -33,6 +33,9 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.bas
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -88,8 +91,8 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
     }
 
     @Override
@@ -235,8 +238,34 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        resource = loadResource(tag);
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+
+        var storage = input.get(componentType());
+        if (storage != null) {
+            resource = storage.resource();
+            if (behaviour.isLockable()) {
+                isLocked = storage.locked();
+            }
+            if (!behaviour.isCreative()) {
+                amount = storage.amount();
+            }
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+
+        builder.set(componentType(), new ResourceStorage<>(
+                resource,
+                amount,
+                isLocked));
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        resource = loadResource(tag, registries);
 
         if (behaviour.isLockable()) {
             isLocked = tag.getBoolean("locked");
@@ -252,7 +281,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 
         if (behaviour.isLockable()) {
             tag.putBoolean("locked", isLocked);
@@ -261,16 +290,18 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         if (!behaviour.isCreative()) {
             tag.putLong("amt", amount);
         }
-        saveResource(resource, tag);
+        saveResource(resource, tag, registries);
     }
 
     public void setResource(T resource) {
         this.resource = resource;
     }
 
-    public abstract T loadResource(CompoundTag tag);
+    public abstract DataComponentType<ResourceStorage<T>> componentType();
 
-    public abstract void saveResource(T resource, CompoundTag tag);
+    public abstract T loadResource(CompoundTag tag, HolderLookup.Provider registries);
+
+    public abstract void saveResource(T resource, CompoundTag tag, HolderLookup.Provider registries);
 
     public abstract T getBlankResource();
 }

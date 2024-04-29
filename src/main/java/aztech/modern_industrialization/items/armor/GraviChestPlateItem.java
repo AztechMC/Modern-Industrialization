@@ -23,71 +23,26 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MIComponents;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 public class GraviChestPlateItem extends ArmorItem implements ActivatableChestItem, ISimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
-        super(buildMaterial(), Type.CHESTPLATE, settings.stacksTo(1).rarity(Rarity.EPIC));
+        super(MIArmorMaterials.GRAVICHESTPLATE, Type.CHESTPLATE,
+                settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false));
     }
 
-    private static ArmorMaterial buildMaterial() {
-        return new ArmorMaterial() {
-            @Override
-            public int getDurabilityForType(Type type) {
-                return 0;
-            }
-
-            @Override
-            public int getDefenseForType(Type type) {
-                return 0;
-            }
-
-            @Override
-            public int getEnchantmentValue() {
-                return 0;
-            }
-
-            @Override
-            public SoundEvent getEquipSound() {
-                return SoundEvents.ARMOR_EQUIP_GENERIC;
-            }
-
-            @Override
-            public Ingredient getRepairIngredient() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return "modern_industrialization:gravichestplate";
-            }
-
-            @Override
-            public float getToughness() {
-                return 0;
-            }
-
-            @Override
-            public float getKnockbackResistance() {
-                return 0;
-            }
-
-            @Override
-            public String toString() {
-                return getName().replace("/", ":");
-            }
-        };
+    @Override
+    public DataComponentType<Long> getEnergyComponent() {
+        return MIComponents.ENERGY.get();
     }
 
     public long getEnergy(ItemStack stack) {

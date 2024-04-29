@@ -35,21 +35,22 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 public class ShapeSelectionClient implements GuiComponentClient {
     private final ShapeSelection.LineInfo[] lines;
     final int[] currentData;
     private Renderer renderer;
 
-    public ShapeSelectionClient(FriendlyByteBuf buf) {
+    public ShapeSelectionClient(RegistryFriendlyByteBuf buf) {
         lines = new ShapeSelection.LineInfo[buf.readVarInt()];
         for (int i = 0; i < lines.length; ++i) {
             int numValues = buf.readVarInt();
             List<Component> components = new ArrayList<>();
             for (int j = 0; j < numValues; ++j) {
-                components.add(buf.readComponent());
+                components.add(ComponentSerialization.STREAM_CODEC.decode(buf));
             }
             lines[i] = new ShapeSelection.LineInfo(numValues, components, buf.readBoolean());
         }
@@ -59,7 +60,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         for (int i = 0; i < currentData.length; ++i) {
             currentData[i] = buf.readVarInt();
         }

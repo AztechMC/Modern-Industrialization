@@ -43,6 +43,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
@@ -83,12 +84,12 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new IComponent() {
             @Override
-            public void writeNbt(CompoundTag tag) {
+            public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("progressTick", progressTick);
             }
 
             @Override
-            public void readNbt(CompoundTag tag, boolean isUpgradingMachine) {
+            public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
                 progressTick = tag.getInt("progressTick");
             }
         });

@@ -53,7 +53,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -64,12 +64,12 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
 
     private NuclearReactorGui.Data data;
 
-    public NuclearReactorGuiClient(FriendlyByteBuf buf) {
+    public NuclearReactorGuiClient(RegistryFriendlyByteBuf buf) {
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         boolean valid = buf.readBoolean();
         if (valid) {
             int sizeX = buf.readInt();

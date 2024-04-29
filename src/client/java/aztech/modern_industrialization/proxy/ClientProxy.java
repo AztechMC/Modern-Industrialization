@@ -46,7 +46,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +112,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+    public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         return MachineMenuClient.create(syncId, playerInventory, buf);
     }
 
@@ -126,7 +126,7 @@ public class ClientProxy extends CommonProxy {
             }
         }
 
-        var modelData = renderView.getModelDataManager().getAtOrEmpty(pos);
+        var modelData = renderView.getModelData(pos);
         var clientData = modelData.get(MachineModelClientData.KEY);
         if (clientData == null) {
             // Not a machine's data!

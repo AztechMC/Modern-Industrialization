@@ -266,7 +266,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {
-                tool.getItem().hurt(current.value().hammerDamage(), world.getRandom(), (ServerPlayer) this.player);
+                tool.getItem().hurtAndBreak(current.value().hammerDamage(), world.getRandom(), (ServerPlayer) this.player,
+                        () -> tool.set(ItemStack.EMPTY));
             }
             if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {
                 tool.set(ItemStack.EMPTY);
@@ -368,7 +369,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                     int toPull = delta;
                     for (int i = 0; i < 36; ++i) {
                         Slot slot = this.slots.get(i);
-                        if (ItemStack.isSameItemSameTags(slot.getItem(), input.getItem())) {
+                        if (ItemStack.isSameItemSameComponents(slot.getItem(), input.getItem())) {
                             int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
                             if (toMove > 0) {
                                 ItemStack removed = slot.remove(toMove);
@@ -401,7 +402,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 input.getItem().setCount(0);
                 for (int i = 0; i < 36; ++i) {
                     Slot slot = this.slots.get(i);
-                    if (ItemStack.isSameItemSameTags(slot.getItem(), matchingStack)) {
+                    if (ItemStack.isSameItemSameComponents(slot.getItem(), matchingStack)) {
                         int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
                         if (toMove > 0) {
                             ItemStack removed = slot.remove(toMove);

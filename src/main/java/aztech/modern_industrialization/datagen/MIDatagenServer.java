@@ -77,7 +77,8 @@ public class MIDatagenServer {
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
         gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
-                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK))));
+                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK)),
+                lookupProvider));
 
         gen.addProvider(run,
                 new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));

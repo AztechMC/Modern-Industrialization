@@ -11,7 +11,8 @@
       "translate": "advancements.modern_industrialization.guidebook.description"
     },
     "icon": {
-      "item": "modern_industrialization:guidebook"
+      "count": 1,
+      "id": "modern_industrialization:guidebook"
     },
     "show_toast": false,
     "title": {

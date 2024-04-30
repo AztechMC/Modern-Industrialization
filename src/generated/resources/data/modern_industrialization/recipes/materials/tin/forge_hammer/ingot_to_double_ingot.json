@@ -5,6 +5,7 @@
     "tag": "forge:ingots/tin"
   },
   "result": {
-    "item": "modern_industrialization:tin_double_ingot"
+    "count": 1,
+    "id": "modern_industrialization:tin_double_ingot"
   }
 }

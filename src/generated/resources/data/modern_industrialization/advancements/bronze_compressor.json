@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:bronze_compressor"
-            ]
+            "items": "modern_industrialization:bronze_compressor"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.bronze_compressor.description"
     },
     "icon": {
-      "item": "modern_industrialization:bronze_compressor"
+      "count": 1,
+      "id": "modern_industrialization:bronze_compressor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.bronze_compressor"

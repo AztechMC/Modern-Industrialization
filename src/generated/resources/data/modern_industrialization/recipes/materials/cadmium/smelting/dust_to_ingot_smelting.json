@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:cadmium_dust"
   },
-  "result": "modern_industrialization:cadmium_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:cadmium_ingot"
+  }
 }

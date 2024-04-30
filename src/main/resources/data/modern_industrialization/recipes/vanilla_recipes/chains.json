@@ -11,7 +11,7 @@
     }
   },
   "result": {
-    "item": "minecraft:chain",
+    "id": "minecraft:chain",
     "count": 6
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:fire_clay_bricks"
-            ]
+            "items": "modern_industrialization:fire_clay_bricks"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.fire_clay_bricks.description"
     },
     "icon": {
-      "item": "modern_industrialization:fire_clay_bricks"
+      "count": 1,
+      "id": "modern_industrialization:fire_clay_bricks"
     },
     "title": {
       "translate": "advancements.modern_industrialization.fire_clay_bricks"

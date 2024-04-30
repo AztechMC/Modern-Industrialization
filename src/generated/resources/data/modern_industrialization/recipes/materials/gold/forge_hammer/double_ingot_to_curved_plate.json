@@ -4,6 +4,7 @@
     "item": "modern_industrialization:gold_double_ingot"
   },
   "result": {
-    "item": "modern_industrialization:gold_curved_plate"
+    "count": 1,
+    "id": "modern_industrialization:gold_curved_plate"
   }
 }

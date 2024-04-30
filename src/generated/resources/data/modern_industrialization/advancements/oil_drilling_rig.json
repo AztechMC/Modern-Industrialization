@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:oil_drilling_rig"
-            ]
+            "items": "modern_industrialization:oil_drilling_rig"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:oil_drilling_rig"
+      "count": 1,
+      "id": "modern_industrialization:oil_drilling_rig"
     },
     "title": {
       "translate": "advancements.modern_industrialization.oil_drilling_rig"

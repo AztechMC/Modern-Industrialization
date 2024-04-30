@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:steel_rod_magnetic"
   },
-  "result": "modern_industrialization:steel_rod"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:steel_rod"
+  }
 }

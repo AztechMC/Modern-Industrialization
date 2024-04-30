@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:superconductor_cable"
-            ]
+            "items": "modern_industrialization:superconductor_cable"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:superconductor_cable"
+      "count": 1,
+      "id": "modern_industrialization:superconductor_cable"
     },
     "title": {
       "translate": "advancements.modern_industrialization.superconductor_cable"

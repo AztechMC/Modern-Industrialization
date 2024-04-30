@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:electrum_dust"
   },
-  "result": "modern_industrialization:electrum_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:electrum_ingot"
+  }
 }

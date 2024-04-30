@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:quantum_sword"
-            ]
+            "items": "modern_industrialization:quantum_sword"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:quantum_sword"
+      "count": 1,
+      "id": "modern_industrialization:quantum_sword"
     },
     "title": {
       "translate": "advancements.modern_industrialization.quantum_sword"

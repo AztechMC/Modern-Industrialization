@@ -1,9 +1,9 @@
 {
   "neoforge:conditions": [
     {
-      "key": "neoforge:not",
+      "type": "neoforge:not",
       "value": {
-        "key": "neoforge:mod_loaded",
+        "type": "neoforge:mod_loaded",
         "modid": "dehydration"
       }
     }
@@ -14,5 +14,7 @@
   "ingredient":{
     "item":"minecraft:water_bucket"
   },
-  "result":"modern_industrialization:steam_bucket"
+  "result": {
+    "id": "modern_industrialization:steam_bucket"
+  }
 }

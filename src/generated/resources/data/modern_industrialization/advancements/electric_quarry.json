@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:electric_quarry"
-            ]
+            "items": "modern_industrialization:electric_quarry"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:electric_quarry"
+      "count": 1,
+      "id": "modern_industrialization:electric_quarry"
     },
     "title": {
       "translate": "advancements.modern_industrialization.electric_quarry"

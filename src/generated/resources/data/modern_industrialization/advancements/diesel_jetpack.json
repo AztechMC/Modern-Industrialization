@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:diesel_jetpack"
-            ]
+            "items": "modern_industrialization:diesel_jetpack"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:diesel_jetpack"
+      "count": 1,
+      "id": "modern_industrialization:diesel_jetpack"
     },
     "title": {
       "translate": "advancements.modern_industrialization.diesel_jetpack"

@@ -5,6 +5,7 @@
     "item": "modern_industrialization:copper_rod"
   },
   "result": {
-    "item": "modern_industrialization:copper_ring"
+    "count": 1,
+    "id": "modern_industrialization:copper_ring"
   }
 }

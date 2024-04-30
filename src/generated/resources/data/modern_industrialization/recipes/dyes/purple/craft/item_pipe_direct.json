@@ -9,7 +9,7 @@
       "tag": "forge:gears/steel"
     },
     "d": {
-      "tag": "forge:dyes/purple"
+      "tag": "c:dyes/purple"
     }
   },
   "pattern": [
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 16,
-    "item": "modern_industrialization:purple_item_pipe"
+    "id": "modern_industrialization:purple_item_pipe"
   }
 }

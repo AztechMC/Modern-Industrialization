@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:distillation_tower"
-            ]
+            "items": "modern_industrialization:distillation_tower"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:distillation_tower"
+      "count": 1,
+      "id": "modern_industrialization:distillation_tower"
     },
     "title": {
       "translate": "advancements.modern_industrialization.distillation_tower"

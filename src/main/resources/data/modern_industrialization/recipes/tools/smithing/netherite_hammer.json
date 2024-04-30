@@ -7,7 +7,7 @@
     "item": "modern_industrialization:diamond_hammer"
   },
   "result": {
-    "item": "modern_industrialization:netherite_hammer"
+    "id": "modern_industrialization:netherite_hammer"
   },
   "template": {
     "item": "minecraft:netherite_upgrade_smithing_template"

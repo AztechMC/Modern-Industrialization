@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:mv_lv_transformer"
-            ]
+            "items": "modern_industrialization:mv_lv_transformer"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.mv_lv_transformer.description"
     },
     "icon": {
-      "item": "modern_industrialization:mv_lv_transformer"
+      "count": 1,
+      "id": "modern_industrialization:mv_lv_transformer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.mv_lv_transformer"

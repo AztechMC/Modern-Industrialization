@@ -15,6 +15,7 @@
     "xxx"
   ],
   "result": {
-    "item": "minecraft:redstone"
+    "count": 1,
+    "id": "minecraft:redstone"
   }
 }

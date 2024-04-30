@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:raw_iridium"
   },
-  "result": "modern_industrialization:iridium_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:iridium_ingot"
+  }
 }

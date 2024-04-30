@@ -5,6 +5,7 @@
     "tag": "forge:ingots/copper"
   },
   "result": {
-    "item": "modern_industrialization:copper_double_ingot"
+    "count": 1,
+    "id": "modern_industrialization:copper_double_ingot"
   }
 }

@@ -12,6 +12,7 @@
     "   "
   ],
   "result": {
-    "item": "minecraft:coal_ore"
+    "count": 1,
+    "id": "minecraft:coal_ore"
   }
 }

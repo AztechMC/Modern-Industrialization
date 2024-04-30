@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:processing_unit"
-            ]
+            "items": "modern_industrialization:processing_unit"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.processing_unit.description"
     },
     "icon": {
-      "item": "modern_industrialization:processing_unit"
+      "count": 1,
+      "id": "modern_industrialization:processing_unit"
     },
     "title": {
       "translate": "advancements.modern_industrialization.processing_unit"

@@ -4,6 +4,7 @@
     "item": "modern_industrialization:iron_double_ingot"
   },
   "result": {
-    "item": "modern_industrialization:iron_plate"
+    "count": 1,
+    "id": "modern_industrialization:iron_plate"
   }
 }

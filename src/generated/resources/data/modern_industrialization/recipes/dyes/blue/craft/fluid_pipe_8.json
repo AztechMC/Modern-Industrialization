@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "forge:dyes/blue"
+      "tag": "c:dyes/blue"
     },
     "p": {
       "tag": "modern_industrialization:fluid_pipes"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "modern_industrialization:blue_fluid_pipe"
+    "id": "modern_industrialization:blue_fluid_pipe"
   }
 }

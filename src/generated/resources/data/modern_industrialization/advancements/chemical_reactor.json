@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:chemical_reactor"
-            ]
+            "items": "modern_industrialization:chemical_reactor"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.chemical_reactor.description"
     },
     "icon": {
-      "item": "modern_industrialization:chemical_reactor"
+      "count": 1,
+      "id": "modern_industrialization:chemical_reactor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.chemical_reactor"

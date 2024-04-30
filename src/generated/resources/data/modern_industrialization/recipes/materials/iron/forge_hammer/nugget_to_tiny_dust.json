@@ -4,6 +4,7 @@
     "tag": "forge:nuggets/iron"
   },
   "result": {
-    "item": "modern_industrialization:iron_tiny_dust"
+    "count": 1,
+    "id": "modern_industrialization:iron_tiny_dust"
   }
 }

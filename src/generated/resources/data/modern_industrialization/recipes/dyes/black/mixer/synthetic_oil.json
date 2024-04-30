@@ -12,7 +12,7 @@
     {
       "amount": 1,
       "probability": 0.0,
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   ],
   "item_outputs": [

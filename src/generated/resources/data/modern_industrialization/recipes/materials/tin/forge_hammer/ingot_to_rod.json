@@ -4,6 +4,7 @@
     "tag": "forge:ingots/tin"
   },
   "result": {
-    "item": "modern_industrialization:tin_rod"
+    "count": 1,
+    "id": "modern_industrialization:tin_rod"
   }
 }

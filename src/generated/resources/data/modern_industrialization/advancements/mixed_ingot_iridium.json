@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:mixed_ingot_iridium"
-            ]
+            "items": "modern_industrialization:mixed_ingot_iridium"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.mixed_ingot_iridium.description"
     },
     "icon": {
-      "item": "modern_industrialization:mixed_ingot_iridium"
+      "count": 1,
+      "id": "modern_industrialization:mixed_ingot_iridium"
     },
     "title": {
       "translate": "advancements.modern_industrialization.mixed_ingot_iridium"

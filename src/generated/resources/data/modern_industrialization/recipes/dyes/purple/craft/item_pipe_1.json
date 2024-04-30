@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "forge:dyes/purple"
+      "tag": "c:dyes/purple"
     },
     "p": {
       "tag": "modern_industrialization:item_pipes"
@@ -13,6 +13,7 @@
     "pd"
   ],
   "result": {
-    "item": "modern_industrialization:purple_item_pipe"
+    "count": 1,
+    "id": "modern_industrialization:purple_item_pipe"
   }
 }

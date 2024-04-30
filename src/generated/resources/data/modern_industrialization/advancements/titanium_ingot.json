@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:titanium_ingot"
-            ]
+            "items": "modern_industrialization:titanium_ingot"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.titanium_ingot.description"
     },
     "icon": {
-      "item": "modern_industrialization:titanium_ingot"
+      "count": 1,
+      "id": "modern_industrialization:titanium_ingot"
     },
     "title": {
       "translate": "advancements.modern_industrialization.titanium_ingot"

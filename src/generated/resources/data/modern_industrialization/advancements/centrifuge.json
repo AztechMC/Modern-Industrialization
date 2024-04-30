@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:centrifuge"
-            ]
+            "items": "modern_industrialization:centrifuge"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.centrifuge.description"
     },
     "icon": {
-      "item": "modern_industrialization:centrifuge"
+      "count": 1,
+      "id": "modern_industrialization:centrifuge"
     },
     "title": {
       "translate": "advancements.modern_industrialization.centrifuge"

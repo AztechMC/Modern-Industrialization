@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:cupronickel_wire_magnetic"
   },
-  "result": "modern_industrialization:cupronickel_wire"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:cupronickel_wire"
+  }
 }

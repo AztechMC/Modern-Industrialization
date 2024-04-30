@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item": "modern_industrialization:item_pipe",
+    "id": "modern_industrialization:item_pipe",
     "count": 16
   }
 }

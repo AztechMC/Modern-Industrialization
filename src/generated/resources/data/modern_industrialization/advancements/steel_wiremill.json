@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:steel_wiremill"
-            ]
+            "items": "modern_industrialization:steel_wiremill"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.steel_wiremill.description"
     },
     "icon": {
-      "item": "modern_industrialization:steel_wiremill"
+      "count": 1,
+      "id": "modern_industrialization:steel_wiremill"
     },
     "title": {
       "translate": "advancements.modern_industrialization.steel_wiremill"

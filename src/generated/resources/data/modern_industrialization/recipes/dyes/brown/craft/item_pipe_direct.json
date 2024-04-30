@@ -9,7 +9,7 @@
       "tag": "forge:gears/steel"
     },
     "d": {
-      "tag": "forge:dyes/brown"
+      "tag": "c:dyes/brown"
     }
   },
   "pattern": [
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 16,
-    "item": "modern_industrialization:brown_item_pipe"
+    "id": "modern_industrialization:brown_item_pipe"
   }
 }

@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item" : "modern_industrialization:coke_oven",
+    "id" : "modern_industrialization:coke_oven",
     "count": 1
   }
 }

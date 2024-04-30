@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:electrolyzer"
-            ]
+            "items": "modern_industrialization:electrolyzer"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.electrolyzer.description"
     },
     "icon": {
-      "item": "modern_industrialization:electrolyzer"
+      "count": 1,
+      "id": "modern_industrialization:electrolyzer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.electrolyzer"

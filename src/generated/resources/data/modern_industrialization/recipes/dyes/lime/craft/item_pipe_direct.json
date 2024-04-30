@@ -9,7 +9,7 @@
       "tag": "forge:gears/steel"
     },
     "d": {
-      "tag": "forge:dyes/lime"
+      "tag": "c:dyes/lime"
     }
   },
   "pattern": [
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 16,
-    "item": "modern_industrialization:lime_item_pipe"
+    "id": "modern_industrialization:lime_item_pipe"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:highly_advanced_upgrade"
-            ]
+            "items": "modern_industrialization:highly_advanced_upgrade"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.highly_advanced_upgrade.description"
     },
     "icon": {
-      "item": "modern_industrialization:highly_advanced_upgrade"
+      "count": 1,
+      "id": "modern_industrialization:highly_advanced_upgrade"
     },
     "title": {
       "translate": "advancements.modern_industrialization.highly_advanced_upgrade"

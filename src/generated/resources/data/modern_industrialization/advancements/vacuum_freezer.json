@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:vacuum_freezer"
-            ]
+            "items": "modern_industrialization:vacuum_freezer"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:vacuum_freezer"
+      "count": 1,
+      "id": "modern_industrialization:vacuum_freezer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.vacuum_freezer"

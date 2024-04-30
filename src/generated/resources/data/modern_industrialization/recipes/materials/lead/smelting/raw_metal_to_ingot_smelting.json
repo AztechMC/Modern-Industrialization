@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:raw_lead"
   },
-  "result": "modern_industrialization:lead_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:lead_ingot"
+  }
 }

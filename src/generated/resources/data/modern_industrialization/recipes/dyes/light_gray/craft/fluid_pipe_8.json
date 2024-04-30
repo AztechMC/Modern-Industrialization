@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "forge:dyes/light_gray"
+      "tag": "c:dyes/light_gray"
     },
     "p": {
       "tag": "modern_industrialization:fluid_pipes"
@@ -16,6 +16,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "modern_industrialization:light_gray_fluid_pipe"
+    "id": "modern_industrialization:light_gray_fluid_pipe"
   }
 }

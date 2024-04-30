@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:iridium_tiny_dust"
   },
-  "result": "modern_industrialization:iridium_nugget"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:iridium_nugget"
+  }
 }

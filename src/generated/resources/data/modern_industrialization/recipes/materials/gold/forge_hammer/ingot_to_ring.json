@@ -4,6 +4,7 @@
     "tag": "forge:ingots/gold"
   },
   "result": {
-    "item": "modern_industrialization:gold_ring"
+    "count": 1,
+    "id": "modern_industrialization:gold_ring"
   }
 }

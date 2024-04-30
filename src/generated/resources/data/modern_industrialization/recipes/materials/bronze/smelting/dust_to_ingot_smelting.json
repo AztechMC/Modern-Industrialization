@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:bronze_dust"
   },
-  "result": "modern_industrialization:bronze_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:bronze_ingot"
+  }
 }

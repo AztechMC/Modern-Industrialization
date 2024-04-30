@@ -5,7 +5,7 @@
     "tag": "forge:ores/copper"
   },
   "result": {
-    "item": "modern_industrialization:copper_dust",
+    "id": "modern_industrialization:copper_dust",
     "count": 12
   }
 }

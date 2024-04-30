@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:coke_oven"
-            ]
+            "items": "modern_industrialization:coke_oven"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:coke_oven"
+      "count": 1,
+      "id": "modern_industrialization:coke_oven"
     },
     "title": {
       "translate": "advancements.modern_industrialization.coke_oven"

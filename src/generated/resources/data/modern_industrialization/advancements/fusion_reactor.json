@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:fusion_reactor"
-            ]
+            "items": "modern_industrialization:fusion_reactor"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:fusion_reactor"
+      "count": 1,
+      "id": "modern_industrialization:fusion_reactor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.fusion_reactor"

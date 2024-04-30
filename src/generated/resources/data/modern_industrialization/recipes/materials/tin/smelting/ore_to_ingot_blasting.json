@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:tin_ore"
   },
-  "result": "modern_industrialization:tin_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:tin_ingot"
+  }
 }

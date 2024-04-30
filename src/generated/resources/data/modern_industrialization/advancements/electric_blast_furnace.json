@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:electric_blast_furnace"
-            ]
+            "items": "modern_industrialization:electric_blast_furnace"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:electric_blast_furnace"
+      "count": 1,
+      "id": "modern_industrialization:electric_blast_furnace"
     },
     "title": {
       "translate": "advancements.modern_industrialization.electric_blast_furnace"

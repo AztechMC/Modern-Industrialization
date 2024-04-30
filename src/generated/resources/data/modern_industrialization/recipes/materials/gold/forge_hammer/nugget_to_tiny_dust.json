@@ -4,6 +4,7 @@
     "tag": "forge:nuggets/gold"
   },
   "result": {
-    "item": "modern_industrialization:gold_tiny_dust"
+    "count": 1,
+    "id": "modern_industrialization:gold_tiny_dust"
   }
 }

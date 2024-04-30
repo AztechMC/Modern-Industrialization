@@ -14,7 +14,7 @@
     }
   },
   "result": {
-    "item" : "modern_industrialization:steam_blast_furnace",
+    "id" : "modern_industrialization:steam_blast_furnace",
     "count": 1
   }
 }

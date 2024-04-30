@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:steam_mining_drill"
-            ]
+            "items": "modern_industrialization:steam_mining_drill"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:steam_mining_drill"
+      "count": 1,
+      "id": "modern_industrialization:steam_mining_drill"
     },
     "title": {
       "translate": "advancements.modern_industrialization.steam_mining_drill"

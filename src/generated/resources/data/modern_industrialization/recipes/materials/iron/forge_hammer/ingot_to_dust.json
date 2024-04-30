@@ -4,6 +4,7 @@
     "tag": "forge:ingots/iron"
   },
   "result": {
-    "item": "modern_industrialization:iron_dust"
+    "count": 1,
+    "id": "modern_industrialization:iron_dust"
   }
 }

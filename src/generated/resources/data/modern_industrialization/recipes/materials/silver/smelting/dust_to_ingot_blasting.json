@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:silver_dust"
   },
-  "result": "modern_industrialization:silver_ingot"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:silver_ingot"
+  }
 }

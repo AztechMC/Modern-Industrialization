@@ -5,6 +5,7 @@
     "tag": "forge:plates/copper"
   },
   "result": {
-    "item": "modern_industrialization:copper_curved_plate"
+    "count": 1,
+    "id": "modern_industrialization:copper_curved_plate"
   }
 }

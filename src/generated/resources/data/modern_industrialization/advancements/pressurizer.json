@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:pressurizer"
-            ]
+            "items": "modern_industrialization:pressurizer"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.pressurizer.description"
     },
     "icon": {
-      "item": "modern_industrialization:pressurizer"
+      "count": 1,
+      "id": "modern_industrialization:pressurizer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.pressurizer"

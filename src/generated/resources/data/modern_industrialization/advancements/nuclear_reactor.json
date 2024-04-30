@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:nuclear_reactor"
-            ]
+            "items": "modern_industrialization:nuclear_reactor"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:nuclear_reactor"
+      "count": 1,
+      "id": "modern_industrialization:nuclear_reactor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.nuclear_reactor"

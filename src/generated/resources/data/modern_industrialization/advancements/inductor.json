@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:inductor"
-            ]
+            "items": "modern_industrialization:inductor"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.inductor.description"
     },
     "icon": {
-      "item": "modern_industrialization:inductor"
+      "count": 1,
+      "id": "modern_industrialization:inductor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.inductor"

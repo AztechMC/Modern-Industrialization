@@ -4,6 +4,7 @@
     "tag": "forge:ingots/steel"
   },
   "result": {
-    "item": "modern_industrialization:steel_ring"
+    "count": 1,
+    "id": "modern_industrialization:steel_ring"
   }
 }

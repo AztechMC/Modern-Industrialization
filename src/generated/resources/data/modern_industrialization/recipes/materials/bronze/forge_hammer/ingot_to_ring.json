@@ -4,6 +4,7 @@
     "tag": "forge:ingots/bronze"
   },
   "result": {
-    "item": "modern_industrialization:bronze_ring"
+    "count": 1,
+    "id": "modern_industrialization:bronze_ring"
   }
 }

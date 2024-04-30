@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:implosion_compressor"
-            ]
+            "items": "modern_industrialization:implosion_compressor"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:implosion_compressor"
+      "count": 1,
+      "id": "modern_industrialization:implosion_compressor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.implosion_compressor"

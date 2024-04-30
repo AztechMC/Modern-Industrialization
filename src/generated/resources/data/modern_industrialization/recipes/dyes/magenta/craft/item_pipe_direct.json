@@ -9,7 +9,7 @@
       "tag": "forge:gears/steel"
     },
     "d": {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   },
   "pattern": [
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 16,
-    "item": "modern_industrialization:magenta_item_pipe"
+    "id": "modern_industrialization:magenta_item_pipe"
   }
 }

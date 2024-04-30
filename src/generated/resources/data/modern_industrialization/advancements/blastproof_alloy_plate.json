@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:blastproof_alloy_plate"
-            ]
+            "items": "modern_industrialization:blastproof_alloy_plate"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.blastproof_alloy_plate.description"
     },
     "icon": {
-      "item": "modern_industrialization:blastproof_alloy_plate"
+      "count": 1,
+      "id": "modern_industrialization:blastproof_alloy_plate"
     },
     "title": {
       "translate": "advancements.modern_industrialization.blastproof_alloy_plate"

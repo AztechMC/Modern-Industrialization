@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:forge_hammer"
-            ]
+            "items": "modern_industrialization:forge_hammer"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:forge_hammer"
+      "count": 1,
+      "id": "modern_industrialization:forge_hammer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.forge_hammer"

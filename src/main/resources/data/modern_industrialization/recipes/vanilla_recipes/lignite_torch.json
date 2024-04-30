@@ -15,7 +15,7 @@
     ]
   },
   "result": {
-    "item": "minecraft:torch",
+    "id": "minecraft:torch",
     "count": 4
   }
 }

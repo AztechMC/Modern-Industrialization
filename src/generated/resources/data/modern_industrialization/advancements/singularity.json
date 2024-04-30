@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:singularity"
-            ]
+            "items": "modern_industrialization:singularity"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.singularity.description"
     },
     "icon": {
-      "item": "modern_industrialization:singularity"
+      "count": 1,
+      "id": "modern_industrialization:singularity"
     },
     "title": {
       "translate": "advancements.modern_industrialization.singularity"

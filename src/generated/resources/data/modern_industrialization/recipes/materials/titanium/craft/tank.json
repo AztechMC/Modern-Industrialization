@@ -6,7 +6,7 @@
       "tag": "forge:plates/titanium"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "###"
   ],
   "result": {
-    "item": "modern_industrialization:titanium_tank"
+    "count": 1,
+    "id": "modern_industrialization:titanium_tank"
   }
 }

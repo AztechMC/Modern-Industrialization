@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:bronze_macerator"
-            ]
+            "items": "modern_industrialization:bronze_macerator"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.bronze_macerator.description"
     },
     "icon": {
-      "item": "modern_industrialization:bronze_macerator"
+      "count": 1,
+      "id": "modern_industrialization:bronze_macerator"
     },
     "title": {
       "translate": "advancements.modern_industrialization.bronze_macerator"

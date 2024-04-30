@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:steam_blast_furnace"
-            ]
+            "items": "modern_industrialization:steam_blast_furnace"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.steam_blast_furnace.description"
     },
     "icon": {
-      "item": "modern_industrialization:steam_blast_furnace"
+      "count": 1,
+      "id": "modern_industrialization:steam_blast_furnace"
     },
     "title": {
       "translate": "advancements.modern_industrialization.steam_blast_furnace"

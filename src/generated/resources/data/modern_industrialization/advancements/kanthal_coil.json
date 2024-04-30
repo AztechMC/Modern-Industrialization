@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:kanthal_coil"
-            ]
+            "items": "modern_industrialization:kanthal_coil"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.kanthal_coil.description"
     },
     "icon": {
-      "item": "modern_industrialization:kanthal_coil"
+      "count": 1,
+      "id": "modern_industrialization:kanthal_coil"
     },
     "title": {
       "translate": "advancements.modern_industrialization.kanthal_coil"

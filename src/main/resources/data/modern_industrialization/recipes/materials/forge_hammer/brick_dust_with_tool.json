@@ -5,6 +5,6 @@
     "item": "minecraft:brick"
   },
   "result": {
-    "item": "modern_industrialization:brick_dust"
+    "id": "modern_industrialization:brick_dust"
   }
 }

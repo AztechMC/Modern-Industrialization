@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:nickel_tiny_dust"
   },
-  "result": "modern_industrialization:nickel_nugget"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:nickel_nugget"
+  }
 }

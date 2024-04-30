@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:steam_quarry"
-            ]
+            "items": "modern_industrialization:steam_quarry"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:steam_quarry"
+      "count": 1,
+      "id": "modern_industrialization:steam_quarry"
     },
     "title": {
       "translate": "advancements.modern_industrialization.steam_quarry"

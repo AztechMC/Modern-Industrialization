@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:fire_clay_dust"
   },
-  "result": "modern_industrialization:fire_clay_brick"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:fire_clay_brick"
+  }
 }

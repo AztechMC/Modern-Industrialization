@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:polarizer"
-            ]
+            "items": "modern_industrialization:polarizer"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.polarizer.description"
     },
     "icon": {
-      "item": "modern_industrialization:polarizer"
+      "count": 1,
+      "id": "modern_industrialization:polarizer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.polarizer"

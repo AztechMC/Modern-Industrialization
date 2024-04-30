@@ -4,6 +4,7 @@
     "tag": "forge:nuggets/tin"
   },
   "result": {
-    "item": "modern_industrialization:tin_tiny_dust"
+    "count": 1,
+    "id": "modern_industrialization:tin_tiny_dust"
   }
 }

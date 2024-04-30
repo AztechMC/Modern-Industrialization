@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:capacitor"
-            ]
+            "items": "modern_industrialization:capacitor"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.capacitor.description"
     },
     "icon": {
-      "item": "modern_industrialization:capacitor"
+      "count": 1,
+      "id": "modern_industrialization:capacitor"
     },
     "title": {
       "translate": "advancements.modern_industrialization.capacitor"

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:steel_packer"
-            ]
+            "items": "modern_industrialization:steel_packer"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.steel_packer.description"
     },
     "icon": {
-      "item": "modern_industrialization:steel_packer"
+      "count": 1,
+      "id": "modern_industrialization:steel_packer"
     },
     "title": {
       "translate": "advancements.modern_industrialization.steel_packer"

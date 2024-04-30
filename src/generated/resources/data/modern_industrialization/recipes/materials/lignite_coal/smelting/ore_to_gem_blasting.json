@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:lignite_coal_ore"
   },
-  "result": "modern_industrialization:lignite_coal"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:lignite_coal"
+  }
 }

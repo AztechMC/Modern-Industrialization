@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:electronic_circuit"
-            ]
+            "items": "modern_industrialization:electronic_circuit"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.electronic_circuit.description"
     },
     "icon": {
-      "item": "modern_industrialization:electronic_circuit"
+      "count": 1,
+      "id": "modern_industrialization:electronic_circuit"
     },
     "title": {
       "translate": "advancements.modern_industrialization.electronic_circuit"

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:analog_circuit"
-            ]
+            "items": "modern_industrialization:analog_circuit"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "modern_industrialization:analog_circuit"
+      "count": 1,
+      "id": "modern_industrialization:analog_circuit"
     },
     "title": {
       "translate": "advancements.modern_industrialization.analog_circuit"

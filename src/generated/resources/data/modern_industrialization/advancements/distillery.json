@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:distillery"
-            ]
+            "items": "modern_industrialization:distillery"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.distillery.description"
     },
     "icon": {
-      "item": "modern_industrialization:distillery"
+      "count": 1,
+      "id": "modern_industrialization:distillery"
     },
     "title": {
       "translate": "advancements.modern_industrialization.distillery"

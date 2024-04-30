@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:quantum_chestplate"
-            ]
+            "items": "modern_industrialization:quantum_chestplate"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:quantum_chestplate"
+      "count": 1,
+      "id": "modern_industrialization:quantum_chestplate"
     },
     "title": {
       "translate": "advancements.modern_industrialization.quantum_chestplate"

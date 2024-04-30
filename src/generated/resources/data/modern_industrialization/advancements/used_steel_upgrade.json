@@ -10,7 +10,8 @@
       "translate": "advancements.modern_industrialization.used_steel_upgrade.description"
     },
     "icon": {
-      "item": "modern_industrialization:steel_upgrade"
+      "count": 1,
+      "id": "modern_industrialization:steel_upgrade"
     },
     "title": {
       "translate": "advancements.modern_industrialization.used_steel_upgrade"

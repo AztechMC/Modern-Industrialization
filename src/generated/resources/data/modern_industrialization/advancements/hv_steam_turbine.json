@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:hv_steam_turbine"
-            ]
+            "items": "modern_industrialization:hv_steam_turbine"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.hv_steam_turbine.description"
     },
     "icon": {
-      "item": "modern_industrialization:hv_steam_turbine"
+      "count": 1,
+      "id": "modern_industrialization:hv_steam_turbine"
     },
     "title": {
       "translate": "advancements.modern_industrialization.hv_steam_turbine"

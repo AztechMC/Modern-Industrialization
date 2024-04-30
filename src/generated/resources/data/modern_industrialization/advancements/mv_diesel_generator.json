@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:mv_diesel_generator"
-            ]
+            "items": "modern_industrialization:mv_diesel_generator"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.modern_industrialization.mv_diesel_generator.description"
     },
     "icon": {
-      "item": "modern_industrialization:mv_diesel_generator"
+      "count": 1,
+      "id": "modern_industrialization:mv_diesel_generator"
     },
     "title": {
       "translate": "advancements.modern_industrialization.mv_diesel_generator"

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "modern_industrialization:replicator"
-            ]
+            "items": "modern_industrialization:replicator"
           }
         ]
       },
@@ -20,7 +18,8 @@
     },
     "frame": "challenge",
     "icon": {
-      "item": "modern_industrialization:replicator"
+      "count": 1,
+      "id": "modern_industrialization:replicator"
     },
     "title": {
       "translate": "advancements.modern_industrialization.replicator"

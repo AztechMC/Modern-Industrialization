@@ -9,7 +9,7 @@
       "tag": "forge:gears/steel"
     },
     "d": {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   },
   "pattern": [
@@ -19,6 +19,6 @@
   ],
   "result": {
     "count": 16,
-    "item": "modern_industrialization:light_blue_item_pipe"
+    "id": "modern_industrialization:light_blue_item_pipe"
   }
 }

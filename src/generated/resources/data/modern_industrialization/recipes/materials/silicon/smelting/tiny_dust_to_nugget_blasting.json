@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "modern_industrialization:silicon_tiny_dust"
   },
-  "result": "modern_industrialization:silicon_nugget"
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:silicon_nugget"
+  }
 }

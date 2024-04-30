@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/tin"
+      "tag": "c:nuggets/tin"
     },
     "y": {
       "item": "modern_industrialization:tin_nugget"

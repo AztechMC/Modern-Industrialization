@@ -8,7 +8,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:raw_materials/osmium"
+      "tag": "c:raw_materials/osmium"
     }
   ],
   "item_outputs": [

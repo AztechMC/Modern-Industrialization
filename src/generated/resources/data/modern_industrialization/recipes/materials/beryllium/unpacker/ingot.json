@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:storage_blocks/beryllium"
+      "tag": "c:storage_blocks/beryllium"
     }
   ],
   "item_outputs": [

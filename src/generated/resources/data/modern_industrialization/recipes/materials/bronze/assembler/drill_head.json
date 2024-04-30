@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:plates/bronze"
+      "tag": "c:plates/bronze"
     },
     {
       "amount": 2,
@@ -23,7 +23,7 @@
     },
     {
       "amount": 2,
-      "tag": "forge:gears/bronze"
+      "tag": "c:gears/bronze"
     }
   ],
   "item_outputs": [

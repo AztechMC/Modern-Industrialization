@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:tiny_dusts/gold"
+      "tag": "c:tiny_dusts/gold"
     }
   ],
   "item_outputs": [

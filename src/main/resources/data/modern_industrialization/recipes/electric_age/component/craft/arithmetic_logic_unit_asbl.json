@@ -9,7 +9,7 @@
   "key":
   {
     "P" : {
-      "tag" : "forge:plates/diamond"
+      "tag" : "c:plates/diamond"
     },
     "a" : {
       "item" : "modern_industrialization:and_gate"

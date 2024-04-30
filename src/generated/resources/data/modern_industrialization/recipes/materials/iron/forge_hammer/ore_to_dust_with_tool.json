@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 50,
   "ingredient": {
-    "tag": "forge:ores/iron"
+    "tag": "c:ores/iron"
   },
   "result": {
     "count": 4,

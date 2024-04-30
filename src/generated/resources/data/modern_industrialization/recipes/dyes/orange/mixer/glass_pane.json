@@ -9,7 +9,7 @@
     },
     {
       "amount": 8,
-      "tag": "forge:glass_panes"
+      "tag": "c:glass_panes"
     }
   ],
   "item_outputs": [

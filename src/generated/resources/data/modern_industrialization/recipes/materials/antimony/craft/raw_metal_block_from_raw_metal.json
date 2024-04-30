@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:raw_materials/antimony"
+      "tag": "c:raw_materials/antimony"
     },
     "y": {
       "item": "modern_industrialization:raw_antimony"

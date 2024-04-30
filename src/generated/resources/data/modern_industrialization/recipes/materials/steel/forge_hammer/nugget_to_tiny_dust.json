@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "ingredient": {
-    "tag": "forge:nuggets/steel"
+    "tag": "c:nuggets/steel"
   },
   "result": {
     "count": 1,

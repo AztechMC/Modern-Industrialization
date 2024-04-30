@@ -54,7 +54,7 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         }
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
-        tag(BlockTags.create(new ResourceLocation("forge:relocation_not_supported"))).add(MIPipes.BLOCK_PIPE.get());
+        tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
         // Have no idea why there is such a tag but go add it
         tag(Tags.Blocks.ORES_QUARTZ).add(BuiltInRegistries.BLOCK.get(new MIIdentifier("quartz_ore")));
     }

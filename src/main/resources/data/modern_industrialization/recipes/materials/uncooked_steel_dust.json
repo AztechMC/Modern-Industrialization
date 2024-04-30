@@ -3,25 +3,25 @@
   "ingredients":
   [
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
-      "tag" : "forge:dusts/iron"
+      "tag" : "c:dusts/iron"
     },
     {
       "item" : "modern_industrialization:coke_dust"

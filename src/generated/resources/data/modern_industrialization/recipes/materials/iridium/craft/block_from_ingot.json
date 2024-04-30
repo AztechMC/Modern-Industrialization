@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/iridium"
+      "tag": "c:ingots/iridium"
     },
     "y": {
       "item": "modern_industrialization:iridium_ingot"

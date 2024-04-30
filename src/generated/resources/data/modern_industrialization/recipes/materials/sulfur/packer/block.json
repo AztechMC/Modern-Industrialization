@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:dusts/sulfur"
+      "tag": "c:dusts/sulfur"
     },
     {
       "amount": 1,

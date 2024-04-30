@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:dusts/soldering_alloy"
+      "tag": "c:dusts/soldering_alloy"
     },
     {
       "amount": 1,

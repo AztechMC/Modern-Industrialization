@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:gems/certus_quartz"
+      "tag": "c:gems/certus_quartz"
     }
   ],
   "item_outputs": [

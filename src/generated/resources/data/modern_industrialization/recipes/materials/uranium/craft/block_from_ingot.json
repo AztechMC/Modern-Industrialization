@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/uranium"
+      "tag": "c:ingots/uranium"
     },
     "y": {
       "item": "modern_industrialization:uranium_ingot"

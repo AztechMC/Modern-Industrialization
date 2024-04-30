@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:tiny_dusts/neodymium"
+      "tag": "c:tiny_dusts/neodymium"
     },
     "y": {
       "item": "modern_industrialization:neodymium_tiny_dust"

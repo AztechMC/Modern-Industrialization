@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "forge:plates/aluminum"
+      "tag": "c:plates/aluminum"
     },
     {
       "amount": 1,

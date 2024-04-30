@@ -7,10 +7,10 @@
   ],
   "key": {
     "P": {
-      "tag": "forge:plates/bronze"
+      "tag": "c:plates/bronze"
     },
     "G" : {
-      "tag" : "forge:gears/bronze"
+      "tag" : "c:gears/bronze"
     }
   },
   "result": {

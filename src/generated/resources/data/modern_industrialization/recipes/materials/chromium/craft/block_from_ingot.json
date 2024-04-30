@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/chromium"
+      "tag": "c:ingots/chromium"
     },
     "y": {
       "item": "modern_industrialization:chromium_ingot"

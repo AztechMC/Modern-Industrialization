@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:raw_materials/tungsten"
+      "tag": "c:raw_materials/tungsten"
     },
     "y": {
       "item": "modern_industrialization:raw_tungsten"

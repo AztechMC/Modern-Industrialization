@@ -7,10 +7,10 @@
   ],
   "key": {
     "A" : {
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     "G" : {
-      "tag" : "forge:gears/titanium"
+      "tag" : "c:gears/titanium"
     }
   },
   "result": {

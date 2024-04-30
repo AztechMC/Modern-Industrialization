@@ -7,10 +7,10 @@
   ],
   "key": {
     "A" : {
-      "tag": "forge:plates/stainless_steel"
+      "tag": "c:plates/stainless_steel"
     },
     "G" : {
-      "tag": "forge:gears/stainless_steel"
+      "tag": "c:gears/stainless_steel"
     }
   },
   "result": {

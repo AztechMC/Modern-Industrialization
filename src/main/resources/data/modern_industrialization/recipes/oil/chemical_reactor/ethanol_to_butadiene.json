@@ -7,7 +7,7 @@
     "amount": 750
   },
   "item_inputs": {
-    "tag": "forge:tiny_dusts/aluminum",
+    "tag": "c:tiny_dusts/aluminum",
     "amount": 1
   },
   "fluid_outputs": [

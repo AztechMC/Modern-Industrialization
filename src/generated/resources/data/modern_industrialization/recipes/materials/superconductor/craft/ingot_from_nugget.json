@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/superconductor"
+      "tag": "c:nuggets/superconductor"
     },
     "y": {
       "item": "modern_industrialization:superconductor_nugget"

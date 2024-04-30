@@ -7,10 +7,10 @@
   ],
   "key": {
     "A" : {
-      "tag" : "forge:plates/titanium"
+      "tag" : "c:plates/titanium"
     },
     "C" : {
-      "tag" : "forge:plates/chromium"
+      "tag" : "c:plates/chromium"
     },
     "H" : {
       "item" : "modern_industrialization:turbo_machine_hull"

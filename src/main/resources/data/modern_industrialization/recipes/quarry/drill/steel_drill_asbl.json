@@ -11,7 +11,7 @@
       "item": "modern_industrialization:steel_drill_head"
     },
     "g" : {
-      "tag": "forge:gears/iron"
+      "tag": "c:gears/iron"
     },
     "p" : {
       "tag" : "modern_industrialization:item_pipes"

@@ -5,19 +5,19 @@
   "item_inputs": [
     {
       "amount": 6,
-      "tag": "forge:tiny_dusts/iron"
+      "tag": "c:tiny_dusts/iron"
     },
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/chromium"
+      "tag": "c:tiny_dusts/chromium"
     },
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/nickel"
+      "tag": "c:tiny_dusts/nickel"
     },
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/manganese"
+      "tag": "c:tiny_dusts/manganese"
     }
   ],
   "item_outputs": [

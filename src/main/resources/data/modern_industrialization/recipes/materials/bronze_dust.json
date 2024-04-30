@@ -3,16 +3,16 @@
   "ingredients":
           [
             {
-              "tag" : "forge:dusts/copper"
+              "tag" : "c:dusts/copper"
             },
             {
-              "tag" : "forge:dusts/copper"
+              "tag" : "c:dusts/copper"
             },
             {
-              "tag" : "forge:dusts/copper"
+              "tag" : "c:dusts/copper"
             },
             {
-              "tag" : "forge:dusts/tin"
+              "tag" : "c:dusts/tin"
             }
 
           ],

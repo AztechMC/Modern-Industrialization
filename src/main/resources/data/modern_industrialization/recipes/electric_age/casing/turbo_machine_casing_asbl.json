@@ -7,7 +7,7 @@
   ],
   "key": {
     "A" : {
-      "tag" : "forge:plates/stainless_steel"
+      "tag" : "c:plates/stainless_steel"
     },
     "H" : {
       "item" : "modern_industrialization:advanced_machine_hull"

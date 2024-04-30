@@ -10,7 +10,7 @@
       "item": "minecraft:furnace"
     },
     "p": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "s": {
       "item": "minecraft:smooth_stone"

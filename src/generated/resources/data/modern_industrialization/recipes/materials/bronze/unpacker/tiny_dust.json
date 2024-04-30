@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:dusts/bronze"
+      "tag": "c:dusts/bronze"
     }
   ],
   "item_outputs": [

@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 60,
   "ingredient": {
-    "tag": "forge:ingots/tin"
+    "tag": "c:ingots/tin"
   },
   "result": {
     "count": 2,

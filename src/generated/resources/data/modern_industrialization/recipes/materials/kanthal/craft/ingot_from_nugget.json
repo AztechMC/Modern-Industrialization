@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/kanthal"
+      "tag": "c:nuggets/kanthal"
     },
     "y": {
       "item": "modern_industrialization:kanthal_nugget"

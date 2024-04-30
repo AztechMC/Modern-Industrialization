@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:dusts/bauxite"
+      "tag": "c:dusts/bauxite"
     },
     {
       "amount": 1,

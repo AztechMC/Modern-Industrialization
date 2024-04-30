@@ -66,7 +66,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
     private void generateAe2Compat() {
         addMiRecipe(MIMachineRecipeTypes.ELECTROLYZER, "ae2:certus_quartz_crystal", "ae2:charged_certus_quartz_crystal", 1, 8, 60);
 
-        addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#forge:gems/certus_quartz", "ae2:certus_quartz_dust", 1, 2, 100);
+        addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:gems/certus_quartz", "ae2:certus_quartz_dust", 1, 2, 100);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "minecraft:ender_pearl", "ae2:ender_dust", 1, 2, 100);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "ae2:fluix_crystal", "ae2:fluix_dust", 1, 2, 100);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "ae2:sky_stone_block", "ae2:sky_dust", 1, 2, 100);
@@ -80,8 +80,8 @@ public class CompatRecipesProvider extends MIRecipesProvider {
 
         for (var entry : Map.of(
                 "calculation", "ae2:certus_quartz_crystal",
-                "engineering", "#forge:gems/diamond",
-                "logic", "#forge:ingots/gold").entrySet()) {
+                "engineering", "#c:gems/diamond",
+                "logic", "#c:ingots/gold").entrySet()) {
             var type = entry.getKey();
             var ingredient = entry.getValue();
 
@@ -97,7 +97,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         }
 
         addCompatRecipe("printed_silicon", new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 8, 200)
-                .addItemInput("#forge:silicon", 1)
+                .addItemInput("#c:silicon", 1)
                 .addItemInput("ae2:silicon_press", 1, 0)
                 .addItemOutput("ae2:printed_silicon", 1));
 
@@ -114,20 +114,20 @@ public class CompatRecipesProvider extends MIRecipesProvider {
             var meWiresDirect = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 16, "qCq", "GdG", "qCq")
                     .addInput('C', "modern_industrialization:bronze_curved_plate")
                     .addInput('G', "#ae2:glass_cable")
-                    .addInput('d', "#forge:dyes/" + color.getName())
+                    .addInput('d', "#c:dyes/" + color.getName())
                     .addInput('q', "ae2:quartz_fiber");
             addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_direct", meWiresDirect);
             addCompatRecipe("dyes/" + color.getName() + "/assembler/me_wire_direct", meWiresDirect.exportToAssembler());
             // 8 me wires
             var eightMeWires = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 8, "ppp", "pdp",
-                    "ppp").addInput('d', "#forge:dyes/" + color.getName()).addInput('p', "#modern_industrialization:me_wires");
+                    "ppp").addInput('d', "#c:dyes/" + color.getName()).addInput('p', "#modern_industrialization:me_wires");
             addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_8", eightMeWires);
             addCompatRecipe("dyes/" + color.getName() + "/mixer/me_wire_8",
                     eightMeWires.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1));
             // 1 me wire
             addCompatRecipe("dyes/" + color.getName() + "/craft/me_wire_1",
                     new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_me_wire", 1, "pd")
-                            .addInput('d', "#forge:dyes/" + color.getName()).addInput('p', "#modern_industrialization:me_wires"));
+                            .addInput('d', "#c:dyes/" + color.getName()).addInput('p', "#modern_industrialization:me_wires"));
         }
 
         // decolor 8 me wires

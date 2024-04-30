@@ -3,11 +3,11 @@
   "eu": 64,
   "duration": 1500,
   "item_inputs": [{
-      "tag": "forge:dusts/silicon",
+      "tag": "c:dusts/silicon",
       "amount": 32
     },
     {
-      "tag": "forge:tiny_dusts/iridium",
+      "tag": "c:tiny_dusts/iridium",
       "amount": 1
     }
   ],

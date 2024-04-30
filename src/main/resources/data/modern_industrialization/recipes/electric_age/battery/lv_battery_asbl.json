@@ -8,7 +8,7 @@
   "key":
   {
     "a" : {
-      "tag" : "forge:plates/battery_alloy"
+      "tag" : "c:plates/battery_alloy"
     },
     "c" : {
       "item" : "modern_industrialization:tin_cable"

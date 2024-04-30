@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/tungsten"
+      "tag": "c:nuggets/tungsten"
     },
     "y": {
       "item": "modern_industrialization:tungsten_nugget"

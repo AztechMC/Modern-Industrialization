@@ -16,7 +16,7 @@
       "item" : "modern_industrialization:basic_machine_hull"
     },
     "g" : {
-      "tag" : "forge:glass"
+      "tag" : "c:glass_blocks"
     },
     "C" : {
       "item" : "modern_industrialization:electronic_circuit"

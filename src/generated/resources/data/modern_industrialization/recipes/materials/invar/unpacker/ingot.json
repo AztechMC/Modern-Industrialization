@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:storage_blocks/invar"
+      "tag": "c:storage_blocks/invar"
     }
   ],
   "item_outputs": [

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/tungsten"
+      "tag": "c:ingots/tungsten"
     },
     "y": {
       "item": "modern_industrialization:tungsten_ingot"

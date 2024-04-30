@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/kanthal"
+      "tag": "c:ingots/kanthal"
     },
     "y": {
       "item": "modern_industrialization:kanthal_ingot"

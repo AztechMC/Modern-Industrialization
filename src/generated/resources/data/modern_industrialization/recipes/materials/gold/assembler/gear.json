@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "forge:plates/gold"
+      "tag": "c:plates/gold"
     },
     {
       "amount": 1,

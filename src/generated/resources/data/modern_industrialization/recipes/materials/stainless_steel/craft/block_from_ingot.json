@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/stainless_steel"
+      "tag": "c:ingots/stainless_steel"
     },
     "y": {
       "item": "modern_industrialization:stainless_steel_ingot"

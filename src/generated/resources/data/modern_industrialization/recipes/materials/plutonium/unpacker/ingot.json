@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:storage_blocks/plutonium"
+      "tag": "c:storage_blocks/plutonium"
     }
   ],
   "item_outputs": [

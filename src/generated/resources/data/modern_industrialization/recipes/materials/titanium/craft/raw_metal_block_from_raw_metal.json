@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:raw_materials/titanium"
+      "tag": "c:raw_materials/titanium"
     },
     "y": {
       "item": "modern_industrialization:raw_titanium"

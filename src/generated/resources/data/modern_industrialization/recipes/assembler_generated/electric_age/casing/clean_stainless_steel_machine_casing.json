@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "forge:plates/stainless_steel"
+      "tag": "c:plates/stainless_steel"
     },
     {
       "amount": 1,
-      "tag": "forge:gears/stainless_steel"
+      "tag": "c:gears/stainless_steel"
     }
   ],
   "item_outputs": [

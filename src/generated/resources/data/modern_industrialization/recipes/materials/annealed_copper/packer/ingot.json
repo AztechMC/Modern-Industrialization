@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:nuggets/annealed_copper"
+      "tag": "c:nuggets/annealed_copper"
     }
   ],
   "item_outputs": [

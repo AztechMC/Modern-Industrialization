@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:dusts/annealed_copper"
+      "tag": "c:dusts/annealed_copper"
     }
   ],
   "item_outputs": [

@@ -4,7 +4,7 @@
   "duration": 10,
   "item_inputs": [
     {
-      "tag": "forge:dusts/emerald",
+      "tag": "c:dusts/emerald",
       "amount": 1
     },
     {

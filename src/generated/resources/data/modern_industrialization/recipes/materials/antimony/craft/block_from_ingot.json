@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/antimony"
+      "tag": "c:ingots/antimony"
     },
     "y": {
       "item": "modern_industrialization:antimony_ingot"

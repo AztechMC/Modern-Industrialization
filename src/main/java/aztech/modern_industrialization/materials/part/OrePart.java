@@ -121,7 +121,7 @@ public class OrePart implements PartKeyProvider {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
-                    String tag = "forge:ores/" + partContext.getMaterialName();
+                    String tag = "c:ores/" + partContext.getMaterialName();
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
                     TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");

@@ -40,13 +40,13 @@ public class MITags {
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
 
     // For Immersive Engineering treated wood
-    public static final TagKey<Fluid> CREOSOTE = FluidTags.create(new ResourceLocation("forge:creosote"));
+    public static final TagKey<Fluid> CREOSOTE = FluidTags.create(new ResourceLocation("c:creosote"));
 
     // TODO 1.21: should be in the tag rework
     public static final TagKey<Item> SHULKER_BOXES = item("shulker_boxes");
 
     public static TagKey<Item> item(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation("forge", path));
+        return TagKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation("c", path));
     }
 
     public static TagKey<Item> miItem(String path) {

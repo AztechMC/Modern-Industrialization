@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:gears/bronze"
+      "tag": "c:gears/bronze"
     },
     "R": {
       "item": "modern_industrialization:bronze_rod"
@@ -15,7 +15,7 @@
       "item": "modern_industrialization:bronze_curved_plate"
     },
     "p": {
-      "tag": "forge:plates/bronze"
+      "tag": "c:plates/bronze"
     }
   },
   "pattern": [

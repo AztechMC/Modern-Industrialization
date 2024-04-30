@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:tiny_dusts/invar"
+      "tag": "c:tiny_dusts/invar"
     },
     "y": {
       "item": "modern_industrialization:invar_tiny_dust"

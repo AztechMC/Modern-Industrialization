@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "forge:plates/titanium"
+      "tag": "c:plates/titanium"
     },
     {
       "amount": 4,
-      "tag": "forge:plates/chromium"
+      "tag": "c:plates/chromium"
     },
     {
       "amount": 1,

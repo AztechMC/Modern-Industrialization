@@ -8,11 +8,11 @@
       "amount" : 1
     },
     {
-      "tag" : "forge:plates/beryllium",
+      "tag" : "c:plates/beryllium",
       "amount" : 1
     },
     {
-      "tag" : "forge:plates/cadmium",
+      "tag" : "c:plates/cadmium",
       "amount" : 1
     }
   ],

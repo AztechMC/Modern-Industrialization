@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "forge:ingots/platinum"
+      "tag": "c:ingots/platinum"
     },
     {
       "amount": 1,

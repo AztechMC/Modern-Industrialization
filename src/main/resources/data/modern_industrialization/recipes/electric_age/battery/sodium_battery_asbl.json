@@ -8,7 +8,7 @@
   "key":
   {
     "a" : {
-      "tag" : "forge:plates/battery_alloy"
+      "tag" : "c:plates/battery_alloy"
     },
     "c" : {
       "item" : "modern_industrialization:aluminum_cable"
@@ -17,7 +17,7 @@
       "item" : "modern_industrialization:battery_alloy_curved_plate"
     },
     "r" :{
-      "tag" : "forge:dusts/sodium"
+      "tag" : "c:dusts/sodium"
     }
   },
 

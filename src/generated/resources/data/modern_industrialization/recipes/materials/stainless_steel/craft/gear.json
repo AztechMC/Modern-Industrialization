@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "forge:plates/stainless_steel"
+      "tag": "c:plates/stainless_steel"
     },
     "R": {
       "item": "modern_industrialization:stainless_steel_ring"

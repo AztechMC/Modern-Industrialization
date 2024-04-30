@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:plates/silicon"
+      "tag": "c:plates/silicon"
     },
     {
       "amount": 3,
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     },
     {
       "amount": 3,
@@ -17,7 +17,7 @@
     },
     {
       "amount": 2,
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     }
   ],
   "item_outputs": [

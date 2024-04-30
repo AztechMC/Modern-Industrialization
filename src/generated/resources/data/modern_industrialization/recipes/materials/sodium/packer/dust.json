@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:tiny_dusts/sodium"
+      "tag": "c:tiny_dusts/sodium"
     }
   ],
   "item_outputs": [

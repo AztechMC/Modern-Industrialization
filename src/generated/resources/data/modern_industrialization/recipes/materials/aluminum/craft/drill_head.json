@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:gears/aluminum"
+      "tag": "c:gears/aluminum"
     },
     "R": {
       "item": "modern_industrialization:aluminum_rod"
@@ -15,7 +15,7 @@
       "item": "modern_industrialization:aluminum_curved_plate"
     },
     "p": {
-      "tag": "forge:plates/aluminum"
+      "tag": "c:plates/aluminum"
     }
   },
   "pattern": [

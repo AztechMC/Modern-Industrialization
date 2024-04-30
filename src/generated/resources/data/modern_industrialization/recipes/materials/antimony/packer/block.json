@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:ingots/antimony"
+      "tag": "c:ingots/antimony"
     },
     {
       "amount": 1,

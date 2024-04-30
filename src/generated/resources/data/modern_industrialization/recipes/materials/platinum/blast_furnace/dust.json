@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:dusts/platinum"
+      "tag": "c:dusts/platinum"
     }
   ],
   "item_outputs": [

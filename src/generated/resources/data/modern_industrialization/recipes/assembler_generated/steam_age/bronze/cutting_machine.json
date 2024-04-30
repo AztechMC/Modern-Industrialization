@@ -9,7 +9,7 @@
     },
     {
       "amount": 2,
-      "tag": "forge:gears/copper"
+      "tag": "c:gears/copper"
     },
     {
       "amount": 1,
@@ -21,7 +21,7 @@
     },
     {
       "amount": 2,
-      "tag": "forge:glass"
+      "tag": "c:glass_blocks"
     }
   ],
   "item_outputs": [

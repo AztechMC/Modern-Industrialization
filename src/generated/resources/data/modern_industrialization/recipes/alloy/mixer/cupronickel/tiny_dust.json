@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/copper"
+      "tag": "c:tiny_dusts/copper"
     },
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/nickel"
+      "tag": "c:tiny_dusts/nickel"
     }
   ],
   "item_outputs": [

@@ -4,11 +4,11 @@
   "duration": 10,
   "item_inputs": [
     {
-      "tag": "forge:tiny_dusts/beryllium",
+      "tag": "c:tiny_dusts/beryllium",
       "amount": 9
     },
     {
-      "tag": "forge:nuggets/stainless_steel",
+      "tag": "c:nuggets/stainless_steel",
       "amount": 1
     },
     {

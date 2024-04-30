@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "forge:plates/copper"
+      "tag": "c:plates/copper"
     },
     "R": {
       "item": "modern_industrialization:copper_ring"

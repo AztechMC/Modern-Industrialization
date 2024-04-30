@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "tag": "forge:plates/tin"
+      "tag": "c:plates/tin"
     },
     "R": {
       "item": "modern_industrialization:tin_ring"

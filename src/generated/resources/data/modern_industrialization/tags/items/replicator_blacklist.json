@@ -2,7 +2,7 @@
   "values": [
     "minecraft:bundle",
     "modern_industrialization:portable_storage_unit",
-    "#forge:shulker_boxes",
+    "#c:shulker_boxes",
     "#modern_industrialization:tanks",
     "#modern_industrialization:barrels"
   ]

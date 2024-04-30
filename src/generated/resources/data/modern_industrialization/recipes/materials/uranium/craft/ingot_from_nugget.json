@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/uranium"
+      "tag": "c:nuggets/uranium"
     },
     "y": {
       "item": "modern_industrialization:uranium_nugget"

@@ -8,7 +8,7 @@
   "key" : {
   "H" : { "item" : "modern_industrialization:basic_machine_hull"},
     "P": { "item" : "modern_industrialization:pump"},
-    "G": { "tag" : "forge:gears/tin"},
+    "G": { "tag" : "c:gears/tin"},
     "c" : {"item" : "modern_industrialization:tin_cable"},
     "C" : {"item" : "modern_industrialization:analog_circuit"}
 

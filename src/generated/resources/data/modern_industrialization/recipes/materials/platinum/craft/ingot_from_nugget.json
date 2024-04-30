@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/platinum"
+      "tag": "c:nuggets/platinum"
     },
     "y": {
       "item": "modern_industrialization:platinum_nugget"

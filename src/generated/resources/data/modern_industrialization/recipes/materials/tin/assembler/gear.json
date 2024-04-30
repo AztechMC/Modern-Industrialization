@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "forge:plates/tin"
+      "tag": "c:plates/tin"
     },
     {
       "amount": 1,

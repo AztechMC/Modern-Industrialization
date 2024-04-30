@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/battery_alloy"
+      "tag": "c:ingots/battery_alloy"
     },
     "y": {
       "item": "modern_industrialization:battery_alloy_ingot"

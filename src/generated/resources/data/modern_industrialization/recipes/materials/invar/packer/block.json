@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:ingots/invar"
+      "tag": "c:ingots/invar"
     },
     {
       "amount": 1,

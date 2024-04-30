@@ -1,6 +1,6 @@
 {
   "values": {
-    "#forge:dusts/coal": {
+    "#c:dusts/coal": {
       "burn_time": 1600
     },
     "modern_industrialization:carbon_dust": {

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:nuggets/tin"
+      "tag": "c:nuggets/tin"
     }
   ],
   "item_outputs": [

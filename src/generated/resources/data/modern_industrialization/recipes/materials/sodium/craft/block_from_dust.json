@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:dusts/sodium"
+      "tag": "c:dusts/sodium"
     },
     "y": {
       "item": "modern_industrialization:sodium_dust"

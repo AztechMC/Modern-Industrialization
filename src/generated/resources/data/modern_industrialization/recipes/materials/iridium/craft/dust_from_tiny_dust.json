@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:tiny_dusts/iridium"
+      "tag": "c:tiny_dusts/iridium"
     },
     "y": {
       "item": "modern_industrialization:iridium_tiny_dust"

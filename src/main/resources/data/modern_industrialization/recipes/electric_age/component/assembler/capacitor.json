@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "forge:plates/gold",
+            "tag": "c:plates/gold",
             "amount": 2
         },
         {

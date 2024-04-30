@@ -7,10 +7,10 @@
   ],
   "key": {
     "P": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "G" : {
-      "tag" : "forge:gears/steel"
+      "tag" : "c:gears/steel"
     }
   },
   "result": {

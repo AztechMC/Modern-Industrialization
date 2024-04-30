@@ -5,19 +5,19 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:tiny_dusts/iridium"
+      "tag": "c:tiny_dusts/iridium"
     },
     {
       "amount": 3,
-      "tag": "forge:tiny_dusts/annealed_copper"
+      "tag": "c:tiny_dusts/annealed_copper"
     },
     {
       "amount": 3,
-      "tag": "forge:tiny_dusts/yttrium"
+      "tag": "c:tiny_dusts/yttrium"
     },
     {
       "amount": 2,
-      "tag": "forge:tiny_dusts/neodymium"
+      "tag": "c:tiny_dusts/neodymium"
     }
   ],
   "item_outputs": [

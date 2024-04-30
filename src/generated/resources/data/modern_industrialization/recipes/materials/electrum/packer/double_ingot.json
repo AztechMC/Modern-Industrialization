@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "forge:ingots/electrum"
+      "tag": "c:ingots/electrum"
     },
     {
       "amount": 1,

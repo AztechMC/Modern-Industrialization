@@ -5,7 +5,7 @@
 
   "item_inputs":[
     {
-    "tag": "forge:dusts/quartz",
+    "tag": "c:dusts/quartz",
     "amount": 1
     },
     {

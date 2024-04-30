@@ -1,18 +1,18 @@
 {
   "values": [
-    "#forge:ores/antimony",
-    "#forge:ores/bauxite",
-    "#forge:ores/iridium",
-    "#forge:ores/lead",
-    "#forge:ores/lignite_coal",
-    "#forge:ores/monazite",
-    "#forge:ores/nickel",
-    "#forge:ores/platinum",
-    "#forge:ores/quartz",
-    "#forge:ores/salt",
-    "#forge:ores/tin",
-    "#forge:ores/titanium",
-    "#forge:ores/tungsten",
-    "#forge:ores/uranium"
+    "#c:ores/antimony",
+    "#c:ores/bauxite",
+    "#c:ores/iridium",
+    "#c:ores/lead",
+    "#c:ores/lignite_coal",
+    "#c:ores/monazite",
+    "#c:ores/nickel",
+    "#c:ores/platinum",
+    "#c:ores/quartz",
+    "#c:ores/salt",
+    "#c:ores/tin",
+    "#c:ores/titanium",
+    "#c:ores/tungsten",
+    "#c:ores/uranium"
   ]
 }

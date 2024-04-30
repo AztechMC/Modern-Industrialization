@@ -9,11 +9,11 @@
     },
     {
       "amount": 4,
-      "tag": "forge:plates/lead"
+      "tag": "c:plates/lead"
     },
     {
       "amount": 1,
-      "tag": "forge:plates/iridium"
+      "tag": "c:plates/iridium"
     }
   ],
   "item_outputs": [

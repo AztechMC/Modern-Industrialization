@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 60,
   "ingredient": {
-    "tag": "forge:ores/copper"
+    "tag": "c:ores/copper"
   },
   "result": {
     "id": "modern_industrialization:copper_dust",

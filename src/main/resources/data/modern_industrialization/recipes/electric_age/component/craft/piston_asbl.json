@@ -17,10 +17,10 @@
       "item" : "modern_industrialization:tin_cable"
     },
     "p" :{
-      "tag" : "forge:plates/steel"
+      "tag" : "c:plates/steel"
     },
     "g" :{
-      "tag" : "forge:gears/steel"
+      "tag" : "c:gears/steel"
     }
   },
 

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:ingots/uranium_238"
+      "tag": "c:ingots/uranium_238"
     },
     {
       "amount": 1,

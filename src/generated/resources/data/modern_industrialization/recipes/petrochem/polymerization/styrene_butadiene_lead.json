@@ -17,7 +17,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "forge:tiny_dusts/lead"
+      "tag": "c:tiny_dusts/lead"
     }
   ]
 }

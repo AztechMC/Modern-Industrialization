@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:nuggets/cupronickel"
+      "tag": "c:nuggets/cupronickel"
     },
     "y": {
       "item": "modern_industrialization:cupronickel_nugget"

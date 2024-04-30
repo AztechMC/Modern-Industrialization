@@ -3,7 +3,7 @@
   "eu": 16,
   "duration": 2400,
   "item_inputs" :     {
-    "tag": "forge:dusts/ruby",
+    "tag": "c:dusts/ruby",
     "amount": 6
   },
   "item_outputs":[

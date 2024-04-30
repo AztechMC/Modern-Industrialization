@@ -9,13 +9,13 @@
   "key":
   {
     "S" : {
-      "tag" : "forge:plates/silicon"
+      "tag" : "c:plates/silicon"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_fine_wire"
     },
     "P" :{
-      "tag" : "forge:plates/steel"
+      "tag" : "c:plates/steel"
     }
   },
 

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "x": {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     },
     "y": {
       "item": "modern_industrialization:tin_ingot"

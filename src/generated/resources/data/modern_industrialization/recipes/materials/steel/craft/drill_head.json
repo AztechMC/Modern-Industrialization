@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "G": {
-      "tag": "forge:gears/steel"
+      "tag": "c:gears/steel"
     },
     "R": {
       "item": "modern_industrialization:steel_rod"
@@ -15,7 +15,7 @@
       "item": "modern_industrialization:steel_curved_plate"
     },
     "p": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     }
   },
   "pattern": [

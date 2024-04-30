@@ -8,7 +8,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "forge:ores/osmium"
+      "tag": "c:ores/osmium"
     }
   ],
   "item_outputs": [

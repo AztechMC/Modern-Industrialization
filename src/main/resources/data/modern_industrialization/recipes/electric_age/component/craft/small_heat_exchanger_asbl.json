@@ -7,7 +7,7 @@
   ],
   "key": {
     "P": {
-      "tag" : "forge:plates/invar"
+      "tag" : "c:plates/invar"
     },
     "L": {
       "item" : "modern_industrialization:stainless_steel_large_plate"

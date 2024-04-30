@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "forge:tiny_dusts/iridium"
+      "tag": "c:tiny_dusts/iridium"
     }
   ],
   "item_outputs": [

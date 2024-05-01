@@ -52,7 +52,7 @@ public class RedstoneControlComponent implements IComponent.ServerOnly, Dropable
 
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("redstoneModuleStack", controlModule.save(registries));
+        tag.put("redstoneModuleStack", controlModule.saveOptional(registries));
     }
 
     @Override

@@ -264,6 +264,14 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+
+        tag.remove("locked");
+        tag.remove("amt");
+    }
+
+    @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         resource = loadResource(tag, registries);
 

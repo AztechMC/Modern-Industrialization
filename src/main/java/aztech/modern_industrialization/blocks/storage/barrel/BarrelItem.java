@@ -39,9 +39,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
 
@@ -52,7 +52,7 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (behaviour instanceof BarrelBlock.BarrelStorage barrelStorage) {
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
             if (isEmpty(stack) && isUnlocked(stack)) {
@@ -60,7 +60,7 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
                 tooltip.add(MIText.BarrelStack.text(barrelStorage.stackCapacity).setStyle(TextHelper.YELLOW));
             }
         }
-        super.appendHoverText(stack, world, tooltip, context);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     public long getCurrentCapacity(ItemStack stack) {

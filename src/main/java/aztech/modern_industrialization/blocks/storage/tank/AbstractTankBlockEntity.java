@@ -50,6 +50,12 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove("fluid");
+    }
+
+    @Override
     public FluidVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
         return NbtHelper.getFluidCompatible(tag, "fluid", registries);
     }

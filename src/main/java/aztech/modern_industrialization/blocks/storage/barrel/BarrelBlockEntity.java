@@ -53,6 +53,12 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove("item");
+    }
+
+    @Override
     public ItemVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
         return ItemVariant.fromNbt(tag.getCompound("item"), registries);
     }

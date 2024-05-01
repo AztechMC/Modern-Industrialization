@@ -31,9 +31,9 @@ import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
 
@@ -42,7 +42,7 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         if (this.behaviour.isCreative()) {
             tooltip.add(FluidHelper.getFluidName(getResource(stack), true));
@@ -60,7 +60,7 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
             }
         }
 
-        super.appendHoverText(stack, world, tooltip, context);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
     @Override

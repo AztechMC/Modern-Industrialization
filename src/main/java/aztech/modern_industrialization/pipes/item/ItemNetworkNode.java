@@ -148,9 +148,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
             connectionTag.putInt("insertPriority", connection.insertPriority);
             connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].save(registries));
+                connectionTag.put(Integer.toString(i), connection.stacks[i].saveOptional(registries));
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.save(registries));
+            connectionTag.put("upgradeStack", connection.upgradeStack.saveOptional(registries));
             tag.put(connection.direction.toString(), connectionTag);
         }
         tag.putInt("inactiveTicks", inactiveTicks);

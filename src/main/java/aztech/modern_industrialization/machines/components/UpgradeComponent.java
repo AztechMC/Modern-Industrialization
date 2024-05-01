@@ -79,7 +79,7 @@ public class UpgradeComponent implements IComponent.ServerOnly, DropableComponen
 
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("upgradesItemStack", itemStack.save(registries));
+        tag.put("upgradesItemStack", itemStack.saveOptional(registries));
     }
 
     @Override

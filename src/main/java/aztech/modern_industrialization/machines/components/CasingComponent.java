@@ -62,7 +62,7 @@ public class CasingComponent implements IComponent, DropableComponent {
 
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("casing", casingStack.save(registries));
+        tag.put("casing", casingStack.saveOptional(registries));
     }
 
     @Override

@@ -4,7 +4,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_rod"
+      "tag": "c:steel_rods"
     }
   ],
   "item_outputs": [

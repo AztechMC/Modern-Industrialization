@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_rod"
+      "tag": "c:titanium_rods"
     }
   ],
   "item_outputs": [

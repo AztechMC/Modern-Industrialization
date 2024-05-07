@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "item": "modern_industrialization:tin_rod"
+      "tag": "c:tin_rods"
     },
     "P": {
       "item": "modern_industrialization:tin_curved_plate"

@@ -10,7 +10,7 @@
       "item": "minecraft:redstone"
     },
     "r": {
-      "item": "modern_industrialization:steel_rod"
+      "tag": "c:steel_rods"
     }
   },
   "result": {

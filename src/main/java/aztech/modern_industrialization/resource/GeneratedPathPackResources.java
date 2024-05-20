@@ -42,6 +42,7 @@ public class GeneratedPathPackResources extends FastPathPackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
+        // TODO: it's unclear that this is still necessary
         if (elements.length == 1 && "pack.mcmeta".equals(elements[0])) {
             return () -> new ByteArrayInputStream("""
                     {

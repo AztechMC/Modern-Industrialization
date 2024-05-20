@@ -1577,6 +1577,8 @@
   "text.modern_industrialization.FluidSlotIO": "Ввод/вывод жидкости. ЛКМ — ввести или извлечь",
   "text.modern_industrialization.FluidSlotInput": "Ввод жидкости. ЛКМ — ввести или извлечь",
   "text.modern_industrialization.FluidSlotOutput": "Вывод жидкости. ЛКМ — извлечь",
+  "text.modern_industrialization.GeneratedResources": "[UNTRANSLATED] MI Generated Resources",
+  "text.modern_industrialization.GeneratedResourcesDescription": "[UNTRANSLATED] Resources from the modern_industrialization/generated_resources folder.",
   "text.modern_industrialization.GravichestplateDisabled": "Гравитационный нагрудник выключен!",
   "text.modern_industrialization.GravichestplateEnabled": "Гравитационный нагрудник включён!",
   "text.modern_industrialization.GunpowderTime": "Разгон: %s",

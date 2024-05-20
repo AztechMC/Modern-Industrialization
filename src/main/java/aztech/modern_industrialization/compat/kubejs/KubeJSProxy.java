@@ -26,9 +26,27 @@ package aztech.modern_industrialization.compat.kubejs;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import net.neoforged.fml.ModList;
 
 public class KubeJSProxy {
+    public static void blockUntilKubeJSIsLoaded() {
+        try {
+            if (!loadLatch.await(1, TimeUnit.MINUTES)) {
+                throw new IllegalStateException("Failed to wait for KubeJS initialization. Timeout of 1 minute was not enough?");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (ModList.get().isLoaded("kubejs") && instance.getClass() == KubeJSProxy.class) {
+            throw new IllegalStateException("Failed to wait for KubeJS initialization.");
+        }
+    }
+
+    public static CountDownLatch loadLatch = new CountDownLatch(ModList.get().isLoaded("kubejs") ? 1 : 0);
     public static KubeJSProxy instance = new KubeJSProxy();
 
     public void fireAddMaterialsEvent() {

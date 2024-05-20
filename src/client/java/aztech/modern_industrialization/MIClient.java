@@ -30,6 +30,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextR
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
+import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
@@ -55,6 +56,7 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighl
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockTankBER;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
@@ -75,6 +77,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -97,6 +100,7 @@ import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -173,13 +177,13 @@ public class MIClient {
             });
         }
 
-        // TODO NEO: runtime datagen
-//        if (MIConfig.getConfig().datagenOnStartup) {
-//            RuntimeDataGen.run(gen -> {
-//                MIDatagenClient.configure(gen, true);
-//                MIDatagenServer.configure(gen, true);
-//            });
-//        }
+        if (MIConfig.getConfig().datagenOnStartup) {
+            modBus.addListener(AddPackFindersEvent.class, event -> {
+                if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+                    RuntimeDataGen.run(MIDatagenClient::configure, MIDatagenServer::configure);
+                }
+            });
+        }
 
         MI.LOGGER.info("Modern Industrialization client setup done!");
     }

@@ -127,6 +127,8 @@ public enum MIText {
     FluidSlotIO("Fluid IO, Left Click to Insert or Extract"),
     FluidSlotInput("Fluid Input, Left Click to Insert or Extract"),
     FluidSlotOutput("Fluid Output, Left Click to Extract"),
+    GeneratedResources("MI Generated Resources"),
+    GeneratedResourcesDescription("Resources from the modern_industrialization/generated_resources folder."),
     GravichestplateDisabled("Gravichestplate disabled!"),
     GravichestplateEnabled("Gravichestplate enabled!"),
     GunpowderTime("Overclock : %s"),

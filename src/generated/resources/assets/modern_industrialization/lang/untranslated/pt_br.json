@@ -1577,6 +1577,8 @@
   "text.modern_industrialization.FluidSlotIO": "IO de Fluidos, Clique Esquerdo para Inserir ou Extrair",
   "text.modern_industrialization.FluidSlotInput": "Entrada de Fluidos, Clique Esquerdo para Inserir ou Extrair",
   "text.modern_industrialization.FluidSlotOutput": "Saída de Fluidos, Clique Esquerdo para Extrair",
+  "text.modern_industrialization.GeneratedResources": "[UNTRANSLATED] MI Generated Resources",
+  "text.modern_industrialization.GeneratedResourcesDescription": "[UNTRANSLATED] Resources from the modern_industrialization/generated_resources folder.",
   "text.modern_industrialization.GravichestplateDisabled": "Peitoral Gravitacional desativado!",
   "text.modern_industrialization.GravichestplateEnabled": "Peitoral Gravitacional ativado!",
   "text.modern_industrialization.GunpowderTime": "Overclock : %s",

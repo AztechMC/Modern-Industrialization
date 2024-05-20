@@ -1875,6 +1875,8 @@
   "text.modern_industrialization.FluidSlotIO": "流体输入输出，左键点击以存入取出",
   "text.modern_industrialization.FluidSlotInput": "流体输入，左键点击以存入取出",
   "text.modern_industrialization.FluidSlotOutput": "流体输出，左键点击以取出",
+  "text.modern_industrialization.GeneratedResources": "[UNTRANSLATED] MI Generated Resources",
+  "text.modern_industrialization.GeneratedResourcesDescription": "[UNTRANSLATED] Resources from the modern_industrialization/generated_resources folder.",
   "text.modern_industrialization.GravichestplateDisabled": "重力胸甲已禁用！",
   "text.modern_industrialization.GravichestplateEnabled": "重力胸甲已启用！",
   "text.modern_industrialization.GunpowderTime": "超频：%s",

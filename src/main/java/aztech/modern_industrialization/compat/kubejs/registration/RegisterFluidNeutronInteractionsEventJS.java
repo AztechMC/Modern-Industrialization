@@ -26,8 +26,8 @@ package aztech.modern_industrialization.compat.kubejs.registration;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.nuclear.IsotopeParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
-import dev.latvian.mods.kubejs.event.EventJS;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 

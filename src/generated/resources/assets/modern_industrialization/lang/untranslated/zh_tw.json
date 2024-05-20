@@ -1778,6 +1778,8 @@
   "text.modern_industrialization.FluidSlotIO": "[UNTRANSLATED] Fluid IO, Left Click to Insert or Extract",
   "text.modern_industrialization.FluidSlotInput": "[UNTRANSLATED] Fluid Input, Left Click to Insert or Extract",
   "text.modern_industrialization.FluidSlotOutput": "[UNTRANSLATED] Fluid Output, Left Click to Extract",
+  "text.modern_industrialization.GeneratedResources": "[UNTRANSLATED] MI Generated Resources",
+  "text.modern_industrialization.GeneratedResourcesDescription": "[UNTRANSLATED] Resources from the modern_industrialization/generated_resources folder.",
   "text.modern_industrialization.GravichestplateDisabled": "[UNTRANSLATED] Gravichestplate disabled!",
   "text.modern_industrialization.GravichestplateEnabled": "[UNTRANSLATED] Gravichestplate enabled!",
   "text.modern_industrialization.GunpowderTime": "[UNTRANSLATED] Overclock : %s",

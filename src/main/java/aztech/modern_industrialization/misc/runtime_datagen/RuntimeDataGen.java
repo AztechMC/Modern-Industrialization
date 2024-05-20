@@ -23,38 +23,40 @@
  */
 package aztech.modern_industrialization.misc.runtime_datagen;
 
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
+import aztech.modern_industrialization.MI;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.DetectedVersion;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class RuntimeDataGen {
-    public static void run(Consumer<FabricDataGenerator.Pack> config) {
+    @FunctionalInterface
+    public interface IDataGenConfig {
+        void run(DataGenerator gen, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries, boolean run,
+                boolean runtimeDatagen);
+    }
+
+    public static void run(IDataGenConfig... configs) {
         try {
-            runInner(config);
+            runInner(configs);
         } catch (Exception ex) {
-            ModernIndustrialization.LOGGER.error("Failed to runtime datagen", ex);
+            MI.LOGGER.error("Failed to runtime datagen", ex);
         }
     }
 
-    private static void runInner(Consumer<FabricDataGenerator.Pack> config) throws Exception {
-        var miFolder = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization");
+    private static void runInner(IDataGenConfig... configs) throws Exception {
+        var miFolder = FMLPaths.GAMEDIR.get().resolve("modern_industrialization");
 
         // Create some relevant texture folders because I'm sure some people will forget it
         var datagenOverridesFolder = miFolder.resolve("extra_datagen_resources");
@@ -69,35 +71,24 @@ public class RuntimeDataGen {
 
         var dataOutput = miFolder.resolve("runtime_datagen");
 
-        ModernIndustrialization.LOGGER.info("Starting MI runtime data generation");
+        MI.LOGGER.info("Starting MI runtime data generation");
 
-        var modContainer = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).get();
-        var registriesFuture = CompletableFuture.supplyAsync(() -> {
-            var vanillaBuilder = VanillaRegistries.BUILDER;
-            DynamicRegistryDatagen.run(vanillaBuilder);
+        var modContainer = LoadingModList.get().getModFileById(MI.ID);
+        var registriesFuture = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
+        var gen = new DataGenerator(dataOutput, DetectedVersion.tryDetectVersion(), true);
 
-            // Combine entries by registry
-            Map<ResourceKey<? extends Registry<?>>, List<RegistrySetBuilder.RegistryBootstrap<?>>> map = new HashMap<>();
-            for (var entry : vanillaBuilder.entries) {
-                map.computeIfAbsent(entry.key(), k -> new ArrayList<>()).add(entry.bootstrap());
-            }
+        for (var config : configs) {
+            config.run(
+                    gen,
+                    new ExistingFileHelper(List.of(), Set.of(), false, null, null),
+                    registriesFuture,
+                    true,
+                    true);
+        }
 
-            var combinedBuilder = new RegistrySetBuilder();
-            for (var entry : map.entrySet()) {
-                combinedBuilder.add((ResourceKey) entry.getKey(), ctx -> {
-                    for (var bootstrap : entry.getValue()) {
-                        bootstrap.run((BootstapContext) ctx);
-                    }
-                });
-            }
-
-            return combinedBuilder.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
-        }, Util.backgroundExecutor());
-        var gen = new FabricDataGenerator(dataOutput, modContainer, true, registriesFuture);
-        config.accept(gen.createPack());
         gen.run();
 
-        ModernIndustrialization.LOGGER.info("Starting MI runtime pack calculation");
+        MI.LOGGER.info("Starting MI runtime pack calculation");
 
         var cleanedOutput = miFolder.resolve("generated_resources");
         // Delete output folder first before copying, otherwise Windows will complain
@@ -116,7 +107,7 @@ public class RuntimeDataGen {
                 }
 
                 var newCache = readCache(cachePath);
-                var oldCache = readCache(modContainer.findPath(".cache/" + cachePath.getFileName()).get());
+                var oldCache = readCache(modContainer.getFile().findResource(".cache/" + cachePath.getFileName()));
 
                 for (var newEntry : newCache.entrySet()) {
                     var oldHash = oldCache.get(newEntry.getKey());
@@ -132,13 +123,13 @@ public class RuntimeDataGen {
                         Files.createDirectories(newPath.getParent());
                         Files.copy(dataOutput.resolve(newEntry.getKey()), newPath);
                     } catch (IOException e) {
-                        ModernIndustrialization.LOGGER.error("Failed to copy file " + newEntry.getKey(), e);
+                        MI.LOGGER.error("Failed to copy file " + newEntry.getKey(), e);
                     }
                 }
             });
         }
 
-        ModernIndustrialization.LOGGER.info("Successfully finished MI runtime data generation");
+        MI.LOGGER.info("Successfully finished MI runtime data generation");
     }
 
     /**
@@ -158,7 +149,7 @@ public class RuntimeDataGen {
 
             return map;
         } catch (IOException e) {
-            ModernIndustrialization.LOGGER.warn("Failed to read cache file " + path, e);
+            MI.LOGGER.warn("Failed to read cache file " + path, e);
             return Map.of();
         }
     }

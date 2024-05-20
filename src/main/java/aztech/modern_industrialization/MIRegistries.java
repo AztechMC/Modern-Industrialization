@@ -104,7 +104,7 @@ public class MIRegistries {
     // Recipe types
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MI.ID);
 
-    public static final Supplier<RecipeType<ForgeHammerRecipe>> FORGE_HAMMER_RECIPE_TYPE = RECIPE_TYPES.register("forge_hammer",
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ForgeHammerRecipe>> FORGE_HAMMER_RECIPE_TYPE = RECIPE_TYPES.register("forge_hammer",
             () -> RecipeType.simple(MI.id("forge_hammer")));
 
     // Creative tabs

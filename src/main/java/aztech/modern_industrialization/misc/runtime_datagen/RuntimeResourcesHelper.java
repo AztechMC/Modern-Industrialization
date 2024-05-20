@@ -25,15 +25,15 @@ package aztech.modern_industrialization.misc.runtime_datagen;
 
 import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import java.util.List;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
+import net.neoforged.fml.loading.FMLPaths;
 
 public class RuntimeResourcesHelper {
     public static final ThreadLocal<Object> IS_CREATING_SERVER_RELOAD_PACK = new ThreadLocal<>();
 
     public static PackResources createPack(PackType packType) {
-        var generatedDirectory = FabricLoader.getInstance().getGameDir().resolve("modern_industrialization/generated_resources");
+        var generatedDirectory = FMLPaths.GAMEDIR.get().resolve("modern_industrialization/generated_resources");
         return new GeneratedPathPackResources(generatedDirectory, packType);
     }
 

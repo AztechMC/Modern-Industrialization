@@ -21,24 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin.runtime_resources;
+package aztech.modern_industrialization.compat.kubejs.registration;
 
-import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.misc.runtime_datagen.RuntimeResourcesHelper;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.MinecraftServer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import dev.latvian.mods.kubejs.event.EventGroup;
+import dev.latvian.mods.kubejs.event.EventHandler;
 
-@Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
-    @Inject(at = @At("HEAD"), method = "method_29437")
-    private void injectReloadResources(RegistryAccess.Frozen frozen, ImmutableList<?> list, CallbackInfoReturnable<?> cir) {
-        if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
-            RuntimeResourcesHelper.IS_CREATING_SERVER_RELOAD_PACK.set(Boolean.TRUE);
-        }
-    }
+public interface MIRegistrationKubeJSEvents {
+    EventGroup EVENT_GROUP = EventGroup.of("MIRegistrationEvents");
+
+    EventHandler REGISTER_CABLE_TIERS = EVENT_GROUP.startup("registerCableTiers", () -> RegisterCableTiersEventJS.class);
+    EventHandler REGISTER_FLUIDS = EVENT_GROUP.startup("registerFluids", () -> RegisterFluidsEventJS.class);
+    EventHandler REGISTER_FLUID_NEUTRON_INTERACTIONS = EVENT_GROUP.startup("registerFluidNeutronInteractions",
+            () -> RegisterFluidNeutronInteractionsEventJS.class);
 }

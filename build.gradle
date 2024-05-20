@@ -222,9 +222,8 @@ dependencies {
 
     implementation("curse.maven:jade-324717:${project.jade_file_id}")
 
-//    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
+    // TODO: compileOnly because implementation will cause datagen to hang... hopefully kubejs fixes it soon
+    compileOnly "dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}"
 
     implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
     implementation "earth.terrarium.argonauts:argonauts-neoforge-${project.minecraft_version}:${project.argonauts_version}"

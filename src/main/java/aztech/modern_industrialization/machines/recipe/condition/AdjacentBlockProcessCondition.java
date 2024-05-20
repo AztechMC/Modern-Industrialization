@@ -41,6 +41,10 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
                     StringRepresentable.fromEnum(RelativePosition::values).fieldOf("position").forGetter(c -> c.relativePosition))
                     .apply(g, AdjacentBlockProcessCondition::new));
 
+    public AdjacentBlockProcessCondition(Block block, String relativePosition) {
+        this(block, RelativePosition.valueOf(relativePosition.toUpperCase(Locale.ROOT)));
+    }
+
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
         var checkPos = switch (relativePosition) {

@@ -23,12 +23,14 @@
  */
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.item.InputItem;
 import dev.latvian.mods.kubejs.item.OutputItem;
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
@@ -41,6 +43,8 @@ import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.rhino.mod.util.JsonSerializable;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.ArrayUtils;
@@ -76,7 +80,7 @@ public final class MachineRecipeSchema {
         @Override
         public JsonElement write(RecipeJS recipe, ChancedInputItem value) {
             JsonObject obj = new JsonObject();
-            obj.add("ingredient", value.input().ingredient.toJson());
+            obj.add("ingredient", ((JsonSerializable) value.input().ingredient).toJsonJS());
             obj.addProperty("amount", value.input().count);
             obj.addProperty("probability", value.probability());
             return obj;
@@ -88,7 +92,7 @@ public final class MachineRecipeSchema {
                 throw new IllegalArgumentException("Expected an object, got " + from);
             }
 
-            var input = MachineRecipeType.readItemInput(json);
+            var input = Util.getOrThrow(MachineRecipe.ItemInput.CODEC.decode(JsonOps.INSTANCE, json), JsonParseException::new).getFirst();
             return new ChancedInputItem(InputItem.of(input.ingredient, input.amount), input.probability);
         }
 
@@ -211,7 +215,8 @@ public final class MachineRecipeSchema {
                 json.add("process_conditions", new JsonArray());
             }
 
-            json.get("process_conditions").getAsJsonArray().add(condition.toJson());
+            var condJson = Util.getOrThrow(MachineProcessCondition.CODEC.encodeStart(JsonOps.INSTANCE, condition), RuntimeException::new);
+            json.get("process_conditions").getAsJsonArray().add(condJson);
             changed = true;
             return this;
         }

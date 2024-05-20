@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
-import aztech.modern_industrialization.MIStartup;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
@@ -50,15 +50,15 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void initStartup() {
         KubeJSProxy.instance = new LoadedKubeJSProxy();
-        MIStartup.onKubejsPluginLoaded();
+        KubeJSProxy.loadLatch.countDown();
     }
 
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-            event.register(mrt.getId(),
-                    mrt == MIMachineRecipeTypes.FORGE_HAMMER ? MachineRecipeSchema.FORGE_HAMMER_SCHEMA : MachineRecipeSchema.SCHEMA);
+            event.register(mrt.getId(), MachineRecipeSchema.SCHEMA);
         }
+        event.register(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.getId(), MachineRecipeSchema.FORGE_HAMMER_SCHEMA);
     }
 
     @Override

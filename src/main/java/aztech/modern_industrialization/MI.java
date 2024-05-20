@@ -44,15 +44,25 @@ import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventList
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
+import aztech.modern_industrialization.misc.runtime_datagen.RuntimeResourcesHelper;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import java.util.List;
 import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.BuiltInPackSource;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackCompatibility;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -60,6 +70,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -77,7 +88,9 @@ public class MI {
         return new ResourceLocation(ID, path);
     }
 
-    public MI(IEventBus modBus) {
+    public MI(IEventBus modBus, Dist dist) {
+        KubeJSProxy.blockUntilKubeJSIsLoaded();
+
         MIAdvancementTriggers.init(modBus);
         MIFluids.init(modBus);
         MIBlock.init(modBus);
@@ -168,6 +181,31 @@ public class MI {
         if (MIConfig.loadAe2Compat()) {
             MIAEAddon.init(modBus);
         }
+
+        modBus.addListener(AddPackFindersEvent.class, event -> {
+            if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA && MIConfig.getConfig().datagenOnStartup) {
+                RuntimeDataGen.run(MIDatagenServer::configure);
+            }
+
+            if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
+                event.addRepositorySource(consumer -> {
+                    consumer.accept(Pack.create(
+                            "modern_industrialization/generated",
+                            MIText.GeneratedResources.text(),
+                            true,
+                            BuiltInPackSource.fixedResources(RuntimeResourcesHelper.createPack(event.getPackType())),
+                            new Pack.Info(
+                                    MIText.GeneratedResourcesDescription.text(),
+                                    PackCompatibility.COMPATIBLE,
+                                    FeatureFlagSet.of(),
+                                    List.of(),
+                                    false),
+                            Pack.Position.TOP,
+                            true, // TODO what?
+                            PackSource.BUILT_IN));
+                });
+            }
+        });
 
         LOGGER.info("Modern Industrialization setup done!");
     }

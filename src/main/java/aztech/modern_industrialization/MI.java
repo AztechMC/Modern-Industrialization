@@ -45,11 +45,11 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
-import aztech.modern_industrialization.misc.runtime_datagen.RuntimeResourcesHelper;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import java.util.List;
 import java.util.Objects;
@@ -67,6 +67,7 @@ import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -193,7 +194,9 @@ public class MI {
                             "modern_industrialization/generated",
                             MIText.GeneratedResources.text(),
                             true,
-                            BuiltInPackSource.fixedResources(RuntimeResourcesHelper.createPack(event.getPackType())),
+                            BuiltInPackSource.fixedResources(new GeneratedPathPackResources(
+                                    FMLPaths.GAMEDIR.get().resolve("modern_industrialization/generated_resources"),
+                                    event.getPackType())),
                             new Pack.Info(
                                     MIText.GeneratedResourcesDescription.text(),
                                     PackCompatibility.COMPATIBLE,

@@ -23,10 +23,9 @@ sourceCompatibility = JavaVersion.VERSION_21
 targetCompatibility = JavaVersion.VERSION_21
 
 java {
-//    toolchain {
-//        languageVersion = JavaLanguageVersion.of(21)
-//        vendor = JvmVendorSpec.MICROSOFT //JvmVendorSpec.matching("jetbrains")
-//    }
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 
     withSourcesJar()
 }

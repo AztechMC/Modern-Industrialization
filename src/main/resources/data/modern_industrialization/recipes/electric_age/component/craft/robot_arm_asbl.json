@@ -12,7 +12,7 @@
       "item" : "modern_industrialization:motor"
     },
     "r" : {
-      "item" : "modern_industrialization:steel_rod"
+      "tag" : "forge:rods/steel"
     },
     "c" : {
       "item" : "modern_industrialization:tin_cable"

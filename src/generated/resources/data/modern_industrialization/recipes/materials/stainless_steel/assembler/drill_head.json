@@ -19,7 +19,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:stainless_steel_rod"
+      "tag": "forge:rods/stainless_steel"
     },
     {
       "amount": 2,

@@ -10,7 +10,7 @@
       "item" : "modern_industrialization:cupronickel_wire_magnetic"
     },
     "r": {
-      "item" : "modern_industrialization:aluminum_rod"
+      "tag" : "forge:rods/aluminum"
     },
     "H": {
       "item": "modern_industrialization:basic_machine_hull"

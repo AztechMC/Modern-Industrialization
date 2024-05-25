@@ -27,7 +27,7 @@
     },
     {
       "amount": 18,
-      "item": "modern_industrialization:he_uranium_rod"
+      "tag": "forge:rods/he_uranium"
     }
   ],
   "item_outputs": [

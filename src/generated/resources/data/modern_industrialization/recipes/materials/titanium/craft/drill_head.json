@@ -6,7 +6,7 @@
       "tag": "forge:gears/titanium"
     },
     "R": {
-      "item": "modern_industrialization:titanium_rod"
+      "tag": "forge:rods/titanium"
     },
     "b": {
       "item": "modern_industrialization:titanium_bolt"

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_rod"
+      "tag": "forge:rods/titanium"
     }
   ],
   "item_outputs": [

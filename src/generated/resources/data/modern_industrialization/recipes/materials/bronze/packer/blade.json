@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_rod"
+      "tag": "forge:rods/bronze"
     }
   ],
   "item_outputs": [

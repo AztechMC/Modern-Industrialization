@@ -6,7 +6,7 @@
       "tag": "forge:gears/stainless_steel"
     },
     "R": {
-      "item": "modern_industrialization:stainless_steel_rod"
+      "tag": "forge:rods/stainless_steel"
     },
     "b": {
       "item": "modern_industrialization:stainless_steel_bolt"

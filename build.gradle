@@ -347,11 +347,6 @@ tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
 }
 
-// Dirty hack to fix the absence of a toolchain. Blame Azercoco!
-tasks.withType(net.neoforged.gradle.neoform.runtime.tasks.RecompileSourceJar).configureEach {
-    it.javaCompiler.set(project.extensions.getByType(JavaToolchainService.class).compilerFor {})
-}
-
 jar {
     from "LICENSE"
     from sourceSets.client.output

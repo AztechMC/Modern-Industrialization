@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:iron_rod"
+      "tag": "c:iron_rods"
     }
   ],
   "item_outputs": [

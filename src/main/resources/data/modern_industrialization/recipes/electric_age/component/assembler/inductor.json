@@ -8,7 +8,7 @@
             "amount": 8
         },
         {
-            "item": "modern_industrialization:steel_rod",
+            "tag": "c:steel_rods",
             "amount": 1
         }
     ],

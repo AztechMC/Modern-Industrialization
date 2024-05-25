@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:le_uranium_rod"
+      "tag": "c:le_uranium_rods"
     }
   ],
   "item_outputs": [

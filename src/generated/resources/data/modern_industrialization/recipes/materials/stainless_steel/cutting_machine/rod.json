@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:stainless_steel_rod"
+      "tag": "c:stainless_steel_rods"
     }
   ],
   "item_outputs": [

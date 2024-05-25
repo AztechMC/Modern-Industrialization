@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "R": {
-      "item": "modern_industrialization:copper_rod"
+      "tag": "c:copper_rods"
     },
     "b": {
       "item": "modern_industrialization:copper_bolt"

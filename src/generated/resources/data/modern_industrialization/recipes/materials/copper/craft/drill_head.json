@@ -5,7 +5,7 @@
       "tag": "c:copper_gears"
     },
     "R": {
-      "item": "modern_industrialization:copper_rod"
+      "tag": "c:copper_rods"
     },
     "b": {
       "item": "modern_industrialization:copper_bolt"

@@ -5,7 +5,7 @@
       "tag": "c:gold_gears"
     },
     "R": {
-      "item": "modern_industrialization:gold_rod"
+      "tag": "c:gold_rods"
     },
     "b": {
       "item": "modern_industrialization:gold_bolt"

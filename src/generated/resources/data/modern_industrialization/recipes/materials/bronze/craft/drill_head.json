@@ -5,7 +5,7 @@
       "tag": "c:bronze_gears"
     },
     "R": {
-      "item": "modern_industrialization:bronze_rod"
+      "tag": "c:bronze_rods"
     },
     "b": {
       "item": "modern_industrialization:bronze_bolt"

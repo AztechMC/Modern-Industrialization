@@ -36,7 +36,6 @@ import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.CommonHooks;
 
 public class FuelBurningComponent implements IComponent {
     /**
@@ -115,7 +114,7 @@ public class FuelBurningComponent implements IComponent {
             for (ConfigurableItemStack stack : itemInputs) {
                 var fuel = stack.getResource().toStack((int) stack.getAmount());
                 if (ItemStackHelper.consumeFuel(stack, true)) {
-                    int fuelTime = CommonHooks.getBurnTime(fuel, null);
+                    int fuelTime = fuel.getBurnTime(null);
                     if (fuelTime > 0) {
                         burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         ItemStackHelper.consumeFuel(stack, false);

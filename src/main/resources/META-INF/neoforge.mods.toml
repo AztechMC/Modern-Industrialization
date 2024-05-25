@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/AztechMC/Modern-Industrialization/issues"
 
 [[mods]]
 modId="modern_industrialization"
-version="${mod_version}"
+version="0.0.0"
 displayName="Modern Industrialization"
 displayURL="https://github.com/AztechMC/Modern-Industrialization"
 logoFile="assets/modern_industrialization/milogo.png"
@@ -18,21 +18,21 @@ config="modern_industrialization.mixins.json"
 [[dependencies.modern_industrialization]]
 modId="neoforge"
 type="required"
-versionRange="${neo_version_range}"
+versionRange="[20.6.13-beta, 20.7-)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
 modId="grandpower"
 type="required"
-versionRange="${grandpower_version_range}"
+versionRange="[2.0.0, 3)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
 modId="ae2"
 type="optional"
-versionRange="${ae2_version_range}"
+versionRange="[18.1.1-alpha, 19)"
 ordering="AFTER"
 side="BOTH"
 

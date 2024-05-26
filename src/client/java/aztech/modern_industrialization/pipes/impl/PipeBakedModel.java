@@ -165,7 +165,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
         if (camouflage != null && processCamouflage) {
             if (MIPipes.transparentCamouflage && side != null) {
-                var adjacentModelData = extraData.level().getModelDataManager().getAtOrEmpty(extraData.pos().relative(side))
+                var adjacentModelData = extraData.level().getModelData(extraData.pos().relative(side))
                         .get(PipeBlockEntity.RenderAttachment.KEY);
                 if (adjacentModelData != null && adjacentModelData.camouflage() != null) {
                     // Don't draw faces between camouflaged pipes

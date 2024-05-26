@@ -29,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -90,7 +89,7 @@ public final class SteamDrillHooks {
     public static Direction breakingSide = null;
 
     private static void onStartBreaking(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getUseItem() == Event.Result.DENY || event.getSide().isServer()) {
+        if (event.getUseItem().isFalse() || event.getSide().isServer()) {
             return;
         }
 

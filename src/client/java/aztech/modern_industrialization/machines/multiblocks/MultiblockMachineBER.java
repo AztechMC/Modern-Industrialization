@@ -124,6 +124,6 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
 
     @Override
     public AABB getRenderBoundingBox(MultiblockMachineBlockEntity blockEntity) {
-        return INFINITE_EXTENT_AABB;
+        return AABB.INFINITE;
     }
 }

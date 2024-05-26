@@ -41,7 +41,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.CommonHooks;
 
 /**
  * A component that turns fluids and/or item into energy.
@@ -303,7 +302,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
             @Override
             public long getEuProduction(Item variant) {
                 // TODO NEO NBT-aware fuels
-                int burnTime = CommonHooks.getBurnTime(variant.getDefaultInstance(), null);
+                int burnTime = variant.getDefaultInstance().getBurnTime(null);
                 return burnTime <= 0 ? 0 : burnTime * FuelBurningComponent.EU_PER_BURN_TICK;
             }
 

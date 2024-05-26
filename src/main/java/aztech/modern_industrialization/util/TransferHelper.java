@@ -79,6 +79,9 @@ public class TransferHelper {
                 ret = src.extractItem(slot, maxAmount, false);
             }
         }
+        if (ret.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
         // Try to extract more
         ++slot;
@@ -90,6 +93,6 @@ public class TransferHelper {
             }
         }
 
-        return ItemStack.EMPTY;
+        return ret;
     }
 }

@@ -164,6 +164,15 @@ public class PipeBakedModel implements IDynamicBakedModel {
         boolean processCamouflage = !MIPipes.transparentCamouflage || checkRenderType(RenderType.translucent(), renderType);
 
         if (camouflage != null && processCamouflage) {
+            if (MIPipes.transparentCamouflage && side != null) {
+                var adjacentModelData = extraData.level().getModelDataManager().getAtOrEmpty(extraData.pos().relative(side))
+                        .get(PipeBlockEntity.RenderAttachment.KEY);
+                if (adjacentModelData != null && adjacentModelData.camouflage() != null) {
+                    // Don't draw faces between camouflaged pipes
+                    return ret != null ? ret : List.of();
+                }
+            }
+
             var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
             var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
 

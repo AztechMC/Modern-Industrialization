@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "modern_industrialization:titanium_rod"
+      "tag": "forge:rods/titanium"
     },
     "P": {
       "item": "modern_industrialization:titanium_curved_plate"

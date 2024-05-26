@@ -2,7 +2,7 @@
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
   "ingredient": {
-    "item": "modern_industrialization:iron_rod"
+    "tag": "forge:rods/iron"
   },
   "result": {
     "item": "modern_industrialization:iron_ring"

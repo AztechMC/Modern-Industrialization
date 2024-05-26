@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "modern_industrialization:bronze_rod"
+      "tag": "forge:rods/bronze"
     },
     "P": {
       "item": "modern_industrialization:bronze_curved_plate"

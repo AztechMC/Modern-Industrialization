@@ -10,7 +10,7 @@
       "item" : "modern_industrialization:processing_unit"
     },
     "r" : {
-      "item" : "modern_industrialization:titanium_rod"
+      "tag" : "forge:rods/titanium"
     },
     "m" : {
       "item" : "modern_industrialization:advanced_motor"

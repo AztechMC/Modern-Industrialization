@@ -27,7 +27,7 @@
     },
     {
       "amount": 18,
-      "item": "modern_industrialization:le_mox_rod"
+      "tag": "forge:rods/le_mox"
     }
   ],
   "item_outputs": [

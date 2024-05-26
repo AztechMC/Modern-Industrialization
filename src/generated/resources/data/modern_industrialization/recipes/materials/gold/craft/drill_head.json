@@ -6,7 +6,7 @@
       "tag": "forge:gears/gold"
     },
     "R": {
-      "item": "modern_industrialization:gold_rod"
+      "tag": "forge:rods/gold"
     },
     "b": {
       "item": "modern_industrialization:gold_bolt"

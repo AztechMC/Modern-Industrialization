@@ -5,8 +5,8 @@
   "item_inputs":
     [
       {
-      "item": "modern_industrialization:stainless_steel_rod",
-      "amount": 1
+        "tag": "forge:rods/stainless_steel",
+        "amount": 1
       },
       {
         "item": "modern_industrialization:neodymium_dust",

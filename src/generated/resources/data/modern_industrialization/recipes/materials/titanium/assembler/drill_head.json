@@ -19,7 +19,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_rod"
+      "tag": "forge:rods/titanium"
     },
     {
       "amount": 2,

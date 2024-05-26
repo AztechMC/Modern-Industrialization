@@ -6,7 +6,7 @@
       "tag": "forge:gears/copper"
     },
     "R": {
-      "item": "modern_industrialization:copper_rod"
+      "tag": "forge:rods/copper"
     },
     "b": {
       "item": "modern_industrialization:copper_bolt"

@@ -6,7 +6,7 @@
       "tag": "c:gears/steel"
     },
     "R": {
-      "item": "modern_industrialization:steel_rod"
+      "tag": "c:rods/steel"
     },
     "b": {
       "item": "modern_industrialization:steel_bolt"

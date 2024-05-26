@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "R": {
-      "item": "modern_industrialization:gold_rod"
+      "tag": "c:rods/gold"
     },
     "b": {
       "item": "modern_industrialization:gold_bolt"

@@ -9,7 +9,7 @@
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:tin_rod"
+      "tag": "c:rods/tin"
     }
   ],
   "item_outputs": [

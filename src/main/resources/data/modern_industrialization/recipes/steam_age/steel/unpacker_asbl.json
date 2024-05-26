@@ -19,7 +19,7 @@
       "tag": "modern_industrialization:item_pipes"
     },
     "R": {
-      "item" : "modern_industrialization:bronze_rod"
+      "tag" : "c:rods/bronze"
     }
   },
   "result": {

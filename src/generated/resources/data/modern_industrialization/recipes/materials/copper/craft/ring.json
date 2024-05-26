@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "R": {
-      "item": "modern_industrialization:copper_rod"
+      "tag": "c:rods/copper"
     },
     "b": {
       "item": "modern_industrialization:copper_bolt"

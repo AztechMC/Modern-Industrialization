@@ -27,7 +27,7 @@
     },
     {
       "amount": 18,
-      "item": "modern_industrialization:he_mox_rod"
+      "tag": "c:rods/he_mox"
     }
   ],
   "item_outputs": [

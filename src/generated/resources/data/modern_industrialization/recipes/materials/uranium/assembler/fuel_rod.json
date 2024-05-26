@@ -27,7 +27,7 @@
     },
     {
       "amount": 18,
-      "item": "modern_industrialization:uranium_rod"
+      "tag": "c:rods/uranium"
     }
   ],
   "item_outputs": [

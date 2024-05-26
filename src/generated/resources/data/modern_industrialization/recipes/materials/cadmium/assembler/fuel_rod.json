@@ -27,7 +27,7 @@
     },
     {
       "amount": 18,
-      "item": "modern_industrialization:cadmium_rod"
+      "tag": "c:rods/cadmium"
     }
   ],
   "item_outputs": [

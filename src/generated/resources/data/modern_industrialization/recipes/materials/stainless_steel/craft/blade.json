@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "modern_industrialization:stainless_steel_rod"
+      "tag": "c:rods/stainless_steel"
     },
     "P": {
       "item": "modern_industrialization:stainless_steel_curved_plate"

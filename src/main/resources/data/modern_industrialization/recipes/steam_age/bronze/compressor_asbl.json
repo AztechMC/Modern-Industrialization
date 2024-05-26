@@ -19,7 +19,7 @@
       "tag": "modern_industrialization:fluid_pipes"
     },
     "r": {
-      "item": "modern_industrialization:copper_rod"
+      "tag": "c:rods/copper"
     }
   },
   "result": {

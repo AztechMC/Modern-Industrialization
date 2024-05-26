@@ -81,7 +81,7 @@ public final class StandardRecipes {
                 .exportToAssembler();
 
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)
-                .addPart('c', CURVED_PLATE).addPart('R', ROD).addTaggedPart('p', PLATE);
+                .addPart('c', CURVED_PLATE).addTaggedPart('R', ROD).addTaggedPart('p', PLATE);
 
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);

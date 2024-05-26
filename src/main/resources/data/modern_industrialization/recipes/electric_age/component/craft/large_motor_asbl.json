@@ -10,7 +10,7 @@
       "item" : "modern_industrialization:electronic_circuit"
     },
     "r" : {
-      "item" : "modern_industrialization:aluminum_rod"
+      "tag" : "c:rods/aluminum"
     },
     "m" : {
       "item" : "modern_industrialization:motor"

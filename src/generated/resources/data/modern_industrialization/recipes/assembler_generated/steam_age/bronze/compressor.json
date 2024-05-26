@@ -21,7 +21,7 @@
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:copper_rod"
+      "tag": "c:rods/copper"
     }
   ],
   "item_outputs": [

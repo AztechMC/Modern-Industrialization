@@ -8,7 +8,7 @@
   "key":
   {
     "r" : {
-      "item" : "modern_industrialization:steel_rod"
+      "tag" : "c:rods/steel"
     },
     "w" : {
       "item" : "modern_industrialization:copper_wire"

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "R": {
-      "item": "modern_industrialization:invar_rod"
+      "tag": "c:rods/invar"
     },
     "b": {
       "item": "modern_industrialization:invar_bolt"

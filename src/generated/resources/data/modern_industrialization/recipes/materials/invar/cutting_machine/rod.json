@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:invar_rod"
+      "tag": "c:rods/invar"
     }
   ],
   "item_outputs": [

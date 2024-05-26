@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "R": {
-      "item": "modern_industrialization:stainless_steel_rod"
+      "tag": "c:rods/stainless_steel"
     },
     "b": {
       "item": "modern_industrialization:stainless_steel_bolt"

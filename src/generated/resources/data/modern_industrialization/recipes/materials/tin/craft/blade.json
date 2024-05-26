@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "modern_industrialization:tin_rod"
+      "tag": "c:rods/tin"
     },
     "P": {
       "item": "modern_industrialization:tin_curved_plate"

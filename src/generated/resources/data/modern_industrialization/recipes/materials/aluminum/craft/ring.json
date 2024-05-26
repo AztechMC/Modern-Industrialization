@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "R": {
-      "item": "modern_industrialization:aluminum_rod"
+      "tag": "c:rods/aluminum"
     },
     "b": {
       "item": "modern_industrialization:aluminum_bolt"

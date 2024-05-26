@@ -4,7 +4,7 @@
   "duration": 200,
   "item_inputs": [
     {
-      "item": "modern_industrialization:gold_rod",
+      "tag": "c:rods/gold",
       "amount": 6
     },
     {

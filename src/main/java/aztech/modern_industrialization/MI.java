@@ -54,7 +54,6 @@ import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -117,7 +116,7 @@ public class MI {
         NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
 
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
-            if (event.getUseBlock() == Event.Result.DENY) {
+            if (event.getUseBlock().isFalse()) {
                 return;
             }
 

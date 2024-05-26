@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
@@ -138,7 +137,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 
     public static void setupBarrelEvents() {
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
-            if (event.getUseBlock() == Event.Result.DENY) {
+            if (event.getUseBlock().isFalse()) {
                 return;
             }
 

@@ -456,7 +456,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.20.4"
+            addGameVersion "1.20.6"
             addGameVersion "NeoForge"
             addGameVersion "Java 21"
 
@@ -490,7 +490,7 @@ modrinth {
     delegate.changelog = changelog
     versionType = releaseChannel
     uploadFile = tasks.jarJar
-    gameVersions = ["1.20.4"]
+    gameVersions = ["1.20.6"]
     loaders = ["neoforge"]
     dependencies {
         required.project "cloth-config"

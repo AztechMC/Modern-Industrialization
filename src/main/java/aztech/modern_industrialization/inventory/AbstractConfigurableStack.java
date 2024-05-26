@@ -243,6 +243,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
                     if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
                         stack.lockedInstance = instance;
                         stack.playerLocked = true;
+                        stack.notifyListeners();
                         return;
                     }
                 }
@@ -258,6 +259,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
             if (simulation.isActing()) {
                 lockedInstance = instance;
                 playerLocked = true;
+                notifyListeners();
             }
             return true;
         }

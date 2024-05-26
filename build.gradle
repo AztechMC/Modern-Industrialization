@@ -233,7 +233,7 @@ dependencies {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    compileOnly "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
     compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 

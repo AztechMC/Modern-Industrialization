@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.recipe;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
@@ -51,7 +52,8 @@ public class RecipeConversions {
         recipe.duration = smeltingRecipe.getCookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
-        recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getResultItem(registryAccess).getItem(), 1, 1));
+        recipe.itemOutputs = Collections
+                .singletonList(new MachineRecipe.ItemOutput(ItemVariant.of(smeltingRecipe.getResultItem(registryAccess)), 1, 1));
         recipe.fluidOutputs = Collections.emptyList();
         return new RecipeHolder<>(id, recipe);
     }
@@ -68,7 +70,7 @@ public class RecipeConversions {
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT.asFluid(), 1, 1));
         recipe.itemOutputs = Collections
                 .singletonList(
-                        new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem(null).getItem(),
+                        new MachineRecipe.ItemOutput(ItemVariant.of(stonecuttingRecipe.getResultItem(null)),
                                 stonecuttingRecipe.getResultItem(registryAccess).getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return new RecipeHolder<>(id, recipe);

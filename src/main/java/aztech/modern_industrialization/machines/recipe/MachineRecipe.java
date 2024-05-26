@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
@@ -36,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -165,7 +167,7 @@ public class MachineRecipe implements Recipe<Container> {
     public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
         for (ItemOutput o : itemOutputs) {
             if (o.probability == 1) {
-                return new ItemStack(o.item, o.amount);
+                return o.getStack();
             }
         }
         return ItemStack.EMPTY;
@@ -190,16 +192,15 @@ public class MachineRecipe implements Recipe<Container> {
         return true;
     }
 
+    private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
+            .mapWithAlternative(
+                    ExtraCodecs.POSITIVE_INT.optionalFieldOf("amount"),
+                    ExtraCodecs.POSITIVE_INT.optionalFieldOf("count"))
+            .xmap(
+                    deserialized -> deserialized.orElse(1),
+                    Optional::of);
+
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
-
-        private static final MapCodec<Integer> AMOUNT_CODEC = NeoForgeExtraCodecs
-                .mapWithAlternative(
-                        ExtraCodecs.POSITIVE_INT.optionalFieldOf("amount"),
-                        ExtraCodecs.POSITIVE_INT.optionalFieldOf("count"))
-                .xmap(
-                        deserialized -> deserialized.orElse(1),
-                        Optional::of);
-
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
@@ -243,19 +244,22 @@ public class MachineRecipe implements Recipe<Container> {
                 FluidInput::new);
     }
 
-    public record ItemOutput(Item item, int amount, float probability) {
-
+    public record ItemOutput(ItemVariant variant, int amount, float probability) {
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(itemOutput -> itemOutput.item),
-                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1)
-                                .forGetter(itemOutput -> itemOutput.amount),
-                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(itemOutput -> itemOutput.probability))
-                        .apply(g, ItemOutput::new));
+                        ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item")
+                                .forGetter(itemOutput -> itemOutput.variant.getItem().builtInRegistryHolder()),
+                        AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.amount),
+                        DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
+                                .forGetter(itemOutput -> itemOutput.variant.getComponentsPatch()),
+                        MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f)
+                                .forGetter(itemOutput -> itemOutput.probability))
+                        .apply(g, (item, count, components, probability) -> new ItemOutput(ItemVariant.of(new ItemStack(item, 1, components)), count,
+                                probability)));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemOutput> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.registry(Registries.ITEM),
-                ItemOutput::item,
+                ItemVariant.STREAM_CODEC,
+                ItemOutput::variant,
                 ByteBufCodecs.VAR_INT,
                 ItemOutput::amount,
                 ByteBufCodecs.FLOAT,
@@ -263,7 +267,7 @@ public class MachineRecipe implements Recipe<Container> {
                 ItemOutput::new);
 
         public ItemStack getStack() {
-            return new ItemStack(item, amount);
+            return variant.toStack(amount);
         }
     }
 

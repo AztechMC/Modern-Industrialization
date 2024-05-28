@@ -201,6 +201,7 @@ public class MachineRecipe implements Recipe<Container> {
                     Optional::of);
 
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
+
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
@@ -245,6 +246,7 @@ public class MachineRecipe implements Recipe<Container> {
     }
 
     public record ItemOutput(ItemVariant variant, int amount, float probability) {
+
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item")

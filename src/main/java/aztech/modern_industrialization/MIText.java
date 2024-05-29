@@ -248,7 +248,8 @@ public enum MIText {
     Unlocked("Unlocked"),
     UseItemToChange("Right-click to change."),
     WaterPercent("Water: %s %%"),
-    Whitelist("Whitelist mode enabled");
+    Whitelist("Whitelist mode enabled"),
+    MachineCasingVoltage("Allows machines to accept %s power");
 
     private final String root;
     private final String englishText;

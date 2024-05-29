@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
@@ -385,6 +386,17 @@ public class MITooltips {
             MIText.ConfigCardHelpItems4,
             MIText.ConfigCardHelpItems5,
             MIText.ConfigCardHelpClear);
+
+    public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
+            (itemStack, item) -> {
+                var itemKey = BuiltInRegistries.ITEM.getKey(item);
+                for (var tier : CableTier.allTiers()) {
+                    if (tier.itemKey != null && tier.itemKey.equals(itemKey)) {
+                        return Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
+                    }
+                }
+                return Optional.empty();
+            });
 
     // Long Tooltip with only text, no need of MIText
 

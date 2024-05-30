@@ -1819,6 +1819,7 @@
   "text.modern_industrialization.LockingModeOff": "[UNTRANSLATED] Lock editing disabled",
   "text.modern_industrialization.LockingModeOn": "[UNTRANSLATED] Lock editing enabled",
   "text.modern_industrialization.LubricantTooltip": "[UNTRANSLATED] Right-Click on Electric Machine : consume %s mb for 1 efficiency tick",
+  "text.modern_industrialization.MachineCasingVoltage": "[UNTRANSLATED] Allows machines to accept %s power",
   "text.modern_industrialization.MachineUpgrade": "[UNTRANSLATED] Electric Machine Upgrade : Max Overclock +%s",
   "text.modern_industrialization.MachineUpgradeStack": "[UNTRANSLATED] Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "[UNTRANSLATED] Can produce up to %s",

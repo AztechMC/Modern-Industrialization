@@ -1612,6 +1612,7 @@
   "text.modern_industrialization.LockingModeOff": "Edição de Trancas desativada",
   "text.modern_industrialization.LockingModeOn": "Edição de Trancas ativada",
   "text.modern_industrialization.LubricantTooltip": "Botão-Direito em Máquina Elétrica : consome %s mb por 1 tick de eficiência",
+  "text.modern_industrialization.MachineCasingVoltage": "[UNTRANSLATED] Allows machines to accept %s power",
   "text.modern_industrialization.MachineUpgrade": "Melhoria de Máquina Elétrica : Overclock Máx. de +%s",
   "text.modern_industrialization.MachineUpgradeStack": "[UNTRANSLATED] Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Pode produzir até %s",

@@ -1600,6 +1600,7 @@
   "text.modern_industrialization.LockingModeOff": "Lock editing disabled",
   "text.modern_industrialization.LockingModeOn": "Lock editing enabled",
   "text.modern_industrialization.LubricantTooltip": "Right-Click on Electric Machine : consume %s mb for 1 efficiency tick",
+  "text.modern_industrialization.MachineCasingVoltage": "Allows machines to accept %s power",
   "text.modern_industrialization.MachineUpgrade": "Electric Machine Upgrade : Max Overclock +%s",
   "text.modern_industrialization.MachineUpgradeStack": "Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Can produce up to %s",

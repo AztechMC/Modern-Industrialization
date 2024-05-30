@@ -1903,6 +1903,7 @@
   "text.modern_industrialization.LockingModeOff": "已禁用锁定编辑",
   "text.modern_industrialization.LockingModeOn": "已启用锁定编辑",
   "text.modern_industrialization.LubricantTooltip": "在电力机器上右键：消耗 %smB 增加一个效率计数器",
+  "text.modern_industrialization.MachineCasingVoltage": "[UNTRANSLATED] Allows machines to accept %s power",
   "text.modern_industrialization.MachineUpgrade": "电力机器升级：最大超频 +%s",
   "text.modern_industrialization.MachineUpgradeStack": "整堆叠升级 +%s",
   "text.modern_industrialization.MaxEuProduction": "最多可供应：%s",

@@ -391,9 +391,8 @@ public class MITooltips {
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
             (itemStack, item) -> {
                 CableTier tier = CasingComponent.getCasingTier(item);
-                return tier == null ?
-                        Optional.empty() :
-                        Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
+                return tier == null ? Optional.empty()
+                        : Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
             });
 
     // Long Tooltip with only text, no need of MIText

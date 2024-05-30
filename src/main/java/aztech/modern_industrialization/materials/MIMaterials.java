@@ -188,6 +188,7 @@ public class MIMaterials {
                                 .set(MaterialProperty.SET, METALLIC)
                                 .set(MaterialProperty.MEAN_RGB, 0xC8C8C8)
                                 .addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
+                                .addParts(TANK.of(1)).addParts(BARREL.of(1))
                                 .addMaterialItemParts(MaterialItemPart.external(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
         );
 

@@ -32,6 +32,7 @@ import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import aztech.modern_industrialization.machines.components.CasingComponent;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
@@ -389,13 +390,10 @@ public class MITooltips {
 
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
             (itemStack, item) -> {
-                var itemKey = BuiltInRegistries.ITEM.getKey(item);
-                for (var tier : CableTier.allTiers()) {
-                    if (tier.itemKey != null && tier.itemKey.equals(itemKey)) {
-                        return Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
-                    }
-                }
-                return Optional.empty();
+                CableTier tier = CasingComponent.getCasingTier(item);
+                return tier == null ?
+                        Optional.empty() :
+                        Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
             });
 
     // Long Tooltip with only text, no need of MIText

@@ -145,6 +145,7 @@ public enum MIText {
     LockingModeOff("Lock editing disabled"),
     LockingModeOn("Lock editing enabled"),
     LubricantTooltip("Right-Click on Electric Machine : consume %s mb for 1 efficiency tick"),
+    MachineCasingVoltage("Allows machines to accept %s power"),
     MachineUpgrade("Electric Machine Upgrade : Max Overclock +%s"),
     MachineUpgradeStack("Total Stack Upgrade +%s"),
     MaxEuProduction("Can produce up to %s"),

@@ -1614,6 +1614,7 @@
   "text.modern_industrialization.LockingModeOff": "Блокировка правки отключена",
   "text.modern_industrialization.LockingModeOn": "Блокировка правки включена",
   "text.modern_industrialization.LubricantTooltip": "ПКМ по электрическому станку: потребит %s мв за 1 такт эффективности",
+  "text.modern_industrialization.MachineCasingVoltage": "[UNTRANSLATED] Allows machines to accept %s power",
   "text.modern_industrialization.MachineUpgrade": "Модернизация электрического станка: Максимальный разгон +%s",
   "text.modern_industrialization.MachineUpgradeStack": "[UNTRANSLATED] Total Stack Upgrade +%s",
   "text.modern_industrialization.MaxEuProduction": "Может производить до %s",

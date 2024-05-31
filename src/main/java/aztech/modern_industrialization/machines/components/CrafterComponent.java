@@ -50,7 +50,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -503,18 +502,18 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.getItem() == output.item() || key.isBlank()) {
+                    if (key.equals(output.variant()) || key.isBlank()) {
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
                         int remainingCapacity = simulate || output.probability() < 1
-                                ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item()))
-                                : output.item().components().getOrDefault(DataComponents.MAX_STACK_SIZE, 1) - (int) stack.getAmount();
+                                ? (int) stack.getRemainingCapacityFor(output.variant())
+                                : output.variant().getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (key.isBlank()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item()))) {
+                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
                                 stack.setAmount(ins);
-                                stack.setKey(ItemVariant.of(output.item()));
+                                stack.setKey(output.variant());
                             } else {
                                 ins = 0;
                             }
@@ -524,9 +523,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                         remainingAmount -= ins;
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
-                            lockItems.add(output.item());
+                            lockItems.add(output.variant().getItem());
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.item(), ins);
+                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);
                             }
                         }
                         if (remainingAmount == 0)
@@ -658,10 +657,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // ITEM OUTPUTS
         outer: for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.getLockedInstance() == output.item())
+                if (stack.getLockedInstance() == output.variant().getItem())
                     continue outer;
             }
-            AbstractConfigurableStack.playerLockNoOverride(output.item(), this.inventory.getItemOutputs());
+            AbstractConfigurableStack.playerLockNoOverride(output.variant().getItem(), this.inventory.getItemOutputs());
         }
 
         // FLUID INPUTS

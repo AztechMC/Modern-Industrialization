@@ -32,6 +32,7 @@ import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
 public record AdjacentBlockProcessCondition(Block block, RelativePosition relativePosition) implements MachineProcessCondition {
@@ -60,6 +61,11 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
         case BEHIND -> MIText.RequiresBlockBehind;
         };
         list.add(text.text(block.getName()));
+    }
+
+    @Override
+    public ItemLike icon() {
+        return block.asItem();
     }
 
     @Override

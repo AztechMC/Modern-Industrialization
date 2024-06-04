@@ -52,6 +52,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -256,15 +258,36 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         // Conditions
         boolean conditionsRequired = recipe.conditions.size() > 0;
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
-            ItemLike displayedItem;
+            List<ItemLike> displayedItems = new ArrayList<>();
             if (steelHatchRequired) {
-                displayedItem = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
-            } else if (conditionsRequired) {
-                displayedItem = MIItem.WRENCH;
-            } else {
-                displayedItem = MIItem.BASIC_UPGRADE;
+                displayedItems.add(BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch")));
             }
-            widgets.item(width / 2f - 3, 3.75, 10.8, 10.8, displayedItem);
+            if (upgradeEuRequired > 0) {
+                displayedItems.add(MIItem.BASIC_UPGRADE);
+            }
+            for (var condition : recipe.conditions) {
+                ItemLike displayedItem = condition.icon();
+                if (displayedItem.asItem() != Items.AIR) {
+                    displayedItems.add(displayedItem);
+                }
+            }
+            if (displayedItems.isEmpty()) {
+                displayedItems.add(MIItem.WRENCH);
+            }
+
+            double x = width / 2f - 3;
+            double y = 3.75;
+            double wh = 10.8;
+            widgets.drawable((graphics) -> {
+                int itemIndex = (int) ((System.currentTimeMillis() / 1500L) % displayedItems.size());
+                ItemLike displayedItem = displayedItems.get(itemIndex);
+
+                graphics.pose().pushPose();
+                graphics.pose().translate(x, y, 0);
+                graphics.pose().scale((float) wh / 16, (float) wh / 16, 0);
+                graphics.renderFakeItem(new ItemStack(displayedItem), 0, 0);
+                graphics.pose().popPose();
+            });
         }
         // Tooltips
         List<Component> tooltips = new ArrayList<>();

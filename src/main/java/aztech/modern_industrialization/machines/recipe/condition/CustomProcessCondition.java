@@ -34,8 +34,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public class CustomProcessCondition implements MachineProcessCondition {
     static final Map<String, Definition> definitions = new HashMap<>();
@@ -46,8 +49,10 @@ public class CustomProcessCondition implements MachineProcessCondition {
         KubeJSProxy.instance.fireCustomConditionEvent();
     }
 
-    public static void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, Component... description) {
+    public static void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, ItemLike icon,
+            Component... description) {
         Objects.requireNonNull(predicate);
+        Objects.requireNonNull(icon);
 
         if (definitions.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate custom process condition definition: " + id);
@@ -57,12 +62,12 @@ public class CustomProcessCondition implements MachineProcessCondition {
             throw new IllegalArgumentException("Custom process condition must have a description");
         }
 
-        definitions.put(id, new Definition(predicate, List.of(description)));
+        definitions.put(id, new Definition(predicate, icon, List.of(description)));
     }
 
     private record Definition(
             BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate,
-            List<Component> description) {
+            ItemLike icon, List<Component> description) {
     }
 
     private static MapCodec<CustomProcessCondition> makeCodec(boolean syncToClient) {
@@ -70,9 +75,15 @@ public class CustomProcessCondition implements MachineProcessCondition {
                 g -> g
                         .group(
                                 Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
+                                BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("icon")
+                                        .forGetter(c -> syncToClient ? Optional.of(c.icon.asItem()) : Optional.empty()),
                                 ComponentSerialization.CODEC.listOf().optionalFieldOf("description")
                                         .forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
-                        .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
+                        .apply(g,
+                                (id, icon, desc) -> desc
+                                        .map(d -> icon.map(i -> new CustomProcessCondition(id, i, d))
+                                                .orElseGet(() -> new CustomProcessCondition(id, Items.AIR, d)))
+                                        .orElseGet(() -> new CustomProcessCondition(id))));
     }
 
     static final MapCodec<CustomProcessCondition> CODEC = makeCodec(false);
@@ -84,15 +95,18 @@ public class CustomProcessCondition implements MachineProcessCondition {
             throw new IllegalArgumentException("Unknown custom process condition definition: " + id);
         }
         this.id = id;
+        this.icon = definition.icon;
         this.description = definition.description;
     }
 
-    public CustomProcessCondition(String id, List<Component> description) {
+    public CustomProcessCondition(String id, ItemLike icon, List<Component> description) {
         this.id = id;
+        this.icon = icon;
         this.description = description;
     }
 
     private final String id;
+    private final ItemLike icon;
     private final List<Component> description;
 
     @Override
@@ -103,6 +117,11 @@ public class CustomProcessCondition implements MachineProcessCondition {
     @Override
     public void appendDescription(List<Component> list) {
         list.addAll(description);
+    }
+
+    @Override
+    public ItemLike icon() {
+        return icon;
     }
 
     @Override

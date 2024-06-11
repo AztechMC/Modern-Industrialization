@@ -40,7 +40,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -75,8 +74,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
@@ -227,6 +229,34 @@ public class SteamDrillItem
         return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
     }
 
+    // Use this little trick to cancel the drops for blocks broken by the steam drill, and instead merge them into a global list.
+    @Nullable
+    private static List<ItemStack> totalDrops = null;
+
+    static {
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::mergeDrops);
+    }
+
+    private static void mergeDrops(BlockDropsEvent event) {
+        if (totalDrops == null) {
+            return;
+        }
+
+        outer: for (var entity : event.getDrops()) {
+            if (entity.getItem().isEmpty()) {
+                continue;
+            }
+            for (ItemStack drop : totalDrops) {
+                if (ItemStack.isSameItemSameComponents(entity.getItem(), drop)) {
+                    drop.grow(entity.getItem().getCount());
+                    continue outer;
+                }
+            }
+            totalDrops.add(entity.getItem());
+        }
+        event.getDrops().clear();
+    }
+
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
@@ -240,32 +270,21 @@ public class SteamDrillItem
             return false;
         }
 
-        List<ItemStack> totalDrops = new ArrayList<>();
+        totalDrops = new ArrayList<>();
         forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
             Block block = tempState.getBlock();
-            int xp = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+            var breakEvent = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
                     blockPos, tempState);
-            if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
+            if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                 block.destroy(world, blockPos, tempState);
-                Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
-                    boolean combined = false;
-                    for (ItemStack drop : totalDrops) {
-                        if (ItemStack.isSameItemSameComponents(drop, itemStack)) {
-                            drop.setCount(drop.getCount() + itemStack.getCount());
-                            combined = true;
-                            break;
-                        }
-                    }
-                    if (!combined) {
-                        totalDrops.add(itemStack);
-                    }
-                });
-                block.popExperience((ServerLevel) world, blockPos, xp);
+                // Thanks to our event above, the drops won't make it into the level, and will be added to `totalDrops` instead.
+                Block.dropResources(tempState, world, blockPos, null, miner, stack);
             }
         });
         totalDrops.forEach(itemStack -> {
             Block.popResource(world, miner.blockPosition(), itemStack);
         });
+        totalDrops = null;
         world.getEntitiesOfClass(ExperienceOrb.class,
                 new AABB(Vec3.atLowerCornerOf(area.corner1()), Vec3.atLowerCornerOf(area.corner2())).inflate(1))
                 .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
@@ -323,7 +342,7 @@ public class SteamDrillItem
     }
 
     private void fillWater(Player player, ItemStack stack) {
-        if (stack.getOrDefault(MIComponents.WATER, 0) != 0) {
+        if (stack.getOrDefault(MIComponents.WATER, 0) != FULL_WATER) {
             stack.set(MIComponents.WATER, FULL_WATER);
             player.playNotifySound(SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1, 1);
         }
@@ -397,11 +416,11 @@ public class SteamDrillItem
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         var fuel = stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         return Optional.of(new SteamDrillTooltipData(
-                stack.getOrDefault(MIComponents.WATER, 0),
+                stack.getOrDefault(MIComponents.WATER, 0) * 100 / FULL_WATER,
                 fuel.burnTicks(),
                 Math.min(1, fuel.maxBurnTicks()),
-                ItemVariant.blank(),
-                0));
+                getResource(stack),
+                getAmount(stack)));
     }
 
     @Override

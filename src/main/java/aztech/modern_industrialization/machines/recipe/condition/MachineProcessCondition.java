@@ -36,6 +36,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public interface MachineProcessCondition {
     private static Codec<MachineProcessCondition> makeCodec(boolean syncToClient) {
@@ -56,6 +58,10 @@ public interface MachineProcessCondition {
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
 
     void appendDescription(List<Component> list);
+
+    default ItemLike icon() {
+        return Items.AIR;
+    }
 
     MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient);
 

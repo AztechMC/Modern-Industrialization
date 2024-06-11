@@ -30,6 +30,8 @@ import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.biome.Biome;
 
 public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {
@@ -48,6 +50,11 @@ public record BiomeProcessCondition(ResourceKey<Biome> biome) implements Machine
         var loc = biome.location();
         var biomeComponent = Component.translatable("biome.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
         list.add(MIText.RequiresBiome.text(biomeComponent));
+    }
+
+    @Override
+    public ItemLike icon() {
+        return Items.OAK_SAPLING;
     }
 
     @Override

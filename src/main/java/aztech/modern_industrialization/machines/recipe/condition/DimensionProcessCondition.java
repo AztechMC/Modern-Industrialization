@@ -30,7 +30,9 @@ import java.util.List;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 public record DimensionProcessCondition(ResourceKey<Level> dimension) implements MachineProcessCondition {
     static final MapCodec<DimensionProcessCondition> CODEC = ResourceKey.codec(Registries.DIMENSION)
@@ -47,6 +49,11 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
         var loc = dimension.location();
         var dimComponent = Component.translatable("dimension.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
         list.add(MIText.RequiresDimension.text(dimComponent));
+    }
+
+    @Override
+    public ItemLike icon() {
+        return Blocks.NETHER_PORTAL.asItem();
     }
 
     @Override

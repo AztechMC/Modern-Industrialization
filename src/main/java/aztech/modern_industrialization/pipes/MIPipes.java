@@ -26,7 +26,6 @@ package aztech.modern_industrialization.pipes;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
@@ -111,7 +110,7 @@ public class MIPipes {
 
     private void registerFluidPipeType(PipeColor color) {
         String pipeId = color.prefix + "fluid_pipe";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
+        PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
                 FluidNetworkNode::new, color.color, true);
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Fluid Pipe",
@@ -125,7 +124,7 @@ public class MIPipes {
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
+        PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Item Pipe",
                 pipeId,
@@ -138,7 +137,7 @@ public class MIPipes {
 
     public void registerCableType(String englishName, String name, int color, CableTier tier) {
         String cableId = name + "_cable";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
+        PipeNetworkType type = PipeNetworkType.register(MI.id(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false);
         var itemDef = MIItem.item(
                 englishName,

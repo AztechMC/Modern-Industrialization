@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.recipe.condition;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.MapCodec;
@@ -51,9 +51,9 @@ public final class MachineProcessConditions {
     }
 
     static {
-        register(new MIIdentifier("dimension"), DimensionProcessCondition.CODEC);
-        register(new MIIdentifier("adjacent_block"), AdjacentBlockProcessCondition.CODEC);
-        register(new MIIdentifier("biome"), BiomeProcessCondition.CODEC);
-        register(new MIIdentifier("custom"), CustomProcessCondition.CODEC);
+        register(MI.id("dimension"), DimensionProcessCondition.CODEC);
+        register(MI.id("adjacent_block"), AdjacentBlockProcessCondition.CODEC);
+        register(MI.id("biome"), BiomeProcessCondition.CODEC);
+        register(MI.id("custom"), CustomProcessCondition.CODEC);
     }
 }

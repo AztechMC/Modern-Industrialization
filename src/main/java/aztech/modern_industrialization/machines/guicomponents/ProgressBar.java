@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.util.Rectangle;
@@ -93,7 +93,7 @@ public class ProgressBar {
         }
 
         public ResourceLocation getTextureId() {
-            return new MIIdentifier("textures/gui/progress_bar/" + progressBarType + ".png");
+            return MI.id("textures/gui/progress_bar/" + progressBarType + ".png");
         }
 
         public Rectangle toRectangle() {

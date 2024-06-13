@@ -425,7 +425,7 @@ public class MITooltips {
     }
 
     private static void add(String itemId, String... englishTooltipsLine) {
-        add(BuiltInRegistries.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
+        add(BuiltInRegistries.ITEM.get(MI.id(itemId)), englishTooltipsLine);
     }
 
     static {

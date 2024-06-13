@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -68,7 +67,7 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-        private static final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/container/multiblock_info.png");
+        private static final MIIdentifier TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {

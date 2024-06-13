@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.viewer.abstraction;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Rectangle;
@@ -91,7 +90,7 @@ public abstract class ViewerCategory<D> {
 
         default void accept(String... itemPath) {// only items in the MI namespace!
             for (var item : itemPath) {
-                accept(BuiltInRegistries.ITEM.get(new MIIdentifier(item)));
+                accept(BuiltInRegistries.ITEM.get(MI.id(item)));
             }
         }
     }

@@ -40,7 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ViewerPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = new MIIdentifier("viewer");
+    private static final ResourceLocation ID = MI.id("viewer");
 
     private final List<ViewerCategoryJei<?>> categories = new ArrayList<>();
 

@@ -116,7 +116,7 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
 
         category.wrapped.buildWorkstations(items -> {
             for (var item : items) {
-                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(new MIIdentifier(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(MI.id(blockId))) {
                     hasWorkstation.setTrue();
                 }
             }

@@ -419,7 +419,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
             int i = 0;
             while (tag.contains("pipe_type_" + i)) {
-                ResourceLocation typeId = new ResourceLocation(tag.getString("pipe_type_" + i));
+                ResourceLocation typeId = ResourceLocation.parse(tag.getString("pipe_type_" + i));
                 PipeNetworkType type = PipeNetworkType.get(typeId);
                 PipeNetworkNode node = type.getNodeCtor().get();
                 node.fromTag(tag.getCompound("pipe_data_" + i), registries);
@@ -432,7 +432,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             CompoundTag pipesTag = tag.getCompound("pipes");
             for (String key : pipesTag.getAllKeys()) {
                 CompoundTag nodeTag = pipesTag.getCompound(key);
-                PipeNetworkType type = PipeNetworkType.get(new ResourceLocation(key));
+                PipeNetworkType type = PipeNetworkType.get(ResourceLocation.parse(key));
                 connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
                 customData.put(type, nodeTag.getCompound("custom").copy());
             }

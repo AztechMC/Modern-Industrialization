@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
@@ -48,7 +48,7 @@ public class GuideBookItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
         if (!world.isClientSide && user instanceof ServerPlayer) {
             if (ModList.get().isLoaded("patchouli")) { // a bit borderline...
-                PatchouliAPI.get().openBookGUI((ServerPlayer) user, new MIIdentifier("book"));
+                PatchouliAPI.get().openBookGUI((ServerPlayer) user, MI.id("book"));
                 return InteractionResultHolder.success(user.getItemInHand(hand));
             } else {
                 user.displayClientMessage(Component.literal("Patchouli is not loaded, can't open guide book!"), true);

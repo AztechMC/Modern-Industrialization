@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.DynamicTooltip;
@@ -44,7 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, Inventory inventory, Component title) {

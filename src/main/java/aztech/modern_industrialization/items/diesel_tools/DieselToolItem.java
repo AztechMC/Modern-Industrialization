@@ -34,6 +34,9 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -128,8 +131,8 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
 
-        for (var entry : getAllEnchantments(stack).entrySet()) {
-            tooltip.add(entry.getKey().value().getFullname(entry.getValue()));
+        for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
+            tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
         }
     }
 
@@ -239,18 +242,18 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        return getAllEnchantments(stack).getLevel(enchantment);
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+        return getAllEnchantments(stack, enchantment.unwrapLookup()).getLevel(enchantment);
     }
 
     @Override
-    public ItemEnchantments getAllEnchantments(ItemStack stack) {
+    public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
         var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
             if (!isFortune(stack)) {
-                map.set(Enchantments.SILK_TOUCH, Enchantments.SILK_TOUCH.getMaxLevel());
+                lookup.get(Enchantments.SILK_TOUCH).ifPresent(h -> map.set(h, h.value().getMaxLevel()));
             } else {
-                map.set(Enchantments.FORTUNE, Enchantments.FORTUNE.getMaxLevel());
+                lookup.get(Enchantments.FORTUNE).ifPresent(h -> map.set(h, h.value().getMaxLevel()));
             }
         }
         return map.toImmutable();
@@ -258,7 +261,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
 
     @Override
     public boolean isFoil(ItemStack pStack) {
-        return !getAllEnchantments(pStack).isEmpty();
+        return FluidFuelItemHelper.getAmount(pStack) > 0;
     }
 
     private static class StrippingAccess extends AxeItem {

@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.105'
+    id 'net.neoforged.moddev' version '0.1.74'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -153,14 +153,6 @@ repositories {
             includeGroup "earth.terrarium.athena"
         }
     }
-    maven { // TODO remove
-        name 'Maven for PR #794' // https://github.com/neoforged/NeoForge/pull/794
-        url 'https://prmaven.neoforged.net/NeoForge/pr794'
-        content {
-            includeModule('net.neoforged', 'testframework')
-            includeModule('net.neoforged', 'neoforge')
-        }
-    }
     mavenLocal()
 }
 
@@ -172,14 +164,8 @@ sourceSets {
         resources {
             srcDir "src/generated/resources"
         }
-        runs {
-            modIdentifier "modern_industrialization"
-        }
     }
     client {
-        runs {
-            modIdentifier "modern_industrialization"
-        }
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
         compileClasspath += sourceSets.main.output
@@ -187,12 +173,70 @@ sourceSets {
     }
 }
 
-dependencies {
-    implementation "net.neoforged:neoforge:${project.neo_version}"
+neoForge {
+    version = project.neo_version
 
-    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}") {
-        jarJar.ranged(it, "[$project.grandpower_version,)")
+    mods {
+        modern_industrialization {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
     }
+
+    runs {
+        // applies to all the run configs below
+        configureEach {
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            systemProperty 'forge.logging.console.level', 'debug'
+        }
+
+        client {
+            client()
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+        }
+
+        server {
+            server()
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+            programArgument '--nogui'
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+        }
+
+        data {
+            data()
+            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
+            // workingDirectory project.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        autotestServer {
+            server()
+            systemProperty 'modern_industrialization.autoTest', 'true'
+        }
+    }
+}
+
+dependencies {
+    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
 
     if (project.runtime_itemlist_mod == "jei") {
         implementation "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
@@ -221,9 +265,7 @@ dependencies {
 
     compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
     runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    jarJar("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
-        jarJar.ranged(it, "[$project.patchouli_version,)")
-    }
+    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
@@ -239,58 +281,6 @@ dependencies {
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
-}
-
-minecraft.accessTransformers.file file("src/main/resources/META-INF/accesstransformer.cfg")
-
-runs {
-    // applies to all the run configs below
-    configureEach {
-        // Recommended logging data for a userdev environment
-        // The markers can be added/remove as needed separated by commas.
-        // "SCAN": For mods scan.
-        // "REGISTRIES": For firing of registry events.
-        // "REGISTRYDUMP": For getting the contents of all registries.
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-        // Recommended logging level for the console
-        // You can set various levels here.
-        // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
-        modSource project.sourceSets.client
-    }
-
-    client {
-        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-    }
-
-    server {
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-        programArgument '--nogui'
-    }
-
-    // This run config launches GameTestServer and runs all registered gametests, then exits.
-    // By default, the server will crash when no gametests are provided.
-    // The gametest system is also enabled by default for other run configs under the /test command.
-    gameTestServer {
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-    }
-
-    data {
-        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-        // workingDirectory project.file('run-data')
-
-        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
-
-    autotestServer {
-        configure 'server'
-        systemProperty 'modern_industrialization.autoTest', 'true'
-    }
 }
 
 processResources {
@@ -348,11 +338,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jar {
-    from "LICENSE"
-    from sourceSets.client.output
-}
-
-tasks.named("jarJar") {
     from "LICENSE"
     from sourceSets.client.output
 }
@@ -469,7 +454,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 embeddedLibrary "grandpower"
                 embeddedLibrary "patchouli"
             }
-            mainArtifact(tasks.named("jarJar").flatMap { it.archiveFile }) {
+            mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
                 displayName = "Modern Industrialization v${version}"
             }
         }
@@ -477,7 +462,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             forgeGradleIntegration = false
         }
         afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jarJar
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jar
         }
     }
 }
@@ -489,7 +474,7 @@ modrinth {
     versionName = "Modern Industrialization v${version}"
     delegate.changelog = changelog
     versionType = releaseChannel
-    uploadFile = tasks.jarJar
+    uploadFile = tasks.jar
     gameVersions = ["1.20.6"]
     loaders = ["neoforge"]
     dependencies {

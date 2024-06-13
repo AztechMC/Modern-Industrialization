@@ -146,7 +146,7 @@ public class PlayerStatistics {
     private static <T> void readNbt(Registry<T> registry, Map<T, StatisticValue> map, CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
             try {
-                var val = registry.get(new ResourceLocation(key));
+                var val = registry.get(ResourceLocation.parse(key));
                 if (val != Items.AIR && val != Fluids.EMPTY) {
                     map.put(val, new StatisticValue(tag.getCompound(key)));
                 }
@@ -166,7 +166,7 @@ public class PlayerStatistics {
     private static void pendingReadNbt(Reference2LongMap<Item> map, CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
             try {
-                var val = BuiltInRegistries.ITEM.get(new ResourceLocation(key));
+                var val = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
                 if (val != Items.AIR) {
                     map.put(val, tag.getLong(key));
                 }

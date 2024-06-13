@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
@@ -78,7 +77,7 @@ import org.lwjgl.system.MemoryStack;
 public class RenderHelper {
     private static final Supplier<BakedQuad[]> OVERLAY_QUADS;
     private static final float W = 0.05f;
-    private static final MIIdentifier LOCKED_TEXTURE_LOCATION = new MIIdentifier("block/locked");
+    private static final MIIdentifier LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());

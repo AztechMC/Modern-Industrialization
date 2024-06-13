@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
@@ -90,7 +90,7 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     @Override
     public ItemVariant getNeutronProduct() {
-        return ItemVariant.of(BuiltInRegistries.ITEM.getOptional(new MIIdentifier(depletedVersionId)).get());
+        return ItemVariant.of(BuiltInRegistries.ITEM.getOptional(MI.id(depletedVersionId)).get());
     }
 
     @Override

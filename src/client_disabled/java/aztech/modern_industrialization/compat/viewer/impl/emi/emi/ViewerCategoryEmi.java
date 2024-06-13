@@ -269,7 +269,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
                 @Override
                 public void arrow(int x, int y) {
-                    texture(new MIIdentifier("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
+                    texture(MI.id("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
                 }
 
                 @Override

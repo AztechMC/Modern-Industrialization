@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.IComponent;
@@ -38,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class RedstoneControlComponent implements IComponent.ServerOnly, DropableComponent {
 
-    public static final ResourceLocation ID = new MIIdentifier("redstone_control");
+    public static final ResourceLocation ID = MI.id("redstone_control");
 
     private ItemStack controlModule = ItemStack.EMPTY;
 

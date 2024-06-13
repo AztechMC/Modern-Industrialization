@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -99,7 +98,7 @@ public class MIPipesClient {
             @Override
             public Collection<Material> getSpriteDependencies() {
                 return sprites.stream().map(
-                        n -> new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/" + n)))
+                        n -> new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/" + n)))
                         .collect(Collectors.toList());
             }
 
@@ -107,7 +106,7 @@ public class MIPipesClient {
             public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
                 Material[] ids = sprites.stream()
                         .map(n -> new Material(InventoryMenu.BLOCK_ATLAS,
-                                new MIIdentifier("block/pipes/" + n)))
+                                MI.id("block/pipes/" + n)))
                         .toArray(Material[]::new);
                 return new PipeMeshCache(textureGetter, ids, innerQuads);
             }

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.datagen.advancement;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIAdvancementTriggers;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
@@ -232,7 +231,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
 
     private AdvancementHolder createBasic(Consumer<AdvancementHolder> consumer, String itemId, AdvancementHolder parent,
             AdvancementType frame, String titleEnglishName, String englishDescription, ExistingFileHelper existingFileHelper) {
-        var item = BuiltInRegistries.ITEM.get(new MIIdentifier(itemId));
+        var item = BuiltInRegistries.ITEM.get(MI.id(itemId));
 
         var advancementTask = newBuilder(itemId);
 

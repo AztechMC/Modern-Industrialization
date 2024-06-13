@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.guicomponents;
 import static aztech.modern_industrialization.nuclear.NeutronType.*;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
@@ -99,9 +98,9 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
         Renderer.Mode currentMode = Renderer.Mode.NUCLEAR_FUEL;
         NeutronType neutronMode = BOTH;
 
-        ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.get(new MIIdentifier("uranium_fuel_rod")), 1);
+        ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")), 1);
 
-        private final ResourceLocation COLORBAR = new MIIdentifier("textures/gui/colorbar.png");
+        private final ResourceLocation COLORBAR = MI.id("textures/gui/colorbar.png");
 
         private enum Mode {
 

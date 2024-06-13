@@ -58,7 +58,7 @@ public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implemen
 
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || storage.isResourceBlank() || !resource.isFluidEqual(storage.getResource().toStack(1))) {
+        if (resource.isEmpty() || storage.isResourceBlank() || !storage.getResource().matches(resource)) {
             return FluidStack.EMPTY;
         }
         return drain(resource.getAmount(), action);

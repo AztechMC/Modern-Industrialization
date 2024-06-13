@@ -23,20 +23,18 @@
  */
 package aztech.modern_industrialization.items;
 
-import java.util.UUID;
+import aztech.modern_industrialization.MI;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public final class ItemHelper {
-    private static final UUID TOOL_UUID = UUID.randomUUID();
-
     public static ItemAttributeModifiers getToolModifiers(double damage) {
         return ItemAttributeModifiers.builder()
                 .add(
                         Attributes.ATTACK_DAMAGE,
-                        new AttributeModifier(TOOL_UUID, "MI Diesel Tool Item", damage, AttributeModifier.Operation.ADD_VALUE),
+                        new AttributeModifier(MI.id("tool_item"), damage, AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
                 .build();
     }

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
@@ -50,14 +49,14 @@ import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
     public static final ResourceLocation TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
-    private static final ResourceLocation PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");
+    private static final ResourceLocation PROGRESS_BAR = MI.id("textures/gui/progress_bar/long_arrow.png");
 
     private final int centerX;
     private final int centerY;
 
     public NeutronInteractionCategory() {
-        super(Recipe.class, new MIIdentifier("neutron_interaction"), MIText.NeutronInteraction.text(),
-                BuiltInRegistries.ITEM.get(new MIIdentifier("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
+        super(Recipe.class, MI.id("neutron_interaction"), MIText.NeutronInteraction.text(),
+                BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
 
         this.centerX = width / 2;
         this.centerY = height / 2 - 5;

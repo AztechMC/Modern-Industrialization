@@ -66,7 +66,7 @@ class MachineSlotLockingHandler implements TransferHandler {
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {
                 Item item = entry.<ItemStack>cast().getValue().getItem();
-                if (BuiltInRegistries.ITEM.getKey(item).equals(new MIIdentifier(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item).equals(MI.id(blockId))) {
                     return true;
                 }
             }

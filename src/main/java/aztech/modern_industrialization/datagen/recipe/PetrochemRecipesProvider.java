@@ -25,7 +25,7 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import static aztech.modern_industrialization.MIFluids.*;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -113,7 +113,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
      */
     private void generateSulfuricPurification(RecipeOutput consumer, Fluid purifiedFluid) {
         String baseName = BuiltInRegistries.FLUID.getKey(purifiedFluid).getPath();
-        Fluid sulfuricFluid = BuiltInRegistries.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
+        Fluid sulfuricFluid = BuiltInRegistries.FLUID.get(MI.id("sulfuric_" + baseName));
         Preconditions.checkArgument(sulfuricFluid instanceof MIFluid);
 
         new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)

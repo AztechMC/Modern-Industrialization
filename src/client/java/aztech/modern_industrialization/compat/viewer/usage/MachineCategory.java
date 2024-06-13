@@ -25,7 +25,6 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -80,7 +79,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private final MachineCategoryParams params;
 
     private MachineCategory(MachineCategoryParams params, int width, int height) {
-        super((Class) RecipeHolder.class, new MIIdentifier(params.category),
+        super((Class) RecipeHolder.class, MI.id(params.category),
                 Component.translatable("rei_categories.modern_industrialization." + params.category),
                 BuiltInRegistries.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
 
@@ -230,7 +229,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
             }
             case STEAM_ONLY -> {
-                guiGraphics.blit(new MIIdentifier("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
             }
             case ELECTRIC_ONLY -> {
                 EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
@@ -258,7 +257,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
             ItemLike displayedItem;
             if (steelHatchRequired) {
-                displayedItem = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+                displayedItem = BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch"));
             } else if (conditionsRequired) {
                 displayedItem = MIItem.WRENCH;
             } else {

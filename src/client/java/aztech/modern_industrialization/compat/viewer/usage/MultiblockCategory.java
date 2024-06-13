@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -51,7 +50,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     private static final int W = SLOTS * 20 - 2 + 2 * MARGIN;
 
     protected MultiblockCategory() {
-        super(Recipe.class, new MIIdentifier("multiblock_shapes"), MIText.MultiblockMaterials.text(), MIItem.WRENCH.stack(), W, H);
+        super(Recipe.class, MI.id("multiblock_shapes"), MIText.MultiblockMaterials.text(), MIItem.WRENCH.stack(), W, H);
     }
 
     @Override
@@ -86,7 +85,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         public final List<ItemStack> materials = new ArrayList<>();
 
         public Recipe(String controller, ShapeTemplate shapeTemplate) {
-            this.controller = BuiltInRegistries.ITEM.get(new MIIdentifier(controller)).getDefaultInstance();
+            this.controller = BuiltInRegistries.ITEM.get(MI.id(controller)).getDefaultInstance();
             this.materials.add(this.controller);
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 

@@ -26,15 +26,14 @@ package aztech.modern_industrialization.blocks;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,14 +63,7 @@ public class OreBlock extends Block {
     }
 
     @Override
-    protected void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean bl) {
-        super.spawnAfterBreak(state, world, pos, stack, bl);
-        if (bl && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
-            int i = this.params.xpDropped.sample(world.random);
-            if (i > 0) {
-                this.popExperience(world, pos, i);
-            }
-        }
-
+    public int getExpDrop(BlockState state, LevelReader level, RandomSource randomSource, BlockPos pos) {
+        return this.params.xpDropped.sample(randomSource);
     }
 }

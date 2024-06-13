@@ -23,20 +23,20 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponents {
-    public static final ResourceLocation AUTO_EXTRACT = new MIIdentifier("auto_extract");
-    public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
-    public static final ResourceLocation ENERGY_BAR = new MIIdentifier("energy_bar");
-    public static final ResourceLocation LARGE_TANK_FLUID_DISPLAY = new MIIdentifier("large_tank_fluid_display");
-    public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
-    public static final ResourceLocation NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
-    public static final ResourceLocation PROGRESS_BAR = new MIIdentifier("progress_bar");
-    public static final ResourceLocation RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
-    public static final ResourceLocation REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
-    public static final ResourceLocation SHAPE_SELECTION = new MIIdentifier("shape_selection");
-    public static final ResourceLocation SLOT_PANEL = new MIIdentifier("slot_panel");
-    public static final ResourceLocation TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
+    public static final ResourceLocation AUTO_EXTRACT = MI.id("auto_extract");
+    public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = MI.id("crafting_multiblock_gui");
+    public static final ResourceLocation ENERGY_BAR = MI.id("energy_bar");
+    public static final ResourceLocation LARGE_TANK_FLUID_DISPLAY = MI.id("large_tank_fluid_display");
+    public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = MI.id("gunpowder_overclock_gui");
+    public static final ResourceLocation NUCLEAR_REACTOR_GUI = MI.id("nuclear_reactor_gui");
+    public static final ResourceLocation PROGRESS_BAR = MI.id("progress_bar");
+    public static final ResourceLocation RECIPE_EFFICIENCY_BAR = MI.id("recipe_efficiency_bar");
+    public static final ResourceLocation REI_SLOT_LOCKING = MI.id("rei_slot_locking");
+    public static final ResourceLocation SHAPE_SELECTION = MI.id("shape_selection");
+    public static final ResourceLocation SLOT_PANEL = MI.id("slot_panel");
+    public static final ResourceLocation TEMPERATURE_BAR = MI.id("temperature_bar");
 }

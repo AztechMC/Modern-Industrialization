@@ -74,7 +74,7 @@ public class MI {
     public static final Logger LOGGER = LoggerFactory.getLogger("Modern Industrialization");
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
     public MI(IEventBus modBus) {

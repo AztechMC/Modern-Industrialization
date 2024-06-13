@@ -42,7 +42,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ManualPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = new MIIdentifier("manual");
+    private static final ResourceLocation ID = MI.id("manual");
 
     private IJeiRuntime jeiRuntime;
 

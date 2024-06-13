@@ -148,7 +148,7 @@ public class OverclockComponent implements IComponent {
     }
 
     public static List<Catalyst> getDefaultCatalysts() {
-        return List.of(new OverclockComponent.Catalyst(2D, new ResourceLocation("minecraft:gunpowder"), 120 * 20));
+        return List.of(new OverclockComponent.Catalyst(2D, ResourceLocation.parse("minecraft:gunpowder"), 120 * 20));
     }
 
     public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {

@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import dev.technici4n.grandpower.api.DelegatingEnergyStorage;
 import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import dev.technici4n.grandpower.api.LimitingEnergyStorage;
@@ -38,9 +38,9 @@ import org.jetbrains.annotations.ApiStatus;
 
 public class EnergyApi {
     public static final BlockCapability<MIEnergyStorage, Direction> SIDED = BlockCapability
-            .createSided(new MIIdentifier("sided_mi_energy_storage"), MIEnergyStorage.class);
+            .createSided(MI.id("sided_mi_energy_storage"), MIEnergyStorage.class);
     public static final ItemCapability<ILongEnergyStorage, Void> ITEM = ItemCapability
-            .createVoid(new MIIdentifier("energy_storage"), ILongEnergyStorage.class);
+            .createVoid(MI.id("energy_storage"), ILongEnergyStorage.class);
 
     private static final ThreadLocal<Boolean> IN_COMPAT = ThreadLocal.withInitial(() -> false);
 

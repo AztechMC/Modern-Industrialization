@@ -254,7 +254,7 @@ public final class MIItem {
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
-            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(new ResourceLocation("minecraft:item/handheld")));
+            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(ResourceLocation.parse("minecraft:item/handheld")));
         }, sortOrder);
     }
 

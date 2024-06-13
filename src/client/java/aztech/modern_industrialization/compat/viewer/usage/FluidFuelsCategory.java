@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.viewer.usage;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
@@ -40,7 +39,7 @@ import net.minecraft.world.level.material.Fluid;
 
 public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     public FluidFuelsCategory() {
-        super(Fluid.class, new MIIdentifier("fluid_fuels"), MIText.FluidFuels.text(), MIFluids.DIESEL.getBucket().getDefaultInstance(), 150, 35);
+        super(Fluid.class, MI.id("fluid_fuels"), MIText.FluidFuels.text(), MIFluids.DIESEL.getBucket().getDefaultInstance(), 150, 35);
     }
 
     @Override

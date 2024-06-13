@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -53,7 +52,7 @@ public class TemperatureBarClient implements GuiComponentClient {
 
     public class Renderer implements ClientComponentRenderer {
 
-        private final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+        private final MIIdentifier TEXTURE = MI.id("textures/gui/efficiency_bar.png");
         private final int WIDTH = 100, HEIGHT = 2;
 
         @Override

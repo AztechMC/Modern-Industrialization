@@ -80,12 +80,12 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     public T addItemInput(String maybeTag, int amount, float probability) {
         Ingredient ing;
         if (maybeTag.startsWith("#")) {
-            ing = Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))));
+            ing = Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))));
         } else {
-            if (!BuiltInRegistries.ITEM.containsKey(new ResourceLocation(maybeTag))) {
+            if (!BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(maybeTag))) {
                 throw new RuntimeException("Could not find item " + maybeTag);
             }
-            ing = Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag)));
+            ing = Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
         }
         return addItemInput(ing, amount, probability);
     }
@@ -101,7 +101,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
 
     public T addItemOutput(String itemId, int amount, float probability) {
         recipe.itemOutputs
-                .add(new MachineRecipe.ItemOutput(ItemVariant.of(BuiltInRegistries.ITEM.get(new ResourceLocation(itemId))), amount, probability));
+                .add(new MachineRecipe.ItemOutput(ItemVariant.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId))), amount, probability));
         return (T) this;
     }
 
@@ -122,7 +122,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidInput(String fluid, int amount, float probability) {
-        recipe.fluidInputs.add(new MachineRecipe.FluidInput(BuiltInRegistries.FLUID.get(new ResourceLocation(fluid)), amount, probability));
+        recipe.fluidInputs.add(new MachineRecipe.FluidInput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability));
         return (T) this;
     }
 
@@ -155,7 +155,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidOutput(String fluid, int amount, float probability) {
-        recipe.fluidOutputs.add(new MachineRecipe.FluidOutput(BuiltInRegistries.FLUID.get(new ResourceLocation(fluid)), amount, probability));
+        recipe.fluidOutputs.add(new MachineRecipe.FluidOutput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability));
         return (T) this;
     }
 
@@ -172,8 +172,8 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
                 MIMachineRecipeTypes.ASSEMBLER,
                 8, 200, 1,
                 recipe.result,
-                recipe.pattern.data().get().pattern().toArray(String[]::new),
-                recipe.pattern.data().get().key());
+                recipe.pattern.data.get().pattern().toArray(String[]::new),
+                recipe.pattern.data.get().key());
     }
 
     public static MIRecipeJson<?> fromShaped(

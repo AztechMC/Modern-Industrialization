@@ -102,7 +102,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
             return false;
         }
 
-        var item = BuiltInRegistries.ITEM.get(new MIIdentifier(blockId));
+        var item = BuiltInRegistries.ITEM.get(MI.id(blockId));
         return lookup.getItemStack().anyMatch(is -> is.is(item));
     }
 }

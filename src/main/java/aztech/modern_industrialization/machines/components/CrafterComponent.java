@@ -404,7 +404,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
-        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new ResourceLocation(tag.getString("activeRecipe")) : null;
+        this.delayedActiveRecipe = tag.contains("activeRecipe") ? ResourceLocation.parse(tag.getString("activeRecipe")) : null;
         if (delayedActiveRecipe == null && usedEnergy > 0) {
             usedEnergy = 0;
             MI.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
@@ -70,7 +70,7 @@ public class ReiMachineRecipes {
     public static void registerRecipeCategoryForMachine(String machine, String category,
             MachineScreenPredicate screenPredicate) {
         machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
-                .add(new ClickAreaCategory(new MIIdentifier(category), screenPredicate));
+                .add(new ClickAreaCategory(MI.id(category), screenPredicate));
     }
 
     public static void registerMachineClickArea(String machine, Rectangle clickArea) {

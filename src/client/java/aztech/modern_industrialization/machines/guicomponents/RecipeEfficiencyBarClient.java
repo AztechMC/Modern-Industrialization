@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -70,7 +69,7 @@ public class RecipeEfficiencyBarClient implements GuiComponentClient {
         return new Renderer();
     }
 
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
     private static final int WIDTH = 100, HEIGHT = 2;
 
     public class Renderer implements ClientComponentRenderer {

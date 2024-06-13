@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.loot;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import java.util.Set;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -33,8 +34,8 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 
 public class BlockLootTableProvider extends BlockLootSubProvider {
-    public BlockLootTableProvider() {
-        super(Set.of(), FeatureFlags.VANILLA_SET);
+    public BlockLootTableProvider(HolderLookup.Provider registries) {
+        super(Set.of(), FeatureFlags.VANILLA_SET, registries);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
             if (blockDefinition.blockLoot instanceof MIBlockLoot.DropSelf) {
                 dropSelf(block);
             } else if (blockDefinition.blockLoot instanceof MIBlockLoot.Ore ore) {
-                add(block, createOreDrop(block, BuiltInRegistries.ITEM.get(new ResourceLocation(ore.loot()))));
+                add(block, createOreDrop(block, BuiltInRegistries.ITEM.get(ResourceLocation.parse(ore.loot()))));
             }
         }
     }

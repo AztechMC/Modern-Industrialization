@@ -26,7 +26,7 @@ package aztech.modern_industrialization.compat.ae2;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.parts.PartModel;
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +43,7 @@ public class P2PModels {
     private final IPartModel modelsHasChannel;
 
     public P2PModels(String frontModelPath) {
-        ResourceLocation frontModel = new MIIdentifier(frontModelPath);
+        ResourceLocation frontModel = MI.id(frontModelPath);
 
         this.modelsOff = new PartModel(MODEL_STATUS_OFF, MODEL_FREQUENCY, frontModel);
         this.modelsOn = new PartModel(MODEL_STATUS_ON, MODEL_FREQUENCY, frontModel);

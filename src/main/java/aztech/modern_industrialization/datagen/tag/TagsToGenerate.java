@@ -37,7 +37,7 @@ public class TagsToGenerate {
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
 
     private static void addTranslation(String tag, String tagEnglishName) {
-        var tagId = new ResourceLocation(tag);
+        var tagId = ResourceLocation.parse(tag);
         tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 

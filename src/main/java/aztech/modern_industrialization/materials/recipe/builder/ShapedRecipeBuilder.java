@@ -99,8 +99,8 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
                 throw new IllegalArgumentException("Key mapping is already registered: " + key);
             }
             Ingredient ingredient = maybeTag.startsWith("#")
-                    ? Ingredient.of(ItemTags.create(new ResourceLocation(maybeTag.substring(1))))
-                    : Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation(maybeTag)));
+                    ? Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))))
+                    : Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
             inputs.put(key, ingredient);
         }
         return this;

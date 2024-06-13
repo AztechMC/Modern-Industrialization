@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
@@ -46,7 +45,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/fluid.png");
 
     public FluidPipeScreen(FluidPipeScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);

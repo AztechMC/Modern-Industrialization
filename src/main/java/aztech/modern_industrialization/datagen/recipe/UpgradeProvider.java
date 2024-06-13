@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapelessRecipeBuilder;
@@ -51,11 +51,11 @@ public class UpgradeProvider extends MIRecipesProvider {
     private static final Set<String> STEEL_NO_UNPACKER = Set.of("furnace", "boiler");
 
     private void buildSteelUpgrades(RecipeOutput consumer) {
-        Item upgrade = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_upgrade"));
+        Item upgrade = BuiltInRegistries.ITEM.get(MI.id("steel_upgrade"));
 
         for (String machine : STEEL_UPGRADE_MACHINES) {
-            Item bronze = BuiltInRegistries.ITEM.get(new MIIdentifier("bronze_" + machine));
-            Item steel = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_" + machine));
+            Item bronze = BuiltInRegistries.ITEM.get(MI.id("bronze_" + machine));
+            Item steel = BuiltInRegistries.ITEM.get(MI.id("steel_" + machine));
 
             var recipe = ShapelessRecipeBuilder.shapeless(steel)
                     .requires(bronze)

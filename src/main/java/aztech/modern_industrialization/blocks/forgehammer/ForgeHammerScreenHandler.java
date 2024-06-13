@@ -28,6 +28,7 @@ import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -266,8 +267,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {
-                tool.getItem().hurtAndBreak(current.value().hammerDamage(), world.getRandom(), (ServerPlayer) this.player,
-                        () -> tool.set(ItemStack.EMPTY));
+                tool.getItem().hurtAndBreak(current.value().hammerDamage(), (ServerLevel) world, (ServerPlayer) this.player,
+                        item -> tool.set(ItemStack.EMPTY));
             }
             if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {
                 tool.set(ItemStack.EMPTY);

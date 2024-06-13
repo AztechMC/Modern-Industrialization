@@ -25,8 +25,8 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MAIN_PART;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
@@ -127,7 +127,7 @@ public class OrePart implements PartKeyProvider {
                     TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
 
                     if (oreParams.generate) {
-                        ResourceLocation oreGenId = new MIIdentifier(
+                        ResourceLocation oreGenId = MI.id(
                                 (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
 
                         var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);

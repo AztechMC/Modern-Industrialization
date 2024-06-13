@@ -25,7 +25,6 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
 import java.util.concurrent.CompletableFuture;
@@ -55,6 +54,6 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
         // Have no idea why there is such a tag but go add it
-        tag(Tags.Blocks.ORES_QUARTZ).add(BuiltInRegistries.BLOCK.get(new MIIdentifier("quartz_ore")));
+        tag(Tags.Blocks.ORES_QUARTZ).add(BuiltInRegistries.BLOCK.get(MI.id("quartz_ore")));
     }
 }

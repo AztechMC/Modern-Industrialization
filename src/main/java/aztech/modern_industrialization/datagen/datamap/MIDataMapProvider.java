@@ -59,7 +59,7 @@ public class MIDataMapProvider extends DataMapProvider {
         addFuel("coke_block", 6400 * 9);
         addFuel("coal_crushed_dust", 1600);
         builder(NeoForgeDataMaps.FURNACE_FUELS)
-                .add(ItemTags.create(new ResourceLocation("c:dusts/coal")), new FurnaceFuel(1600), false);
+                .add(ItemTags.create(ResourceLocation.parse("c:dusts/coal")), new FurnaceFuel(1600), false);
         addFuel("coal_tiny_dust", 160);
         addFuel("lignite_coal", 1600);
         addFuel("lignite_coal_block", 16000);

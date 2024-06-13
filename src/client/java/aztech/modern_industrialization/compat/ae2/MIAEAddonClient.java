@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.ae2;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.impl.PipeMeshCache;
@@ -39,15 +38,15 @@ public class MIAEAddonClient {
     private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
         @Override
         public Collection<Material> getSpriteDependencies() {
-            return List.of(new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/me_blocks")));
+            return List.of(new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
+                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks")));
         }
 
         @Override
         public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
             return new PipeMeshCache(textureGetter, new Material[] {
-                    new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/me_blocks"))
+                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
+                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks"))
             }, false);
         }
     };

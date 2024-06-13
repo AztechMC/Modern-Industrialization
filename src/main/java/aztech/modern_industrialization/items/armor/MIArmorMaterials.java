@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +69,7 @@ public final class MIArmorMaterials {
             }),
             10,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> Ingredient.of(BuiltInRegistries.ITEM.get(new MIIdentifier("rubber_sheet"))),
+            () -> Ingredient.of(BuiltInRegistries.ITEM.get(MI.id("rubber_sheet"))),
             List.of(new ArmorMaterial.Layer(location)),
             0,
             0));

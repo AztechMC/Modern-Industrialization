@@ -73,7 +73,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.key = readVariantFromNbt(tag.getCompound("key"), registries);
         this.amount = tag.getLong("amount");
         if (tag.contains("locked")) {
-            this.lockedInstance = getRegistry().get(new ResourceLocation(tag.getString("locked")));
+            this.lockedInstance = getRegistry().get(ResourceLocation.parse(tag.getString("locked")));
         }
         this.machineLocked = tag.getBoolean("machineLocked");
         this.playerLocked = tag.getBoolean("playerLocked");

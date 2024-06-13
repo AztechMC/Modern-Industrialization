@@ -37,6 +37,9 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -395,22 +398,22 @@ public class SteamDrillItem
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        return getAllEnchantments(stack).getLevel(enchantment);
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+        return getAllEnchantments(stack, enchantment.unwrapLookup()).getLevel(enchantment);
     }
 
     @Override
-    public ItemEnchantments getAllEnchantments(ItemStack stack) {
+    public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
         var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (!isNotSilkTouch(stack)) {
-            map.set(Enchantments.SILK_TOUCH, 1);
+            lookup.get(Enchantments.SILK_TOUCH).ifPresent(h -> map.set(h, 1));
         }
         return map.toImmutable();
     }
 
     @Override
     public boolean isFoil(ItemStack pStack) {
-        return !getAllEnchantments(pStack).isEmpty();
+        return !isNotSilkTouch(pStack);
     }
 
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
@@ -480,8 +483,8 @@ public class SteamDrillItem
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
 
-        if (!isNotSilkTouch(stack)) {
-            tooltip.add(Enchantments.SILK_TOUCH.getFullname(1));
+        for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
+            tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
         }
     }
 

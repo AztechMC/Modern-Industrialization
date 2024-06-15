@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;

@@ -39,7 +39,7 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 public class DelegatingUnbakedModel implements IUnbakedGeometry<DelegatingUnbakedModel> {
     public static final IGeometryLoader<DelegatingUnbakedModel> LOADER = (object, context) -> {
         var loc = GsonHelper.getAsString(object, "delegate");
-        return new DelegatingUnbakedModel(new ResourceLocation(loc));
+        return new DelegatingUnbakedModel(ResourceLocation.parse(loc));
     };
 
     private final ResourceLocation delegate;
@@ -50,7 +50,7 @@ public class DelegatingUnbakedModel implements IUnbakedGeometry<DelegatingUnbake
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+            ModelState modelState, ItemOverrides overrides) {
         return baker.bake(delegate, modelState, spriteGetter);
     }
 }

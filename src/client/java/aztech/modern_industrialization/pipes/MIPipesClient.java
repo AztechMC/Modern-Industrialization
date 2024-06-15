@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;

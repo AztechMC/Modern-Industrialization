@@ -71,7 +71,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+            ModelState modelState, ItemOverrides overrides) {
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
         var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {

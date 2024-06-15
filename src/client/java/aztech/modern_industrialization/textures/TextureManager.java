@@ -57,11 +57,11 @@ public class TextureManager {
     }
 
     public boolean hasAsset(String asset) {
-        return rm.getResource(new ResourceLocation(asset)).isPresent();
+        return rm.getResource(ResourceLocation.parse(asset)).isPresent();
     }
 
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
-        var resource = rm.getResource(new ResourceLocation(textureId));
+        var resource = rm.getResource(ResourceLocation.parse(textureId));
         if (resource.isPresent()) {
             try (var stream = resource.get().open()) {
                 return NativeImage.read(stream);
@@ -87,7 +87,7 @@ public class TextureManager {
         }
 
         String overrideId = textureId.replace(":textures/", ":datagen_texture_overrides/");
-        Optional<Resource> overrideResource = rm.getResource(new ResourceLocation(overrideId));
+        Optional<Resource> overrideResource = rm.getResource(ResourceLocation.parse(overrideId));
 
         if (overrideResource.isPresent()) {
             // Copy the override over
@@ -125,7 +125,7 @@ public class TextureManager {
 
     public void markTexturesAsGenerated(ExistingFileHelper helper) {
         for (var texture : generatedTextures) {
-            helper.trackGenerated(new ResourceLocation(texture), PackType.CLIENT_RESOURCES, "", "textures");
+            helper.trackGenerated(ResourceLocation.parse(texture), PackType.CLIENT_RESOURCES, "", "textures");
         }
     }
 }

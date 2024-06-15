@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -35,7 +36,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
 public class HudRenderer {
-    public static void onRenderHud(GuiGraphics guiGraphics, float delta) {
+    public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);

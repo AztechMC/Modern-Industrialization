@@ -36,9 +36,9 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,8 +56,8 @@ public class MachineBakedModel implements IDynamicBakedModel {
 
     public static final String CASING_FOLDER = "machine_casing";
 
-    public static ResourceLocation getCasingModelId(MachineCasing casing) {
-        return MI.id(CASING_FOLDER + "/" + casing.name);
+    public static ModelResourceLocation getCasingModelId(MachineCasing casing) {
+        return ModelResourceLocation.standalone(MI.id(CASING_FOLDER + "/" + casing.name));
     }
 
     public static BakedModel getCasingModel(MachineCasing casing) {
@@ -133,7 +133,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
         var sprites = getSprites(casing);
 
         List<BakedQuad> quads = new ArrayList<>();
-        var vc = new QuadBakingVertexConsumer(quads::add);
+        var vc = new QuadBakingVertexConsumer();
 
         if (side != null) {
             // Casing
@@ -141,18 +141,18 @@ public class MachineBakedModel implements IDynamicBakedModel {
             // Machine overlays
             TextureAtlasSprite sprite = getSprite(sprites, side, data.frontDirection, false);
             if (sprite != null) {
-                ModelHelper.emitSprite(vc, side, sprite, -Z_OFFSET);
+                quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
             }
         }
 
         // Output overlays
         if (data.outputDirection != null && side == data.outputDirection) {
-            ModelHelper.emitSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET);
+            quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET));
             if (data.itemAutoExtract) {
-                ModelHelper.emitSprite(vc, data.outputDirection, sprites[25], -3 * Z_OFFSET);
+                quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[25], -3 * Z_OFFSET));
             }
             if (data.fluidAutoExtract) {
-                ModelHelper.emitSprite(vc, data.outputDirection, sprites[26], -3 * Z_OFFSET);
+                quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[26], -3 * Z_OFFSET));
             }
         }
 

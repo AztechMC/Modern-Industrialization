@@ -99,6 +99,6 @@ public class MachineOverlayClient {
         Vec3 coord = GeometryHelper.toWorldCoords(new Vec3(faceX, faceY, 0), face);
         // assume normal is not useful, it was added in 1.17 but the shader doesn't seem
         // to use it.
-        lines.vertex(model, (float) coord.x, (float) coord.y, (float) coord.z).color(0f, 0f, 0f, 0.4f).normal(0, 0, 0).endVertex();
+        lines.addVertex(model, (float) coord.x, (float) coord.y, (float) coord.z).setColor(0f, 0f, 0f, 0.4f).setNormal(0, 0, 0);
     }
 }

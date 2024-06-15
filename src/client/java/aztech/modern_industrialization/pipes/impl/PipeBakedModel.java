@@ -226,7 +226,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
-    private static final int QUAD_STRIDE = DefaultVertexFormat.BLOCK.getIntegerSize();
+    private static final int QUAD_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
     private static final int VERTEX_COLOR = 3;
 
     private static int getColor(int[] quadData, int vertex) {

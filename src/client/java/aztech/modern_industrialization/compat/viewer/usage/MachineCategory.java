@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;

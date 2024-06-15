@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MIText;

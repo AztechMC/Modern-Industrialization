@@ -63,7 +63,7 @@ class PartTextureGenerator {
         this.mtm = mtm;
         this.material = material;
         this.materialName = material.name;
-        this.itemPath = new ResourceLocation(part.getItemId()).getPath();
+        this.itemPath = ResourceLocation.parse(part.getItemId()).getPath();
     }
 
     private void build(MaterialItemPart part) throws IOException {

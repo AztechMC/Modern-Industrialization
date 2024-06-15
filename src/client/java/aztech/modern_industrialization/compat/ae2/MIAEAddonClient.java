@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.ae2;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.impl.PipeMeshCache;

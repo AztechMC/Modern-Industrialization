@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class DeferredBarrelTextRenderer {
     }
 
     private static final List<Entry> barrelsToRender = new ArrayList<>();
-    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new BufferBuilder(128));
+    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(DeferredBarrelTextRenderer::render);

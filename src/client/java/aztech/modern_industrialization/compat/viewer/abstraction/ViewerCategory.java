@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.abstraction;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Rectangle;

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MI;
 import com.google.gson.JsonSyntaxException;
+import java.util.Objects;
 import java.util.function.Function;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -32,6 +33,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -46,14 +48,14 @@ public class UseBlockModelUnbakedModel implements IUnbakedGeometry<UseBlockModel
     public static final IGeometryLoader<UseBlockModelUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
 
         var blockId = GsonHelper.getAsString(jsonObject, "block");
-        var block = BuiltInRegistries.BLOCK.getOptional(new ResourceLocation(blockId))
+        var block = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(blockId))
                 .orElseThrow(() -> new JsonSyntaxException("Expected \"block\" to be a block, was unknown string " + blockId));
 
         return new UseBlockModelUnbakedModel(block.defaultBlockState());
     };
 
     private final BlockState targetState;
-    private final ResourceLocation delegate;
+    private final ModelResourceLocation delegate;
 
     private UseBlockModelUnbakedModel(BlockState targetState) {
         this.targetState = targetState;
@@ -62,7 +64,8 @@ public class UseBlockModelUnbakedModel implements IUnbakedGeometry<UseBlockModel
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-        return new UseBlockModelBakedModel(targetState, baker.bake(delegate, modelState, spriteGetter));
+            ModelState modelState, ItemOverrides overrides) {
+        var delegateModel = Objects.requireNonNull(baker.getTopLevelModel(delegate));
+        return new UseBlockModelBakedModel(targetState, baker.bakeUncached(delegateModel, modelState, spriteGetter));
     }
 }

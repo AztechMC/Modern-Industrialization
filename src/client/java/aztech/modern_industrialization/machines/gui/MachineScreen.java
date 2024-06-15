@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;

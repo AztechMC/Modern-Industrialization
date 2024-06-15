@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;

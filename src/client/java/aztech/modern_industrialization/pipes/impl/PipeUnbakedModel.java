@@ -52,11 +52,11 @@ public class PipeUnbakedModel implements IUnbakedGeometry<PipeUnbakedModel> {
 
     private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
     private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
-            new ResourceLocation("minecraft:block/iron_block"));
+            ResourceLocation.parse("minecraft:block/iron_block"));
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+            ModelState modelState, ItemOverrides overrides) {
         Map<PipeRenderer.Factory, PipeRenderer> renderers = new IdentityHashMap<>();
         for (PipeRenderer.Factory rendererFactory : MIPipesClient.RENDERERS) {
             renderers.put(rendererFactory, rendererFactory.create(spriteGetter));

@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '0.1.74'
+    id 'net.neoforged.moddev' version '0.1.82'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -179,6 +179,9 @@ neoForge {
     mods {
         modern_industrialization {
             sourceSet sourceSets.main
+        }
+        modern_industrialization_with_client {
+            sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
     }
@@ -186,6 +189,8 @@ neoForge {
     runs {
         // applies to all the run configs below
         configureEach {
+            mods = [neoForge.mods.modern_industrialization]
+
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -201,6 +206,8 @@ neoForge {
 
         client {
             client()
+            sourceSet = sourceSets.client
+            mods = [neoForge.mods.modern_industrialization_with_client]
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
@@ -221,6 +228,8 @@ neoForge {
 
         data {
             data()
+            sourceSet = sourceSets.client
+            mods = [neoForge.mods.modern_industrialization_with_client]
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // workingDirectory project.file('run-data')
 
@@ -264,8 +273,8 @@ dependencies {
     }
 
     compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-    runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+//    runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+//    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
     implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
 
@@ -275,7 +284,7 @@ dependencies {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    compileOnly "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
     compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 
@@ -441,7 +450,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.20.6"
+            addGameVersion "1.21"
             addGameVersion "NeoForge"
             addGameVersion "Java 21"
 
@@ -475,7 +484,7 @@ modrinth {
     delegate.changelog = changelog
     versionType = releaseChannel
     uploadFile = tasks.jar
-    gameVersions = ["1.20.6"]
+    gameVersions = ["1.21"]
     loaders = ["neoforge"]
     dependencies {
         required.project "cloth-config"

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -30,6 +31,7 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBarClient implements GuiComponentClient {
     public final TemperatureBar.Parameters params;
@@ -52,7 +54,7 @@ public class TemperatureBarClient implements GuiComponentClient {
 
     public class Renderer implements ClientComponentRenderer {
 
-        private final MIIdentifier TEXTURE = MI.id("textures/gui/efficiency_bar.png");
+        private final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
         private final int WIDTH = 100, HEIGHT = 2;
 
         @Override

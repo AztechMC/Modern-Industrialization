@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '0.1.82'
+    id 'net.neoforged.moddev' version '0.1.90'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -244,28 +244,30 @@ neoForge {
     }
 }
 
+configurations {
+    localRuntimeOnly
+    runtimeClasspath.extendsFrom localRuntimeOnly
+}
+
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
 
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
-        implementation "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
-    } else {
-        compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }
 
-    if (project.runtime_itemlist_mod == "rei") {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else {
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    }
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:REIPluginCompatibilities-forge-annotations:${project.rei_annotations_version}"
+    if (project.runtime_itemlist_mod == "rei") {
+        localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    }
 
+    compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
     if (project.runtime_itemlist_mod == "emi") {
-        implementation "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+        localRuntimeOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
         // Add JEI so that we can use EMI's builtin compat layer
-        runtimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
-    } else {
-        compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }
 
     if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "none"])) {
@@ -273,18 +275,18 @@ dependencies {
     }
 
     compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-//    runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+//    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 //    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
-    implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-    compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
+    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    compileOnly "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    localRuntimeOnly compileOnly("appeng:appliedenergistics2-neoforge:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
     compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 

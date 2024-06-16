@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:steel_large_plate",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:rail",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:minecart",
+      "amount": 1
+    }
+  ]
+}

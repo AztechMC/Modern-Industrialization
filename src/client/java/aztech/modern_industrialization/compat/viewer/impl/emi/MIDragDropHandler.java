@@ -43,6 +43,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 class MIDragDropHandler implements EmiDragDropHandler<Screen> {
@@ -55,7 +56,9 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         // Note: might provide peculiar behavior for tags. Checking for size == 1 is an option
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
-        FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
+        FluidVariant fk = stack.getKey() instanceof Fluid f
+                ? FluidVariant.of(new FluidStack(f.builtInRegistryHolder(), 1, stack.getComponentChanges()))
+                : null;
         ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         @Nullable
         GuiEventListener element = gui.getChildAt(mouseX, mouseY).orElse(null);
@@ -92,7 +95,9 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
         List<Rect2i> bounds = new ArrayList<>();
         EmiStack stack = ingredient.getEmiStacks().get(0);
 
-        FluidVariant fk = stack.getKey() instanceof Fluid f ? FluidVariant.of(f, stack.getNbt()) : null;
+        FluidVariant fk = stack.getKey() instanceof Fluid f
+                ? FluidVariant.of(new FluidStack(f.builtInRegistryHolder(), 1, stack.getComponentChanges()))
+                : null;
         ItemVariant ik = stack.getKey() instanceof Item ? ItemVariant.of(stack.getItemStack()) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {

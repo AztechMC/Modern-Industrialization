@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.gui.MachineScreen;

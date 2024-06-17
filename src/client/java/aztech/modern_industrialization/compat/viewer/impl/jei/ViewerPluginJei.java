@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.viewer.usage.ViewerSetup;
 import java.util.ArrayList;
 import java.util.List;

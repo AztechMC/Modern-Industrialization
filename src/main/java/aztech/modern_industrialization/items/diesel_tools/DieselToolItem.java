@@ -131,8 +131,10 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
 
-        for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
-            tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+        if (context.registries() != null) {
+            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
+                tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+            }
         }
     }
 

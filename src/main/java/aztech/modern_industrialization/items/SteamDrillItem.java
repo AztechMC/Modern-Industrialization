@@ -483,8 +483,10 @@ public class SteamDrillItem
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
 
-        for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
-            tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+        if (context.registries() != null) {
+            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
+                tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+            }
         }
     }
 

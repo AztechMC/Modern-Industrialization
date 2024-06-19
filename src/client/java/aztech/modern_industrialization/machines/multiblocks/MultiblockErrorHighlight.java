@@ -57,6 +57,8 @@ public class MultiblockErrorHighlight {
         if (highlightQueue.size() > 0) {
             RenderSystem.clear(256, Minecraft.ON_OSX);
             var poseStack = event.getPoseStack();
+            poseStack.pushPose();
+            poseStack.mulPose(event.getModelViewMatrix());
             for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
                 poseStack.pushPose();
                 Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -77,6 +79,7 @@ public class MultiblockErrorHighlight {
 
                 poseStack.popPose();
             }
+            poseStack.popPose();
             immediate.endBatch();
             highlightQueue.clear();
         }

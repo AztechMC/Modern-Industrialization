@@ -421,7 +421,7 @@ public class SteamDrillItem
         return Optional.of(new SteamDrillTooltipData(
                 stack.getOrDefault(MIComponents.WATER, 0) * 100 / FULL_WATER,
                 fuel.burnTicks(),
-                Math.min(1, fuel.maxBurnTicks()),
+                Math.max(1, fuel.maxBurnTicks()),
                 getResource(stack),
                 getAmount(stack)));
     }

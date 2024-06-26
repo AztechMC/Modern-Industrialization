@@ -97,7 +97,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
         // Have no idea why there is such a tag but go add it
         tag(Tags.Items.ORES_QUARTZ).add(BuiltInRegistries.ITEM.get(MI.id("quartz_ore")));
 
-        tag(Tags.Items.TOOLS_SHEARS).add(MIItem.DIESEL_CHAINSAW.asItem());
+        tag(Tags.Items.TOOLS_SHEAR).add(MIItem.DIESEL_CHAINSAW.asItem());
         tag(MITags.WRENCHES).add(MIItem.WRENCH.asItem());
         tag(ItemTags.AXES).add(MIItem.DIESEL_CHAINSAW.asItem());
         tag(ItemTags.HOES).add(MIItem.DIESEL_CHAINSAW.asItem());

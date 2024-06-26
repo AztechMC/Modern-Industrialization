@@ -59,7 +59,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
         try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new PathPackResources(
                 new PackLocationInfo("ngr", Component.literal("ngr"), PackSource.DEFAULT, Optional.empty()),
                 nonGeneratedResources)))) {
-            var possibleTargets = manager.listResources("recipes", path -> path.getPath().endsWith(".json"));
+            var possibleTargets = manager.listResources("recipe", path -> path.getPath().endsWith(".json"));
             for (var entry : possibleTargets.entrySet()) {
                 var pathId = entry.getKey();
                 if (shouldConvertToAssembler(pathId)) {
@@ -93,7 +93,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
 
         var shapedRecipe = parsedRecipe.getOrThrow(m -> new RuntimeException("Failed to parse shaped recipe " + recipeId + ": " + m));
 
-        String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - "_asbl.json".length());
+        String outputSuffix = recipeId.getPath().substring("recipe/".length(), recipeId.getPath().length() - "_asbl.json".length());
         new MachineRecipeBuilder(MIRecipeJson.assemblerFromShaped(shapedRecipe))
                 .offerTo(consumer, "assembler_generated/" + outputSuffix);
     }

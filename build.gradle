@@ -280,13 +280,13 @@ dependencies {
 
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    localRuntimeOnly compileOnly("appeng:appliedenergistics2-neoforge:${project.ae2_version}")
+    localRuntimeOnly compileOnly("appeng:appliedenergistics2:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
     compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 

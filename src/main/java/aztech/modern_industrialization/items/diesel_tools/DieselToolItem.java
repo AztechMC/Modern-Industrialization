@@ -120,7 +120,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
             return ItemHelper.getToolModifiers(damage * FluidFuel.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
         }
@@ -293,7 +293,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         int costMb = (int) (defaultMb / speedMultiplier);
 
         if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
-            if (stack.is(Tags.Items.TOOLS_SHEARS) && interactionTarget instanceof Shearable shearable) {
+            if (stack.is(Tags.Items.TOOLS_SHEAR) && interactionTarget instanceof Shearable shearable) {
                 if (!interactionTarget.level().isClientSide && shearable.readyForShearing()) {
                     shearable.shear(SoundSource.PLAYERS);
                     interactionTarget.gameEvent(GameEvent.SHEAR, player);

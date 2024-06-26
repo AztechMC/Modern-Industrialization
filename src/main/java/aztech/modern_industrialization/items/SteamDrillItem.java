@@ -167,7 +167,7 @@ public class SteamDrillItem
     }
 
     @Override
-    public ItemAttributeModifiers getAttributeModifiers(ItemStack stack) {
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         if (canUse(stack)) {
             return ItemHelper.getToolModifiers(5);
         }

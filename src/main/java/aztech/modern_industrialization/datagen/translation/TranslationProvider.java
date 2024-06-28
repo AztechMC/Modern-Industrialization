@@ -38,7 +38,6 @@ import com.google.gson.JsonElement;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,12 +52,10 @@ public final class TranslationProvider implements DataProvider {
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
 
     private final PackOutput packOutput;
-    private final boolean runtimeDatagen;
     private final Map<String, String> translationPairs = new TreeMap<>();
 
-    public TranslationProvider(PackOutput packOutput, boolean runtimeDatagen) {
+    public TranslationProvider(PackOutput packOutput) {
         this.packOutput = packOutput;
-        this.runtimeDatagen = runtimeDatagen;
     }
 
     public void addTranslation(String key, String englishValue) {
@@ -147,46 +144,6 @@ public final class TranslationProvider implements DataProvider {
         collectTranslationEntries();
 
         customJsonSave(cache, GSON.toJsonTree(translationPairs), packOutput.getOutputFolder().resolve(OUTPUT_PATH));
-
-        if (runtimeDatagen) {
-            return;
-        }
-
-        // Inspect manual translations for other languages
-        Path manualTranslationsPath = packOutput.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
-        try (var paths = Files.walk(manualTranslationsPath, 1)) {
-            paths.forEach(path -> {
-                try {
-                    String lang = path.getFileName().toString();
-                    if (lang.endsWith(".json")) {
-                        lang = lang.substring(0, lang.length() - 5);
-                        @SuppressWarnings("unchecked")
-                        TreeMap<String, String> manualTranslations = GSON.fromJson(Files.readString(path), TreeMap.class);
-
-                        TreeMap<String, String> output = new TreeMap<>();
-
-                        for (var entry : translationPairs.entrySet()) {
-                            if (!manualTranslations.containsKey(entry.getKey())) {
-                                output.put(entry.getKey(), "[UNTRANSLATED] " + entry.getValue());
-                            }
-                        }
-
-                        for (var entry : manualTranslations.entrySet()) {
-                            if (translationPairs.containsKey(entry.getKey())) {
-                                output.put(entry.getKey(), entry.getValue());
-                            } else {
-                                output.put(entry.getKey(), "[UNUSED, PLEASE REMOVE] " + entry.getValue());
-                            }
-                        }
-
-                        var savePath = packOutput.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
-                        customJsonSave(cache, GSON.toJsonTree(output), savePath);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
     }
 
     private void customJsonSave(CachedOutput cache, JsonElement jsonElement, Path path) throws IOException {

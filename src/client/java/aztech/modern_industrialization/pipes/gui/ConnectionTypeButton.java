@@ -37,7 +37,7 @@ class ConnectionTypeButton extends Button {
     private final ConnectionTypeInterface connectionType;
 
     public ConnectionTypeButton(int x, int y, OnPress onPress, Supplier<List<Component>> tooltipSupplier, ConnectionTypeInterface connectionType) {
-        super(x, y, 20, 20, null, onPress, Button.DEFAULT_NARRATION);
+        super(x, y, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
         this.connectionType = connectionType;
         setTooltip(new DynamicTooltip(tooltipSupplier));
     }

@@ -330,16 +330,22 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     public class MachineButton extends Button {
-
+        private final Supplier<List<Component>> tooltipSupplier;
         final ClientComponentRenderer.CustomButtonRenderer renderer;
         final Supplier<Boolean> isPresent;
 
         private MachineButton(int x, int y, int width, int height, OnPress onPress, Supplier<List<Component>> tooltipSupplier,
                 ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isPresent) {
             super(x, y, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.tooltipSupplier = tooltipSupplier;
             this.setTooltip(new DynamicTooltip(tooltipSupplier));
             this.renderer = renderer;
             this.isPresent = isPresent;
+        }
+
+        @Override
+        public Component getMessage() {
+            return tooltipSupplier.get().getFirst();
         }
 
         @Override

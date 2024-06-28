@@ -104,9 +104,17 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     private class WhitelistButton extends Button {
+        private final Supplier<List<Component>> tooltipSupplier;
+
         public WhitelistButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, Button.DEFAULT_NARRATION);
+            super(i + 148, j + 44, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.tooltipSupplier = tooltipSupplier;
             setTooltip(new DynamicTooltip(tooltipSupplier));
+        }
+
+        @Override
+        public Component getMessage() {
+            return tooltipSupplier.get().getFirst();
         }
 
         @Override

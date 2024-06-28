@@ -393,43 +393,6 @@ spotless {
         endWithNewline()
         licenseHeaderFile 'LICENSE.java'
     }
-    format 'json', {
-        target 'src/main/**/lang/*.json'
-        addStep(JsonOrderStep.create())
-    }
-}
-
-import com.diffplug.spotless.FormatterFunc
-import com.diffplug.spotless.FormatterStep
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-
-final class JsonOrderStep {
-    private JsonOrderStep() {}
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create()
-
-    static FormatterStep create() {
-        return FormatterStep.create(
-                'jsonOrderStep',
-                new State(),
-                {
-                    new FormatterFunc() {
-                        String apply(String input) {
-                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class)
-                            String sortedJson = GSON.toJson(jsonMap)
-                            String prettyPrinted = sortedJson.replace('\\u0027', '\'')
-                            return prettyPrinted + "\n"
-                        }
-                    }
-                },
-        )
-    }
-
-    private static final class State implements Serializable {
-        private static final long serialVersionUID = 1L
-
-        private final int formatVersion = 1
-    }
 }
 
 def releaseChannel = "release"

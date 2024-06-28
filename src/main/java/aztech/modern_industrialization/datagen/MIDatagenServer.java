@@ -90,7 +90,7 @@ public class MIDatagenServer {
 
         gen.addProvider(run, new MIDataMapProvider(gen.getPackOutput(), lookupProvider));
 
-        var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
+        var translationProvider = new TranslationProvider(gen.getPackOutput());
         gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(
                 new MIAdvancementsProvider(translationProvider))));
 

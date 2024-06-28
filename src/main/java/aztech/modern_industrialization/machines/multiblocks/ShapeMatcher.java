@@ -63,13 +63,13 @@ public class ShapeMatcher implements ChunkEventListener {
     public static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
         BlockPos rotatedPos;
         if (controllerDirection == NORTH)
-            rotatedPos = templatePos;
+            rotatedPos = new BlockPos(-templatePos.getX(), templatePos.getY(), templatePos.getZ());
         else if (controllerDirection == SOUTH)
-            rotatedPos = new BlockPos(-templatePos.getX(), templatePos.getY(), -templatePos.getZ());
+            rotatedPos = new BlockPos(templatePos.getX(), templatePos.getY(), -templatePos.getZ());
         else if (controllerDirection == EAST)
-            rotatedPos = new BlockPos(-templatePos.getZ(), templatePos.getY(), templatePos.getX());
+            rotatedPos = new BlockPos(-templatePos.getZ(), templatePos.getY(), -templatePos.getX());
         else
-            rotatedPos = new BlockPos(templatePos.getZ(), templatePos.getY(), -templatePos.getX());
+            rotatedPos = new BlockPos(templatePos.getZ(), templatePos.getY(), templatePos.getX());
         return rotatedPos.offset(controllerPos);
     }
 

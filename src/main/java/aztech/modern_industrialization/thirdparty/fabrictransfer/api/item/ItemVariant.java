@@ -52,7 +52,7 @@ public interface ItemVariant extends TransferVariant<Item> {
     Codec<ItemVariant> CODEC = ExtraCodecs.optionalEmptyMap(
             ItemStack.SINGLE_ITEM_CODEC.xmap(ItemVariant::of, ItemVariant::toStack))
             .xmap(o -> o.orElse(ItemVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
-    StreamCodec<RegistryFriendlyByteBuf, ItemVariant> STREAM_CODEC = ItemStack.STREAM_CODEC.map(ItemVariant::of, ItemVariant::toStack);
+    StreamCodec<RegistryFriendlyByteBuf, ItemVariant> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(ItemVariant::of, ItemVariant::toStack);
 
     /**
      * Retrieve a blank ItemVariant.

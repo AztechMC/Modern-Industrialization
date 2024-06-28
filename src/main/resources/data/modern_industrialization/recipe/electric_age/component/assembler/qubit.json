@@ -36,7 +36,7 @@
 
     "item_outputs": [
         {
-            "item": "modern_industrialization:qbit",
+            "item": "modern_industrialization:qubit",
             "amount": 1
         }
     ]

@@ -18,7 +18,7 @@
     },
     {
       "type": "text",
-      "text": "Steel tanks store up to 8 buckets.$(br2)You can check all recipes in REI!"
+      "text": "Steel tanks store up to 16 buckets.$(br2)You can check all recipes in REI!"
     },
     {
       "type": "crafting",

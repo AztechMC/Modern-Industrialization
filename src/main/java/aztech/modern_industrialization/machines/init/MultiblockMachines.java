@@ -365,7 +365,7 @@ public class MultiblockMachines {
                 for (int y = -1; y <= 1; y++) {
                     if (z > 0 && z < 4) {
 
-                        heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings : x == 0 ? stainlessSteelPipe : frostproofMachineCasing,
+                        heatExchangerShapeBuilder.add(x, y, z, x == 1 ? invarCasings : x == 0 ? stainlessSteelPipe : frostproofMachineCasing,
                                 ((y == 1 || y == -1) && x == 0) ? energyInput : null);
                     } else {
                         if (z != 0 || x != 0 || y != 0) {

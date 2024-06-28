@@ -60,6 +60,11 @@ public class DeferredBarrelTextRenderer {
             return;
         }
 
+        var matrices = event.getPoseStack();
+        matrices.pushPose();
+        var camPos = event.getCamera().getPosition();
+        matrices.translate(-camPos.x, -camPos.y, -camPos.z);
+
         for (var entry : barrelsToRender) {
             var pos = entry.pos();
             int sideMask = entry.sideMask();
@@ -68,6 +73,9 @@ public class DeferredBarrelTextRenderer {
                 continue;
             }
 
+            matrices.pushPose();
+            matrices.translate(pos.getX(), pos.getY(), pos.getZ());
+
             String amount;
             if (entity.behaviour.isCreative()) {
                 amount = "∞";
@@ -75,7 +83,6 @@ public class DeferredBarrelTextRenderer {
                 amount = String.valueOf(entity.getAmount());
             }
             ItemStack toRender = entity.getResource().toStack();
-            var matrices = event.getPoseStack();
 
             for (int i = 0; i < 4; ++i) {
                 if ((sideMask & (1 << i)) == 0) {
@@ -114,7 +121,11 @@ public class DeferredBarrelTextRenderer {
 
                 matrices.popPose();
             }
+
+            matrices.popPose();
         }
+
+        matrices.popPose();
 
         barrelsToRender.clear();
         immediate.endBatch();

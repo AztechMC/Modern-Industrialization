@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PLP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:trash_can"
+  }
+}

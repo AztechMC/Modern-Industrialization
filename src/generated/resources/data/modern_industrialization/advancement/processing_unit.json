@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:kanthal_coil",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:processing_unit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.processing_unit.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:processing_unit"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.processing_unit"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

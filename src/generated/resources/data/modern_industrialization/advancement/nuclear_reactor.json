@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:implosion_compressor",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:nuclear_reactor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.nuclear_reactor.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:nuclear_reactor"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.nuclear_reactor"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

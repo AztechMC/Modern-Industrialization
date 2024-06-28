@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "rTT",
+    "rdr",
+    "rTT"
+    ],
+  "key": {
+    "r": {
+      "item" : "modern_industrialization:resistor"
+    },
+    "T": {
+      "item" : "modern_industrialization:transistor"
+    },
+    "d":{
+      "item" : "modern_industrialization:diode"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:op_amp"
+  }
+}

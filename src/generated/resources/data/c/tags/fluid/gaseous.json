@@ -1,0 +1,22 @@
+{
+  "values": [
+    "modern_industrialization:acetylene",
+    "modern_industrialization:argon",
+    "modern_industrialization:chlorine",
+    "modern_industrialization:deuterium",
+    "modern_industrialization:ethylene",
+    "modern_industrialization:heavy_water_steam",
+    "modern_industrialization:helium",
+    "modern_industrialization:helium_3",
+    "modern_industrialization:helium_plasma",
+    "modern_industrialization:high_pressure_heavy_water_steam",
+    "modern_industrialization:high_pressure_steam",
+    "modern_industrialization:hydrogen",
+    "modern_industrialization:methane",
+    "modern_industrialization:nitrogen",
+    "modern_industrialization:oxygen",
+    "modern_industrialization:polyvinyl_chloride",
+    "modern_industrialization:steam",
+    "modern_industrialization:tritium"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:fusion_reactor",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:plasma_turbine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.plasma_turbine.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:plasma_turbine"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.plasma_turbine"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

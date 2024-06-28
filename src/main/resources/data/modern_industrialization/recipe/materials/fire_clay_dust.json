@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TC",
+    "TC"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:brick_dust"
+    },
+    "T" : {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:fire_clay_dust",
+    "count": 3
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "mPm",
+    "pHp",
+    "mCm"
+  ],
+  "key": {
+    "m" : {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "H" : {
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:electrum_cable"
+    },
+    "P": {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "C": {
+      "item" : "modern_industrialization:electronic_circuit"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:centrifuge"
+  }
+}

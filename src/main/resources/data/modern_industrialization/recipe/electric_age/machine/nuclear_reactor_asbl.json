@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AcA",
+    "RCR",
+    "AcA"
+  ],
+  "key": {
+    "A" : {
+      "item": "modern_industrialization:nuclear_alloy_large_plate"
+    },
+
+    "C" : {
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    },
+
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+
+    "R" : {
+      "item" : "modern_industrialization:cadmium_control_rod"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:nuclear_reactor"
+  }
+}

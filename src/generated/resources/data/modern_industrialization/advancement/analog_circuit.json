@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:resistor",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:analog_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.analog_circuit.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:analog_circuit"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.analog_circuit"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

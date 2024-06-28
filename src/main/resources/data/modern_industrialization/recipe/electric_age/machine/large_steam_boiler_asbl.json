@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PcP",
+    "fBf",
+    "PcP"
+  ],
+  "key": {
+    "P" : {
+      "item" : "modern_industrialization:bronze_plated_bricks"
+    },
+    "c" : {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "B": {
+      "item": "modern_industrialization:bronze_boiler"
+    },
+    "f": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:large_steam_boiler"
+  }
+}

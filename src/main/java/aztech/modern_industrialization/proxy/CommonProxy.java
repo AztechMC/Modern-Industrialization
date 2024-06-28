@@ -32,13 +32,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -64,15 +67,11 @@ public class CommonProxy {
         }
     }
 
-    private static MinecraftServer currentServer = null;
+    private static MinecraftServer currentServer = null; // note: will be null in multiplayer client
 
     public static void initEvents() {
         NeoForge.EVENT_BUS.addListener(ServerAboutToStartEvent.class, e -> currentServer = e.getServer());
         NeoForge.EVENT_BUS.addListener(ServerStoppedEvent.class, e -> currentServer = null);
-    }
-
-    public static MinecraftServer getCurrentServer() {
-        return currentServer;
     }
 
     public Player getClientPlayer() {
@@ -92,6 +91,10 @@ public class CommonProxy {
             }
         }
         return null;
+    }
+
+    public boolean shouldSteamDrillForceBreakReset() {
+        return false;
     }
 
     public boolean hasShiftDown() {
@@ -114,7 +117,11 @@ public class CommonProxy {
     public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
     }
 
-    public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+    public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         throw new UnsupportedOperationException("Only supported on the server");
+    }
+
+    public BlockState getMachineCasingBlockState(BlockState state, BlockAndTintGetter renderView, BlockPos pos) {
+        return state;
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:raw_materials/platinum"
+    },
+    "y": {
+      "item": "modern_industrialization:raw_platinum"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:raw_platinum_block"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "c:rods/bronze"
+    },
+    "P": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    }
+  },
+  "pattern": [
+    "P",
+    "P",
+    "I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:bronze_blade"
+  }
+}

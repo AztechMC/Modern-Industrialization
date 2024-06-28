@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ChC",
+    "LHL",
+    "ChC"
+  ],
+  "key": {
+    "C" : {
+      "item" : "modern_industrialization:superconductor_coil"
+    },
+    "h" : {
+      "item" : "modern_industrialization:large_heat_exchanger"
+    },
+    "L" : {
+      "item" : "modern_industrialization:nuclear_alloy_large_plate"
+    },
+    "H" : {
+      "item" : "modern_industrialization:plasma_handling_iridium_machine_casing"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:fusion_chamber"
+  }
+}

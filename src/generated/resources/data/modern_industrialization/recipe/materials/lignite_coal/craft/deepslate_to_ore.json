@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:deepslate_lignite_coal_ore"
+    }
+  },
+  "pattern": [
+    "   ",
+    " x ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:lignite_coal_ore"
+  }
+}

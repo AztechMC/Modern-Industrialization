@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.recipe.condition;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.List;
@@ -64,8 +65,8 @@ public class CustomProcessCondition implements MachineProcessCondition {
             List<Component> description) {
     }
 
-    private static Codec<CustomProcessCondition> makeCodec(boolean syncToClient) {
-        return RecordCodecBuilder.create(
+    private static MapCodec<CustomProcessCondition> makeCodec(boolean syncToClient) {
+        return RecordCodecBuilder.mapCodec(
                 g -> g
                         .group(
                                 Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
@@ -74,8 +75,8 @@ public class CustomProcessCondition implements MachineProcessCondition {
                         .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
     }
 
-    static final Codec<CustomProcessCondition> CODEC = makeCodec(false);
-    private static final Codec<CustomProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
+    static final MapCodec<CustomProcessCondition> CODEC = makeCodec(false);
+    private static final MapCodec<CustomProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
 
     public CustomProcessCondition(String id) {
         var definition = definitions.get(id);
@@ -105,7 +106,7 @@ public class CustomProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public Codec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
         return syncToClient ? CODEC_FOR_SYNC : CODEC;
     }
 }

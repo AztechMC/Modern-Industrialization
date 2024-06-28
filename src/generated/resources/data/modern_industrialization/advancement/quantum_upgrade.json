@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:quantum_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:quantum_upgrade"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.quantum_upgrade.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:quantum_upgrade"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.quantum_upgrade"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

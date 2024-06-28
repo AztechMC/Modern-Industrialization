@@ -25,6 +25,7 @@ package aztech.modern_industrialization.util;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -45,7 +46,7 @@ public class ModelHelper {
         return side == null ? 6 : side.get3DDataValue();
     }
 
-    public static void emitSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth) {
+    public static BakedQuad bakeSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth) {
         vc.setTintIndex(-1);
         vc.setDirection(d);
         vc.setSprite(sprite);
@@ -58,14 +59,15 @@ public class ModelHelper {
         Vector2f[] uv = ModelHelper.bakeUvs(pos, sprite, d);
 
         for (int i = 0; i < 4; ++i) {
-            vc.vertex(pos[i].x, pos[i].y, pos[i].z);
-            vc.color(255, 255, 255, 255);
-            vc.uv(uv[i].x, uv[i].y);
-            vc.uv2(0);
+            vc.addVertex(pos[i].x, pos[i].y, pos[i].z);
+            vc.setColor(255, 255, 255, 255);
+            vc.setUv(uv[i].x, uv[i].y);
+            vc.setLight(0);
             var normal = d.getNormal();
-            vc.normal(normal.getX(), normal.getY(), normal.getZ());
-            vc.endVertex();
+            vc.setNormal(normal.getX(), normal.getY(), normal.getZ());
         }
+
+        return vc.bakeQuad();
     }
 
     public static void square(Vector3f[] out, Direction nominalFace, float left, float bottom, float right, float top, float depth) {

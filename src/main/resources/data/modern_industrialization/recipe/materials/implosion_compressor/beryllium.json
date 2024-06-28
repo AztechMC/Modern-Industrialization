@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "eu": 1,
+  "duration": 10,
+  "item_inputs": [
+    {
+      "tag": "c:tiny_dusts/beryllium",
+      "amount": 9
+    },
+    {
+      "tag": "c:nuggets/stainless_steel",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:industrial_tnt",
+      "amount": 1
+    }
+  ],
+  "item_outputs": {
+    "item": "modern_industrialization:beryllium_ingot",
+    "amount": 1
+  }
+}

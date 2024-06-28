@@ -23,15 +23,17 @@
  */
 package aztech.modern_industrialization.stats;
 
+import aztech.modern_industrialization.compat.argonauts.ArgonautsFacade;
 import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.ftbteams.FTBTeamsFacade;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,6 +44,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +57,8 @@ public class PlayerStatistics {
     private final UUID uuid;
     private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
     private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
+
+    private static final Set<UUID> uuidCache = new HashSet<>();
 
     // Items produced while the player was offline... this is used to award vanilla stats when the player comes back online.
     private final Reference2LongMap<Item> pendingCraftedStats = new Reference2LongOpenHashMap<>();
@@ -86,18 +91,25 @@ public class PlayerStatistics {
         usedItems.computeIfAbsent(what.asItem(), i -> new StatisticValue()).add(amount);
     }
 
-    public void addProducedItems(ItemLike what, long amount) {
+    public void addProducedItems(Level level, ItemLike what, long amount) {
+        var server = Objects.requireNonNull(level.getServer());
         var item = what.asItem();
         producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
 
         if (uuid != null) {
             FTBQuestsFacade.INSTANCE.addCompleted(uuid, item, amount);
 
-            awardStat(what, amount);
+            awardStat(level, what, amount);
 
-            for (var otherTeamMember : FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid)) {
-                data.get(otherTeamMember).awardStat(what, amount);
+            // Make sure we only award the stats to other players once even if they have both FTB Teams and Argonauts.
+            uuidCache.clear();
+            uuidCache.addAll(FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid));
+            uuidCache.addAll(ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(server, uuid));
+
+            for (var uuid : uuidCache) {
+                data.get(uuid).awardStat(level, what, amount);
             }
+            uuidCache.clear();
         }
     }
 
@@ -109,10 +121,10 @@ public class PlayerStatistics {
         producedFluids.computeIfAbsent(what, i -> new StatisticValue()).add(amount);
     }
 
-    private void awardStat(ItemLike what, long amount) {
+    private void awardStat(Level level, ItemLike what, long amount) {
         Objects.requireNonNull(uuid);
 
-        var player = CommonProxy.getCurrentServer().getPlayerList().getPlayer(uuid);
+        var player = level.getPlayerByUUID(uuid);
 
         if (player != null) {
             player.awardStat(Stats.ITEM_CRAFTED.get(what.asItem()), Ints.saturatedCast(amount));
@@ -134,7 +146,7 @@ public class PlayerStatistics {
     private static <T> void readNbt(Registry<T> registry, Map<T, StatisticValue> map, CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
             try {
-                var val = registry.get(new ResourceLocation(key));
+                var val = registry.get(ResourceLocation.parse(key));
                 if (val != Items.AIR && val != Fluids.EMPTY) {
                     map.put(val, new StatisticValue(tag.getCompound(key)));
                 }
@@ -154,7 +166,7 @@ public class PlayerStatistics {
     private static void pendingReadNbt(Reference2LongMap<Item> map, CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
             try {
-                var val = BuiltInRegistries.ITEM.get(new ResourceLocation(key));
+                var val = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
                 if (val != Items.AIR) {
                     map.put(val, tag.getLong(key));
                 }

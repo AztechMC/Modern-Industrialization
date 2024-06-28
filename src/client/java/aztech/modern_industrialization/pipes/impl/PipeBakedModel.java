@@ -23,13 +23,15 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.thirdparty.fabricrendering.ModelHelper;
 import aztech.modern_industrialization.thirdparty.fabricrendering.SpriteFinder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import java.util.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -110,7 +112,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
         var camouflage = attachment.camouflage();
 
-        if (camouflage == null || MIPipesClient.transparentCamouflage) {
+        if (camouflage == null || MIPipes.transparentCamouflage) {
             var renderNormal = checkRenderType(RenderType.cutout(), renderType);
             var renderFluid = checkRenderType(RenderType.translucent(), renderType);
 
@@ -159,36 +161,50 @@ public class PipeBakedModel implements IDynamicBakedModel {
             }
         }
 
-        if (camouflage != null) {
-            // TODO NEO
-//            renderContext.pushTransform(quad -> {
-//                // Fix tinting
-//                if (quad.colorIndex() != -1) {
-//                    var blockColorMap = Minecraft.getInstance().getBlockColors();
-//
-//                    int color = 0xFF000000 | blockColorMap.getColor(camouflage, blockRenderView, pos, quad.colorIndex());
-//                    quad.colorIndex(-1);
-//
-//                    for (int vertex = 0; vertex < 4; ++vertex) {
-//                        quad.color(vertex, multiplyColor(color, quad.color(vertex)));
-//                    }
-//                }
-//
-//                if (MIPipesClient.transparentCamouflage) {
-//                    quad.material(translucentMaterial);
-//
-//                    for (int vertex = 0; vertex < 4; ++vertex) {
-//                        quad.color(vertex, multiplyColor(0x9FFFFFFF, quad.color(vertex)));
-//                    }
-//                }
-//
-//                return true;
-//            });
-//
-//            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
-//            camouflageModel.emitBlockQuads(blockRenderView, state, pos, supplier, renderContext);
-//
-//            renderContext.popTransform();
+        boolean processCamouflage = !MIPipes.transparentCamouflage || checkRenderType(RenderType.translucent(), renderType);
+
+        if (camouflage != null && processCamouflage) {
+            if (MIPipes.transparentCamouflage && side != null) {
+                var adjacentModelData = extraData.level().getModelData(extraData.pos().relative(side))
+                        .get(PipeBlockEntity.RenderAttachment.KEY);
+                if (adjacentModelData != null && adjacentModelData.camouflage() != null) {
+                    // Don't draw faces between camouflaged pipes
+                    return ret != null ? ret : List.of();
+                }
+            }
+
+            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
+            var camouflageModelData = camouflageModel.getModelData(extraData.level(), extraData.pos(), camouflage, ModelData.EMPTY);
+
+            for (var quad : camouflageModel.getQuads(camouflage, side, rand, camouflageModelData, renderType)) {
+                if (quad.isTinted() || MIPipes.transparentCamouflage) {
+                    // Copy quad to modify inner data
+                    int[] quadData = quad.getVertices().clone();
+
+                    // Fix tinting
+                    if (quad.isTinted()) {
+                        var blockColorMap = Minecraft.getInstance().getBlockColors();
+                        int color = 0xFF000000 | blockColorMap.getColor(camouflage, extraData.level(), extraData.pos(), quad.getTintIndex());
+
+                        for (int vertex = 0; vertex < 4; vertex++) {
+                            setColor(quadData, vertex, multiplyColor(color, getColor(quadData, vertex)));
+                        }
+                    }
+
+                    if (MIPipes.transparentCamouflage) {
+                        for (int vertex = 0; vertex < 4; ++vertex) {
+                            setColor(quadData, vertex, multiplyColor(0x9FFFFFFF, getColor(quadData, vertex)));
+                        }
+                    }
+
+                    quad = new BakedQuad(quadData, -1, quad.getDirection(), quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion());
+                }
+
+                if (ret == null) {
+                    ret = new ArrayList<>();
+                }
+                ret.add(quad);
+            }
         }
 
         return ret != null ? ret : List.of();
@@ -208,6 +224,28 @@ public class PipeBakedModel implements IDynamicBakedModel {
         final int blue = (color1 & 0xFF) * (color2 & 0xFF) / 0xFF;
 
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+
+    private static final int QUAD_STRIDE = DefaultVertexFormat.BLOCK.getVertexSize() / 4;
+    private static final int VERTEX_COLOR = 3;
+
+    private static int getColor(int[] quadData, int vertex) {
+        return swapBlueRed(quadData[vertex * QUAD_STRIDE + VERTEX_COLOR]);
+    }
+
+    private static void setColor(int[] quadData, int vertex, int color) {
+        quadData[vertex * QUAD_STRIDE + VERTEX_COLOR] = swapBlueRed(color);
+    }
+
+    /**
+     * Converts between ARGB color and ABGR color. Assumes little endian encoding.
+     */
+    public static int swapBlueRed(int color) {
+        if (color == -1) {
+            return -1;
+        }
+
+        return (color & 0xFF00FF00) | ((color & 0x00FF0000) >>> 16) | ((color & 0x000000FF) << 16);
     }
 
     private static PipeRenderContext.QuadTransform getColorTransform(int color) {

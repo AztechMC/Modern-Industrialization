@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:titanium_ingot",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:raw_iridium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.raw_iridium.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:raw_iridium"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.raw_iridium"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

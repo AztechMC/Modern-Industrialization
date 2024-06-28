@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "tpt",
+    "RSR",
+    "tpt"
+  ],
+  "key":
+  {
+    "t": {
+      "item" : "modern_industrialization:steel_tank"
+    },
+    "p" : {
+      "item" : "modern_industrialization:pump"
+    },
+    "S" :{
+      "item" : "modern_industrialization:steel_machine_casing"
+    },
+    "R" : {
+      "item" : "modern_industrialization:tin_rotor"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:large_tank"
+  }
+}

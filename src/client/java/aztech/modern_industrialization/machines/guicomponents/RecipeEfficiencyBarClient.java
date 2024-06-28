@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -48,13 +48,13 @@ public class RecipeEfficiencyBarClient implements GuiComponentClient {
     long baseRecipeEu;
     long maxRecipeEu;
 
-    public RecipeEfficiencyBarClient(FriendlyByteBuf buf) {
+    public RecipeEfficiencyBarClient(RegistryFriendlyByteBuf buf) {
         this.params = new RecipeEfficiencyBar.Parameters(buf.readInt(), buf.readInt());
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         hasActiveRecipe = buf.readBoolean();
         if (hasActiveRecipe) {
             efficiencyTicks = buf.readInt();
@@ -70,7 +70,7 @@ public class RecipeEfficiencyBarClient implements GuiComponentClient {
         return new Renderer();
     }
 
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
     private static final int WIDTH = 100, HEIGHT = 2;
 
     public class Renderer implements ClientComponentRenderer {

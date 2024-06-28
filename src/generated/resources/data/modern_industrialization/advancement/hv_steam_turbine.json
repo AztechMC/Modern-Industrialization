@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:mv_steam_turbine",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:hv_steam_turbine"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.hv_steam_turbine.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:hv_steam_turbine"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.hv_steam_turbine"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

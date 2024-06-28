@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 8,
+  "duration": 400,
+  "item_inputs": {
+    "tag": "c:dusts/salt",
+    "amount": 2
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:sodium_dust",
+    "amount": 1
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:chlorine",
+    "amount": 125
+  }
+}

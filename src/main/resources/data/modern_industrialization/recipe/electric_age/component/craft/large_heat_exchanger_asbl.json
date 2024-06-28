@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "ghg",
+    "RLR",
+    "ghg"
+  ],
+  "key": {
+    "h": {
+      "item" : "modern_industrialization:small_heat_exchanger"
+    },
+    "L": {
+      "item" : "modern_industrialization:large_advanced_pump"
+    },
+    "R":{
+      "item" : "modern_industrialization:aluminum_rotor"
+    },
+    "g" : {
+      "tag" : "c:gears/invar"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:large_heat_exchanger"
+  }
+}

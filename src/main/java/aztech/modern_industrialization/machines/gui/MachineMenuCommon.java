@@ -30,7 +30,7 @@ import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotGroup;
 import java.util.List;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
@@ -82,5 +82,5 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
         return guiParams;
     }
 
-    public abstract void readClientComponentSyncData(int componentIndex, FriendlyByteBuf buf);
+    public abstract void readClientComponentSyncData(int componentIndex, RegistryFriendlyByteBuf buf);
 }

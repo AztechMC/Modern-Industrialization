@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " OO",
+    "IH ",
+    " OO"
+  ],
+  "key": {
+    "H": {
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "I": {
+      "item": "modern_industrialization:superconductor_cable"
+    },
+    "O": {
+      "item": "modern_industrialization:annealed_copper_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:superconductor_ev_transformer"
+  }
+}

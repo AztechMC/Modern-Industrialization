@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "www",
+    "wrw",
+    "www"
+  ],
+  "key":
+  {
+    "r" : {
+      "tag" : "c:rods/steel"
+    },
+    "w" : {
+      "item" : "modern_industrialization:copper_wire"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:inductor"
+  }
+}

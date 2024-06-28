@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "WWW",
+    "wPw",
+    "WWW"
+  ],
+
+  "key":
+  {
+    "P" : {
+      "tag" : "c:plates/emerald"
+    },
+    "w" : {
+      "item" : "modern_industrialization:silicon_wafer"
+    },
+    "W" : {
+      "item" : "modern_industrialization:platinum_fine_wire"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:memory_management_unit",
+    "count": 1
+  }
+
+}

@@ -1,0 +1,33 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:forge_hammer"
+    },
+    {
+      "amount": 2,
+      "tag": "c:gears/copper"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:bronze_machine_casing"
+    },
+    {
+      "amount": 3,
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    {
+      "amount": 2,
+      "tag": "c:rods/copper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:bronze_compressor"
+    }
+  ]
+}

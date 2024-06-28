@@ -23,14 +23,12 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import static aztech.modern_industrialization.nuclear.NeutronType.*;
-
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.nuclear.*;
 import java.util.Optional;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class NuclearReactorGui {
@@ -59,12 +57,12 @@ public class NuclearReactorGui {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             Data data = copyData();
             buf.writeBoolean(data.valid);
             if (data.valid) {

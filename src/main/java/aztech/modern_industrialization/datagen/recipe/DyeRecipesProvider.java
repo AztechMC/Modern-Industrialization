@@ -44,7 +44,7 @@ public class DyeRecipesProvider extends MIRecipesProvider {
             var dyeTag = "#" + color.getTag().location();
             // 16 item pipes with dye in the center
             var itemPipesDirect = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 16, "CCC", "GdG",
-                    "CCC").addInput('C', "modern_industrialization:bronze_curved_plate").addInput('G', "#forge:gears/steel").addInput('d',
+                    "CCC").addInput('C', "modern_industrialization:bronze_curved_plate").addInput('G', "#c:gears/steel").addInput('d',
                             dyeTag);
             itemPipesDirect.offerTo(consumer, pathPrefix + "craft/item_pipe_direct");
             itemPipesDirect.exportToAssembler().offerTo(consumer, pathPrefix + "assembler/item_pipe_direct");
@@ -88,18 +88,18 @@ public class DyeRecipesProvider extends MIRecipesProvider {
 
             // glass
             new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput(dyeTag, 1)
-                    .addItemInput("#forge:glass", 8)
+                    .addItemInput("#c:glass_blocks", 8)
                     .addItemOutput("minecraft:" + color.getName() + "_stained_glass", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass");
 
             // glassPane
             new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput(dyeTag, 1)
-                    .addItemInput("#forge:glass_panes", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
+                    .addItemInput("#c:glass_panes", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass_pane");
 
             // shulker Box
             new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput(dyeTag, 1)
-                    .addItemInput("#forge:shulker_boxes", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
+                    .addItemInput("#c:shulker_boxes", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
                     .offerTo(consumer, pathPrefix + "mixer/shulker_box");
 
             // bed

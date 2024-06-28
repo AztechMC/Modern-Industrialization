@@ -25,18 +25,19 @@ package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
-import net.minecraft.network.FriendlyByteBuf;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record LockAllPacket(int containerId, boolean lock) implements BasePacket {
-    public LockAllPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readBoolean());
-    }
-
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(containerId);
-        buf.writeBoolean(lock);
-    }
+    public static final StreamCodec<ByteBuf, LockAllPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            LockAllPacket::containerId,
+            ByteBufCodecs.BOOL,
+            LockAllPacket::lock,
+            LockAllPacket::new);
 
     public void handle(Context ctx) {
         ctx.assertOnServer();

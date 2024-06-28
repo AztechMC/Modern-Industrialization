@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.DynamicTooltip;
@@ -44,7 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, Inventory inventory, Component title) {
@@ -104,9 +104,17 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     private class WhitelistButton extends Button {
+        private final Supplier<List<Component>> tooltipSupplier;
+
         public WhitelistButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, Button.DEFAULT_NARRATION);
+            super(i + 148, j + 44, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.tooltipSupplier = tooltipSupplier;
             setTooltip(new DynamicTooltip(tooltipSupplier));
+        }
+
+        @Override
+        public Component getMessage() {
+            return tooltipSupplier.get().getFirst();
         }
 
         @Override

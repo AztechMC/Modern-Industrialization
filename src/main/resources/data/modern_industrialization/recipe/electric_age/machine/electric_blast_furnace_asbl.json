@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CHC",
+    "CFC"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:cupronickel_wire_magnetic"
+    },
+    "H": {
+      "item": "modern_industrialization:basic_machine_hull"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:electric_blast_furnace"
+  }
+}

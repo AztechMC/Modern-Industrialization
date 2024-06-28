@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:he_mox_dust"
+    }
+  },
+  "pattern": [
+    "x"
+  ],
+  "result": {
+    "count": 9,
+    "id": "modern_industrialization:he_mox_tiny_dust"
+  }
+}

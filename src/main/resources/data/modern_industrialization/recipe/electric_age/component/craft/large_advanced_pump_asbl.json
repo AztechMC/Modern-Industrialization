@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ppp",
+    "rMr",
+    "CrC"
+  ],
+  "key": {
+    "C" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "r" : {
+      "item" : "modern_industrialization:titanium_rotor"
+    },
+    "M" : {
+      "item" : "modern_industrialization:large_advanced_motor"
+    },
+    "p": {
+      "item" : "modern_industrialization:advanced_pump"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:large_advanced_pump"
+  }
+}

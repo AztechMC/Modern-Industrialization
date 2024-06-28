@@ -1,0 +1,30 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ppp",
+    "crr",
+    "cmg"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:motor"
+    },
+    "r" : {
+      "tag" : "c:rods/steel"
+    },
+    "c" : {
+      "item" : "modern_industrialization:tin_cable"
+    },
+    "p" :{
+      "tag" : "c:plates/steel"
+    },
+    "g" :{
+      "tag" : "c:gears/steel"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:piston"
+  }
+}

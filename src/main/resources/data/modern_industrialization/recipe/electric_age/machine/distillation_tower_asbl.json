@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pdp",
+    "CHC",
+    "pdp"
+  ],
+  "key": {
+    "p" : {
+      "item" : "modern_industrialization:advanced_pump"
+    },
+    "H" :{
+      "item" : "modern_industrialization:turbo_machine_hull"
+    },
+    "C" : {
+      "item" : "modern_industrialization:digital_circuit"
+    },
+    "d": {
+      "item" : "modern_industrialization:distillery"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:distillation_tower"
+  }
+}

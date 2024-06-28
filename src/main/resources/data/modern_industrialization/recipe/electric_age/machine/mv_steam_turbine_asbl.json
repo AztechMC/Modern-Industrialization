@@ -1,0 +1,32 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pcp",
+    "rHr",
+    "mem"
+  ],
+  "key": {
+    "p" : {
+      "tag" : "modern_industrialization:fluid_pipes"
+    },
+    "H" : {
+      "item" : "modern_industrialization:advanced_machine_hull"
+    },
+    "c" : {
+      "item" : "modern_industrialization:electronic_circuit"
+    },
+    "r":{
+      "item" : "modern_industrialization:aluminum_rotor"
+    },
+    "m" : {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "e" : {
+      "item" : "modern_industrialization:electrum_cable"
+    }
+
+  },
+  "result": {
+    "id": "modern_industrialization:mv_steam_turbine"
+  }
+}

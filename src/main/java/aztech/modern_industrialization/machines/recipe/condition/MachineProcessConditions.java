@@ -23,17 +23,17 @@
  */
 package aztech.modern_industrialization.machines.recipe.condition;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public final class MachineProcessConditions {
-    private static final BiMap<ResourceLocation, Codec<? extends MachineProcessCondition>> MAP = HashBiMap.create();
+    private static final BiMap<ResourceLocation, MapCodec<? extends MachineProcessCondition>> MAP = HashBiMap.create();
 
-    public static void register(ResourceLocation id, Codec<? extends MachineProcessCondition> serializer) {
+    public static void register(ResourceLocation id, MapCodec<? extends MachineProcessCondition> serializer) {
         if (MAP.get(id) != null || MAP.inverse().get(serializer) != null) {
             throw new IllegalArgumentException("Duplicate registration for process condition " + id);
         }
@@ -42,18 +42,18 @@ public final class MachineProcessConditions {
     }
 
     @Nullable
-    public static Codec<? extends MachineProcessCondition> get(ResourceLocation id) {
+    public static MapCodec<? extends MachineProcessCondition> get(ResourceLocation id) {
         return MAP.get(id);
     }
 
-    public static ResourceLocation getId(Codec<? extends MachineProcessCondition> serializer) {
+    public static ResourceLocation getId(MapCodec<? extends MachineProcessCondition> serializer) {
         return MAP.inverse().get(serializer);
     }
 
     static {
-        register(new MIIdentifier("dimension"), DimensionProcessCondition.CODEC);
-        register(new MIIdentifier("adjacent_block"), AdjacentBlockProcessCondition.CODEC);
-        register(new MIIdentifier("biome"), BiomeProcessCondition.CODEC);
-        register(new MIIdentifier("custom"), CustomProcessCondition.CODEC);
+        register(MI.id("dimension"), DimensionProcessCondition.CODEC);
+        register(MI.id("adjacent_block"), AdjacentBlockProcessCondition.CODEC);
+        register(MI.id("biome"), BiomeProcessCondition.CODEC);
+        register(MI.id("custom"), CustomProcessCondition.CODEC);
     }
 }

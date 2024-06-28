@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": {
+    "tag": "c:dusts/sodium",
+    "amount": 1
+  },
+  "fluid_inputs": [
+    {
+    "fluid": "modern_industrialization:oxygen",
+    "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 1000
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:sodium_hydroxide",
+    "amount": 2000
+  }
+}

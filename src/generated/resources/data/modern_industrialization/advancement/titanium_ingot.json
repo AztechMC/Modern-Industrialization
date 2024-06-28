@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:kanthal_coil",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:titanium_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.titanium_ingot.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:titanium_ingot"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.titanium_ingot"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

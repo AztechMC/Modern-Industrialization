@@ -23,30 +23,26 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.GeometryHelper;
-import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -54,12 +50,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -69,8 +62,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -81,11 +77,12 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,11 +99,11 @@ public class SteamDrillItem
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
         public long getCapacityForResource(ItemVariant resource) {
-            return resource.getItem().getMaxStackSize();
+            return resource.getMaxStackSize();
         }
 
         public boolean canInsert(ItemVariant item) {
-            int burnTicks = CommonHooks.getBurnTime(item.toStack(), null);
+            int burnTicks = item.toStack().getBurnTime(null);
             return burnTicks > 0;
         }
 
@@ -115,20 +112,20 @@ public class SteamDrillItem
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Properties settings) {
-        super(settings.stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(settings
+                .stacksTo(1)
+                .rarity(Rarity.UNCOMMON)
+                .component(MIComponents.SILK_TOUCH, true)
+                .component(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY)
+                .component(MIComponents.WATER, 0));
     }
 
     private static boolean isNotSilkTouch(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        return tag != null && tag.getBoolean("nosilk");
+        return !stack.getOrDefault(MIComponents.SILK_TOUCH, true);
     }
 
     private static void setSilkTouch(ItemStack stack, boolean silkTouch) {
-        if (silkTouch) {
-            stack.removeTagKey("nosilk");
-        } else {
-            stack.getOrCreateTag().putBoolean("nosilk", true);
-        }
+        stack.set(MIComponents.SILK_TOUCH, silkTouch);
     }
 
     @Override
@@ -138,12 +135,12 @@ public class SteamDrillItem
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return !newStack.is(this) || !canUse(newStack);
+        return !newStack.is(this) || !canUse(newStack) || CommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
     }
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (isSupportedBlock(stack, state) && canUse(stack) && TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state)) {
+        if (isSupportedBlock(stack, state) && canUse(stack) && !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops())) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);
@@ -170,83 +167,131 @@ public class SteamDrillItem
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.MAINHAND && canUse(stack)) {
-            return ItemHelper.createToolModifiers(5);
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+        if (canUse(stack)) {
+            return ItemHelper.getToolModifiers(5);
         }
-        return ImmutableMultimap.of();
+        return ItemAttributeModifiers.EMPTY;
     }
 
-    public static Pair<BlockPos, BlockPos> getArea(BlockPos pos, Direction hitFace) {
+    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {
+    }
+
+    @Nullable
+    public static Area getArea(BlockGetter level, Player player) {
+        if (player.isShiftKeyDown()) {
+            return null; // No area mining on sneak.
+        }
+
+        HitResult rayTraceResult = rayTraceSimple(level, player, 0);
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
+            Direction facing = blockResult.getDirection();
+            return getArea(blockResult.getBlockPos(), facing);
+        }
+        return null;
+    }
+
+    private static Area getArea(BlockPos pos, Direction hitFace) {
         int face = hitFace.get3DDataValue();
         var right = GeometryHelper.FACE_RIGHT[face];
         int rx = (int) right.x(), ry = (int) right.y(), rz = (int) right.z();
         var up = GeometryHelper.FACE_UP[face];
         int ux = (int) up.x(), uy = (int) up.y(), uz = (int) up.z();
-        return Pair.of(
+        return new Area(
+                pos,
                 pos.offset(rx + ux, ry + uy, rz + uz),
                 pos.offset(-rx - ux, -ry - uy, -rz - uz));
     }
 
-    private static HitResult rayTraceSimple(Level world, LivingEntity living, double blockReachDistance, float partialTicks) {
+    public static void forEachMineableBlock(BlockGetter world, Area area, LivingEntity miner, BiConsumer<BlockPos, BlockState> callback) {
+        BlockPos.betweenClosed(area.corner1(), area.corner2()).forEach(blockPos -> {
+            if (world.getBlockEntity(blockPos) != null && !area.center().equals(blockPos)) {
+                return; // No block entities unless it's the center block.
+            }
+            if (!(miner instanceof Player)) {
+                return;
+            }
+
+            BlockState tempState = world.getBlockState(blockPos);
+            if (tempState.isAir())
+                return;
+            if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
+                return;
+            if (tempState.getDestroySpeed(world, blockPos) < 0)
+                return;
+            callback.accept(blockPos, tempState);
+        });
+    }
+
+    private static HitResult rayTraceSimple(BlockGetter world, Player living, float partialTicks) {
+        double blockReachDistance = living.blockInteractionRange();
         Vec3 vec3d = living.getEyePosition(partialTicks);
         Vec3 vec3d1 = living.getViewVector(partialTicks);
         Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
         return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
     }
 
+    // Use this little trick to cancel the drops for blocks broken by the steam drill, and instead merge them into a global list.
+    @Nullable
+    private static List<ItemStack> totalDrops = null;
+
+    static {
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::mergeDrops);
+    }
+
+    private static void mergeDrops(BlockDropsEvent event) {
+        if (totalDrops == null) {
+            return;
+        }
+
+        outer: for (var entity : event.getDrops()) {
+            if (entity.getItem().isEmpty()) {
+                continue;
+            }
+            for (ItemStack drop : totalDrops) {
+                if (ItemStack.isSameItemSameComponents(entity.getItem(), drop)) {
+                    drop.grow(entity.getItem().getCount());
+                    continue outer;
+                }
+            }
+            totalDrops.add(entity.getItem());
+        }
+        event.getDrops().clear();
+    }
+
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
 
-        // Thanks to Buuz for this code, from ItemInfinityDrill
-        // TODO NEO reimplement drill outline
-        if (miner instanceof Player p && !p.isShiftKeyDown()) {
-            HitResult rayTraceResult = rayTraceSimple(world, miner, 16, 0);
-            if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
-                BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
-                Direction facing = blockResult.getDirection();
-                Pair<BlockPos, BlockPos> area = getArea(pos, facing);
-                List<ItemStack> totalDrops = new ArrayList<>();
-                BlockPos.betweenClosed(area.getFirst(), area.getSecond()).forEach(blockPos -> {
-                    if (world.getBlockEntity(blockPos) == null && world instanceof ServerLevel && miner instanceof ServerPlayer
-                            && !world.isEmptyBlock(blockPos)) {
-                        BlockState tempState = world.getBlockState(blockPos);
-                        Block block = tempState.getBlock();
-                        if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
-                            return;
-                        if (tempState.getDestroySpeed(world, blockPos) < 0)
-                            return;
-                        int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
-                                blockPos);
-                        if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
-                            block.destroy(world, blockPos, tempState);
-                            Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
-                                boolean combined = false;
-                                for (ItemStack drop : totalDrops) {
-                                    if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {
-                                        drop.setCount(drop.getCount() + itemStack.getCount());
-                                        combined = true;
-                                        break;
-                                    }
-                                }
-                                if (!combined) {
-                                    totalDrops.add(itemStack);
-                                }
-                            });
-                            block.popExperience((ServerLevel) world, blockPos, xp);
-                        }
-                    }
-                });
-                totalDrops.forEach(itemStack -> {
-                    Block.popResource(world, miner.blockPosition(), itemStack);
-                });
-                world.getEntitiesOfClass(ExperienceOrb.class,
-                        new AABB(Vec3.atLowerCornerOf(area.getFirst()), Vec3.atLowerCornerOf(area.getSecond())).inflate(1))
-                        .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
-                                miner.blockPosition().getZ()));
-            }
+        if (!(miner instanceof Player p)) {
+            return false;
         }
+
+        var area = getArea(world, p);
+        if (area == null) {
+            return false;
+        }
+
+        totalDrops = new ArrayList<>();
+        forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
+            Block block = tempState.getBlock();
+            var breakEvent = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+                    blockPos, tempState);
+            if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
+                block.destroy(world, blockPos, tempState);
+                // Thanks to our event above, the drops won't make it into the level, and will be added to `totalDrops` instead.
+                Block.dropResources(tempState, world, blockPos, null, miner, stack);
+            }
+        });
+        totalDrops.forEach(itemStack -> {
+            Block.popResource(world, miner.blockPosition(), itemStack);
+        });
+        totalDrops = null;
+        world.getEntitiesOfClass(ExperienceOrb.class,
+                new AABB(Vec3.atLowerCornerOf(area.corner1()), Vec3.atLowerCornerOf(area.corner2())).inflate(1))
+                .forEach(entityXPOrb -> entityXPOrb.teleportTo(miner.blockPosition().getX(), miner.blockPosition().getY(),
+                        miner.blockPosition().getZ()));
 
         return true;
     }
@@ -258,13 +303,10 @@ public class SteamDrillItem
     }
 
     private void useFuel(ItemStack stack, @Nullable LivingEntity entity) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.getInt("water") > 0) {
-            if (tag.getInt("burnTicks") == 0) {
+        if (stack.getOrDefault(MIComponents.WATER, 0) > 0) {
+            if (stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY).burnTicks() == 0) {
                 int burnTicks = consumeFuel(stack, Simulation.ACT);
-                tag = stack.getOrCreateTag(); // consumeFuel might cause the tag to change
-                tag.putInt("burnTicks", burnTicks);
-                tag.putInt("maxBurnTicks", burnTicks);
+                stack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(burnTicks, burnTicks));
 
                 if (burnTicks > 0 && entity != null) {
                     // Play cool sound
@@ -303,25 +345,23 @@ public class SteamDrillItem
     }
 
     private void fillWater(Player player, ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (tag.getInt("water") != FULL_WATER) {
-            tag.putInt("water", FULL_WATER);
+        if (stack.getOrDefault(MIComponents.WATER, 0) != FULL_WATER) {
+            stack.set(MIComponents.WATER, FULL_WATER);
             player.playNotifySound(SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1, 1);
         }
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        CompoundTag tag = stack.getOrCreateTag();
-        int burnTicks = tag.getInt("burnTicks");
-        if (burnTicks > 0) {
-            NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - 5));
-            NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - 5));
+        var fuel = stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+        if (fuel.burnTicks() > 0) {
+            stack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(Math.max(0, fuel.burnTicks() - 5), fuel.maxBurnTicks()));
+            stack.update(MIComponents.WATER, 0, w -> Math.max(0, w - 5));
         }
-        if (tag.getInt("burnTicks") == 0) {
-            tag.remove("maxBurnTicks");
+        if (fuel.burnTicks() == 0) {
+            stack.set(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         }
-        if (tag.getInt("water") == 0) {
+        if (stack.getOrDefault(MIComponents.WATER.get(), 0) == 0) {
             if (entity instanceof Player player) {
                 var inv = player.getInventory();
                 for (int i = 0; i < inv.getContainerSize(); ++i) {
@@ -334,15 +374,14 @@ public class SteamDrillItem
     }
 
     public boolean canUse(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || tag.getInt("water") == 0) {
+        if (stack.getOrDefault(MIComponents.WATER, 0) == 0) {
             return false;
         }
-        return tag.getInt("burnTicks") > 0 || consumeFuel(stack, Simulation.SIMULATE) > 0;
+        return stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY).burnTicks() > 0 || consumeFuel(stack, Simulation.SIMULATE) > 0;
     }
 
     private int consumeFuel(ItemStack stack, Simulation simulation) {
-        int burnTicks = CommonHooks.getBurnTime(getResource(stack).toStack(), null);
+        int burnTicks = getResource(stack).toStack().getBurnTime(null);
         if (burnTicks > 0) {
             if (simulation.isActing()) {
                 var burnt = getResource(stack).toStack();
@@ -359,27 +398,32 @@ public class SteamDrillItem
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
-        return getAllEnchantments(stack).getOrDefault(enchantment, 0);
+    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+        return getAllEnchantments(stack, enchantment.unwrapLookup()).getLevel(enchantment);
     }
 
     @Override
-    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
-        Reference2IntMap<Enchantment> map = new Reference2IntOpenHashMap<>();
+    public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
+        var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (!isNotSilkTouch(stack)) {
-            map.put(Enchantments.SILK_TOUCH, 1);
+            lookup.get(Enchantments.SILK_TOUCH).ifPresent(h -> map.set(h, 1));
         }
-        return map;
+        return map.toImmutable();
+    }
+
+    @Override
+    public boolean isFoil(ItemStack pStack) {
+        return !isNotSilkTouch(pStack);
     }
 
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            return Optional.of(new SteamDrillTooltipData(tag.getInt("water") * 100 / FULL_WATER, tag.getInt("burnTicks"), tag.getInt("maxBurnTicks"),
-                    getResource(stack), getAmount(stack)));
-        } else {
-            return Optional.of(new SteamDrillTooltipData(0, 0, 1, ItemVariant.blank(), 0));
-        }
+        var fuel = stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+        return Optional.of(new SteamDrillTooltipData(
+                stack.getOrDefault(MIComponents.WATER, 0) * 100 / FULL_WATER,
+                fuel.burnTicks(),
+                Math.max(1, fuel.maxBurnTicks()),
+                getResource(stack),
+                getAmount(stack)));
     }
 
     @Override
@@ -424,7 +468,7 @@ public class SteamDrillItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         var data = (SteamDrillTooltipData) getTooltipImage(stack).get();
 
         // Water %
@@ -439,7 +483,11 @@ public class SteamDrillItem
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
 
-        // TODO NEO add active mode (silk touch vs fortune)
+        if (context.registries() != null) {
+            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
+                tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+            }
+        }
     }
 
     @Override

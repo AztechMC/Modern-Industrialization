@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:analog_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:mv_lv_transformer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.mv_lv_transformer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:mv_lv_transformer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.mv_lv_transformer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

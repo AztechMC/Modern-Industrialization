@@ -27,7 +27,7 @@ import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -61,14 +61,14 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
 
     boolean canUse(Player player);
 
-    static ItemPipeInterface ofBuf(FriendlyByteBuf buf) {
+    static ItemPipeInterface ofBuf(RegistryFriendlyByteBuf buf) {
         boolean[] whitelist = new boolean[] { buf.readBoolean() };
         int[] type = new int[] { buf.readInt() };
         int[] priority = new int[] { buf.readInt(), buf.readInt() };
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; ++i)
-            stacks.add(buf.readItem());
-        ItemStack[] upgradeStack = new ItemStack[] { buf.readItem() };
+            stacks.add(ItemStack.OPTIONAL_STREAM_CODEC.decode(buf));
+        ItemStack[] upgradeStack = new ItemStack[] { ItemStack.OPTIONAL_STREAM_CODEC.decode(buf) };
 
         return new ItemPipeInterface() {
             @Override
@@ -128,13 +128,13 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
         };
     }
 
-    default void toBuf(FriendlyByteBuf buf) {
+    default void toBuf(RegistryFriendlyByteBuf buf) {
         buf.writeBoolean(isWhitelist());
         buf.writeInt(getConnectionType());
         buf.writeInt(getPriority(0));
         buf.writeInt(getPriority(1));
         for (int i = 0; i < SLOTS; ++i)
-            buf.writeItem(getStack(i));
-        buf.writeItem(getUpgradeStack());
+            ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, getStack(i));
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, getUpgradeStack());
     }
 }

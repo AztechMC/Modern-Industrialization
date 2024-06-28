@@ -25,10 +25,10 @@ package aztech.modern_industrialization.machines.helper;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyStorageUtil;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import dev.technici4n.grandpower.api.EnergyStorageUtil;
 import net.minecraft.core.Direction;
 
 public class EnergyHelper {

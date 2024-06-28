@@ -1,0 +1,38 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 32,
+  "duration": 1000,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:quantum_machine_hull",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:singularity",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:quantum_circuit",
+      "amount": 2
+    },
+    {
+      "tag": "c:plates/iridium",
+      "amount": 16
+    },
+    {
+      "item": "modern_industrialization:large_advanced_motor",
+      "amount": 8
+    },
+    {
+      "item": "modern_industrialization:titanium_barrel",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:quantum_barrel",
+      "amount": 1
+    }
+  ]
+}
+

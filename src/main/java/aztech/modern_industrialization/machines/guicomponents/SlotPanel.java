@@ -40,7 +40,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -102,7 +102,7 @@ public class SlotPanel {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeVarInt(slotFactories.size());
             for (var type : slotTypes) {
                 buf.writeEnum(type);

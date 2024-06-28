@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "modern_industrialization:copper_dust"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:copper_ingot"
+  }
+}

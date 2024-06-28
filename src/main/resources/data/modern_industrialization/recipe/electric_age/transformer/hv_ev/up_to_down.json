@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "modern_industrialization:hv_ev_transformer"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:ev_hv_transformer"
+  }
+}

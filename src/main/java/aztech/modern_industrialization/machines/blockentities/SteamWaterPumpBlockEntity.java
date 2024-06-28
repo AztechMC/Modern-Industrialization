@@ -50,7 +50,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
         this.registerComponents(inventory);
     }
 
-    private final boolean bronze;
+    public final boolean bronze;
     private final MIInventory inventory;
 
     @Override

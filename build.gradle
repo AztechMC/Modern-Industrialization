@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.81'
+    id 'net.neoforged.moddev' version '0.1.90'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -12,14 +12,19 @@ plugins {
 version = System.getenv("MI_VERSION")
         ? System.getenv("MI_VERSION")
         : "0.0.0-local"
+group = "aztech"
+base {
+    archivesName = "Modern-Industrialization"
+}
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+logger.lifecycle("Modern Industrialization version ${version}")
+
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-        vendor = JvmVendorSpec.matching("jetbrains")
+        languageVersion = JavaLanguageVersion.of(21)
     }
 
     withSourcesJar()
@@ -37,20 +42,13 @@ repositories {
     maven {
         url 'https://maven.blamejared.com'
     }
-    // for WTHIT
-    maven {
-        url "https://maven2.bai.lol"
-        content {
-            includeGroup "lol.bai"
-            includeGroup "mcp.mobius.waila"
-        }
-    }
     // for AE2 and JEI
     maven {
         name "Modmaven"
         url "https://modmaven.dev"
         content {
             includeGroup "appeng"
+            includeGroup "dev.technici4n"
             includeGroup "mezz.jei"
         }
     }
@@ -110,20 +108,10 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-    // for reach entity attributes, required by Magna
     maven {
-        url = "https://maven.jamieswhiteshirt.com/libs-release/"
+        url "https://maven.ftb.dev/snapshots"
         content {
-            includeGroup "com.jamieswhiteshirt"
-        }
-    }
-    // for PlayerAbilityLib
-    maven {
-        name = 'Ladysnake Mods'
-        url = 'https://maven.ladysnake.org/releases'
-        content {
-            includeGroup 'io.github.ladysnake'
-            includeGroupByRegex 'io\\.github\\.onyxstudios.*'
+            includeGroup "dev.ftb.mods"
         }
     }
     maven {
@@ -156,12 +144,13 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-    repositories {
-        maven {
-            url = "https://maven.draylar.dev/releases"
-            content {
-                includeGroup "dev.draylar"
-            }
+    maven {
+        url "https://maven.teamresourceful.com/repository/maven-public/"
+        content {
+            includeGroup "com.teamresourceful"
+            includeGroup "com.teamresourceful.resourcefullib"
+            includeGroup "earth.terrarium.argonauts"
+            includeGroup "earth.terrarium.athena"
         }
     }
     mavenLocal()
@@ -175,14 +164,8 @@ sourceSets {
         resources {
             srcDir "src/generated/resources"
         }
-        runs {
-            modIdentifier "modern_industrialization"
-        }
     }
     client {
-        runs {
-            modIdentifier "modern_industrialization"
-        }
         compileClasspath += sourceSets.main.compileClasspath
         runtimeClasspath += sourceSets.main.runtimeClasspath
         compileClasspath += sourceSets.main.output
@@ -190,112 +173,125 @@ sourceSets {
     }
 }
 
+neoForge {
+    version = project.neo_version
+
+    mods {
+        modern_industrialization {
+            sourceSet sourceSets.main
+        }
+        modern_industrialization_with_client {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+
+    runs {
+        // applies to all the run configs below
+        configureEach {
+            mods = [neoForge.mods.modern_industrialization]
+
+            // Recommended logging data for a userdev environment
+            // The markers can be added/remove as needed separated by commas.
+            // "SCAN": For mods scan.
+            // "REGISTRIES": For firing of registry events.
+            // "REGISTRYDUMP": For getting the contents of all registries.
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+            // Recommended logging level for the console
+            // You can set various levels here.
+            // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+            systemProperty 'forge.logging.console.level', 'debug'
+        }
+
+        client {
+            client()
+            sourceSet = sourceSets.client
+            mods = [neoForge.mods.modern_industrialization_with_client]
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+        }
+
+        server {
+            server()
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+            programArgument '--nogui'
+        }
+
+        // This run config launches GameTestServer and runs all registered gametests, then exits.
+        // By default, the server will crash when no gametests are provided.
+        // The gametest system is also enabled by default for other run configs under the /test command.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
+        }
+
+        data {
+            data()
+            sourceSet = sourceSets.client
+            mods = [neoForge.mods.modern_industrialization_with_client]
+            // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
+            // workingDirectory project.file('run-data')
+
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        autotestServer {
+            server()
+            systemProperty 'modern_industrialization.autoTest', 'true'
+        }
+    }
+}
+
+configurations {
+    localRuntimeOnly
+    runtimeClasspath.extendsFrom localRuntimeOnly
+}
+
 dependencies {
-    implementation "net.neoforged:neoforge:${project.neo_version}"
+    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
 
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
-        implementation "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
-    } else {
-        compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }
 
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+    compileOnly "me.shedaniel:REIPluginCompatibilities-forge-annotations:${project.rei_annotations_version}"
     if (project.runtime_itemlist_mod == "rei") {
-        implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
-    } else {
-        compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+        localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     }
 
+    compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
     if (project.runtime_itemlist_mod == "emi") {
-        implementation "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
-    } else {
-        compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+        localRuntimeOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
+        // Add JEI so that we can use EMI's builtin compat layer
+        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }
 
-    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi"])) {
+    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "none"])) {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
     compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-    runtimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    jarJar("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
-        jarJar.ranged(it, "[$project.patchouli_version,)")
-    }
+//    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+//    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
-    implementation("me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}")
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-//    modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
-//    modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
-//    modRuntimeOnly "lol.bai:badpackets:fabric-${project.badpackets_version}"
-//
+    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+
 //    modImplementation("dev.latvian.mods:kubejs-fabric:${project.kubejs_version}") {
 //        exclude(group: "net.fabricmc.fabric-api")
 //    }
 
-    implementation "appeng:appliedenergistics2-neoforge:${project.ae2_version}"
+    localRuntimeOnly compileOnly("appeng:appliedenergistics2:${project.ae2_version}")
+    compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
+    compileOnly "earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}"
 
-//    // TODO 1.20: FTB stuff
-////    modCompileOnly("dev.ftb.mods:ftb-quests-fabric:${project.ftb_quests_version}") {
-////        exclude(group: "net.fabricmc.fabric-api")
-////        exclude(group: "me.shedaniel")
-////    }
-//    modImplementation("dev.ftb.mods:ftb-teams-fabric:${project.ftb_teams_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//        exclude(group: "me.shedaniel")
-//    }
-}
-
-minecraft.accessTransformers.file file("src/main/resources/META-INF/accesstransformer.cfg")
-
-runs {
-    // applies to all the run configs below
-    configureEach {
-        // Recommended logging data for a userdev environment
-        // The markers can be added/remove as needed separated by commas.
-        // "SCAN": For mods scan.
-        // "REGISTRIES": For firing of registry events.
-        // "REGISTRYDUMP": For getting the contents of all registries.
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-        // Recommended logging level for the console
-        // You can set various levels here.
-        // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
-        modSource project.sourceSets.client
-
-        jvmArgument "-XX:+AllowEnhancedClassRedefinition"
-    }
-
-    client {
-        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-    }
-
-    server {
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-        programArgument '--nogui'
-    }
-
-    // This run config launches GameTestServer and runs all registered gametests, then exits.
-    // By default, the server will crash when no gametests are provided.
-    // The gametest system is also enabled by default for other run configs under the /test command.
-    gameTestServer {
-        systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-    }
-
-    data {
-        // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
-        // workingDirectory project.file('run-data')
-
-        // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
-
-    autotestServer {
-        configure 'server'
-        systemProperty 'modern_industrialization.autoTest', 'true'
-    }
+    compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
+    compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
 }
 
 processResources {
@@ -303,10 +299,12 @@ processResources {
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
+            grandpower_version_range: grandpower_version_range,
+            ae2_version_range: ae2_version_range,
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
 }
@@ -355,12 +353,6 @@ jar {
     from sourceSets.client.output
 }
 
-// TODO: shouldn't NG handle this automatically?
-tasks.named("jarJar") {
-    from "LICENSE"
-    from sourceSets.client.output
-}
-
 // configure the maven publication
 publishing {
     publications {
@@ -371,8 +363,14 @@ publishing {
 
     // select the repositories you want to publish to
     repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
+        maven {
+            credentials {
+                username = System.getenv("MODMAVEN_USER")
+                password = System.getenv("MODMAVEN_PASSWORD")
+            }
+            name = "modmaven"
+            url = "https://modmaven.dev/artifactory/local-releases/"
+        }
     }
 }
 
@@ -454,9 +452,9 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.20.4"
+            addGameVersion "1.21"
             addGameVersion "NeoForge"
-            addGameVersion "Java 17"
+            addGameVersion "Java 21"
 
             relations {
                 requiredDependency "cloth-config"
@@ -464,9 +462,10 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
+                embeddedLibrary "grandpower"
                 embeddedLibrary "patchouli"
             }
-            mainArtifact(tasks.named("jarJar").flatMap { it.archiveFile }) {
+            mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
                 displayName = "Modern Industrialization v${version}"
             }
         }
@@ -474,7 +473,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             forgeGradleIntegration = false
         }
         afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jarJar
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jar
         }
     }
 }
@@ -486,8 +485,8 @@ modrinth {
     versionName = "Modern Industrialization v${version}"
     delegate.changelog = changelog
     versionType = releaseChannel
-    uploadFile = tasks.jarJar
-    gameVersions = ["1.20.4"]
+    uploadFile = tasks.jar
+    gameVersions = ["1.21"]
     loaders = ["neoforge"]
     dependencies {
         required.project "cloth-config"

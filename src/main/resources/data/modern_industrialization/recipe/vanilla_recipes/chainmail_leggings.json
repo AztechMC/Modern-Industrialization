@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "xxx",
+    "x x",
+    "x x"
+  ],
+  "key": {
+    "x": [
+      {
+        "item": "modern_industrialization:iron_ring"
+      }
+    ]
+  },
+  "result": {
+    "id": "minecraft:chainmail_leggings"
+  }
+}

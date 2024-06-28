@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "II ",
+    " HO",
+    "II "
+  ],
+  "key": {
+    "H": {
+      "item": "modern_industrialization:turbo_machine_hull"
+    },
+    "I": {
+      "item": "modern_industrialization:aluminum_cable"
+    },
+    "O": {
+      "item": "modern_industrialization:annealed_copper_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:hv_ev_transformer"
+  }
+}

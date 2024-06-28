@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 16,
+  "duration": 400,
+
+  "item_inputs":[
+    {
+      "item": "modern_industrialization:carbon_dust",
+      "amount": 1
+    },
+    {
+      "tag": "c:dusts/iron",
+      "amount": 4
+    }
+  ],
+
+  "item_outputs": {
+    "item": "modern_industrialization:steel_ingot",
+    "amount": 5
+  }
+}

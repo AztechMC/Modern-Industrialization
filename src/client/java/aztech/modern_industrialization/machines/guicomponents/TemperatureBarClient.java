@@ -23,26 +23,27 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBarClient implements GuiComponentClient {
     public final TemperatureBar.Parameters params;
     public int temperature;
 
-    public TemperatureBarClient(FriendlyByteBuf buf) {
+    public TemperatureBarClient(RegistryFriendlyByteBuf buf) {
         this.params = new TemperatureBar.Parameters(buf.readInt(), buf.readInt(), buf.readInt());
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         this.temperature = buf.readInt();
     }
 
@@ -53,7 +54,7 @@ public class TemperatureBarClient implements GuiComponentClient {
 
     public class Renderer implements ClientComponentRenderer {
 
-        private final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+        private final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
         private final int WIDTH = 100, HEIGHT = 2;
 
         @Override

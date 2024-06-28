@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.viewer.usage;
 
 import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -80,7 +80,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private final MachineCategoryParams params;
 
     private MachineCategory(MachineCategoryParams params, int width, int height) {
-        super((Class) RecipeHolder.class, new MIIdentifier(params.category),
+        super((Class) RecipeHolder.class, MI.id(params.category),
                 Component.translatable("rei_categories.modern_industrialization." + params.category),
                 BuiltInRegistries.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
 
@@ -150,7 +150,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.itemInputs.size()) {
                 var input = recipe.itemInputs.get(i);
-                slot.ingredient(input.ingredient, input.amount, input.probability);
+                slot.ingredient(input.ingredient(), input.amount(), input.probability());
             }
         }
     }
@@ -166,7 +166,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.itemOutputs.size()) {
                 var output = recipe.itemOutputs.get(i);
-                slot.item(output.getStack(), output.probability);
+                slot.item(output.getStack(), output.probability());
             }
         }
     }
@@ -182,7 +182,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
-                slot.fluid(FluidVariant.of(input.fluid), input.amount, input.probability);
+                slot.fluid(FluidVariant.of(input.fluid()), input.amount(), input.probability());
             } else {
                 slot.variant(FluidVariant.blank());
             }
@@ -200,7 +200,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.fluidOutputs.size()) {
                 var output = recipe.fluidOutputs.get(i);
-                slot.fluid(FluidVariant.of(output.fluid), output.amount, output.probability);
+                slot.fluid(FluidVariant.of(output.fluid()), output.amount(), output.probability());
             } else {
                 slot.variant(FluidVariant.blank());
             }
@@ -230,7 +230,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
             }
             case STEAM_ONLY -> {
-                guiGraphics.blit(new MIIdentifier("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
             }
             case ELECTRIC_ONLY -> {
                 EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
@@ -258,7 +258,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
             ItemLike displayedItem;
             if (steelHatchRequired) {
-                displayedItem = BuiltInRegistries.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+                displayedItem = BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch"));
             } else if (conditionsRequired) {
                 displayedItem = MIItem.WRENCH;
             } else {

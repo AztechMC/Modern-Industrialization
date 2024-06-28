@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "bbb",
+    "LHL",
+    "bbb"
+  ],
+  "key":
+  {
+    "b" : {
+      "item" : "modern_industrialization:cadmium_battery"
+    },
+    "H" :{
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "L": {
+      "tag" : "c:plates/battery_alloy"
+    }
+
+  },
+  "result": {
+    "id": "modern_industrialization:ev_storage_unit"
+  }
+}

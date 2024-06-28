@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 4,
+  "duration": 100,
+  "item_inputs": {
+    "item": "minecraft:redstone",
+    "amount": 1
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:molten_redstone",
+    "amount": 90
+  }
+}

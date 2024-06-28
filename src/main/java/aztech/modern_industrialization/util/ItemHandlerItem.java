@@ -29,7 +29,7 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 import net.neoforged.neoforge.items.wrapper.ForwardingItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +39,7 @@ public class ItemHandlerItem extends ForwardingItemHandler {
     public ItemHandlerItem(SlotAccess slot, Function<ItemStack, @Nullable IItemHandler> getter) {
         super(() -> {
             var cap = getter.apply(slot.get());
-            return cap == null ? EmptyHandler.INSTANCE : cap;
+            return cap == null ? EmptyItemHandler.INSTANCE : cap;
         });
         this.slot = slot;
     }
@@ -78,7 +78,7 @@ public class ItemHandlerItem extends ForwardingItemHandler {
 
         // Replace stack, and stow away the new result
         var newStack = this.slot.get();
-        if (ItemStack.isSameItemSameTags(stackCopy, newStack)) {
+        if (ItemStack.isSameItemSameComponents(stackCopy, newStack)) {
             stackCopy.grow(1);
         } else if (!newStack.isEmpty()) {
             // TODO stow

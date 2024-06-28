@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:dyes/black"
+    },
+    "p": {
+      "tag": "modern_industrialization:fluid_pipes"
+    }
+  },
+  "pattern": [
+    "pd"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:black_fluid_pipe"
+  }
+}

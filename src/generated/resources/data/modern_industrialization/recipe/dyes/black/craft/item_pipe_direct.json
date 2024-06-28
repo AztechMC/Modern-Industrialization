@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "d": {
+      "tag": "c:dyes/black"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "GdG",
+    "CCC"
+  ],
+  "result": {
+    "count": 16,
+    "id": "modern_industrialization:black_item_pipe"
+  }
+}

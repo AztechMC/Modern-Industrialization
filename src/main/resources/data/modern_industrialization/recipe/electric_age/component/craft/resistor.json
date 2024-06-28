@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " P ",
+    "FCF",
+    " P "
+  ],
+  "key":
+  {
+    "P" : {
+      "item" : "minecraft:paper"
+    },
+    "F" : {
+      "item" : "modern_industrialization:copper_fine_wire"
+    },
+    "C" : {
+      "tag" : "c:dusts/coal"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:resistor",
+    "count": 3
+  }
+}

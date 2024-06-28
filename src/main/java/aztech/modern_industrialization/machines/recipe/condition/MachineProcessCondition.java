@@ -27,16 +27,20 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 public interface MachineProcessCondition {
     private static Codec<MachineProcessCondition> makeCodec(boolean syncToClient) {
         return ResourceLocation.CODEC
-                .<Codec<? extends MachineProcessCondition>>flatXmap(
+                .<MapCodec<? extends MachineProcessCondition>>flatXmap(
                         resLoc -> Optional.ofNullable(MachineProcessConditions.get(resLoc))
                                 .map(DataResult::success)
                                 .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition " + resLoc)),
@@ -47,13 +51,13 @@ public interface MachineProcessCondition {
     }
 
     Codec<MachineProcessCondition> CODEC = makeCodec(false);
-    Codec<MachineProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
+    StreamCodec<ByteBuf, MachineProcessCondition> STREAM_CODEC = ByteBufCodecs.fromCodec(makeCodec(true));
 
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
 
     void appendDescription(List<Component> list);
 
-    Codec<? extends MachineProcessCondition> codec(boolean syncToClient);
+    MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient);
 
     interface Context {
         MachineBlockEntity getBlockEntity();

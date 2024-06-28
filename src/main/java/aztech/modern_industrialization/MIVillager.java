@@ -58,8 +58,8 @@ public class MIVillager {
         level3.add(buyItemsFromVillager(MIMaterials.BRONZE.getPart(MIParts.GEAR), 4, 1, 5));
         level3.add(buyItemsFromVillager(MIMaterials.BRONZE.getPart(MIParts.ROTOR), 4, 1, 5));
         level3.add(buyItemsFromVillager(MIMaterials.STEEL.getPart(MIParts.INGOT), 6, 3, 10));
-        level3.add(sellItemsToVillager(BuiltInRegistries.ITEM.get(new MIIdentifier("item_pipe")), 4, 20, 10));
-        level3.add(sellItemsToVillager(BuiltInRegistries.ITEM.get(new MIIdentifier("fluid_pipe")), 4, 20, 10));
+        level3.add(sellItemsToVillager(BuiltInRegistries.ITEM.get(MI.id("item_pipe")), 4, 20, 10));
+        level3.add(sellItemsToVillager(BuiltInRegistries.ITEM.get(MI.id("fluid_pipe")), 4, 20, 10));
 
         var level4 = event.getTrades().get(4);
         level4.add(buyItemsFromVillager(MIMaterials.STEEL.getPart(MIParts.GEAR), 5, 1, 5));

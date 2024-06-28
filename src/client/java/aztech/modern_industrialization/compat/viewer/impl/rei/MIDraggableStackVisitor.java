@@ -30,6 +30,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -53,7 +54,7 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
     }
 
     private boolean acceptsStack(DraggingContext<Screen> context, DraggableStack stack) {
-        FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
+        FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(FluidStackHooksForge.toForge(fs)) : null;
         ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
         @Nullable
         GuiEventListener element = context.getScreen().getChildAt(context.getCurrentPosition().x, context.getCurrentPosition().y)
@@ -87,7 +88,7 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
     @Override
     public Stream<BoundsProvider> getDraggableAcceptingBounds(DraggingContext<Screen> context, DraggableStack stack) {
         List<BoundsProvider> bounds = new ArrayList<>();
-        FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
+        FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(FluidStackHooksForge.toForge(fs)) : null;
         ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
         for (GuiEventListener element : context.getScreen().children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {

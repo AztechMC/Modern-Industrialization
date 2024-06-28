@@ -32,7 +32,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/configurable_tank_asbl",
-      "text": "The Configurable Tank is the fluid equivalent of the Configurable Chest.$(br2)It has 9 configurable slots that can each hold 16 buckets, and auto-extract functionality! Useful for automation with many different fluids!"
+      "text": "The Configurable Tank is the fluid equivalent of the Configurable Chest.$(br2)It has 9 configurable slots that can each hold 16 buckets, and auto-eject functionality! Useful for automation with many different fluids!"
     }
   ],
   "sortnum": 107

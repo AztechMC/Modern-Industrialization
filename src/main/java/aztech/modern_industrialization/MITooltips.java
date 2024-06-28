@@ -23,14 +23,16 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import aztech.modern_industrialization.machines.components.CasingComponent;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
@@ -339,12 +341,12 @@ public class MITooltips {
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
             (itemStack, item) -> {
-                if (SpeedUpgrade.UPGRADES.containsKey(item)) {
-                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(SpeedUpgrade.UPGRADES.get(item)).build());
+                var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
+                if (upgrade != null) {
+                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
                 } else {
                     return Optional.empty();
                 }
-
             });
 
     public static final TooltipAttachment UPGRADES = TooltipAttachment.ofMultilines(
@@ -386,6 +388,13 @@ public class MITooltips {
             MIText.ConfigCardHelpItems5,
             MIText.ConfigCardHelpClear);
 
+    public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
+            (itemStack, item) -> {
+                CableTier tier = CasingComponent.getCasingTier(item);
+                return tier == null ? Optional.empty()
+                        : Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
+            });
+
     // Long Tooltip with only text, no need of MIText
 
     public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
@@ -416,7 +425,7 @@ public class MITooltips {
     }
 
     private static void add(String itemId, String... englishTooltipsLine) {
-        add(BuiltInRegistries.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
+        add(BuiltInRegistries.ITEM.get(MI.id(itemId)), englishTooltipsLine);
     }
 
     static {

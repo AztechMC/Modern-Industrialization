@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "cdc",
+    "tbt",
+    "cdc"
+  ],
+
+  "key":
+  {
+    "d" : {
+      "item" : "modern_industrialization:diode"
+    },
+    "c" : {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "t" : {
+      "item" : "modern_industrialization:transistor"
+    },
+    "b" :{
+      "item" : "modern_industrialization:electronic_circuit_board"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:electronic_circuit"
+  }
+
+}

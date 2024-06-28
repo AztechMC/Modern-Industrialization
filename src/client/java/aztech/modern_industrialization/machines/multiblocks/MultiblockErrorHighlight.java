@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
     private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
-    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new BufferBuilder(128));
+    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MultiblockErrorHighlight::end);
@@ -57,6 +57,8 @@ public class MultiblockErrorHighlight {
         if (highlightQueue.size() > 0) {
             RenderSystem.clear(256, Minecraft.ON_OSX);
             var poseStack = event.getPoseStack();
+            poseStack.pushPose();
+            poseStack.mulPose(event.getModelViewMatrix());
             for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
                 poseStack.pushPose();
                 Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
@@ -77,6 +79,7 @@ public class MultiblockErrorHighlight {
 
                 poseStack.popPose();
             }
+            poseStack.popPose();
             immediate.endBatch();
             highlightQueue.clear();
         }

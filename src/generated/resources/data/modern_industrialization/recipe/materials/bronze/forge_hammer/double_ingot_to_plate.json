@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "item": "modern_industrialization:bronze_double_ingot"
+  },
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:bronze_plate"
+  }
+}

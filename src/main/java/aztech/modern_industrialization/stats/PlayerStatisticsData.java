@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +39,7 @@ public class PlayerStatisticsData extends MISavedData {
     private final Map<UUID, PlayerStatistics> stats = new HashMap<>();
     private final Function<UUID, PlayerStatistics> statsFactory = uuid -> new PlayerStatistics(this, uuid);
 
-    private PlayerStatisticsData(CompoundTag tag) {
+    private PlayerStatisticsData(CompoundTag tag, HolderLookup.Provider registries) {
         for (var key : tag.getAllKeys()) {
             var uuid = UUID.fromString(key);
             stats.put(uuid, new PlayerStatistics(this, uuid, tag.getCompound(key)));
@@ -63,7 +64,7 @@ public class PlayerStatisticsData extends MISavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         for (var entry : stats.entrySet()) {
             tag.put(entry.getKey().toString(), entry.getValue().toTag());
         }

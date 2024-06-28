@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "c:plates/steel",
+      "amount": 5
+    },
+    {
+      "item": "modern_industrialization:motor",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:hopper",
+      "amount": 2
+    }
+  ]
+}

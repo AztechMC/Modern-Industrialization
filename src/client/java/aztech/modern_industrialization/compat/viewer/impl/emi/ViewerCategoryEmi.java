@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -147,7 +147,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 isFluid = true;
                 hasBackground = false;
                 if (!fluid.isBlank()) {
-                    ing = EmiStack.of(fluid.getFluid(), fluid.getNbt());
+                    ing = EmiStack.of(fluid.getFluid(), fluid.getComponentsPatch());
                 }
             } else {
                 throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
@@ -159,7 +159,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
             isFluid = true;
             hasBackground = false;
-            ing = EmiStack.of(fluid.getFluid(), fluid.getNbt(), amount);
+            ing = EmiStack.of(fluid.getFluid(), fluid.getComponentsPatch(), amount);
             processProbability(probability);
             return this;
         }
@@ -269,7 +269,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
                 @Override
                 public void arrow(int x, int y) {
-                    texture(new MIIdentifier("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
+                    texture(MI.id("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
                 }
 
                 @Override

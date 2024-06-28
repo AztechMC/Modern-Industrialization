@@ -10,7 +10,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/steel/steel_upgrade_asbl",
-      "text":  "To upgrade a bronze machine, craft a Steel Upgrade and apply it in a Smithing Table."
+      "text":  "To upgrade a bronze machine, craft a Steel Upgrade and apply it in a Crafting Table.$(br2)You can also sneak and right-click a bronze machine with the upgrade to apply it directly."
     },
     {
       "type": "text",
@@ -18,7 +18,7 @@
     },
     {
       "type": "text",
-      "text": "Steel tanks store up to 8 buckets.$(br2)You can check all recipes in REI!"
+      "text": "Steel tanks store up to 16 buckets.$(br2)You can check all recipes in REI!"
     },
     {
       "type": "crafting",

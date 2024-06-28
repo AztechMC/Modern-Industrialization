@@ -1,0 +1,46 @@
+{
+  "values": {
+    "#c:dusts/coal": {
+      "burn_time": 1600
+    },
+    "modern_industrialization:carbon_dust": {
+      "burn_time": 6400
+    },
+    "modern_industrialization:carbon_tiny_dust": {
+      "burn_time": 640
+    },
+    "modern_industrialization:coal_crushed_dust": {
+      "burn_time": 1600
+    },
+    "modern_industrialization:coal_tiny_dust": {
+      "burn_time": 160
+    },
+    "modern_industrialization:coke": {
+      "burn_time": 6400
+    },
+    "modern_industrialization:coke_block": {
+      "burn_time": 57600
+    },
+    "modern_industrialization:coke_dust": {
+      "burn_time": 6400
+    },
+    "modern_industrialization:guidebook": {
+      "burn_time": 300
+    },
+    "modern_industrialization:lignite_coal": {
+      "burn_time": 1600
+    },
+    "modern_industrialization:lignite_coal_block": {
+      "burn_time": 16000
+    },
+    "modern_industrialization:lignite_coal_crushed_dust": {
+      "burn_time": 1600
+    },
+    "modern_industrialization:lignite_coal_dust": {
+      "burn_time": 1600
+    },
+    "modern_industrialization:lignite_coal_tiny_dust": {
+      "burn_time": 160
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/aluminum"
+    },
+    "R": {
+      "item": "modern_industrialization:aluminum_ring"
+    },
+    "b": {
+      "item": "modern_industrialization:aluminum_bolt"
+    }
+  },
+  "pattern": [
+    "PbP",
+    "bRb",
+    "PbP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:aluminum_gear"
+  }
+}

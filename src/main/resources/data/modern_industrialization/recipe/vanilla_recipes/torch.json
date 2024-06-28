@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "s"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:coke"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "minecraft:torch",
+    "count": 8
+  }
+}

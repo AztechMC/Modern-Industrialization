@@ -23,14 +23,15 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MIComponents;
 import net.minecraft.world.item.ItemStack;
 
 public interface ActivatableChestItem {
     default boolean isActivated(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getBoolean("activated");
+        return stack.getOrDefault(MIComponents.ACTIVATED.get(), false);
     }
 
     default void setActivated(ItemStack stack, boolean activated) {
-        stack.getOrCreateTag().putBoolean("activated", activated);
+        stack.set(MIComponents.ACTIVATED.get(), activated);
     }
 }

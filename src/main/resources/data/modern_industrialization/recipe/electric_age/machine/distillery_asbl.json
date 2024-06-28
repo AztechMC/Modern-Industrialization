@@ -1,0 +1,31 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "gfg",
+    "mHm",
+    "CpC"
+  ],
+  "key": {
+    "f": {
+      "tag" : "modern_industrialization:fluid_pipes"
+    },
+    "m" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "g" : {
+      "tag" : "c:glass_blocks"
+    },
+    "C" : {
+      "item" : "modern_industrialization:electronic_circuit"
+    },
+    "p": {
+      "item" : "modern_industrialization:electrum_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:distillery"
+  }
+}

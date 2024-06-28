@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "PCP",
+    "QbQ",
+    "PCP"
+  ],
+
+  "key":
+  {
+    "P" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:cooling_cell"
+    },
+    "Q" : {
+      "item" : "modern_industrialization:qubit"
+    },
+    "b" :{
+      "item" : "modern_industrialization:quantum_circuit_board"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:quantum_circuit"
+  }
+
+}

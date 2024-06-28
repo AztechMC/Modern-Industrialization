@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:ingots/platinum"
+    },
+    "y": {
+      "item": "modern_industrialization:platinum_ingot"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:platinum_block"
+  }
+}

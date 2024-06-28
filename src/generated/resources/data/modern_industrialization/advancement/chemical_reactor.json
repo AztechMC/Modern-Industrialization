@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:electronic_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:chemical_reactor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.chemical_reactor.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:chemical_reactor"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.chemical_reactor"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

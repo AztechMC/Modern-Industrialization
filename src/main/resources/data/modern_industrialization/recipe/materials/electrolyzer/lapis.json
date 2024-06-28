@@ -1,0 +1,28 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 32,
+  "duration": 2400,
+  "item_inputs": {
+    "tag": "c:dusts/lapis",
+    "amount": 18
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:aluminum_dust",
+      "amount": 3
+    },
+    {
+      "item": "modern_industrialization:sodium_dust",
+      "amount": 2
+    },
+    {
+      "item": "modern_industrialization:silicon_dust",
+      "amount": 1
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:oxygen",
+    "amount": 2500,
+    "probability": 0.5
+  }
+}

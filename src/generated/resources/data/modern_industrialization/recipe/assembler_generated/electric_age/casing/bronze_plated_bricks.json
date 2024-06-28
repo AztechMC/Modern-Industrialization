@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "c:plates/bronze"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:fire_clay_bricks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:bronze_plated_bricks"
+    }
+  ]
+}

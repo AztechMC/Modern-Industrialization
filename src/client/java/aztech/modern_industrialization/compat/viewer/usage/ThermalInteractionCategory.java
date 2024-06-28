@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
@@ -50,7 +50,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
     private final int px, py;
 
     protected ThermalInteractionCategory() {
-        super(Recipe.class, new MIIdentifier("thermal_interaction"), MIText.ThermalInteraction.text(),
+        super(Recipe.class, MI.id("thermal_interaction"), MIText.ThermalInteraction.text(),
                 new Icon.Texture(MachineScreen.SLOT_ATLAS, 145, 1), 150, 100);
 
         this.centerX = width / 2;
@@ -102,7 +102,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
                 @Override
                 public ItemVariant getVariant() {
-                    return ItemVariant.of(BuiltInRegistries.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
+                    return ItemVariant.of(BuiltInRegistries.ITEM.get(MI.id(String.format("nuclear_%s_hatch", s))));
                 }
             }, CategoryType.THERMAL_PROPERTIES));
         }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:ingots/antimony"
+    },
+    "y": {
+      "item": "modern_industrialization:antimony_ingot"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:antimony_block"
+  }
+}

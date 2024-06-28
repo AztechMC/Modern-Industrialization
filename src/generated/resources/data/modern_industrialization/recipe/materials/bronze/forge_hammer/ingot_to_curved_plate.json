@@ -1,0 +1,11 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "count": 2,
+  "ingredient": {
+    "tag": "c:ingots/bronze"
+  },
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:bronze_curved_plate"
+  }
+}

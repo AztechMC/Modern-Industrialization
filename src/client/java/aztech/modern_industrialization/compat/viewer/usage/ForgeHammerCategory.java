@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.compat.viewer.usage;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
@@ -41,7 +41,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammerRecipe>> {
-    public static final ResourceLocation ID = new MIIdentifier("forge_hammer");
+    public static final ResourceLocation ID = MI.id("forge_hammer");
 
     private final int startPointX;
     private final int startPointY;

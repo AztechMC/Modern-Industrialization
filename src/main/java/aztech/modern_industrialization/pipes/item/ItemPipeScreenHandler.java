@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
@@ -32,10 +32,9 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +54,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
     public static final int UPGRADE_SLOT_X = 150, UPGRADE_SLOT_Y = 70;
 
-    public ItemPipeScreenHandler(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+    public ItemPipeScreenHandler(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(syncId, playerInventory, ItemPipeInterface.ofBuf(buf));
     }
 
@@ -108,7 +107,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
                 }
                 // Return if the stack is already in the filter.
                 for (int i = 0; i < 21; i++) {
-                    if (ItemStackHelper.areEqualIgnoreCount(slots.get(36 + i).getItem(), slot.getItem())) {
+                    if (ItemStack.isSameItemSameComponents(slots.get(36 + i).getItem(), slot.getItem())) {
                         return ItemStack.EMPTY;
                     }
                 }
@@ -216,7 +215,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0) != 0;
+            return stack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES) != null;
         }
 
         @Override

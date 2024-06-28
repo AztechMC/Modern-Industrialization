@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -124,17 +125,24 @@ public final class MIInventory implements IComponent {
         }
     }
 
-    public void writeNbt(CompoundTag tag) {
-        NbtHelper.putList(tag, "items", itemStorage.stacks, ConfigurableItemStack::toNbt);
-        NbtHelper.putList(tag, "fluids", fluidStorage.stacks, ConfigurableFluidStack::toNbt);
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        NbtHelper.putList(tag, "items", itemStorage.stacks, configurableItemStack -> configurableItemStack.toNbt(registries));
+        NbtHelper.putList(tag, "fluids", fluidStorage.stacks, configurableFluidStack -> configurableFluidStack.toNbt(registries));
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 
-        NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::new);
-        NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::new);
+        NbtHelper.getList(tag, "items", newItemStacks, t -> new ConfigurableItemStack(t, registries));
+        NbtHelper.getList(tag, "fluids", newFluidStacks, t -> new ConfigurableFluidStack(t, registries));
+
+        if (isUpgradingMachine) {
+            // Increase fluid slot capacities if upgrading
+            for (int i = 0; i < newFluidStacks.size() && i < fluidStorage.stacks.size(); ++i) {
+                newFluidStacks.get(i).setCapacity(fluidStorage.stacks.get(i).getCapacity());
+            }
+        }
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
         SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);

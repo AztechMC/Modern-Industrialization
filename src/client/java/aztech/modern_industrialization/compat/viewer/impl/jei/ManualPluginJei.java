@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.recipe.RecipeType;
@@ -39,8 +39,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @JeiPlugin
+@REIPluginCompatIgnore
 public class ManualPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = new MIIdentifier("manual");
+    private static final ResourceLocation ID = MI.id("manual");
 
     private IJeiRuntime jeiRuntime;
 

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "ae2"
+    }
+  ],
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 90,
+      "fluid": "modern_industrialization:molten_redstone"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "ae2:printed_calculation_processor"
+    },
+    {
+      "amount": 1,
+      "item": "ae2:printed_silicon"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "ae2:calculation_processor"
+    }
+  ]
+}

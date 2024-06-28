@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "item": "modern_industrialization:iron_double_ingot"
+  },
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:iron_bolt"
+  }
+}

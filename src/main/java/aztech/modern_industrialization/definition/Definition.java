@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.definition;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public abstract class Definition {
     public Definition(String englishName, String path, boolean addToTranslation) {
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(englishName, "englishName");
-        this.id = new MIIdentifier(path);
+        this.id = MI.id(path);
         this.englishName = englishName;
         if (addToTranslation) {
             TRANSLATABLE_DEFINITION.add(this);

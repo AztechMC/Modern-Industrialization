@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:electric_blast_furnace",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:electronic_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.electronic_circuit.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:electronic_circuit"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.electronic_circuit"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

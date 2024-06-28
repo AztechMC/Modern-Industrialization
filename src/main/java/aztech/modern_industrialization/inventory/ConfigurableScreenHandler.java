@@ -69,6 +69,15 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         }
     }
 
+    public void updateSlot(int index, Slot slot) {
+        var existingSlot = getSlot(index);
+        var slotGroup = slotGroups.remove(existingSlot);
+        if (slotGroup != null) {
+            slotGroups.put(slot, slotGroup);
+        }
+        this.slots.set(index, slot);
+    }
+
     protected Slot addSlot(Slot slot, SlotGroup slotGroup) {
         slotGroups.put(slot, slotGroup);
         slotGroupIndices.add(slotGroup);
@@ -197,7 +206,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 ItemStack targetStack = targetSlot.getItem();
 
                 if (filter.test(targetSlot) && targetSlot.mayPlace(sourceStack)
-                        && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.isSameItemSameTags(targetStack, sourceStack))) {
+                        && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.isSameItemSameComponents(targetStack, sourceStack))) {
                     int maxInsert = targetSlot.getMaxStackSize(sourceStack) - targetStack.getCount();
                     if (maxInsert > 0) {
                         ItemStack newTargetStack = sourceStack.split(maxInsert);

@@ -30,12 +30,15 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import net.minecraft.Util;
+import java.util.Optional;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.apache.commons.io.IOUtils;
@@ -53,8 +56,10 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     @Override
     public void buildRecipes(RecipeOutput consumer) {
         var nonGeneratedResources = packOutput.getOutputFolder().resolve("../../main/resources");
-        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new PathPackResources("ngr", nonGeneratedResources, true)))) {
-            var possibleTargets = manager.listResources("recipes", path -> path.getPath().endsWith(".json"));
+        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new PathPackResources(
+                new PackLocationInfo("ngr", Component.literal("ngr"), PackSource.DEFAULT, Optional.empty()),
+                nonGeneratedResources)))) {
+            var possibleTargets = manager.listResources("recipe", path -> path.getPath().endsWith(".json"));
             for (var entry : possibleTargets.entrySet()) {
                 var pathId = entry.getKey();
                 if (shouldConvertToAssembler(pathId)) {
@@ -84,11 +89,11 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     public static void convertToAssembler(RecipeOutput consumer, ResourceLocation recipeId, byte[] recipe) {
         String recipeString = new String(recipe, StandardCharsets.UTF_8);
         var recipeJson = JsonParser.parseString(recipeString);
-        var parsedRecipe = ShapedRecipe.Serializer.CODEC.parse(JsonOps.INSTANCE, recipeJson);
+        var parsedRecipe = ShapedRecipe.Serializer.CODEC.codec().parse(JsonOps.INSTANCE, recipeJson);
 
-        var shapedRecipe = Util.getOrThrow(parsedRecipe, m -> new RuntimeException("Failed to parse shaped recipe " + recipeId + ": " + m));
+        var shapedRecipe = parsedRecipe.getOrThrow(m -> new RuntimeException("Failed to parse shaped recipe " + recipeId + ": " + m));
 
-        String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - "_asbl.json".length());
+        String outputSuffix = recipeId.getPath().substring("recipe/".length(), recipeId.getPath().length() - "_asbl.json".length());
         new MachineRecipeBuilder(MIRecipeJson.assemblerFromShaped(shapedRecipe))
                 .offerTo(consumer, "assembler_generated/" + outputSuffix);
     }

@@ -26,17 +26,16 @@ package aztech.modern_industrialization.compat.viewer.impl.emi;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.compat.viewer.usage.ForgeHammerCategory;
 import aztech.modern_industrialization.network.machines.ForgeHammerMoveRecipePacket;
-import dev.emi.emi.api.EmiFillAction;
-import dev.emi.emi.api.EmiRecipeHandler;
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.Nullable;
 
-class ForgeHammerRecipeHandler implements EmiRecipeHandler<ForgeHammerScreenHandler> {
+class ForgeHammerRecipeHandler implements StandardRecipeHandler<ForgeHammerScreenHandler> {
     @Override
     public List<Slot> getInputSources(ForgeHammerScreenHandler handler) {
         List<Slot> inputs = new ArrayList<>();
@@ -67,19 +66,18 @@ class ForgeHammerRecipeHandler implements EmiRecipeHandler<ForgeHammerScreenHand
     }
 
     @Override
-    public boolean performFill(EmiRecipe recipe, AbstractContainerScreen<ForgeHammerScreenHandler> screen, EmiFillAction action, int amount) {
+    public boolean craft(EmiRecipe recipe, EmiCraftContext<ForgeHammerScreenHandler> context) {
         new ForgeHammerMoveRecipePacket(
-                screen.getMenu().containerId,
+                context.getScreenHandler().containerId,
                 recipe.getId(),
-                switch (action) {
-                case FILL -> 0;
+                switch (context.getDestination()) {
+                case NONE -> 0;
                 case CURSOR -> 1;
-                case QUICK_MOVE -> 2;
+                case INVENTORY -> 2;
                 },
-                amount).sendToServer();
+                context.getAmount()).sendToServer();
 
-        Minecraft.getInstance().setScreen(screen);
-
+        Minecraft.getInstance().setScreen(context.getScreen());
         return true;
     }
 }

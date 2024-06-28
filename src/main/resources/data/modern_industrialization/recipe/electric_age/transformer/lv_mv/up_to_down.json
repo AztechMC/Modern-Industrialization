@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "modern_industrialization:lv_mv_transformer"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:mv_lv_transformer"
+  }
+}

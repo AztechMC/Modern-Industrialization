@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 20,
+  "duration": 240,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:ethylbenzene",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:steam",
+      "amount": 2000
+    }
+  ],
+  "item_inputs": {
+    "tag": "c:dusts/iron",
+    "amount": 1
+  },
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:styrene",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 500
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "pb"
+  ],
+  "key": {
+    "p": {
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    "b": {
+      "item": "water_bucket"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:fluid_pipe"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "bbb",
+    "LHL",
+    "bbb"
+  ],
+  "key":
+  {
+    "b" : {
+      "item" : "modern_industrialization:plutonium_battery"
+    },
+    "H" :{
+      "item" : "modern_industrialization:quantum_machine_hull"
+    },
+    "L": {
+      "tag" : "c:plates/battery_alloy"
+    }
+
+  },
+  "result": {
+    "id": "modern_industrialization:superconductor_storage_unit"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:cut_copper_stairs"
+    },
+    {
+      "item": "modern_industrialization:wax"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:waxed_cut_copper_stairs"
+  }
+}

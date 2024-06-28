@@ -28,19 +28,21 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.network.BasePacket;
-import net.minecraft.network.FriendlyByteBuf;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract) implements BasePacket {
-    public SetAutoExtractPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readBoolean(), buf.readBoolean());
-    }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeBoolean(isItem);
-        buf.writeBoolean(isExtract);
-    }
+    public static final StreamCodec<ByteBuf, SetAutoExtractPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            SetAutoExtractPacket::syncId,
+            ByteBufCodecs.BOOL,
+            SetAutoExtractPacket::isItem,
+            ByteBufCodecs.BOOL,
+            SetAutoExtractPacket::isExtract,
+            SetAutoExtractPacket::new);
 
     @Override
     public void handle(Context ctx) {

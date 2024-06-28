@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    " e ",
+    "PPP",
+    "SSS"
+  ],
+
+  "key":
+  {
+    "S" : {
+      "tag" : "c:plates/silicon"
+    },
+    "e" : {
+      "item" : "modern_industrialization:electrum_fine_wire"
+    },
+    "P" :{
+      "tag" : "c:plates/steel"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:transistor",
+    "count": 2
+  }
+
+}

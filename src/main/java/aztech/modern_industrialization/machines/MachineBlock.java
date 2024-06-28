@@ -25,16 +25,21 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.blocks.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.List;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -58,24 +63,31 @@ public class MachineBlock extends Block implements TickableBlock {
         return blockEntityConstructor.apply(pos, state);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack handStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
         if (world.isClientSide) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         } else {
             BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof MachineBlockEntity machine) {
-                InteractionResult beResult = machine.onUse(player, hand, MachineOverlay.findHitSide(hit));
+                var beResult = machine.useItemOn(player, hand, MachineOverlay.findHitSide(hit));
                 if (beResult.consumesAction()) {
                     world.blockUpdated(pos, Blocks.AIR);
                     return beResult;
-                } else {
-                    machine.openMenu((ServerPlayer) player);
                 }
             }
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof MachineBlockEntity machine) {
+            machine.openMenu((ServerPlayer) player);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -85,9 +97,8 @@ public class MachineBlock extends Block implements TickableBlock {
         ((MachineBlockEntity) be).onPlaced(placer, itemStack);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {
             // Drop items
             BlockEntity be = world.getBlockEntity(pos);
@@ -138,6 +149,17 @@ public class MachineBlock extends Block implements TickableBlock {
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine) {
             machine.refreshRedstoneStatus();
+        }
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
+            @Nullable BlockPos sourcePos) {
+        if (renderView instanceof ServerLevel) {
+            // Well... we pull the information from the model, so nothing to do here.
+            return state;
+        } else {
+            return CommonProxy.INSTANCE.getMachineCasingBlockState(state, renderView, pos);
         }
     }
 }

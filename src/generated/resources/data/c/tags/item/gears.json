@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#c:gears/aluminum",
+    "#c:gears/bronze",
+    "#c:gears/copper",
+    "#c:gears/gold",
+    "#c:gears/invar",
+    "#c:gears/iron",
+    "#c:gears/stainless_steel",
+    "#c:gears/steel",
+    "#c:gears/tin",
+    "#c:gears/titanium"
+  ]
+}

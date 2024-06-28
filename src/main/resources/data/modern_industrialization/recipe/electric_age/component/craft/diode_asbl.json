@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "ePg",
+    "eSg",
+    "ePg"
+  ],
+
+  "key":
+  {
+    "S" : {
+      "tag" : "c:plates/silicon"
+    },
+    "g" : {
+      "tag" : "c:glass_blocks"
+    },
+    "e" : {
+      "item" : "modern_industrialization:electrum_fine_wire"
+    },
+    "P" :{
+      "tag" : "c:plates/steel"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:diode"
+  }
+
+}

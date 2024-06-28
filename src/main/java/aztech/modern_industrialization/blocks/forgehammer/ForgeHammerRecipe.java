@@ -24,17 +24,19 @@
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIRegistries;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -43,15 +45,26 @@ public record ForgeHammerRecipe(
         Ingredient ingredient,
         int count,
         ItemStack result,
-        int hammerDamage) implements Recipe<Container> {
+        int hammerDamage) implements Recipe<RecipeInput> {
 
-    private static final Codec<ForgeHammerRecipe> CODEC = RecordCodecBuilder.create(
+    private static final MapCodec<ForgeHammerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(ForgeHammerRecipe::ingredient),
-                    ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "count", 1).forGetter(ForgeHammerRecipe::count),
-                    ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(ForgeHammerRecipe::result),
-                    ExtraCodecs.strictOptionalField(ExtraCodecs.NON_NEGATIVE_INT, "damage", 0).forGetter(ForgeHammerRecipe::hammerDamage))
+                    ExtraCodecs.POSITIVE_INT.optionalFieldOf("count", 1).forGetter(ForgeHammerRecipe::count),
+                    ItemStack.CODEC.fieldOf("result").forGetter(ForgeHammerRecipe::result),
+                    ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("damage", 0).forGetter(ForgeHammerRecipe::hammerDamage))
                     .apply(instance, ForgeHammerRecipe::new));
+
+    private static final StreamCodec<RegistryFriendlyByteBuf, ForgeHammerRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredient.CONTENTS_STREAM_CODEC,
+            ForgeHammerRecipe::ingredient,
+            ByteBufCodecs.VAR_INT,
+            ForgeHammerRecipe::count,
+            ItemStack.STREAM_CODEC,
+            ForgeHammerRecipe::result,
+            ByteBufCodecs.VAR_INT,
+            ForgeHammerRecipe::hammerDamage,
+            ForgeHammerRecipe::new);
 
     @Override
     public boolean isSpecial() {
@@ -59,12 +72,12 @@ public record ForgeHammerRecipe(
     }
 
     @Override
-    public boolean matches(Container inv, Level world) {
+    public boolean matches(RecipeInput recipeInput, Level world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider registryAccess) {
         throw new UnsupportedOperationException();
     }
 
@@ -79,7 +92,7 @@ public record ForgeHammerRecipe(
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
         return result;
     }
 
@@ -95,25 +108,13 @@ public record ForgeHammerRecipe(
 
     public static class Serializer implements RecipeSerializer<ForgeHammerRecipe> {
         @Override
-        public Codec<ForgeHammerRecipe> codec() {
+        public MapCodec<ForgeHammerRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public ForgeHammerRecipe fromNetwork(FriendlyByteBuf buf) {
-            return new ForgeHammerRecipe(
-                    Ingredient.fromNetwork(buf),
-                    buf.readVarInt(),
-                    buf.readItem(),
-                    buf.readVarInt());
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, ForgeHammerRecipe recipe) {
-            recipe.ingredient.toNetwork(buf);
-            buf.writeVarInt(recipe.count);
-            buf.writeItem(recipe.result);
-            buf.writeVarInt(recipe.hammerDamage);
+        public StreamCodec<RegistryFriendlyByteBuf, ForgeHammerRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 }

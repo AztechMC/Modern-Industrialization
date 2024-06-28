@@ -73,15 +73,15 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
                 .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', Tags.Items.GLASS)
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', Tags.Items.GLASS_BLOCKS)
                 .exportToAssembler();
         new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###")
                 .addTaggedPart('#', PLATE)
-                .addInput('b', "#forge:barrels/wooden")
+                .addInput('b', Tags.Items.BARRELS_WOODEN)
                 .exportToAssembler();
 
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)
-                .addPart('c', CURVED_PLATE).addPart('R', ROD).addTaggedPart('p', PLATE);
+                .addPart('c', CURVED_PLATE).addTaggedPart('R', ROD).addTaggedPart('p', PLATE);
 
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);
@@ -126,10 +126,10 @@ public final class StandardRecipes {
                 .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0f).addPartOutput(DOUBLE_INGOT, 1);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2)
-                .addItemInput("#forge:plates/nuclear_alloy", 1)
+                .addItemInput("#c:plates/nuclear_alloy", 1)
                 .addPartOutput(FUEL_ROD_DOUBLE, 1);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#forge:plates/nuclear_alloy", 2)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_quad").addItemInput("#c:plates/nuclear_alloy", 2)
                 .addPartInput(FUEL_ROD_DOUBLE, 2)
                 .addPartOutput(FUEL_ROD_QUAD, 1);
         // UNPACKER

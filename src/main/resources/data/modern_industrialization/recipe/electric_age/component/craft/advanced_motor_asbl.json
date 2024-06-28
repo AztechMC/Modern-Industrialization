@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "cwr",
+    "wmw",
+    "rwc"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:stainless_steel_rod_magnetic"
+    },
+    "r" : {
+      "tag" : "c:rods/stainless_steel"
+    },
+    "c" : {
+      "item" : "modern_industrialization:aluminum_cable"
+    },
+    "w" :{
+      "item" : "modern_industrialization:annealed_copper_wire"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:advanced_motor"
+  }
+}

@@ -26,8 +26,6 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -44,8 +42,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -53,7 +52,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -94,7 +93,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
-        this.orientation = new OrientationComponent(orientationParams);
+        this.orientation = new OrientationComponent(orientationParams, this);
         this.placedBy = new PlacedByComponent();
 
         registerComponents(orientation, placedBy);
@@ -164,12 +163,12 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         return new MachineMenuServer(syncId, inv, this, guiParams);
     }
 
-    public final void writeScreenOpeningData(FriendlyByteBuf buf) {
+    public final void writeScreenOpeningData(RegistryFriendlyByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putList(tag, "items", inv.getItemStacks(), ConfigurableItemStack::toNbt);
-        NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), ConfigurableFluidStack::toNbt);
+        NbtHelper.putList(tag, "items", inv.getItemStacks(), configurableItemStack -> configurableItemStack.toNbt(buf.registryAccess()));
+        NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), configurableFluidStack -> configurableFluidStack.toNbt(buf.registryAccess()));
         buf.writeNbt(tag);
         // Write slot positions
         inv.itemPositions.write(buf);
@@ -187,8 +186,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     /**
      * @param face The face that was targeted, taking the overlay into account.
      */
-    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
-        return InteractionResult.PASS;
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public void openMenu(ServerPlayer player) {
@@ -234,33 +233,37 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
         for (IComponent component : icomponents) {
-            component.writeClientNbt(tag);
+            component.writeClientNbt(tag, registries);
         }
         return tag;
     }
 
     @Override
-    public final void saveAdditional(CompoundTag tag) {
+    public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         for (IComponent component : icomponents) {
-            component.writeNbt(tag);
+            component.writeNbt(tag, registries);
         }
     }
 
     @Override
-    public final void load(CompoundTag tag) {
+    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        load(tag, registries, false);
+    }
+
+    public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
             for (IComponent component : icomponents) {
-                component.readNbt(tag);
+                component.readNbt(tag, registries, isUpgradingMachine);
             }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");
             for (IComponent component : icomponents) {
-                component.readClientNbt(tag);
+                component.readClientNbt(tag, registries);
             }
             if (forceChunkRemesh) {
                 WorldHelper.forceChunkRemesh(level, worldPosition);

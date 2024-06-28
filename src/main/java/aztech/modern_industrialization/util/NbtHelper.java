@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -41,14 +42,14 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 public class NbtHelper {
-    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid) {
+    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid, HolderLookup.Provider registries) {
         CompoundTag savedTag = new CompoundTag();
-        savedTag.put("fk", fluid.toNbt());
+        savedTag.put("fk", fluid.toNbt(registries));
         tag.put(key, savedTag);
     }
 
     public static Item getItem(CompoundTag tag, String key) {
-        return BuiltInRegistries.ITEM.get(new ResourceLocation(tag.getString(key)));
+        return BuiltInRegistries.ITEM.get(ResourceLocation.parse(tag.getString(key)));
     }
 
     public static void putItem(CompoundTag tag, String key, Item item) {
@@ -123,16 +124,16 @@ public class NbtHelper {
         }
     }
 
-    public static FluidVariant getFluidCompatible(CompoundTag tag, String key) {
+    public static FluidVariant getFluidCompatible(CompoundTag tag, String key, HolderLookup.Provider registries) {
         if (tag == null || !tag.contains(key))
             return FluidVariant.blank();
 
         if (tag.get(key) instanceof StringTag) {
-            return FluidVariant.of(BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString(key))));
+            return FluidVariant.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString(key))));
         } else {
             CompoundTag compound = tag.getCompound(key);
             if (compound.contains("fk")) {
-                return FluidVariant.fromNbt(compound.getCompound("fk"));
+                return FluidVariant.fromNbt(compound.getCompound("fk"), registries);
             } else {
                 return FluidVariant.of(readLbaTag(tag.getCompound(key)));
             }
@@ -141,7 +142,7 @@ public class NbtHelper {
 
     private static Fluid readLbaTag(CompoundTag tag) {
         if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
-            return BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("ObjName")));
+            return BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("ObjName")));
         } else {
             return Fluids.EMPTY;
         }

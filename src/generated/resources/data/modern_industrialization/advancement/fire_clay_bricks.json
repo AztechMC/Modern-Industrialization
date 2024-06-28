@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:forge_hammer",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:fire_clay_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.fire_clay_bricks.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:fire_clay_bricks"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.fire_clay_bricks"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

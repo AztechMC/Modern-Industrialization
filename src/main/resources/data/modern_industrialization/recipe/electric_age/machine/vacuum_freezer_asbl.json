@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "CHC",
+    "pCp"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    "H": {
+      "item": "modern_industrialization:advanced_machine_hull"
+    },
+    "P": {
+      "item": "modern_industrialization:large_pump"
+    },
+    "p" : {
+      "item": "modern_industrialization:aluminum_large_plate"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:vacuum_freezer"
+  }
+}

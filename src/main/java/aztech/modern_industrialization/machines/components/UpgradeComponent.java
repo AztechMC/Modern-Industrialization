@@ -30,11 +30,12 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -77,19 +78,19 @@ public class UpgradeComponent implements IComponent.ServerOnly, DropableComponen
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.put("upgradesItemStack", itemStack.save(new CompoundTag()));
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("upgradesItemStack", itemStack.saveOptional(registries));
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
-        itemStack = ItemStack.of(tag.getCompound("upgradesItemStack"));
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+        itemStack = ItemStack.parseOptional(registries, tag.getCompound("upgradesItemStack"));
     }
 
-    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.isEmpty()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (UpgradeComponent.getExtraEu(stackInHand.getItem()) > 0) {
             boolean changed = false;
@@ -114,12 +115,12 @@ public class UpgradeComponent implements IComponent.ServerOnly, DropableComponen
                     be.sync();
 
                 }
-                return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
+                return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
 
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public long getAddMaxEUPerTick() {

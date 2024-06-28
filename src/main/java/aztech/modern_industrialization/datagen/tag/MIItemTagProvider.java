@@ -25,7 +25,6 @@ package aztech.modern_industrialization.datagen.tag;
 
 import appeng.api.features.P2PTunnelAttunement;
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
@@ -65,7 +64,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
-            var tagId = new ResourceLocation(entry.getKey());
+            var tagId = ResourceLocation.parse(entry.getKey());
             for (var item : entry.getValue()) {
                 if (optional) {
                     tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item.asItem()));
@@ -76,7 +75,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
         }
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
-            var tagId = new ResourceLocation(entry.getKey());
+            var tagId = ResourceLocation.parse(entry.getKey());
             for (var tag : entry.getValue()) {
                 tag(key(tagId)).addTag(key(tag));
             }
@@ -96,9 +95,9 @@ public class MIItemTagProvider extends ItemTagsProvider {
                 .addTag(MITags.BARRELS);
 
         // Have no idea why there is such a tag but go add it
-        tag(Tags.Items.ORES_QUARTZ).add(BuiltInRegistries.ITEM.get(new MIIdentifier("quartz_ore")));
+        tag(Tags.Items.ORES_QUARTZ).add(BuiltInRegistries.ITEM.get(MI.id("quartz_ore")));
 
-        tag(key("forge:tools/shears")).add(MIItem.DIESEL_CHAINSAW.asItem());
+        tag(Tags.Items.TOOLS_SHEAR).add(MIItem.DIESEL_CHAINSAW.asItem());
         tag(MITags.WRENCHES).add(MIItem.WRENCH.asItem());
         tag(ItemTags.AXES).add(MIItem.DIESEL_CHAINSAW.asItem());
         tag(ItemTags.HOES).add(MIItem.DIESEL_CHAINSAW.asItem());
@@ -119,7 +118,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
     }
 
     private static TagKey<Item> key(String id) {
-        return key(new ResourceLocation(id));
+        return key(ResourceLocation.parse(id));
     }
 
     private void generatedConventionTag() {

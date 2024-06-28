@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:distillery",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:diesel_jetpack"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.diesel_jetpack.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:diesel_jetpack"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.diesel_jetpack"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

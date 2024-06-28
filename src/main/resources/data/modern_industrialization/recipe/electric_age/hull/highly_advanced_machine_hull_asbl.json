@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " c ",
+    "BCB",
+    "ppp"
+  ],
+  "key": {
+    "B" : {
+      "item" : "modern_industrialization:cadmium_battery"
+    },
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:highly_advanced_machine_casing"
+    },
+    "p" : {
+      "item" : "modern_industrialization:annealed_copper_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:highly_advanced_machine_hull"
+  }
+}

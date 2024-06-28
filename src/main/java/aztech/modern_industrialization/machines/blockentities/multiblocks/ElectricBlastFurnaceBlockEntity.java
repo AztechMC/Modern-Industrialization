@@ -25,8 +25,8 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -66,8 +66,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
         // Register tiers
         List<Tier> registrationTiers = new ArrayList<>();
 
-        registrationTiers.add(new Tier(new MIIdentifier("cupronickel_coil"), 32, "Cupronickel"));
-        registrationTiers.add(new Tier(new MIIdentifier("kanthal_coil"), 128, "Kanthal"));
+        registrationTiers.add(new Tier(MI.id("cupronickel_coil"), 32, "Cupronickel"));
+        registrationTiers.add(new Tier(MI.id("kanthal_coil"), 128, "Kanthal"));
         KubeJSProxy.instance.fireAddEbfTiersEvent(tier -> {
             Preconditions.checkArgument(tier.maxBaseEu > 4, "EBF tier EU/t must be greater than 4.");
             for (var t : registrationTiers) {
@@ -94,7 +94,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
 
         for (int i = 0; i < tiers.size(); ++i) {
             var tier = tiers.get(i);
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("heatproof_machine_casing")));
+            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("heatproof_machine_casing")));
             SimpleMember coilsBlocks = SimpleMember.forBlockId(tier.coilBlockId());
             HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)

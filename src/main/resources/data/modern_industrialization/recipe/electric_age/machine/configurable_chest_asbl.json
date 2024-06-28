@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "chc",
+    "mCm",
+    "chc"
+  ],
+  "key":
+  {
+    "C" : {
+      "item" : "modern_industrialization:steel_machine_casing"
+    },
+    "m" :{
+      "item" : "modern_industrialization:motor"
+    },
+    "c": {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "h" : {
+      "item" : "minecraft:hopper"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:configurable_chest",
+    "count": 4
+  }
+}

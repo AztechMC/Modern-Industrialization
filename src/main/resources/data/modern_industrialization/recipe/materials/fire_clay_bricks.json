@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TT",
+    "TT"
+  ],
+  "key": {
+    "T" : {
+      "item": "modern_industrialization:fire_clay_brick"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:fire_clay_bricks",
+    "count": 1
+  }
+}

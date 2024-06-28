@@ -23,8 +23,11 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
+import aztech.modern_industrialization.datagen.model.MachineCasingImitations;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import dev.latvian.mods.kubejs.event.EventJS;
+import java.util.Objects;
+import net.minecraft.resources.ResourceLocation;
 
 public class RegisterCasingsEventJS extends EventJS {
     public void register(String... names) {
@@ -35,5 +38,14 @@ public class RegisterCasingsEventJS extends EventJS {
 
             MachineCasings.create(name);
         }
+    }
+
+    public void registerBlockImitation(String name, ResourceLocation block) {
+        Objects.requireNonNull(block, "block may not be null");
+        if (name.contains(":")) {
+            throw new IllegalArgumentException("Casing name cannot contain ':'.");
+        }
+
+        MachineCasingImitations.imitationsToGenerate.put(MachineCasings.create(name), block);
     }
 }

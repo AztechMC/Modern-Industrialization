@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 16,
+  "duration": 300,
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:ethanol",
+    "amount": 750
+  },
+  "item_inputs": {
+    "tag": "c:tiny_dusts/aluminum",
+    "amount": 1
+  },
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:butadiene",
+      "amount": 375
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 750
+    },
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 250
+    }
+  ]
+}

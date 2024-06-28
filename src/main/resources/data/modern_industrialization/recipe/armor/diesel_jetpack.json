@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PtP",
+    "McM",
+    "R R"
+  ],
+  "key" : {
+    "P" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "M": {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "R" : {
+      "item" : "modern_industrialization:aluminum_rotor"
+    },
+    "t" : {
+      "item" : "modern_industrialization:aluminum_tank"
+    },
+    "c": {
+      "item" : "modern_industrialization:electronic_circuit"
+    }
+  },
+  "result": {
+    "id" : "modern_industrialization:diesel_jetpack"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:distillery",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:diesel_mining_drill"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.diesel_mining_drill.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:diesel_mining_drill"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.diesel_mining_drill"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

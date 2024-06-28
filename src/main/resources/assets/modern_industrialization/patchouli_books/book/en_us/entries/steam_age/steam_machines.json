@@ -34,7 +34,7 @@
     },
     {
       "type": "text",
-      "text": "Steam machines will accept inputs from any side, be it items, steam or another fluid.$(br2)You can lock their slots by clicking on the lock in the interface. Locked slots only accept one type of item or fluid.$(br2)Every machine has an output side, and you can enable auto-output from the interface. Hoppers, pipes and other automation can extract output items from any side, of course. You can also reduce the maximum number of items in a slot by scrolling."
+      "text": "Steam machines will accept inputs from any side, be it items, steam or another fluid.$(br2)You can lock their slots by clicking on the lock in the interface. Locked slots only accept one type of item or fluid.$(br2)Every machine has an output side, and you can enable auto-eject from the interface. Hoppers, pipes and other automation can extract output items from any side, of course. You can also reduce the maximum number of items in a slot by scrolling."
     },
     {
       "type": "crafting",

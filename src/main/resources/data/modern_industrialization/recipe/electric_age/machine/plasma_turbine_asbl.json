@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "tpt",
+    "RHR",
+    "tpt"
+  ],
+  "key":
+  {
+    "t": {
+      "item" : "modern_industrialization:superconductor_coil"
+    },
+    "p" : {
+      "item" : "modern_industrialization:quantum_circuit"
+    },
+    "H" :{
+      "item" : "modern_industrialization:quantum_machine_hull"
+    },
+    "R" : {
+      "item" : "modern_industrialization:titanium_rotor"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:plasma_turbine"
+  }
+}

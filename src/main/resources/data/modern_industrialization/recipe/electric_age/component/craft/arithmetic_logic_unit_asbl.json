@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "NaN",
+    "oPo",
+    "NaN"
+  ],
+
+  "key":
+  {
+    "P" : {
+      "tag" : "c:plates/diamond"
+    },
+    "a" : {
+      "item" : "modern_industrialization:and_gate"
+    },
+    "o" : {
+      "item" : "modern_industrialization:or_gate"
+    },
+    "N" :{
+      "item" : "modern_industrialization:not_gate"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:arithmetic_logic_unit",
+    "count": 1
+  }
+
+}

@@ -1,0 +1,15 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "modern_industrialization:rubber_sheet"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:rubber_helmet"
+  }
+}

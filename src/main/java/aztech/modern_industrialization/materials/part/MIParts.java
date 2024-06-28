@@ -58,7 +58,7 @@ public class MIParts {
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
     public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
         var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-        TagsToGenerate.generateTag("forge:gems/" + itemPath, item, englishName + "s");
+        TagsToGenerate.generateTag("c:gems/" + itemPath, item, englishName + "s");
     })
             .withTexture(new TextureGenParams.Gem())
             .withCustomPath("%s", "%s");
@@ -100,18 +100,18 @@ public class MIParts {
     public static final PartTemplate[] ITEM_PURE_NON_METAL = new PartTemplate[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final PartTemplate[] ITEM_PURE_METAL = new PartTemplate[] { INGOT, NUGGET, TINY_DUST, DUST };
 
-    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
-            RAW_METAL_BLOCK);
+    public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, ROD,
+            TINY_DUST, RAW_METAL, RAW_METAL_BLOCK);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
     public static final Map<PartKey, CategoryTag> CATEGORY_TAGS = Map.of(
             DUST.key(), new CategoryTag(Tags.Items.DUSTS, "Dusts"),
-            GEAR.key(), new CategoryTag("forge:gears", "Gears"),
+            GEAR.key(), new CategoryTag("c:gears", "Gears"),
             INGOT.key(), new CategoryTag(Tags.Items.INGOTS, "Ingots"),
             NUGGET.key(), new CategoryTag(Tags.Items.NUGGETS, "Nuggets"),
-            PLATE.key(), new CategoryTag("forge:plates", "Plates"),
+            PLATE.key(), new CategoryTag("c:plates", "Plates"),
             RAW_METAL.key(), new CategoryTag(Tags.Items.RAW_MATERIALS, "Raw Ores"),
-            TINY_DUST.key(), new CategoryTag("forge:tiny_dusts", "Tiny Dusts"));
+            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"));
 
     public record CategoryTag(String tag, String englishName) {
         public CategoryTag(TagKey<Item> tag, String englishName) {

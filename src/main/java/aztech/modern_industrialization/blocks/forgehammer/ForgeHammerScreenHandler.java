@@ -28,6 +28,7 @@ import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -107,12 +108,48 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         // This ensures that the whole item is always removed from the slot, even if someone right-clicks the output slot.
         // (Instead of leaving half the result behind, which gets overridden by the next recipe).
         this.output = new Slot(new ResultContainer(), 0, 143, 32) {
+            // The stack passed to `onTake` is not meaningful.
+            // Hence, we need this crappy hack to track the real amount of removed items for stats.
+            // Similar to the handling in `ResultSlot`.
+            private int removeCount = 0;
+
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
 
             @Override
+            public ItemStack remove(int pAmount) {
+                var stack = super.remove(pAmount);
+                // Do not increment by pAmount, it's not correct!
+                // We might remove more since we always remove the full stack.
+                // See https://bugs.mojang.com/browse/MC-269175.
+                removeCount += stack.getCount();
+                return stack;
+            }
+
+            @Override
+            protected void onQuickCraft(ItemStack pStack, int pAmount) {
+                this.removeCount += pAmount;
+                checkTakeAchievements(pStack);
+            }
+
+            @Override
+            protected void onSwapCraft(int pNumItemsCrafted) {
+                this.removeCount += pNumItemsCrafted;
+            }
+
+            @Override
+            protected void checkTakeAchievements(ItemStack pStack) {
+                // Do not trust the stack parameter!!
+                if (this.removeCount > 0) {
+                    pStack.onCraftedBy(player.level(), player, this.removeCount);
+                    this.removeCount = 0;
+                }
+            }
+
+            @Override
             public void onTake(Player player, ItemStack stack) {
+                checkTakeAchievements(stack);
                 ForgeHammerScreenHandler.this.onCraft();
                 // Don't play the sound multiple times within the same tick
                 // Prevents the sound being played a lot when shift-clicking the output into your inventory
@@ -170,7 +207,11 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         if (!input.getItem().isEmpty()) {
             Set<ItemVariant> outputs = new HashSet<>();
 
-            for (var holder : this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())) {
+            var recipes = new ArrayList<>(this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()));
+            // Process recipes with hammer damage first, duplicates will be filtered by output!
+            recipes.sort(Comparator.comparing(h -> -h.value().hammerDamage()));
+
+            for (var holder : recipes) {
                 ForgeHammerRecipe recipe = holder.value();
 
                 if (recipe.ingredient().test(input.getItem()) && recipe.count() <= input.getItem().getCount()) {
@@ -226,7 +267,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.input.getItem().shrink(current.value().count());
         if (!tool.getItem().isEmpty()) {
             if (!world.isClientSide()) {
-                tool.getItem().hurt(current.value().hammerDamage(), world.getRandom(), (ServerPlayer) this.player);
+                tool.getItem().hurtAndBreak(current.value().hammerDamage(), (ServerLevel) world, (ServerPlayer) this.player,
+                        item -> tool.set(ItemStack.EMPTY));
             }
             if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {
                 tool.set(ItemStack.EMPTY);
@@ -328,7 +370,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                     int toPull = delta;
                     for (int i = 0; i < 36; ++i) {
                         Slot slot = this.slots.get(i);
-                        if (ItemStack.isSameItemSameTags(slot.getItem(), input.getItem())) {
+                        if (ItemStack.isSameItemSameComponents(slot.getItem(), input.getItem())) {
                             int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
                             if (toMove > 0) {
                                 ItemStack removed = slot.remove(toMove);
@@ -361,7 +403,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 input.getItem().setCount(0);
                 for (int i = 0; i < 36; ++i) {
                     Slot slot = this.slots.get(i);
-                    if (ItemStack.isSameItemSameTags(slot.getItem(), matchingStack)) {
+                    if (ItemStack.isSameItemSameComponents(slot.getItem(), matchingStack)) {
                         int toMove = Math.min(toPull, input.getMaxStackSize(input.getItem()) - input.getItem().getCount());
                         if (toMove > 0) {
                             ItemStack removed = slot.remove(toMove);

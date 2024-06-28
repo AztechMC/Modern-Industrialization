@@ -23,19 +23,20 @@
  */
 package aztech.modern_industrialization.items;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import java.util.UUID;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import aztech.modern_industrialization.MI;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public final class ItemHelper {
-    private static final UUID TOOL_UUID = UUID.randomUUID();
-
-    public static Multimap<Attribute, AttributeModifier> createToolModifiers(double damage) {
-        return ImmutableMultimap.of(Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(TOOL_UUID, "MI Diesel Tool Item", damage, AttributeModifier.Operation.ADDITION));
+    public static ItemAttributeModifiers getToolModifiers(double damage) {
+        return ItemAttributeModifiers.builder()
+                .add(
+                        Attributes.ATTACK_DAMAGE,
+                        new AttributeModifier(MI.id("tool_item"), damage, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)
+                .build();
     }
 
     private ItemHelper() {

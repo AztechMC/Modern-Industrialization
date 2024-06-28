@@ -1,0 +1,12 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "count": 3,
+  "damage": 30,
+  "ingredient": {
+    "tag": "c:raw_materials/tin"
+  },
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:tin_dust"
+  }
+}

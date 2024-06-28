@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:singularity",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:uu_matter_bucket"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.uu_matter_bucket.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:uu_matter_bucket"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.uu_matter_bucket"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

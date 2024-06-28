@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "tag": "c:dusts/sulfur"
+    },
+    "y": {
+      "item": "modern_industrialization:sulfur_dust"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:sulfur_block"
+  }
+}

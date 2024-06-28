@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "modern_industrialization:steel_rod_magnetic"
+  },
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:steel_rod"
+  }
+}

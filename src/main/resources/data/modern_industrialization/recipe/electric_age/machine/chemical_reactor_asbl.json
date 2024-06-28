@@ -1,0 +1,31 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "gmg",
+    "fHf",
+    "CpC"
+  ],
+  "key": {
+    "f": {
+      "item" : "modern_industrialization:aluminum_rotor"
+    },
+    "m" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "g" : {
+      "tag" : "c:glass_blocks"
+    },
+    "C" : {
+      "item" : "modern_industrialization:electronic_circuit"
+    },
+    "p": {
+      "item" : "modern_industrialization:electrum_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:chemical_reactor"
+  }
+}

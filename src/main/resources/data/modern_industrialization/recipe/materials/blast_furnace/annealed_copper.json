@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 64,
+  "duration": 600,
+  "item_inputs": {
+    "tag": "c:dusts/copper",
+    "amount": 1
+  },
+  "fluid_inputs":{
+    "fluid" : "modern_industrialization:oxygen",
+    "amount": 250
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:annealed_copper_hot_ingot",
+    "amount": 1
+  }
+}

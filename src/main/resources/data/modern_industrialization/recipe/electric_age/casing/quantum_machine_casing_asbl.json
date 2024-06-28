@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:plates/iridium"
+    },
+    "H": {
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:quantum_machine_casing"
+  }
+}

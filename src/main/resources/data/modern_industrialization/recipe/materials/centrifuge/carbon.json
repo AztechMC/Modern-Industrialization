@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 16,
+  "duration": 400,
+  "item_inputs": {
+    "tag": "c:dusts/coal",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:carbon_dust",
+    "amount": 1
+  }
+}

@@ -23,8 +23,7 @@
  */
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.api.pipe.item.SpeedUpgrade;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
@@ -33,7 +32,9 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
+import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MultiblockHatches;
@@ -48,9 +49,11 @@ import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -60,7 +63,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,14 +74,17 @@ public class MI {
     public static final Logger LOGGER = LoggerFactory.getLogger("Modern Industrialization");
 
     public static ResourceLocation id(String path) {
-        return new ResourceLocation(ID, path);
+        return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
     public MI(IEventBus modBus) {
+        MIAdvancementTriggers.init(modBus);
+        MIComponents.init(modBus);
         MIFluids.init(modBus);
         MIBlock.init(modBus);
         MIItem.init(modBus);
         MIRegistries.init(modBus);
+        MIArmorMaterials.init(modBus);
         MIMaterials.init();
 
         MIMachineRecipeTypes.init();
@@ -101,10 +108,15 @@ public class MI {
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
+        NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
+            var player = (ServerPlayer) event.getEntity();
+            var server = Objects.requireNonNull(player.getServer());
+            PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
+        });
         NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
 
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
-            if (event.getUseBlock() == Event.Result.DENY) {
+            if (event.getUseBlock().isFalse()) {
                 return;
             }
 
@@ -129,18 +141,13 @@ public class MI {
         // Setup after, so wrench has priority
         BarrelBlock.setupBarrelEvents();
 
+        SteamDrillHooks.init();
+
         modBus.addListener(FMLCommonSetupEvent.class, event -> {
             MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);
             MIItem.ITEM_DEFINITIONS.values().forEach(ItemDefinition::onRegister);
 
-            FluidFuelRegistry.init();
             FluidNuclearComponent.init();
-            MIFuels.init();
-
-            SpeedUpgrade.UPGRADES.put(MIItem.MOTOR.asItem(), 2);
-            SpeedUpgrade.UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8);
-            SpeedUpgrade.UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32);
-            SpeedUpgrade.UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64);
         });
 
         modBus.addListener(GatherDataEvent.class, event -> {
@@ -153,7 +160,12 @@ public class MI {
         });
 
         modBus.addListener(RegisterCapabilitiesEvent.class, MICapabilities::init);
-        modBus.addListener(RegisterPayloadHandlerEvent.class, MIPackets::init);
+        modBus.addListener(RegisterPayloadHandlersEvent.class, MIPackets::init);
+
+        modBus.addListener(RegisterDataMapTypesEvent.class, event -> {
+            event.register(MIDataMaps.FLUID_FUELS);
+            event.register(MIDataMaps.ITEM_PIPE_UPGRADES);
+        });
 
         if (MIConfig.loadAe2Compat()) {
             MIAEAddon.init(modBus);

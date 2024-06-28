@@ -96,10 +96,8 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
 
             for (int i = 0; i < ingredients.size(); i++) {
                 int n = ingredientAmounts.get(i);
-                for (int j = 0; j < n; j++) {
-                    dusts.addItemInput("#forge:dusts/" + ingredients.get(i), 1);
-                    tinyDusts.addItemInput("#forge:tiny_dusts/" + ingredients.get(i), 1);
-                }
+                dusts.addItemInput("#c:dusts/" + ingredients.get(i), n);
+                tinyDusts.addItemInput("#c:tiny_dusts/" + ingredients.get(i), n);
             }
 
             dusts.offerTo(consumer, "alloy/mixer/" + output + "/dust");

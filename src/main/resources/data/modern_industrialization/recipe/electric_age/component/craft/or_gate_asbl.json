@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    " A ",
+    "wdw",
+    " A "
+    ],
+  "key": {
+    "A": {
+      "item" : "modern_industrialization:op_amp"
+    },
+    "w":{
+      "item" : "modern_industrialization:aluminum_wire"
+    },
+    "d": {
+      "item" : "modern_industrialization:diode"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:or_gate"
+  }
+}

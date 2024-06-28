@@ -30,7 +30,6 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
-import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,10 +64,6 @@ public class MIModelProvider extends BaseModelProvider {
                 itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
             }
         }
-
-        // Custom loader to bake machine casing models
-        models().getBuilder(MachineCasingHolderModel.MODEL_ID.toString())
-                .customLoader(TrivialModelBuilder.begin(MachineCasingHolderModel.LOADER_ID));
 
         // Machine models
         for (var entry : MachineModelsToGenerate.props.entrySet()) {

@@ -1,0 +1,12 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "count": 3,
+  "damage": 30,
+  "ingredient": {
+    "item": "modern_industrialization:coal_crushed_dust"
+  },
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:coal_dust"
+  }
+}

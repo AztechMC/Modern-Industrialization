@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 10,
+  "duration": 2400,
+  "item_inputs": {
+    "tag": "c:dusts/monazite",
+    "amount": 9
+  },
+    "item_outputs": [
+      {
+      "item": "modern_industrialization:neodymium_dust",
+      "amount": 3
+      },
+      {
+        "item": "modern_industrialization:yttrium_dust",
+        "amount": 3
+      },
+      {
+        "item": "modern_industrialization:cadmium_dust",
+        "amount": 3
+      }
+    ],
+
+  "fluid_outputs": [
+    {
+      "fluid" : "modern_industrialization:helium",
+      "amount": 300,
+      "probability" : 0.5
+    }
+  ]
+}

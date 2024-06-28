@@ -24,7 +24,6 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.ILongEnergyStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
 import java.util.ArrayList;
@@ -53,14 +52,13 @@ public class MICapabilities {
         // Misc
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MIRegistries.CREATIVE_BARREL_BE.get(), (be, side) -> new SlotItemHandler(be));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MIRegistries.CREATIVE_TANK_BE.get(), (be, side) -> new SlotFluidHandler(be));
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), (be, side) -> EnergyApi.CREATIVE);
+        event.registerBlockEntity(EnergyApi.SIDED, MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), (be, side) -> EnergyApi.CREATIVE);
 
         // Energy compat
         var allBlocks = StreamSupport.stream(BuiltInRegistries.BLOCK.spliterator(), false)
                 .toArray(Block[]::new);
         var allItems = StreamSupport.stream(BuiltInRegistries.ITEM.spliterator(), false)
                 .toArray(Item[]::new);
-        ILongEnergyStorage.init(event, allBlocks, allItems);
         EnergyApi.init(event, allBlocks, allItems);
     }
 

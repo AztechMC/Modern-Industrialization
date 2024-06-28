@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "fcf",
+    "PBP",
+    "fcf"
+  ],
+  "key": {
+    "P" : {
+      "item" : "modern_industrialization:clean_stainless_steel_machine_casing"
+    },
+    "c" : {
+      "item" : "modern_industrialization:digital_circuit"
+    },
+    "B": {
+      "item": "modern_industrialization:advanced_large_steam_boiler"
+    },
+    "f": {
+      "item": "modern_industrialization:advanced_pump"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:high_pressure_large_steam_boiler"
+  }
+}

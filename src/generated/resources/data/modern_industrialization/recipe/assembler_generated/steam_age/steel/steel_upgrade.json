@@ -1,0 +1,37 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    {
+      "amount": 2,
+      "tag": "c:gears/bronze"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:bronze_rotor"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steel_machine_casing"
+    },
+    {
+      "amount": 2,
+      "tag": "c:rods/bronze"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:fire_clay_bricks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:steel_upgrade"
+    }
+  ]
+}

@@ -10,7 +10,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/fireclay/coke_oven",
-      "text": "For this first multiblock, you will need the Coke Oven itself of course, 21 Bricks and 3 $(thing)Hatches$(): an item input, an item output and a fluid input."
+      "text": "For this first multiblock, you will need the Coke Oven itself of course, 21 Bricks and 3 $(thing)Hatches$(): an item input, an item output and a fluid input.$(br2)Optionally add a fluid output hatch to collect creosote too."
     },
     {
       "type": "crafting",
@@ -24,11 +24,11 @@
     },
     {
       "type": "text",
-      "text": "The Coke Oven block here has the role of a $(thing)Controller$(). Every multiblock is managed by a controller, but you usually cannot interact with the controller directly: all input and output goes through hatches. We need a fluid input because the coke oven is powered by steam, we need an item input for the coal and an output for the coke.$(br2)If we forget one of the hatches, the coke oven will not be able to start!"
+      "text": "The Coke Oven block here has the role of a $(thing)Controller$(). Every multiblock is managed by a controller, but you usually cannot interact with the controller directly: all input and output goes through hatches. We need a fluid input because the coke oven is powered by steam, we need an item input for the coal and an output for the coke.$(br2)We can optionally add a fluid output hatch for the creosote. It is a chanced output and will therefore be voided if there is no room for it."
     },
     {
       "type": "text",
-      "text": "$(l)Hold a Wrench to see the missing blocks and the errors!$() You can also hold a Hatch to know where it can go.$(br2)We need 21 Bricks for this multiblock! Check REI, it says 24 total, but we have 3 hatches so we only need bricks for the 21 remaining blocks!"
+      "text": "If we forget one of the hatches, the coke oven will not be able to start!$(br2)$(l)Hold a Wrench to see the missing blocks and the errors!$() You can also hold a Hatch to know where it can go.$(br2)We need 21 Bricks for this multiblock! Check REI, it says 24 total, but we have 3 hatches so we only need bricks for the 21 remaining blocks!"
     },
     {
       "type": "image",

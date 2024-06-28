@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "fdd",
+    "PDd",
+    "bPf"
+  ],
+  "key" : {
+    "P": {
+      "item" : "modern_industrialization:iron_large_plate"
+    },
+    "f" : {
+      "item" : "minecraft:furnace"
+    },
+    "b" : {
+      "item" : "minecraft:bucket"
+    },
+    "d": {
+      "item" : "minecraft:diamond"
+    },
+    "D" : {
+      "item" : "modern_industrialization:copper_drill_head"
+    }
+  },
+  "result": {
+    "id" : "modern_industrialization:steam_mining_drill"
+  }
+}

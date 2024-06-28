@@ -1,9 +1,0 @@
-{
-  "type": "modern_industrialization:forge_hammer",
-  "ingredient": {
-    "tag": "forge:ingots/tin"
-  },
-  "result": {
-    "item": "modern_industrialization:tin_ring"
-  }
-}

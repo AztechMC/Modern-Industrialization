@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "pPp",
+    "PLP",
+    "pPp"
+  ],
+  "key": {
+    "P": {
+      "tag" : "c:plates/invar"
+    },
+    "L": {
+      "item" : "modern_industrialization:stainless_steel_large_plate"
+    },
+    "p":{
+      "item" : "modern_industrialization:advanced_pump"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:small_heat_exchanger"
+  }
+}

@@ -23,16 +23,17 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
+import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
 
@@ -41,24 +42,7 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     }
 
     @Override
-    public FluidVariant getResource(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement("BlockEntityTag");
-        if (tag != null) {
-            return NbtHelper.getFluidCompatible(tag, "fluid");
-        } else {
-            return FluidVariant.blank();
-        }
-    }
-
-    @Override
-    public void setResourceNoClean(ItemStack stack, FluidVariant resource) {
-        CompoundTag tag = stack.getOrCreateTagElement("BlockEntityTag");
-        NbtHelper.putFluid(tag, "fluid", resource);
-        onChange(stack);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 
         if (this.behaviour.isCreative()) {
             tooltip.add(FluidHelper.getFluidName(getResource(stack), true));
@@ -76,7 +60,16 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
             }
         }
 
-        super.appendHoverText(stack, world, tooltip, context);
+        super.appendHoverText(stack, context, tooltip, flag);
     }
 
+    @Override
+    public DataComponentType<ResourceStorage<FluidVariant>> getComponentType() {
+        return MIComponents.FLUID_STORAGE.get();
+    }
+
+    @Override
+    public ResourceStorage<FluidVariant> getDefaultComponent() {
+        return ResourceStorage.FLUID_EMPTY;
+    }
 }

@@ -26,20 +26,24 @@ package aztech.modern_industrialization.network.machines;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateItemSlotPacket(int syncId, int stackId, ConfigurableItemStack newStack) implements BasePacket {
-    public UpdateItemSlotPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableItemStack(buf.readNbt()));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateItemSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
+            UpdateItemSlotPacket::write, UpdateItemSlotPacket::new);
+
+    public UpdateItemSlotPacket(RegistryFriendlyByteBuf buf) {
+        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableItemStack(buf.readNbt(), buf.registryAccess()));
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeByte(syncId);
         buf.writeVarInt(stackId);
-        buf.writeNbt(newStack.toNbt());
+        buf.writeNbt(newStack.toNbt(buf.registryAccess()));
     }
 
     @Override
@@ -57,7 +61,7 @@ public record UpdateItemSlotPacket(int syncId, int stackId, ConfigurableItemStac
                 Slot slot = csh.slots.get(i);
                 if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot is) {
                     if (is.getConfStack() == oldStack) {
-                        csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
+                        csh.updateSlot(i, newStack.new ConfigurableItemSlot(is));
                         return;
                     }
                 }

@@ -1,0 +1,31 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "crH",
+    "MPr",
+    "tMc"
+  ],
+  "key" : {
+    "P" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "M": {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "r" : {
+      "item" : "modern_industrialization:invar_rotary_blade"
+    },
+    "t" : {
+      "item" : "modern_industrialization:aluminum_tank"
+    },
+    "c": {
+      "item" : "modern_industrialization:electronic_circuit"
+    },
+    "H" : {
+      "item" : "modern_industrialization:aluminum_drill_head"
+    }
+  },
+  "result": {
+    "id" : "modern_industrialization:diesel_mining_drill"
+  }
+}

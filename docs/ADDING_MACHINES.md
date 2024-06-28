@@ -316,14 +316,22 @@ Methods that config exposes:
 
 ## Adding new casing types
 See [MACHINE_MODELS.md](MACHINE_MODELS.md) for an explanation of machine models and what casings are.
-You can add new casings using the `register` function in the `MIMachineEvents.registerCasings` event.
+You can add new casings using the `MIMachineEvents.registerCasings` event.
+- Use the `register` function if you will also be adding a JSON model for the casing.
+- Use the `registerBlockImitation` function to add a casing that will imitate another block.
 
-Remember that the top, side and bottom textures of a casing must be `modern_industrialization:textures/block/casings/<casing name>/{top,side,bottom}.png`.
+If you use `register` and want a texture-based casing model,
+remember that the top, side and bottom textures of a casing must be `modern_industrialization:textures/block/casings/<casing name>/{top,side,bottom}.png`.
 
-For example, to register two new casings:
+For example:
 ```js
 MIMachineEvents.registerCasings(event => {
+    // Register two casings.
+    // This doesn't register any model! Either add models or add the top/side/bottom textures.
     event.register("my_fancy_casing", "my_other_casing");
+
+    // This registers a new casing with the same model as a diamond block!
+    event.registerBlockImitation("my_diamond_casing", "minecraft:diamond_block");
 })
 ```
 

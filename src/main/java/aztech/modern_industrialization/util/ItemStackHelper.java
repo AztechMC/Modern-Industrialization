@@ -25,14 +25,8 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public class ItemStackHelper {
-    public static boolean areEqualIgnoreCount(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameTags(s1, s2);
-    }
-
     /**
      * Try to consume the fuel in the stack.
      * 
@@ -43,12 +37,13 @@ public class ItemStackHelper {
     public static boolean consumeFuel(ConfigurableItemStack stack, boolean simulate) {
         if (stack.isResourceBlank())
             return false;
-        Item item = stack.getResource().getItem();
-        if (item.hasCraftingRemainingItem()) {
-            if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(item.getCraftingRemainingItem())) {
+        var itemStack = stack.toStack();
+        if (itemStack.hasCraftingRemainingItem()) {
+            var remainder = ItemVariant.of(itemStack.getCraftingRemainingItem());
+            if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(remainder)) {
                 if (!simulate) {
                     stack.setAmount(1);
-                    stack.setKey(ItemVariant.of(item.getCraftingRemainingItem()));
+                    stack.setKey(remainder);
                 }
                 return true;
             }

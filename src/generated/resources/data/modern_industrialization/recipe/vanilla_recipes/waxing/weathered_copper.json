@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:weathered_copper"
+    },
+    {
+      "item": "modern_industrialization:wax"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:waxed_weathered_copper"
+  }
+}

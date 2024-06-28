@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 12,
+  "duration": 200,
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:acetylene",
+    "amount": 1000
+  },
+  "item_inputs": {
+    "tag": "c:dusts/coal",
+    "amount": 1
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:hydrogen",
+    "amount": 2000
+  }
+}

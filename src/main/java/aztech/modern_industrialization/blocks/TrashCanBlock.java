@@ -24,9 +24,12 @@
 package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.MICapabilities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -37,7 +40,23 @@ import org.jetbrains.annotations.NotNull;
 public class TrashCanBlock extends Block {
     public TrashCanBlock(Properties properties) {
         super(properties);
+    }
 
+    // We have no BE, so we must invalidate caps on placement and removal
+    @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        if (!pOldState.is(this)) {
+            pLevel.invalidateCapabilities(pPos);
+        }
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
+    }
+
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+        if (!pState.is(pNewState.getBlock())) {
+            pLevel.invalidateCapabilities(pPos);
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 
     private static class TrashItemHandler implements IItemHandler {

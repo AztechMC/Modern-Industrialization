@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:nuke",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:singularity"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.singularity.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:singularity"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.singularity"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -26,18 +26,18 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.SimpleEnergyItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
+import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
-import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
@@ -70,7 +70,7 @@ public final class MIItem {
     public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p), HAMMER);
 
     // Steam tier stuff
-    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", STEAM_TIER);
+    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", SteelUpgradeItem::new, STEAM_TIER);
     public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", STEAM_TIER);
     public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
     public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
@@ -128,8 +128,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
 
     // Quantum circuits
-    // TODO NEO: Change item id to "qubit"
-    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qubit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
     public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
     public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
     public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_OTHER);
@@ -164,13 +163,13 @@ public final class MIItem {
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> SimpleEnergyItem.createStorage(stack, item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
     // Armor
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.HELMET, s.stacksTo(1)), ITEMS_OTHER);
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, ArmorItem.Type.BOOTS, s.stacksTo(1)), ITEMS_OTHER);
+    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.HELMET, s.stacksTo(1).durability(400)), ITEMS_OTHER);
+    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.BOOTS, s.stacksTo(1).durability(400)), ITEMS_OTHER);
     public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
@@ -181,7 +180,7 @@ public final class MIItem {
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    SimpleEnergyItem.registerStorage(event, item);
+                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
@@ -194,7 +193,7 @@ public final class MIItem {
     // Material-like items
     public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));
     public static final ItemDefinition<Item> MIXED_INGOT_BLASTPROOF = item("Mixed Blastproof Ingot", "mixed_ingot_blastproof", MATERIALS.and("blastproof"));
-    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium", s -> new Item(s.food(new FoodProperties.Builder().nutrition(20).saturationMod(1).build())), MATERIALS.and("iridium"));
+    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium", s -> new Item(s.food(new FoodProperties.Builder().nutrition(20).saturationModifier(1).build())), MATERIALS.and("iridium"));
     public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
 
     // Others
@@ -254,7 +253,7 @@ public final class MIItem {
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
-            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(new ResourceLocation("minecraft:item/handheld")));
+            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(ResourceLocation.parse("minecraft:item/handheld")));
         }, sortOrder);
     }
 

@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:quantum_upgrade",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:replicator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.replicator.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:replicator"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.replicator"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

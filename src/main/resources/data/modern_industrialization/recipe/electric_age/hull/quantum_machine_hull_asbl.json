@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " c ",
+    "BCB",
+    "ppp"
+  ],
+  "key": {
+    "B" : {
+      "item" : "modern_industrialization:plutonium_battery"
+    },
+    "c" : {
+      "item" : "modern_industrialization:quantum_circuit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:quantum_machine_casing"
+    },
+    "p" : {
+      "item" : "modern_industrialization:superconductor_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:quantum_machine_hull"
+  }
+}

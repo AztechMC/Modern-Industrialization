@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " c ",
+    "BCB",
+    "ppp"
+  ],
+  "key": {
+    "B" : {
+      "item" : "modern_industrialization:sodium_battery"
+    },
+    "c" : {
+      "item" : "modern_industrialization:digital_circuit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:turbo_machine_casing"
+    },
+    "p" : {
+      "item" : "modern_industrialization:aluminum_cable"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:turbo_machine_hull"
+  }
+}

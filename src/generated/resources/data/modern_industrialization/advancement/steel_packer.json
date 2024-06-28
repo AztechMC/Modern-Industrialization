@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:steel_machine_casing",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:steel_packer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.steel_packer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:steel_packer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.steel_packer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

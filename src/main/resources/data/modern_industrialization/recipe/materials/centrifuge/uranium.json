@@ -1,0 +1,35 @@
+{
+  "type": "modern_industrialization:centrifuge",
+
+  "eu": 64,
+  "duration": 6000,
+
+  "item_inputs": {
+    "tag": "c:dusts/uranium",
+    "amount": 9
+  },
+
+  "item_outputs":
+    [
+      {
+      "item": "modern_industrialization:uranium_235_tiny_dust",
+      "amount": 1
+      },
+      {
+        "item": "modern_industrialization:uranium_238_tiny_dust",
+        "amount": 64
+      },
+      {
+        "item": "modern_industrialization:uranium_238_tiny_dust",
+        "amount": 16
+      }
+    ],
+
+  "fluid_outputs": [
+    {
+      "fluid" : "modern_industrialization:helium",
+      "amount": 150,
+      "probability" : 0.5
+    }
+  ]
+}

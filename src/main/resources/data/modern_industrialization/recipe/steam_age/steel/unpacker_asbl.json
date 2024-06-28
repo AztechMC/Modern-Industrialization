@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "RCR",
+    "ppp"
+  ],
+  "key": {
+    "G": {
+      "tag": "c:gears/bronze"
+    },
+    "C": {
+      "item": "modern_industrialization:steel_machine_casing"
+    },
+    "p": {
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    "P": {
+      "tag": "modern_industrialization:item_pipes"
+    },
+    "R": {
+      "tag" : "c:rods/bronze"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:steel_unpacker",
+    "count": 1
+  }
+}

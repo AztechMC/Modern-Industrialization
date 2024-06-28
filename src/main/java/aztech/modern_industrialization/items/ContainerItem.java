@@ -23,12 +23,13 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import com.google.common.primitives.Ints;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -39,9 +40,14 @@ import net.neoforged.neoforge.items.IItemHandler;
  */
 public interface ContainerItem<T extends TransferVariant<?>> {
 
-    T getResource(ItemStack stack);
+    default T getResource(ItemStack stack) {
+        return stack.getOrDefault(getComponentType(), getDefaultComponent()).resource();
+    }
 
-    void setResourceNoClean(ItemStack stack, T resource);
+    default void setResourceNoClean(ItemStack stack, T resource) {
+        stack.update(getComponentType(), getDefaultComponent(), resource, ResourceStorage::withResource);
+        onChange(stack);
+    }
 
     default void setResource(ItemStack stack, T resource) {
         setResourceNoClean(stack, resource);
@@ -50,11 +56,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
     default boolean isUnlocked(ItemStack stack) {
         if (getBehaviour().isLockable()) {
-            CompoundTag tag = stack.getTagElement("BlockEntityTag");
-            if (tag == null)
-                return true;
-            else
-                return !tag.getBoolean("locked");
+            return !stack.getOrDefault(getComponentType(), getDefaultComponent()).locked();
         } else {
             return true;
         }
@@ -62,7 +64,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
     default void setLockedNoClean(ItemStack stack, boolean locked) {
         if (getBehaviour().isLockable()) {
-            stack.getOrCreateTagElement("BlockEntityTag").putBoolean("locked", locked);
+            stack.update(getComponentType(), getDefaultComponent(), locked, ResourceStorage::withLocked);
         }
     }
 
@@ -72,23 +74,20 @@ public interface ContainerItem<T extends TransferVariant<?>> {
     }
 
     default long getAmount(ItemStack stack) {
-        if (getResource(stack).isBlank()) {
+        var component = stack.getOrDefault(getComponentType(), getDefaultComponent());
+        if (component.resource().isBlank()) {
             return 0;
         }
         if (getBehaviour().isCreative()) {
             return Long.MAX_VALUE;
         } else {
-            CompoundTag tag = stack.getTagElement("BlockEntityTag");
-            if (tag == null)
-                return 0;
-            else
-                return tag.getLong("amt");
+            return component.amount();
         }
     }
 
     default void setAmountNoClean(ItemStack stack, long amount) {
         if (!getBehaviour().isCreative()) {
-            stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
+            stack.update(getComponentType(), getDefaultComponent(), amount, ResourceStorage::withAmount);
             onChange(stack);
         }
     }
@@ -99,22 +98,24 @@ public interface ContainerItem<T extends TransferVariant<?>> {
     }
 
     default void clean(ItemStack stack) {
-        if (isUnlocked(stack) && (getResource(stack).isBlank() || getAmount(stack) == 0)) {
-            stack.removeTagKey("BlockEntityTag");
+        var component = stack.get(getComponentType());
+        if (component != null && !component.locked() && (component.resource().isBlank() || component.amount() == 0)) {
+            stack.remove(getComponentType());
         }
     }
 
     default boolean isEmpty(ItemStack stack) {
-        if (stack.getTagElement("BlockEntityTag") == null) {
-            return true;
-        } else
-            return getAmount(stack) == 0;
+        return stack.getOrDefault(getComponentType(), getDefaultComponent()).amount() == 0;
     }
 
     default void onChange(ItemStack stack) {
     }
 
     StorageBehaviour<T> getBehaviour();
+
+    DataComponentType<ResourceStorage<T>> getComponentType();
+
+    ResourceStorage<T> getDefaultComponent();
 
     class BaseHandler<T extends TransferVariant<?>> {
         protected final ItemStack stack;
@@ -174,7 +175,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate, boolean ignoreFilter, boolean ignoreLock) {
             if (stack.isEmpty() || slot != 0) {
-                return ItemStack.EMPTY;
+                return stack;
             }
 
             if (containerItem.getBehaviour().isCreative()) {
@@ -194,12 +195,12 @@ public interface ContainerItem<T extends TransferVariant<?>> {
                     return stack.copyWithCount(stack.getCount() - inserted);
                 }
             }
-            return ItemStack.EMPTY;
+            return stack;
         }
 
         @Override
         public ItemStack extractItem(int slot, int maxAmount, boolean simulate) {
-            if (slot == 0 || maxAmount <= 0 || isResourceBlank()) {
+            if (slot != 0 || maxAmount <= 0 || isResourceBlank()) {
                 return ItemStack.EMPTY;
             }
 
@@ -283,7 +284,7 @@ public interface ContainerItem<T extends TransferVariant<?>> {
 
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (resource.isEmpty() || isResourceBlank() || !resource.isFluidEqual(getResource().toStack(1))) {
+            if (resource.isEmpty() || isResourceBlank() || !getResource().matches(resource)) {
                 return FluidStack.EMPTY;
             }
             return drain(resource.getAmount(), action);

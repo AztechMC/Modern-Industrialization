@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "GpG",
+    "rHr",
+    "GpG"
+  ],
+  "key":
+  {
+    "G": {
+      "tag" : "c:gears/bronze"
+    },
+    "H" :{
+      "item" : "modern_industrialization:steel_machine_casing"
+    },
+    "p": {
+      "tag" : "modern_industrialization:fluid_pipes"
+    },
+    "r" : {
+      "item" : "modern_industrialization:bronze_rotor"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:steel_wiremill"
+  }
+}

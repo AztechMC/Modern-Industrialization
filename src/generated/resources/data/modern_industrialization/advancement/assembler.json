@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:analog_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:assembler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.assembler.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:assembler"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.assembler"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

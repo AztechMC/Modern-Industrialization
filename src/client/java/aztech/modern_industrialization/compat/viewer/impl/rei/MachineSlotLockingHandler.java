@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -66,7 +66,7 @@ class MachineSlotLockingHandler implements TransferHandler {
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {
                 Item item = entry.<ItemStack>cast().getValue().getItem();
-                if (BuiltInRegistries.ITEM.getKey(item).equals(new MIIdentifier(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item).equals(MI.id(blockId))) {
                     return true;
                 }
             }

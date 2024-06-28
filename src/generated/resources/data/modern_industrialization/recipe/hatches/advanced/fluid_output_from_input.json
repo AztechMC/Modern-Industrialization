@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:advanced_fluid_input_hatch"
+    }
+  },
+  "pattern": [
+    "U"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:advanced_fluid_output_hatch"
+  }
+}

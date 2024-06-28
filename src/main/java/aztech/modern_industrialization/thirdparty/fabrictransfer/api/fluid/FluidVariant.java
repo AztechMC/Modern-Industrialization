@@ -24,14 +24,22 @@
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferApiImpl;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.fluid.FluidVariantImpl;
+import com.mojang.serialization.Codec;
+import java.util.Optional;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * An immutable association of a still fluid and an optional NBT tag.
@@ -49,6 +57,11 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface FluidVariant extends TransferVariant<Fluid> {
+    Codec<FluidVariant> CODEC = ExtraCodecs.optionalEmptyMap(
+            FluidStack.fixedAmountCodec(1).xmap(FluidVariant::of, fv -> fv.toStack(1)))
+            .xmap(o -> o.orElse(FluidVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
+    StreamCodec<RegistryFriendlyByteBuf, FluidVariant> STREAM_CODEC = FluidStack.OPTIONAL_STREAM_CODEC.map(FluidVariant::of, fv -> fv.toStack(1));
+
     /**
      * Retrieve a blank FluidVariant.
      */
@@ -60,32 +73,25 @@ public interface FluidVariant extends TransferVariant<Fluid> {
      * Retrieve an ItemVariant with the item and tag of a stack.
      */
     static FluidVariant of(FluidStack stack) {
-        return of(stack.getFluid(), stack.getTag());
+        return FluidVariantImpl.of(stack);
     }
 
     /**
      * Retrieve a FluidVariant with a fluid, and a {@code null} tag.
      *
      * <p>
-     * The flowing and still variations of {@linkplain net.minecraft.fluid.FlowableFluid flowable fluids}
+     * The flowing and still variations of {@linkplain FlowingFluid flowable fluids}
      * are normalized to always refer to the still variant. For example,
      * {@code FluidVariant.of(Fluids.FLOWING_WATER).getFluid() == Fluids.WATER}.
      */
     static FluidVariant of(Fluid fluid) {
-        return of(fluid, null);
+        return FluidVariantImpl.of(fluid);
     }
 
     /**
-     * Retrieve a FluidVariant with a fluid, and an optional tag.
-     *
-     * <p>
-     * The flowing and still variations of {@linkplain net.minecraft.fluid.FlowableFluid flowable fluids}
-     * are normalized to always refer to the still fluid. For example,
-     * {@code FluidVariant.of(Fluids.FLOWING_WATER, nbt).getFluid() == Fluids.WATER}.
+     * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
      */
-    static FluidVariant of(Fluid fluid, @Nullable CompoundTag nbt) {
-        return FluidVariantImpl.of(fluid, nbt);
-    }
+    boolean matches(FluidStack stack);
 
     /**
      * Return the fluid of this variant.
@@ -97,12 +103,11 @@ public interface FluidVariant extends TransferVariant<Fluid> {
     /**
      * Create a new fluid stack from this variant.
      */
-    default FluidStack toStack(int count) {
-        if (isBlank())
-            return FluidStack.EMPTY;
-        FluidStack stack = new FluidStack(getFluid(), count);
-        stack.setTag(copyNbt());
-        return stack;
+    FluidStack toStack(int count);
+
+    @Override
+    default Tag toNbt(HolderLookup.Provider registries) {
+        return CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
     }
 
     /**
@@ -111,14 +116,20 @@ public interface FluidVariant extends TransferVariant<Fluid> {
      * <p>
      * If an error occurs during deserialization, it will be logged with the DEBUG level, and a blank variant will be returned.
      */
-    static FluidVariant fromNbt(CompoundTag nbt) {
-        return FluidVariantImpl.fromNbt(nbt);
+    static FluidVariant fromNbt(CompoundTag nbt, HolderLookup.Provider registries) {
+        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(TransferApiImpl.LOGGER::error)
+                .orElse(blank());
+    }
+
+    @Override
+    default void toPacket(RegistryFriendlyByteBuf buf) {
+        STREAM_CODEC.encode(buf, this);
     }
 
     /**
      * Read a variant from a packet byte buffer, assuming it was serialized using {@link #toPacket}.
      */
-    static FluidVariant fromPacket(FriendlyByteBuf buf) {
-        return FluidVariantImpl.fromPacket(buf);
+    static FluidVariant fromPacket(RegistryFriendlyByteBuf buf) {
+        return STREAM_CODEC.decode(buf);
     }
 }

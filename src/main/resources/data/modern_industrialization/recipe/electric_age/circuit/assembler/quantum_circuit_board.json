@@ -1,0 +1,37 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 64,
+  "duration": 2000,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:superconductor_cable",
+      "amount": 12
+    },
+    {
+      "item": "modern_industrialization:plutonium_battery",
+      "amount": 2
+    },
+    {
+      "item": "modern_industrialization:processing_unit_board",
+      "amount": 1
+    },
+    {
+      "tag": "c:plates/iridium",
+      "amount": 6
+    }
+  ],
+
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:helium_3",
+      "amount" : 50
+    }
+  ],
+
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:quantum_circuit_board",
+      "amount": 1
+    }
+  ]
+}

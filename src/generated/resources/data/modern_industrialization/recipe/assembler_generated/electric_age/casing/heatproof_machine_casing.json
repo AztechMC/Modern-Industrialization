@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "c:plates/invar"
+    },
+    {
+      "amount": 1,
+      "tag": "c:gears/invar"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:heatproof_machine_casing"
+    }
+  ]
+}

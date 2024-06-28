@@ -1,0 +1,31 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 16,
+    "duration": 400,
+    "item_inputs": [
+        {
+            "tag": "modern_industrialization:fluid_pipes",
+            "amount": 3
+        },
+        {
+            "item": "modern_industrialization:small_heat_exchanger",
+            "amount": 2
+        },
+        {
+            "tag" :  "c:plates/tin",
+            "amount": 6
+        }
+    ],
+    "fluid_inputs": [
+        {
+            "fluid": "modern_industrialization:cryofluid",
+            "amount": 1000
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:cooling_cell",
+            "amount": 1
+        }
+    ]
+}

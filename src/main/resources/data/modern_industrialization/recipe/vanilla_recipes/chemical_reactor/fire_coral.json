@@ -1,0 +1,46 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 2,
+  "duration": 6000,
+  "item_inputs": [
+    {
+      "item": "minecraft:fire_coral_block",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:bone_meal",
+      "amount": 4
+    },
+    {
+      "tag": "c:dusts/salt",
+      "amount": 4
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "minecraft:water",
+      "amount": 9000
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:fire_coral_block",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:fire_coral_fan",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:fire_coral",
+      "amount": 2
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "minecraft:water",
+    "amount": 6000
+  }
+}
+
+
+    

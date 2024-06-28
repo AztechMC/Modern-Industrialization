@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:iridium_block"
+    }
+  },
+  "pattern": [
+    "x"
+  ],
+  "result": {
+    "count": 9,
+    "id": "modern_industrialization:iridium_ingot"
+  }
+}

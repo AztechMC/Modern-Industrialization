@@ -36,15 +36,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -63,6 +65,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -74,7 +77,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
 
     public PipeBlock(Properties settings) {
-        super(settings.isValidSpawn(MobSpawning.NO_SPAWN).isRedstoneConductor((state, level, pos) -> state.getValue(CAMOUFLAGED)));
+        super(settings
+                .isValidSpawn(MobSpawning.NO_SPAWN)
+                .isRedstoneConductor((state, level, pos) -> state.getValue(CAMOUFLAGED))
+                // Disable occlusion like this to bypass the occlusion cache,
+                // which cannot capture a dependency on the global transparent rendering setting.
+                // We still implement an occlusion check in hidesNeighborFace.
+                .noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(CAMOUFLAGED, false));
     }
 
@@ -209,16 +218,17 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         if (pipeEntity.tryApplyCamouflage(player, hand)) {
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return ItemInteractionResult.sidedSuccess(world.isClientSide());
         }
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
         if (partShape == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!world.isClientSide) {
@@ -227,7 +237,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 ((ServerPlayer) player).openMenu(menuOpener, menuOpener::writeAdditionalData);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return ItemInteractionResult.sidedSuccess(world.isClientSide);
     }
 
     @SuppressWarnings("deprecation")
@@ -279,15 +289,13 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {
             if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
                 pipe.stateReplaced = true;
@@ -304,14 +312,33 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                 return Objects.requireNonNullElse(pipe.camouflage, state);
             }
         } else {
-            var manager = renderView.getModelDataManager();
-            if (manager != null) {
-                var data = manager.getAtOrEmpty(pos).get(PipeBlockEntity.RenderAttachment.KEY);
-                if (data != null) {
-                    return Objects.requireNonNullElse(data.camouflage(), state);
-                }
+            var data = renderView.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+            if (data != null) {
+                return Objects.requireNonNullElse(data.camouflage(), state);
             }
         }
         return state;
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+        if (target instanceof BlockHitResult bhr) {
+            if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
+                if (pipe.hasCamouflage()) {
+                    return pipe.getCamouflageStack();
+                }
+
+                var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
+                return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
+        // If we are a full block, we should always be able to occlude...
+        return !MIPipes.transparentCamouflage && state.getValue(CAMOUFLAGED);
     }
 }

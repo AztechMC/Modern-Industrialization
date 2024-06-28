@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+    "item": "minecraft:hopper",
+    "amount": 1
+    },
+    {
+      "item": "minecraft:minecart",
+      "amount": 1
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:hopper_minecart",
+    "amount": 1
+  }
+}

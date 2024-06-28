@@ -1,0 +1,33 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "frf",
+    "PHP",
+    "pcp"
+  ],
+  "key":
+  {
+    "f" : {
+      "tag" : "modern_industrialization:fluid_pipes"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:tin_cable"
+    },
+    "P" : {
+      "item" : "modern_industrialization:pump"
+    },
+    "c": {
+      "item": "modern_industrialization:analog_circuit"
+    },
+    "r": {
+      "item": "modern_industrialization:tin_rotor"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:electric_water_pump"
+  }
+}

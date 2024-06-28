@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -58,7 +58,7 @@ public class AutoExtract {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buf) {
+        public void writeInitialData(RegistryFriendlyByteBuf buf) {
             buf.writeBoolean(displayAsInsert);
             buf.writeBoolean(orientation.params.hasExtractItems);
             buf.writeBoolean(orientation.params.hasExtractFluids);
@@ -66,7 +66,7 @@ public class AutoExtract {
         }
 
         @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
+        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
             buf.writeBoolean(orientation.extractItems);
             buf.writeBoolean(orientation.extractFluids);
         }

@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -34,13 +34,13 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.CommonHooks;
 
 /**
  * A component that turns fluids and/or item into energy.
@@ -91,12 +91,12 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("euBuffer", euBuffer);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         euBuffer = tag.getLong("euBuffer");
     }
 
@@ -302,7 +302,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
             @Override
             public long getEuProduction(Item variant) {
                 // TODO NEO NBT-aware fuels
-                int burnTime = CommonHooks.getBurnTime(variant.getDefaultInstance(), null);
+                int burnTime = variant.getDefaultInstance().getBurnTime(null);
                 return burnTime <= 0 ? 0 : burnTime * FuelBurningComponent.EU_PER_BURN_TICK;
             }
 
@@ -324,7 +324,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
         return new EUProductionMap<>() {
             @Override
             public long getEuProduction(Fluid variant) {
-                return FluidFuelRegistry.getEu(variant);
+                return FluidFuel.getEu(variant);
             }
 
             @Override

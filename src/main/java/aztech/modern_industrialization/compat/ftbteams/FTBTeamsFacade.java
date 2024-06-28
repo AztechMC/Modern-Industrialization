@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.ftbteams;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import net.neoforged.fml.ModList;
@@ -43,5 +44,5 @@ public interface FTBTeamsFacade {
         return uuid -> List.of();
     }
 
-    Iterable<UUID> getOtherPlayersInTeam(UUID playerUuid);
+    Collection<UUID> getOtherPlayersInTeam(UUID playerUuid);
 }

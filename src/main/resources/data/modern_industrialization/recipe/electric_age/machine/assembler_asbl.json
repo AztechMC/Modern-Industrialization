@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AcA",
+    "CHC",
+    "AcA"
+  ],
+  "key":
+  {
+    "A" : {
+      "item" : "modern_industrialization:robot_arm"
+    },
+    "c" : {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:conveyor"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:assembler"
+  }
+}

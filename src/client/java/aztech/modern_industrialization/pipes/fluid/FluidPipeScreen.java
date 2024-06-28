@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
@@ -46,7 +46,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
+    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/fluid.png");
 
     public FluidPipeScreen(FluidPipeScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
@@ -103,12 +103,19 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private class NetworkFluidButton extends Button implements ReiDraggable {
+        private final Supplier<List<Component>> tooltipSupplier;
         private final FluidPipeInterface iface;
 
         public NetworkFluidButton(int x, int y, OnPress onPress, Supplier<List<Component>> tooltipSupplier, FluidPipeInterface iface) {
-            super(x, y, 16, 16, null, onPress, Button.DEFAULT_NARRATION);
+            super(x, y, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.tooltipSupplier = tooltipSupplier;
             setTooltip(new DynamicTooltip(tooltipSupplier));
             this.iface = iface;
+        }
+
+        @Override
+        public Component getMessage() {
+            return tooltipSupplier.get().getFirst();
         }
 
         @Override

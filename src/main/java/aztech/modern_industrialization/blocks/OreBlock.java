@@ -26,19 +26,20 @@ package aztech.modern_industrialization.blocks;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 // An MIBlock that converts a book into the guide book when right clicked
 public class OreBlock extends Block {
@@ -52,28 +53,20 @@ public class OreBlock extends Block {
         this.materialName = materialName;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        ItemStack handStack = player.getMainHandItem();
+    protected ItemInteractionResult useItemOn(ItemStack handStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hit) {
         if (handStack.getItem() == Items.BOOK) {
             handStack.shrink(1);
             player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
-        return super.use(state, world, pos, player, hand, hit);
+        return super.useItemOn(handStack, state, world, pos, player, hand, hit);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean bl) {
-        super.spawnAfterBreak(state, world, pos, stack, bl);
-        if (bl && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
-            int i = this.params.xpDropped.sample(world.random);
-            if (i > 0) {
-                this.popExperience(world, pos, i);
-            }
-        }
-
+    public int getExpDrop(BlockState state, LevelAccessor level, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity breaker,
+            ItemStack tool) {
+        return this.params.xpDropped.sample(level.getRandom());
     }
 }

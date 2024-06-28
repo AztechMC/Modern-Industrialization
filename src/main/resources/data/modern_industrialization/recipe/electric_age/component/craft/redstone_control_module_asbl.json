@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "dtd",
+    "rcr",
+    "ibi"
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:redstone"
+    },
+    "t": {
+      "item": "minecraft:redstone_torch"
+    },
+    "c": {
+      "item": "modern_industrialization:capacitor"
+    },
+    "r": {
+      "item": "modern_industrialization:resistor"
+    },
+    "b": {
+      "item": "modern_industrialization:analog_circuit_board"
+    },
+    "i": {
+      "item": "modern_industrialization:inductor"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:redstone_control_module"
+  }
+}
+

@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:analog_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:large_steam_boiler"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.large_steam_boiler.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:large_steam_boiler"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.large_steam_boiler"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

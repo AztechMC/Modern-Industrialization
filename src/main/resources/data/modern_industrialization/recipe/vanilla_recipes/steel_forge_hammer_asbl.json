@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "___",
+    " i ",
+    "iii"
+  ],
+  "key": {
+    "_": {
+      "tag": "c:plates/steel"
+    },
+    "i": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:forge_hammer",
+    "count": 2
+  }
+}

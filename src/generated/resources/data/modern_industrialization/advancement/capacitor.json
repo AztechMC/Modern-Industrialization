@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:steel_wiremill",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:capacitor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.capacitor.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:capacitor"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.capacitor"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

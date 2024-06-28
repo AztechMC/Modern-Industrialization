@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "modern_industrialization:ae_compat_loaded"
+    }
+  ],
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "ae2:quartz_fiber"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    {
+      "amount": 1,
+      "tag": "c:dyes/brown"
+    },
+    {
+      "amount": 2,
+      "tag": "ae2:glass_cable"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "item": "modern_industrialization:brown_me_wire"
+    }
+  ]
+}

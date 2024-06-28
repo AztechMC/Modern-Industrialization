@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "tag": "c:rods/bronze"
+    },
+    "b": {
+      "item": "modern_industrialization:bronze_bolt"
+    }
+  },
+  "pattern": [
+    "bRb",
+    "R R",
+    "bRb"
+  ],
+  "result": {
+    "count": 2,
+    "id": "modern_industrialization:bronze_ring"
+  }
+}

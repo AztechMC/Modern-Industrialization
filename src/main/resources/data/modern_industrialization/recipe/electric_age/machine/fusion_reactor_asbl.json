@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "QHQ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:fusion_chamber"
+    },
+    "H": {
+      "item": "modern_industrialization:quantum_machine_hull"
+    },
+    "Q": {
+      "item": "modern_industrialization:quantum_circuit"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:fusion_reactor"
+  }
+}

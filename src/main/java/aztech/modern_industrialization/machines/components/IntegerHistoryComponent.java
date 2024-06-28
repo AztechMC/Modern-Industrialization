@@ -27,6 +27,7 @@ import aztech.modern_industrialization.machines.IComponent;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -56,14 +57,14 @@ public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         for (K key : keys) {
             tag.putIntArray(key.toString(), histories.get(key));
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         for (K key : keys) {
             String keyString = key.toString();
             if (tag.contains(keyString)) {

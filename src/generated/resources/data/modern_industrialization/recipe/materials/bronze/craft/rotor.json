@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "modern_industrialization:bronze_blade"
+    },
+    "R": {
+      "item": "modern_industrialization:bronze_ring"
+    },
+    "b": {
+      "item": "modern_industrialization:bronze_bolt"
+    }
+  },
+  "pattern": [
+    "bBb",
+    "BRB",
+    "bBb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:bronze_rotor"
+  }
+}

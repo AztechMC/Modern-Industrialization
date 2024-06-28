@@ -1,0 +1,18 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "b",
+    "p"
+  ],
+  "key": {
+    "b": {
+      "item": "modern_industrialization:iron_double_ingot"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:packer_double_ingot_template"
+  }
+}

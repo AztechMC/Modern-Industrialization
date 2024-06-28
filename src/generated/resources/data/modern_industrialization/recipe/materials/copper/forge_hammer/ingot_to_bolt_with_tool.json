@@ -1,0 +1,11 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 60,
+  "ingredient": {
+    "tag": "c:ingots/copper"
+  },
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:copper_bolt"
+  }
+}

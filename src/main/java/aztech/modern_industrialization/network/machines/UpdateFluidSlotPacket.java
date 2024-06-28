@@ -26,20 +26,24 @@ package aztech.modern_industrialization.network.machines;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidStack newStack) implements BasePacket {
-    public UpdateFluidSlotPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableFluidStack(buf.readNbt()));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
+            UpdateFluidSlotPacket::write, UpdateFluidSlotPacket::new);
+
+    public UpdateFluidSlotPacket(RegistryFriendlyByteBuf buf) {
+        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableFluidStack(buf.readNbt(), buf.registryAccess()));
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeByte(syncId);
         buf.writeVarInt(stackId);
-        buf.writeNbt(newStack.toNbt());
+        buf.writeNbt(newStack.toNbt(buf.registryAccess()));
     }
 
     @Override
@@ -57,7 +61,7 @@ public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidSt
                 Slot slot = csh.slots.get(i);
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fs) {
                     if (fs.getConfStack() == oldStack) {
-                        csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
+                        csh.updateSlot(i, newStack.new ConfigurableFluidSlot(fs));
                         return;
                     }
                 }

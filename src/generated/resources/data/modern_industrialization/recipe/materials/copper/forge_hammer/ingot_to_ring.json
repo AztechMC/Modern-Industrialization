@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:ingots/copper"
+  },
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:copper_ring"
+  }
+}

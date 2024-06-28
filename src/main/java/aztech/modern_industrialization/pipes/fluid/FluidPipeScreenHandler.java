@@ -29,7 +29,7 @@ import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +44,7 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
     private int trackedPriority;
     private int trackedType;
 
-    public FluidPipeScreenHandler(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+    public FluidPipeScreenHandler(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(syncId, playerInventory, FluidPipeInterface.ofBuf(buf));
     }
 

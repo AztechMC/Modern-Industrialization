@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "TlT",
+    "lIl",
+    "TlT"
+  ],
+  "key": {
+    "T": {
+      "item" : "modern_industrialization:tungsten_large_plate"
+    },
+    "l": {
+      "tag" : "c:plates/lead"
+    },
+    "I":{
+      "tag" : "c:plates/iridium"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:ultradense_metal_ball"
+  }
+}

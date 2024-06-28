@@ -28,15 +28,15 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.MISavedData;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworks extends MISavedData {
@@ -61,20 +61,20 @@ public class PipeNetworks extends MISavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
         for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
-            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag()));
+            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag(), registries));
         }
         return nbt;
     }
 
-    public static PipeNetworks readNbt(CompoundTag nbt) {
+    public static PipeNetworks readNbt(CompoundTag nbt, HolderLookup.Provider registries) {
         Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
         for (Map.Entry<ResourceLocation, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
             if (nbt.contains(tagKey)) {
-                manager.fromNbt(nbt.getCompound(tagKey));
+                manager.fromNbt(nbt.getCompound(tagKey), registries);
             }
             managers.put(entry.getValue(), manager);
         }
@@ -99,12 +99,11 @@ public class PipeNetworks extends MISavedData {
     }
 
     static {
-        NeoForge.EVENT_BUS.addListener(TickEvent.LevelTickEvent.class, event -> {
-            if (event.side != LogicalSide.SERVER || event.phase != TickEvent.Phase.END) {
+        NeoForge.EVENT_BUS.addListener(LevelTickEvent.Post.class, event -> {
+            if (!(event.getLevel() instanceof ServerLevel world)) {
                 return;
             }
 
-            var world = (ServerLevel) event.level;
             PipeNetworks networks = PipeNetworks.get(world);
 
             // Load pipes

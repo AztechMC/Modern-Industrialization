@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import net.minecraft.core.HolderLookup;
@@ -37,7 +37,7 @@ public abstract class MIRecipesProvider extends RecipeProvider {
     }
 
     protected static ResourceLocation id(String path) {
-        return new MIIdentifier(path);
+        return MI.id(path);
     }
 
     @Override

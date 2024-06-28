@@ -23,15 +23,17 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.world;
 
-import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class ChunkEventListeners {
     public static ChunkPosMultiMap<ChunkEventListener> listeners = new ChunkPosMultiMap<>();
@@ -44,7 +46,7 @@ public class ChunkEventListeners {
                 return;
             }
 
-            ensureServerThread();
+            ensureServerThread(event.getLevel().getServer());
             Set<ChunkEventListener> cels = listeners.get(event.getLevel(), event.getChunk().getPos());
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -57,7 +59,7 @@ public class ChunkEventListeners {
                 return;
             }
 
-            ensureServerThread();
+            ensureServerThread(event.getLevel().getServer());
             Set<ChunkEventListener> cels = listeners.get(event.getLevel(), event.getChunk().getPos());
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -75,7 +77,7 @@ public class ChunkEventListeners {
     public static void onBlockStateChange(Level world, ChunkPos chunkPos, BlockPos pos) {
         // We skip block state changes that happen outside of the server thread.
         // Hopefully that won't cause problems.
-        if (CommonProxy.getCurrentServer().isSameThread()) {
+        if (world instanceof ServerLevel serverLevel && serverLevel.getServer().isSameThread()) {
             Set<ChunkEventListener> cels = listeners.get(world, chunkPos);
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -85,8 +87,12 @@ public class ChunkEventListeners {
         }
     }
 
-    private static void ensureServerThread() {
-        if (!CommonProxy.getCurrentServer().isSameThread()) {
+    private static void ensureServerThread(@Nullable MinecraftServer server) {
+        if (server == null) {
+            throw new RuntimeException("Null server!");
+        }
+
+        if (!server.isSameThread()) {
             throw new RuntimeException("Thread is not server thread!");
         }
     }

@@ -26,16 +26,16 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.CommonHooks;
 
 public class FuelBurningComponent implements IComponent {
     /**
@@ -114,7 +114,7 @@ public class FuelBurningComponent implements IComponent {
             for (ConfigurableItemStack stack : itemInputs) {
                 var fuel = stack.getResource().toStack((int) stack.getAmount());
                 if (ItemStackHelper.consumeFuel(stack, true)) {
-                    int fuelTime = CommonHooks.getBurnTime(fuel, null);
+                    int fuelTime = fuel.getBurnTime(null);
                     if (fuelTime > 0) {
                         burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         ItemStackHelper.consumeFuel(stack, false);
@@ -129,7 +129,7 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
-                    long euPerMb = FluidFuelRegistry.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
+                    long euPerMb = FluidFuel.getEu(stack.getResource().getFluid()) * burningEuMultiplier;
                     if (euPerMb != 0) {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
                         long mbConsumed = Math.min(mbConsumedMax, stack.getAmount());
@@ -146,13 +146,13 @@ public class FuelBurningComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("burningEuBuffer", burningEuBuffer);
 
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
     }
 

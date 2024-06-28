@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "modern_industrialization:steel_ring"
+    }
+  },
+  "result": {
+    "id": "minecraft:chain",
+    "count": 6
+  }
+}

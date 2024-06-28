@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "cCc",
+    "rHr",
+    "cPc"
+  ],
+  "key": {
+    "c" : {
+      "item" : "modern_industrialization:cupronickel_wire_magnetic"
+    },
+    "r": {
+      "tag" : "c:rods/aluminum"
+    },
+    "H": {
+      "item": "modern_industrialization:basic_machine_hull"
+    },
+    "C" : {
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    "P" : {
+      "item": "modern_industrialization:large_pump"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:electrolyzer"
+  }
+}

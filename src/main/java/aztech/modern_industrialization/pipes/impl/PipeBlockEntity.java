@@ -42,6 +42,7 @@ import java.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -392,16 +393,16 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
             tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
-            tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag()));
+            tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag(), registries));
             i++;
         }
         for (Tuple<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
             tag.putString("pipe_type_" + i, entry.getA().getIdentifier().toString());
-            tag.put("pipe_data_" + i, entry.getB().toTag(new CompoundTag()));
+            tag.put("pipe_data_" + i, entry.getB().toTag(new CompoundTag(), registries));
             i++;
         }
         if (camouflage != null) {
@@ -410,7 +411,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage")) : null;
 
         if (!tag.contains("pipes")) {
@@ -418,10 +419,10 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
             int i = 0;
             while (tag.contains("pipe_type_" + i)) {
-                ResourceLocation typeId = new ResourceLocation(tag.getString("pipe_type_" + i));
+                ResourceLocation typeId = ResourceLocation.parse(tag.getString("pipe_type_" + i));
                 PipeNetworkType type = PipeNetworkType.get(typeId);
                 PipeNetworkNode node = type.getNodeCtor().get();
-                node.fromTag(tag.getCompound("pipe_data_" + i));
+                node.fromTag(tag.getCompound("pipe_data_" + i), registries);
                 unloadedPipes.add(new Tuple<>(type, node));
                 i++;
             }
@@ -431,7 +432,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             CompoundTag pipesTag = tag.getCompound("pipes");
             for (String key : pipesTag.getAllKeys()) {
                 CompoundTag nodeTag = pipesTag.getCompound(key);
-                PipeNetworkType type = PipeNetworkType.get(new ResourceLocation(key));
+                PipeNetworkType type = PipeNetworkType.get(ResourceLocation.parse(key));
                 connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
                 customData.put(type, nodeTag.getCompound("custom").copy());
             }
@@ -463,13 +464,13 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         loadPipes();
         CompoundTag pipesTag = new CompoundTag();
         for (PipeNetworkNode pipe : pipes) {
             CompoundTag nodeTag = new CompoundTag();
-            nodeTag.put("custom", pipe.writeCustomData());
+            nodeTag.put("custom", pipe.writeCustomData(registries));
             nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(worldPosition)));
             pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
         }

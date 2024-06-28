@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:guidebook",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:forge_hammer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.forge_hammer.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:forge_hammer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.forge_hammer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

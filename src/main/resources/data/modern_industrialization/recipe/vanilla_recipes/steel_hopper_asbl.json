@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "p p",
+    "pcp",
+    " p "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "result": {
+    "id": "minecraft:hopper",
+    "count": 2
+  }
+}

@@ -34,6 +34,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permits MaterialItemPartImpl {
 
@@ -78,7 +79,7 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
     default Ingredient getTaggedIngredient() {
         var taggedItem = getTaggedItemId();
         if (taggedItem.startsWith("#")) {
-            return Ingredient.of(ItemTags.create(new ResourceLocation(taggedItem.substring(1))));
+            return Ingredient.of(ItemTags.create(ResourceLocation.parse(taggedItem.substring(1))));
         } else {
             return Ingredient.of(asItem());
         }
@@ -91,7 +92,11 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
 
     @Override
     default Item asItem() {
-        return BuiltInRegistries.ITEM.getOrThrow(ResourceKey.create(Registries.ITEM, new ResourceLocation(getItemId())));
+        return BuiltInRegistries.ITEM.getOrThrow(ResourceKey.create(Registries.ITEM, ResourceLocation.parse(getItemId())));
+    }
+
+    default Block asBlock() {
+        return BuiltInRegistries.BLOCK.getOrThrow(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(getItemId())));
     }
 
     /**

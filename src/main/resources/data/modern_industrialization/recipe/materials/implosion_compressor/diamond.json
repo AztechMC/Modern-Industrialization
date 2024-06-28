@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "eu": 1,
+  "duration": 10,
+  "item_inputs": [
+    {
+      "tag": "c:dusts/diamond",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:industrial_tnt",
+      "amount": 1
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:diamond",
+    "amount": 1
+  }
+}

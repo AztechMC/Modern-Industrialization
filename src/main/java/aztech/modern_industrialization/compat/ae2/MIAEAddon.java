@@ -102,7 +102,7 @@ public class MIAEAddon {
 
         var pipeId = color.prefix + "me_wire";
         var type = PipeNetworkType.register(
-                new MIIdentifier(pipeId),
+                MI.id(pipeId),
                 (id, data) -> new MENetwork(id, data, aeColor),
                 MENetworkNode::new,
                 color.color,

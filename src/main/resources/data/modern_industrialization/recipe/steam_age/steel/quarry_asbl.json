@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern": [
+    "LpL",
+    "GCG",
+    "LPL"
+  ],
+  "key": {
+    "L": {
+      "item": "modern_industrialization:steel_large_plate"
+    },
+    "p":{
+      "tag": "modern_industrialization:item_pipes"
+    },
+    "G": {
+      "tag": "c:gears/steel"
+    },
+    "P": {
+      "item": "modern_industrialization:invar_rotary_blade"
+    },
+    "C": {
+      "item": "modern_industrialization:steel_machine_casing"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:steam_quarry",
+    "count": 1
+  }
+}

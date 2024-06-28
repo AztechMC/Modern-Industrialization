@@ -1,0 +1,26 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 16,
+  "duration": 200,
+  "item_inputs": [
+    {
+    "tag": "c:dusts/sulfur",
+    "amount": 1
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:oxygen",
+      "amount": 200
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 200
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:sulfuric_acid",
+    "amount": 500
+  }
+
+}

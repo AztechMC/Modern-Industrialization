@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "logged_in": {
+      "trigger": "modern_industrialization:player_logged_in"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "modern_industrialization:textures/block/fire_clay_bricks.png",
+    "description": {
+      "translate": "advancements.modern_industrialization.guidebook.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:guidebook"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "text.modern_industrialization.ModernIndustrialization"
+    }
+  },
+  "requirements": [
+    [
+      "logged_in"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

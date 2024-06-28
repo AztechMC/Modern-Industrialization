@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:tiny_dusts/tin"
+    },
+    {
+      "amount": 1,
+      "tag": "c:tiny_dusts/lead"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:soldering_alloy_tiny_dust"
+    }
+  ]
+}

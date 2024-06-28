@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "r",
+    "c",
+    "r"
+  ],
+  "key":
+  {
+    "r" : {
+      "item" : "modern_industrialization:rubber_sheet"
+    },
+    "c" : {
+      "tag" : "c:plates/copper"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:analog_circuit_board"
+  }
+}

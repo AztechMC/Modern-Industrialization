@@ -1,0 +1,20 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "tag": "c:plates/nuclear_alloy"
+    },
+
+    "C" : {
+      "item" : "modern_industrialization:highly_advanced_fluid_input_hatch"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:nuclear_fluid_hatch"
+  }
+}

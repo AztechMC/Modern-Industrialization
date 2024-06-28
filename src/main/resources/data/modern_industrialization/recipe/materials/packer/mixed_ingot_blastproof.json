@@ -1,0 +1,24 @@
+{
+  "type" : "modern_industrialization:packer",
+  "eu" : 2,
+  "duration" : 200,
+  "item_inputs" : [
+    {
+      "tag" : "c:ingots/tungsten",
+      "amount" : 1
+    },
+    {
+      "tag" : "c:ingots/titanium",
+      "amount" : 1
+    },
+    {
+      "tag" : "c:ingots/stainless_steel",
+      "amount" : 1
+    }
+  ],
+  "item_outputs" : {
+    "item" : "modern_industrialization:mixed_ingot_blastproof",
+    "amount" : 1
+  }
+
+}

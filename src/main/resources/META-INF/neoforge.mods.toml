@@ -1,0 +1,45 @@
+modLoader="javafml"
+loaderVersion="[2,)"
+license="MIT"
+issueTrackerURL="https://github.com/AztechMC/Modern-Industrialization/issues"
+
+[[mods]]
+modId="modern_industrialization"
+version="${mod_version}"
+displayName="Modern Industrialization"
+displayURL="https://github.com/AztechMC/Modern-Industrialization"
+logoFile="assets/modern_industrialization/milogo.png"
+authors="Azerococo,Technici4n"
+description='''A modern industrial mod for Minecraft.'''
+
+[[mixins]]
+config="modern_industrialization.mixins.json"
+
+[[dependencies.modern_industrialization]]
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.modern_industrialization]]
+modId="grandpower"
+type="required"
+versionRange="${grandpower_version_range}"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.modern_industrialization]]
+modId="ae2"
+type="optional"
+versionRange="${ae2_version_range}"
+ordering="AFTER"
+side="BOTH"
+
+#[[dependencies.modern_industrialization]]
+#modId="minecraft"
+#mandatory=true
+## This version range declares a minimum of the current minecraft version up to but not including the next major version
+#versionRange=""
+#ordering="NONE"
+#side="BOTH"

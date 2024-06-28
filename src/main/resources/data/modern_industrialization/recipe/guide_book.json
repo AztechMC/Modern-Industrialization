@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ccc",
+    "cbc",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "tag": "c:nuggets/copper"
+    },
+    "b": {
+      "item": "minecraft:book"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:guidebook"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "tpt",
+    "RHR",
+    "tpt"
+  ],
+  "key":
+  {
+    "t": {
+      "item" : "modern_industrialization:hv_steam_turbine"
+    },
+    "p" : {
+      "item" : "modern_industrialization:advanced_pump"
+    },
+    "H" :{
+      "item" : "modern_industrialization:turbo_machine_hull"
+    },
+    "R" : {
+      "item" : "modern_industrialization:stainless_steel_rotor"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:large_steam_turbine"
+  }
+}

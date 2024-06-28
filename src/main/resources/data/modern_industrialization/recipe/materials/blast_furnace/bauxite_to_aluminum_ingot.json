@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 32,
+  "duration": 2000,
+  "item_inputs": {
+    "tag": "c:storage_blocks/bauxite",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:aluminum_ingot",
+    "amount": 1
+  }
+}

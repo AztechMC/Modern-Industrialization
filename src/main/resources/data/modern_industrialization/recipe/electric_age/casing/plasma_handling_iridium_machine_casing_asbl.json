@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:plates/iridium"
+    },
+    "C": {
+      "item": "modern_industrialization:superconductor_coil"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:plasma_handling_iridium_machine_casing"
+  }
+}

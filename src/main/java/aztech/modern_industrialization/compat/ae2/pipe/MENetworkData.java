@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.networking.*;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class MENetworkData extends PipeNetworkData {
@@ -49,12 +50,12 @@ public class MENetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
         this.getMainNode().loadFromNBT(tag);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
         this.getMainNode().saveToNBT(tag);
         return tag;
     }

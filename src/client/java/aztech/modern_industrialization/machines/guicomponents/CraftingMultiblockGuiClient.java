@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
@@ -32,7 +32,8 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGuiClient implements GuiComponentClient {
     public boolean isShapeValid;
@@ -43,12 +44,12 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     long currentRecipeEu;
     long baseRecipeEu;
 
-    public CraftingMultiblockGuiClient(FriendlyByteBuf buf) {
+    public CraftingMultiblockGuiClient(RegistryFriendlyByteBuf buf) {
         readCurrentData(buf);
     }
 
     @Override
-    public void readCurrentData(FriendlyByteBuf buf) {
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {
         isShapeValid = buf.readBoolean();
         if (isShapeValid) {
             hasActiveRecipe = buf.readBoolean();
@@ -68,7 +69,7 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-        private static final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/container/multiblock_info.png");
+        private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {

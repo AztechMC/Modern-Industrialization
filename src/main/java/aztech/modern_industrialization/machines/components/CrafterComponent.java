@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -386,7 +387,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("usedEnergy", this.usedEnergy);
         tag.putLong("recipeEnergy", this.recipeEnergy);
         tag.putLong("recipeMaxEu", this.recipeMaxEu);
@@ -399,11 +400,11 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
-        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new ResourceLocation(tag.getString("activeRecipe")) : null;
+        this.delayedActiveRecipe = tag.contains("activeRecipe") ? ResourceLocation.parse(tag.getString("activeRecipe")) : null;
         if (delayedActiveRecipe == null && usedEnergy > 0) {
             usedEnergy = 0;
             MI.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
@@ -422,12 +423,12 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
         boolean ok = true;
         for (MachineRecipe.ItemInput input : recipe.itemInputs) {
-            if (!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
-                if (ThreadLocalRandom.current().nextFloat() >= input.probability) {
+            if (!simulate && input.probability() < 1) { // if we are not simulating, there is a chance we don't need to take this output
+                if (ThreadLocalRandom.current().nextFloat() >= input.probability()) {
                     continue;
                 }
             }
-            int remainingAmount = input.amount;
+            int remainingAmount = input.amount();
             for (ConfigurableItemStack stack : stacks) {
                 if (stack.getAmount() > 0 && input.matches(stack.getResource().toStack())) { // TODO: ItemStack creation slow?
                     int taken = Math.min((int) stack.getAmount(), remainingAmount);
@@ -453,14 +454,14 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
         boolean ok = true;
         for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
-            if (!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
-                if (ThreadLocalRandom.current().nextFloat() >= input.probability) {
+            if (!simulate && input.probability() < 1) { // if we are not simulating, there is a chance we don't need to take this output
+                if (ThreadLocalRandom.current().nextFloat() >= input.probability()) {
                     continue;
                 }
             }
-            long remainingAmount = input.amount;
+            long remainingAmount = input.amount();
             for (ConfigurableFluidStack stack : stacks) {
-                if (stack.getResource().equals(FluidVariant.of(input.fluid))) {
+                if (stack.getResource().equals(FluidVariant.of(input.fluid()))) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
                     if (taken > 0 && !simulate) {
                         behavior.getStatsOrDummy().addUsedFluids(stack.getResource().getFluid(), taken);
@@ -486,14 +487,14 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
         boolean ok = true;
         for (MachineRecipe.ItemOutput output : recipe.itemOutputs) {
-            if (output.probability < 1) {
+            if (output.probability() < 1) {
                 if (simulate)
                     continue; // don't check output space for probabilistic recipes
                 float randFloat = ThreadLocalRandom.current().nextFloat();
-                if (randFloat > output.probability)
+                if (randFloat > output.probability())
                     continue;
             }
-            int remainingAmount = output.amount;
+            int remainingAmount = output.amount();
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
@@ -501,17 +502,18 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.getItem() == output.item || key.isBlank()) {
+                    if (key.equals(output.variant()) || key.isBlank()) {
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
-                        int remainingCapacity = simulate || output.probability < 1 ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item))
-                                : output.item.getMaxStackSize() - (int) stack.getAmount();
+                        int remainingCapacity = simulate || output.probability() < 1
+                                ? (int) stack.getRemainingCapacityFor(output.variant())
+                                : output.variant().getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (key.isBlank()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item))) {
+                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
                                 stack.setAmount(ins);
-                                stack.setKey(ItemVariant.of(output.item));
+                                stack.setKey(output.variant());
                             } else {
                                 ins = 0;
                             }
@@ -521,9 +523,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                         remainingAmount -= ins;
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
-                            lockItems.add(output.item);
+                            lockItems.add(output.variant().getItem());
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedItems(output.item, ins);
+                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);
                             }
                         }
                         if (remainingAmount == 0)
@@ -553,11 +555,11 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         boolean ok = true;
         for (int i = 0; i < Math.min(recipe.fluidOutputs.size(), behavior.getMaxFluidOutputs()); ++i) {
             MachineRecipe.FluidOutput output = recipe.fluidOutputs.get(i);
-            if (output.probability < 1) {
+            if (output.probability() < 1) {
                 if (simulate)
                     continue; // don't check output space for probabilistic recipes
                 float randFloat = ThreadLocalRandom.current().nextFloat();
-                if (randFloat > output.probability)
+                if (randFloat > output.probability())
                     continue;
             }
             // First, try to find a slot that contains the fluid. If we couldn't find one,
@@ -565,20 +567,20 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             outer: for (int tries = 0; tries < 2; ++tries) {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
-                    FluidVariant outputKey = FluidVariant.of(output.fluid);
+                    FluidVariant outputKey = FluidVariant.of(output.fluid());
                     if (stack.isResourceAllowedByLock(outputKey)
                             && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
-                        long inserted = Math.min(output.amount, stack.getRemainingSpace());
+                        long inserted = Math.min(output.amount(), stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setKey(outputKey);
                             stack.increment(inserted);
                             locksToToggle.add(j);
-                            lockFluids.add(output.fluid);
+                            lockFluids.add(output.fluid());
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedFluids(output.fluid, inserted);
+                                behavior.getStatsOrDummy().addProducedFluids(output.fluid(), inserted);
                             }
                         }
-                        if (inserted < output.amount) {
+                        if (inserted < output.amount()) {
                             ok = false;
                         }
                         break outer;
@@ -619,7 +621,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // ITEM INPUTS
         outer: for (MachineRecipe.ItemInput input : recipe.value().itemInputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                if (input.matches(new ItemStack(stack.getLockedInstance())))
+                if (stack.getLockedInstance() != null && input.matches(new ItemStack(stack.getLockedInstance())))
                     continue outer;
             }
             Item targetItem = null;
@@ -655,33 +657,38 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // ITEM OUTPUTS
         outer: for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
             for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.getLockedInstance() == output.item)
+                if (stack.getLockedInstance() == output.variant().getItem())
                     continue outer;
             }
-            AbstractConfigurableStack.playerLockNoOverride(output.item, this.inventory.getItemOutputs());
+            AbstractConfigurableStack.playerLockNoOverride(output.variant().getItem(), this.inventory.getItemOutputs());
         }
 
         // FLUID INPUTS
         outer: for (MachineRecipe.FluidInput input : recipe.value().fluidInputs) {
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.isLockedTo(input.fluid))
+                if (stack.isLockedTo(input.fluid()))
                     continue outer;
             }
-            AbstractConfigurableStack.playerLockNoOverride(input.fluid, this.inventory.getFluidInputs());
+            AbstractConfigurableStack.playerLockNoOverride(input.fluid(), this.inventory.getFluidInputs());
         }
         // FLUID OUTPUTS
         outer: for (MachineRecipe.FluidOutput output : recipe.value().fluidOutputs) {
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.isLockedTo(output.fluid))
+                if (stack.isLockedTo(output.fluid()))
                     continue outer;
             }
-            AbstractConfigurableStack.playerLockNoOverride(output.fluid, this.inventory.getFluidOutputs());
+            AbstractConfigurableStack.playerLockNoOverride(output.fluid(), this.inventory.getFluidOutputs());
         }
 
         // LOCK ITEMS
         if (recipe.value().itemInputs.size() > 0 || recipe.value().itemOutputs.size() > 0) {
             lockAll(this.inventory.getItemInputs());
             lockAll(this.inventory.getItemOutputs());
+        }
+        // LOCK FLUIDS
+        if (recipe.value().fluidInputs.size() > 0 || recipe.value().fluidOutputs.size() > 0) {
+            lockAll(this.inventory.getFluidInputs());
+            lockAll(this.inventory.getFluidOutputs());
         }
     }
 

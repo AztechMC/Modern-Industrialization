@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "gpd",
+    "mCf",
+    "cPg"
+
+  ],
+  "key": {
+    "d" : {
+      "item": "modern_industrialization:stainless_steel_drill_head"
+    },
+    "g" : {
+      "tag": "c:gears/iron"
+    },
+    "p" : {
+      "tag" : "modern_industrialization:item_pipes"
+    },
+    "f" : {
+      "tag" : "modern_industrialization:fluid_pipes"
+    },
+    "m" : {
+      "item": "modern_industrialization:advanced_motor"
+    },
+    "P" : {
+      "item": "modern_industrialization:advanced_pump"
+    },
+    "c" : {
+      "item" : "modern_industrialization:aluminum_cable"
+    },
+    "C" : {
+      "item" : "modern_industrialization:digital_circuit"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:stainless_steel_drill",
+    "count": 4
+  }
+}

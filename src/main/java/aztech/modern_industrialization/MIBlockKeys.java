@@ -38,6 +38,6 @@ public class MIBlockKeys {
     public static final ResourceKey<Block> QUANTUM_MACHINE_HULL = block("quantum_machine_hull");
 
     private static ResourceKey<Block> block(String path) {
-        return ResourceKey.create(Registries.BLOCK, new MIIdentifier(path));
+        return ResourceKey.create(Registries.BLOCK, MI.id(path));
     }
 }

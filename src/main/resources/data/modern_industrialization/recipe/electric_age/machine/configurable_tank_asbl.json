@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ctc",
+    "pCp",
+    "ctc"
+  ],
+  "key":
+  {
+    "C" : {
+      "item" : "modern_industrialization:steel_machine_casing"
+    },
+    "p" :{
+      "item" : "modern_industrialization:pump"
+    },
+    "c": {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "t" : {
+      "item" : "modern_industrialization:aluminum_tank"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:configurable_tank",
+    "count": 4
+  }
+}

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.jei;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -134,7 +134,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                             item(item.toStack());
                         } else if (variant instanceof FluidVariant fluid) {
                             if (!fluid.isBlank()) {
-                                slotBuilder.addFluidStack(fluid.getFluid(), 1, fluid.copyNbt());
+                                slotBuilder.addFluidStack(fluid.getFluid(), 1, fluid.getComponentsPatch());
                             }
                             JeiSlotUtil.overrideFluidRenderer(slotBuilder);
                             slotBuilder.setBackground(fluidSlot, -1, -1);
@@ -146,7 +146,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
 
                     @Override
                     public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
-                        slotBuilder.addFluidStack(fluid.getFluid(), amount, fluid.copyNbt());
+                        slotBuilder.addFluidStack(fluid.getFluid(), amount, fluid.getComponentsPatch());
                         JeiSlotUtil.overrideFluidRenderer(slotBuilder);
                         JeiSlotUtil.customizeTooltip(slotBuilder, probability);
                         slotBuilder.setBackground(fluidSlot, -1, -1);
@@ -209,7 +209,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
 
             @Override
             public void arrow(int x, int y) {
-                texture(new MIIdentifier("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
+                texture(MI.id("textures/gui/jei/arrow.png"), x, y, 0, 17, 24, 17);
             }
 
             @Override

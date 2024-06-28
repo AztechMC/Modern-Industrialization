@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:electronic_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:electric_quarry"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.electric_quarry.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:electric_quarry"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.electric_quarry"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

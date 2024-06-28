@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:nuclear_reactor",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:nuke"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.nuke.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:nuke"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.nuke"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

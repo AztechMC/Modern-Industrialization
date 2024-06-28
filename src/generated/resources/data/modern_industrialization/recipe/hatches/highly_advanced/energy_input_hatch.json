@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:annealed_copper_cable"
+    },
+    "V": {
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    }
+  },
+  "pattern": [
+    "U",
+    "V"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:ev_energy_input_hatch"
+  }
+}

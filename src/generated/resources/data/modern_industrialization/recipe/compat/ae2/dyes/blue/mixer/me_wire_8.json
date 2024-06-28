@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "modern_industrialization:ae_compat_loaded"
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "modern_industrialization:me_wires"
+    },
+    {
+      "amount": 1,
+      "tag": "c:dyes/blue"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:blue_me_wire"
+    }
+  ]
+}

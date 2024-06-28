@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients":
+  [
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "tag" : "c:dusts/iron"
+    },
+    {
+      "item" : "modern_industrialization:coke_dust"
+    }
+  ,
+    {
+      "item" : "modern_industrialization:coke_dust"
+    }
+
+  ],
+  "result": {
+    "id": "modern_industrialization:uncooked_steel_dust",
+    "count": 7
+  }
+}

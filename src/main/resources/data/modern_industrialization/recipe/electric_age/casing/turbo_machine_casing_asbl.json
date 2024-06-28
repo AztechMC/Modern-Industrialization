@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "tag" : "c:plates/stainless_steel"
+    },
+    "H" : {
+      "item" : "modern_industrialization:advanced_machine_hull"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:turbo_machine_casing"
+  }
+}

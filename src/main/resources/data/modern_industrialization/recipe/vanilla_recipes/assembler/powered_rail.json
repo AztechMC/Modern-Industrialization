@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "c:rods/gold",
+      "amount": 6
+    },
+    {
+      "item": "minecraft:stick",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "amount": 1
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:creosote",
+      "amount": 100
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:powered_rail",
+      "amount": 8
+    }
+  ]
+}

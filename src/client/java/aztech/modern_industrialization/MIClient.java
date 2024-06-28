@@ -26,12 +26,14 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
+import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
+import aztech.modern_industrialization.items.SteamDrillHighlight;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
@@ -45,8 +47,10 @@ import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeT
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.models.MachineCasingHolderModel;
+import aztech.modern_industrialization.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineUnbakedModel;
+import aztech.modern_industrialization.machines.models.UseBlockModelUnbakedModel;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -79,44 +83,43 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
-import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID, bus = EventBusSubscriber.Bus.MOD)
 public class MIClient {
     @SubscribeEvent
     private static void init(FMLConstructModEvent ignored) {
         var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
         Objects.requireNonNull(modBus);
+        var modContainer = ModLoadingContext.get().getActiveContainer();
 
+        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
+        DeferredBarrelTextRenderer.init();
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());
 
-        NeoForge.EVENT_BUS.addListener(TickEvent.RenderTickEvent.class, event -> {
-            if (event.phase == TickEvent.Phase.START) {
-                JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance());
-            }
+        NeoForge.EVENT_BUS.addListener(RenderFrameEvent.Pre.class, event -> {
+            JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance());
         });
-        NeoForge.EVENT_BUS.addListener(TickEvent.ClientTickEvent.class, event -> {
-            if (event.phase == TickEvent.Phase.END) {
-                ClientKeyHandler.onEndTick(Minecraft.getInstance());
-            }
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> {
+            ClientKeyHandler.onEndTick(Minecraft.getInstance());
         });
         NeoForge.EVENT_BUS.addListener(ItemTooltipEvent.class, event -> {
             MITooltips.attachTooltip(event.getItemStack(), event.getToolTip());
@@ -125,7 +128,7 @@ public class MIClient {
             // != null check
             if (Minecraft.getInstance().level != null && !MIConfig.getConfig().disableFuelTooltips) {
                 try {
-                    int fuelTime = CommonHooks.getBurnTime(event.getItemStack(), null);
+                    int fuelTime = event.getItemStack().getBurnTime(null);
                     if (fuelTime > 0) {
                         long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
                         event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
@@ -152,10 +155,9 @@ public class MIClient {
                     false);
         });
 
-        ModLoadingContext.get().registerExtensionPoint(
-                ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(
-                        (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get()));
+        modContainer.registerExtensionPoint(
+                IConfigScreenFactory.class,
+                (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get());
 
         // Warn if neither JEI nor REI is present!
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
@@ -190,14 +192,16 @@ public class MIClient {
     @SubscribeEvent
     private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(DelegatingModelBuilder.LOADER_ID, DelegatingUnbakedModel.LOADER);
-        event.register(MachineCasingHolderModel.LOADER_ID, MachineCasingHolderModel.LOADER);
         event.register(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.LOADER);
         event.register(PipeUnbakedModel.LOADER_ID, PipeUnbakedModel.LOADER);
+        event.register(UseBlockModelUnbakedModel.LOADER_ID, UseBlockModelUnbakedModel.LOADER);
     }
 
     @SubscribeEvent
     private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(MachineCasingHolderModel.MODEL_ID);
+        for (var casing : MachineCasings.registeredCasings.values()) {
+            event.register(MachineBakedModel.getCasingModelId(casing));
+        }
     }
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
@@ -238,11 +242,8 @@ public class MIClient {
     }
 
     @SubscribeEvent
-    private static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), MI.id("activation_status"),
-                (gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-                    HudRenderer.onRenderHud(guiGraphics, partialTick);
-                });
+    private static void registerGuiOverlays(RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, MI.id("activation_status"), HudRenderer::onRenderHud);
     }
 
     @SubscribeEvent

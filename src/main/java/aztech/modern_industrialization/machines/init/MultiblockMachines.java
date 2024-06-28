@@ -26,9 +26,9 @@ package aztech.modern_industrialization.machines.init;
 import static aztech.modern_industrialization.machines.models.MachineCasings.CLEAN_STAINLESS_STEEL;
 import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
@@ -200,8 +200,8 @@ public class MultiblockMachines {
     }
 
     private static void quarries() {
-        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("steel_machine_casing")));
-        SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("steel_machine_casing_pipe")));
+        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
+        SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing_pipe")));
         HatchFlags quarryHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, FLUID_INPUT, ITEM_OUTPUT).build();
         HatchFlags quarryElectricHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, ENERGY_INPUT).build();
 
@@ -243,8 +243,8 @@ public class MultiblockMachines {
     }
 
     private static void oilDrillingRig() {
-        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("steel_machine_casing")));
-        SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("steel_machine_casing_pipe")));
+        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
+        SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing_pipe")));
         SimpleMember chain = SimpleMember.verticalChain();
         HatchFlags hatchFlags = new HatchFlags.Builder().with(ITEM_INPUT).with(FLUID_OUTPUT).with(ENERGY_INPUT).build();
 
@@ -365,7 +365,7 @@ public class MultiblockMachines {
                 for (int y = -1; y <= 1; y++) {
                     if (z > 0 && z < 4) {
 
-                        heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings : x == 0 ? stainlessSteelPipe : frostproofMachineCasing,
+                        heatExchangerShapeBuilder.add(x, y, z, x == 1 ? invarCasings : x == 0 ? stainlessSteelPipe : frostproofMachineCasing,
                                 ((y == 1 || y == -1) && x == 0) ? energyInput : null);
                     } else {
                         if (z != 0 || x != 0 || y != 0) {
@@ -550,27 +550,27 @@ public class MultiblockMachines {
 
     public static void init() {
 
-        invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("heatproof_machine_casing")));
+        invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("heatproof_machine_casing")));
 
-        bronzePlatedBricks = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("bronze_plated_bricks")));
-        bronzePipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("bronze_machine_casing_pipe")));
+        bronzePlatedBricks = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("bronze_plated_bricks")));
+        bronzePipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("bronze_machine_casing_pipe")));
 
-        frostproofMachineCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("frostproof_machine_casing")));
+        frostproofMachineCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("frostproof_machine_casing")));
 
-        stainlessSteelClean = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("clean_stainless_steel_machine_casing")));
-        stainlessSteelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("stainless_steel_machine_casing_pipe")));
+        stainlessSteelClean = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("clean_stainless_steel_machine_casing")));
+        stainlessSteelPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("stainless_steel_machine_casing_pipe")));
 
-        titaniumCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("solid_titanium_machine_casing")));
-        titaniumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("titanium_machine_casing_pipe")));
+        titaniumCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("solid_titanium_machine_casing")));
+        titaniumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("titanium_machine_casing_pipe")));
 
-        blastProofCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("blastproof_casing")));
+        blastProofCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("blastproof_casing")));
 
 
-        highlyAdvancedHull = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("highly_advanced_machine_hull")));
-        fusionChamber = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("fusion_chamber")));
+        highlyAdvancedHull = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("highly_advanced_machine_hull")));
+        fusionChamber = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("fusion_chamber")));
 
-        plasmaHandlingIridium = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("plasma_handling_iridium_machine_casing")));
-        iridiumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(new MIIdentifier("iridium_machine_casing_pipe")));
+        plasmaHandlingIridium = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("plasma_handling_iridium_machine_casing")));
+        iridiumPipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("iridium_machine_casing_pipe")));
 
         cokeOven();
         steamBlastFurnace();
@@ -785,7 +785,7 @@ public class MultiblockMachines {
                     itemInputs.build(), itemOutputs.build(), fluidInputs.build(), fluidOutputs.build(),
                     progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
             for (String workstation : workstations) {
-                ReiMachineRecipes.registerWorkstation(category, new MIIdentifier(workstation));
+                ReiMachineRecipes.registerWorkstation(category, MI.id(workstation));
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, ReiMachineRecipes.MachineScreenPredicate.MULTIBLOCK);
                 ReiMachineRecipes.registerMachineClickArea(workstation, CRAFTING_GUI);
             }

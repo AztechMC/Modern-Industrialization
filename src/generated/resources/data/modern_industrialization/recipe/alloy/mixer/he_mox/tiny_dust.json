@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "tag": "c:tiny_dusts/uranium_238"
+    },
+    {
+      "amount": 3,
+      "tag": "c:tiny_dusts/plutonium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "modern_industrialization:he_mox_tiny_dust"
+    }
+  ]
+}

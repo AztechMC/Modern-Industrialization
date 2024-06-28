@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 32,
+  "duration": 400,
+
+  "item_inputs":[
+    {
+    "tag": "c:dusts/quartz",
+    "amount": 1
+    },
+    {
+      "item": "modern_industrialization:coke_dust",
+      "amount": 1
+    }
+  ],
+
+  "item_outputs": {
+    "item": "modern_industrialization:silicon_dust",
+    "amount": 1
+  }
+}

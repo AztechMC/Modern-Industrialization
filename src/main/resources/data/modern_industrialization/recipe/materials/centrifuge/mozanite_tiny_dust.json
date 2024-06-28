@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 10,
+  "duration": 240,
+  "item_inputs": {
+    "tag": "c:tiny_dusts/monazite",
+    "amount": 9
+  },
+    "item_outputs": [
+      {
+      "item": "modern_industrialization:neodymium_tiny_dust",
+      "amount": 3
+      },
+      {
+        "item": "modern_industrialization:yttrium_tiny_dust",
+        "amount": 3
+      },
+      {
+        "item": "modern_industrialization:cadmium_tiny_dust",
+        "amount": 3
+      }
+    ]
+}

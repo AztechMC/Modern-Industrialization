@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "item": "minecraft:brick"
+  },
+  "result": {
+    "id": "modern_industrialization:brick_tiny_dust",
+    "count": 3
+  }
+}

@@ -49,6 +49,7 @@ import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier<IJeiRuntime> jeiRuntime)
@@ -119,14 +120,14 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
 
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
             if (stack.getAmount() > 0) {
-                Fluid fluid = stack.getResource().getFluid();
-                if (fluid != null) {
-                    return fluidHelper.create(fluid, 1);
+                var fluid = stack.getResource();
+                if (!fluid.isBlank()) {
+                    return fluid.toStack(1);
                 }
             } else if (stack.getLockedInstance() != null) {
                 Fluid fluid = stack.getLockedInstance();
                 if (fluid != null) {
-                    return fluidHelper.create(fluid, 1);
+                    return new FluidStack(fluid, 1);
                 }
             }
         } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {

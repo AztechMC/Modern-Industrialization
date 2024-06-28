@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:electronic_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:electrolyzer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.electrolyzer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:electrolyzer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.electrolyzer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

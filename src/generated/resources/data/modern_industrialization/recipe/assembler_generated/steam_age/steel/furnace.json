@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 5,
+      "tag": "c:plates/steel"
+    },
+    {
+      "amount": 1,
+      "item": "minecraft:furnace"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:fire_clay_bricks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steel_furnace"
+    }
+  ]
+}

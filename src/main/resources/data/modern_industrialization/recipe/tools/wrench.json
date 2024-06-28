@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "b b",
+    "bbb",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "tag": "c:plates/bronze"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:wrench"
+  }
+}
+

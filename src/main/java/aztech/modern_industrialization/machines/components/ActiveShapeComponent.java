@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
@@ -59,12 +60,12 @@ public class ActiveShapeComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("activeShape", activeShape);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         activeShape = tag.getInt("activeShape");
     }
 }

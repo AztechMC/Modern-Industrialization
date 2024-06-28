@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    " i ",
+    "iii"
+  ],
+  "key": {
+    "I": {
+      "item": "modern_industrialization:steel_block"
+    },
+    "i": {
+      "item": "modern_industrialization:steel_ingot"
+    }
+  },
+  "result": {
+    "id": "minecraft:anvil",
+    "count": 2
+  }
+}

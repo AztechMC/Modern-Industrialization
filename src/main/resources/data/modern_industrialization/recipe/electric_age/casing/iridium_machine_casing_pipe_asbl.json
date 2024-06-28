@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "pPp",
+    "p#p",
+    "pPp"
+  ],
+  "key": {
+    "#": {
+      "item": "modern_industrialization:plasma_handling_iridium_machine_casing"
+    },
+    "p": {
+      "item": "modern_industrialization:iridium_curved_plate"
+    },
+    "P" : {
+      "item" : "modern_industrialization:large_advanced_pump"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:iridium_machine_casing_pipe",
+    "count": 2
+  }
+}

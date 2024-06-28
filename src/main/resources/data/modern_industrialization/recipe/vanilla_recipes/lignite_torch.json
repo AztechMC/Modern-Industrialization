@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": [
+      {
+        "item": "modern_industrialization:lignite_coal"
+      }
+    ]
+  },
+  "result": {
+    "id": "minecraft:torch",
+    "count": 4
+  }
+}

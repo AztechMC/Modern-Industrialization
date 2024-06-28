@@ -1,0 +1,11 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "count": 2,
+  "ingredient": {
+    "tag": "c:ingots/gold"
+  },
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:gold_double_ingot"
+  }
+}

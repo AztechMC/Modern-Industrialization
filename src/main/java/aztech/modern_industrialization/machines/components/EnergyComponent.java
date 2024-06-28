@@ -31,6 +31,7 @@ import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -63,11 +64,11 @@ public class EnergyComponent implements IComponent.ServerOnly, EnergyAccess {
         return capacity.get() - getEu();
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("storedEu", getEu());
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         setEu(tag.getLong("storedEu"), false);
     }
 

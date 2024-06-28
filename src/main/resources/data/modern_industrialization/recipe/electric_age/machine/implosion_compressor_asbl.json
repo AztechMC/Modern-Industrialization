@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "BmB",
+    "THT",
+    "BmB"
+  ],
+  "key": {
+    "m" : {
+      "item" : "modern_industrialization:advanced_motor"
+    },
+    "T" : {
+      "item" : "modern_industrialization:titanium_large_plate"
+    },
+    "H": {
+      "item": "modern_industrialization:turbo_machine_hull"
+    },
+    "B": {
+      "item": "modern_industrialization:blastproof_alloy_large_plate"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:implosion_compressor"
+  }
+}

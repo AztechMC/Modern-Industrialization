@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class IsActiveComponent implements IComponent.ClientOnly {
@@ -38,12 +39,12 @@ public class IsActiveComponent implements IComponent.ClientOnly {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putBoolean("isActive", isActive);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         isActive = tag.getBoolean("isActive");
     }
 }

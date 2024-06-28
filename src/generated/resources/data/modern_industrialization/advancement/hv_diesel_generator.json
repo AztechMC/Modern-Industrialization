@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:mv_diesel_generator",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:hv_diesel_generator"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.hv_diesel_generator.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:hv_diesel_generator"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.hv_diesel_generator"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

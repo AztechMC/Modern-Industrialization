@@ -27,7 +27,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.Optional;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 public interface INuclearTileData {
@@ -68,7 +68,7 @@ public interface INuclearTileData {
         return null;
     }
 
-    static void write(Optional<INuclearTileData> maybeData, FriendlyByteBuf buf) {
+    static void write(Optional<INuclearTileData> maybeData, RegistryFriendlyByteBuf buf) {
 
         if (maybeData.isPresent()) {
             INuclearTileData tile = maybeData.get();
@@ -88,7 +88,7 @@ public interface INuclearTileData {
             buf.writeDouble(tile.getMeanEuGeneration());
 
             buf.writeBoolean(!tile.isFluid());
-            buf.writeNbt(tile.getVariant().toNbt());
+            tile.getVariant().toPacket(buf);
             buf.writeLong(tile.getVariantAmount());
 
         } else {
@@ -97,7 +97,7 @@ public interface INuclearTileData {
 
     }
 
-    static Optional<INuclearTileData> read(FriendlyByteBuf buf) {
+    static Optional<INuclearTileData> read(RegistryFriendlyByteBuf buf) {
         boolean isPresent = buf.readBoolean();
         if (isPresent) {
 
@@ -115,7 +115,7 @@ public interface INuclearTileData {
             final double euGeneration = buf.readDouble();
 
             final boolean isItem = buf.readBoolean();
-            final TransferVariant variant = isItem ? ItemVariant.fromNbt(buf.readNbt()) : FluidVariant.fromNbt(buf.readNbt());
+            final TransferVariant variant = isItem ? ItemVariant.fromPacket(buf) : FluidVariant.fromPacket(buf);
             final long amount = buf.readLong();
 
             return Optional.of(new INuclearTileData() {

@@ -1,0 +1,40 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 4,
+  "duration": 400,
+  "item_inputs": [
+    {
+      "tag": "c:dusts/quartz",
+      "amount": 4
+    },
+    {
+      "tag": "c:tiny_dusts/beryllium",
+      "amount": 3
+    },
+    {
+      "tag": "c:tiny_dusts/aluminum",
+      "amount": 2
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 4000
+    },
+    {
+      "fluid": "modern_industrialization:sodium_hydroxide",
+      "amount": 4000
+    },
+    {
+      "fluid": "modern_industrialization:chlorine",
+      "amount": 250
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:prismarine_crystals",
+    "amount": 16
+  }
+}
+
+
+    

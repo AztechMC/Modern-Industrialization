@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " RR",
+    "RrR",
+    "RR "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "r": {
+      "tag": "c:rods/steel"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:steel_rod_magnetic"
+  }
+}

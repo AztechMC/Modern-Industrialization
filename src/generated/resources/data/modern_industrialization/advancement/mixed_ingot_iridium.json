@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:implosion_compressor",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:mixed_ingot_iridium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.mixed_ingot_iridium.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:mixed_ingot_iridium"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.mixed_ingot_iridium"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

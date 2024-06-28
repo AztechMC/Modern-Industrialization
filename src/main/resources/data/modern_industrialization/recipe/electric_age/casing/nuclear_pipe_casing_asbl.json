@@ -1,0 +1,22 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "cPc",
+    "cCc",
+    "cPc"
+  ],
+  "key": {
+    "c" : {
+      "item": "modern_industrialization:blastproof_alloy_curved_plate"
+    },
+    "P" : {
+      "item": "modern_industrialization:advanced_pump"
+    },
+    "C" : {
+      "item" : "modern_industrialization:nuclear_casing"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:nuclear_alloy_machine_casing_pipe"
+  }
+}

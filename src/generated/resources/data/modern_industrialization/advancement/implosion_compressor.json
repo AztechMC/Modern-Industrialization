@@ -1,0 +1,34 @@
+{
+  "parent": "modern_industrialization:blastproof_alloy_plate",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:implosion_compressor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.implosion_compressor.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:implosion_compressor"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.implosion_compressor"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

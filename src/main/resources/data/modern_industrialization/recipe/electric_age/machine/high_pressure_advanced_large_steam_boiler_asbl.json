@@ -1,0 +1,25 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "LcL",
+    "fBf",
+    "LcL"
+  ],
+  "key": {
+    "L" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "B": {
+      "item": "modern_industrialization:high_pressure_large_steam_boiler"
+    },
+    "f": {
+      "item": "modern_industrialization:large_advanced_pump"
+    }
+  },
+  "result": {
+    "id": "modern_industrialization:high_pressure_advanced_large_steam_boiler"
+  }
+}

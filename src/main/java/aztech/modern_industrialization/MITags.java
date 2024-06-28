@@ -25,8 +25,10 @@ package aztech.modern_industrialization;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
 public class MITags {
     public static final TagKey<Item> WRENCHES = item("tools/wrench");
@@ -37,14 +39,17 @@ public class MITags {
     public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
 
+    // For Immersive Engineering treated wood
+    public static final TagKey<Fluid> CREOSOTE = FluidTags.create(ResourceLocation.parse("c:creosote"));
+
     // TODO 1.21: should be in the tag rework
     public static final TagKey<Item> SHULKER_BOXES = item("shulker_boxes");
 
     public static TagKey<Item> item(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), new ResourceLocation("forge", path));
+        return TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", path));
     }
 
     public static TagKey<Item> miItem(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), new MIIdentifier(path));
+        return TagKey.create(BuiltInRegistries.ITEM.key(), MI.id(path));
     }
 }

@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 16,
+  "duration": 300,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:benzene",
+      "amount": 500
+    },
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 750
+    }
+  ],
+  "item_inputs": {
+    "tag": "c:tiny_dusts/nickel",
+    "amount": 4
+  },
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:caprolactam",
+      "amount": 600
+    }
+  ]
+}

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
@@ -56,8 +56,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
-    public static final ResourceLocation SLOT_ATLAS = new MIIdentifier("textures/gui/container/slot_atlas.png");
-    public static final ResourceLocation BACKGROUND = new MIIdentifier("textures/gui/container/background.png");
+    public static final ResourceLocation SLOT_ATLAS = MI.id("textures/gui/container/slot_atlas.png");
+    public static final ResourceLocation BACKGROUND = MI.id("textures/gui/container/background.png");
 
     private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
@@ -246,7 +246,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         Slot slot = hoveredSlot;
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-            FluidVariant renderedKey = stack.isPlayerLocked() ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
+            FluidVariant renderedKey = stack.getLockedInstance() != null ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
             List<Component> tooltip = new ArrayList<>(
                     FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
 
@@ -330,16 +330,22 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     public class MachineButton extends Button {
-
+        private final Supplier<List<Component>> tooltipSupplier;
         final ClientComponentRenderer.CustomButtonRenderer renderer;
         final Supplier<Boolean> isPresent;
 
         private MachineButton(int x, int y, int width, int height, OnPress onPress, Supplier<List<Component>> tooltipSupplier,
                 ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isPresent) {
             super(x, y, width, height, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            this.tooltipSupplier = tooltipSupplier;
             this.setTooltip(new DynamicTooltip(tooltipSupplier));
             this.renderer = renderer;
             this.isPresent = isPresent;
+        }
+
+        @Override
+        public Component getMessage() {
+            return tooltipSupplier.get().getFirst();
         }
 
         @Override

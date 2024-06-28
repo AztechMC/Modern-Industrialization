@@ -1,0 +1,30 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "mcm",
+    "CHC",
+    "pcp"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:motor"
+    },
+    "c" : {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:conveyor"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:tin_cable"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:electric_unpacker"
+  }
+}

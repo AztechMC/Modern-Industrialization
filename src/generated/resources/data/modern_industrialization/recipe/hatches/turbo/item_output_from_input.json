@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:turbo_item_input_hatch"
+    }
+  },
+  "pattern": [
+    "U"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:turbo_item_output_hatch"
+  }
+}

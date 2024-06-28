@@ -25,22 +25,25 @@ package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.network.BasePacket;
-import net.minecraft.network.FriendlyByteBuf;
+import aztech.modern_industrialization.network.MIStreamCodecs;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record AdjustSlotCapacityPacket(int syncId, int slotId, boolean isIncrease, boolean isShiftDown) implements BasePacket {
-    public AdjustSlotCapacityPacket(FriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), buf.readBoolean(), buf.readBoolean());
-    }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(slotId);
-        buf.writeBoolean(isIncrease);
-        buf.writeBoolean(isShiftDown);
-    }
+    public static final StreamCodec<ByteBuf, AdjustSlotCapacityPacket> STREAM_CODEC = StreamCodec.composite(
+            MIStreamCodecs.BYTE,
+            AdjustSlotCapacityPacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            AdjustSlotCapacityPacket::slotId,
+            ByteBufCodecs.BOOL,
+            AdjustSlotCapacityPacket::isIncrease,
+            ByteBufCodecs.BOOL,
+            AdjustSlotCapacityPacket::isShiftDown,
+            AdjustSlotCapacityPacket::new);
 
     @Override
     public void handle(Context ctx) {

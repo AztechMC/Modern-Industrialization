@@ -1,0 +1,10 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "ingredient": {
+    "tag": "c:ores/copper"
+  },
+  "result": {
+    "id": "minecraft:raw_copper",
+    "count": 5
+  }
+}

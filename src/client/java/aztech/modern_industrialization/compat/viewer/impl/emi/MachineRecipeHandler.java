@@ -23,17 +23,16 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
-import dev.emi.emi.api.EmiFillAction;
-import dev.emi.emi.api.EmiRecipeHandler;
-import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -42,7 +41,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
+class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
     @Override
     public List<Slot> getInputSources(MachineMenuCommon menu) {
         return menu.slots.stream()
@@ -66,33 +65,28 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
     }
 
     @Override
-    public boolean onlyDisplayWhenApplicable(EmiRecipe recipe) {
-        return true;
-    }
-
-    @Override
-    public boolean canCraft(EmiRecipe recipe, EmiPlayerInventory inventory, AbstractContainerScreen<MachineMenuCommon> screen) {
-        var handler = screen.getMenu();
+    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<MachineMenuCommon> context) {
+        var handler = context.getScreenHandler();
         if (!canApply(handler, ((ViewerCategoryEmi<?>.ViewerRecipe) recipe).getCategory()))
             return false;
-        if (Minecraft.getInstance().screen == screen) {
+        if (Minecraft.getInstance().screen == context.getScreen()) {
             // Let EMI move items
-            return inventory.canCraft(recipe);
+            return context.getInventory().canCraft(recipe);
         } else {
-            return lockSlots(recipe, screen, false);
+            return lockSlots(recipe, context.getScreen(), false);
         }
     }
 
     @Override
-    public boolean performFill(EmiRecipe recipe, AbstractContainerScreen<MachineMenuCommon> screen, EmiFillAction action, int amount) {
-        var handler = screen.getMenu();
+    public boolean craft(EmiRecipe recipe, EmiCraftContext<MachineMenuCommon> context) {
+        var handler = context.getScreenHandler();
         if (!canApply(handler, ((ViewerCategoryEmi<?>.ViewerRecipe) recipe).getCategory()))
             return false;
-        if (Minecraft.getInstance().screen == screen) {
+        if (Minecraft.getInstance().screen == context.getScreen()) {
             // Let EMI move items
-            return EmiRecipeHandler.super.performFill(recipe, screen, action, amount);
+            return StandardRecipeHandler.super.craft(recipe, context);
         } else {
-            return lockSlots(recipe, screen, true);
+            return lockSlots(recipe, context.getScreen(), true);
         }
     }
 
@@ -116,7 +110,7 @@ class MachineRecipeHandler implements EmiRecipeHandler<MachineMenuCommon> {
 
         category.wrapped.buildWorkstations(items -> {
             for (var item : items) {
-                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(new MIIdentifier(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(MI.id(blockId))) {
                     hasWorkstation.setTrue();
                 }
             }

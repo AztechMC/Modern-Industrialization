@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:macerator",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": {
+    "tag": "c:ores/copper",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "minecraft:raw_copper",
+    "amount": 8
+  }
+}

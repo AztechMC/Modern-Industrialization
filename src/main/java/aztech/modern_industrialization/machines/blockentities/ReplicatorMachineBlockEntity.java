@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.IComponent;
@@ -43,6 +43,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
@@ -58,7 +59,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    public static final TagKey<Item> BLACKLISTED = TagKey.create(BuiltInRegistries.ITEM.key(), new MIIdentifier("replicator_blacklist"));
+    public static final TagKey<Item> BLACKLISTED = TagKey.create(BuiltInRegistries.ITEM.key(), MI.id("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 
@@ -83,12 +84,12 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new IComponent() {
             @Override
-            public void writeNbt(CompoundTag tag) {
+            public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("progressTick", progressTick);
             }
 
             @Override
-            public void readNbt(CompoundTag tag) {
+            public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
                 progressTick = tag.getInt("progressTick");
             }
         });

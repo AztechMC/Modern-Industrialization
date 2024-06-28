@@ -1,0 +1,33 @@
+{
+  "parent": "modern_industrialization:lv_steam_turbine",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:polarizer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.modern_industrialization.polarizer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "modern_industrialization:polarizer"
+    },
+    "title": {
+      "translate": "advancements.modern_industrialization.polarizer"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

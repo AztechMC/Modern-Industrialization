@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
+import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
@@ -39,6 +40,7 @@ import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
@@ -75,14 +77,18 @@ public class MIDatagenServer {
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
 
         gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
-                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK))));
+                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK)),
+                lookupProvider));
 
         gen.addProvider(run,
                 new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
 
         gen.addProvider(run, new MIBlockTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(run, new MIFluidTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
         gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
         gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+
+        gen.addProvider(run, new MIDataMapProvider(gen.getPackOutput(), lookupProvider));
 
         var translationProvider = new TranslationProvider(gen.getPackOutput(), runtimeDatagen);
         gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(

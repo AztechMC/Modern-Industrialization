@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "modern_industrialization:ae_compat_loaded"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:dyes/red"
+    },
+    "p": {
+      "tag": "modern_industrialization:me_wires"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "pdp",
+    "ppp"
+  ],
+  "result": {
+    "count": 8,
+    "id": "modern_industrialization:red_me_wire"
+  }
+}

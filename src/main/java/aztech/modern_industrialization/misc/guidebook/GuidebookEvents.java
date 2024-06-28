@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.misc.guidebook;
 
+import aztech.modern_industrialization.MIAdvancementTriggers;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -41,6 +43,8 @@ public class GuidebookEvents {
                     }
                 }
             }
+            // In any case, fire the logged in trigger
+            MIAdvancementTriggers.PLAYER_LOGGED_IN.get().trigger((ServerPlayer) player);
         });
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, event -> {

@@ -178,7 +178,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, SHINY)
                         .set(MaterialProperty.MEAN_RGB, 0xFFE650)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, LARGE_PLATE, PLATE, TINY_DUST)
+                        .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, PLATE, TINY_DUST)
                         .addParts(DRILL_HEAD, DRILL))
         );
 
@@ -197,7 +197,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, METALLIC)
                         .set(MaterialProperty.MEAN_RGB, 0xe77c56)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE)
                         .addParts(FINE_WIRE)
                         .addParts(CABLE.of(CableTier.LV))
@@ -240,7 +240,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0x1A2D8D)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).cancelRecipes("macerator/ore_to_crushed"));
+                        .addParts(ITEM_PURE_NON_METAL)).cancelRecipes("macerator/ore_to_crushed"));
 
         REDSTONE = MaterialRegistry
                 .addMaterial(new MaterialBuilder("Redstone", "redstone")
@@ -307,7 +307,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, SHINY)
                         .set(MaterialProperty.MEAN_RGB, 0xffcc00)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
                         .addParts(BARREL.of(32)).addParts(MACHINE_CASING.of(), MACHINE_CASING_PIPE.of())
                         .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
@@ -318,7 +318,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0xc0bcd0)
                         .set(MaterialProperty.HARDNESS, SOFT)
-                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                        .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
                         .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON))
                         .addParts(WIRE).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.LV))
@@ -375,7 +375,7 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, DULL)
                 .set(MaterialProperty.MEAN_RGB, 0x9C7CA0)
                 .set(MaterialProperty.HARDNESS, SOFT)
-                .addParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, LARGE_PLATE).addParts(BLOCK.of(MaterialBlockSet.IRON))
+                .addParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET).addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         INVAR = MaterialRegistry
@@ -517,7 +517,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, SHINY)
                         .set(MaterialProperty.MEAN_RGB, 0xFFE6E6)
                         .addParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(HOT_INGOT)
-                        .addParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
+                        .addParts(PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("macerator/crushed_dust"));
 
         MANGANESE = MaterialRegistry.addMaterial(new MaterialBuilder("Manganese", "manganese")
@@ -705,7 +705,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0x8760ad)
                         .set(MaterialProperty.HARDNESS, VERY_HARD)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER))
-                        .addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD)
+                        .addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT)
                         .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(ORE.ofAll(6, 5, 20, MaterialOreSet.IRON))
                         .addRecipes(StandardRecipes::apply));
 

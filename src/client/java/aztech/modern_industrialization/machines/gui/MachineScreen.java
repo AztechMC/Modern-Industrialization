@@ -345,7 +345,8 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
         @Override
         public Component getMessage() {
-            return tooltipSupplier.get().getFirst();
+            var tooltip = tooltipSupplier.get();
+            return tooltip.isEmpty() ? Component.empty() : tooltip.getFirst();
         }
 
         @Override

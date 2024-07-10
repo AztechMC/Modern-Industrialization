@@ -276,12 +276,13 @@ public class SteamDrillItem
         totalDrops = new ArrayList<>();
         forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
             Block block = tempState.getBlock();
+            var blockEntity = world.getBlockEntity(blockPos);
             var breakEvent = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
                     blockPos, tempState);
             if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                 block.destroy(world, blockPos, tempState);
                 // Thanks to our event above, the drops won't make it into the level, and will be added to `totalDrops` instead.
-                Block.dropResources(tempState, world, blockPos, null, miner, stack);
+                Block.dropResources(tempState, world, blockPos, blockEntity, miner, stack);
             }
         });
         totalDrops.forEach(itemStack -> {

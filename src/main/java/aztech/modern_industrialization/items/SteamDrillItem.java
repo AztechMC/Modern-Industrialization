@@ -254,9 +254,11 @@ public class SteamDrillItem
             Block block = tempState.getBlock();
             int xp = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
                     blockPos);
+
+            var blockEntity = world.getBlockEntity(blockPos);
             if (xp >= 0 && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                 block.destroy(world, blockPos, tempState);
-                Block.getDrops(tempState, (ServerLevel) world, blockPos, null, miner, stack).forEach(itemStack -> {
+                Block.getDrops(tempState, (ServerLevel) world, blockPos, blockEntity, miner, stack).forEach(itemStack -> {
                     boolean combined = false;
                     for (ItemStack drop : totalDrops) {
                         if (ItemHandlerHelper.canItemStacksStack(drop, itemStack)) {

@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '0.1.90'
+    id 'net.neoforged.moddev' version '1.0.1'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -294,7 +294,7 @@ dependencies {
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
 }
 
-processResources {
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [
             neo_version: neo_version,
             neo_version_range: neo_version_range,
@@ -304,41 +304,14 @@ processResources {
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
+    from 'src/main/templates'
+    into layout.buildDirectory.dir('generated/sources/modMetadata')
+    expand replaceProperties
 }
-
-//loom {
-//    accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
-//    mods {
-//        moderndynamics {
-//            sourceSet sourceSets.main
-//            sourceSet sourceSets.client
-//        }
-//    }
-//    runs {
-//        autoTestServer {
-//            server()
-//            name = "Autotest Server"
-//            vmArg "-Dmodern_industrialization.autoTest"
-//
-//            ideConfigGenerated = true
-//        }
-//        datagenClient {
-//            client()
-//            name "Data Generation"
-//            vmArg "-Dfabric-api.datagen"
-//            vmArg "-Dfabric-api.datagen.modid=modern_industrialization"
-//            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
-//            vmArg "-Dfabric-api.datagen.strict-validation=true"
-//
-//            ideConfigGenerated = true
-//            runDir "build/datagen"
-//            source sourceSets.client
-//        }
-//    }
-//}
+sourceSets.main.resources.srcDir generateModMetadata
+tasks.named("neoForgeIdeSync").configure {
+    dependsOn generateModMetadata
+}
 
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is

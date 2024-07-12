@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import java.util.function.Supplier;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
 
 public class UseBlockModelBakedModel extends BakedModelWrapper<BakedModel> {
     private final BlockState targetState;
 
-    public UseBlockModelBakedModel(BlockState targetState, BakedModel stateModel) {
+    public UseBlockModelBakedModel(BlockState targetState, Supplier<BakedModel> stateModel) {
         super(stateModel);
         this.targetState = targetState;
     }

@@ -25,8 +25,8 @@ package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MI;
 import com.google.gson.JsonSyntaxException;
-import java.util.Objects;
 import java.util.function.Function;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public class UseBlockModelUnbakedModel implements IUnbakedGeometry<UseBlockModelUnbakedModel> {
     public static final ResourceLocation LOADER_ID = MI.id("use_block_model");
@@ -65,7 +66,6 @@ public class UseBlockModelUnbakedModel implements IUnbakedGeometry<UseBlockModel
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelState, ItemOverrides overrides) {
-        var delegateModel = Objects.requireNonNull(baker.getTopLevelModel(delegate));
-        return new UseBlockModelBakedModel(targetState, baker.bakeUncached(delegateModel, modelState, spriteGetter));
+        return new UseBlockModelBakedModel(targetState, Lazy.of(() -> Minecraft.getInstance().getModelManager().getModel(delegate)));
     }
 }

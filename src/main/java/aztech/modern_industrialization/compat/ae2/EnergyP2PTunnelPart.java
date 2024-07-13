@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.ae2;
 
-import appeng.api.config.PowerUnits;
+import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
@@ -96,7 +96,7 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
             }
 
             if (!simulate) {
-                queueTunnelDrain(PowerUnits.FE, total);
+                queueTunnelDrain(PowerUnit.FE, total);
             }
 
             return total;
@@ -143,7 +143,7 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
             try (var input = getInputCapability()) {
                 long extracted = input.get().extract(maxAmount, simulate);
                 if (!simulate) {
-                    queueTunnelDrain(PowerUnits.FE, extracted);
+                    queueTunnelDrain(PowerUnit.FE, extracted);
                 }
                 return extracted;
             }

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.items.armor;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-
 import net.minecraft.world.entity.player.Player;
 
 public class MIKeyMap {

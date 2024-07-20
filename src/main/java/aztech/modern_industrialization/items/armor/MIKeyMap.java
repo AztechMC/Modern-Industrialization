@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import net.minecraft.world.entity.player.Player;
 
 public class MIKeyMap {
-    private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
+    private static final Map<Player, Boolean> HOLDING_UP = new WeakHashMap<>();
 
     static boolean isHoldingUp(Player player) {
         return HOLDING_UP.getOrDefault(player, false);

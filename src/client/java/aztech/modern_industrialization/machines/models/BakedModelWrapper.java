@@ -83,7 +83,9 @@ abstract class BakedModelWrapper<T extends BakedModel> implements BakedModel {
 
     @Override
     public boolean isCustomRenderer() {
-        return originalModel.get().isCustomRenderer();
+        // CTM calls this before we can resolve the UseBlockModelBakedModel delegate.
+        // Always return false instead of checking the delegate.
+        return false;
     }
 
     @Override

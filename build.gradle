@@ -282,8 +282,8 @@ dependencies {
 
     /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
-    // TODO: compileOnly because implementation will cause datagen to hang... hopefully kubejs fixes it soon
-    localRuntimeOnly compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")
+    // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
+    /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")
 
     localRuntimeOnly compileOnly("appeng:appliedenergistics2:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"

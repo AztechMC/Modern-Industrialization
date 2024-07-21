@@ -19,20 +19,26 @@ config="modern_industrialization.mixins.json"
 modId="neoforge"
 type="required"
 versionRange="${neo_version_range}"
-ordering="AFTER"
+ordering="NONE"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
 modId="grandpower"
 type="required"
 versionRange="${grandpower_version_range}"
-ordering="AFTER"
+ordering="NONE"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
 modId="ae2"
 type="optional"
 versionRange="${ae2_version_range}"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.modern_industrialization]]
+modId="kubejs"
+type="optional"
 ordering="AFTER"
 side="BOTH"
 

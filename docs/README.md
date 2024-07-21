@@ -23,7 +23,7 @@ Some content added via the KubeJS integration will require custom resources (for
 MI can generate most of these resources for you if you ask it to.
 - Set `datagenOnStartup` to `true` in the config file.
   - During the end of startup, MI will generate new resources in the `modern_industrialization/generated_resources` folder.
-- Make sure that `loadRuntimeGeneratedResources` is set to `true` in the config file.
+- Set `loadRuntimeGeneratedResources` to `true` in the config file as well.
   - This will make sure that MI will automatically load the resources generated in the previous step.
 - Profit!
 
@@ -32,7 +32,7 @@ Runtime datagen works by running the data generators during the end of MI startu
 - It uses `modern_industrialization/runtime_datagen` to produce all the files that are automatically generated.
   - These files include loot tables, most recipes, or material textures, for example.
 - The files that are **different** from those in the jar then get copied to `modern_industrialization/generated_resources`.
-- Finally, MI injects a hidden data and resource pack with maximum priority to load these resources into the game.
+- Finally, MI injects a data and resource pack to load these resources into the game.
 
 Runtime datagen will only use the resources from the MI jar and the base vanilla assets.
 **It will not use any resource pack, as it runs too early.**

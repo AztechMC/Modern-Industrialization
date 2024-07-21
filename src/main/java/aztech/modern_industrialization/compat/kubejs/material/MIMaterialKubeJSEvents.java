@@ -32,5 +32,6 @@ public interface MIMaterialKubeJSEvents {
     EventGroup EVENT_GROUP = EventGroup.of("MIMaterialEvents");
 
     EventHandler ADD_MATERIALS = EVENT_GROUP.startup("addMaterials", () -> AddMaterialsEventJS.class);
-    TargetedEventHandler<String> MODIFY_MATERIAL = EVENT_GROUP.startup("modifyMaterial", () -> ModifyMaterialEventJS.class).supportsTarget(EventTargetType.STRING);
+    TargetedEventHandler<String> MODIFY_MATERIAL = EVENT_GROUP.startup("modifyMaterial", () -> ModifyMaterialEventJS.class)
+            .supportsTarget(EventTargetType.STRING);
 }

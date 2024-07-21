@@ -54,8 +54,11 @@ import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
@@ -90,7 +93,7 @@ public class MI {
     }
 
     public MI(IEventBus modBus, Dist dist) {
-        KubeJSProxy.blockUntilKubeJSIsLoaded();
+        KubeJSProxy.checkThatKubeJsIsLoaded();
 
         MIAdvancementTriggers.init(modBus);
         MIComponents.init(modBus);
@@ -192,22 +195,22 @@ public class MI {
 
             if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
                 event.addRepositorySource(consumer -> {
-                    consumer.accept(Pack.create(
-                            "modern_industrialization/generated",
-                            MIText.GeneratedResources.text(),
-                            true,
+                    consumer.accept(new Pack(
+                            new PackLocationInfo(
+                                    "modern_industrialization/generated",
+                                    MIText.GeneratedResources.text(),
+                                    PackSource.BUILT_IN,
+                                    Optional.empty()),
                             BuiltInPackSource.fixedResources(new GeneratedPathPackResources(
                                     FMLPaths.GAMEDIR.get().resolve("modern_industrialization/generated_resources"),
                                     event.getPackType())),
-                            new Pack.Info(
+                            new Pack.Metadata(
                                     MIText.GeneratedResourcesDescription.text(),
                                     PackCompatibility.COMPATIBLE,
                                     FeatureFlagSet.of(),
                                     List.of(),
                                     false),
-                            Pack.Position.TOP,
-                            true, // TODO what?
-                            PackSource.BUILT_IN));
+                            new PackSelectionConfig(true, Pack.Position.TOP, false)));
                 });
             }
         });

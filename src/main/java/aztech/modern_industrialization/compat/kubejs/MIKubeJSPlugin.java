@@ -37,9 +37,8 @@ import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
-import net.minecraft.resources.ResourceLocation;
-
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
 
 public class MIKubeJSPlugin implements KubeJSPlugin {
     @Override
@@ -57,7 +56,6 @@ public class MIKubeJSPlugin implements KubeJSPlugin {
     @Override
     public void initStartup() {
         KubeJSProxy.instance = new LoadedKubeJSProxy();
-        KubeJSProxy.loadLatch.countDown();
     }
 
     @Override

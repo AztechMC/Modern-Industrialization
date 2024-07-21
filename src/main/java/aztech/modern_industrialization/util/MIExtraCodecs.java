@@ -52,14 +52,17 @@ public class MIExtraCodecs {
         return Codec.LONG.flatXmap(checker, checker);
     }
 
+    public static <T> Codec<List<T>> maybeList(Codec<T> elementCodec) {
+        var listCodec = NeoForgeExtraCodecs.listWithOptionalElements(ConditionalOps.createConditionalCodec(elementCodec));
+        return Codec.either(elementCodec, listCodec)
+                .xmap(either -> either.map(List::of, Function.identity()), Either::right);
+    }
+
     /**
      * A codec that can accept a single element, or a list of potentially conditional elements.
      */
     public static <T> MapCodec<List<T>> maybeList(Codec<T> elementCodec, String field) {
-        var listCodec = NeoForgeExtraCodecs.listWithOptionalElements(ConditionalOps.createConditionalCodec(elementCodec));
-        var maybeListCodec = Codec.either(elementCodec, listCodec)
-                .xmap(either -> either.map(List::of, Function.identity()), Either::right);
-        return maybeListCodec.optionalFieldOf(field, List.of());
+        return maybeList(elementCodec).optionalFieldOf(field, List.of());
     }
 
     public static <T> MapCodec<T> optionalFieldAlwaysWrite(Codec<T> baseCodec, String field, T defaultValue) {

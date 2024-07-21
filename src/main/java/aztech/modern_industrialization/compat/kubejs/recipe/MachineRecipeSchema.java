@@ -23,130 +23,181 @@
  */
 package aztech.modern_industrialization.compat.kubejs.recipe;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
-import dev.latvian.mods.kubejs.recipe.InputReplacement;
-import dev.latvian.mods.kubejs.recipe.ItemMatch;
+import dev.latvian.mods.kubejs.bindings.IngredientWrapper;
+import dev.latvian.mods.kubejs.bindings.SizedIngredientWrapper;
+import dev.latvian.mods.kubejs.core.IngredientKJS;
+import dev.latvian.mods.kubejs.core.ItemStackKJS;
+import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
+import dev.latvian.mods.kubejs.item.ItemStackJS;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
-import dev.latvian.mods.kubejs.recipe.component.ItemComponents;
+import dev.latvian.mods.kubejs.recipe.component.ListRecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import dev.latvian.mods.kubejs.recipe.component.UniqueIdBuilder;
+import dev.latvian.mods.kubejs.recipe.match.ItemMatch;
+import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
+import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.rhino.mod.util.JsonSerializable;
-import net.minecraft.Util;
+import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.type.TypeInfo;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import org.apache.commons.lang3.ArrayUtils;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public final class MachineRecipeSchema {
     private static final RecipeComponent<Integer> POSITIVE_INTEGER = NumberComponent.intRange(1, Integer.MAX_VALUE);
     private static final RecipeComponent<Float> PROBABILITY = NumberComponent.floatRange(0, 1);
 
-    public record ChancedInputItem(InputItem input, float probability) {
-    }
-
-    private static final RecipeComponent<ChancedInputItem> ITEM_INPUT = new RecipeComponent<>() {
+    private static final RecipeComponent<MachineRecipe.ItemInput> ITEM_INPUT = new RecipeComponent<>() {
         @Override
-        public String componentType() {
-            return "modern_industrialization_item_input";
+        public Codec<MachineRecipe.ItemInput> codec() {
+            return MachineRecipe.ItemInput.CODEC;
         }
 
         @Override
-        public ComponentRole role() {
-            return ComponentRole.INPUT;
+        public TypeInfo typeInfo() {
+            return SizedIngredientWrapper.TYPE_INFO;
         }
 
         @Override
-        public Class<?> componentClass() {
-            return ChancedInputItem.class;
+        public MachineRecipe.ItemInput wrap(Context cx, KubeRecipe recipe, Object from) {
+            var sizedIngredient = (SizedIngredient) cx.jsToJava(from, typeInfo());
+            return new MachineRecipe.ItemInput(sizedIngredient.ingredient(), sizedIngredient.count(), 1);
         }
 
         @Override
-        public boolean hasPriority(RecipeJS recipe, Object from) {
-            return recipe.inputItemHasPriority(from);
+        public boolean matches(Context cx, KubeRecipe recipe, MachineRecipe.ItemInput value, ReplacementMatchInfo match) {
+            return match.match() instanceof ItemMatch m && m.matches(cx, value.ingredient(), match.exact());
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, ChancedInputItem value) {
-            JsonObject obj = new JsonObject();
-            obj.add("ingredient", ((JsonSerializable) value.input().ingredient).toJsonJS());
-            obj.addProperty("amount", value.input().count);
-            obj.addProperty("probability", value.probability());
-            return obj;
-        }
-
-        @Override
-        public ChancedInputItem read(RecipeJS recipe, Object from) {
-            if (!(from instanceof JsonObject json)) {
-                throw new IllegalArgumentException("Expected an object, got " + from);
-            }
-
-            var input = Util.getOrThrow(MachineRecipe.ItemInput.CODEC.decode(JsonOps.INSTANCE, json), JsonParseException::new).getFirst();
-            return new ChancedInputItem(InputItem.of(input.ingredient, input.amount), input.probability);
-        }
-
-        @Override
-        public boolean isInput(RecipeJS recipe, ChancedInputItem value, ReplacementMatch match) {
-            return match instanceof ItemMatch m && !value.input().isEmpty() && m.contains(value.input().ingredient);
-        }
-
-        @Override
-        public ChancedInputItem replaceInput(RecipeJS recipe, ChancedInputItem original, ReplacementMatch match, InputReplacement with) {
-            if (isInput(recipe, original, match) && with instanceof InputItem w) {
-                return new ChancedInputItem(w.withCount(original.input().count), original.probability());
+        public MachineRecipe.ItemInput replace(Context cx, KubeRecipe recipe, MachineRecipe.ItemInput original, ReplacementMatchInfo match,
+                Object with) {
+            if (matches(cx, recipe, original, match)) {
+                var withJava = (SizedIngredient) cx.jsToJava(with, typeInfo());
+                return new MachineRecipe.ItemInput(withJava.ingredient(), withJava.count(), original.probability());
             } else {
                 return original;
             }
         }
 
         @Override
-        public String checkEmpty(RecipeKey<ChancedInputItem> key, ChancedInputItem value) {
-            if (value.input().isEmpty()) {
-                return "Ingredient '" + key.name + "' can't be empty!";
+        public String checkEmpty(RecipeKey<MachineRecipe.ItemInput> key, MachineRecipe.ItemInput value) {
+            if (value.ingredient().isEmpty() || value.amount() <= 0) {
+                return "ItemInput '" + key.name + "' can't be empty!";
             }
 
             return "";
         }
 
         @Override
-        public String toString() {
-            return componentType();
+        public void buildUniqueId(UniqueIdBuilder builder, MachineRecipe.ItemInput value) {
+            var tag = IngredientWrapper.tagKeyOf(value.ingredient());
+
+            if (tag != null) {
+                builder.append(tag.location());
+            } else {
+                var first = IngredientKJS.class.cast(value.ingredient()).kjs$getFirst();
+
+                if (!first.isEmpty()) {
+                    builder.append(RegistryObjectKJS.class.cast(first).kjs$getIdLocation());
+                }
+            }
+        }
+    };
+    private static final RecipeComponent<MachineRecipe.ItemOutput> ITEM_OUTPUT = new RecipeComponent<>() {
+        @Override
+        public Codec<MachineRecipe.ItemOutput> codec() {
+            return MachineRecipe.ItemOutput.CODEC;
+        }
+
+        @Override
+        public TypeInfo typeInfo() {
+            return ItemStackJS.TYPE_INFO;
+        }
+
+        @Override
+        public MachineRecipe.ItemOutput wrap(Context cx, KubeRecipe recipe, Object from) {
+            var itemStack = (ItemStack) cx.jsToJava(from, typeInfo());
+            return new MachineRecipe.ItemOutput(ItemVariant.of(itemStack), itemStack.getCount(), 1);
+        }
+
+        @Override
+        public boolean matches(Context cx, KubeRecipe recipe, MachineRecipe.ItemOutput value, ReplacementMatchInfo match) {
+            return match.match() instanceof ItemMatch m && !value.variant().isBlank() && value.amount() > 0
+                    && m.matches(cx, value.getStack(), match.exact());
+        }
+
+        @Override
+        public MachineRecipe.ItemOutput replace(Context cx, KubeRecipe recipe, MachineRecipe.ItemOutput original, ReplacementMatchInfo match,
+                Object with) {
+            if (matches(cx, recipe, original, match)) {
+                var withJava = (ItemStack) cx.jsToJava(with, typeInfo());
+                return new MachineRecipe.ItemOutput(ItemVariant.of(withJava), withJava.getCount(), original.probability());
+            } else {
+                return original;
+            }
+        }
+
+        @Override
+        public String checkEmpty(RecipeKey<MachineRecipe.ItemOutput> key, MachineRecipe.ItemOutput value) {
+            if (value.getStack().isEmpty()) {
+                return "ItemOutput '" + key.name + "' can't be empty!";
+            }
+
+            return "";
+        }
+
+        @Override
+        public void buildUniqueId(UniqueIdBuilder builder, MachineRecipe.ItemOutput value) {
+            if (!value.getStack().isEmpty()) {
+                builder.append(ItemStackKJS.class.cast(value.getStack()).kjs$getIdLocation());
+            }
         }
     };
 
-    private static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).key("eu");
-    private static final RecipeKey<Integer> DURATION = NumberComponent.intRange(1, Integer.MAX_VALUE).key("duration");
-    private static final RecipeKey<ChancedInputItem[]> ITEM_INPUTS = ITEM_INPUT.asArrayOrSelf().key("item_inputs");
-    private static final RecipeKey<OutputItem[]> ITEM_OUTPUTS = ItemComponents.OUTPUT.asArrayOrSelf().key("item_outputs");
+    private static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).key("eu", ComponentRole.OTHER);
+    private static final RecipeKey<Integer> DURATION = NumberComponent.intRange(1, Integer.MAX_VALUE).key("duration", ComponentRole.OTHER);
+    private static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = maybeList(ITEM_INPUT).key("item_inputs", ComponentRole.INPUT);
+    private static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = maybeList(ITEM_OUTPUT).key("item_outputs",
+            ComponentRole.OUTPUT);
 
+    private static <T> ListRecipeComponent<T> maybeList(RecipeComponent<T> component) {
+        // Don't use component.asListOrSelf() because we want to support conditions in list elements!
+        return new ListRecipeComponent<>(component, true, TypeInfo.RAW_LIST.withParams(component.typeInfo()).or(component.typeInfo()),
+                MIExtraCodecs.maybeList(component.codec()));
+    }
+
+    public static final KubeRecipeFactory MACHINE_RECIPE_FACTORY = new KubeRecipeFactory(
+            MI.id("machine"), MachineRecipeJS.class, MachineRecipeJS::new);
     public static final RecipeSchema SCHEMA = new RecipeSchema(
-            MachineRecipeJS.class,
-            MachineRecipeJS::new,
             EU,
             DURATION,
-            ITEM_INPUTS.optional(ty -> new ChancedInputItem[0]),
-            ITEM_OUTPUTS.optional(ty -> new OutputItem[0]))
+            ITEM_INPUTS.optional(ty -> List.of()),
+            ITEM_OUTPUTS.optional(ty -> List.of()))
+                    .factory(MACHINE_RECIPE_FACTORY)
                     .constructor(EU, DURATION);
 
-    private static final RecipeKey<Integer> HAMMER_DAMAGE = NumberComponent.INT.key("hammer_damage").optional(0);
+    private static final RecipeKey<Integer> HAMMER_DAMAGE = NumberComponent.INT.key("hammer_damage", ComponentRole.OTHER).optional(0);
     public static final RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
-            MachineRecipeJS.class,
-            MachineRecipeJS::new,
             HAMMER_DAMAGE,
             ITEM_INPUTS,
             ITEM_OUTPUTS)
+                    .factory(MACHINE_RECIPE_FACTORY)
                     .constructor(HAMMER_DAMAGE);
 
     private MachineRecipeSchema() {
@@ -154,21 +205,25 @@ public final class MachineRecipeSchema {
 
     public static class MachineRecipeJS extends KubeRecipe implements ProcessConditionHelper {
 
-        public MachineRecipeJS itemIn(InputItem ingredient) {
+        public MachineRecipeJS itemIn(SizedIngredient ingredient) {
             return itemIn(ingredient, 1);
         }
 
-        public MachineRecipeJS itemIn(InputItem ingredient, float chance) {
-            setValue(ITEM_INPUTS, ArrayUtils.add(getValue(ITEM_INPUTS), new ChancedInputItem(ingredient, chance)));
+        public MachineRecipeJS itemIn(SizedIngredient ingredient, float chance) {
+            var newList = new ArrayList<>(getValue(ITEM_INPUTS));
+            newList.add(new MachineRecipe.ItemInput(ingredient.ingredient(), ingredient.count(), chance));
+            setValue(ITEM_INPUTS, newList);
             return this;
         }
 
-        public MachineRecipeJS itemOut(OutputItem output) {
+        public MachineRecipeJS itemOut(ItemStack output) {
             return itemOut(output, 1);
         }
 
-        public MachineRecipeJS itemOut(OutputItem output, float chance) {
-            setValue(ITEM_OUTPUTS, ArrayUtils.add(getValue(ITEM_OUTPUTS), output.withChance(chance)));
+        public MachineRecipeJS itemOut(ItemStack output, float chance) {
+            var newList = new ArrayList<>(getValue(ITEM_OUTPUTS));
+            newList.add(new MachineRecipe.ItemOutput(ItemVariant.of(output), output.getCount(), chance));
+            setValue(ITEM_OUTPUTS, newList);
             return this;
         }
 
@@ -216,31 +271,10 @@ public final class MachineRecipeSchema {
                 json.add("process_conditions", new JsonArray());
             }
 
-            var condJson = Util.getOrThrow(MachineProcessCondition.CODEC.encodeStart(JsonOps.INSTANCE, condition), RuntimeException::new);
+            var condJson = MachineProcessCondition.CODEC.encodeStart(JsonOps.INSTANCE, condition).getOrThrow(RuntimeException::new);
             json.get("process_conditions").getAsJsonArray().add(condJson);
             changed = true;
             return this;
-        }
-
-        private float readProbability(JsonObject object) {
-            if (object.get("probability") instanceof JsonPrimitive probability) {
-                return probability.getAsFloat();
-            } else {
-                return 1.0f;
-            }
-        }
-
-        @Override
-        public JsonElement writeOutputItem(OutputItem value) {
-            var json = new JsonObject();
-            json.addProperty("item", BuiltInRegistries.ITEM.getKey(value.item.getItem()).toString());
-            json.addProperty("amount", value.item.getCount());
-
-            if (value.hasChance()) {
-                json.addProperty("probability", value.getChance());
-            }
-
-            return json;
         }
     }
 }

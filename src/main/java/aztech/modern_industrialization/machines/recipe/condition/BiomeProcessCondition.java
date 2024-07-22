@@ -28,7 +28,9 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 
@@ -36,6 +38,10 @@ public record BiomeProcessCondition(ResourceKey<Biome> biome) implements Machine
     static final MapCodec<BiomeProcessCondition> CODEC = ResourceKey.codec(Registries.BIOME)
             .fieldOf("biome")
             .xmap(BiomeProcessCondition::new, BiomeProcessCondition::biome);
+    static final StreamCodec<RegistryFriendlyByteBuf, BiomeProcessCondition> STREAM_CODEC = StreamCodec.composite(
+            ResourceKey.streamCodec(Registries.BIOME),
+            BiomeProcessCondition::biome,
+            BiomeProcessCondition::new);
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
@@ -51,7 +57,12 @@ public record BiomeProcessCondition(ResourceKey<Biome> biome) implements Machine
     }
 
     @Override
-    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec() {
         return CODEC;
+    }
+
+    @Override
+    public StreamCodec<? super RegistryFriendlyByteBuf, ? extends MachineProcessCondition> streamCodec() {
+        return STREAM_CODEC;
     }
 }

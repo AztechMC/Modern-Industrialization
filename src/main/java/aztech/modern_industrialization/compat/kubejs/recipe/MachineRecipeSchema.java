@@ -59,9 +59,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public final class MachineRecipeSchema {
-    private static final RecipeComponent<Integer> POSITIVE_INTEGER = NumberComponent.intRange(1, Integer.MAX_VALUE);
-    private static final RecipeComponent<Float> PROBABILITY = NumberComponent.floatRange(0, 1);
-
     private static final RecipeComponent<MachineRecipe.ItemInput> ITEM_INPUT = new RecipeComponent<>() {
         @Override
         public Codec<MachineRecipe.ItemInput> codec() {
@@ -172,9 +169,10 @@ public final class MachineRecipeSchema {
 
     private static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).key("eu", ComponentRole.OTHER);
     private static final RecipeKey<Integer> DURATION = NumberComponent.intRange(1, Integer.MAX_VALUE).key("duration", ComponentRole.OTHER);
-    private static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = maybeList(ITEM_INPUT).key("item_inputs", ComponentRole.INPUT);
-    private static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = maybeList(ITEM_OUTPUT).key("item_outputs",
-            ComponentRole.OUTPUT);
+    private static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = maybeList(ITEM_INPUT)
+            .key("item_inputs", ComponentRole.INPUT);
+    private static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = maybeList(ITEM_OUTPUT)
+            .key("item_outputs", ComponentRole.OUTPUT);
 
     private static <T> ListRecipeComponent<T> maybeList(RecipeComponent<T> component) {
         // Don't use component.asListOrSelf() because we want to support conditions in list elements!
@@ -204,15 +202,20 @@ public final class MachineRecipeSchema {
     }
 
     public static class MachineRecipeJS extends KubeRecipe implements ProcessConditionHelper {
+        private <T> void addToList(RecipeKey<List<T>> key, T element) {
+            // In 1.21, this can be null when the recipe is constructed via a JS constructor apparently.
+            var value = getValue(key);
+            var list = value == null ? new ArrayList<T>() : new ArrayList<>(value);
+            list.add(element);
+            setValue(key, list);
+        }
 
         public MachineRecipeJS itemIn(SizedIngredient ingredient) {
             return itemIn(ingredient, 1);
         }
 
         public MachineRecipeJS itemIn(SizedIngredient ingredient, float chance) {
-            var newList = new ArrayList<>(getValue(ITEM_INPUTS));
-            newList.add(new MachineRecipe.ItemInput(ingredient.ingredient(), ingredient.count(), chance));
-            setValue(ITEM_INPUTS, newList);
+            addToList(ITEM_INPUTS, new MachineRecipe.ItemInput(ingredient.ingredient(), ingredient.count(), chance));
             return this;
         }
 
@@ -221,9 +224,7 @@ public final class MachineRecipeSchema {
         }
 
         public MachineRecipeJS itemOut(ItemStack output, float chance) {
-            var newList = new ArrayList<>(getValue(ITEM_OUTPUTS));
-            newList.add(new MachineRecipe.ItemOutput(ItemVariant.of(output), output.getCount(), chance));
-            setValue(ITEM_OUTPUTS, newList);
+            addToList(ITEM_OUTPUTS, new MachineRecipe.ItemOutput(ItemVariant.of(output), output.getCount(), chance));
             return this;
         }
 

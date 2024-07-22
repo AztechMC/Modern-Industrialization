@@ -30,7 +30,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 
@@ -40,6 +44,12 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(c -> c.block),
                     StringRepresentable.fromEnum(RelativePosition::values).fieldOf("position").forGetter(c -> c.relativePosition))
                     .apply(g, AdjacentBlockProcessCondition::new));
+    static final StreamCodec<RegistryFriendlyByteBuf, AdjacentBlockProcessCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.registry(Registries.BLOCK),
+            AdjacentBlockProcessCondition::block,
+            ByteBufCodecs.fromCodec(StringRepresentable.fromEnum(RelativePosition::values)),
+            AdjacentBlockProcessCondition::relativePosition,
+            AdjacentBlockProcessCondition::new);
 
     public AdjacentBlockProcessCondition(Block block, String relativePosition) {
         this(block, RelativePosition.valueOf(relativePosition.toUpperCase(Locale.ROOT)));
@@ -67,8 +77,13 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
     }
 
     @Override
-    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec() {
         return CODEC;
+    }
+
+    @Override
+    public StreamCodec<? super RegistryFriendlyByteBuf, ? extends MachineProcessCondition> streamCodec() {
+        return STREAM_CODEC;
     }
 }
 

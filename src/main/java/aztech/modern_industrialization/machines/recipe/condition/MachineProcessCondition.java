@@ -28,36 +28,41 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
-import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 public interface MachineProcessCondition {
-    private static Codec<MachineProcessCondition> makeCodec(boolean syncToClient) {
-        return ResourceLocation.CODEC
-                .<MapCodec<? extends MachineProcessCondition>>flatXmap(
-                        resLoc -> Optional.ofNullable(MachineProcessConditions.get(resLoc))
-                                .map(DataResult::success)
-                                .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition " + resLoc)),
-                        codec -> Optional.ofNullable(MachineProcessConditions.getId(codec))
-                                .map(DataResult::success)
-                                .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition codec " + codec)))
-                .dispatch(cond -> cond.codec(syncToClient), c -> c);
-    }
-
-    Codec<MachineProcessCondition> CODEC = makeCodec(false);
-    StreamCodec<ByteBuf, MachineProcessCondition> STREAM_CODEC = ByteBufCodecs.fromCodec(makeCodec(true));
+    Codec<MachineProcessCondition> CODEC = ResourceLocation.CODEC
+            .<MapCodec<? extends MachineProcessCondition>>flatXmap(
+                    resLoc -> Optional.ofNullable(MachineProcessConditions.getCodec(resLoc))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition " + resLoc)),
+                    codec -> Optional.ofNullable(MachineProcessConditions.getId(codec))
+                            .map(DataResult::success)
+                            .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition codec " + codec)))
+            .dispatch(MachineProcessCondition::codec, c -> c);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    StreamCodec<RegistryFriendlyByteBuf, MachineProcessCondition> STREAM_CODEC = ResourceLocation.STREAM_CODEC
+            .<RegistryFriendlyByteBuf>mapStream(b -> b)
+            .map(
+                    resLoc -> Optional.ofNullable(MachineProcessConditions.getStreamCodec(resLoc))
+                            .orElseThrow(() -> new IllegalArgumentException("Unknown machine process condition " + resLoc)),
+                    streamCodec -> Optional.ofNullable(MachineProcessConditions.getId(streamCodec))
+                            .orElseThrow(() -> new IllegalArgumentException("Unknown machine process condition codec " + streamCodec)))
+            .dispatch(r -> (StreamCodec) r.streamCodec(), c -> c);
 
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
 
     void appendDescription(List<Component> list);
 
-    MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient);
+    MapCodec<? extends MachineProcessCondition> codec();
+
+    StreamCodec<? super RegistryFriendlyByteBuf, ? extends MachineProcessCondition> streamCodec();
 
     interface Context {
         MachineBlockEntity getBlockEntity();

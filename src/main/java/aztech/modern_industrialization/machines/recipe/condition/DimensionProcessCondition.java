@@ -28,7 +28,9 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
@@ -36,6 +38,11 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
     static final MapCodec<DimensionProcessCondition> CODEC = ResourceKey.codec(Registries.DIMENSION)
             .fieldOf("dimension")
             .xmap(DimensionProcessCondition::new, DimensionProcessCondition::dimension);
+
+    static final StreamCodec<RegistryFriendlyByteBuf, DimensionProcessCondition> STREAM_CODEC = StreamCodec.composite(
+            ResourceKey.streamCodec(Registries.DIMENSION),
+            DimensionProcessCondition::dimension,
+            DimensionProcessCondition::new);
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
@@ -50,7 +57,12 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
     }
 
     @Override
-    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
+    public MapCodec<? extends MachineProcessCondition> codec() {
         return CODEC;
+    }
+
+    @Override
+    public StreamCodec<? super RegistryFriendlyByteBuf, ? extends MachineProcessCondition> streamCodec() {
+        return STREAM_CODEC;
     }
 }

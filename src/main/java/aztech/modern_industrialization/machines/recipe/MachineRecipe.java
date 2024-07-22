@@ -67,7 +67,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                                 MIExtraCodecs.maybeList(FluidInput.CODEC, "fluid_inputs").forGetter(recipe -> recipe.fluidInputs),
                                 MIExtraCodecs.maybeList(ItemOutput.CODEC, "item_outputs").forGetter(recipe -> recipe.itemOutputs),
                                 MIExtraCodecs.maybeList(FluidOutput.CODEC, "fluid_outputs").forGetter(recipe -> recipe.fluidOutputs),
-                                MIExtraCodecs.maybeList(MachineProcessCondition.CODEC, "conditions").forGetter(recipe -> recipe.conditions))
+                                MIExtraCodecs.maybeList(MachineProcessCondition.CODEC, "process_conditions").forGetter(recipe -> recipe.conditions))
                         .apply(g, (eu, duration, itemInputs, fluidInputs, itemOutputs, fluidOutputs, conditions) -> {
                             var ret = new MachineRecipe(type);
                             ret.eu = eu;

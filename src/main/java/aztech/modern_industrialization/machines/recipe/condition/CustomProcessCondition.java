@@ -34,8 +34,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 public class CustomProcessCondition implements MachineProcessCondition {
     static final Map<String, Definition> definitions = new HashMap<>();
@@ -75,8 +78,13 @@ public class CustomProcessCondition implements MachineProcessCondition {
                         .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
     }
 
-    static final MapCodec<CustomProcessCondition> CODEC = makeCodec(false);
-    private static final MapCodec<CustomProcessCondition> CODEC_FOR_SYNC = makeCodec(true);
+    static final MapCodec<CustomProcessCondition> CODEC = Codec.STRING.fieldOf("custom_id").xmap(CustomProcessCondition::new, c -> c.id);
+    static final StreamCodec<RegistryFriendlyByteBuf, CustomProcessCondition> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8,
+            c -> c.id,
+            ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list()),
+            c -> c.description,
+            CustomProcessCondition::new);
 
     public CustomProcessCondition(String id) {
         var definition = definitions.get(id);
@@ -106,7 +114,12 @@ public class CustomProcessCondition implements MachineProcessCondition {
     }
 
     @Override
-    public MapCodec<? extends MachineProcessCondition> codec(boolean syncToClient) {
-        return syncToClient ? CODEC_FOR_SYNC : CODEC;
+    public MapCodec<? extends MachineProcessCondition> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public StreamCodec<? super RegistryFriendlyByteBuf, ? extends MachineProcessCondition> streamCodec() {
+        return STREAM_CODEC;
     }
 }

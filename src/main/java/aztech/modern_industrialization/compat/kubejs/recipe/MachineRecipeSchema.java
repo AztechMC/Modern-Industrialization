@@ -34,38 +34,43 @@ import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.TickDuration;
-
 import java.util.List;
 
-public interface MachineRecipeSchema {
-	private static <T> RecipeKey<List<T>> optionalList(RecipeComponent<T> component, String name, ComponentRole role) {
-		return component.asConditionalListOrSelf().key(name, role).optional(List.of()).allowEmpty();
-	}
+public final class MachineRecipeSchema {
+    private MachineRecipeSchema() {
+    }
 
-	RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).inputKey("eu");
-	RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.inputKey("duration");
-	RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = optionalList(ItemOutputComponent.ITEM_OUTPUT, "item_outputs", ComponentRole.OUTPUT);
-	RecipeKey<List<MachineRecipe.FluidOutput>> FLUID_OUTPUTS = optionalList(FluidOutputComponent.FLUID_OUTPUT, "fluid_outputs", ComponentRole.OUTPUT);
-	RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = optionalList(ItemInputComponent.ITEM_INPUT, "item_inputs", ComponentRole.INPUT);
-	RecipeKey<List<MachineRecipe.FluidInput>> FLUID_INPUTS = optionalList(FluidInputComponent.FLUID_INPUT, "fluid_inputs", ComponentRole.INPUT);
-	RecipeKey<List<MachineProcessCondition>> MACHINE_PROCESS_CONDITIONS = optionalList(MachineProcessConditionComponent.MACHINE_PROCESS_CONDITION, "process_conditions", ComponentRole.OTHER);
+    private static <T> RecipeKey<List<T>> optionalList(RecipeComponent<T> component, String name, ComponentRole role) {
+        return component.asConditionalListOrSelf().key(name, role).optional(List.of()).allowEmpty();
+    }
 
-	RecipeSchema SCHEMA = new RecipeSchema(
-		EU,
-		DURATION,
-		ITEM_OUTPUTS,
-		FLUID_OUTPUTS,
-		ITEM_INPUTS,
-		FLUID_INPUTS,
-		MACHINE_PROCESS_CONDITIONS
-	)
-		.factory(MachineKubeRecipe.FACTORY)
-		.constructor(EU, DURATION);
+    public static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).inputKey("eu");
+    public static final RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.inputKey("duration");
+    public static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = optionalList(ItemOutputComponent.ITEM_OUTPUT, "item_outputs",
+            ComponentRole.OUTPUT);
+    public static final RecipeKey<List<MachineRecipe.FluidOutput>> FLUID_OUTPUTS = optionalList(FluidOutputComponent.FLUID_OUTPUT, "fluid_outputs",
+            ComponentRole.OUTPUT);
+    public static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = optionalList(ItemInputComponent.ITEM_INPUT, "item_inputs",
+            ComponentRole.INPUT);
+    public static final RecipeKey<List<MachineRecipe.FluidInput>> FLUID_INPUTS = optionalList(FluidInputComponent.FLUID_INPUT, "fluid_inputs",
+            ComponentRole.INPUT);
+    public static final RecipeKey<List<MachineProcessCondition>> MACHINE_PROCESS_CONDITIONS = optionalList(
+            MachineProcessConditionComponent.MACHINE_PROCESS_CONDITION, "process_conditions", ComponentRole.OTHER);
 
-	RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
-		ItemStackComponent.ITEM_STACK.outputKey("result"),
-		IngredientComponent.INGREDIENT.inputKey("ingredient"),
-		NumberComponent.INT.min(0).otherKey("damage").optional(0),
-		NumberComponent.INT.min(1).otherKey("count").optional(1)
-	);
+    public static final RecipeSchema SCHEMA = new RecipeSchema(
+            EU,
+            DURATION,
+            ITEM_OUTPUTS,
+            FLUID_OUTPUTS,
+            ITEM_INPUTS,
+            FLUID_INPUTS,
+            MACHINE_PROCESS_CONDITIONS)
+                    .factory(MachineKubeRecipe.FACTORY)
+                    .constructor(EU, DURATION);
+
+    public static final RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
+            ItemStackComponent.ITEM_STACK.outputKey("result"),
+            IngredientComponent.INGREDIENT.inputKey("ingredient"),
+            NumberComponent.INT.min(0).otherKey("damage").optional(0),
+            NumberComponent.INT.min(1).otherKey("count").optional(1));
 }

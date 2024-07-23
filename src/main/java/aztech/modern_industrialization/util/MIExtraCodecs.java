@@ -54,8 +54,8 @@ public class MIExtraCodecs {
 
     public static <T> Codec<List<T>> maybeList(Codec<T> elementCodec) {
         var listCodec = NeoForgeExtraCodecs.listWithOptionalElements(ConditionalOps.createConditionalCodec(elementCodec));
-        return Codec.either(elementCodec, listCodec)
-                .xmap(either -> either.map(List::of, Function.identity()), Either::right);
+        return Codec.either(listCodec, elementCodec)
+                .xmap(either -> either.map(Function.identity(), List::of), Either::left);
     }
 
     /**

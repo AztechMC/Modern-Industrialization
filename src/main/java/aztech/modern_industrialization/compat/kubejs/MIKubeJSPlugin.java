@@ -26,7 +26,13 @@ package aztech.modern_industrialization.compat.kubejs;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.compat.kubejs.machine.MIMachineKubeJSEvents;
 import aztech.modern_industrialization.compat.kubejs.material.MIMaterialKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.recipe.FluidInputComponent;
+import aztech.modern_industrialization.compat.kubejs.recipe.FluidOutputComponent;
+import aztech.modern_industrialization.compat.kubejs.recipe.ItemInputComponent;
+import aztech.modern_industrialization.compat.kubejs.recipe.ItemOutputComponent;
 import aztech.modern_industrialization.compat.kubejs.recipe.MIRecipeKubeJSEvents;
+import aztech.modern_industrialization.compat.kubejs.recipe.MachineKubeRecipe;
+import aztech.modern_industrialization.compat.kubejs.recipe.MachineProcessConditionComponent;
 import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeSchema;
 import aztech.modern_industrialization.compat.kubejs.registration.MIRegistrationKubeJSEvents;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -36,6 +42,8 @@ import dev.latvian.mods.kubejs.core.RecipeManagerKJS;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipesKubeEvent;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistry;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
@@ -64,6 +72,20 @@ public class MIKubeJSPlugin implements KubeJSPlugin {
             registry.register(mrt.getId(), MachineRecipeSchema.SCHEMA);
         }
         registry.register(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.getId(), MachineRecipeSchema.FORGE_HAMMER_SCHEMA);
+    }
+
+    @Override
+    public void registerRecipeFactories(RecipeFactoryRegistry registry) {
+        registry.register(MachineKubeRecipe.FACTORY);
+    }
+
+    @Override
+    public void registerRecipeComponents(RecipeComponentFactoryRegistry registry) {
+        registry.register(ItemOutputComponent.ITEM_OUTPUT);
+        registry.register(FluidOutputComponent.FLUID_OUTPUT);
+        registry.register(ItemInputComponent.ITEM_INPUT);
+        registry.register(FluidInputComponent.FLUID_INPUT);
+        registry.register(MachineProcessConditionComponent.MACHINE_PROCESS_CONDITION);
     }
 
     @Override

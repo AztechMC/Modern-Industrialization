@@ -199,7 +199,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     protected abstract MachineModelClientData getModelData();
 
     @MustBeInvokedByOverriders
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
+    public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
         orientation.onPlaced(placer, itemStack);
         placedBy.onPlaced(placer);
     }

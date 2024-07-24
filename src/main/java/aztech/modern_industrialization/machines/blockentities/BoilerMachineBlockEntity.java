@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.MIFluidStorage;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
@@ -42,8 +43,13 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -127,4 +133,18 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         return fuelBurning.getTooltips();
     }
 
+    @Override
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var heldItem = player.getItemInHand(hand);
+        if (!heldItem.isEmpty()) {
+            var waterSlotHandler = new MIFluidStorage(inventory.getFluidStacks().subList(0, 1)).fluidHandler;
+            var result = FluidUtil.tryEmptyContainerAndStow(heldItem, waterSlotHandler, new PlayerInvWrapper(player.getInventory()),
+                    Integer.MAX_VALUE, player, true);
+            if (result.isSuccess()) {
+                player.setItemInHand(hand, result.getResult());
+                return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
+            }
+        }
+        return super.useItemOn(player, hand, face);
+    }
 }

@@ -275,8 +275,8 @@ dependencies {
     }
 
     compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-//    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-//    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 

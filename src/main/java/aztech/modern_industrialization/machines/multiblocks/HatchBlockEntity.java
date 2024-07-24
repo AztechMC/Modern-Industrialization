@@ -40,6 +40,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
     public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
@@ -108,7 +109,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
+    public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(placer, itemStack);
         if (orientation.params.hasOutput) {
             orientation.outputDirection = orientation.outputDirection.getOpposite();

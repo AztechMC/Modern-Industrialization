@@ -31,6 +31,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class OrientationComponent implements IComponent {
     public Direction facingDirection = Direction.NORTH;
@@ -92,8 +93,9 @@ public class OrientationComponent implements IComponent {
         return false;
     }
 
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        Direction dir = placer.getDirection();
+    public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
+        // The placer can be null using some mods' automatic placement: pick NORTH arbitrarily.
+        Direction dir = placer != null ? placer.getDirection() : Direction.NORTH;
         facingDirection = dir.getOpposite();
         if (params.hasOutput) {
             outputDirection = dir;

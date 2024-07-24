@@ -51,7 +51,7 @@ public class PlacedByComponent implements IComponent {
         }
     }
 
-    public void onPlaced(LivingEntity placer) {
+    public void onPlaced(@Nullable LivingEntity placer) {
         if (placer instanceof Player) {
             placerId = placer.getUUID();
         } else {

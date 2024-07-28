@@ -39,7 +39,8 @@ public class MIFluidBlock extends Block {
     private final int color;
 
     public MIFluidBlock(int color) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().pushReaction(PushReaction.DESTROY).liquid());
+        // .air() to make `FluidType#canBePlacedInLevel` return false
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().pushReaction(PushReaction.DESTROY).liquid().air());
         this.color = FluidHelper.getColorMinLuminance(color);
     }
 

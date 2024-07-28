@@ -298,6 +298,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
+            cloth_config_version_range: cloth_config_version_range,
             grandpower_version_range: grandpower_version_range,
             ae2_version_range: ae2_version_range,
     ]

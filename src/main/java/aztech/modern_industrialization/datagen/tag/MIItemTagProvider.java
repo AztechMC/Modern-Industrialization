@@ -31,6 +31,7 @@ import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -44,6 +45,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -60,16 +62,17 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        generatedConventionTag();
-
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
-            var tagId = ResourceLocation.parse(entry.getKey());
-            for (var item : entry.getValue()) {
+            var items = entry.getValue().stream()
+                    .map(ItemLike::asItem)
+                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
+                    .toList();
+            for (var item : items) {
                 if (optional) {
-                    tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item.asItem()));
+                    tag(entry.getKey()).addOptional(BuiltInRegistries.ITEM.getKey(item));
                 } else {
-                    tag(key(tagId)).add(item.asItem());
+                    tag(entry.getKey()).add(item);
                 }
             }
         }
@@ -90,12 +93,9 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
                 .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
-                .addTag(MITags.SHULKER_BOXES)
+                .addTag(Tags.Items.SHULKER_BOXES)
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
-
-        // Have no idea why there is such a tag but go add it
-        tag(Tags.Items.ORES_QUARTZ).add(BuiltInRegistries.ITEM.get(MI.id("quartz_ore")));
 
         tag(Tags.Items.TOOLS_SHEAR).add(MIItem.DIESEL_CHAINSAW.asItem());
         tag(MITags.WRENCHES).add(MIItem.WRENCH.asItem());
@@ -119,26 +119,5 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
     private static TagKey<Item> key(String id) {
         return key(ResourceLocation.parse(id));
-    }
-
-    private void generatedConventionTag() {
-        tag(MITags.SHULKER_BOXES)
-                .add(Items.SHULKER_BOX)
-                .add(Items.WHITE_SHULKER_BOX)
-                .add(Items.ORANGE_SHULKER_BOX)
-                .add(Items.MAGENTA_SHULKER_BOX)
-                .add(Items.LIGHT_BLUE_SHULKER_BOX)
-                .add(Items.YELLOW_SHULKER_BOX)
-                .add(Items.LIME_SHULKER_BOX)
-                .add(Items.PINK_SHULKER_BOX)
-                .add(Items.GRAY_SHULKER_BOX)
-                .add(Items.LIGHT_GRAY_SHULKER_BOX)
-                .add(Items.CYAN_SHULKER_BOX)
-                .add(Items.PURPLE_SHULKER_BOX)
-                .add(Items.BLUE_SHULKER_BOX)
-                .add(Items.BROWN_SHULKER_BOX)
-                .add(Items.GREEN_SHULKER_BOX)
-                .add(Items.RED_SHULKER_BOX)
-                .add(Items.BLACK_SHULKER_BOX);
     }
 }

@@ -110,7 +110,6 @@ public class OrePart implements PartKeyProvider {
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
                                     .withLoot(new MIBlockLoot.Ore(loot))
-                                    .addMoreTags(List.of(Tags.Blocks.ORES))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
                                     .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE));
@@ -125,6 +124,8 @@ public class OrePart implements PartKeyProvider {
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
                     TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
+                    TagsToGenerate.generateTagNoTranslation(deepslate ? Tags.Items.ORES_IN_GROUND_DEEPSLATE : Tags.Items.ORES_IN_GROUND_STONE,
+                            oreBlockBlockDefinition);
 
                     if (oreParams.generate) {
                         ResourceLocation oreGenId = MI.id(

@@ -25,14 +25,15 @@ package aztech.modern_industrialization.datagen.tag;
 
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class TagsToGenerate {
 
-    static final Map<String, List<ItemLike>> tagToItemMap = new HashMap<>();
-    static final Set<String> optionalTags = new HashSet<>();
+    static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
+    static final Set<TagKey<Item>> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
 
@@ -45,8 +46,12 @@ public class TagsToGenerate {
         if (tag.startsWith("#")) {
             throw new IllegalArgumentException("Tag must not start with #: " + tag);
         }
-        tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
+        generateTagNoTranslation(ItemTags.create(ResourceLocation.parse(tag)), item);
         addTranslation(tag, tagEnglishName);
+    }
+
+    public static void generateTagNoTranslation(TagKey<Item> tag, ItemLike item) {
+        tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
     }
 
     public static void addTagToTag(String tagTobeAdded, String tagTarget, String targetEnglishName) {
@@ -66,6 +71,6 @@ public class TagsToGenerate {
     }
 
     public static void markTagOptional(TagKey<Item> tag) {
-        optionalTags.add(tag.location().toString());
+        optionalTags.add(tag);
     }
 }

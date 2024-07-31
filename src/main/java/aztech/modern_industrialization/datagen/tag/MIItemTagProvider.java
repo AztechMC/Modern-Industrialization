@@ -31,6 +31,7 @@ import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -44,6 +45,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -64,12 +66,15 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
-            var tagId = ResourceLocation.parse(entry.getKey());
-            for (var item : entry.getValue()) {
+            var items = entry.getValue().stream()
+                    .map(ItemLike::asItem)
+                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
+                    .toList();
+            for (var item : items) {
                 if (optional) {
-                    tag(key(tagId)).addOptional(BuiltInRegistries.ITEM.getKey(item.asItem()));
+                    tag(entry.getKey()).addOptional(BuiltInRegistries.ITEM.getKey(item));
                 } else {
-                    tag(key(tagId)).add(item.asItem());
+                    tag(entry.getKey()).add(item);
                 }
             }
         }

@@ -27,11 +27,16 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -55,5 +60,43 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
         // Have no idea why there is such a tag but go add it
         tag(Tags.Blocks.ORES_QUARTZ).add(BuiltInRegistries.BLOCK.get(MI.id("quartz_ore")));
+
+        for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
+            boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
+            var items = entry.getValue().stream()
+                    .map(ItemLike::asItem)
+                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
+                    .toList();
+            for (var item : items) {
+                var itemKey = BuiltInRegistries.ITEM.getKey(item);
+                var block = BuiltInRegistries.BLOCK.getOptional(itemKey);
+                if (block.isEmpty()) {
+                    continue;
+                }
+                var key = BlockTags.create(entry.getKey().location());
+                if (optional) {
+                    tag(key).addOptional(itemKey);
+                } else {
+                    tag(key).add(block.get());
+                }
+            }
+        }
+
+        for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
+            var tagId = ResourceLocation.parse(entry.getKey());
+            for (var tag : entry.getValue()) {
+                if (this.builders.containsKey(ResourceLocation.parse(tag))) {
+                    tag(key(tagId)).addTag(key(tag));
+                }
+            }
+        }
+    }
+
+    private static TagKey<Block> key(ResourceLocation id) {
+        return TagKey.create(BuiltInRegistries.BLOCK.key(), id);
+    }
+
+    private static TagKey<Block> key(String id) {
+        return key(ResourceLocation.parse(id));
     }
 }

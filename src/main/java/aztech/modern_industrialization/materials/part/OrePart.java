@@ -125,6 +125,8 @@ public class OrePart implements PartKeyProvider {
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
                     TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
+                    TagsToGenerate.generateTagNoTranslation(deepslate ? Tags.Items.ORES_IN_GROUND_DEEPSLATE : Tags.Items.ORES_IN_GROUND_STONE,
+                            oreBlockBlockDefinition);
 
                     if (oreParams.generate) {
                         ResourceLocation oreGenId = MI.id(

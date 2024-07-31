@@ -58,8 +58,6 @@ public class MIBlockTagProvider extends BlockTagsProvider {
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
-        // Have no idea why there is such a tag but go add it
-        tag(Tags.Blocks.ORES_QUARTZ).add(BuiltInRegistries.BLOCK.get(MI.id("quartz_ore")));
 
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());

@@ -42,9 +42,6 @@ public class MITags {
     // For Immersive Engineering treated wood
     public static final TagKey<Fluid> CREOSOTE = FluidTags.create(ResourceLocation.parse("c:creosote"));
 
-    // TODO 1.21: should be in the tag rework
-    public static final TagKey<Item> SHULKER_BOXES = item("shulker_boxes");
-
     public static TagKey<Item> item(String path) {
         return TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", path));
     }

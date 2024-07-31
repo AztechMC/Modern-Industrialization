@@ -62,8 +62,6 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        generatedConventionTag();
-
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             var items = entry.getValue().stream()
@@ -95,7 +93,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
                 .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
-                .addTag(MITags.SHULKER_BOXES)
+                .addTag(Tags.Items.SHULKER_BOXES)
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
 
@@ -121,26 +119,5 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
     private static TagKey<Item> key(String id) {
         return key(ResourceLocation.parse(id));
-    }
-
-    private void generatedConventionTag() {
-        tag(MITags.SHULKER_BOXES)
-                .add(Items.SHULKER_BOX)
-                .add(Items.WHITE_SHULKER_BOX)
-                .add(Items.ORANGE_SHULKER_BOX)
-                .add(Items.MAGENTA_SHULKER_BOX)
-                .add(Items.LIGHT_BLUE_SHULKER_BOX)
-                .add(Items.YELLOW_SHULKER_BOX)
-                .add(Items.LIME_SHULKER_BOX)
-                .add(Items.PINK_SHULKER_BOX)
-                .add(Items.GRAY_SHULKER_BOX)
-                .add(Items.LIGHT_GRAY_SHULKER_BOX)
-                .add(Items.CYAN_SHULKER_BOX)
-                .add(Items.PURPLE_SHULKER_BOX)
-                .add(Items.BLUE_SHULKER_BOX)
-                .add(Items.BROWN_SHULKER_BOX)
-                .add(Items.GREEN_SHULKER_BOX)
-                .add(Items.RED_SHULKER_BOX)
-                .add(Items.BLACK_SHULKER_BOX);
     }
 }

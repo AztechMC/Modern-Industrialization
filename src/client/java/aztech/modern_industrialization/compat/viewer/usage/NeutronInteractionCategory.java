@@ -38,6 +38,7 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.Locale;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -250,6 +251,11 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
             }
         }
         }
+    }
+
+    @Override
+    public ResourceLocation getRecipeId(NeutronInteractionCategory.Recipe recipe) {
+        return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
     public record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {

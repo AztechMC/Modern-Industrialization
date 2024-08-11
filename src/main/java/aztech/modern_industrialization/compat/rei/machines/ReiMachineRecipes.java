@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper to register stuff for use with the REI plugin. This class will be
@@ -47,7 +47,7 @@ public class ReiMachineRecipes {
     /**
      * List of registered multiblock shape "recipes".
      */
-    public static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
+    public static final List<MultiblockShape> multiblockShapes = new ArrayList<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -78,7 +78,11 @@ public class ReiMachineRecipes {
     }
 
     public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
-        multiblockShapes.add(new Tuple<>(machine, shapeTemplate));
+        registerMultiblockShape(machine, shapeTemplate, null);
+    }
+
+    public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+        multiblockShapes.add(new MultiblockShape(machine, shapeTemplate, alternative));
     }
 
     public static class ClickAreaCategory {
@@ -94,5 +98,8 @@ public class ReiMachineRecipes {
     public enum MachineScreenPredicate {
         ANY,
         MULTIBLOCK,
+    }
+
+    public record MultiblockShape(String machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
     }
 }

@@ -52,13 +52,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
-class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDisplay<D>> {
+class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.ViewerDisplay> {
     public final ViewerCategory<D> wrapped;
-    public final CategoryIdentifier<ViewerDisplay<D>> identifier;
+    public final CategoryIdentifier<ViewerDisplay> identifier;
     private final Renderer icon;
 
     public ViewerCategoryRei(ViewerCategory<D> wrapped) {
@@ -73,7 +72,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
     }
 
     @Override
-    public CategoryIdentifier<? extends ViewerDisplay<D>> getCategoryIdentifier() {
+    public CategoryIdentifier<? extends ViewerDisplay> getCategoryIdentifier() {
         return identifier;
     }
 
@@ -127,13 +126,13 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         });
     }
 
-    private ViewerDisplay<D> makeDisplay(D recipe) {
+    private ViewerDisplay makeDisplay(D recipe) {
         List<IngredientBuilder> inputs = new ArrayList<>();
         List<IngredientBuilder> outputs = new ArrayList<>();
 
         processLayout(recipe, inputs, outputs);
 
-        return new ViewerDisplay<>(identifier, convert(inputs), convert(outputs), recipe);
+        return new ViewerDisplay(identifier, convert(inputs), convert(outputs), recipe);
     }
 
     private static class IngredientBuilder implements ViewerCategory.SlotBuilder {
@@ -216,13 +215,13 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
         return ingredients;
     }
 
-    public static class ViewerDisplay<D> implements Display {
-        private final CategoryIdentifier<ViewerDisplay<D>> identifier;
+    public class ViewerDisplay implements Display {
+        private final CategoryIdentifier<ViewerDisplay> identifier;
         private final List<EntryIngredient> inputs;
         private final List<EntryIngredient> outputs;
         final D recipe;
 
-        public ViewerDisplay(CategoryIdentifier<ViewerDisplay<D>> identifier, List<EntryIngredient> inputs, List<EntryIngredient> outputs, D recipe) {
+        public ViewerDisplay(CategoryIdentifier<ViewerDisplay> identifier, List<EntryIngredient> inputs, List<EntryIngredient> outputs, D recipe) {
             this.identifier = identifier;
             this.inputs = inputs;
             this.outputs = outputs;
@@ -246,12 +245,12 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return recipe instanceof RecipeHolder<?> r ? Optional.of(r.id()) : Optional.empty();
+            return Optional.of(wrapped.getRecipeId(recipe));
         }
     }
 
     @Override
-    public List<Widget> setupDisplay(ViewerDisplay<D> display, Rectangle bounds) {
+    public List<Widget> setupDisplay(ViewerDisplay display, Rectangle bounds) {
         List<Widget> widgets = new ArrayList<>();
 
         // Recipe base

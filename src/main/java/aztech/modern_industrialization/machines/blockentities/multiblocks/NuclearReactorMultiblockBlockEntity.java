@@ -210,8 +210,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     public static void registerReiShapes() {
-        for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            ReiMachineRecipes.registerMultiblockShape("nuclear_reactor", shapeTemplate);
+        for (int i = 0; i < shapeTemplates.length; ++i) {
+            ReiMachineRecipes.registerMultiblockShape("nuclear_reactor", shapeTemplates[i], "" + i);
         }
     }
 

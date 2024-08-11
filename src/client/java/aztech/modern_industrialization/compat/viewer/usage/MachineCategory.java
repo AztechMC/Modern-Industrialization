@@ -310,4 +310,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
     private record DrawOffset(int x, int y) {
     }
+
+    @Override
+    public ResourceLocation getRecipeId(RecipeHolder<MachineRecipe> recipe) {
+        return recipe.id();
+    }
 }

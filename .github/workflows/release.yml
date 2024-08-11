@@ -31,11 +31,13 @@ jobs:
       - name: Upload to Curseforge
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
+          CHANGELOG: ${{ github.event.release.body }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: ./gradlew curseforge405388
       - name: Upload to Modrinth
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
+          CHANGELOG: ${{ github.event.release.body }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
         run: ./gradlew modrinth
       - name: Upload artifacts

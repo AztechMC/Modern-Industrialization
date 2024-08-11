@@ -370,7 +370,7 @@ spotless {
 }
 
 def releaseChannel = "release"
-def changelog = "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
+def changelog = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {
     releaseChannel = "alpha"
     changelog = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelog

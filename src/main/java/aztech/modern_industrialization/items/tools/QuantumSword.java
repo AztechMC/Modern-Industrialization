@@ -43,7 +43,8 @@ public class QuantumSword extends Item {
 
     private void onHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         var damageSources = attacker.level().damageSources();
-        target.hurt(new DamageSource(damageSources.genericKill().typeHolder(), attacker), Float.MAX_VALUE);
+        // Note: Don't use Float.MAX_VALUE, calculations using it might produce infinite or NaN values.
+        target.hurt(new DamageSource(damageSources.genericKill().typeHolder(), attacker), (float) Integer.MAX_VALUE);
 
         // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
         // advancement

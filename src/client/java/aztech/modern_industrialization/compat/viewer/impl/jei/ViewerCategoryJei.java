@@ -309,4 +309,9 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             }
         });
     }
+
+    @Override
+    public ResourceLocation getRegistryName(D recipe) {
+        return wrapped.getRecipeId(recipe);
+    }
 }

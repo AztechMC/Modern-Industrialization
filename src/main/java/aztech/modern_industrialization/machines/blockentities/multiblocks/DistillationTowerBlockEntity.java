@@ -91,8 +91,8 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
     }
 
     public static void registerReiShapes() {
-        for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            ReiMachineRecipes.registerMultiblockShape("distillation_tower", shapeTemplate);
+        for (int i = 0; i < shapeTemplates.length; ++i) {
+            ReiMachineRecipes.registerMultiblockShape("distillation_tower", shapeTemplates[i], "" + i);
         }
     }
 

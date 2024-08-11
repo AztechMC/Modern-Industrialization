@@ -78,6 +78,8 @@ public abstract class ViewerCategory<D> {
      */
     public abstract void buildWidgets(D recipe, WidgetList widgets);
 
+    public abstract ResourceLocation getRecipeId(D recipe);
+
     public sealed interface Icon {
         record Stack(ItemStack stack) implements Icon {
         }

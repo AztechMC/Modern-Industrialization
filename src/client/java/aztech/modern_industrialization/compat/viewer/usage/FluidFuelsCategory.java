@@ -33,8 +33,10 @@ import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
 
@@ -71,5 +73,10 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
         int totalEnergy = FluidFuel.getEu(recipe);
         Component text = MIText.EuInDieselGenerator.text(totalEnergy);
         widgets.secondaryText(text, 40, 14);
+    }
+
+    @Override
+    public ResourceLocation getRecipeId(Fluid recipe) {
+        return MI.id("fluid_fuels/" + BuiltInRegistries.FLUID.getKey(recipe).toString().replace(':', '_'));
     }
 }

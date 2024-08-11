@@ -36,11 +36,13 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.Locale;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -167,6 +169,11 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
             }
         }
         }
+    }
+
+    @Override
+    public ResourceLocation getRecipeId(Recipe recipe) {
+        return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "thermal_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
     protected record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {

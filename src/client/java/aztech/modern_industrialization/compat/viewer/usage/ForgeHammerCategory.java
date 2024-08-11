@@ -93,4 +93,9 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
         Component text = recipe.hammerDamage() > 0 ? MIText.DurabilityCost.text(recipe.hammerDamage()) : MIText.NoToolRequired.text();
         widgets.secondaryText(text, startPointX - 24, 28);
     }
+
+    @Override
+    public ResourceLocation getRecipeId(RecipeHolder<ForgeHammerRecipe> recipe) {
+        return recipe.id();
+    }
 }

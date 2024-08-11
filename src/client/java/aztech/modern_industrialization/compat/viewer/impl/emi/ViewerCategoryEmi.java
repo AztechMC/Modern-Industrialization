@@ -105,6 +105,9 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
         processLayout(recipe, inputs, outputs);
 
+        // If there is an invisible output, the recipe will be excluded from the tree.
+        boolean excludeFromTree = outputs.stream().anyMatch(b -> !b.isVisible);
+
         // Remove empty ingredients that only exist for rendering reasons (e.g. empty fluid slots)
         inputs.removeIf(b -> b.ing.isEmpty());
         outputs.removeIf(b -> b.ing.isEmpty());
@@ -113,7 +116,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         List<IngredientBuilder> catalysts = inputs.stream().filter(b -> b.isCatalyst).toList();
         inputs.removeIf(b -> b.isCatalyst);
 
-        return new ViewerRecipe(recipe, convertInputs(inputs), convertInputs(catalysts), convertOutputs(outputs));
+        return new ViewerRecipe(recipe, convertInputs(inputs), convertInputs(catalysts), convertOutputs(outputs), excludeFromTree);
     }
 
     private static List<EmiIngredient> convertInputs(List<IngredientBuilder> list) {
@@ -203,12 +206,14 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         private final List<EmiIngredient> inputs;
         private final List<EmiIngredient> catalysts;
         private final List<EmiStack> outputs;
+        private final boolean excludeFromTree;
 
-        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiIngredient> catalysts, List<EmiStack> outputs) {
+        public ViewerRecipe(D recipe, List<EmiIngredient> inputs, List<EmiIngredient> catalysts, List<EmiStack> outputs, boolean excludeFromTree) {
             this.recipe = recipe;
             this.inputs = inputs;
             this.catalysts = catalysts;
             this.outputs = outputs;
+            this.excludeFromTree = excludeFromTree;
         }
 
         @Override
@@ -320,6 +325,11 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                     processIngredient(this, widgets, output, false);
                 }
             }
+        }
+
+        @Override
+        public boolean supportsRecipeTree() {
+            return !excludeFromTree && EmiRecipe.super.supportsRecipeTree();
         }
     }
 

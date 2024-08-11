@@ -60,7 +60,7 @@ public class ItemOutputComponent extends SimpleRecipeComponent<MachineRecipe.Ite
             Object with) {
         if (matches(cx, recipe, original, match)) {
             var withJava = (ItemStack) cx.jsToJava(with, typeInfo());
-            return new MachineRecipe.ItemOutput(ItemVariant.of(withJava), withJava.getCount(), original.probability());
+            return new MachineRecipe.ItemOutput(ItemVariant.of(withJava), original.amount(), original.probability());
         } else {
             return original;
         }

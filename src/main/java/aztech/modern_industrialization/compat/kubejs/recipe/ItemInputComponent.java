@@ -29,12 +29,14 @@ import dev.latvian.mods.kubejs.bindings.IngredientWrapper;
 import dev.latvian.mods.kubejs.bindings.SizedIngredientWrapper;
 import dev.latvian.mods.kubejs.core.IngredientKJS;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
+import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.component.SimpleRecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.UniqueIdBuilder;
 import dev.latvian.mods.kubejs.recipe.match.ItemMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.Context;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public class ItemInputComponent extends SimpleRecipeComponent<MachineRecipe.ItemInput> {
@@ -59,8 +61,8 @@ public class ItemInputComponent extends SimpleRecipeComponent<MachineRecipe.Item
     public MachineRecipe.ItemInput replace(Context cx, KubeRecipe recipe, MachineRecipe.ItemInput original, ReplacementMatchInfo match,
             Object with) {
         if (matches(cx, recipe, original, match)) {
-            var withJava = (SizedIngredient) cx.jsToJava(with, typeInfo());
-            return new MachineRecipe.ItemInput(withJava.ingredient(), withJava.count(), original.probability());
+            var withJava = (Ingredient) cx.jsToJava(with, IngredientJS.TYPE_INFO);
+            return new MachineRecipe.ItemInput(withJava, original.amount(), original.probability());
         } else {
             return original;
         }

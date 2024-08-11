@@ -32,6 +32,7 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIArmorMaterials;
@@ -66,6 +67,8 @@ import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -75,6 +78,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -159,6 +163,19 @@ public class MI {
         BarrelBlock.setupBarrelEvents();
 
         SteamDrillHooks.init();
+        NeoForge.EVENT_BUS.addListener(AnvilUpdateEvent.class, event -> {
+            // Don't let anyone try to enchant our dynamic tools! Renaming is allowed, only if the other slot is empty.
+            if ((event.getLeft().getItem() instanceof DynamicToolItem && !event.getRight().isEmpty()) ||
+                    (!event.getLeft().isEmpty() && event.getRight().getItem() instanceof DynamicToolItem)) {
+                event.setCanceled(true);
+                // According to the documentation setCanceled should be all we need, but unfortunately we have to manually override the output and
+                // cost too??
+                if (event.getPlayer().containerMenu instanceof AnvilMenu anvilMenu) {
+                    anvilMenu.getSlot(2).set(ItemStack.EMPTY);
+                    anvilMenu.setMaximumCost(0);
+                }
+            }
+        });
 
         modBus.addListener(FMLCommonSetupEvent.class, event -> {
             MIBlock.BLOCK_DEFINITIONS.values().forEach(BlockDefinition::onRegister);

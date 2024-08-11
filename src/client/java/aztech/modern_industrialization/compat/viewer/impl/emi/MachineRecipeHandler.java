@@ -24,15 +24,19 @@
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
+import dev.emi.emi.api.stack.EmiStack;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -56,6 +60,23 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
                 // Machine input only
                 .filter(s -> s instanceof ConfigurableItemStack.ConfigurableItemSlot cis && cis.getConfStack().canPlayerInsert())
                 .toList();
+    }
+
+    @Override
+    public EmiPlayerInventory getInventory(AbstractContainerScreen<MachineMenuCommon> screen) {
+        var stacks = new ArrayList<EmiStack>();
+        // Same implementation as in super call
+        for (var inputSource : getInputSources(screen.getMenu())) {
+            stacks.add(EmiStack.of(inputSource.getItem()));
+        }
+        // Add fluid inputs. EMI won't move fluids but at least they won't block item transfer if they are in the machine.
+        for (var slot : screen.getMenu().slots) {
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs && cfs.getConfStack().canPlayerInsert()) {
+                var variant = cfs.getConfStack().getVariant();
+                stacks.add(EmiStack.of(variant.getFluid(), variant.getComponentsPatch(), cfs.getConfStack().getAmount()));
+            }
+        }
+        return new EmiPlayerInventory(stacks);
     }
 
     @Override

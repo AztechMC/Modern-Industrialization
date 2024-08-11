@@ -213,7 +213,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
 
     public interface EUProductionMap<T> {
 
-        record InformationEntry<T> (long eu, T variant) {
+        record InformationEntry<T>(long eu, T variant) {
         }
 
         long getEuProduction(T variant);

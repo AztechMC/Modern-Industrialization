@@ -65,8 +65,8 @@ public final class MachineRecipeSchema {
             ITEM_INPUTS,
             FLUID_INPUTS,
             MACHINE_PROCESS_CONDITIONS)
-                    .factory(MachineKubeRecipe.FACTORY)
-                    .constructor(EU, DURATION);
+            .factory(MachineKubeRecipe.FACTORY)
+            .constructor(EU, DURATION);
 
     public static final RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
             ItemStackComponent.ITEM_STACK.outputKey("result"),

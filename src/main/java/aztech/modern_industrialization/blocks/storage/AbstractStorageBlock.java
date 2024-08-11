@@ -80,7 +80,7 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
 
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof AbstractStorageBlockEntity<?>storageBlockEntity) {
+        if (level.getBlockEntity(pos) instanceof AbstractStorageBlockEntity<?> storageBlockEntity) {
             return StorageUtil.calculateComparatorOutput(storageBlockEntity);
         }
         return 0;

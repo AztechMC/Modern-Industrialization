@@ -276,7 +276,7 @@ public final class StorageUtil {
         StoragePreconditions.notNegative(maxAmount);
 
         try {
-            if (storage instanceof SlottedStorage<T>slottedStorage) {
+            if (storage instanceof SlottedStorage<T> slottedStorage) {
                 return insertStacking(slottedStorage.getSlots(), resource, maxAmount, transaction);
             } else if (storage != null) {
                 return storage.insert(resource, maxAmount, transaction);

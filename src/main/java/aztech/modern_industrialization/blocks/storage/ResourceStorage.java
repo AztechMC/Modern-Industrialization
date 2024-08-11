@@ -35,7 +35,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-public record ResourceStorage<T extends TransferVariant<?>> (T resource, long amount, boolean locked) {
+public record ResourceStorage<T extends TransferVariant<?>>(T resource, long amount, boolean locked) {
     public ResourceStorage {
         if (resource.isBlank() && amount != 0) {
             throw new IllegalArgumentException("Expected 0 amount for blank resoruce, got " + amount);

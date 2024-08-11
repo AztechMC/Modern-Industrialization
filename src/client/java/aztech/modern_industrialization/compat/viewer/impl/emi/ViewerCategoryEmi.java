@@ -219,7 +219,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
         @Override
         public @Nullable ResourceLocation getId() {
-            return recipe instanceof RecipeHolder<?>r ? r.id() : null;
+            return recipe instanceof RecipeHolder<?> r ? r.id() : null;
         }
 
         @Override

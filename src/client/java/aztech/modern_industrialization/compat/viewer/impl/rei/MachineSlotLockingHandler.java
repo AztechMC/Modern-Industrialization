@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 class MachineSlotLockingHandler implements TransferHandler {
     @Override
     public @NotNull Result handle(@NotNull Context context) {
-        if (!(context.getDisplay() instanceof ViewerCategoryRei.ViewerDisplay<?>d && d.recipe instanceof RecipeHolder<?>holder
+        if (!(context.getDisplay() instanceof ViewerCategoryRei.ViewerDisplay<?> d && d.recipe instanceof RecipeHolder<?> holder
                 && holder.value() instanceof MachineRecipe recipe))
             return Result.createNotApplicable();
         if (!(context.getMenu() instanceof MachineMenuClient handler))

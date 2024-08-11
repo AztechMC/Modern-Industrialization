@@ -25,17 +25,21 @@ package aztech.modern_industrialization.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
+import aztech.modern_industrialization.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -49,6 +53,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryJei<D> implements IRecipeCategory<D> {
@@ -134,9 +139,9 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                             item(item.toStack());
                         } else if (variant instanceof FluidVariant fluid) {
                             if (!fluid.isBlank()) {
-                                slotBuilder.addFluidStack(fluid.getFluid(), 1, fluid.getComponentsPatch());
+                                // Use 1000 as the amount to make JEI render the full sprite
+                                slotBuilder.addFluidStack(fluid.getFluid(), FluidType.BUCKET_VOLUME, fluid.getComponentsPatch());
                             }
-                            JeiSlotUtil.overrideFluidRenderer(slotBuilder);
                             slotBuilder.setBackground(fluidSlot, -1, -1);
                         } else {
                             throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
@@ -144,18 +149,41 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                         return this;
                     }
 
+                    private static void addProbability(IRecipeSlotBuilder slot, float probability) {
+                        slot.addTooltipCallback(new IRecipeSlotTooltipCallback() {
+                            @Override
+                            public void onTooltip(IRecipeSlotView recipeSlotView, List<Component> tooltip) {
+                                var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
+                                var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
+                                if (probabilityLine != null) {
+                                    tooltip.add(probabilityLine);
+                                }
+                            }
+
+                            @Override
+                            public void onRichTooltip(IRecipeSlotView recipeSlotView, ITooltipBuilder tooltip) {
+                                var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
+                                var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
+                                if (probabilityLine != null) {
+                                    tooltip.add(probabilityLine);
+                                }
+                            }
+                        });
+                    }
+
                     @Override
                     public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
                         slotBuilder.addFluidStack(fluid.getFluid(), amount, fluid.getComponentsPatch());
-                        JeiSlotUtil.overrideFluidRenderer(slotBuilder);
-                        JeiSlotUtil.customizeTooltip(slotBuilder, probability);
+                        // This call displays the full sprite (instead of JEI's partial rendering)
+                        slotBuilder.setFluidRenderer(1, false, 16, 16);
+                        addProbability(slotBuilder, probability);
                         slotBuilder.setBackground(fluidSlot, -1, -1);
                         return this;
                     }
 
                     private ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
                         slotBuilder.addItemStacks(stacks);
-                        JeiSlotUtil.customizeTooltip(slotBuilder, probability);
+                        addProbability(slotBuilder, probability);
                         return this;
                     }
 
@@ -240,11 +268,9 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
     }
 
     @Override
-    public List<Component> getTooltipStrings(D recipe, IRecipeSlotsView recipeSlotsView, double jeiMouseX, double jeiMouseY) {
+    public void getTooltip(ITooltipBuilder tooltips, D recipe, IRecipeSlotsView recipeSlotsView, double jeiMouseX, double jeiMouseY) {
         double mouseX = jeiMouseX + 4;
         double mouseY = jeiMouseY + 4;
-
-        var tooltips = new ArrayList<Component>();
 
         wrapped.buildWidgets(recipe, new ViewerCategory.WidgetList() {
             @Override
@@ -282,7 +308,5 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                 }
             }
         });
-
-        return tooltips;
     }
 }

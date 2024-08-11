@@ -60,7 +60,7 @@ public class ItemInputComponent extends SimpleRecipeComponent<MachineRecipe.Item
             Object with) {
         if (matches(cx, recipe, original, match)) {
             var withJava = (SizedIngredient) cx.jsToJava(with, typeInfo());
-            return new MachineRecipe.ItemInput(withJava.ingredient(), withJava.count(), original.probability());
+            return new MachineRecipe.ItemInput(withJava.ingredient(), original.amount(), original.probability());
         } else {
             return original;
         }

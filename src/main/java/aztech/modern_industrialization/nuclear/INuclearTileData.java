@@ -55,7 +55,7 @@ public interface INuclearTileData {
         TransferVariant<?> variant = getVariant();
 
         if (variant instanceof ItemVariant resource) {
-            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent<?>comp) {
+            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent<?> comp) {
                 return comp;
             }
 

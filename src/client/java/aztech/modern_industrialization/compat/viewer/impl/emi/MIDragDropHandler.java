@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 class MIDragDropHandler implements EmiDragDropHandler<Screen> {
     @Override
     public boolean dropStack(Screen screen, EmiIngredient ingredient, int mouseX, int mouseY) {
-        if (!(screen instanceof MIHandledScreen<?>gui)) {
+        if (!(screen instanceof MIHandledScreen<?> gui)) {
             return false;
         }
 
@@ -88,7 +88,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
 
     @Override
     public void render(Screen screen, EmiIngredient ingredient, GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        if (!(screen instanceof MIHandledScreen<?>gui)) {
+        if (!(screen instanceof MIHandledScreen<?> gui)) {
             return;
         }
 

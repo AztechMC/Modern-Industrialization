@@ -56,7 +56,7 @@ public class MIPackets {
     static final Map<Class<? extends BasePacket>, CustomPacketPayload.Type<?>> packetTypes = new HashMap<>();
     private static final List<Registration<?>> registrations = new ArrayList<>();
 
-    private record Registration<P extends BasePacket> (CustomPacketPayload.Type<P> packetType, Class<P> clazz,
+    private record Registration<P extends BasePacket>(CustomPacketPayload.Type<P> packetType, Class<P> clazz,
             StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {
     }
 

@@ -246,7 +246,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei.ViewerDi
 
         @Override
         public Optional<ResourceLocation> getDisplayLocation() {
-            return recipe instanceof RecipeHolder<?>r ? Optional.of(r.id()) : Optional.empty();
+            return recipe instanceof RecipeHolder<?> r ? Optional.of(r.id()) : Optional.empty();
         }
     }
 

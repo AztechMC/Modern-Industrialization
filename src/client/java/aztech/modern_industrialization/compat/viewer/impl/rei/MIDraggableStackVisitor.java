@@ -67,7 +67,7 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
                 return dw.dragFluid(fk, Simulation.ACT);
             }
         }
-        if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
+        if (context.getScreen() instanceof MIHandledScreen<?> handledScreen) {
             AbstractContainerMenu handler = handledScreen.getMenu();
             Slot slot = handledScreen.getFocusedSlot();
             if (slot instanceof ReiDraggable dw) {
@@ -100,7 +100,7 @@ class MIDraggableStackVisitor implements DraggableStackVisitor<Screen> {
                 }
             }
         }
-        if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
+        if (context.getScreen() instanceof MIHandledScreen<?> handledScreen) {
             AbstractContainerMenu handler = handledScreen.getMenu();
             for (Slot slot : handler.slots) {
                 if (slot instanceof ReiDraggable dw) {

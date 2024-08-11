@@ -60,7 +60,7 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe instanceof ViewerCategoryEmi.ViewerRecipe r && r.recipe instanceof RecipeHolder<?>holder
+        return recipe instanceof ViewerCategoryEmi.ViewerRecipe r && r.recipe instanceof RecipeHolder<?> holder
                 && holder.value() instanceof MachineRecipe;
     }
 

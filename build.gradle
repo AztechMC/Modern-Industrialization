@@ -301,6 +301,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             cloth_config_version_range: cloth_config_version_range,
             grandpower_version_range: grandpower_version_range,
             ae2_version_range: ae2_version_range,
+            jei_version_range: jei_version_range,
     ]
     inputs.properties replaceProperties
 

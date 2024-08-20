@@ -375,8 +375,7 @@ public class MITooltips {
                     line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND).build(),
                     line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND).build(),
                     line(MIText.SteamDrillProfit).build(),
-                    line(MIText.SteamDrillToggle).arg("sneak", KEYBIND).arg("use", KEYBIND).build()
-            ));
+                    line(MIText.SteamDrillToggle).arg("sneak", KEYBIND).arg("use", KEYBIND).build()));
 
     public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
             List.of(
@@ -384,29 +383,26 @@ public class MITooltips {
                     line(MIText.ConfigCardHelpCamouflage2).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
                     line(MIText.ConfigCardHelpCamouflage3).arg("use", KEYBIND).build(),
                     line(MIText.ConfigCardHelpCamouflage4).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND).arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT).build(),
+                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND).arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
+                            .build(),
                     Component.empty(),
                     line(MIText.ConfigCardHelpItems1).build(),
                     line(MIText.ConfigCardHelpItems2).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
                     line(MIText.ConfigCardHelpItems3).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND).arg("use", KEYBIND).build()
-            ));
-    
+                    line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND).arg("use", KEYBIND).build()));
+
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
             (itemStack, item) -> {
                 CableTier tier = CasingComponent.getCasingTier(item);
                 return tier == null ? Optional.empty()
                         : Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
             });
-    
+
     public static final TooltipAttachment TRASH_CAN_HELP = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
-                return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ?
-                        Optional.of(List.of(
-                                line(MIText.PipeHelp1).arg("use", KEYBIND).build(),
-                                line(MIText.PipeHelp2).arg("sneak", KEYBIND).arg("use", KEYBIND).build()
-                        )) :
-                        Optional.empty();
+                return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
+                        line(MIText.PipeHelp1).arg("use", KEYBIND).build(),
+                        line(MIText.PipeHelp2).arg("sneak", KEYBIND).arg("use", KEYBIND).build())) : Optional.empty();
             });
 
     // Long Tooltip with only text, no need of MIText
@@ -427,7 +423,8 @@ public class MITooltips {
 
         MITooltips.TooltipAttachment.ofMultilines((itemStack, item) -> {
             if (attachTo.test(item)) {
-                return Optional.of(Arrays.stream(translationKey).map((key) -> Component.translatable(key).withStyle(DEFAULT_STYLE)).collect(Collectors.toList()));
+                return Optional.of(Arrays.stream(translationKey).map((key) -> Component.translatable(key).withStyle(DEFAULT_STYLE))
+                        .collect(Collectors.toList()));
             } else {
                 return Optional.empty();
             }
@@ -492,7 +489,8 @@ public class MITooltips {
         }
 
         public static TooltipAttachment ofMultilines(ItemLike itemLike, MIText... tooltipLines) {
-            return ofMultilines(itemLike, Arrays.stream(tooltipLines).map((text) -> text.text().withStyle(DEFAULT_STYLE)).collect(Collectors.toList()));
+            return ofMultilines(itemLike,
+                    Arrays.stream(tooltipLines).map((text) -> text.text().withStyle(DEFAULT_STYLE)).collect(Collectors.toList()));
         }
 
         private TooltipAttachment(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {

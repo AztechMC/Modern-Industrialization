@@ -45,7 +45,8 @@ public class MachineCategoryParams {
     public final SteamMode steamMode;
     public final List<ResourceLocation> workstations = new ArrayList<>();
 
-    public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
+    public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs,
+            SlotPositions fluidInputs,
             SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
             SteamMode steamMode) {
         this.englishName = englishName;
@@ -59,10 +60,11 @@ public class MachineCategoryParams {
         this.isMultiblock = isMultiblock;
         this.steamMode = steamMode;
     }
-    
+
     public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
-                                 SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
-                                 SteamMode steamMode) {
-        this(englishName, MI.id(category), itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipePredicate, isMultiblock, steamMode);
+            SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
+            SteamMode steamMode) {
+        this(englishName, MI.id(category), itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipePredicate, isMultiblock,
+                steamMode);
     }
 }

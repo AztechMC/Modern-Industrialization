@@ -108,7 +108,8 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
             for (var entry : materials.entrySet()) {
                 this.materials.add(new ItemStack(entry.getKey(), entry.getValue()));
             }
-            this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(), controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));
+            this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
+                    controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));
         }
     }
 }

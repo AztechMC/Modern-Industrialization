@@ -108,28 +108,27 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 .forEach(consumer);
 
         // converted recipes
-        if(params.category.getNamespace().equals(MI.ID))
-        {
+        if (params.category.getNamespace().equals(MI.ID)) {
             switch (params.category.getPath()) {
-                case "bronze_furnace" -> {
-                    recipeManager.getAllRecipesFor(RecipeType.SMELTING)
-                            .stream()
-                            .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
-                            .forEach(consumer);
-                }
-                case "bronze_cutting_machine" -> {
-                    recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
-                            .stream()
-                            .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
-                            .forEach(consumer);
-                }
-                case "centrifuge" -> {
-                    ComposterBlock.COMPOSTABLES.keySet()
-                            .stream()
-                            .map(RecipeConversions::ofCompostable)
-                            .filter(Objects::nonNull)
-                            .forEach(consumer);
-                }
+            case "bronze_furnace" -> {
+                recipeManager.getAllRecipesFor(RecipeType.SMELTING)
+                        .stream()
+                        .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
+                        .forEach(consumer);
+            }
+            case "bronze_cutting_machine" -> {
+                recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
+                        .stream()
+                        .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
+                        .forEach(consumer);
+            }
+            case "centrifuge" -> {
+                ComposterBlock.COMPOSTABLES.keySet()
+                        .stream()
+                        .map(RecipeConversions::ofCompostable)
+                        .filter(Objects::nonNull)
+                        .forEach(consumer);
+            }
             }
         }
     }

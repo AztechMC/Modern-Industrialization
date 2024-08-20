@@ -54,7 +54,7 @@ public class ReiMachineRecipes {
             throw new IllegalStateException("Machine was already registered: " + machine);
         }
     }
-    
+
     public static void registerCategory(String machine, MachineCategoryParams params) {
         registerCategory(MI.id(machine), params);
     }
@@ -66,7 +66,7 @@ public class ReiMachineRecipes {
         }
         params.workstations.add(item);
     }
-    
+
     public static void registerWorkstation(String machine, ResourceLocation item) {
         registerWorkstation(MI.id(machine), item);
     }
@@ -74,7 +74,7 @@ public class ReiMachineRecipes {
     public static void registerRecipeCategoryForMachine(ResourceLocation machine, ResourceLocation category) {
         registerRecipeCategoryForMachine(machine, category, MachineScreenPredicate.ANY);
     }
-    
+
     public static void registerRecipeCategoryForMachine(String machine, ResourceLocation category) {
         registerRecipeCategoryForMachine(MI.id(machine), category);
     }
@@ -84,16 +84,16 @@ public class ReiMachineRecipes {
         machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
                 .add(new ClickAreaCategory(category, screenPredicate));
     }
-    
+
     public static void registerRecipeCategoryForMachine(String machine, ResourceLocation category,
-                                                        MachineScreenPredicate screenPredicate) {
+            MachineScreenPredicate screenPredicate) {
         registerRecipeCategoryForMachine(MI.id(machine), category, screenPredicate);
     }
-    
+
     public static void registerMachineClickArea(ResourceLocation machine, Rectangle clickArea) {
         machineToClickArea.put(machine, clickArea);
     }
-    
+
     public static void registerMachineClickArea(String machine, Rectangle clickArea) {
         registerMachineClickArea(MI.id(machine), clickArea);
     }
@@ -101,7 +101,7 @@ public class ReiMachineRecipes {
     public static void registerMultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate) {
         registerMultiblockShape(machine, shapeTemplate, null);
     }
-    
+
     public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
         registerMultiblockShape(MI.id(machine), shapeTemplate);
     }
@@ -109,7 +109,7 @@ public class ReiMachineRecipes {
     public static void registerMultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
         multiblockShapes.add(new MultiblockShape(machine, shapeTemplate, alternative));
     }
-    
+
     public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
         registerMultiblockShape(MI.id(machine), shapeTemplate, alternative);
     }

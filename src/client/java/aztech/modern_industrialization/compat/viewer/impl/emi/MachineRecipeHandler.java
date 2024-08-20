@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.emi;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;

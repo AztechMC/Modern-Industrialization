@@ -204,7 +204,7 @@ public class MITooltips {
         return state.getDefaultInstance().getHoverName().copy().withStyle(NUMBER_TEXT);
     };
 
-    public static final Parser<String> KEYBIND = keybind -> {
+    public static final Parser<String> KEYBIND_PARSER = keybind -> {
         return Component.keybind("key.%s".formatted(keybind)).withStyle(NUMBER_TEXT);
     };
 
@@ -270,7 +270,7 @@ public class MITooltips {
             }).noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),
-            new Line(MIText.LubricantTooltip).arg("use", KEYBIND).arg(LubricantHelper.mbPerTick));
+            new Line(MIText.LubricantTooltip).arg("use", KEYBIND_PARSER).arg(LubricantHelper.mbPerTick));
 
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
 
@@ -335,7 +335,7 @@ public class MITooltips {
                     lines.add(line(MIText.RedstoneControlModuleHelp).build());
                     lines.add(line(MIText.RedstoneControlModuleMachineRequires)
                             .arg(requiredSignal.text().setStyle(NUMBER_TEXT), COMPONENT).build());
-                    lines.add(line(MIText.UseItemToChange).arg("use", KEYBIND).build());
+                    lines.add(line(MIText.UseItemToChange).arg("use", KEYBIND_PARSER).build());
 
                     return Optional.of(lines);
                 } else {
@@ -372,24 +372,24 @@ public class MITooltips {
 
     public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
             List.of(
-                    line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND).build(),
-                    line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND).build(),
+                    line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillProfit).build(),
-                    line(MIText.SteamDrillToggle).arg("sneak", KEYBIND).arg("use", KEYBIND).build()));
+                    line(MIText.SteamDrillToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
             List.of(
                     line(MIText.ConfigCardHelpCamouflage1).build(),
-                    line(MIText.ConfigCardHelpCamouflage2).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpCamouflage3).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpCamouflage4).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND).arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
+                    line(MIText.ConfigCardHelpCamouflage2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage3).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage4).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND_PARSER).arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
                             .build(),
                     Component.empty(),
                     line(MIText.ConfigCardHelpItems1).build(),
-                    line(MIText.ConfigCardHelpItems2).arg("sneak", KEYBIND).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpItems3).arg("use", KEYBIND).build(),
-                    line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND).arg("use", KEYBIND).build()));
+                    line(MIText.ConfigCardHelpItems2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpItems3).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
             (itemStack, item) -> {
@@ -401,8 +401,8 @@ public class MITooltips {
     public static final TooltipAttachment TRASH_CAN_HELP = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
-                        line(MIText.PipeHelp1).arg("use", KEYBIND).build(),
-                        line(MIText.PipeHelp2).arg("sneak", KEYBIND).arg("use", KEYBIND).build())) : Optional.empty();
+                        line(MIText.PipeHelp1).arg("use", KEYBIND_PARSER).build(),
+                        line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
             });
 
     // Long Tooltip with only text, no need of MIText

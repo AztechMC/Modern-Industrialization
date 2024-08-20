@@ -46,9 +46,8 @@ public class MachineCategoryParams {
     public final List<ResourceLocation> workstations = new ArrayList<>();
 
     public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs,
-            SlotPositions fluidInputs,
-            SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
-            SteamMode steamMode) {
+            SlotPositions fluidInputs, SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate,
+            boolean isMultiblock, SteamMode steamMode) {
         this.englishName = englishName;
         this.category = category;
         this.itemInputs = itemInputs;

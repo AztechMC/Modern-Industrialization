@@ -383,7 +383,8 @@ public class MITooltips {
                     line(MIText.ConfigCardHelpCamouflage2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.ConfigCardHelpCamouflage3).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.ConfigCardHelpCamouflage4).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
-                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND_PARSER).arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
+                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND_PARSER)
+                            .arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
                             .build(),
                     Component.empty(),
                     line(MIText.ConfigCardHelpItems1).build(),

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -33,7 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class MachineCategoryParams {
     public final String englishName;
-    public final String category;
+    public final ResourceLocation category;
     public final SlotPositions itemInputs;
     public final SlotPositions itemOutputs;
     public final SlotPositions fluidInputs;
@@ -44,7 +45,7 @@ public class MachineCategoryParams {
     public final SteamMode steamMode;
     public final List<ResourceLocation> workstations = new ArrayList<>();
 
-    public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
+    public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
             SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
             SteamMode steamMode) {
         this.englishName = englishName;
@@ -57,5 +58,11 @@ public class MachineCategoryParams {
         this.recipePredicate = recipePredicate;
         this.isMultiblock = isMultiblock;
         this.steamMode = steamMode;
+    }
+    
+    public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
+                                 SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
+                                 SteamMode steamMode) {
+        this(englishName, MI.id(category), itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipePredicate, isMultiblock, steamMode);
     }
 }

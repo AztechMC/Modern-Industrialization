@@ -35,12 +35,13 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ClickArea;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
+import net.minecraft.resources.ResourceLocation;
 
 class MachineClickAreaHandler implements ClickArea<MachineScreen> {
     @Override
     public Result handle(ClickAreaContext<MachineScreen> context) {
         MachineMenuClient screenHandler = context.getScreen().getMenu();
-        String blockId = screenHandler.guiParams.blockId;
+        ResourceLocation blockId = screenHandler.guiParams.blockId;
         List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
                 Collections.emptyList());
         Rectangle rectangle = ReiMachineRecipes.machineToClickArea.get(blockId);

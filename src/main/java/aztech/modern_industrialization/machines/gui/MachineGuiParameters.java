@@ -23,15 +23,17 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
+import aztech.modern_industrialization.MI;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class MachineGuiParameters {
-    public final String blockId;
+    public final ResourceLocation blockId;
     public final int playerInventoryX, playerInventoryY;
     public final int backgroundWidth, backgroundHeight;
     public final boolean lockButton;
 
-    private MachineGuiParameters(String blockId, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
+    private MachineGuiParameters(ResourceLocation blockId, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
             boolean lockButton) {
         this.blockId = blockId;
         this.playerInventoryX = playerInventoryX;
@@ -42,7 +44,7 @@ public class MachineGuiParameters {
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeUtf(blockId);
+        buf.writeResourceLocation(blockId);
         buf.writeInt(playerInventoryX);
         buf.writeInt(playerInventoryY);
         buf.writeInt(backgroundWidth);
@@ -51,18 +53,22 @@ public class MachineGuiParameters {
     }
 
     public static MachineGuiParameters read(FriendlyByteBuf buf) {
-        return new MachineGuiParameters(buf.readUtf(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
+        return new MachineGuiParameters(buf.readResourceLocation(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
     }
 
     public static class Builder {
-        private final String blockId;
+        private final ResourceLocation blockId;
         public int playerInventoryX = 8, playerInventoryY = 84;
         private int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
 
-        public Builder(String blockId, boolean lockButton) {
+        public Builder(ResourceLocation blockId, boolean lockButton) {
             this.blockId = blockId;
             this.lockButton = lockButton;
+        }
+
+        public Builder(String blockId, boolean lockButton) {
+            this(MI.id(blockId), lockButton);
         }
 
         public Builder backgroundHeight(int height) {

@@ -47,6 +47,7 @@ import mezz.jei.api.runtime.IIngredientManager;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -63,7 +64,7 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
     public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen screen, double guiMouseX, double guiMouseY) {
 
         MachineMenuClient screenHandler = screen.getMenu();
-        String blockId = screenHandler.guiParams.blockId;
+        ResourceLocation blockId = screenHandler.guiParams.blockId;
         List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
                 Collections.emptyList());
         Rectangle rectangle = ReiMachineRecipes.machineToClickArea.get(blockId);

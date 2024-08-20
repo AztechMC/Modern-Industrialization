@@ -37,6 +37,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -105,12 +106,12 @@ class MachineRecipeHandler implements StandardRecipeHandler<MachineMenuCommon> {
 
     private boolean canApply(MachineMenuCommon handler, ViewerCategoryEmi<?> category) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
-        String blockId = handler.guiParams.blockId;
+        ResourceLocation blockId = handler.guiParams.blockId;
         MutableBoolean hasWorkstation = new MutableBoolean(false);
 
         category.wrapped.buildWorkstations(items -> {
             for (var item : items) {
-                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(MI.id(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item.asItem()).equals(blockId)) {
                     hasWorkstation.setTrue();
                 }
             }

@@ -41,6 +41,8 @@ import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -242,7 +244,7 @@ public final class SingleBlockCraftingMachines {
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
         SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
         registerReiTiers(englishName, machine, type,
-                new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
+                new MachineCategoryParams(null, (ResourceLocation) null, items.sublist(0, itemInputCount),
                         items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
                         null, false, SteamMode.BOTH),

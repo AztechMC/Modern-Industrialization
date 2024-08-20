@@ -155,7 +155,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final Component getDisplayName() {
-        return Component.translatable("block.modern_industrialization." + guiParams.blockId);
+        return Component.translatable("block.%s.%s".formatted(guiParams.blockId.getNamespace(), guiParams.blockId.getPath()));
     }
 
     @Override

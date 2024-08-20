@@ -92,8 +92,8 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         public final List<ItemStack> materials = new ArrayList<>();
         public final ResourceLocation id;
 
-        public Recipe(String controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
-            this.controller = BuiltInRegistries.ITEM.get(MI.id(controller)).getDefaultInstance();
+        public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+            this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
             this.materials.add(this.controller);
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 

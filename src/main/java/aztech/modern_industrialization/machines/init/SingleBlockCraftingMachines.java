@@ -44,7 +44,6 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Registration of all single block crafting machines.
@@ -243,7 +242,7 @@ public final class SingleBlockCraftingMachines {
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
         SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
         registerReiTiers(englishName, machine, type,
-                new MachineCategoryParams(null, (ResourceLocation) null, items.sublist(0, itemInputCount),
+                new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
                         items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
                         null, false, SteamMode.BOTH),
@@ -263,17 +262,17 @@ public final class SingleBlockCraftingMachines {
                 String englishPrefix = i == 0 ? "Bronze " : i == 1 ? "Steel " : "Electric ";
                 String fullEnglishName = tiers == SingleBlockCraftingMachines.TIER_ELECTRIC || previousMaxEu == 0 ? englishName
                         : englishPrefix + englishName;
-                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, itemId, categoryParams.itemInputs,
+                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, MI.id(itemId), categoryParams.itemInputs,
                         categoryParams.itemOutputs,
                         categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
                         recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
                         i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
-                ReiMachineRecipes.registerCategory(itemId, category);
-                ReiMachineRecipes.registerMachineClickArea(itemId, categoryParams.progressBarParams.toRectangle());
+                ReiMachineRecipes.registerCategory(MI.id(itemId), category);
+                ReiMachineRecipes.registerMachineClickArea(MI.id(itemId), categoryParams.progressBarParams.toRectangle());
                 previousCategories.add(category);
                 for (MachineCategoryParams param : previousCategories) {
                     param.workstations.add(MI.id(itemId));
-                    ReiMachineRecipes.registerRecipeCategoryForMachine(itemId, param.category);
+                    ReiMachineRecipes.registerRecipeCategoryForMachine(MI.id(itemId), param.category);
                 }
                 previousMaxEu = maxEu;
             }

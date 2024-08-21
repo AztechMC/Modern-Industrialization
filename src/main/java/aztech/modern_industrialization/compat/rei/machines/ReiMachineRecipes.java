@@ -55,10 +55,6 @@ public class ReiMachineRecipes {
         }
     }
 
-    public static void registerCategory(String machine, MachineCategoryParams params) {
-        registerCategory(MI.id(machine), params);
-    }
-
     public static void registerWorkstation(ResourceLocation machine, ResourceLocation item) {
         MachineCategoryParams params = categories.get(machine);
         if (params == null) {
@@ -67,16 +63,8 @@ public class ReiMachineRecipes {
         params.workstations.add(item);
     }
 
-    public static void registerWorkstation(String machine, ResourceLocation item) {
-        registerWorkstation(MI.id(machine), item);
-    }
-
     public static void registerRecipeCategoryForMachine(ResourceLocation machine, ResourceLocation category) {
         registerRecipeCategoryForMachine(machine, category, MachineScreenPredicate.ANY);
-    }
-
-    public static void registerRecipeCategoryForMachine(String machine, ResourceLocation category) {
-        registerRecipeCategoryForMachine(MI.id(machine), category);
     }
 
     public static void registerRecipeCategoryForMachine(ResourceLocation machine, ResourceLocation category,
@@ -85,17 +73,8 @@ public class ReiMachineRecipes {
                 .add(new ClickAreaCategory(category, screenPredicate));
     }
 
-    public static void registerRecipeCategoryForMachine(String machine, ResourceLocation category,
-            MachineScreenPredicate screenPredicate) {
-        registerRecipeCategoryForMachine(MI.id(machine), category, screenPredicate);
-    }
-
     public static void registerMachineClickArea(ResourceLocation machine, Rectangle clickArea) {
         machineToClickArea.put(machine, clickArea);
-    }
-
-    public static void registerMachineClickArea(String machine, Rectangle clickArea) {
-        registerMachineClickArea(MI.id(machine), clickArea);
     }
 
     public static void registerMultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate) {

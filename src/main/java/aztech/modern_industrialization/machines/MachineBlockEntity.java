@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -155,7 +156,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final Component getDisplayName() {
-        return Component.translatable("block.%s.%s".formatted(guiParams.blockId.getNamespace(), guiParams.blockId.getPath()));
+        return Component.translatable(Util.makeDescriptionId("block", guiParams.blockId));
     }
 
     @Override

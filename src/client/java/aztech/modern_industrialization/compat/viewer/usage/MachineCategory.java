@@ -80,8 +80,8 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private final MachineCategoryParams params;
 
     private MachineCategory(MachineCategoryParams params, int width, int height) {
-        super((Class) RecipeHolder.class, MI.id(params.category),
-                Component.translatable("rei_categories.modern_industrialization." + params.category),
+        super((Class) RecipeHolder.class, params.category,
+                Component.translatable("rei_categories.%s.%s".formatted(params.category.getNamespace(), params.category.getPath())),
                 BuiltInRegistries.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
 
         this.params = params;
@@ -108,26 +108,28 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 .forEach(consumer);
 
         // converted recipes
-        switch (params.category) {
-        case "bronze_furnace" -> {
-            recipeManager.getAllRecipesFor(RecipeType.SMELTING)
-                    .stream()
-                    .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
-                    .forEach(consumer);
-        }
-        case "bronze_cutting_machine" -> {
-            recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
-                    .stream()
-                    .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
-                    .forEach(consumer);
-        }
-        case "centrifuge" -> {
-            ComposterBlock.COMPOSTABLES.keySet()
-                    .stream()
-                    .map(RecipeConversions::ofCompostable)
-                    .filter(Objects::nonNull)
-                    .forEach(consumer);
-        }
+        if (params.category.getNamespace().equals(MI.ID)) {
+            switch (params.category.getPath()) {
+            case "bronze_furnace" -> {
+                recipeManager.getAllRecipesFor(RecipeType.SMELTING)
+                        .stream()
+                        .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
+                        .forEach(consumer);
+            }
+            case "bronze_cutting_machine" -> {
+                recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
+                        .stream()
+                        .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
+                        .forEach(consumer);
+            }
+            case "centrifuge" -> {
+                ComposterBlock.COMPOSTABLES.keySet()
+                        .stream()
+                        .map(RecipeConversions::ofCompostable)
+                        .filter(Objects::nonNull)
+                        .forEach(consumer);
+            }
+            }
         }
     }
 

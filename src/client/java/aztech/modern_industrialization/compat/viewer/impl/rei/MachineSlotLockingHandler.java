@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.viewer.impl.rei;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -35,6 +34,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -61,12 +61,12 @@ class MachineSlotLockingHandler implements TransferHandler {
 
     private boolean canApply(MachineMenuClient handler, CategoryIdentifier<?> category) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
-        String blockId = handler.guiParams.blockId;
+        ResourceLocation blockId = handler.guiParams.blockId;
         List<EntryIngredient> workstations = CategoryRegistry.getInstance().get(category).getWorkstations();
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {
                 Item item = entry.<ItemStack>cast().getValue().getItem();
-                if (BuiltInRegistries.ITEM.getKey(item).equals(MI.id(blockId))) {
+                if (BuiltInRegistries.ITEM.getKey(item).equals(blockId)) {
                     return true;
                 }
             }

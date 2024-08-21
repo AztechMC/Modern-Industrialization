@@ -262,17 +262,17 @@ public final class SingleBlockCraftingMachines {
                 String englishPrefix = i == 0 ? "Bronze " : i == 1 ? "Steel " : "Electric ";
                 String fullEnglishName = tiers == SingleBlockCraftingMachines.TIER_ELECTRIC || previousMaxEu == 0 ? englishName
                         : englishPrefix + englishName;
-                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, itemId, categoryParams.itemInputs,
+                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, MI.id(itemId), categoryParams.itemInputs,
                         categoryParams.itemOutputs,
                         categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
                         recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
                         i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
-                ReiMachineRecipes.registerCategory(itemId, category);
-                ReiMachineRecipes.registerMachineClickArea(itemId, categoryParams.progressBarParams.toRectangle());
+                ReiMachineRecipes.registerCategory(MI.id(itemId), category);
+                ReiMachineRecipes.registerMachineClickArea(MI.id(itemId), categoryParams.progressBarParams.toRectangle());
                 previousCategories.add(category);
                 for (MachineCategoryParams param : previousCategories) {
                     param.workstations.add(MI.id(itemId));
-                    ReiMachineRecipes.registerRecipeCategoryForMachine(itemId, param.category);
+                    ReiMachineRecipes.registerRecipeCategoryForMachine(MI.id(itemId), param.category);
                 }
                 previousMaxEu = maxEu;
             }

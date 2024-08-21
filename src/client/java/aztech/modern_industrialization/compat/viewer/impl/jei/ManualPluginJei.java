@@ -45,8 +45,8 @@ public class ManualPluginJei implements IModPlugin {
 
     private IJeiRuntime jeiRuntime;
 
-    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(String category) {
-        return RecipeType.create(MI.ID, category, (Class) RecipeHolder.class);
+    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(ResourceLocation category) {
+        return RecipeType.create(category.getNamespace(), category.getPath(), (Class) RecipeHolder.class);
     }
 
     @Override

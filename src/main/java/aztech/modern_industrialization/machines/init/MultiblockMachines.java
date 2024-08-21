@@ -719,11 +719,10 @@ public class MultiblockMachines {
 
     public static class Rei {
         private final String englishName;
-        private final String category;
+        private final ResourceLocation category;
         private final MachineRecipeType recipeType;
         private final ProgressBar.Parameters progressBarParams;
-        // machines in the MI namespace
-        private final List<String> workstations;
+        private final List<ResourceLocation> workstations;
         // extra workstations to be displayed in viewers, can be any item id
         private final List<ResourceLocation> extraWorkstations;
         private Predicate<MachineRecipe> extraTest = recipe -> true;
@@ -733,7 +732,7 @@ public class MultiblockMachines {
         private final SlotPositions.Builder fluidOutputs = new SlotPositions.Builder();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
 
-        public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+        public Rei(String englishName, ResourceLocation category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
             this.englishName = englishName;
             this.category = category;
             this.recipeType = recipeType;
@@ -741,6 +740,10 @@ public class MultiblockMachines {
             this.workstations = new ArrayList<>();
             this.extraWorkstations = new ArrayList<>();
             workstations.add(category);
+        }
+        
+        public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+            this(englishName, MI.id(category), recipeType, progressBarParams);
         }
 
         public Rei items(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
@@ -759,11 +762,15 @@ public class MultiblockMachines {
             this.extraTest = extraTest;
             return this;
         }
-
-        public Rei workstations(String... workstations) {
+        
+        public Rei workstations(ResourceLocation... workstations) {
             this.workstations.clear();
             this.workstations.addAll(Arrays.asList(workstations));
             return this;
+        }
+        
+        public Rei workstations(String... workstations) {
+            return workstations(Arrays.stream(workstations).map(MI::id).toList().toArray(new ResourceLocation[0]));
         }
 
         public Rei extraWorkstations(ResourceLocation... extraWorkstations) {
@@ -779,13 +786,13 @@ public class MultiblockMachines {
 
         public final void register() {
             // Allow KJS scripts to add slots
-            KubeJSProxy.instance.fireAddMultiblockSlotsEvent(category, itemInputs, itemOutputs, fluidInputs, fluidOutputs);
+            KubeJSProxy.instance.fireAddMultiblockSlotsEvent(category.getPath(), itemInputs, itemOutputs, fluidInputs, fluidOutputs);
 
             ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category,
                     itemInputs.build(), itemOutputs.build(), fluidInputs.build(), fluidOutputs.build(),
                     progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
-            for (String workstation : workstations) {
-                ReiMachineRecipes.registerWorkstation(category, MI.id(workstation));
+            for (ResourceLocation workstation : workstations) {
+                ReiMachineRecipes.registerWorkstation(category, workstation);
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, ReiMachineRecipes.MachineScreenPredicate.MULTIBLOCK);
                 ReiMachineRecipes.registerMachineClickArea(workstation, CRAFTING_GUI);
             }

@@ -10,7 +10,7 @@
   ],
   "item_inputs": [
     {
-      "item": "modern_industrialization:sulfur_dust",
+      "tag": "c:dusts/sulfur",
       "amount": 1
     }
   ],

@@ -45,7 +45,6 @@ public interface DynamicToolItem {
 //                || stack.is(Tags.Items.SHEARS) &&
 //                        (state.is(FabricMineableTags.SHEARS_MINEABLE) || Items.SHEARS.getDestroySpeed(
 //                                SHEAR_STACK, state) > 1.0f)
-//                || stack.is(ItemTags.SWORDS) && state.is(FabricMineableTags.SWORD_MINEABLE);
     }
 
 }

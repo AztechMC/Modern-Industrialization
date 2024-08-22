@@ -343,11 +343,16 @@ public class MITooltips {
                 }
             });
 
-    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
+    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
                 if (upgrade != null) {
-                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
+                    List<Component> lines = new LinkedList<>();
+                    lines.add(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
+                    if (itemStack.getCount() > 1) {
+                        lines.add(new Line(MIText.TooltipSpeedUpgradeStack).arg(itemStack.getCount() * upgrade.maxExtractedItems()).build());
+                    }
+                    return Optional.of(lines);
                 } else {
                     return Optional.empty();
                 }

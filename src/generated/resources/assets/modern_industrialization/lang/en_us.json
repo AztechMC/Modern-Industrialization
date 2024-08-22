@@ -1682,6 +1682,7 @@
   "text.modern_industrialization.ToolSwitchedNoSilkTouch": "Silk Touch Mode disabled!",
   "text.modern_industrialization.ToolSwitchedSilkTouch": "Silk Touch Mode enabled!",
   "text.modern_industrialization.TooltipSpeedUpgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
+  "text.modern_industrialization.TooltipSpeedUpgradeStack": "Total Stack Upgrade +%d items / 3s.",
   "text.modern_industrialization.TooltipsShiftRequired": "Press [Shift] for info",
   "text.modern_industrialization.TransparentCamouflageDisabled": "Disabled transparent camouflage rendering",
   "text.modern_industrialization.TransparentCamouflageEnabled": "Enabled transparent camouflage rendering",

@@ -243,6 +243,7 @@ public enum MIText {
     ToolSwitchedNoSilkTouch("Silk Touch Mode disabled!"),
     ToolSwitchedSilkTouch("Silk Touch Mode enabled!"),
     TooltipSpeedUpgrade("Item Pipe Speed Upgrade: +%d items / 3s."),
+    TooltipSpeedUpgradeStack("Total Stack Upgrade +%d items / 3s."),
     TooltipsShiftRequired("Press [Shift] for info"),
     TransparentCamouflageDisabled("Disabled transparent camouflage rendering"),
     TransparentCamouflageEnabled("Enabled transparent camouflage rendering"),

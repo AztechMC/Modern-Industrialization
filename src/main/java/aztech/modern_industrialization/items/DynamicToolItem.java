@@ -38,12 +38,13 @@ public interface DynamicToolItem {
     default boolean isSupportedBlock(ItemStack stack, BlockState state) {
         return stack.is(ItemTags.AXES) && state.is(BlockTags.MINEABLE_WITH_AXE)
                 || stack.is(ItemTags.PICKAXES) && state.is(BlockTags.MINEABLE_WITH_PICKAXE)
-                || stack.is(ItemTags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL);
+                || stack.is(ItemTags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL)
+                || stack.is(ItemTags.HOES) && state.is(BlockTags.MINEABLE_WITH_HOE)
+                || stack.is(ItemTags.SWORDS) && state.is(BlockTags.SWORD_EFFICIENT);
         // TODO NEO
 //                || stack.is(Tags.Items.SHEARS) &&
 //                        (state.is(FabricMineableTags.SHEARS_MINEABLE) || Items.SHEARS.getDestroySpeed(
 //                                SHEAR_STACK, state) > 1.0f)
-//                || stack.is(ItemTags.SWORDS) && state.is(FabricMineableTags.SWORD_MINEABLE);
     }
 
 }

@@ -34,7 +34,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.IdentityHashMap;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -105,7 +105,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
         MachineModelClientData data = entity.getMachineModelData();
         if (data.isActive) {
-            VertexConsumer vc = vcp.getBuffer(RenderType.cutout());
+            VertexConsumer vc = vcp.getBuffer(Sheets.cutoutBlockSheet());
 
             for (Direction d : Direction.values()) {
                 BakedQuad quad = getCachedQuad(data, d);

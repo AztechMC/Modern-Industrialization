@@ -134,19 +134,21 @@ public class PipeItem extends Item {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity pipeBe) {
             var player = context.getPlayer();
-            if(player != null && player.getOffhandItem().is(MITags.WRENCHES) && isCable()) {
+            if (player != null && player.getOffhandItem().is(MITags.WRENCHES) && isCable()) {
                 if (!world.isClientSide()) {
                     var cablesToRemove = new HashSet<PipeNetworkType>();
                     // save cables which we need to remove
                     for (PipeNetworkNode pipe : pipeBe.getNodes()) {
                         var isCablePipe = pipe instanceof ElectricityNetworkNode;
-                        if(!isCablePipe) continue;
+                        if (!isCablePipe)
+                            continue;
                         cablesToRemove.add(pipe.getType());
                     }
                     // remove all energy cables
-                    for(PipeNetworkType type : cablesToRemove) {
+                    for (PipeNetworkType type : cablesToRemove) {
                         pipeBe.removePipeAndDropContainedItems(type);
-                        world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(MIPipes.INSTANCE.getPipeItem(type))));
+                        world.addFreshEntity(
+                                new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(MIPipes.INSTANCE.getPipeItem(type))));
                     }
                     world.blockUpdated(pos, Blocks.AIR);
                     if (pipeBe.canAddPipe(type)) {

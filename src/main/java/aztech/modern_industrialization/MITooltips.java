@@ -204,6 +204,10 @@ public class MITooltips {
         return state.getDefaultInstance().getHoverName().copy().withStyle(NUMBER_TEXT);
     };
 
+    public static final Parser<String> KEYBIND_PARSER = keybind -> {
+        return Component.keybind("key.%s".formatted(keybind)).withStyle(NUMBER_TEXT);
+    };
+
     public static final Parser<Component> COMPONENT = state -> state;
 
     // Tooltips
@@ -266,7 +270,7 @@ public class MITooltips {
             }).noShiftRequired();
 
     public static final TooltipAttachment LUBRICANT_BUCKET = TooltipAttachment.of(MIFluids.LUBRICANT.getBucket(),
-            new Line(MIText.LubricantTooltip).arg(LubricantHelper.mbPerTick));
+            new Line(MIText.LubricantTooltip).arg("use", KEYBIND_PARSER).arg(LubricantHelper.mbPerTick));
 
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
 
@@ -331,7 +335,7 @@ public class MITooltips {
                     lines.add(line(MIText.RedstoneControlModuleHelp).build());
                     lines.add(line(MIText.RedstoneControlModuleMachineRequires)
                             .arg(requiredSignal.text().setStyle(NUMBER_TEXT), COMPONENT).build());
-                    lines.add(line(MIText.UseItemToChange).build());
+                    lines.add(line(MIText.UseItemToChange).arg("use", KEYBIND_PARSER).build());
 
                     return Optional.of(lines);
                 } else {
@@ -339,11 +343,16 @@ public class MITooltips {
                 }
             });
 
-    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.of(
+    public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
                 if (upgrade != null) {
-                    return Optional.of(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
+                    List<Component> lines = new LinkedList<>();
+                    lines.add(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
+                    if (itemStack.getCount() > 1) {
+                        lines.add(new Line(MIText.TooltipSpeedUpgradeStack).arg(itemStack.getCount() * upgrade.maxExtractedItems()).build());
+                    }
+                    return Optional.of(lines);
                 } else {
                     return Optional.empty();
                 }
@@ -367,32 +376,39 @@ public class MITooltips {
             });
 
     public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
-            MIText.SteamDrillWaterHelp,
-            MIText.SteamDrillFuelHelp,
-            MIText.SteamDrillProfit,
-            MIText.SteamDrillToggle);
+            List.of(
+                    line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.SteamDrillProfit).build(),
+                    line(MIText.SteamDrillToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
-            MIText.ConfigCardHelpCamouflage1,
-            MIText.ConfigCardHelpCamouflage2,
-            MIText.ConfigCardHelpCamouflage3,
-            MIText.ConfigCardHelpCamouflage4,
-            MIText.ConfigCardHelpCamouflage5,
-            MIText.ConfigCardHelpCamouflage6,
-            MIText.ConfigCardHelpCamouflage7,
-            MIText.ConfigCardHelpCamouflage8,
-            MIText.ConfigCardHelpItems1,
-            MIText.ConfigCardHelpItems2,
-            MIText.ConfigCardHelpItems3,
-            MIText.ConfigCardHelpItems4,
-            MIText.ConfigCardHelpItems5,
-            MIText.ConfigCardHelpClear);
+            List.of(
+                    line(MIText.ConfigCardHelpCamouflage1).build(),
+                    line(MIText.ConfigCardHelpCamouflage2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage3).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage4).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpCamouflage5).arg("sneak", KEYBIND_PARSER)
+                            .arg(MIText.KeyMouseScroll.text().withStyle(NUMBER_TEXT), COMPONENT)
+                            .build(),
+                    Component.empty(),
+                    line(MIText.ConfigCardHelpItems1).build(),
+                    line(MIText.ConfigCardHelpItems2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpItems3).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.ConfigCardHelpClear).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment MACHINE_CASING_VOLTAGE = TooltipAttachment.of(
             (itemStack, item) -> {
                 CableTier tier = CasingComponent.getCasingTier(item);
                 return tier == null ? Optional.empty()
                         : Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
+            });
+
+    public static final TooltipAttachment TRASH_CAN_HELP = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
+                        line(MIText.PipeHelp1).arg("use", KEYBIND_PARSER).build(),
+                        line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
             });
 
     // Long Tooltip with only text, no need of MIText
@@ -413,7 +429,8 @@ public class MITooltips {
 
         MITooltips.TooltipAttachment.ofMultilines((itemStack, item) -> {
             if (attachTo.test(item)) {
-                return Optional.of(Arrays.stream(translationKey).map(Component::translatable).collect(Collectors.toList()));
+                return Optional.of(Arrays.stream(translationKey).map((key) -> Component.translatable(key).withStyle(DEFAULT_STYLE))
+                        .collect(Collectors.toList()));
             } else {
                 return Optional.empty();
             }
@@ -432,17 +449,13 @@ public class MITooltips {
         add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
                 "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
         add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
-        add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
-        add(MIBlock.TRASH_CAN, "Will delete any item or fluid sent into it.", "Can also be used to empty a fluid slot",
-                "by Right-Clicking on it with a Trash Can");
+        add("steam_blast_furnace", "Needs at least one Steel or higher tier hatch for 3 and 4 EU/t recipes");
+        add(MIBlock.TRASH_CAN, "Will delete any item or fluid sent into it.",
+                "Can also be used to empty a fluid slot by Right-Clicking on it with a Trash Can");
 
-        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe()), "pipe",
-                "Can be instantly retrieved by", "Right-Clicking with any Wrench.", "Use Shift + Right-Click to connect ",
-                "directly the pipe to the target block.");
-
-        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && pipe.isCable(), "cable", " ", "Can power blocks from any mod, but can",
-                "only extract energy from Modern", "Industrialization blocks and machines.", "They also are the only cables able",
-                "to power Modern Industrialization machines.");
+        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && pipe.isCable(), "cable", " ",
+                "Can power blocks from any mod, but can only extract energy from Modern Industrialization blocks and machines.",
+                "They also are the only cables able to power Modern Industrialization machines.");
 
     }
 
@@ -482,7 +495,8 @@ public class MITooltips {
         }
 
         public static TooltipAttachment ofMultilines(ItemLike itemLike, MIText... tooltipLines) {
-            return ofMultilines(itemLike, Arrays.stream(tooltipLines).map(MIText::text).collect(Collectors.toList()));
+            return ofMultilines(itemLike,
+                    Arrays.stream(tooltipLines).map((text) -> text.text().withStyle(DEFAULT_STYLE)).collect(Collectors.toList()));
         }
 
         private TooltipAttachment(BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines) {

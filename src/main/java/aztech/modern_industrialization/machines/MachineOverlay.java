@@ -78,7 +78,8 @@ public class MachineOverlay {
                 return i;
             }
         }
-        throw new UnsupportedOperationException("Hit shape could not be found :(");
+        // hit from really weird direction - default to center of machine
+        return 1 * 3 * 3 + 1 * 3 + 1;
     }
 
     public static Direction findHitSide(Vec3 posInBlock, Direction hitFace) {
@@ -96,7 +97,8 @@ public class MachineOverlay {
                 }
             }
         }
-        throw new RuntimeException("Unreachable!");
+        // hit from inside of machine - default to center
+        return hitFace;
     }
 
     public static Direction findHitSide(BlockHitResult bhr) {

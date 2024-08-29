@@ -204,23 +204,34 @@ public class SteamDrillItem
                 pos.offset(-rx - ux, -ry - uy, -rz - uz));
     }
 
+    private static boolean isAreaMineableBlock(BlockGetter level, BlockState state, BlockPos pos) {
+        return !state.isAir() &&
+                (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL)) &&
+                state.getDestroySpeed(level, pos) > 0;
+    }
+
     public static void forEachMineableBlock(BlockGetter world, Area area, LivingEntity miner, BiConsumer<BlockPos, BlockState> callback) {
+        if (!(miner instanceof Player)) {
+            return;
+        }
+
+        BlockState centerState = world.getBlockState(area.center());
+        if (!isAreaMineableBlock(world, centerState, area.center())) {
+            return;
+        }
+
+        callback.accept(area.center(), centerState);
+
         BlockPos.betweenClosed(area.corner1(), area.corner2()).forEach(blockPos -> {
-            if (world.getBlockEntity(blockPos) != null && !area.center().equals(blockPos)) {
-                return; // No block entities unless it's the center block.
-            }
-            if (!(miner instanceof Player)) {
+            if (world.getBlockEntity(blockPos) != null || // No block entities
+                    area.center().equals(blockPos)) { // Ignore center block since it is handled above
                 return;
             }
 
             BlockState tempState = world.getBlockState(blockPos);
-            if (tempState.isAir())
-                return;
-            if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
-                return;
-            if (tempState.getDestroySpeed(world, blockPos) < 0)
-                return;
-            callback.accept(blockPos, tempState);
+            if (isAreaMineableBlock(world, tempState, blockPos)) {
+                callback.accept(blockPos, tempState);
+            }
         });
     }
 
@@ -229,7 +240,7 @@ public class SteamDrillItem
         Vec3 vec3d = living.getEyePosition(partialTicks);
         Vec3 vec3d1 = living.getViewVector(partialTicks);
         Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
+        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, living));
     }
 
     // Use this little trick to cancel the drops for blocks broken by the steam drill, and instead merge them into a global list.

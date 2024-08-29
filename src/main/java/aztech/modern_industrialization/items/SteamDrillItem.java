@@ -276,7 +276,7 @@ public class SteamDrillItem
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
 
-        if (!(miner instanceof Player p)) {
+        if (!(miner instanceof ServerPlayer p)) {
             return false;
         }
 
@@ -289,7 +289,7 @@ public class SteamDrillItem
         forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
             Block block = tempState.getBlock();
             var blockEntity = world.getBlockEntity(blockPos);
-            var breakEvent = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+            var breakEvent = CommonHooks.fireBlockBreak(world, p.gameMode.getGameModeForPlayer(), p,
                     blockPos, tempState);
             if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                 block.destroy(world, blockPos, tempState);

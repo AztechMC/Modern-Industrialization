@@ -288,7 +288,8 @@ public class SteamDrillItem
         Player player = event.getEntity();
         if (!player.level().isClientSide()) {
             PlayerInteractEvent.LeftClickBlock.Action action = event.getAction();
-            if (action == PlayerInteractEvent.LeftClickBlock.Action.START) {
+            if (action == PlayerInteractEvent.LeftClickBlock.Action.START ||
+                    action == PlayerInteractEvent.LeftClickBlock.Action.STOP) {
                 lastClickedBlock.put(player, new ClickedBlock(event.getPos(), event.getFace()));
             } else if (action == PlayerInteractEvent.LeftClickBlock.Action.ABORT) {
                 lastClickedBlock.remove(player);

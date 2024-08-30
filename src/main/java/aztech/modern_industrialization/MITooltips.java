@@ -30,6 +30,7 @@ import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
+import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
@@ -372,6 +373,18 @@ public class MITooltips {
                     line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillProfit).arg("modern_industrialization.toggle_3x3", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
+
+    public static final TooltipAttachment DIESEL_TOOLS = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (item instanceof DieselToolItem tool) {
+                    return Optional.of(List.of(
+                            line(MIText.DieselToolFuelHelp1).arg("use", KEYBIND_PARSER).build(),
+                            line(MIText.DieselToolFuelHelp2).build(),
+                            line(MIText.DieselToolToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
+                } else {
+                    return Optional.empty();
+                }
+            });
 
     public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,
             List.of(

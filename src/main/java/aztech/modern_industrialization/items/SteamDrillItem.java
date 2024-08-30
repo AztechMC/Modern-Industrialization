@@ -82,6 +82,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jetbrains.annotations.Nullable;
 
@@ -290,7 +291,7 @@ public class SteamDrillItem
             }
         });
         totalDrops.forEach(itemStack -> {
-            Block.popResource(world, miner.blockPosition(), itemStack);
+            ItemHandlerHelper.giveItemToPlayer(p, itemStack);
         });
         totalDrops = null;
         world.getEntitiesOfClass(ExperienceOrb.class,

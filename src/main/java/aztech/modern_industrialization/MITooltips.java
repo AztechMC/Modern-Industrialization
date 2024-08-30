@@ -379,7 +379,7 @@ public class MITooltips {
             List.of(
                     line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND_PARSER).build(),
-                    line(MIText.SteamDrillProfit).build(),
+                    line(MIText.SteamDrillProfit).arg("modern_industrialization.toggle_3x3", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
 
     public static final TooltipAttachment CONFIG_CARD_HELP = TooltipAttachment.ofMultilines(MIItem.CONFIG_CARD,

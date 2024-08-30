@@ -81,6 +81,7 @@ public final class TranslationProvider implements DataProvider {
 
         addTranslation("key.categories.modern_industrialization.modern_industrialization", "Modern Industrialization");
         addTranslation("key.modern_industrialization.toggle_flight", "Toggle Flight");
+        addTranslation("key.modern_industrialization.toggle_3x3", "Toggle 3x3 Mining");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
         addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
 

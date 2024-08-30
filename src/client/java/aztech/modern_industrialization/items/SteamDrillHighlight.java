@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIItem;
 import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,11 +39,12 @@ public class SteamDrillHighlight {
     public static void onBlockHighlight(RenderHighlightEvent.Block event) {
         var player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-        if (!MIItem.STEAM_MINING_DRILL.is(player.getMainHandItem())) {
+        ItemStack stack = player.getMainHandItem();
+        if (!(stack.getItem() instanceof SteamDrillItem drillItem)) {
             return;
         }
 
-        var area = SteamDrillItem.getArea(player.level(), player);
+        var area = drillItem.getArea(player.level(), player, stack);
         if (area == null) {
             return;
         }

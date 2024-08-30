@@ -29,6 +29,7 @@ import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Collections;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import net.minecraft.Util;
@@ -61,7 +62,24 @@ public class MIKeybinds {
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_V,
                     CATEGORY),
-            toggleableItemAction(EquipmentSlot.CHEST, (i) -> i.is(MIItem.DIESEL_JETPACK.asItem()) || i.is(MIItem.GRAVICHESTPLATE.asItem())));
+            toggleableItemAction(
+                    EquipmentSlot.CHEST,
+                    (i) -> i.is(MIItem.DIESEL_JETPACK.asItem()) || i.is(MIItem.GRAVICHESTPLATE.asItem()),
+                    (player, activated) -> {
+                    }));
+
+    public static final Keybind TOGGLE_3_BY_3 = create(
+            "toggle_3x3",
+            (id) -> new KeyMapping(
+                    id,
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_Y,
+                    CATEGORY),
+            toggleableItemAction(
+                    EquipmentSlot.MAINHAND,
+                    (i) -> i.is(MIItem.STEAM_MINING_DRILL.asItem()),
+                    (player, activated) -> player.displayClientMessage((activated ? MIText.ToolSwitched3x3 : MIText.ToolSwitchedNo3x3).text(),
+                            true)));
 
     private static Keybind create(String id, Function<String, KeyMapping> creator, Runnable action) {
         String descriptionId = Util.makeDescriptionId("key", MI.id(id));
@@ -70,7 +88,7 @@ public class MIKeybinds {
         return keybind;
     }
 
-    private static Runnable toggleableItemAction(EquipmentSlot slot, Predicate<ItemStack> filter) {
+    private static Runnable toggleableItemAction(EquipmentSlot slot, Predicate<ItemStack> filter, BiConsumer<Player, Boolean> after) {
         return () -> {
             Player player = Minecraft.getInstance().player;
             ItemStack stack = player.getItemBySlot(slot);
@@ -78,6 +96,7 @@ public class MIKeybinds {
                 boolean activated = !item.isActivated(stack);
                 item.setActivated(stack, activated);
                 new ActivateItemPacket(slot, activated).sendToServer();
+                after.accept(player, activated);
             }
         };
     }

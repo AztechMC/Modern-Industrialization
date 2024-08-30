@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
@@ -53,11 +53,12 @@ public final class SteamDrillHooks {
     }
 
     public static void overrideDestroyProgress(Player pPlayer, BlockGetter pLevel, CallbackInfoReturnable<Float> cir) {
-        if (!MIItem.STEAM_MINING_DRILL.is(pPlayer.getMainHandItem()) || !canOverride.get()) {
+        ItemStack stack = pPlayer.getMainHandItem();
+        if (!(stack.getItem() instanceof SteamDrillItem drillItem) || !canOverride.get()) {
             return;
         }
 
-        var area = SteamDrillItem.getArea(pLevel, pPlayer);
+        var area = drillItem.getArea(pLevel, pPlayer, stack);
         if (area == null) {
             return;
         }

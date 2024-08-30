@@ -39,7 +39,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -94,7 +93,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SteamDrillItem
         extends Item
-        implements DynamicToolItem, ItemContainingItemHelper {
+        implements DynamicToolItem, ItemContainingItemHelper, ActivatableItem {
 
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
@@ -128,6 +127,11 @@ public class SteamDrillItem
         stack.set(MIComponents.SILK_TOUCH, silkTouch);
     }
 
+    private boolean should3by3(ItemStack stack, Player player) {
+        return this.isActivated(stack) &&
+                !player.isShiftKeyDown();
+    }
+
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !newStack.is(this) || slotChanged;
@@ -154,7 +158,7 @@ public class SteamDrillItem
 
                 Player player = CommonProxy.INSTANCE.findUser(stack);
 
-                if (player != null && player.isShiftKeyDown()) {
+                if (player != null && !should3by3(stack, player)) {
                     speed *= 4f;
                 }
                 return speed;
@@ -178,9 +182,9 @@ public class SteamDrillItem
     }
 
     @Nullable
-    public static Area getArea(BlockGetter level, Player player) {
-        if (player.isShiftKeyDown()) {
-            return null; // No area mining on sneak.
+    public Area getArea(BlockGetter level, Player player, ItemStack stack) {
+        if (!should3by3(stack, player)) {
+            return null;
         }
 
         HitResult rayTraceResult = rayTraceSimple(level, player, 0);
@@ -268,7 +272,7 @@ public class SteamDrillItem
             return false;
         }
 
-        var area = getArea(world, p);
+        var area = getArea(world, p, stack);
         if (area == null) {
             return false;
         }
@@ -483,12 +487,15 @@ public class SteamDrillItem
         if (data.burnTicks > 0) {
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
-
-        if (context.registries() != null) {
-            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
-                tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
-            }
-        }
+        // 3x3 state
+        tooltip.add(MIText.MiningArea
+                .text((this.isActivated(stack) ? MIText.MiningArea3x3 : MIText.MiningArea1x1).text().setStyle(TextHelper.NUMBER_TEXT))
+                .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
+        // Silk touch
+        tooltip.add(MIText.SilkTouch
+                .text((isNotSilkTouch(stack) ? MIText.Deactivated.text().setStyle(TextHelper.RED)
+                        : MIText.Activated.text().setStyle(TextHelper.GREEN)))
+                .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
     }
 
     @Override

@@ -100,9 +100,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addItemOutput(String itemId, int amount, float probability) {
-        recipe.itemOutputs
-                .add(new MachineRecipe.ItemOutput(ItemVariant.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId))), amount, probability));
-        return (T) this;
+        return addItemOutput(ItemVariant.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId))), amount, probability);
     }
 
     public T addItemOutput(ItemLike item, int amount, float probability) {
@@ -115,6 +113,11 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
 
     public T addItemOutput(Item item, int amount) {
         return addItemOutput(item, amount, 1);
+    }
+
+    public T addItemOutput(ItemVariant variant, int amount, float probability) {
+        recipe.itemOutputs.add(new MachineRecipe.ItemOutput(variant, amount, probability));
+        return (T) this;
     }
 
     public T addFluidInput(String fluid, int amount) {

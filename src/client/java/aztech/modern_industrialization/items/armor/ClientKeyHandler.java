@@ -23,40 +23,20 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.network.armor.ActivateChestPacket;
+import aztech.modern_industrialization.MIKeybinds;
 import aztech.modern_industrialization.network.armor.UpdateKeysPacket;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
-import org.lwjgl.glfw.GLFW;
 
-/*
- * Borrowed from Iron Jetpacks! https://github.com/shedaniel/IronJetpacks/blob/1.16/src/main/java/com/blakebr0/ironjetpacks/handler/KeyBindingsHandler.java
- */
 public class ClientKeyHandler {
     private static boolean up = false;
-    public static KeyMapping keyActivate = new KeyMapping("key.modern_industrialization.activate", KeyConflictContext.IN_GAME,
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization");
 
     public static void onEndTick(Minecraft client) {
-        updateState(client);
         updateKeyMap(client);
-    }
 
-    public static void updateState(Minecraft client) {
-        if (client.player == null)
-            return;
-
-        ItemStack chest = client.player.getItemBySlot(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof ActivatableChestItem activatable) {
-            while (keyActivate.consumeClick()) {
-                boolean activated = !activatable.isActivated(chest);
-                ActivateChestPacket.activateChest(client.player, activated);
-                new ActivateChestPacket(activated).sendToServer();
+        for (MIKeybinds.Keybind keybind : MIKeybinds.getMappings()) {
+            while (keybind.holder().get().consumeClick()) {
+                keybind.action().run();
             }
         }
     }

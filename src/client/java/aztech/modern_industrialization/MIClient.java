@@ -252,7 +252,7 @@ public class MIClient {
 
     @SubscribeEvent
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(ClientKeyHandler.keyActivate);
+        MIKeybinds.init(event);
     }
 
     @SubscribeEvent

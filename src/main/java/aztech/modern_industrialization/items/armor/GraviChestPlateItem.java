@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.items.ActivatableItem;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-public class GraviChestPlateItem extends ArmorItem implements ActivatableChestItem, ISimpleEnergyItem {
+public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, ISimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
         super(MIArmorMaterials.GRAVICHESTPLATE, Type.CHESTPLATE,
                 settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false));

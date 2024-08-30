@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.network;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.network.armor.ActivateChestPacket;
+import aztech.modern_industrialization.network.armor.ActivateItemPacket;
 import aztech.modern_industrialization.network.armor.UpdateKeysPacket;
 import aztech.modern_industrialization.network.machines.AdjustSlotCapacityPacket;
 import aztech.modern_industrialization.network.machines.ChangeShapePacket;
@@ -69,7 +69,7 @@ public class MIPackets {
 
     static {
         // Armor
-        register("activate_chest", ActivateChestPacket.class, ActivateChestPacket.STREAM_CODEC);
+        register("activate_chest", ActivateItemPacket.class, ActivateItemPacket.STREAM_CODEC);
         register("update_keys", UpdateKeysPacket.class, UpdateKeysPacket.STREAM_CODEC);
         // Configurable inventory
         register("adjust_slot_capacity", AdjustSlotCapacityPacket.class, AdjustSlotCapacityPacket.STREAM_CODEC);

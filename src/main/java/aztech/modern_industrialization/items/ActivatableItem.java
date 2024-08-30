@@ -27,8 +27,12 @@ import aztech.modern_industrialization.MIComponents;
 import net.minecraft.world.item.ItemStack;
 
 public interface ActivatableItem {
+    default boolean getDefaultActivatedState() {
+        return false;
+    }
+
     default boolean isActivated(ItemStack stack) {
-        return stack.getOrDefault(MIComponents.ACTIVATED.get(), false);
+        return stack.getOrDefault(MIComponents.ACTIVATED.get(), this.getDefaultActivatedState());
     }
 
     default void setActivated(ItemStack stack, boolean activated) {

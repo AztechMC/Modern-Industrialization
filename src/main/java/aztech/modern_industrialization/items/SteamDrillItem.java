@@ -129,6 +129,11 @@ public class SteamDrillItem
         stack.set(MIComponents.SILK_TOUCH, silkTouch);
     }
 
+    @Override
+    public boolean getDefaultActivatedState() {
+        return true;
+    }
+
     private boolean should3by3(ItemStack stack, Player player) {
         return this.isActivated(stack) &&
                 !player.isShiftKeyDown();

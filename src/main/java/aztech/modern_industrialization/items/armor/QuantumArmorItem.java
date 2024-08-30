@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIText;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -53,7 +54,8 @@ public class QuantumArmorItem extends ArmorItem {
                             NeoForgeMod.CREATIVE_FLIGHT,
                             new AttributeModifier(MI.id("quantum_flight"), 1, AttributeModifier.Operation.ADD_VALUE),
                             EquipmentSlotGroup.CHEST)
-                    .build();
+                    .build()
+                    .withTooltip(false);
         } else {
             return ItemAttributeModifiers.EMPTY;
         }
@@ -66,5 +68,8 @@ public class QuantumArmorItem extends ArmorItem {
         String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
         list.add(Component.translatable("attribute.modifier.plus.0", oneQuarterInfinity, Component.translatable("attribute.name.generic.armor"))
                 .withStyle(ChatFormatting.BLUE));
+        if (type == Type.CHESTPLATE) {
+            list.add(MIText.AllowCreativeFlight.text().withStyle(ChatFormatting.BLUE));
+        }
     }
 }

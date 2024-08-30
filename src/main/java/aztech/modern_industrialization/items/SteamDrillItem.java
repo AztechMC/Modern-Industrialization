@@ -34,6 +34,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,6 +82,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -178,11 +180,18 @@ public class SteamDrillItem
     }
 
     @Nullable
-    public static Area getArea(BlockGetter level, Player player) {
+    public static Area getArea(BlockGetter level, Player player, boolean rayTraceOnly) {
         if (player.isShiftKeyDown()) {
             return null; // No area mining on sneak.
         }
 
+        if (!rayTraceOnly) {
+            ClickedBlock clickedBlock = lastClickedBlock.get(player);
+            if (clickedBlock != null) {
+                return getArea(clickedBlock.pos(), clickedBlock.face());
+            }
+            // If for some reason we can't get a last clicked block, default to the raytrace check
+        }
         HitResult rayTraceResult = rayTraceSimple(level, player, 0);
         if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
@@ -247,8 +256,12 @@ public class SteamDrillItem
     @Nullable
     private static List<ItemStack> totalDrops = null;
 
+    // Use this trick to use a more accurate block face (especially when on a remote server).
+    private static final WeakHashMap<Player, ClickedBlock> lastClickedBlock = new WeakHashMap<>();
+
     static {
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::mergeDrops);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::trackClickedFace);
     }
 
     private static void mergeDrops(BlockDropsEvent event) {
@@ -271,6 +284,21 @@ public class SteamDrillItem
         event.getDrops().clear();
     }
 
+    private static void trackClickedFace(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide()) {
+            PlayerInteractEvent.LeftClickBlock.Action action = event.getAction();
+            if (action == PlayerInteractEvent.LeftClickBlock.Action.START) {
+                lastClickedBlock.put(player, new ClickedBlock(event.getPos(), event.getFace()));
+            } else if (action == PlayerInteractEvent.LeftClickBlock.Action.ABORT) {
+                lastClickedBlock.remove(player);
+            }
+        }
+    }
+
+    private record ClickedBlock(BlockPos pos, Direction face) {
+    }
+
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
@@ -279,10 +307,11 @@ public class SteamDrillItem
             return false;
         }
 
-        var area = getArea(world, p);
+        var area = getArea(world, p, false);
         if (area == null) {
             return false;
         }
+        lastClickedBlock.remove(p);
 
         totalDrops = new ArrayList<>();
         forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {

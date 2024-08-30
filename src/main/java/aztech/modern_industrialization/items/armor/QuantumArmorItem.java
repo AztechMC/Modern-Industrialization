@@ -23,15 +23,19 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MI;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class QuantumArmorItem extends ArmorItem {
     public static final List<QuantumArmorItem> ITEMS = new ArrayList<>();
@@ -43,7 +47,16 @@ public class QuantumArmorItem extends ArmorItem {
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {
-        return ItemAttributeModifiers.EMPTY;
+        if (type == Type.CHESTPLATE) {
+            return ItemAttributeModifiers.builder()
+                    .add(
+                            NeoForgeMod.CREATIVE_FLIGHT,
+                            new AttributeModifier(MI.id("quantum_flight"), 1, AttributeModifier.Operation.ADD_VALUE),
+                            EquipmentSlotGroup.CHEST)
+                    .build();
+        } else {
+            return ItemAttributeModifiers.EMPTY;
+        }
     }
 
     @Override

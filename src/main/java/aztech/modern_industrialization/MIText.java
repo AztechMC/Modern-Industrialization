@@ -44,7 +44,6 @@ public enum MIText {
     AcceptsSteam("Accepts Steam (1 mb = 1 EU)"),
     AcceptsSteamToo("Also Accepts Steam (1 mb = 1 EU)"),
     AcceptsUpgrades("Add upgrades to increase max processing EU/t."),
-    AllowCreativeFlight("Allow Creative Flight"),
     Activated("Activated"),
     BarrelStack("Can store up to %d stacks"),
     BarrelStorageComponent("%s / %s (%s)"),

@@ -23,22 +23,39 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.items.ActivatableItem;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, ISimpleEnergyItem {
     public GraviChestPlateItem(Properties settings) {
         super(MIArmorMaterials.GRAVICHESTPLATE, Type.CHESTPLATE,
                 settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false));
+    }
+
+    @Override
+    public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+        ItemAttributeModifiers modifiers = this.getStoredEnergy(stack) > 0 ? defaultModifiers.get() : ItemAttributeModifiers.EMPTY;
+        if (this.getStoredEnergy(stack) > 0 && this.isActivated(stack)) {
+            modifiers = modifiers.withModifierAdded(
+                    NeoForgeMod.CREATIVE_FLIGHT,
+                    new AttributeModifier(MI.id("gravichestplate_flight"), 1, AttributeModifier.Operation.ADD_VALUE),
+                    EquipmentSlotGroup.CHEST);
+        }
+        return modifiers;
     }
 
     @Override

@@ -28,12 +28,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public class MIArmorEffects {
     private MIArmorEffects() {
@@ -49,21 +46,6 @@ public class MIArmorEffects {
         return ThreadLocalRandom.current().nextDouble() < parts / 4d;
     }
 
-    public static boolean allowFlight(Player player) {
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        return allowFlight(chest);
-    }
-
-    public static boolean allowFlight(ItemStack chest) {
-        if (chest.getItem() instanceof GraviChestPlateItem gsp && gsp.isActivated(chest) && gsp.getEnergy(chest) > 0) {
-            return true;
-        }
-        if (chest.getItem() == MIItem.QUANTUM_CHESTPLATE.asItem()) {
-            return true;
-        }
-        return false;
-    }
-
     public static boolean canTankFlyIntoWall(ItemStack helmet) {
         return helmet.getItem() == MIItem.RUBBER_HELMET.asItem() || helmet.getItem() == MIItem.QUANTUM_HELMET.asItem();
     }
@@ -73,27 +55,6 @@ public class MIArmorEffects {
     }
 
     public static void init() {
-        NeoForge.EVENT_BUS.addListener(PlayerTickEvent.Pre.class, event -> {
-            var player = event.getEntity();
-            if (!player.level().isClientSide()) {
-                if (allowFlight(player)) {
-                    player.getAbilities().mayfly = true;
-                    player.onUpdateAbilities();
-                }
-            }
-        });
-
-        NeoForge.EVENT_BUS.addListener(LivingEquipmentChangeEvent.class, event -> {
-            if (event.getSlot() == EquipmentSlot.CHEST && allowFlight(event.getFrom()) && !allowFlight(event.getTo())) {
-                // Remove ability :P
-                if (event.getEntity() instanceof Player player) {
-                    player.getAbilities().mayfly = false;
-                    player.getAbilities().flying = false;
-                    player.onUpdateAbilities();
-                }
-            }
-        });
-
         NeoForge.EVENT_BUS.addListener(LivingIncomingDamageEvent.class, event -> {
             if (quantumArmorPreventsDamage(event.getEntity())) {
                 event.setCanceled(true);

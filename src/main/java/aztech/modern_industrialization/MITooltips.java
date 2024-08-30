@@ -245,15 +245,6 @@ public class MITooltips {
                 }
             });
 
-    public static final TooltipAttachment CREATIVE_FLIGHT = TooltipAttachment.of(
-            (itemStack, item) -> {
-                if (item == MIItem.QUANTUM_CHESTPLATE.asItem() || item == MIItem.GRAVICHESTPLATE.asItem()) {
-                    return Optional.of(new Line(MIText.AllowCreativeFlight).build());
-                } else {
-                    return Optional.empty();
-                }
-            }).noShiftRequired();
-
     public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
             (itemStack, item) -> {
                 if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(MI.ID)) {

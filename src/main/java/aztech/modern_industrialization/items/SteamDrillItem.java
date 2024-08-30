@@ -499,7 +499,7 @@ public class SteamDrillItem
                 .text((this.isActivated(stack) ? MIText.MiningArea3x3 : MIText.MiningArea1x1).text().setStyle(TextHelper.NUMBER_TEXT))
                 .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
         // Silk touch
-        tooltip.add(MIText.SilkTouch
+        tooltip.add(MIText.SilkTouchState
                 .text((isNotSilkTouch(stack) ? MIText.Deactivated.text().setStyle(TextHelper.RED)
                         : MIText.Activated.text().setStyle(TextHelper.GREEN)))
                 .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));

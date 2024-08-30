@@ -31,6 +31,7 @@ import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
@@ -132,8 +133,16 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
 
         if (context.registries() != null) {
-            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
-                tooltip.add(entry.getKey().value().getFullname(entry.getKey(), entry.getIntValue()));
+            var enchantmentRegistry = context.registries().lookupOrThrow(Registries.ENCHANTMENT);
+
+            tooltip.add(MIText.MiningMode.text(enchantmentRegistry.get(isFortune(stack) ? Enchantments.FORTUNE : Enchantments.SILK_TOUCH)
+                    .orElseThrow().value().description().copy().setStyle(TextHelper.NUMBER_TEXT)).setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
+
+            for (var entry : getAllEnchantments(stack, enchantmentRegistry).entrySet()) {
+                if (!entry.getKey().is(Enchantments.SILK_TOUCH) &&
+                        !entry.getKey().is(Enchantments.FORTUNE)) {
+                    tooltip.add(Enchantment.getFullname(entry.getKey(), entry.getIntValue()));
+                }
             }
         }
     }

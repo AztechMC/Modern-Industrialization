@@ -189,8 +189,8 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, AdvancementType.CHALLENGE, "The Texas Chain Saw Massacre", "Craft a Diesel Chainsaw", existingFileHelper);
         var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", distillery, AdvancementType.CHALLENGE, "Through The Walls Of Ba Sing Se", "Craft a Diesel Mining Drill", existingFileHelper);
         var digitalCircuit = createBasic(consumer, "digital_circuit", distillery, "No need for Sodium anymore", "Craft a Digital Circuit", existingFileHelper);
-        var turboDieselGenerator = createBasic(consumer, "hv_diesel_generator", dieselGenerator, "Fast and Furious 2 : Revenge", "Craft an HV Diesel Generator", existingFileHelper);
-        var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator, "Fast and Furious 42 : Armageddon", "Craft a Large Diesel Generator", existingFileHelper);
+        var turboDieselGenerator = createBasic(consumer, "hv_diesel_generator", dieselGenerator, "Fast and Furious 2: Revenge", "Craft an HV Diesel Generator", existingFileHelper);
+        var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator, "Fast and Furious 42: Armageddon", "Craft a Large Diesel Generator", existingFileHelper);
         var hvSteamTurbine = createBasic(consumer, "hv_steam_turbine", mvSteamTurbine, "Better than Water Wheel", "Craft an HV Steam Turbine", existingFileHelper);
         var largeSteamTurbine = createBasic(consumer, "large_steam_turbine", hvSteamTurbine, "Enslaved Hurricane", "Craft a Large Steam Turbine", existingFileHelper);
         var distillationTower = createBasic(consumer, "distillation_tower", digitalCircuit, AdvancementType.GOAL, "TOTAL™ Distillation", "Craft a Distillation Tower to unlock to full potential of oil processing", existingFileHelper);
@@ -202,7 +202,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var blastProofAlloyPlate = createBasic(consumer, "blastproof_alloy_plate", titaniumIngot, "Creeper Nightmare", "Craft a Blastproof Alloy Plate in the compressor", existingFileHelper);
         var implosionCompressor = createBasic(consumer, "implosion_compressor", blastProofAlloyPlate, AdvancementType.GOAL, "Automated Creeper", "Craft an Implosion Compressor", existingFileHelper);
         var pressurizer = createBasic(consumer, "pressurizer", titaniumIngot, "Under Pressure", "Craft a Pressurizer to unlock for efficient Steam Process", existingFileHelper);
-        var rawIridium = createBasic(consumer, "raw_iridium", titaniumIngot, "Diamond 2.0 : Electric Boogaloo", "Obtain a Raw Piece of Iridium", existingFileHelper);
+        var rawIridium = createBasic(consumer, "raw_iridium", titaniumIngot, "Diamond 2.0: Electric Boogaloo", "Obtain a Raw Piece of Iridium", existingFileHelper);
         var superconductorCable = createBasic(consumer, "superconductor_cable", rawIridium, AdvancementType.GOAL, "Unlimited Power (Transfer)", "Craft a Superconductor Cable to transfer unlimited amount of energy", existingFileHelper);
         var gravichestplate = createBasic(consumer, "gravichestplate", superconductorCable, AdvancementType.CHALLENGE, "Gravichestplate™", "Craft a Gravichestplate to unlock creative flight", existingFileHelper);
         var nuclearReactor = createBasic(consumer, "nuclear_reactor", implosionCompressor, AdvancementType.CHALLENGE, "3.6 Roentgen", "Craft a Nuclear Reactor and discover its overengineered mechanisms", existingFileHelper);

@@ -236,7 +236,7 @@ public enum MIText {
     SilkTouch("Silk Touch : %s"),
     SingleNeutronCapture("Single Neutron Capture"),
     SteamDrillFuelHelp("2) Place fuel inside the drill using %s."),
-    SteamDrillProfit("3) Enjoy 3x3 Silk Touch (press %s to toggle)."),
+    SteamDrillProfit("3) Enjoy 3x3 Mining (press %s to toggle)."),
     SteamDrillToggle("4) Toggle Silk Touch with %s + %s."),
     SteamDrillWaterHelp("1) Press %s on still or flowing water to fill."),
     Temperature("Temperature : %d °C"),

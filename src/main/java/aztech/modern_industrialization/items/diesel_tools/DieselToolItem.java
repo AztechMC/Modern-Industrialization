@@ -48,7 +48,14 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -137,13 +144,6 @@ public class DieselToolItem extends Item implements DynamicToolItem {
 
             tooltip.add(MIText.MiningMode.text(enchantmentRegistry.get(isFortune(stack) ? Enchantments.FORTUNE : Enchantments.SILK_TOUCH)
                     .orElseThrow().value().description().copy().setStyle(TextHelper.NUMBER_TEXT)).setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
-
-            for (var entry : getAllEnchantments(stack, enchantmentRegistry).entrySet()) {
-                if (!entry.getKey().is(Enchantments.SILK_TOUCH) &&
-                        !entry.getKey().is(Enchantments.FORTUNE)) {
-                    tooltip.add(Enchantment.getFullname(entry.getKey(), entry.getIntValue()));
-                }
-            }
         }
     }
 

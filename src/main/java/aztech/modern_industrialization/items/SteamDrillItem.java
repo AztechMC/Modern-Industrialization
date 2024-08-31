@@ -39,7 +39,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -503,14 +502,6 @@ public class SteamDrillItem
                 .text((isNotSilkTouch(stack) ? MIText.Deactivated.text().setStyle(TextHelper.RED)
                         : MIText.Activated.text().setStyle(TextHelper.GREEN)))
                 .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
-
-        if (context.registries() != null) {
-            for (var entry : getAllEnchantments(stack, context.registries().lookupOrThrow(Registries.ENCHANTMENT)).entrySet()) {
-                if (!entry.getKey().is(Enchantments.SILK_TOUCH)) {
-                    tooltip.add(Enchantment.getFullname(entry.getKey(), entry.getIntValue()));
-                }
-            }
-        }
     }
 
     @Override

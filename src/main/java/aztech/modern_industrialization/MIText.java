@@ -249,6 +249,7 @@ public enum MIText {
     ThermalInteraction("Thermal Interaction"),
     ThermalNeutron("Thermal Neutron"),
     ThermalNeutronFraction("Thermal Scattered Neutron Fraction"),
+    ToolInformation("Tool information:"),
     ToolSwitched3x3("3x3 Mining enabled!"),
     ToolSwitchedFortune("Fortune Mode enabled!"),
     ToolSwitchedNo3x3("3x3 Mining disabled!"),

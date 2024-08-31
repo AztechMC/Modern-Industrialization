@@ -369,6 +369,7 @@ public class MITooltips {
 
     public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
             List.of(
+                    line(MIText.ToolInformation).build(),
                     line(MIText.SteamDrillWaterHelp).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillFuelHelp).arg("use", KEYBIND_PARSER).build(),
                     line(MIText.SteamDrillProfit).arg("modern_industrialization.toggle_3x3", KEYBIND_PARSER).build(),
@@ -378,6 +379,7 @@ public class MITooltips {
             (itemStack, item) -> {
                 if (item instanceof DieselToolItem tool) {
                     return Optional.of(List.of(
+                            line(MIText.ToolInformation).build(),
                             line(MIText.DieselToolFuelHelp1).arg("use", KEYBIND_PARSER).build(),
                             line(MIText.DieselToolFuelHelp2).build(),
                             line(MIText.DieselToolToggle).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));

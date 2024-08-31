@@ -1690,6 +1690,7 @@
   "text.modern_industrialization.ThermalInteraction": "Thermal Interaction",
   "text.modern_industrialization.ThermalNeutron": "Thermal Neutron",
   "text.modern_industrialization.ThermalNeutronFraction": "Thermal Scattered Neutron Fraction",
+  "text.modern_industrialization.ToolInformation": "Tool information:",
   "text.modern_industrialization.ToolSwitched3x3": "3x3 Mining enabled!",
   "text.modern_industrialization.ToolSwitchedFortune": "Fortune Mode enabled!",
   "text.modern_industrialization.ToolSwitchedNo3x3": "3x3 Mining disabled!",

@@ -43,7 +43,7 @@ public class SteamDrillHighlight {
             return;
         }
 
-        var area = SteamDrillItem.getArea(player.level(), player);
+        var area = SteamDrillItem.getArea(player.level(), player, true);
         if (area == null) {
             return;
         }

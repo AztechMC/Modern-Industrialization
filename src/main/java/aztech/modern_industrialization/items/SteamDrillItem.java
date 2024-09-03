@@ -34,6 +34,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,6 +82,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -178,11 +180,18 @@ public class SteamDrillItem
     }
 
     @Nullable
-    public static Area getArea(BlockGetter level, Player player) {
+    public static Area getArea(BlockGetter level, Player player, boolean rayTraceOnly) {
         if (player.isShiftKeyDown()) {
             return null; // No area mining on sneak.
         }
 
+        if (!rayTraceOnly) {
+            ClickedBlock clickedBlock = lastClickedBlock.get(player);
+            if (clickedBlock != null) {
+                return getArea(clickedBlock.pos(), clickedBlock.face());
+            }
+            // If for some reason we can't get a last clicked block, default to the raytrace check
+        }
         HitResult rayTraceResult = rayTraceSimple(level, player, 0);
         if (rayTraceResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockResult = (BlockHitResult) rayTraceResult;
@@ -204,23 +213,34 @@ public class SteamDrillItem
                 pos.offset(-rx - ux, -ry - uy, -rz - uz));
     }
 
+    private static boolean isAreaMineableBlock(BlockGetter level, BlockState state, BlockPos pos) {
+        return !state.isAir() &&
+                (state.is(BlockTags.MINEABLE_WITH_PICKAXE) || state.is(BlockTags.MINEABLE_WITH_SHOVEL)) &&
+                state.getDestroySpeed(level, pos) > 0;
+    }
+
     public static void forEachMineableBlock(BlockGetter world, Area area, LivingEntity miner, BiConsumer<BlockPos, BlockState> callback) {
+        if (!(miner instanceof Player)) {
+            return;
+        }
+
+        BlockState centerState = world.getBlockState(area.center());
+        if (!isAreaMineableBlock(world, centerState, area.center())) {
+            return;
+        }
+
+        callback.accept(area.center(), centerState);
+
         BlockPos.betweenClosed(area.corner1(), area.corner2()).forEach(blockPos -> {
-            if (world.getBlockEntity(blockPos) != null && !area.center().equals(blockPos)) {
-                return; // No block entities unless it's the center block.
-            }
-            if (!(miner instanceof Player)) {
+            if (world.getBlockEntity(blockPos) != null || // No block entities
+                    area.center().equals(blockPos)) { // Ignore center block since it is handled above
                 return;
             }
 
             BlockState tempState = world.getBlockState(blockPos);
-            if (tempState.isAir())
-                return;
-            if (!tempState.is(BlockTags.MINEABLE_WITH_PICKAXE) && !tempState.is(BlockTags.MINEABLE_WITH_SHOVEL))
-                return;
-            if (tempState.getDestroySpeed(world, blockPos) < 0)
-                return;
-            callback.accept(blockPos, tempState);
+            if (isAreaMineableBlock(world, tempState, blockPos)) {
+                callback.accept(blockPos, tempState);
+            }
         });
     }
 
@@ -229,15 +249,19 @@ public class SteamDrillItem
         Vec3 vec3d = living.getEyePosition(partialTicks);
         Vec3 vec3d1 = living.getViewVector(partialTicks);
         Vec3 vec3d2 = vec3d.add(vec3d1.x * blockReachDistance, vec3d1.y * blockReachDistance, vec3d1.z * blockReachDistance);
-        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, living));
+        return world.clip(new ClipContext(vec3d, vec3d2, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, living));
     }
 
     // Use this little trick to cancel the drops for blocks broken by the steam drill, and instead merge them into a global list.
     @Nullable
     private static List<ItemStack> totalDrops = null;
 
+    // Use this trick to use a more accurate block face (especially when on a remote server).
+    private static final WeakHashMap<Player, ClickedBlock> lastClickedBlock = new WeakHashMap<>();
+
     static {
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::mergeDrops);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, SteamDrillItem::trackClickedFace);
     }
 
     private static void mergeDrops(BlockDropsEvent event) {
@@ -260,24 +284,41 @@ public class SteamDrillItem
         event.getDrops().clear();
     }
 
+    private static void trackClickedFace(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide()) {
+            PlayerInteractEvent.LeftClickBlock.Action action = event.getAction();
+            if (action == PlayerInteractEvent.LeftClickBlock.Action.START ||
+                    action == PlayerInteractEvent.LeftClickBlock.Action.STOP) {
+                lastClickedBlock.put(player, new ClickedBlock(event.getPos().immutable(), event.getFace()));
+            } else if (action == PlayerInteractEvent.LeftClickBlock.Action.ABORT) {
+                lastClickedBlock.remove(player);
+            }
+        }
+    }
+
+    private record ClickedBlock(BlockPos pos, Direction face) {
+    }
+
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
 
-        if (!(miner instanceof Player p)) {
+        if (!(miner instanceof ServerPlayer p)) {
             return false;
         }
 
-        var area = getArea(world, p);
+        var area = getArea(world, p, false);
         if (area == null) {
             return false;
         }
+        lastClickedBlock.remove(p);
 
         totalDrops = new ArrayList<>();
         forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
             Block block = tempState.getBlock();
             var blockEntity = world.getBlockEntity(blockPos);
-            var breakEvent = CommonHooks.fireBlockBreak(world, ((ServerPlayer) miner).gameMode.getGameModeForPlayer(), (ServerPlayer) miner,
+            var breakEvent = CommonHooks.fireBlockBreak(world, p.gameMode.getGameModeForPlayer(), p,
                     blockPos, tempState);
             if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
                 block.destroy(world, blockPos, tempState);

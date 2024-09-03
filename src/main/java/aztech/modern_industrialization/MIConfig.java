@@ -84,6 +84,8 @@ public class MIConfig implements ConfigData {
     public int maxDistillationTowerHeight = 9;
     @EnglishTranslation(value = "Enable inter-machine connected textures. (Requires a suitable resource pack)")
     public boolean enableInterMachineConnectedTextures = false;
+    @EnglishTranslation(value = "Space between the top of the screen and the Jetpack/GraviChestPlate overlay text.")
+    public int armorHudYPosition = 4;
 
     @ConfigEntry.Gui.Excluded
     private transient volatile static MIConfig instance = null;

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import net.minecraft.ChatFormatting;
@@ -39,6 +40,8 @@ public class HudRenderer {
     public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, MIConfig.getConfig().armorHudYPosition, 0);
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
             if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);
@@ -46,15 +49,13 @@ public class HudRenderer {
 
                 if (active) {
                     jetpackActiveComponent = MIText.JetpackEnabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
-                    ;
                 } else {
                     jetpackActiveComponent = MIText.JetpackDisabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-                    ;
                 }
-                guiGraphics.drawString(mc.font, jetpackActiveComponent, 4, 4, 16383998);
+                guiGraphics.drawString(mc.font, jetpackActiveComponent, 4, 0, 16383998);
 
                 Component fillText = MIText.JetpackFill.text(FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
-                guiGraphics.drawString(mc.font, fillText, 4, 14, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 10, 16383998);
             } else if (chest.getItem() instanceof GraviChestPlateItem gsp) {
                 boolean active = gsp.isActivated(chest);
 
@@ -62,17 +63,16 @@ public class HudRenderer {
 
                 if (active) {
                     gravichestplateActiveComponent = MIText.GravichestplateEnabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
-                    ;
                 } else {
                     gravichestplateActiveComponent = MIText.GravichestplateDisabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-                    ;
                 }
 
-                guiGraphics.drawString(mc.font, gravichestplateActiveComponent, 4, 4, 16383998);
+                guiGraphics.drawString(mc.font, gravichestplateActiveComponent, 4, 0, 16383998);
                 Component fillText = MIText.EnergyFill.text(
                         gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
-                guiGraphics.drawString(mc.font, fillText, 4, 14, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 10, 16383998);
             }
+            guiGraphics.pose().popPose();
         }
     }
 }

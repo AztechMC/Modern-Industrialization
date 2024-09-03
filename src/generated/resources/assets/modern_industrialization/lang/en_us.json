@@ -1448,6 +1448,7 @@
   "tag.modern_industrialization.me_wires": "ME Wires",
   "tag.modern_industrialization.replicator_blacklist": "Replicator Blacklist",
   "tag.modern_industrialization.tanks": "Tanks",
+  "text.autoconfig.modern_industrialization.option.armorHudYPosition": "Space between the top of the screen and the Jetpack/GraviChestPlate overlay text.",
   "text.autoconfig.modern_industrialization.option.colorWaterLava": "Color Water and Lava (Restart needed)",
   "text.autoconfig.modern_industrialization.option.datagenOnStartup": "Run MI runtime datagen on startup (Restart needed)",
   "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "Disable display of Fuel EU in tooltips",

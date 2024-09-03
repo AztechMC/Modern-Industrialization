@@ -290,7 +290,7 @@ public class SteamDrillItem
             PlayerInteractEvent.LeftClickBlock.Action action = event.getAction();
             if (action == PlayerInteractEvent.LeftClickBlock.Action.START ||
                     action == PlayerInteractEvent.LeftClickBlock.Action.STOP) {
-                lastClickedBlock.put(player, new ClickedBlock(event.getPos(), event.getFace()));
+                lastClickedBlock.put(player, new ClickedBlock(event.getPos().immutable(), event.getFace()));
             } else if (action == PlayerInteractEvent.LeftClickBlock.Action.ABORT) {
                 lastClickedBlock.remove(player);
             }

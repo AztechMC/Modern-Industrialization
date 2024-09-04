@@ -1,0 +1,20 @@
+{
+  "values": [
+    "#c:rods/aluminum",
+    "#c:rods/bronze",
+    "#c:rods/cadmium",
+    "#c:rods/copper",
+    "#c:rods/gold",
+    "#c:rods/he_mox",
+    "#c:rods/he_uranium",
+    "#c:rods/invar",
+    "#c:rods/iron",
+    "#c:rods/le_mox",
+    "#c:rods/le_uranium",
+    "#c:rods/stainless_steel",
+    "#c:rods/steel",
+    "#c:rods/tin",
+    "#c:rods/titanium",
+    "#c:rods/uranium"
+  ]
+}

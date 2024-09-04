@@ -105,13 +105,16 @@ public class MIParts {
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
     public static final Map<PartKey, CategoryTag> CATEGORY_TAGS = Map.of(
+            BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"),
             DUST.key(), new CategoryTag(Tags.Items.DUSTS, "Dusts"),
             GEAR.key(), new CategoryTag("c:gears", "Gears"),
             INGOT.key(), new CategoryTag(Tags.Items.INGOTS, "Ingots"),
             NUGGET.key(), new CategoryTag(Tags.Items.NUGGETS, "Nuggets"),
             PLATE.key(), new CategoryTag("c:plates", "Plates"),
+            ROD.key(), new CategoryTag(Tags.Items.RODS, "Rods"),
             RAW_METAL.key(), new CategoryTag(Tags.Items.RAW_MATERIALS, "Raw Ores"),
-            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"));
+            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"),
+            RAW_METAL_BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"));
 
     public record CategoryTag(String tag, String englishName) {
         public CategoryTag(TagKey<Item> tag, String englishName) {

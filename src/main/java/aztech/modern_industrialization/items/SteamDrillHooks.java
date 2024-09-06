@@ -58,7 +58,7 @@ public final class SteamDrillHooks {
             return;
         }
 
-        var area = drillItem.getArea(pLevel, pPlayer, stack);
+        var area = drillItem.getArea(pLevel, pPlayer, stack, false);
         if (area == null) {
             return;
         }

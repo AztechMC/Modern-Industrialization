@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -78,7 +79,9 @@ public final class TranslationProvider implements DataProvider {
 
         addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
 
-        addTranslation("key.modern_industrialization.activate", "Toggle Flight");
+        addTranslation("key.categories.modern_industrialization.modern_industrialization", "Modern Industrialization");
+        addTranslation("key.modern_industrialization.toggle_flight", "Toggle Flight");
+        addTranslation("key.modern_industrialization.toggle_3x3", "Toggle 3x3 Mining");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
         addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
 
@@ -112,7 +115,9 @@ public final class TranslationProvider implements DataProvider {
         }
 
         for (var entry : ReiMachineRecipes.categories.entrySet()) {
-            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
+            if (entry.getKey().getNamespace().equals(MI.ID)) {
+                addTranslation("rei_categories.modern_industrialization." + entry.getKey().getPath(), entry.getValue().englishName);
+            }
         }
 
         for (var entry : TagsToGenerate.tagTranslations.entrySet()) {

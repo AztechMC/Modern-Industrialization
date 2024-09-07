@@ -21,30 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.network.armor;
+package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.items.armor.ActivatableChestItem;
-import aztech.modern_industrialization.network.BasePacket;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
+import aztech.modern_industrialization.MIComponents;
 import net.minecraft.world.item.ItemStack;
 
-public record ActivateChestPacket(boolean activated) implements BasePacket {
-    public static final StreamCodec<ByteBuf, ActivateChestPacket> STREAM_CODEC = ByteBufCodecs.BOOL
-            .map(ActivateChestPacket::new, ActivateChestPacket::activated);
-
-    @Override
-    public void handle(Context ctx) {
-        activateChest(ctx.getPlayer(), activated);
+public interface ActivatableItem {
+    default boolean getDefaultActivatedState() {
+        return false;
     }
 
-    public static void activateChest(Player player, boolean activated) {
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof ActivatableChestItem activatable) {
-            activatable.setActivated(chest, activated);
-        }
+    default boolean isActivated(ItemStack stack) {
+        return stack.getOrDefault(MIComponents.ACTIVATED.get(), this.getDefaultActivatedState());
+    }
+
+    default void setActivated(ItemStack stack, boolean activated) {
+        stack.set(MIComponents.ACTIVATED.get(), activated);
     }
 }

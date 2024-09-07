@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
+import aztech.modern_industrialization.items.ActivatableItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
@@ -51,7 +52,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class JetpackItem extends ArmorItem implements ActivatableChestItem {
+public class JetpackItem extends ArmorItem implements ActivatableItem {
     public static final int CAPACITY = 8 * FluidType.BUCKET_VOLUME;
 
     public JetpackItem(Properties settings) {

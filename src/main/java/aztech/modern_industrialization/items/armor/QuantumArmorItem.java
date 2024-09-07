@@ -23,15 +23,20 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIText;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class QuantumArmorItem extends ArmorItem {
     public static final List<QuantumArmorItem> ITEMS = new ArrayList<>();
@@ -43,7 +48,17 @@ public class QuantumArmorItem extends ArmorItem {
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers() {
-        return ItemAttributeModifiers.EMPTY;
+        if (type == Type.CHESTPLATE) {
+            return ItemAttributeModifiers.builder()
+                    .add(
+                            NeoForgeMod.CREATIVE_FLIGHT,
+                            new AttributeModifier(MI.id("quantum_flight"), 1, AttributeModifier.Operation.ADD_VALUE),
+                            EquipmentSlotGroup.CHEST)
+                    .build()
+                    .withTooltip(false);
+        } else {
+            return ItemAttributeModifiers.EMPTY;
+        }
     }
 
     @Override
@@ -53,5 +68,8 @@ public class QuantumArmorItem extends ArmorItem {
         String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
         list.add(Component.translatable("attribute.modifier.plus.0", oneQuarterInfinity, Component.translatable("attribute.name.generic.armor"))
                 .withStyle(ChatFormatting.BLUE));
+        if (type == Type.CHESTPLATE) {
+            list.add(MIText.AllowCreativeFlight.text().withStyle(ChatFormatting.BLUE));
+        }
     }
 }

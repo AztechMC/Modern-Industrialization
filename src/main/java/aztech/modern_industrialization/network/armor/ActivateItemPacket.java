@@ -25,9 +25,7 @@ package aztech.modern_industrialization.network.armor;
 
 import aztech.modern_industrialization.items.ActivatableItem;
 import aztech.modern_industrialization.network.BasePacket;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,12 +33,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public record ActivateItemPacket(EquipmentSlot slot, boolean activated) implements BasePacket {
-    public static final StreamCodec<ByteBuf, ActivateItemPacket> STREAM_CODEC = ByteBufCodecs
-            .fromCodec(RecordCodecBuilder.create(instance -> instance
-                    .group(
-                            EquipmentSlot.CODEC.fieldOf("slot").forGetter(ActivateItemPacket::slot),
-                            Codec.BOOL.fieldOf("activated").forGetter(ActivateItemPacket::activated))
-                    .apply(instance, ActivateItemPacket::new)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ActivateItemPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.fromCodec(EquipmentSlot.CODEC),
+            ActivateItemPacket::slot,
+            ByteBufCodecs.BOOL,
+            ActivateItemPacket::activated,
+            ActivateItemPacket::new);
 
     @Override
     public void handle(Context ctx) {

@@ -31,10 +31,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public record ActivateItemPacket(EquipmentSlot slot, boolean activated) implements BasePacket {
     public static final StreamCodec<RegistryFriendlyByteBuf, ActivateItemPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(EquipmentSlot.CODEC),
+            NeoForgeStreamCodecs.enumCodec(EquipmentSlot.class),
             ActivateItemPacket::slot,
             ByteBufCodecs.BOOL,
             ActivateItemPacket::activated,

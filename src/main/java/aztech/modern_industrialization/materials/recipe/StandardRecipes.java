@@ -34,6 +34,7 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.ShapelessRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
@@ -54,7 +55,7 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
                 .exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, ORE, 1, "deepslate_to_ore", "   ", " x ", "   ").addPart('x', ORE_DEEPSLATE);
+        new ShapelessRecipeBuilder(ctx, ORE, 1, "deepslate_to_ore").addPart(ORE_DEEPSLATE);
 
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', CABLE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE)
@@ -203,8 +204,8 @@ public final class StandardRecipes {
             new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "yxx", "xxx", "xxx")
                     .addPart('y', smallPart)
                     .addTaggedPart('x', smallPart);
-            new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart.key() + "_from_" + bigPart.key(), "x")
-                    .addPart('x', bigPart);
+            new ShapelessRecipeBuilder(ctx, smallPart, 9, smallPart.key() + "_from_" + bigPart.key())
+                    .addPart(bigPart);
         }
 
         if (packer) {

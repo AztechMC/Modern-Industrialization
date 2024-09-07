@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.mixin;
 
+import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
+import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import java.util.function.Consumer;
@@ -41,11 +43,16 @@ import org.spongepowered.asm.mixin.injection.At;
  * still display the defaulted attribute. This is because {@link ItemStack#addAttributeTooltips(Consumer, Player)} directly uses
  * {@link ItemStack#getOrDefault(DataComponentType, Object)} to get the item attribute modifiers rather than
  * {@link IItemStackExtension#getAttributeModifiers()}. Despite the comment in the code saying otherwise, this is the cause of the issue.
+ * <br>
+ * <br>
+ * This is a workaround for an issue in NeoForge. This fix is only applied to the relevant items (GraviChestplate & Quantum Armor).
  */
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
     @WrapOperation(method = "addAttributeTooltips", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getOrDefault(Lnet/minecraft/core/component/DataComponentType;Ljava/lang/Object;)Ljava/lang/Object;"))
     private Object addAttributeTooltips(ItemStack instance, DataComponentType dataComponentType, Object defaultValue, Operation<Object> original) {
-        return instance.getAttributeModifiers();
+        Item item = instance.getItem();
+        return item instanceof GraviChestPlateItem || item instanceof QuantumArmorItem ? instance.getAttributeModifiers()
+                : original.call(instance, dataComponentType, defaultValue);
     }
 }

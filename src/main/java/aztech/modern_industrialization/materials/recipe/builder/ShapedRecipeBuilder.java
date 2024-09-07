@@ -147,6 +147,18 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     @Override
     public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
+            int totalItems = 0;
+            for (String row : pattern) {
+                for (char c : row.toCharArray()) {
+                    if (c != ' ') {
+                        totalItems++;
+                    }
+                }
+            }
+            if (totalItems <= 1) {
+                throw new IllegalStateException("Shaped recipe should have at least 2 items.");
+            }
+
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
             recipeOutput.accept(MI.id(fullId), new ShapedRecipe(
                     "",

@@ -1,13 +1,10 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "x": {
+  "ingredients": [
+    {
       "item": "modern_industrialization:le_uranium_dust"
     }
-  },
-  "pattern": [
-    "x"
   ],
   "result": {
     "count": 9,

@@ -1,15 +1,10 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "x": {
+  "ingredients": [
+    {
       "item": "minecraft:deepslate_coal_ore"
     }
-  },
-  "pattern": [
-    "   ",
-    " x ",
-    "   "
   ],
   "result": {
     "count": 1,

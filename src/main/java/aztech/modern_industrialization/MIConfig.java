@@ -86,11 +86,13 @@ public class MIConfig implements ConfigData {
     public boolean enableInterMachineConnectedTextures = false;
     @EnglishTranslation(value = "Space between the top of the screen and the Jetpack/GraviChestPlate overlay text.")
     public int armorHudYPosition = 4;
+    @EnglishTranslation(value = "Base amount of items transferred by item pipes every 3 seconds.")
+    public int baseItemPipeTransfer = 16;
 
     @ConfigEntry.Gui.Excluded
     private transient volatile static MIConfig instance = null;
 
-    public static synchronized MIConfig getConfig() {
+    public static MIConfig getConfig() {
         MIConfig config = instance;
         if (config == null) {
             synchronized (MIConfig.class) {

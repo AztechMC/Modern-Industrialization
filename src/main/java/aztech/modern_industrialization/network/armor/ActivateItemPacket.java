@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
 
 public record ActivateItemPacket(EquipmentSlot slot, boolean activated) implements BasePacket {
     public static final StreamCodec<ByteBuf, ActivateItemPacket> STREAM_CODEC = ByteBufCodecs
-            .fromCodec(RecordCodecBuilder.create((instance) -> instance
+            .fromCodec(RecordCodecBuilder.create(instance -> instance
                     .group(
                             EquipmentSlot.CODEC.fieldOf("slot").forGetter(ActivateItemPacket::slot),
                             Codec.BOOL.fieldOf("activated").forGetter(ActivateItemPacket::activated))

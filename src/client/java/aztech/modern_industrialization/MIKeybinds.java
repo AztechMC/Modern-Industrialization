@@ -51,14 +51,14 @@ public class MIKeybinds {
     }
 
     public static void init(RegisterKeyMappingsEvent event) {
-        MAPPINGS.forEach((m) -> event.register(m.holder().get()));
+        MAPPINGS.forEach(m -> event.register(m.holder().get()));
     }
 
     public static final String CATEGORY = Util.makeDescriptionId("key.categories", MI.id(MI.ID));
 
     public static final Keybind TOGGLE_FLIGHT = create(
             "toggle_flight",
-            (id) -> new KeyMapping(
+            id -> new KeyMapping(
                     id,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -66,13 +66,13 @@ public class MIKeybinds {
                     CATEGORY),
             toggleableItemAction(
                     EquipmentSlot.CHEST,
-                    (i) -> i.is(MIItem.DIESEL_JETPACK.asItem()) || i.is(MIItem.GRAVICHESTPLATE.asItem()),
+                    i -> i.is(MIItem.DIESEL_JETPACK.asItem()) || i.is(MIItem.GRAVICHESTPLATE.asItem()),
                     (player, activated) -> {
                     }));
 
     public static final Keybind TOGGLE_3_BY_3 = create(
             "toggle_3x3",
-            (id) -> new KeyMapping(
+            id -> new KeyMapping(
                     id,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -80,7 +80,7 @@ public class MIKeybinds {
                     CATEGORY),
             toggleableItemAction(
                     EquipmentSlot.MAINHAND,
-                    (i) -> i.is(MIItem.STEAM_MINING_DRILL.asItem()),
+                    i -> i.is(MIItem.STEAM_MINING_DRILL.asItem()),
                     (player, activated) -> player.displayClientMessage((activated ? MIText.ToolSwitched3x3 : MIText.ToolSwitchedNo3x3).text(),
                             true)));
 

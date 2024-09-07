@@ -26,6 +26,7 @@ package aztech.modern_industrialization.pipes.item;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MIComponents;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
@@ -300,7 +301,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         int getMoves() {
             var upgradeData = upgradeStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
             int extraExtractedItems = upgradeData == null ? 0 : upgradeData.maxExtractedItems();
-            return 16 + (extraExtractedItems * upgradeStack.getCount());
+            return MIConfig.getConfig().baseItemPipeTransfer + (extraExtractedItems * upgradeStack.getCount());
         }
 
         private void dropUpgrades(Level world, BlockPos pos) {

@@ -39,6 +39,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
@@ -59,6 +60,7 @@ public class MIKeybinds {
             "toggle_flight",
             (id) -> new KeyMapping(
                     id,
+                    KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_V,
                     CATEGORY),
@@ -72,6 +74,7 @@ public class MIKeybinds {
             "toggle_3x3",
             (id) -> new KeyMapping(
                     id,
+                    KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_Y,
                     CATEGORY),

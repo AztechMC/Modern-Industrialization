@@ -30,6 +30,7 @@ import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
+import aztech.modern_industrialization.machines.components.OverdriveComponent;
 import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -72,6 +73,10 @@ public class SlotPanel {
 
         public Server withCasing(CasingComponent casingComponent) {
             return addSlot(SlotType.CASINGS, () -> casingComponent.getDrop().copy(), casingComponent::setCasingServer);
+        }
+
+        public Server withOverdrive(OverdriveComponent overdriveComponent) {
+            return addSlot(SlotType.OVERDRIVE_MODULE, () -> overdriveComponent.getDrop().copy(), overdriveComponent::setStackServer);
         }
 
         private Server addSlot(SlotType type, Supplier<ItemStack> getStack, BiConsumer<MachineBlockEntity, ItemStack> setStack) {
@@ -125,9 +130,9 @@ public class SlotPanel {
     public enum SlotType {
         REDSTONE_MODULE(SlotGroup.REDSTONE_MODULE, 1, MIItem.REDSTONE_CONTROL_MODULE::is, 36, 80, MIText.AcceptsRedstoneControlModule),
         UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.getExtraEu(stack.getItem()) > 0, 0, 80, MIText.AcceptsUpgrades),
-        // Assumes that the default casing is always the LV casing for now
+        // Assumes that the default casing is always the LV casing for now,
         CASINGS(SlotGroup.CASING, 1, stack -> CasingComponent.getCasingTier(stack.getItem()) != null, 18, 80, MIText.AcceptsMachineHull),
-        ;
+        OVERDRIVE_MODULE(SlotGroup.OVERDRIVE_MODULE, 1, MIItem.OVERDRIVE_MODULE::is, 0, 98, MIText.AcceptsOverdriveModule);
 
         public final SlotGroup group;
         public final int slotLimit;

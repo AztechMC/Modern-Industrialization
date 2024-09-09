@@ -47,10 +47,12 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
     public DistillationTowerBlockEntity(BEP bep) {
         super(bep, "distillation_tower", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
-        this.registerComponents(upgrades);
+        this.overdrive = new OverdriveComponent();
+        this.registerComponents(upgrades, overdrive);
         registerGuiComponent(new SlotPanel.Server(this)
                 .withRedstoneControl(redstoneControl)
-                .withUpgrades(upgrades));
+                .withUpgrades(upgrades)
+                .withOverdrive(overdrive));
 
         registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
             @Override
@@ -69,6 +71,7 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
     }
 
     private final UpgradeComponent upgrades;
+    private final OverdriveComponent overdrive;
 
     @Override
     public MachineRecipeType recipeType() {
@@ -83,6 +86,11 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
     @Override
     public long getMaxRecipeEu() {
         return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
+    }
+
+    @Override
+    public boolean isOverdriving() {
+        return overdrive.shouldOverdrive();
     }
 
     @Override

@@ -79,6 +79,9 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);
         }
+        if (!result.consumesAction()) {
+            result = mapComponentOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
+        }
         return result;
     }
 

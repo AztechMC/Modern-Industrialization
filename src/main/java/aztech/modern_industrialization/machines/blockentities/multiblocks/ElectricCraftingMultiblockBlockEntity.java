@@ -36,14 +36,17 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraft
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
         this.upgrades = new UpgradeComponent();
+        this.overdrive = new OverdriveComponent();
         this.registerComponents(upgrades);
         registerGuiComponent(new SlotPanel.Server(this)
                 .withRedstoneControl(redstoneControl)
-                .withUpgrades(upgrades));
+                .withUpgrades(upgrades)
+                .withOverdrive(overdrive));
     }
 
     private final MachineRecipeType recipeType;
     private final UpgradeComponent upgrades;
+    private final OverdriveComponent overdrive;
 
     @Override
     public MachineRecipeType recipeType() {
@@ -58,5 +61,10 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraft
     @Override
     public long getMaxRecipeEu() {
         return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
+    }
+
+    @Override
+    public boolean isOverdriving() {
+        return overdrive.shouldOverdrive();
     }
 }

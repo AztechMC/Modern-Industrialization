@@ -41,7 +41,7 @@ jobs:
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
         run: ./gradlew modrinth
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: modern-industrialization ${{ github.event.release.tag_name }}
           path: build/libs

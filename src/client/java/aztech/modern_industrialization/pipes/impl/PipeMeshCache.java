@@ -31,16 +31,13 @@ import aztech.modern_industrialization.thirdparty.fabricrendering.MeshBuilderImp
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.util.NbtHelper;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockAndTintGetter;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,7 +134,7 @@ public class PipeMeshCache implements PipeRenderer {
      */
     public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot,
             PipeEndpointType[][] connections,
-            CompoundTag customData) {
+            @Nullable Object customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
         int[] renderTypes = new int[6];
@@ -160,8 +157,7 @@ public class PipeMeshCache implements PipeRenderer {
         }
 
         // Fluid handling logic
-        if (customData.contains("fluid")) {
-            FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid", Minecraft.getInstance().player.registryAccess());
+        if (customData instanceof FluidVariant fluid) {
             TextureAtlasSprite still = FluidVariantRendering.getSprite(fluid);
             int color = FluidVariantRendering.getColor(fluid, view, pos);
             ctx.pushTransform(quad -> {
@@ -197,7 +193,7 @@ public class PipeMeshCache implements PipeRenderer {
         centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder).outputTo(ctx.getEmitter());
 
         // Fluid handling logic
-        if (customData.contains("fluid")) {
+        if (customData instanceof FluidVariant) {
             ctx.popTransform();
         }
     }

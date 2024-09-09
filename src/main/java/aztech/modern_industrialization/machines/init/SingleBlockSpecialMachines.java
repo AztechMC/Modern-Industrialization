@@ -91,7 +91,7 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", CableTier.HV.casing, true, true, true);
         MachineRegistrationHelper.addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
-        MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.EV.casing, true, false, true, true);
+        MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.SUPERCONDUCTOR.casing, true, false, true, true);
     }
 
     private static void registerTransformer(CableTier low, CableTier up) {

@@ -29,7 +29,6 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.BlockAndTintGetter;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +51,7 @@ public interface PipeRenderer {
      *                    connection type or null for no connection.
      */
     void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
-            CompoundTag customData);
+            @Nullable Object customData);
 
     interface Factory {
         Collection<Material> getSpriteDependencies();

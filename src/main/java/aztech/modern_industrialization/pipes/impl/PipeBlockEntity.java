@@ -491,12 +491,16 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     public ModelData getModelData() {
         PipeNetworkType[] types = new PipeNetworkType[connections.size()];
         PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
-        CompoundTag[] customData = new CompoundTag[connections.size()];
+        @Nullable
+        Object[] customData = new Object[connections.size()];
         int i = 0;
         for (Map.Entry<PipeNetworkType, PipeEndpointType[]> entry : connections.entrySet()) {
             types[i] = entry.getKey();
             renderedConnections[i] = Arrays.copyOf(entry.getValue(), 6);
-            customData[i] = this.customData.get(entry.getKey());
+            var data = this.customData.get(entry.getKey());
+            if (data.contains("fluid")) {
+                customData[i] = NbtHelper.getFluidCompatible(data, "fluid", level.registryAccess());
+            }
             i++;
         }
         return ModelData.builder()
@@ -538,7 +542,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             @Nullable BlockState camouflage,
             PipeNetworkType[] types,
             PipeEndpointType[][] renderedConnections,
-            CompoundTag[] customData) {
+            @Nullable Object[] customData) {
         public static final ModelProperty<RenderAttachment> KEY = new ModelProperty<>();
     }
 

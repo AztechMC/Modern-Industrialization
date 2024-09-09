@@ -35,7 +35,7 @@ jobs:
         ! grep -q FATAL runs/server/logs/latest.log
         ! grep -q JsonSyntaxException runs/server/logs/latest.log
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Modern Industrialization ${{ steps.var.outputs.commit_hash }}
         path: build/libs

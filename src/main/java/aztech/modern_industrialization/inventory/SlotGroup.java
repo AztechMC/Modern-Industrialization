@@ -31,4 +31,5 @@ public enum SlotGroup {
     UPGRADES,
     CASING,
     REDSTONE_MODULE,
+    OVERDRIVE_MODULE,
 }

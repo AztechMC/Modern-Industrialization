@@ -99,6 +99,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
         long getMaxRecipeEu();
 
+        default boolean isOverdriving() {
+            return false;
+        }
+
         // can't use getWorld() or the remapping will fail
         Level getCrafterWorld();
 
@@ -122,7 +126,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     private final Inventory inventory;
     private final Behavior behavior;
 
+    @Nullable
     private RecipeHolder<MachineRecipe> activeRecipe = null;
+    @Nullable
     private ResourceLocation delayedActiveRecipe;
 
     private long usedEnergy;
@@ -216,19 +222,27 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // PROCESS RECIPE TICK
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
-        if (activeRecipe != null && (usedEnergy > 0 || recipeStarted) && isEnabled) {
-            recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
-            eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT)
-                    : 0;
-            isActive = eu > 0;
-            usedEnergy += eu;
+        if (activeRecipe != null && isEnabled) {
+            if (usedEnergy > 0 || recipeStarted) {
+                recipeMaxEu = getRecipeMaxEu(activeRecipe.value().eu, recipeEnergy, efficiencyTicks);
+                eu = activeRecipe.value().conditionsMatch(conditionContext)
+                        ? behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT)
+                        : 0;
+                isActive = eu > 0;
+                usedEnergy += eu;
 
-            if (usedEnergy == recipeEnergy) {
-                putItemOutputs(activeRecipe.value(), false, false);
-                putFluidOutputs(activeRecipe.value(), false, false);
-                clearLocks();
-                usedEnergy = 0;
-                finishedRecipe = true;
+                if (usedEnergy == recipeEnergy) {
+                    putItemOutputs(activeRecipe.value(), false, false);
+                    putFluidOutputs(activeRecipe.value(), false, false);
+                    clearLocks();
+                    usedEnergy = 0;
+                    finishedRecipe = true;
+                }
+            } else if (behavior.isOverdriving()) {
+                eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(recipeMaxEu, ACT) : 0;
+                isActive = eu > 0;
+            } else {
+                isActive = false;
             }
         } else {
             isActive = false;

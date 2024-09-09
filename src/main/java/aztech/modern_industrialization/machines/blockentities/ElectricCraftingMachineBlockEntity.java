@@ -53,6 +53,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.redstoneControl = new RedstoneControlComponent();
         this.casing = new CasingComponent();
         this.upgrades = new UpgradeComponent();
+        this.overdrive = new OverdriveComponent();
         this.energy = new EnergyComponent(this, casing::getEuCapacity);
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
@@ -60,13 +61,15 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         registerGuiComponent(new SlotPanel.Server(this)
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
-                .withCasing(casing));
-        this.registerComponents(redstoneControl, casing, upgrades, energy);
+                .withCasing(casing)
+                .withOverdrive(overdrive));
+        this.registerComponents(redstoneControl, casing, upgrades, overdrive, energy);
     }
 
     private final RedstoneControlComponent redstoneControl;
     private final CasingComponent casing;
     private final UpgradeComponent upgrades;
+    private final OverdriveComponent overdrive;
     private final EnergyComponent energy;
     private final MIEnergyStorage insertable;
 
@@ -107,6 +110,9 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
             result = upgrades.onUse(this, player, hand);
         }
         if (!result.consumesAction()) {
+            result = overdrive.onUse(this, player, hand);
+        }
+        if (!result.consumesAction()) {
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         return result;
@@ -115,6 +121,11 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     @Override
     public long getMaxRecipeEu() {
         return tier.getMaxEu() + upgrades.getAddMaxEUPerTick();
+    }
+
+    @Override
+    public boolean isOverdriving() {
+        return overdrive.shouldOverdrive();
     }
 
     @Override

@@ -1691,6 +1691,7 @@
   "text.modern_industrialization.SteamDrillProfit": "- Press %s to toggle 3x3 mining.",
   "text.modern_industrialization.SteamDrillToggle": "- Toggle Silk Touch with %s + %s.",
   "text.modern_industrialization.SteamDrillWaterHelp": "- Press %s on still or flowing water to fill.",
+  "text.modern_industrialization.SuperconductorPowerOnly": "Can only connect to Superconductor cables and machines. Must be directly connected to a machine on at least one end of the tunnel.",
   "text.modern_industrialization.Temperature": "Temperature: %d °C",
   "text.modern_industrialization.TemperatureMode": "Temperature",
   "text.modern_industrialization.ThermalEfficiency": "Thermal Efficiency %s %%",

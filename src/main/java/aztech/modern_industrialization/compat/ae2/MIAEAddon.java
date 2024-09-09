@@ -73,6 +73,8 @@ public class MIAEAddon {
 
     public static void commonSetup(FMLCommonSetupEvent event) {
         P2PTunnelAttunement.registerAttunementTag(ENERGY_P2P_TUNNEL);
+
+        MITooltips.TooltipAttachment.of(ENERGY_P2P_TUNNEL, MIText.SuperconductorPowerOnly);
     }
 
     public static void registerPartCapabilities(RegisterPartCapabilitiesEvent event) {

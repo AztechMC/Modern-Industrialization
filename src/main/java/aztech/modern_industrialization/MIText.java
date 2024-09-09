@@ -245,6 +245,7 @@ public enum MIText {
     SteamDrillProfit("- Press %s to toggle 3x3 mining."),
     SteamDrillToggle("- Toggle Silk Touch with %s + %s."),
     SteamDrillWaterHelp("- Press %s on still or flowing water to fill."),
+    SuperconductorPowerOnly("Can only connect to Superconductor cables and machines. Must be directly connected to a machine on at least one end of the tunnel."),
     Temperature("Temperature: %d °C"),
     TemperatureMode("Temperature"),
     ThermalEfficiency("Thermal Efficiency %s %%"),

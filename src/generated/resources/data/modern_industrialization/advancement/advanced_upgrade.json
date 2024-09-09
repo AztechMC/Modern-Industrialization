@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:electronic_circuit",
+  "parent": "modern_industrialization:basic_upgrade",
   "criteria": {
     "checkInv": {
       "conditions": {

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
@@ -48,6 +49,7 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
         super(bep, name, orientationParams, shapeTemplates);
 
         this.redstoneControl = new RedstoneControlComponent();
+        registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, () -> 0));
         registerComponents(redstoneControl);
     }
 

@@ -29,7 +29,6 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -48,7 +47,6 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(this, inventory, getBehavior());
         this.isActive = new IsActiveComponent();
-        registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter));
         registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> operatingState != OperatingState.NOT_MATCHED));
         registerComponents(activeShape, crafter, isActive);
     }

@@ -31,6 +31,7 @@ import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 public class GunpowderOverclockGuiClient implements GuiComponentClient {
     final GunpowderOverclockGui.Parameters params;
@@ -66,21 +67,25 @@ public class GunpowderOverclockGuiClient implements GuiComponentClient {
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (remTick > 0) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                    int seconds = remTick / 20;
-                    int hours = seconds / 3600;
-                    int minutes = (seconds % 3600) / 60;
-
-                    String time = String.format("%d", seconds);
-
-                    if (hours > 0) {
-                        time = String.format("%d:%02d:%02d", hours, minutes, seconds % 60);
-                    } else if (minutes > 0) {
-                        time = String.format("%d:%02d", minutes, seconds % 60);
-                    }
-
-                    guiGraphics.renderTooltip(font, MIText.GunpowderTime.text(time), cursorX, cursorY);
+                    guiGraphics.renderTooltip(font, formatOverclock(remTick), cursorX, cursorY);
                 }
             }
+        }
+
+        public static Component formatOverclock(int remTick) {
+            int seconds = remTick / 20;
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+
+            String time = String.format("%d", seconds);
+
+            if (hours > 0) {
+                time = String.format("%d:%02d:%02d", hours, minutes, seconds % 60);
+            } else if (minutes > 0) {
+                time = String.format("%d:%02d", minutes, seconds % 60);
+            }
+
+            return MIText.GunpowderTime.text(time);
         }
     }
 }

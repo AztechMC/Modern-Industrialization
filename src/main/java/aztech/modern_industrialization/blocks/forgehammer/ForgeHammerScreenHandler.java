@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.forgehammer;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -335,7 +336,9 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return this.context.evaluate((level, pos) -> {
+            return level.getBlockState(pos).is(MIBlock.FORGE_HAMMER.asBlock()) && player.canInteractWithBlock(pos, 4.0);
+        }, true);
     }
 
     public void removed(Player player) {

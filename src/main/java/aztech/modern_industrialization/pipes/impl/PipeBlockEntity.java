@@ -53,6 +53,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -516,12 +517,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     @Override
     public boolean isWithinUseDistance(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this) {
-            return false;
-        } else {
-            return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D,
-                    (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
-        }
+        return Container.stillValidBlockEntity(this, player);
     }
 
     @Override

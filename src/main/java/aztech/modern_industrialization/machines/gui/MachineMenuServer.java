@@ -28,9 +28,9 @@ import aztech.modern_industrialization.network.machines.MachineComponentSyncPack
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 
@@ -66,12 +66,7 @@ public class MachineMenuServer extends MachineMenuCommon {
 
     @Override
     public boolean stillValid(Player player) {
-        BlockPos pos = blockEntity.getBlockPos();
-        if (player.level().getBlockEntity(pos) != blockEntity) {
-            return false;
-        } else {
-            return player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
-        }
+        return Container.stillValidBlockEntity(blockEntity, player);
     }
 
     @Override

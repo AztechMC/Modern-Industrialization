@@ -27,6 +27,7 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.OverclockComponent;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -53,6 +54,8 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
 
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
         this.recipeType = recipeType;
+        registerGuiComponent(
+                new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, overclockComponent::getTicks));
         this.registerComponents(overclockComponent);
     }
 

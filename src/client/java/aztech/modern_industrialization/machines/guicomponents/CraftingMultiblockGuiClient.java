@@ -43,6 +43,7 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     int maxEfficiencyTicks;
     long currentRecipeEu;
     long baseRecipeEu;
+    int remainingOverclockTicks;
 
     public CraftingMultiblockGuiClient(RegistryFriendlyByteBuf buf) {
         readCurrentData(buf);
@@ -61,6 +62,7 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                 baseRecipeEu = buf.readLong();
             }
         }
+        remainingOverclockTicks = buf.readVarInt();
     }
 
     @Override
@@ -79,16 +81,17 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                     CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
             Font font = minecraftClient.font;
 
-            guiGraphics.drawString(font, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 9, y + 23,
+            int deltaY = 23;
+
+            guiGraphics.drawString(font, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 9, y + deltaY,
                     isShapeValid ? 0xFFFFFF : 0xFF0000, false);
+            deltaY += 11;
+
             if (isShapeValid) {
-                // TODO: what is this weird check?
-                guiGraphics.drawString(font, hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9,
-                        y + 34, 0xFFFFFF, false);
+                guiGraphics.drawString(font, MIText.MultiblockStatusActive.text(), x + 9, y + deltaY, 0xFFFFFF, false);
+                deltaY += 11;
+
                 if (hasActiveRecipe) {
-
-                    int deltaY = 45;
-
                     guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", progress * 100) + " %"), x + 9, y + deltaY, 0xFFFFFF,
                             false);
                     deltaY += 11;
@@ -105,7 +108,13 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
 
                     guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + deltaY, 0xFFFFFF,
                             false);
+                    deltaY += 11;
                 }
+            }
+
+            if (remainingOverclockTicks > 0) {
+                guiGraphics.drawString(font, GunpowderOverclockGuiClient.Renderer.formatOverclock(remainingOverclockTicks), x + 9, y + deltaY,
+                        0xFFFFFF, false);
             }
         }
 

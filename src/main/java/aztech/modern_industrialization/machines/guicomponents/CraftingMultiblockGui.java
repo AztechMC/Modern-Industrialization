@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -36,11 +37,19 @@ public class CraftingMultiblockGui {
         private final CrafterComponent crafter;
         private final Supplier<Boolean> isShapeValid;
         private final Supplier<Float> progressSupplier;
+        private final IntSupplier remainingOverclockTicks;
 
+        @Deprecated(forRemoval = true)
         public Server(Supplier<Boolean> isShapeValid, Supplier<Float> progressSupplier, CrafterComponent crafter) {
+            this(isShapeValid, progressSupplier, crafter, () -> 0);
+        }
+
+        public Server(Supplier<Boolean> isShapeValid, Supplier<Float> progressSupplier, CrafterComponent crafter,
+                IntSupplier remainingOverclockTicks) {
             this.isShapeValid = isShapeValid;
             this.crafter = crafter;
             this.progressSupplier = progressSupplier;
+            this.remainingOverclockTicks = remainingOverclockTicks;
         }
 
         @Override
@@ -48,12 +57,12 @@ public class CraftingMultiblockGui {
             if (isShapeValid.get()) {
                 if (crafter.hasActiveRecipe()) {
                     return new Data(progressSupplier.get(), crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(),
-                            crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu());
+                            crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu(), remainingOverclockTicks.getAsInt());
                 } else {
-                    return new Data(true);
+                    return new Data(true, remainingOverclockTicks.getAsInt());
                 }
             } else {
-                return new Data();
+                return new Data(remainingOverclockTicks.getAsInt());
             }
         }
 
@@ -66,7 +75,8 @@ public class CraftingMultiblockGui {
             }
             return cachedData.isShapeValid != isShapeValid.get() || cachedData.hasActiveRecipe != crafter.hasActiveRecipe()
                     || cachedData.progress != progressSupplier.get() || crafter.getEfficiencyTicks() != cachedData.efficiencyTicks
-                    || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks || recipe;
+                    || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks || recipe
+                    || cachedData.remainingOverclockTicks != remainingOverclockTicks.getAsInt();
 
         }
 
@@ -92,7 +102,7 @@ public class CraftingMultiblockGui {
             } else {
                 buf.writeBoolean(false);
             }
-
+            buf.writeVarInt(remainingOverclockTicks.getAsInt());
         }
 
         @Override
@@ -109,12 +119,13 @@ public class CraftingMultiblockGui {
         final int maxEfficiencyTicks;
         final long currentRecipeEu;
         final long baseRecipeEu;
+        final int remainingOverclockTicks;
 
-        private Data() {
-            this(false);
+        private Data(int remainingOverclockTicks) {
+            this(false, remainingOverclockTicks);
         }
 
-        private Data(boolean isShapeValid) {
+        private Data(boolean isShapeValid, int remainingOverclockTicks) {
             this.isShapeValid = isShapeValid;
             this.hasActiveRecipe = false;
             this.efficiencyTicks = 0;
@@ -122,9 +133,11 @@ public class CraftingMultiblockGui {
             this.maxEfficiencyTicks = 0;
             this.currentRecipeEu = 0;
             this.baseRecipeEu = 0;
+            this.remainingOverclockTicks = remainingOverclockTicks;
         }
 
-        private Data(float progress, int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu) {
+        private Data(float progress, int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu,
+                int remainingOverclockTicks) {
             this.efficiencyTicks = efficiencyTicks;
             this.progress = progress;
             this.maxEfficiencyTicks = maxEfficiencyTicks;
@@ -132,6 +145,7 @@ public class CraftingMultiblockGui {
             this.hasActiveRecipe = true;
             this.currentRecipeEu = currentRecipeEu;
             this.baseRecipeEu = baseRecipeEu;
+            this.remainingOverclockTicks = remainingOverclockTicks;
         }
     }
 

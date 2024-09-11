@@ -201,7 +201,7 @@ public final class StandardRecipes {
     private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, PartKeyProvider smallPart, PartKeyProvider bigPart, boolean packer) {
         if (ctx.hasInternalPart(smallPart) || ctx.hasInternalPart(bigPart)) {
             // Don't add recipe if it's all external (vanilla already has it)
-            new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "yxx", "xxx", "xxx")
+            new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart.key() + "_from_" + smallPart.key(), "xxx", "xyx", "xxx")
                     .addPart('y', smallPart)
                     .addTaggedPart('x', smallPart);
             new ShapelessRecipeBuilder(ctx, smallPart, 9, smallPart.key() + "_from_" + bigPart.key())

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.client.DynamicTooltip;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,14 +37,17 @@ import net.minecraft.util.FormattedCharSequence;
 class PriorityDisplay extends AbstractWidget {
     private final Supplier<Integer> priorityGetter;
     private final Font textRenderer;
+    private final BooleanSupplier isEnabled;
 
     public PriorityDisplay(int x, int y, int width, int height, Component message, Supplier<List<Component>> tooltipSupplier,
             Supplier<Integer> priorityGetter,
-            Font textRenderer) {
+            Font textRenderer,
+            BooleanSupplier isEnabled) {
         super(x, y, width, height, message);
         setTooltip(new DynamicTooltip(tooltipSupplier));
         this.priorityGetter = priorityGetter;
         this.textRenderer = textRenderer;
+        this.isEnabled = isEnabled;
         this.active = false;
     }
 
@@ -60,6 +64,6 @@ class PriorityDisplay extends AbstractWidget {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         FormattedCharSequence orderedText = getMessage().getVisualOrderText();
         guiGraphics.drawString(textRenderer, orderedText, this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2,
-                this.getY() + (this.height - 8) / 2, 4210752, false);
+                this.getY() + (this.height - 8) / 2, isEnabled.getAsBoolean() ? 0x404040 : 0x707070, false);
     }
 }

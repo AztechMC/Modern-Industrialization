@@ -26,6 +26,7 @@ package aztech.modern_industrialization.pipes.gui;
 import aztech.modern_industrialization.client.DynamicTooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,15 +37,20 @@ import net.minecraft.util.Mth;
 
 class PriorityButton extends Button {
     private final int u;
+    private final BooleanSupplier isEnabled;
 
-    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
+    public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, Supplier<List<Component>> tooltipSupplier,
+            BooleanSupplier isEnabled) {
         super(x, y, width, 12, Component.literal(message), onPress, Button.DEFAULT_NARRATION);
         this.u = u;
+        this.isEnabled = isEnabled;
         setTooltip(new DynamicTooltip(tooltipSupplier));
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        this.active = this.isEnabled.getAsBoolean();
+
         Minecraft minecraftClient = Minecraft.getInstance();
         Font font = minecraftClient.font;
         int v = this.isHoveredOrFocused() ? 40 + this.height : 40;

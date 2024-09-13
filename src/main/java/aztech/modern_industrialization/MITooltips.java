@@ -68,7 +68,8 @@ public class MITooltips {
     public static final PriorityQueue<TooltipAttachment> TOOLTIPS = new PriorityQueue<>();
 
     public static final Style DEFAULT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
-    public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
+    public static final Style HIGHLIGHT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
+    public static final Style NUMBER_TEXT = HIGHLIGHT_STYLE;
 
     private static final Map<Class<?>, Style> DEFAULT_ARGUMENT_STYLE = new HashMap<>();
 

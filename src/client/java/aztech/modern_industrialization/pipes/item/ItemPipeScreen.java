@@ -70,8 +70,37 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             return lines;
         }));
         addConnectionTypeButton(148, 22, menu.pipeInterface);
-        addPriorityWidgets(35, 72, menu.pipeInterface, "insert", 0);
-        addPriorityWidgets(35, 86, menu.pipeInterface, "extract", 1);
+
+        addPriorityWidgets(35, 72, menu.pipeInterface, 0, makePriorityWidgetTooltip(0, true), () -> menu.pipeInterface.getConnectionType() != 2);
+        addPriorityWidgets(35, 86, menu.pipeInterface, 1, makePriorityWidgetTooltip(1, false), () -> menu.pipeInterface.getConnectionType() != 0);
+    }
+
+    private Supplier<List<Component>> makePriorityWidgetTooltip(int channel, boolean insert) {
+        return () -> {
+            List<Component> lines = new ArrayList<>();
+
+            MIText priorityText = insert ? MIText.PriorityInsert : MIText.PriorityExtract;
+            lines.add(priorityText.text(menu.pipeInterface.getPriority(channel)));
+
+            if (insert && menu.pipeInterface.getConnectionType() == 2) {
+                lines.add(MIText.PriorityNotApplicable.text(
+                        MIText.PipeConnectionTooltipExtractOnly.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
+                        MIText.PipeConnectionOut.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
+                        .setStyle(TextHelper.GRAY_TEXT));
+            } else if (!insert && menu.pipeInterface.getConnectionType() == 0) {
+                lines.add(MIText.PriorityNotApplicable.text(
+                        MIText.PipeConnectionTooltipInsertOnly.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
+                        MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
+                        .setStyle(TextHelper.GRAY_TEXT));
+            } else {
+                lines.add(MIText.PriorityItemHelp.text(
+                        MIText.PipeConnectionOut.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
+                        MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
+                        .setStyle(TextHelper.GRAY_TEXT));
+            }
+
+            return lines;
+        };
     }
 
     /**

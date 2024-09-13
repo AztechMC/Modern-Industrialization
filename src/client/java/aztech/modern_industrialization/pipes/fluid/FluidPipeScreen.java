@@ -58,7 +58,17 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
         addNetworkFluidButton();
         addConnectionTypeButton(148, 22, menu.iface);
-        addPriorityWidgets(33, 42, menu.iface, "transfer", 0);
+        addPriorityWidgets(33, 42, menu.iface, 0, () -> {
+            List<Component> lines = new ArrayList<>();
+
+            MIText priorityText = MIText.PriorityTransfer;
+            lines.add(priorityText.text(menu.iface.getPriority(0)));
+
+            MIText priorityTextHelp = MIText.PriorityTransferHelp;
+            lines.add(priorityTextHelp.text().setStyle(TextHelper.GRAY_TEXT));
+
+            return lines;
+        }, () -> true);
     }
 
     @Override

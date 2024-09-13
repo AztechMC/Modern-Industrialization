@@ -206,9 +206,10 @@ public enum MIText {
     PipeHelp1("Can be instantly retrieved by pressing %s with any Wrench."),
     PipeHelp2("Use %s + %s to connect directly the pipe to the target block."),
     PriorityExtract("Extract priority: %d"),
-    PriorityExtractHelp("Lower priorities first, only into higher priorities."),
     PriorityInsert("Insert priority: %d"),
-    PriorityInsertHelp("Higher priorities first."),
+    PriorityItemHelp(
+            "Items only move from lower extract (%s) priorities to equal or higher insert (%s) priorities. Greater differences take precedence."),
+    PriorityNotApplicable("Not applicable in %s mode (%s)."),
     PriorityTransfer("Transfer priority: %d"),
     PriorityTransferHelp("Pipes will interact with higher priorities first."),
     Progress("Progress: %s"),

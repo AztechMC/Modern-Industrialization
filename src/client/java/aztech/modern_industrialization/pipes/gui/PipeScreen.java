@@ -33,6 +33,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -66,44 +67,24 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {
-        Supplier<List<Component>> tooltip = () -> {
-            List<Component> lines = new ArrayList<>();
-
-            MIText priorityText = switch (tooltipType) {
-            case "transfer" -> MIText.PriorityTransfer;
-            case "insert" -> MIText.PriorityInsert;
-            case "extract" -> MIText.PriorityExtract;
-            default -> throw new IllegalArgumentException("tooltipType : " + tooltipType + " must be either transfer, insert or extract");
-            };
-
-            MIText priorityTextHelp = switch (tooltipType) {
-            case "transfer" -> MIText.PriorityTransferHelp;
-            case "insert" -> MIText.PriorityInsertHelp;
-            case "extract" -> MIText.PriorityExtractHelp;
-            default -> throw new IllegalArgumentException("tooltipTypeHelp : " + tooltipType + " must be either transfer, insert or extract");
-            };
-
-            lines.add(priorityText.text(priority.getPriority(channel)));
-            lines.add(priorityTextHelp.text().setStyle(TextHelper.GRAY_TEXT));
-            return lines;
-        };
-        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip);
-        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel, tooltip);
-        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel, tooltip);
-        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel, tooltip);
+    protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, int channel, Supplier<List<Component>> tooltip,
+            BooleanSupplier isEnabled) {
+        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip, isEnabled);
+        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel, tooltip, isEnabled);
+        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel, tooltip, isEnabled);
+        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel, tooltip, isEnabled);
         addRenderableWidget(
                 new PriorityDisplay(startX + 34 + this.leftPos, startY + this.topPos, 28, 12, Component.literal(""), tooltip,
                         () -> priority.getPriority(channel),
-                        font));
+                        font, isEnabled));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta, PriorityInterface priority,
-            int channel, Supplier<List<Component>> priorityTooltip) {
+            int channel, Supplier<List<Component>> priorityTooltip, BooleanSupplier isEnabled) {
         addRenderableWidget(new PriorityButton(x + this.leftPos, y + this.topPos, width, u, text, button -> {
             priority.incrementPriority(channel, delta);
             new IncrementPriorityPacket(menu.containerId, channel, delta).sendToServer();
-        }, priorityTooltip));
+        }, priorityTooltip, isEnabled));
     }
 
     protected int connectionTypeForward(ConnectionTypeInterface connectionType) {

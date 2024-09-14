@@ -149,7 +149,7 @@ public class CraftingMultiblockGui {
         }
     }
 
-    public static final int X = 4;
+    public static final int X = 5;
     public static final int Y = 16;
     public static final int W = 166;
     public static final int H = 80;

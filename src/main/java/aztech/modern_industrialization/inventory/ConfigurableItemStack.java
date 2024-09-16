@@ -36,6 +36,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -145,15 +146,10 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     @Override
     public long getRemainingCapacityFor(ItemVariant key) {
-        return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
-    }
-
-    @Override
-    public void setAmount(long amount) {
-        super.setAmount(amount);
         if (adjustedCapacity < amount) {
-            adjustedCapacity = (int) amount;
+            return 0; // Make sure we don't get negative counts if this happens!
         }
+        return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
     }
 
     /**
@@ -176,7 +172,8 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         if (!isIncrease) {
             delta = -delta;
         }
-        adjustedCapacity = Math.min(64, Math.max((int) amount, adjustedCapacity + delta));
+        adjustedCapacity = Mth.clamp(adjustedCapacity + delta, 0, 64);
+        notifyListeners();
     }
 
     public int getAdjustedCapacity() {

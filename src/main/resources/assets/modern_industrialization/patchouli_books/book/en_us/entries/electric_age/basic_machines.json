@@ -30,18 +30,6 @@
     {
       "type": "text",
       "text": "We strongly suggest that you automate Machine Hull, Analog Circuits, Motors, Pistons, Robot Arms and Conveyor Belts using Assemblers as soon as possible, that will make crafting electric machines basically free!"
-    },
-    {
-      "type": "spotlight",
-      "title": "Redstone Control Modules",
-      "item": "modern_industrialization:redstone_control_module",
-      "text": "A Redstone Control Module can be used to control the behavior of electric machines and multiblocks with redstone signals.$(br2)Configure the module in your hand, then insert it into the machine or multiblock controller."
-    },
-    {
-      "type": "spotlight",
-      "title": "Overclock Upgrades",
-      "item": "modern_industrialization:basic_upgrade",
-      "text": "Regular electric machines have an overclock capped at 32 EU/t, and electric multiblocks have an overclock capped at 128 EU/t.$(br2)In the machine or multiblock's menu, add upgades to increase its maximum overclock! Check REI for the exact amounts."
     }
   ],
   "sortnum": 105

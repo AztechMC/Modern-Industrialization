@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:chemical_reactor",
+  "parent": "modern_industrialization:basic_upgrade",
   "criteria": {
     "checkInv": {
       "conditions": {

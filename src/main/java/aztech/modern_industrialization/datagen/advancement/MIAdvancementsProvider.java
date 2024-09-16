@@ -212,8 +212,8 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         var quantumCircuit = createBasic(consumer, "quantum_circuit", mixedIngotIridium, AdvancementType.GOAL, "Mobius Strip Eigenvalues", "Craft a Quantum Circuit", existingFileHelper);
         var fusionReactor = createBasic(consumer, "fusion_reactor", quantumCircuit, AdvancementType.CHALLENGE, "Enslaved Star Core", "Craft a Fusion Reactor to produce insane amount of energy", existingFileHelper);
         var plasmaTurbine = createBasic(consumer, "plasma_turbine", fusionReactor, "Better than Nuclear Fission", "Craft a Plasma Turbine to transform Helium Plasma into energy", existingFileHelper);
-        var basicUpgrade = createBasic(consumer, "basic_upgrade", assembler, AdvancementType.GOAL, "Machine Speedup", "Craft a Basic Upgrade to increase the maximum speed of an electric recipe", existingFileHelper);
-        var advancedUpgrade = createBasic(consumer, "advanced_upgrade", chemicalReactor, "Machine Speedup-Speedup", "Craft a Advanced Upgrade", existingFileHelper);
+        var basicUpgrade = createBasic(consumer, "basic_upgrade", chemicalReactor, AdvancementType.GOAL, "Machine Speedup", "Craft a Basic Upgrade to increase the maximum speed of an electric recipe", existingFileHelper);
+        var advancedUpgrade = createBasic(consumer, "advanced_upgrade", basicUpgrade, "Machine Speedup-Speedup", "Craft a Advanced Upgrade", existingFileHelper);
         var turboUpgrade = createBasic(consumer, "turbo_upgrade", digitalCircuit, "Gotta go Fast", "Craft a Turbo Upgrade", existingFileHelper);
         var highlyAdvancedUpgrade = createBasic(consumer, "highly_advanced_upgrade", processingUnit, "I'm speed", "Craft an Highly Advanced Upgrade", existingFileHelper);
         var quantumUpgrade = createBasic(consumer, "quantum_upgrade", quantumCircuit, AdvancementType.GOAL, "Time Dilation", "Craft a Quantum Upgrade to unlock unlimited recipe speed", existingFileHelper);

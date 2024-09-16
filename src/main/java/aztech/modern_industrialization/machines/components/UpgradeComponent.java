@@ -23,17 +23,12 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -43,37 +38,13 @@ import net.minecraft.world.level.ItemLike;
 public class UpgradeComponent implements IComponent.ServerOnly, DropableComponent {
 
     private ItemStack itemStack = ItemStack.EMPTY;
-    private final static Map<ResourceLocation, Long> UPGRADES = new HashMap<>();
 
     public static long getExtraEu(ItemLike item) {
-        return UPGRADES.getOrDefault(BuiltInRegistries.ITEM.getKey(item.asItem()), 0L);
-    }
-
-    public static void registerUpgrade(ItemLike item, long extraEu) {
-        registerUpgrade(BuiltInRegistries.ITEM.getKey(item.asItem()), extraEu);
-    }
-
-    public static void registerUpgrade(ResourceLocation itemId, long extraEu) {
-        Objects.requireNonNull(itemId);
-
-        if (extraEu <= 0) {
-            throw new IllegalArgumentException("extraEu must be positive");
-        }
-
-        if (UPGRADES.containsKey(itemId)) {
-            throw new IllegalArgumentException("Upgrade already registered:" + itemId);
-        }
-
-        UPGRADES.put(itemId, extraEu);
+        var data = item.asItem().builtInRegistryHolder().getData(MIDataMaps.MACHINE_UPGRADES);
+        return data == null ? 0 : data.extraMaxEu();
     }
 
     static {
-        registerUpgrade(MIItem.BASIC_UPGRADE.asItem(), 2L);
-        registerUpgrade(MIItem.ADVANCED_UPGRADE.asItem(), 8L);
-        registerUpgrade(MIItem.TURBO_UPGRADE.asItem(), 32L);
-        registerUpgrade(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
-        registerUpgrade(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
-
         KubeJSProxy.instance.fireRegisterUpgradesEvent();
     }
 

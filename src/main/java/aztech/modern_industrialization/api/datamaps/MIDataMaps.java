@@ -45,6 +45,15 @@ public final class MIDataMaps {
             .synced(ItemPipeUpgrade.CODEC, true)
             .build();
 
+    /**
+     * Items that can be added to electric machines, to increase the maximum EU/t they can support.
+     */
+    public static final DataMapType<Item, MachineUpgrade> MACHINE_UPGRADES = DataMapType
+            .builder(
+                    MI.id("machine_upgrades"), Registries.ITEM, MachineUpgrade.CODEC)
+            .synced(MachineUpgrade.CODEC, true)
+            .build();
+
     private MIDataMaps() {
     }
 }

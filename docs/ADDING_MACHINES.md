@@ -18,15 +18,16 @@ MIMachineEvents.addEbfTiers(event => {
 ```
 
 ## Adding electric machine upgrades
-You can add electric machine upgrades using KubeJS.
-This will allow them to be used in all the electric machines to increase the maximum EU that the machine can handle.
-
-Example:
-```js
-MIMachineEvents.registerUpgrades(event => {
-  // id of the upgrade item, number of added EU per upgrade
-  event.register("minecraft:diamond", 42);
-});
+You can add electric machine upgrades using the `modern_industrialization:machine_upgrades` item data map.
+For example, in `data/modern_industrialization/data_maps/item/machine_upgrades.json`:
+```json
+{
+  "values": {
+    "minecraft:diamond": {
+      "extraMaxEu": 42
+    }
+  }
+}
 ```
 
 ## Registering a recipe type

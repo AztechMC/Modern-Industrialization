@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs.machine;
+package aztech.modern_industrialization.api.datamaps;
 
-import aztech.modern_industrialization.machines.components.UpgradeComponent;
-import dev.latvian.mods.kubejs.event.KubeEvent;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.ExtraCodecs;
 
-public class RegisterUpgradesEventJS implements KubeEvent {
-    public static void register(ResourceLocation itemId, long extraEu) {
-        UpgradeComponent.registerUpgrade(itemId, extraEu);
-    }
+public record MachineUpgrade(int extraMaxEu) {
+    public static final Codec<MachineUpgrade> CODEC = RecordCodecBuilder.create(
+            instance -> instance
+                    .group(ExtraCodecs.POSITIVE_INT.fieldOf("extraMaxEu").forGetter(MachineUpgrade::extraMaxEu))
+                    .apply(instance, MachineUpgrade::new));
 }

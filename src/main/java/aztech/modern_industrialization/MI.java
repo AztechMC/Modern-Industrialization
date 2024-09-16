@@ -199,6 +199,7 @@ public class MI {
         modBus.addListener(RegisterDataMapTypesEvent.class, event -> {
             event.register(MIDataMaps.FLUID_FUELS);
             event.register(MIDataMaps.ITEM_PIPE_UPGRADES);
+            event.register(MIDataMaps.MACHINE_UPGRADES);
         });
 
         if (MIConfig.loadAe2Compat()) {

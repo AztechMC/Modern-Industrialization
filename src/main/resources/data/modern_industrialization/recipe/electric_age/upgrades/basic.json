@@ -20,11 +20,6 @@
       "amount": 1
     }
   ],
-
-  "fluid_inputs": {
-    "fluid" : "modern_industrialization:polyethylene",
-    "amount" : 500
-  },
   "item_outputs": [
     {
       "item": "modern_industrialization:basic_upgrade",

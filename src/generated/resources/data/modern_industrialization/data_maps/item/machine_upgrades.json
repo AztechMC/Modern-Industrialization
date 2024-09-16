@@ -7,13 +7,13 @@
       "extraMaxEu": 2
     },
     "modern_industrialization:highly_advanced_upgrade": {
-      "extraMaxEu": 1024
+      "extraMaxEu": 512
     },
     "modern_industrialization:quantum_upgrade": {
       "extraMaxEu": 999999999
     },
     "modern_industrialization:turbo_upgrade": {
-      "extraMaxEu": 128
+      "extraMaxEu": 64
     }
   }
 }

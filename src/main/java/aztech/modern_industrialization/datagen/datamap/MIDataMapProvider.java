@@ -110,9 +110,9 @@ public class MIDataMapProvider extends DataMapProvider {
 
     private void gatherMachineUpgrades() {
         addMachineUpgrade(MIItem.BASIC_UPGRADE, 2);
-        addMachineUpgrade(MIItem.ADVANCED_UPGRADE, 8);
-        addMachineUpgrade(MIItem.TURBO_UPGRADE, 32);
-        addMachineUpgrade(MIItem.HIGHLY_ADVANCED_UPGRADE, 128);
+        addMachineUpgrade(MIItem.ADVANCED_UPGRADE, 16);
+        addMachineUpgrade(MIItem.TURBO_UPGRADE, 128);
+        addMachineUpgrade(MIItem.HIGHLY_ADVANCED_UPGRADE, 1024);
         addMachineUpgrade(MIItem.QUANTUM_UPGRADE, 999999999);
     }
 

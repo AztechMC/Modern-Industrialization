@@ -50,10 +50,10 @@ public class MultiblockHatches {
         registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3, 5, 44, 18);
 
         registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
-        registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 8);
-        registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 16);
-        registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 32);
-        registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 64);
+        registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 16);
+        registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 64);
+        registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 256);
+        registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 1024);
 
         registerEnergyHatches(CableTier.LV);
         registerEnergyHatches(CableTier.MV);

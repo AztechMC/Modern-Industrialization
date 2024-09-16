@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.api.datamaps.ItemPipeUpgrade;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
+import aztech.modern_industrialization.api.datamaps.MachineUpgrade;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import java.util.concurrent.CompletableFuture;
@@ -51,6 +52,7 @@ public class MIDataMapProvider extends DataMapProvider {
 
         gatherFluidFuels();
         gatherItemPipeUpgrades();
+        gatherMachineUpgrades();
     }
 
     private void gatherFurnaceFuels() {
@@ -104,5 +106,17 @@ public class MIDataMapProvider extends DataMapProvider {
 
     private void addItemPipeUpgrade(ItemDefinition<?> itemDefinition, int maxExtractedItems) {
         builder(MIDataMaps.ITEM_PIPE_UPGRADES).add(itemDefinition.getId(), new ItemPipeUpgrade(maxExtractedItems), false);
+    }
+
+    private void gatherMachineUpgrades() {
+        addMachineUpgrade(MIItem.BASIC_UPGRADE, 2);
+        addMachineUpgrade(MIItem.ADVANCED_UPGRADE, 8);
+        addMachineUpgrade(MIItem.TURBO_UPGRADE, 32);
+        addMachineUpgrade(MIItem.HIGHLY_ADVANCED_UPGRADE, 128);
+        addMachineUpgrade(MIItem.QUANTUM_UPGRADE, 999999999);
+    }
+
+    private void addMachineUpgrade(ItemDefinition<?> itemDefinition, int extraMaxEu) {
+        builder(MIDataMaps.MACHINE_UPGRADES).add(itemDefinition.getId(), new MachineUpgrade(extraMaxEu), false);
     }
 }

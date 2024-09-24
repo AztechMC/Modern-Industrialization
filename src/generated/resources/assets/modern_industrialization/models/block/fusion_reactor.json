@@ -1,5 +1,5 @@
 {
-  "casing": "ev",
+  "casing": "modern_industrialization:ev",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/fusion_reactor/overlay_front",

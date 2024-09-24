@@ -1,5 +1,5 @@
 {
-  "casing": "lv",
+  "casing": "modern_industrialization:lv",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/macerator/overlay_front",

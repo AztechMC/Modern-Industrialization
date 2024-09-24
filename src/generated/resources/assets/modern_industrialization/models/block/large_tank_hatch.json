@@ -1,5 +1,5 @@
 {
-  "casing": "steel",
+  "casing": "modern_industrialization:steel",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "item_auto": "modern_industrialization:block/overlays/item_auto",

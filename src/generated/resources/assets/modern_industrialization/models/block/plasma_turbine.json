@@ -1,5 +1,5 @@
 {
-  "casing": "plasma_handling_iridium_machine_casing",
+  "casing": "modern_industrialization:plasma_handling_iridium_machine_casing",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/steam_turbine/overlay_front",

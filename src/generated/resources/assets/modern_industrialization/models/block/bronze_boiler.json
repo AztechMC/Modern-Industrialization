@@ -1,5 +1,5 @@
 {
-  "casing": "bricked_bronze",
+  "casing": "modern_industrialization:bricked_bronze",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/boiler/overlay_front",

@@ -1,5 +1,5 @@
 {
-  "casing": "nuclear_casing",
+  "casing": "modern_industrialization:nuclear_casing",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "item_auto": "modern_industrialization:block/overlays/item_auto",

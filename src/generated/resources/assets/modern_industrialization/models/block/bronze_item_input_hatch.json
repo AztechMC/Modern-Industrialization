@@ -1,5 +1,5 @@
 {
-  "casing": "bronze",
+  "casing": "modern_industrialization:bronze",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/hatch_item/overlay_front",

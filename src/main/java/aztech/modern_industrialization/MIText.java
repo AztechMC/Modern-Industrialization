@@ -203,7 +203,7 @@ public enum MIText {
     PipeConnectionTooltipExtractOnly("Extract only"),
     PipeConnectionTooltipInsertOnly("Insert only"),
     PipeConnectionTooltipInsertOrExtract("Insert or Extract"),
-    PipeHelp1("Can be instantly retrieved by pressing %s with any Wrench."),
+    PipeHelp1("Can be instantly retrieved by pressing %s + %s with any Wrench."),
     PipeHelp2("Use %s + %s to connect directly the pipe to the target block."),
     PriorityExtract("Extract priority: %d"),
     PriorityInsert("Insert priority: %d"),

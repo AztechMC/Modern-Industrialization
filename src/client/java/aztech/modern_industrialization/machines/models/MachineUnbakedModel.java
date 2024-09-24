@@ -50,7 +50,7 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
     private final MachineCasing baseCasing;
     private final int[] outputOverlayIndexes;
     private final Material[] defaultOverlays;
-    private final Map<String, Material[]> tieredOverlays = new HashMap<>();
+    private final Map<ResourceLocation, Material[]> tieredOverlays = new HashMap<>();
 
     public MachineUnbakedModel(Class<O> overlayClass, MachineModelBaker modelBaker, JsonObject obj) {
         this.modelBaker = modelBaker;
@@ -65,7 +65,7 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
         for (var casingTier : tieredOverlays.keySet()) {
             var casingOverlaysJson = MachineOverlaysJson.parse(overlayClass, GsonHelper.getAsJsonObject(tieredOverlays, casingTier),
                     defaultOverlaysJson);
-            this.tieredOverlays.put(casingTier, casingOverlaysJson.toSpriteIds());
+            this.tieredOverlays.put(ResourceLocation.parse(casingTier), casingOverlaysJson.toSpriteIds());
         }
     }
 
@@ -73,7 +73,7 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelState, ItemOverrides overrides) {
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
-        var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();
+        var tieredOverlays = new HashMap<ResourceLocation, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }

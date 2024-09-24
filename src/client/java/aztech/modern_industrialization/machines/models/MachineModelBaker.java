@@ -25,9 +25,10 @@ package aztech.modern_industrialization.machines.models;
 
 import java.util.Map;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 
 public interface MachineModelBaker {
     MachineBakedModel bake(MachineCasing baseCasing,
             int[] outputOverlayIndexes, TextureAtlasSprite[] defaultOverlays,
-            Map<String, TextureAtlasSprite[]> tieredOverlays);
+            Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays);
 }

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.util.ModelHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +38,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +57,8 @@ public class MachineBakedModel implements IDynamicBakedModel {
     public static final String CASING_FOLDER = "machine_casing";
 
     public static ModelResourceLocation getCasingModelId(MachineCasing casing) {
-        return ModelResourceLocation.standalone(MI.id(CASING_FOLDER + "/" + casing.name));
+        return ModelResourceLocation
+                .standalone(ResourceLocation.fromNamespaceAndPath(casing.key.getNamespace(), CASING_FOLDER + "/" + casing.key.getPath()));
     }
 
     public static BakedModel getCasingModel(MachineCasing casing) {
@@ -67,12 +68,12 @@ public class MachineBakedModel implements IDynamicBakedModel {
     private final MachineCasing baseCasing;
     private final int[] outputOverlayIndexes;
     private final TextureAtlasSprite[] defaultOverlays;
-    private final Map<String, TextureAtlasSprite[]> tieredOverlays;
+    private final Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays;
     private final MachineModelClientData defaultData;
 
     public MachineBakedModel(MachineCasing baseCasing,
             int[] outputOverlayIndexes, TextureAtlasSprite[] defaultOverlays,
-            Map<String, TextureAtlasSprite[]> tieredOverlays) {
+            Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays) {
         this.baseCasing = baseCasing;
         this.outputOverlayIndexes = outputOverlayIndexes;
         this.defaultOverlays = defaultOverlays;
@@ -88,7 +89,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
         if (casing == null) {
             return defaultOverlays;
         }
-        return tieredOverlays.getOrDefault(casing.name, defaultOverlays);
+        return tieredOverlays.getOrDefault(casing.key, defaultOverlays);
     }
 
     /**

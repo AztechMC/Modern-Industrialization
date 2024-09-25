@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -42,7 +43,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-public class CasingComponent implements IComponent, DropableComponent {
+public class CasingComponent implements IComponent, DropableComponent, CableTierHolder {
 
     private ItemStack casingStack = ItemStack.EMPTY;
     private CableTier currentTier = CableTier.LV;
@@ -78,6 +79,11 @@ public class CasingComponent implements IComponent, DropableComponent {
     @Override
     public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         currentTier = CableTier.getTier(tag.getString("casing"));
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return currentTier;
     }
 
     public void dropCasing(Level world, BlockPos pos) {

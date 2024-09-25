@@ -81,11 +81,6 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
         currentTier = CableTier.getTier(tag.getString("casing"));
     }
 
-    @Override
-    public CableTier getCableTier() {
-        return currentTier;
-    }
-
     public void dropCasing(Level world, BlockPos pos) {
         Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), casingStack);
     }
@@ -145,6 +140,11 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
     @Override
     public ItemStack getDrop() {
         return casingStack;
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return currentTier;
     }
 
     public void setCasingServer(MachineBlockEntity be, ItemStack casing) {

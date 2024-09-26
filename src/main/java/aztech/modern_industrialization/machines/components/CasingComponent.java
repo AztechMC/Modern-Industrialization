@@ -45,13 +45,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class CasingComponent implements IComponent, DropableComponent, CableTierHolder {
 
-    private ItemStack casingStack = ItemStack.EMPTY;
-    private CableTier currentTier = CableTier.LV;
+    protected ItemStack casingStack = ItemStack.EMPTY;
+    protected CableTier currentTier = CableTier.LV;
 
     /**
      * Sets the current casing stack and update {@link #currentTier} accordingly.
      */
-    private void setCasingStack(ItemStack stack) {
+    protected void setCasingStack(ItemStack stack) {
         casingStack = stack;
 
         // Compute tier
@@ -110,7 +110,7 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    private void playCasingPlaceSound(MachineBlockEntity be) {
+    protected void playCasingPlaceSound(MachineBlockEntity be) {
         var blockKey = currentTier.itemKey;
         if (blockKey == null) {
             return; // no sound for LV

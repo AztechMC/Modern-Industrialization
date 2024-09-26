@@ -33,6 +33,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
+    protected ShapeMatcher shapeMatcher;
+
     public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep, guiParams, orientationParams);
         this.shapeValid = new ShapeValidComponent();
@@ -45,7 +47,61 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return shapeValid.shapeValid;
     }
 
-    public abstract void unlink();
+    public ShapeMatcher getShapeMatcher() {
+        return shapeMatcher;
+    }
+
+    public ShapeMatcher createShapeMatcher() {
+        return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
+    }
+
+    protected void onLink() {
+    }
+
+    protected void onUnlink() {
+    }
+
+    protected void onRematch() {
+    }
+
+    protected void onMatchSuccessful() {
+    }
+
+    protected void onMatchFailure() {
+    }
+
+    protected void link() {
+        if (shapeMatcher == null) {
+            shapeMatcher = createShapeMatcher();
+            shapeMatcher.registerListeners(level);
+            onLink();
+        }
+        if (shapeMatcher.needsRematch()) {
+            shapeValid.shapeValid = false;
+            shapeMatcher.rematch(level);
+            onRematch();
+
+            if (shapeMatcher.isMatchSuccessful()) {
+                onMatchSuccessful();
+                shapeValid.shapeValid = true;
+            } else {
+                onMatchFailure();
+            }
+
+            if (shapeValid.update()) {
+                sync(false);
+            }
+        }
+    }
+
+    public void unlink() {
+        if (shapeMatcher != null) {
+            shapeMatcher.unlinkHatches();
+            shapeMatcher.unregisterListeners(level);
+            shapeMatcher = null;
+            onUnlink();
+        }
+    }
 
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {

@@ -115,7 +115,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public final void setRemoved() {
+    public void setRemoved() {
         super.setRemoved();
         if (!level.isClientSide) {
             unlink();

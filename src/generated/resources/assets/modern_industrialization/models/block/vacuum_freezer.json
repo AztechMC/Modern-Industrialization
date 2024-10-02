@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:frostproof_machine_casing",
+  "casing": "frostproof_machine_casing",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/vacuum_freezer/overlay_front",

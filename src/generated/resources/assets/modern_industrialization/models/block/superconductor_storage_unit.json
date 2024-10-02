@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:superconductor",
+  "casing": "superconductor",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/electric_storage/overlay_front",

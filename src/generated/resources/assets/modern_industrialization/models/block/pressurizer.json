@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:titanium_machine_casing_pipe",
+  "casing": "titanium_machine_casing_pipe",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/pressurizer/overlay_front",

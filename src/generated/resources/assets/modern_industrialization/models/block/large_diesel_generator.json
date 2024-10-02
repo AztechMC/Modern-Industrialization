@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:solid_titanium_machine_casing",
+  "casing": "solid_titanium_machine_casing",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/diesel_generator/overlay_front",

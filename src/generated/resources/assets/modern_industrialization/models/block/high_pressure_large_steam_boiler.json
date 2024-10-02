@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:clean_stainless_steel_machine_casing",
+  "casing": "clean_stainless_steel_machine_casing",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/large_boiler/overlay_front",

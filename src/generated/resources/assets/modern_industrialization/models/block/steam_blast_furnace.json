@@ -1,5 +1,5 @@
 {
-  "casing": "modern_industrialization:firebricks",
+  "casing": "firebricks",
   "default_overlays": {
     "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
     "front": "modern_industrialization:block/machines/steam_blast_furnace/overlay_front",

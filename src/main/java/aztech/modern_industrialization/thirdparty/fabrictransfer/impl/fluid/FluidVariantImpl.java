@@ -68,7 +68,7 @@ public class FluidVariantImpl implements FluidVariant {
         if (stack.isComponentsPatchEmpty() || stack.isEmpty()) {
             return of(stack.getFluid());
         } else {
-            return of(stack);
+            return new FluidVariantImpl(stack);
         }
     }
 

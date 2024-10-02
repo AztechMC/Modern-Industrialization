@@ -64,9 +64,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     public MachineScreen(MachineMenuClient handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
 
-        for (GuiComponentClient component : handler.components) {
-            renderers.add(component.createRenderer(this));
-        }
+        handler.components.forEach(component -> renderers.add(component.createRenderer(this)));
 
         this.imageHeight = handler.guiParams.backgroundHeight;
         this.imageWidth = handler.guiParams.backgroundWidth;

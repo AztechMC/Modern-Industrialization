@@ -30,6 +30,9 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -51,10 +54,6 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
 class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     private final IJeiHelpers helpers;
     public final ViewerCategory<D> wrapped;
@@ -63,12 +62,11 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
     public ViewerCategoryJei(IJeiHelpers helpers, ViewerCategory<D> wrapped) {
         super(
-            RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass),
-            wrapped.title,
-            DrawableIcon.create(helpers.getGuiHelper(), wrapped.icon),
-            wrapped.width - 8,
-            wrapped.height - 8
-        );
+                RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass),
+                wrapped.title,
+                DrawableIcon.create(helpers.getGuiHelper(), wrapped.icon),
+                wrapped.width - 8,
+                wrapped.height - 8);
 
         this.helpers = helpers;
         this.wrapped = wrapped;
@@ -99,7 +97,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
             private ViewerCategory.SlotBuilder slot(RecipeIngredientRole role, int x, int y) {
                 var slotBuilder = builder.addSlot(role, x - 4, y - 4)
-                    .setStandardSlotBackground();
+                        .setStandardSlotBackground();
 
                 return new ViewerCategory.SlotBuilder() {
                     @Override
@@ -120,12 +118,12 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
                     private static void addProbability(IRecipeSlotBuilder slot, float probability) {
                         slot.addRichTooltipCallback((recipeSlotView, tooltip) -> {
-							var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
-							var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
-							if (probabilityLine != null) {
-								tooltip.add(probabilityLine);
-							}
-						});
+                            var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
+                            var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
+                            if (probabilityLine != null) {
+                                tooltip.add(probabilityLine);
+                            }
+                        });
                     }
 
                     @Override

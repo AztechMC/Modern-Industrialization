@@ -98,8 +98,8 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
             onUnlink();
+            shapeMatcher = null;
         }
     }
 

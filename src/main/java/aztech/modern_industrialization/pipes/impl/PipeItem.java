@@ -23,15 +23,20 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
+import java.util.HashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -128,6 +133,34 @@ public class PipeItem extends Item {
         // If there is a block entity we try to add the pipe.
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity pipeBe) {
+            var player = context.getPlayer();
+            if (player != null && player.getOffhandItem().is(MITags.WRENCHES) && isCable()) {
+                if (!world.isClientSide()) {
+                    var cablesToRemove = new HashSet<PipeNetworkType>();
+                    // save cables which we need to remove
+                    for (PipeNetworkNode pipe : pipeBe.getNodes()) {
+                        var isCablePipe = pipe instanceof ElectricityNetworkNode;
+                        if (!isCablePipe)
+                            continue;
+                        cablesToRemove.add(pipe.getType());
+                    }
+                    // remove all energy cables
+                    for (PipeNetworkType type : cablesToRemove) {
+                        pipeBe.removePipeAndDropContainedItems(type);
+                        world.addFreshEntity(
+                                new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(MIPipes.INSTANCE.getPipeItem(type))));
+                    }
+                    world.blockUpdated(pos, Blocks.AIR);
+                    if (pipeBe.canAddPipe(type)) {
+                        if (!world.isClientSide()) {
+                            pipeBe.addPipe(type, defaultData.clone());
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            }
             if (pipeBe.canAddPipe(type)) {
                 if (!world.isClientSide()) {
                     pipeBe.addPipe(type, defaultData.clone());

@@ -413,10 +413,10 @@ public class MITooltips {
                         : Optional.of(new Line(MIText.MachineCasingVoltage).arg(Component.translatable(tier.shortEnglishKey())).build());
             });
 
-    public static final TooltipAttachment TRASH_CAN_HELP = TooltipAttachment.ofMultilines(
+    public static final TooltipAttachment PIPE_HELP = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
                 return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
-                        line(MIText.PipeHelp1).arg("use", KEYBIND_PARSER).build(),
+                        line(MIText.PipeHelp1).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
                         line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
             });
 

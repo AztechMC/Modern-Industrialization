@@ -1648,7 +1648,6 @@
   "text.modern_industrialization.PipeConnectionTooltipExtractOnly": "搬出のみ",
   "text.modern_industrialization.PipeConnectionTooltipInsertOnly": "搬入のみ",
   "text.modern_industrialization.PipeConnectionTooltipInsertOrExtract": "搬入あるいは搬出",
-  "text.modern_industrialization.PipeHelp1": "どのレンチでも%sを押せば即座に取り出すことができる。",
   "text.modern_industrialization.PipeHelp2": "パイプを目標ブロックに直接接続するには%s + %sを使う。",
   "text.modern_industrialization.PriorityExtract": "搬出優先度: %d",
   "text.modern_industrialization.PriorityInsert": "搬入優先度: %d",

@@ -321,7 +321,6 @@
   "text.modern_industrialization.PipeConnectionTooltipExtractOnly": "Extrait seulement",
   "text.modern_industrialization.PipeConnectionTooltipInsertOnly": "Insert seulement",
   "text.modern_industrialization.PipeConnectionTooltipInsertOrExtract": "Insert ou extrait",
-  "text.modern_industrialization.PipeHelp1": "Peut être instantanément récupéré en appuyant sur %s avec quelconque Clé.",
   "text.modern_industrialization.PipeHelp2": "Utiliser %s + %s pour directement connecter le tuyau au bloc visé.",
   "text.modern_industrialization.PriorityExtract": "Priorité d'extraction : %d",
   "text.modern_industrialization.PriorityInsert": "Priorité d'insertion : %d",

@@ -54,7 +54,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {
-            ShapeMatcher matcher = new ShapeMatcher(be.getLevel(), be.getBlockPos(), be.getOrientation().facingDirection, be.getActiveShape());
+            ShapeMatcher matcher = be.createShapeMatcher();
 
             for (BlockPos pos : matcher.getPositions()) {
                 matrices.pushPose();

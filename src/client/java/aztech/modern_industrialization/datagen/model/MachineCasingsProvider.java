@@ -81,16 +81,16 @@ public class MachineCasingsProvider extends ModelProvider<BlockModelBuilder> {
     }
 
     private void imitateBlock(MachineCasing casing, Block block) {
-        getBuilder(casing.name)
+        getBuilder(casing.key.toString())
                 .customLoader((bmb, existingFileHelper) -> new UseBlockModelModelBuilder<>(block, bmb, existingFileHelper));
     }
 
     private void cubeBottomTop(MachineCasing casing, String side, String bottom, String top) {
-        cubeBottomTop(casing.name, MI.id(side), MI.id(bottom), MI.id(top));
+        cubeBottomTop(casing.key.toString(), MI.id(side), MI.id(bottom), MI.id(top));
     }
 
     private void cubeAll(MachineCasing casing, String side) {
-        cubeAll(casing.name, MI.id(side));
+        cubeAll(casing.key.toString(), MI.id(side));
     }
 
     @Override

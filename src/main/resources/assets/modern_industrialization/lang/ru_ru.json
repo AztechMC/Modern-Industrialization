@@ -1593,7 +1593,7 @@
   "text.modern_industrialization.PipeConnectionTooltipExtractOnly": "Только извлечение",
   "text.modern_industrialization.PipeConnectionTooltipInsertOnly": "Только вставить",
   "text.modern_industrialization.PipeConnectionTooltipInsertOrExtract": "Вставка или Извлечение",
-  "text.modern_industrialization.PipeHelp1": "Может быть мгновенно извлечена путём нажатия %s одним из гаечных ключей.",
+  "text.modern_industrialization.PipeHelp1": "Может быть мгновенно извлечена путём нажатия %s + %s любым гаечным ключом.",
   "text.modern_industrialization.PipeHelp2": "%s + %s, чтобы подключить трубу напрямую в целевой блок.",
   "text.modern_industrialization.PriorityExtract": "Приоритет извлечения: %d",
   "text.modern_industrialization.PriorityInsert": "Приоритет вставки: %d",

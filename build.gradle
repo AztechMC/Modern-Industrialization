@@ -252,7 +252,7 @@ configurations {
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
 
-    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
         localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }

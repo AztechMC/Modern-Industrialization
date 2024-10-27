@@ -35,6 +35,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 
 public interface MachineProcessCondition {
     Codec<MachineProcessCondition> CODEC = ResourceLocation.CODEC
@@ -59,6 +60,10 @@ public interface MachineProcessCondition {
     boolean canProcessRecipe(Context context, MachineRecipe recipe);
 
     void appendDescription(List<Component> list);
+
+    default ItemStack icon() {
+        return ItemStack.EMPTY;
+    }
 
     MapCodec<? extends MachineProcessCondition> codec();
 

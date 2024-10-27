@@ -29,9 +29,14 @@ import aztech.modern_industrialization.machines.recipe.condition.MachineProcessC
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import java.util.function.BiPredicate;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public class CustomConditionEventJS implements KubeEvent {
+    public void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, ItemStack icon, Component... description) {
+        CustomProcessCondition.register(id, predicate, icon, description);
+    }
+
     public void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, Component... description) {
-        CustomProcessCondition.register(id, predicate, description);
+        register(id, predicate, ItemStack.EMPTY, description);
     }
 }

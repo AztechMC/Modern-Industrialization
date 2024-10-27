@@ -52,10 +52,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
@@ -258,15 +258,36 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         // Conditions
         boolean conditionsRequired = recipe.conditions.size() > 0;
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
-            ItemLike displayedItem;
+            List<ItemStack> displayedItems = new ArrayList<>();
             if (steelHatchRequired) {
-                displayedItem = BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch"));
-            } else if (conditionsRequired) {
-                displayedItem = MIItem.WRENCH;
-            } else {
-                displayedItem = MIItem.BASIC_UPGRADE;
+                displayedItems.add(BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch")).getDefaultInstance());
             }
-            widgets.item(width / 2f - 3, 3.75, 10.8, 10.8, displayedItem);
+            if (upgradeEuRequired > 0) {
+                displayedItems.add(MIItem.BASIC_UPGRADE.stack());
+            }
+            for (var condition : recipe.conditions) {
+                ItemStack displayedItem = condition.icon();
+                if (!displayedItem.isEmpty()) {
+                    displayedItems.add(displayedItem);
+                }
+            }
+            if (displayedItems.isEmpty()) {
+                displayedItems.add(MIItem.WRENCH.stack());
+            }
+
+            double x = width / 2f - 3;
+            double y = 3.75;
+            double wh = 10.8;
+            widgets.drawable(graphics -> {
+                int itemIndex = (int) ((System.currentTimeMillis() / 1500L) % displayedItems.size());
+                ItemStack displayedItem = displayedItems.get(itemIndex).copyWithCount(1);
+
+                graphics.pose().pushPose();
+                graphics.pose().translate(x, y, 0);
+                graphics.pose().scale((float) wh / 16, (float) wh / 16, 1);
+                graphics.renderFakeItem(displayedItem, 0, 0);
+                graphics.pose().popPose();
+            });
         }
         // Tooltips
         List<Component> tooltips = new ArrayList<>();

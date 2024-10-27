@@ -32,6 +32,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 
 public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {
@@ -54,6 +56,11 @@ public record BiomeProcessCondition(ResourceKey<Biome> biome) implements Machine
         var loc = biome.location();
         var biomeComponent = Component.translatable("biome.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
         list.add(MIText.RequiresBiome.text(biomeComponent));
+    }
+
+    @Override
+    public ItemStack icon() {
+        return Items.OAK_SAPLING.getDefaultInstance();
     }
 
     @Override

@@ -72,7 +72,9 @@ public class MIDatagenServer {
         aggregate.addProvider(MaterialRecipesProvider::new);
         aggregate.addProvider(DyeRecipesProvider::new);
         aggregate.addProvider(AssemblerRecipesProvider::new);
-        aggregate.addProvider(CompatRecipesProvider::new);
+        if (!runtimeDatagen) {
+            aggregate.addProvider(CompatRecipesProvider::new);
+        }
         aggregate.addProvider(UpgradeProvider::new);
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
 

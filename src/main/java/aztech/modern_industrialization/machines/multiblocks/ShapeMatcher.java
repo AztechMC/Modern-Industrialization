@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import static net.minecraft.core.Direction.*;
-
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.*;
@@ -32,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -42,12 +41,14 @@ import org.jetbrains.annotations.Nullable;
 public class ShapeMatcher implements ChunkEventListener {
     public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
         this.controllerPos = controllerPos;
+        this.controllerDirection = controllerDirection;
         this.template = template;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
     }
 
     protected final BlockPos controllerPos;
+    protected final Direction controllerDirection;
     protected final ShapeTemplate template;
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
@@ -77,11 +78,11 @@ public class ShapeMatcher implements ChunkEventListener {
      */
     public static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
         BlockPos rotatedPos;
-        if (controllerDirection == NORTH)
+        if (controllerDirection == Direction.NORTH)
             rotatedPos = new BlockPos(-templatePos.getX(), templatePos.getY(), templatePos.getZ());
-        else if (controllerDirection == SOUTH)
+        else if (controllerDirection == Direction.SOUTH)
             rotatedPos = new BlockPos(templatePos.getX(), templatePos.getY(), -templatePos.getZ());
-        else if (controllerDirection == EAST)
+        else if (controllerDirection == Direction.EAST)
             rotatedPos = new BlockPos(-templatePos.getZ(), templatePos.getY(), -templatePos.getX());
         else
             rotatedPos = new BlockPos(templatePos.getZ(), templatePos.getY(), templatePos.getX());
@@ -122,6 +123,16 @@ public class ShapeMatcher implements ChunkEventListener {
         matchSuccessful = false;
         needsRematch = true;
     }
+    
+    private Rotation rotation() {
+        return switch (controllerDirection) {
+            case NORTH -> Rotation.NONE;
+            case SOUTH -> Rotation.CLOCKWISE_180;
+            case WEST -> Rotation.CLOCKWISE_90;
+            case EAST -> Rotation.COUNTERCLOCKWISE_90;
+            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        };
+    }
 
     /**
      * Return true if there was a match, and append matched hatches to the list if
@@ -132,7 +143,7 @@ public class ShapeMatcher implements ChunkEventListener {
         if (simpleMember == null)
             return false;
 
-        BlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos).rotate(world, pos, this.rotation());
         if (simpleMember.matchesState(state))
             return true;
 

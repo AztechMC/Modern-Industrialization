@@ -42,6 +42,10 @@ import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
 import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
+import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
+import aztech.modern_industrialization.network.structure.StructureUpdateControllerPacket;
+import aztech.modern_industrialization.network.structure.StructureUpdateHatchPacket;
+import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,6 +94,11 @@ public class MIPackets {
         register("set_item_whitelist", SetItemWhitelistPacket.class, SetItemWhitelistPacket.STREAM_CODEC);
         register("set_network_fluid", SetNetworkFluidPacket.class, SetNetworkFluidPacket.STREAM_CODEC);
         register("set_priority", SetPriorityPacket.class, SetPriorityPacket.STREAM_CODEC);
+        // Structure blocks
+        register("structure_save_controller", StructureSaveControllerPacket.class, StructureSaveControllerPacket.STREAM_CODEC);
+        register("structure_update_controller", StructureUpdateControllerPacket.class, StructureUpdateControllerPacket.STREAM_CODEC);
+        register("structure_update_hatch", StructureUpdateHatchPacket.class, StructureUpdateHatchPacket.STREAM_CODEC);
+        register("structure_update_member", StructureUpdateMemberPacket.class, StructureUpdateMemberPacket.STREAM_CODEC);
     }
 
     public static void init(RegisterPayloadHandlersEvent event) {

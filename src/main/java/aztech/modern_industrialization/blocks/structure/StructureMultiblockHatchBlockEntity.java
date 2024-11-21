@@ -1,0 +1,137 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package aztech.modern_industrialization.blocks.structure;
+
+import aztech.modern_industrialization.MIRegistries;
+import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import java.util.Locale;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
+
+public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
+    private String inputCasing;
+    private String inputFlags;
+
+    private MachineCasing casing;
+    private HatchFlags flags = HatchFlags.NO_HATCH;
+
+    public StructureMultiblockHatchBlockEntity(BlockPos pos, BlockState state) {
+        super(MIRegistries.STRUCTURE_MULTIBLOCK_HATCH_BE.get(), pos, state);
+    }
+
+    @Nullable
+    public String getInputCasing() {
+        return inputCasing;
+    }
+
+    public void setInputCasing(String inputCasing) {
+        this.inputCasing = inputCasing;
+        casing = formatCasing(inputCasing);
+    }
+
+    @Nullable
+    public String getInputFlags() {
+        return inputFlags;
+    }
+
+    public void setInputFlags(String inputFlags) {
+        this.inputFlags = inputFlags;
+        flags = formatFlags(inputFlags);
+    }
+
+    @Nullable
+    public MachineCasing getCasing() {
+        return casing;
+    }
+
+    @Nullable
+    public HatchFlags getFlags() {
+        return flags;
+    }
+
+    @Nullable
+    public static MachineCasing formatCasing(String input) {
+        return StructureMultiblockControllerBlockEntity.formatCasing(input);
+    }
+
+    @Nullable
+    public static HatchFlags formatFlags(String input) {
+        if (input == null || input.isEmpty()) {
+            return HatchFlags.NO_HATCH;
+        }
+        HatchFlags.Builder builder = new HatchFlags.Builder();
+        for (String part : input.split(";")) {
+            try {
+                builder.with(Integer.parseInt(part));
+            } catch (NumberFormatException ignored) {
+                try {
+                    HatchType hatchType = HatchType.valueOf(part.toUpperCase(Locale.ROOT));
+                    builder.with(hatchType);
+                } catch (IllegalArgumentException ignored2) {
+                    return null;
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        this.saveAdditional(tag, registries);
+        return tag;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        if (inputCasing != null) {
+            tag.putString("casing", inputCasing);
+        }
+        if (inputFlags != null) {
+            tag.putString("flags", inputFlags);
+        }
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.setInputCasing(tag.getString("casing"));
+        this.setInputFlags(tag.getString("flags"));
+    }
+}

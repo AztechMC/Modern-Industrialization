@@ -39,9 +39,13 @@ public class HatchFlags {
     public static class Builder {
         private int flags = 0;
 
-        public Builder with(HatchType type) {
-            flags |= 1 << type.getId();
+        public Builder with(int flag) {
+            flags |= 1 << flag;
             return this;
+        }
+
+        public Builder with(HatchType type) {
+            return this.with(type.getId());
         }
 
         public Builder with(HatchType... types) {

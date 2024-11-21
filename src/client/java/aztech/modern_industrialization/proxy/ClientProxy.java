@@ -29,6 +29,12 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.gui.structure.StructureMultiblockControllerEditScreen;
+import aztech.modern_industrialization.gui.structure.StructureMultiblockHatchEditScreen;
+import aztech.modern_industrialization.gui.structure.StructureMultiblockMemberEditScreen;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
@@ -151,5 +157,26 @@ public class ClientProxy extends CommonProxy {
         }
         // Couldn't find target state
         return state;
+    }
+
+    @Override
+    public void openStructureMultiblockControllerScreen(Player player, StructureMultiblockControllerBlockEntity controller) {
+        if (player.getCommandSenderWorld().isClientSide()) {
+            Minecraft.getInstance().setScreen(new StructureMultiblockControllerEditScreen(controller));
+        }
+    }
+
+    @Override
+    public void openStructureMultiblockHatchScreen(Player player, StructureMultiblockHatchBlockEntity hatch) {
+        if (player.getCommandSenderWorld().isClientSide()) {
+            Minecraft.getInstance().setScreen(new StructureMultiblockHatchEditScreen(hatch));
+        }
+    }
+
+    @Override
+    public void openStructureMultiblockMemberScreen(Player player, StructureMultiblockMemberBlockEntity member) {
+        if (player.getCommandSenderWorld().isClientSide()) {
+            Minecraft.getInstance().setScreen(new StructureMultiblockMemberEditScreen(member));
+        }
     }
 }

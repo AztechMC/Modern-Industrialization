@@ -57,6 +57,21 @@ public class ShapeMatcher implements ChunkEventListener {
     protected final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
     /**
+     * Convert a real position in the world to a relative position in the shape template.
+     */
+    public static BlockPos toTemplatePos(BlockPos controllerPos, Direction controllerDirection, BlockPos worldPos) {
+        BlockPos relativePos = worldPos.subtract(controllerPos);
+        if (controllerDirection == Direction.NORTH)
+            return new BlockPos(-relativePos.getX(), relativePos.getY(), relativePos.getZ());
+        else if (controllerDirection == Direction.SOUTH)
+            return new BlockPos(relativePos.getX(), relativePos.getY(), -relativePos.getZ());
+        else if (controllerDirection == Direction.EAST)
+            return new BlockPos(-relativePos.getZ(), relativePos.getY(), -relativePos.getX());
+        else
+            return new BlockPos(relativePos.getZ(), relativePos.getY(), relativePos.getX());
+    }
+
+    /**
      * Convert a relative position in the shape template to the real position in the
      * world.
      */

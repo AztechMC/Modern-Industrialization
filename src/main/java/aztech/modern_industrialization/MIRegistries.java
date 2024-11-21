@@ -28,6 +28,9 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.proxy.CommonProxy;
@@ -69,6 +72,21 @@ public class MIRegistries {
     public static final Supplier<BlockEntityType<CreativeStorageUnitBlockEntity>> CREATIVE_STORAGE_UNIT_BE = BLOCK_ENTITIES
             .register("creative_storage_unit", () -> {
                 return BlockEntityType.Builder.of(CreativeStorageUnitBlockEntity::new, MIBlock.CREATIVE_STORAGE_UNIT.get()).build(null);
+            });
+    public static final Supplier<BlockEntityType<StructureMultiblockControllerBlockEntity>> STRUCTURE_MULTIBLOCK_CONTROLLER_BE = BLOCK_ENTITIES
+            .register("structure_multiblock_controller", () -> {
+                return BlockEntityType.Builder.of(StructureMultiblockControllerBlockEntity::new, MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())
+                        .build(null);
+            });
+    public static final Supplier<BlockEntityType<StructureMultiblockHatchBlockEntity>> STRUCTURE_MULTIBLOCK_HATCH_BE = BLOCK_ENTITIES
+            .register("structure_multiblock_hatch", () -> {
+                return BlockEntityType.Builder.of(StructureMultiblockHatchBlockEntity::new, MIBlock.STRUCTURE_MULTIBLOCK_HATCH.get())
+                        .build(null);
+            });
+    public static final Supplier<BlockEntityType<StructureMultiblockMemberBlockEntity>> STRUCTURE_MULTIBLOCK_MEMBER_BE = BLOCK_ENTITIES
+            .register("structure_multiblock_member", () -> {
+                return BlockEntityType.Builder.of(StructureMultiblockMemberBlockEntity::new, MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get())
+                        .build(null);
             });
 
     // Conditions

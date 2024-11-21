@@ -99,6 +99,12 @@ public class DebugCommands {
                                                 return buildMultiblock(ctx.getSource(), getLoadedBlockPos(ctx, "controller_pos"));
                                             }))
                             )
+                            .then(literal("test_structure")
+                                    .then(argument("structure_id", id()))
+                                    .then(argument("controller_pos", blockPos()))
+                                    .executes(ctx -> {
+                                        return testStructure(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
+                                    }))
                     )
             );
         });
@@ -181,6 +187,11 @@ public class DebugCommands {
         } else {
             src.sendFailure(Component.literal("Block at position %s is not a multiblock controller.".formatted(controllerPos)));
         }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int testStructure(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
+        // TODO do stuff
         return Command.SINGLE_SUCCESS;
     }
 }

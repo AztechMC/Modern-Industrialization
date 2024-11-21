@@ -35,6 +35,9 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlock;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -54,6 +57,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -129,6 +133,42 @@ public class MIBlock {
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
+    
+    // TODO make these blocks not show up in the creative tab and dont give them mineable tags
+    public static final BlockDefinition<StructureMultiblockControllerBlock> STRUCTURE_MULTIBLOCK_CONTROLLER = block("Structure Multiblock Controller",
+            "structure_multiblock_controller", BlockDefinitionParams.defaultStone()
+                    .withBlockConstructor(StructureMultiblockControllerBlock::new)
+                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
+                    .withModel((block, gen) -> {
+                        String name = gen.name(block);
+                        var model = gen.models().orientable(name,
+                                gen.blockTexture("structure_multiblock_controller_side"),
+                                gen.blockTexture("structure_multiblock_controller_front"),
+                                gen.blockTexture("structure_multiblock_controller_side"));
+                        gen.horizontalBlock(block, model);
+                        gen.simpleBlockItem(block, model);
+                    })
+                    .noLootTable());
+    
+    public static final BlockDefinition<StructureMultiblockHatchBlock> STRUCTURE_MULTIBLOCK_HATCH = block("Structure Multiblock Hatch",
+            "structure_multiblock_hatch", BlockDefinitionParams.defaultStone()
+                    .withBlockConstructor(StructureMultiblockHatchBlock::new)
+                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
+                    .withModel((block, gen) -> {
+                        String name = gen.name(block);
+                        gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_hatch")));
+                    })
+                    .noLootTable());
+    
+    public static final BlockDefinition<StructureMultiblockMemberBlock> STRUCTURE_MULTIBLOCK_MEMBER = block("Structure Multiblock Member",
+            "structure_multiblock_member", BlockDefinitionParams.defaultStone()
+                    .withBlockConstructor(StructureMultiblockMemberBlock::new)
+                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
+                    .withModel((block, gen) -> {
+                        String name = gen.name(block);
+                        gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_member")));
+                    })
+                    .noLootTable());
 
     // Materials
     public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",

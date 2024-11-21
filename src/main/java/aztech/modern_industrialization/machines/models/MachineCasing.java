@@ -23,10 +23,12 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-public class MachineCasing {
-    public final String name;
+import net.minecraft.resources.ResourceLocation;
 
-    MachineCasing(String name) {
-        this.name = name;
+public class MachineCasing {
+    public final ResourceLocation key;
+
+    MachineCasing(ResourceLocation key) {
+        this.key = key;
     }
 }

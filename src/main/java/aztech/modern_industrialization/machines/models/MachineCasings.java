@@ -23,13 +23,15 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
 
 public class MachineCasings {
 
-    public static final Map<String, MachineCasing> registeredCasings = new HashMap<>();
+    public static final Map<ResourceLocation, MachineCasing> registeredCasings = new HashMap<>();
 
     public static final MachineCasing BRICKED_BRONZE = create("bricked_bronze");
     public static final MachineCasing BRICKED_STEEL = create("bricked_steel");
@@ -54,22 +56,30 @@ public class MachineCasings {
         KubeJSProxy.instance.fireRegisterMachineCasingsEvent();
     }
 
-    public static MachineCasing create(String name) {
-        if (registeredCasings.containsKey(name)) {
-            throw new IllegalArgumentException("Duplicate machine casing definition: " + name);
+    public static MachineCasing create(ResourceLocation key) {
+        if (registeredCasings.containsKey(key)) {
+            throw new IllegalArgumentException("Duplicate machine casing definition: " + key);
         }
 
-        MachineCasing casing = new MachineCasing(name);
-        registeredCasings.put(name, casing);
+        MachineCasing casing = new MachineCasing(key);
+        registeredCasings.put(key, casing);
         return casing;
     }
 
-    public static MachineCasing get(String name) {
-        MachineCasing casing = registeredCasings.get(name);
+    public static MachineCasing create(String name) {
+        return create(MI.id(name));
+    }
+
+    public static MachineCasing get(ResourceLocation key) {
+        MachineCasing casing = registeredCasings.get(key);
         if (casing != null) {
             return casing;
         } else {
-            throw new IllegalArgumentException("Machine casing model \"" + name + "\" does not exist.");
+            throw new IllegalArgumentException("Machine casing model \"" + key + "\" does not exist.");
         }
+    }
+
+    public static MachineCasing get(String name) {
+        return get(ResourceLocation.isValidPath(name) ? MI.id(name) : ResourceLocation.parse(name));
     }
 }

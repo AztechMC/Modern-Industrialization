@@ -21,27 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.viewer.impl;
+package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
-import java.util.Optional;
+import java.util.Map;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 
-public class MachineScreenPredicateTest {
-    public static boolean test(ReiMachineRecipes.MachineScreenPredicate predicate, MachineScreen screen) {
-        return switch (predicate) {
-        case ANY -> true;
-        case MULTIBLOCK -> screen.getMenu().components.findOrDefault(
-                client -> {
-                    if (client instanceof CraftingMultiblockGuiClient cmGui) {
-                        if (cmGui.isShapeValid) {
-                            return Optional.of(true);
-                        }
-                    }
-                    return Optional.empty();
-                },
-                false);
-        };
-    }
+public interface MachineModelBaker {
+    MachineBakedModel bake(MachineCasing baseCasing,
+            int[] outputOverlayIndexes, TextureAtlasSprite[] defaultOverlays,
+            Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays);
 }

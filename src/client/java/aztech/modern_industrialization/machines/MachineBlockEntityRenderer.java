@@ -69,7 +69,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
         if (cachedQuads[cachedQuadIndex] == null) {
-            TextureAtlasSprite sprite = model == null ? null : MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
+            TextureAtlasSprite sprite = model == null ? null : model.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
                 var vc = new QuadBakingVertexConsumer();
                 cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(vc, d, sprite, -2 * MachineBakedModel.Z_OFFSET);

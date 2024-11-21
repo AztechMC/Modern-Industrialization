@@ -28,7 +28,6 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
@@ -62,7 +61,9 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
     }
 
     @Override
-    protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
+    protected void onMatchSuccessful() {
+        super.onMatchSuccessful();
+
         energyInputs.clear();
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyInputs(energyInputs);
@@ -76,13 +77,13 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         if (!result.consumesAction()) {
-            result = mapComponentOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
+            result = icomponents.mapOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
         }
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);
         }
         if (!result.consumesAction()) {
-            result = mapComponentOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
+            result = icomponents.mapOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
         }
         return result;
     }

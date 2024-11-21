@@ -38,7 +38,7 @@ public class MachineModelsToGenerate {
 
     record MachineModelProperties(MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side, boolean active) {
         void addToMachineJson(JsonObject obj) {
-            obj.addProperty("casing", defaultCasing.name);
+            obj.addProperty("casing", defaultCasing.key.getPath());
 
             var defaultOverlays = new JsonObject();
 

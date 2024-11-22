@@ -134,9 +134,8 @@ public class MIBlock {
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
     
-    // TODO SWEDZ: make these blocks not show up in the creative tab and dont give them mineable tags
     public static final BlockDefinition<StructureMultiblockControllerBlock> STRUCTURE_MULTIBLOCK_CONTROLLER = block("Structure Multiblock Controller",
-            "structure_multiblock_controller", BlockDefinitionParams.defaultStone()
+            "structure_multiblock_controller", BlockDefinitionParams.defaultCreativeOnly()
                     .withBlockConstructor(StructureMultiblockControllerBlock::new)
                     .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
@@ -147,28 +146,25 @@ public class MIBlock {
                                 gen.blockTexture("structure_multiblock_controller_side"));
                         gen.horizontalBlock(block, model);
                         gen.simpleBlockItem(block, model);
-                    })
-                    .noLootTable());
+                    }));
     
     public static final BlockDefinition<StructureMultiblockHatchBlock> STRUCTURE_MULTIBLOCK_HATCH = block("Structure Multiblock Hatch",
-            "structure_multiblock_hatch", BlockDefinitionParams.defaultStone()
+            "structure_multiblock_hatch", BlockDefinitionParams.defaultCreativeOnly()
                     .withBlockConstructor(StructureMultiblockHatchBlock::new)
                     .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
                         String name = gen.name(block);
                         gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_hatch")));
-                    })
-                    .noLootTable());
+                    }));
     
     public static final BlockDefinition<StructureMultiblockMemberBlock> STRUCTURE_MULTIBLOCK_MEMBER = block("Structure Multiblock Member",
-            "structure_multiblock_member", BlockDefinitionParams.defaultStone()
+            "structure_multiblock_member", BlockDefinitionParams.defaultCreativeOnly()
                     .withBlockConstructor(StructureMultiblockMemberBlock::new)
                     .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
                         String name = gen.name(block);
                         gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_member")));
-                    })
-                    .noLootTable());
+                    }));
 
     // Materials
     public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
@@ -245,6 +241,14 @@ public class MIBlock {
                     (block, modelGenerator) -> modelGenerator.simpleBlockWithItem(block, modelGenerator.cubeAll(block)),
                     new MIBlockLoot.DropSelf(),
                     List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
+        }
+
+        public static BlockDefinitionParams<Block> defaultCreativeOnly() {
+            return new BlockDefinitionParams<>(
+                    BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(-1.0f).explosionResistance(3600000.0f), Block::new,
+                    BlockItem::new,
+                    (block, modelGenerator) -> modelGenerator.simpleBlockWithItem(block, modelGenerator.cubeAll(block)),
+                    null, List.of());
         }
 
         public static BlockDefinitionParams<Block> defaultStone() {

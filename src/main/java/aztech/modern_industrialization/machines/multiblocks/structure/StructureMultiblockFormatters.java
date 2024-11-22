@@ -98,7 +98,7 @@ public final class StructureMultiblockFormatters {
             } else {
                 try {
                     var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    members.add(new StructureMemberTestState(blockResult.blockState()));
+                    members.add(new StructureMemberTestState(blockResult::blockState));
                 } catch (CommandSyntaxException ignored) {
                     return null;
                 }

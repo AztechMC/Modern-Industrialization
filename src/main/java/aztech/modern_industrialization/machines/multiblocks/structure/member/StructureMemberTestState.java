@@ -23,20 +23,30 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
+import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class StructureMemberTestState implements StructureMemberTest {
+    private Supplier<BlockState> blockStateSupplier;
+
     private BlockState blockState;
 
-    public StructureMemberTestState(BlockState blockState) {
-        this.blockState = blockState;
+    public StructureMemberTestState(Supplier<BlockState> blockState) {
+        this.blockStateSupplier = blockState;
     }
 
     public StructureMemberTestState() {
         this(null);
+    }
+
+    private BlockState blockState() {
+        if (blockState == null) {
+            blockState = blockStateSupplier.get();
+        }
+        return blockState;
     }
 
     @Override
@@ -46,24 +56,24 @@ public class StructureMemberTestState implements StructureMemberTest {
 
     @Override
     public boolean matchesState(BlockState state) {
-        return blockState == state;
+        return this.blockState() == state;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        var registry = BuiltInRegistries.BLOCK.asLookup();
-        blockState = NbtUtils.readBlockState(registry, tag.getCompound("state"));
+        blockStateSupplier = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("state"));
+        blockState = null;
     }
 
     @Override
     public void save(CompoundTag tag) {
-        tag.put("state", NbtUtils.writeBlockState(blockState));
+        tag.put("state", NbtUtils.writeBlockState(this.blockState()));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof StructureMemberTestState other) {
-            return blockState == other.blockState;
+            return this.blockState() == other.blockState();
         }
         return false;
     }

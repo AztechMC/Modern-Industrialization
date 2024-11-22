@@ -81,7 +81,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     @Override
     public StructureMember getMemberOverride() {
-        return new StructureMember(preview, members, null);
+        return new StructureMember(() -> preview, members, null);
     }
 
     @Override

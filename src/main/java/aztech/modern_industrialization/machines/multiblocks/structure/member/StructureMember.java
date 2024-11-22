@@ -26,8 +26,10 @@ package aztech.modern_industrialization.machines.multiblocks.structure.member;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -35,9 +37,36 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record StructureMember(BlockState preview, List<StructureMemberTest> tests, HatchFlags hatchFlags) implements SimpleMember {
-    public StructureMember(BlockState state) {
+public final class StructureMember implements SimpleMember {
+    private final Supplier<BlockState> previewSupplier;
+    private final List<StructureMemberTest> tests;
+    private final HatchFlags hatchFlags;
+
+    private BlockState preview;
+
+    public StructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests, HatchFlags hatchFlags) {
+        this.previewSupplier = preview;
+        this.tests = tests;
+        this.hatchFlags = hatchFlags;
+    }
+
+    public StructureMember(Supplier<BlockState> state) {
         this(state, List.of(new StructureMemberTestState(state)), null);
+    }
+
+    public BlockState preview() {
+        if (preview == null) {
+            preview = previewSupplier.get();
+        }
+        return preview;
+    }
+
+    public List<StructureMemberTest> tests() {
+        return Collections.unmodifiableList(tests);
+    }
+
+    public HatchFlags hatchFlags() {
+        return hatchFlags;
     }
 
     @Override
@@ -52,21 +81,21 @@ public record StructureMember(BlockState preview, List<StructureMemberTest> test
 
     @Override
     public BlockState getPreviewState() {
-        return preview;
+        return this.preview();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof StructureMember other) {
-            return preview == other.preview() &&
-                    tests.containsAll(other.tests()) && other.tests().containsAll(tests) &&
-                    Objects.equals(hatchFlags, other.hatchFlags());
+            return this.preview() == other.preview() &&
+                    tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
+                    Objects.equals(hatchFlags, other.hatchFlags);
         }
         return false;
     }
 
     public void save(CompoundTag tag) {
-        tag.put("preview", NbtUtils.writeBlockState(preview));
+        tag.put("preview", NbtUtils.writeBlockState(this.preview()));
 
         ListTag testsTag = new ListTag();
         for (StructureMemberTest test : tests) {
@@ -89,9 +118,7 @@ public record StructureMember(BlockState preview, List<StructureMemberTest> test
             return null;
         }
 
-        var registry = BuiltInRegistries.BLOCK.asLookup();
-
-        BlockState preview = NbtUtils.readBlockState(registry, tag.getCompound("preview"));
+        Supplier<BlockState> preview = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("preview"));
 
         ListTag testsTag = tag.getList("tests", Tag.TAG_COMPOUND);
         List<StructureMemberTest> tests = new ArrayList<>();

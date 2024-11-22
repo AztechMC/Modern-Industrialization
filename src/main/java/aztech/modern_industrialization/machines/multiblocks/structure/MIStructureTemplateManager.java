@@ -46,7 +46,6 @@ import java.util.Objects;
 import net.minecraft.FileUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -158,7 +157,7 @@ public final class MIStructureTemplateManager {
 
             blockTag.put("pos", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, pos)));
 
-            StructureMember member = new StructureMember(state);
+            StructureMember member = new StructureMember(() -> state);
 
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof StructureMemberOverride override) {
@@ -206,8 +205,6 @@ public final class MIStructureTemplateManager {
     @Nullable
     public static ShapeTemplate deserialize(CompoundTag tag) {
         Objects.requireNonNull(tag);
-
-        var blockRegistry = BuiltInRegistries.BLOCK.asLookup();
 
         ResourceLocation hatchCasingId = ResourceLocation.tryParse(tag.getString("hatch_casing"));
         if (hatchCasingId == null || !MachineCasings.registeredCasings.containsKey(hatchCasingId)) {

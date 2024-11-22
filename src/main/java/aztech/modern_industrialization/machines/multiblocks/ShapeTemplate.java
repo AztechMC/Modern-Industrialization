@@ -24,11 +24,13 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -198,6 +200,26 @@ public class ShapeTemplate {
             }
 
             return innerBuilder.build();
+        }
+    }
+
+    public static class Structure {
+        private final ResourceLocation id;
+
+        public Structure(ResourceLocation id) {
+            this.id = id;
+        }
+
+        public ShapeTemplate build() {
+            var tag = MIStructureTemplateManager.load(id);
+            if (tag == null) {
+                throw new IllegalStateException("Failed to load structure with id %s".formatted(id));
+            }
+            ShapeTemplate template = MIStructureTemplateManager.deserialize(tag);
+            if (template == null) {
+                throw new IllegalStateException("Failed to parse structure with id %s".formatted(id));
+            }
+            return template;
         }
     }
 }

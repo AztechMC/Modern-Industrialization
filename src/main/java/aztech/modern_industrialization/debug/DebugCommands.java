@@ -198,6 +198,10 @@ public class DebugCommands {
         BlockState controllerState = src.getLevel().getBlockState(controllerPos);
         if(controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             CompoundTag tag = MIStructureTemplateManager.load(id);
+            if (tag == null) {
+                src.sendFailure(Component.literal("Could not find structure by the id '%s'".formatted(id)));
+                return Command.SINGLE_SUCCESS;
+            }
             ShapeTemplate shape = MIStructureTemplateManager.deserialize(MachineCasings.CLEAN_STAINLESS_STEEL, tag);
             ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING), shape);
             matcher.rematch(src.getLevel());

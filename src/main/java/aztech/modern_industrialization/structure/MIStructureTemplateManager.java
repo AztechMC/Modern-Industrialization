@@ -148,9 +148,18 @@ public final class MIStructureTemplateManager {
 
     @Nullable
     public static CompoundTag load(ResourceLocation id) {
-        try (InputStream input = new FileInputStream(path(id).toFile());
-                InputStream fastInput = new FastBufferedInputStream(input)) {
-            return NbtIo.readCompressed(fastInput, NbtAccounter.unlimitedHeap());
+        try {
+            Path path = path(id);
+            if(Files.exists(path)) {
+                try (InputStream input = new FileInputStream(path.toFile());
+                     InputStream fastInput = new FastBufferedInputStream(input)) {
+                    return NbtIo.readCompressed(fastInput, NbtAccounter.unlimitedHeap());
+                } catch (Exception ex) {
+                    MI.LOGGER.error("Failed to load structure '{}'", id, ex);
+                    return null;
+                }
+            }
+            return null;
         } catch (Exception ex) {
             MI.LOGGER.error("Failed to load structure '{}'", id, ex);
             return null;

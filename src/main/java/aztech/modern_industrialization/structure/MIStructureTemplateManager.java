@@ -26,6 +26,7 @@ package aztech.modern_industrialization.structure;
 import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
@@ -58,17 +59,16 @@ import net.neoforged.fml.loading.FMLPaths;
 import org.jetbrains.annotations.Nullable;
 
 public final class MIStructureTemplateManager {
-    public static CompoundTag fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection, BoundingBox bounds) {
+    public static CompoundTag fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection, StructureControllerBounds bounds) {
+        if (bounds.isEmpty()) {
+            throw new IllegalArgumentException("Invalid bounds: %s".formatted(bounds));
+        }
+
         CompoundTag tag = new CompoundTag();
 
-        BlockPos minPos = controllerPos.offset(bounds.minX(), bounds.minY(), bounds.minZ());
-        BlockPos maxPos = controllerPos.offset(bounds.maxX(), bounds.maxY(), bounds.maxZ());
-
-        // TODO may be unnecessary to store this
-        CompoundTag boundsTag = new CompoundTag();
-        boundsTag.put("min", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, minPos)));
-        boundsTag.put("max", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, maxPos)));
-        tag.put("bounds", boundsTag);
+        BoundingBox boundsBox = bounds.boundingBox();
+        BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());
+        BlockPos maxPos = controllerPos.offset(boundsBox.maxX(), boundsBox.maxY(), boundsBox.maxZ());
 
         List<BlockState> paletteStates = new ArrayList<>();
         ListTag palette = new ListTag();
@@ -150,9 +150,9 @@ public final class MIStructureTemplateManager {
     public static CompoundTag load(ResourceLocation id) {
         try {
             Path path = path(id);
-            if(Files.exists(path)) {
+            if (Files.exists(path)) {
                 try (InputStream input = new FileInputStream(path.toFile());
-                     InputStream fastInput = new FastBufferedInputStream(input)) {
+                        InputStream fastInput = new FastBufferedInputStream(input)) {
                     return NbtIo.readCompressed(fastInput, NbtAccounter.unlimitedHeap());
                 } catch (Exception ex) {
                     MI.LOGGER.error("Failed to load structure '{}'", id, ex);

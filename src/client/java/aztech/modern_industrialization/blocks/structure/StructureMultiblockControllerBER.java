@@ -30,7 +30,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 
 public class StructureMultiblockControllerBER implements BlockEntityRenderer<StructureMultiblockControllerBlockEntity> {
@@ -41,15 +40,14 @@ public class StructureMultiblockControllerBER implements BlockEntityRenderer<Str
             return;
         }
         BlockPos pos = controller.getBlockPos();
-        BoundingBox bounds = controller.getBounds();
-        if (bounds == null) {
-            bounds = new BoundingBox(0, 0, 0, 0, 0, 0);
+        StructureControllerBounds bounds = controller.getBounds();
+        AABB box = bounds.aabb();
+        if (box != null) {
+            matrices.pushPose();
+            VertexConsumer buffer = vcs.getBuffer(RenderType.lines());
+            LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
+            matrices.popPose();
         }
-        matrices.pushPose();
-        VertexConsumer buffer = vcs.getBuffer(RenderType.lines());
-        AABB box = AABB.of(bounds);
-        LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
-        matrices.popPose();
     }
 
     @Override

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
@@ -37,11 +38,9 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 public class StructureMultiblockControllerEditScreen extends Screen {
     private static final int VALID_TEXT_COLOR = 0xE0E0E0;
@@ -62,7 +61,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private EditBox sizeXBox;
     private EditBox sizeYBox;
     private EditBox sizeZBox;
-    
+
     private CycleButton<Boolean> showBoundsBox;
 
     public StructureMultiblockControllerEditScreen(StructureMultiblockControllerBlockEntity controller) {
@@ -78,18 +77,15 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         return Optional.ofNullable(StructureMultiblockControllerBlockEntity.formatCasing(casingBox.getValue()));
     }
 
-    // TODO this needs to be reworked to allow for negative sizes and whatnot
-    private Optional<BoundingBox> getBoundingBox() {
+    private Optional<StructureControllerBounds> getBounds() {
         try {
-            int minX = Integer.parseInt(posXBox.getValue());
-            int minY = Integer.parseInt(posYBox.getValue());
-            int minZ = Integer.parseInt(posZBox.getValue());
-            BlockPos min = new BlockPos(minX, minY, minZ);
-            int maxX = Integer.parseInt(sizeXBox.getValue()) + minX - 1;
-            int maxY = Integer.parseInt(sizeYBox.getValue()) + minY - 1;
-            int maxZ = Integer.parseInt(sizeZBox.getValue()) + minZ - 1;
-            BlockPos max = new BlockPos(maxX, maxY, maxZ);
-            return Optional.of(BoundingBox.fromCorners(min, max));
+            int x = Integer.parseInt(posXBox.getValue());
+            int y = Integer.parseInt(posYBox.getValue());
+            int z = Integer.parseInt(posZBox.getValue());
+            int sizeX = Integer.parseInt(sizeXBox.getValue());
+            int sizeY = Integer.parseInt(sizeYBox.getValue());
+            int sizeZ = Integer.parseInt(sizeZBox.getValue());
+            return Optional.of(new StructureControllerBounds(x, y, z, sizeX, sizeY, sizeZ));
         } catch (NumberFormatException ignored) {
             return Optional.empty();
         }
@@ -105,9 +101,15 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         casingBox.setTextColor(validCasing ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
     }
 
+    private void updateBounds() {
+        boolean validBounds = this.getBounds().filter((b) -> !b.isEmpty()).isPresent();
+        saveButton.active = validBounds;
+    }
+
     private void updateAll() {
         this.updateId();
         this.updateCasing();
+        this.updateBounds();
     }
 
     private void done() {
@@ -120,7 +122,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 controller.getBlockPos(),
                 idBox.getValue(),
                 casingBox.getValue(),
-                this.getBoundingBox().orElse(new BoundingBox(0, 0, 0, 0, 0, 0)),
+                this.getBounds().orElse(new StructureControllerBounds(0, 0, 0, 1, 1, 1)),
                 showBoundsBox.getValue()));
     }
 
@@ -166,37 +168,40 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         casingBox.setResponder(text -> this.updateCasing());
         this.addRenderableWidget(casingBox);
 
-        BoundingBox bounds = controller.getBounds();
-        if (bounds == null) {
-            bounds = new BoundingBox(0, 0, 0, 0, 0, 0);
-        }
+        StructureControllerBounds bounds = controller.getBounds();
 
         posXBox = new EditBox(font, width / 2 - 152, 130, 80, 20, Component.translatable("structure_block.position.x"));
         posXBox.setMaxLength(15);
-        posXBox.setValue(Integer.toString(bounds.minX()));
+        posXBox.setValue(Integer.toString(bounds.x()));
+        posXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posXBox);
         posYBox = new EditBox(font, width / 2 - 72, 130, 80, 20, Component.translatable("structure_block.position.y"));
         posYBox.setMaxLength(15);
-        posYBox.setValue(Integer.toString(bounds.minY()));
+        posYBox.setValue(Integer.toString(bounds.y()));
+        posYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posYBox);
         posZBox = new EditBox(font, width / 2 + 8, 130, 80, 20, Component.translatable("structure_block.position.z"));
         posZBox.setMaxLength(15);
-        posZBox.setValue(Integer.toString(bounds.minZ()));
+        posZBox.setValue(Integer.toString(bounds.z()));
+        posZBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posZBox);
 
         sizeXBox = new EditBox(font, width / 2 - 152, 170, 80, 20, Component.translatable("structure_block.size.x"));
         sizeXBox.setMaxLength(15);
-        sizeXBox.setValue(Integer.toString(bounds.maxX() - bounds.minX() + 1));
+        sizeXBox.setValue(Integer.toString(bounds.sizeX()));
+        sizeXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeXBox);
         sizeYBox = new EditBox(font, width / 2 - 72, 170, 80, 20, Component.translatable("structure_block.size.y"));
         sizeYBox.setMaxLength(15);
-        sizeYBox.setValue(Integer.toString(bounds.maxY() - bounds.minY() + 1));
+        sizeYBox.setValue(Integer.toString(bounds.sizeY()));
+        sizeYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeYBox);
         sizeZBox = new EditBox(font, width / 2 + 8, 170, 80, 20, Component.translatable("structure_block.size.z"));
         sizeZBox.setMaxLength(15);
-        sizeZBox.setValue(Integer.toString(bounds.maxZ() - bounds.minZ() + 1));
+        sizeZBox.setValue(Integer.toString(bounds.sizeZ()));
+        sizeZBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeZBox);
-        
+
         this.addRenderableWidget(showBoundsBox = CycleButton.onOffBuilder(controller.shouldShowBounds())
                 .displayOnlyValue()
                 .create(width / 2 + 4 + 100, 130, 50, 20, Component.translatable("structure_block.show_boundingbox")));
@@ -217,8 +222,9 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 153, 120, 0xA0A0A0);
 
         graphics.drawString(font, Component.translatable("structure_block.size"), width / 2 - 153, 160, 0xA0A0A0);
-        
-        graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"), width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 10526880);
+
+        graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"),
+                width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 10526880);
     }
 
     @Override
@@ -235,23 +241,25 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     public void resize(Minecraft minecraft, int width, int height) {
         String idBoxValue = idBox.getValue();
         String casingBoxValue = casingBox.getValue();
-        String posXValue = posXBox.getValue();
-        String posYValue = posYBox.getValue();
-        String posZValue = posZBox.getValue();
-        String sizeXValue = sizeXBox.getValue();
-        String sizeYValue = sizeYBox.getValue();
-        String sizeZValue = sizeZBox.getValue();
+        String posXBoxValue = posXBox.getValue();
+        String posYBoxValue = posYBox.getValue();
+        String posZBoxValue = posZBox.getValue();
+        String sizeXBoxValue = sizeXBox.getValue();
+        String sizeYBoxValue = sizeYBox.getValue();
+        String sizeZBoxValue = sizeZBox.getValue();
+        boolean showBoundsBoxValue = showBoundsBox.getValue();
 
         this.init(minecraft, width, height);
 
         idBox.setValue(idBoxValue);
         casingBox.setValue(casingBoxValue);
-        posXBox.setValue(posXValue);
-        posYBox.setValue(posYValue);
-        posZBox.setValue(posZValue);
-        sizeXBox.setValue(sizeXValue);
-        sizeYBox.setValue(sizeYValue);
-        sizeZBox.setValue(sizeZValue);
+        posXBox.setValue(posXBoxValue);
+        posYBox.setValue(posYBoxValue);
+        posZBox.setValue(posZBoxValue);
+        sizeXBox.setValue(sizeXBoxValue);
+        sizeYBox.setValue(sizeYBoxValue);
+        sizeZBox.setValue(sizeZBoxValue);
+        showBoundsBox.setValue(showBoundsBoxValue);
     }
 
     @Override

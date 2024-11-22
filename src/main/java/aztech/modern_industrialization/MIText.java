@@ -251,6 +251,7 @@ public enum MIText {
     StructureMultiblockMemberMembers("Members"),
     StructureMultiblockMemberPreview("Preview"),
     StructureMultiblockStructureName("Structure Name"),
+    StructureMultiblockSaveFailNoBounds("Failed to save structure. The bounds provided are not valid."),
     SuperconductorPowerOnly(
             "Can only connect to Superconductor cables and machines. Must be directly connected to a machine on at least one end of the tunnel."),
     Temperature("Temperature: %d °C"),

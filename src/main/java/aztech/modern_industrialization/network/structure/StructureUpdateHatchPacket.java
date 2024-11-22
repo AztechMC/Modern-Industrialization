@@ -29,6 +29,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -47,11 +48,12 @@ public record StructureUpdateHatchPacket(BlockPos pos, String inputCasing, Strin
     public void handle(Context ctx) {
         ctx.assertOnServer();
 
-        if (!ctx.getPlayer().canUseGameMasterBlocks()) {
+        Player player = ctx.getPlayer();
+        Level level = player.level();
+
+        if (!player.canUseGameMasterBlocks()) {
             return;
         }
-
-        Level level = ctx.getPlayer().level();
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockHatchBlockEntity hatch) {

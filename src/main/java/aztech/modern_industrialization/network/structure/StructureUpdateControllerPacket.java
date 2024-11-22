@@ -23,17 +23,19 @@
  */
 package aztech.modern_industrialization.network.structure;
 
+import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-public record StructureUpdateControllerPacket(BlockPos pos, String inputId, String inputCasing, BoundingBox bounds, boolean showBounds) implements BasePacket {
+public record StructureUpdateControllerPacket(BlockPos pos, String inputId, String inputCasing, StructureControllerBounds bounds, boolean showBounds)
+        implements BasePacket {
 
     public static final StreamCodec<ByteBuf, StructureUpdateControllerPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
@@ -42,7 +44,7 @@ public record StructureUpdateControllerPacket(BlockPos pos, String inputId, Stri
             StructureUpdateControllerPacket::inputId,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateControllerPacket::inputCasing,
-            ByteBufCodecs.fromCodec(BoundingBox.CODEC),
+            ByteBufCodecs.fromCodec(StructureControllerBounds.CODEC),
             StructureUpdateControllerPacket::bounds,
             ByteBufCodecs.BOOL,
             StructureUpdateControllerPacket::showBounds,
@@ -52,11 +54,12 @@ public record StructureUpdateControllerPacket(BlockPos pos, String inputId, Stri
     public void handle(Context ctx) {
         ctx.assertOnServer();
 
-        if (!ctx.getPlayer().canUseGameMasterBlocks()) {
+        Player player = ctx.getPlayer();
+        Level level = player.level();
+
+        if (!player.canUseGameMasterBlocks()) {
             return;
         }
-
-        Level level = ctx.getPlayer().level();
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {

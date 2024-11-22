@@ -38,7 +38,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.Nullable;
 
 public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
@@ -47,7 +46,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
 
     private ResourceLocation id;
     private MachineCasing casing;
-    private BoundingBox bounds;
+    private StructureControllerBounds bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
     private boolean showBounds;
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
@@ -75,11 +74,11 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
     }
 
     @Nullable
-    public BoundingBox getBounds() {
+    public StructureControllerBounds getBounds() {
         return bounds;
     }
 
-    public void setBounds(BoundingBox bounds) {
+    public void setBounds(StructureControllerBounds bounds) {
         this.bounds = bounds;
     }
 
@@ -87,11 +86,11 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
     public ResourceLocation getId() {
         return id;
     }
-    
+
     public boolean shouldShowBounds() {
         return showBounds;
     }
-    
+
     public void setShowBounds(boolean showBounds) {
         this.showBounds = showBounds;
     }
@@ -137,12 +136,10 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
         if (inputCasing != null) {
             tag.putString("casing", inputCasing);
         }
-        if (bounds != null) {
-            CompoundTag boundsTag = new CompoundTag();
-            boundsTag.put("min", NbtUtils.writeBlockPos(new BlockPos(bounds.minX(), bounds.minY(), bounds.minZ())));
-            boundsTag.put("max", NbtUtils.writeBlockPos(new BlockPos(bounds.maxX(), bounds.maxY(), bounds.maxZ())));
-            tag.put("bounds", boundsTag);
-        }
+        CompoundTag boundsTag = new CompoundTag();
+        boundsTag.put("origin", NbtUtils.writeBlockPos(new BlockPos(bounds.x(), bounds.y(), bounds.z())));
+        boundsTag.put("size", NbtUtils.writeBlockPos(new BlockPos(bounds.sizeX(), bounds.sizeY(), bounds.sizeZ())));
+        tag.put("bounds", boundsTag);
         tag.putBoolean("show_bounds", showBounds);
     }
 
@@ -153,9 +150,13 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
         this.setInputCasing(tag.getString("casing"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {
             CompoundTag boundsTag = tag.getCompound("bounds");
-            BlockPos min = NbtUtils.readBlockPos(boundsTag, "min").orElseThrow();
-            BlockPos max = NbtUtils.readBlockPos(boundsTag, "max").orElseThrow();
-            bounds = BoundingBox.fromCorners(min, max);
+            BlockPos origin = NbtUtils.readBlockPos(boundsTag, "origin").orElseThrow();
+            BlockPos size = NbtUtils.readBlockPos(boundsTag, "size").orElseThrow();
+            bounds = new StructureControllerBounds(
+                    origin.getX(), origin.getY(), origin.getZ(),
+                    size.getX(), size.getY(), size.getZ());
+        } else {
+            bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
         }
         showBounds = tag.getBoolean("show_bounds");
     }

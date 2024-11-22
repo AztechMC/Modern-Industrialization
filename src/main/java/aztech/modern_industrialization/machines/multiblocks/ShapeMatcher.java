@@ -25,15 +25,6 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +33,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -104,34 +103,34 @@ public class ShapeMatcher implements ChunkEventListener {
         }
         return result;
     }
-    
+
     private static Rotation templateRotation(Direction controllerDirection) {
         return switch (controllerDirection) {
-            case SOUTH -> Rotation.NONE;
-            case NORTH -> Rotation.CLOCKWISE_180;
-            case EAST -> Rotation.CLOCKWISE_90;
-            case WEST -> Rotation.COUNTERCLOCKWISE_90;
-            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        case SOUTH -> Rotation.NONE;
+        case NORTH -> Rotation.CLOCKWISE_180;
+        case EAST -> Rotation.CLOCKWISE_90;
+        case WEST -> Rotation.COUNTERCLOCKWISE_90;
+        default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
         };
     }
-    
+
     private static Rotation worldRotation(Direction controllerDirection) {
         return switch (controllerDirection) {
-            case SOUTH -> Rotation.NONE;
-            case NORTH -> Rotation.CLOCKWISE_180;
-            case EAST -> Rotation.COUNTERCLOCKWISE_90;
-            case WEST -> Rotation.CLOCKWISE_90;
-            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        case SOUTH -> Rotation.NONE;
+        case NORTH -> Rotation.CLOCKWISE_180;
+        case EAST -> Rotation.COUNTERCLOCKWISE_90;
+        case WEST -> Rotation.CLOCKWISE_90;
+        default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
         };
     }
-    
+
     /**
      * Convert a in-world block state to a rotated block state as it should be saved for a shape template.
      */
     public static BlockState toTemplateState(Level level, BlockPos pos, BlockState state, Direction controllerDirection) {
         return state.rotate(level, pos, templateRotation(controllerDirection));
     }
-    
+
     /**
      * Convert a template block state to a rotated block state as it should be placed in world.
      */

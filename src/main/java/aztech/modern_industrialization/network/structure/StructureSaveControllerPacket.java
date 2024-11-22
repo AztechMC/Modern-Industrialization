@@ -23,14 +23,17 @@
  */
 package aztech.modern_industrialization.network.structure;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.structure.MIStructureTemplateManager;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,16 +49,18 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
     public void handle(Context ctx) {
         ctx.assertOnServer();
 
-        if (!ctx.getPlayer().canUseGameMasterBlocks()) {
+        Player player = ctx.getPlayer();
+        Level level = player.level();
+
+        if (!player.canUseGameMasterBlocks()) {
             return;
         }
-
-        Level level = ctx.getPlayer().level();
 
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-            if (controller.getBounds() == null) {
+            if (controller.getBounds().isEmpty()) {
+                player.sendSystemMessage(MIText.StructureMultiblockSaveFailNoBounds.text().withStyle(ChatFormatting.RED));
                 return;
             }
             // TODO dont do this on dedicated server maybe?

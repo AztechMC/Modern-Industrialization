@@ -23,6 +23,10 @@
  */
 package aztech.modern_industrialization.debug;
 
+import static net.minecraft.commands.Commands.*;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.*;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
+
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -51,10 +55,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-
-import static net.minecraft.commands.Commands.*;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.*;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
 
 public class DebugCommands {
     private static final SuggestionProvider<CommandSourceStack> PIPE_TYPES_SUGGESTION_PROVIDER = (context, builder) -> {
@@ -196,14 +196,15 @@ public class DebugCommands {
 
     private static int testStructure(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
         BlockState controllerState = src.getLevel().getBlockState(controllerPos);
-        if(controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+        if (controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             CompoundTag tag = MIStructureTemplateManager.load(id);
             if (tag == null) {
                 src.sendFailure(Component.literal("Could not find structure by the id '%s'".formatted(id)));
                 return Command.SINGLE_SUCCESS;
             }
             ShapeTemplate shape = MIStructureTemplateManager.deserialize(MachineCasings.CLEAN_STAINLESS_STEEL, tag);
-            ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING), shape);
+            ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING),
+                    shape);
             matcher.rematch(src.getLevel());
             src.sendSuccess(() -> Component.literal("Match test results: %s".formatted(matcher.isMatchSuccessful())), true);
         } else {

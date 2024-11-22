@@ -121,6 +121,10 @@ public final class MIStructureTemplateManager {
 
     public static FromWorldResult fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection,
             MachineCasing hatchCasing, StructureControllerBounds bounds) {
+        Objects.requireNonNull(level);
+        Objects.requireNonNull(controllerPos);
+        Objects.requireNonNull(controllerDirection);
+        Objects.requireNonNull(bounds);
         if (hatchCasing == null) {
             return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, controllerPos.toShortString());
         }
@@ -201,6 +205,8 @@ public final class MIStructureTemplateManager {
 
     @Nullable
     public static ShapeTemplate deserialize(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+
         var blockRegistry = BuiltInRegistries.BLOCK.asLookup();
 
         ResourceLocation hatchCasingId = ResourceLocation.tryParse(tag.getString("hatch_casing"));
@@ -230,6 +236,7 @@ public final class MIStructureTemplateManager {
     }
 
     private static Path path(ResourceLocation id) throws IOException {
+        Objects.requireNonNull(id);
         var miFolder = FMLPaths.GAMEDIR.get().resolve(MI.ID);
         var structuresFolder = miFolder
                 .resolve("structures")
@@ -239,6 +246,8 @@ public final class MIStructureTemplateManager {
     }
 
     public static boolean save(ResourceLocation id, CompoundTag tag) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(tag);
         try {
             try (OutputStream output = new FileOutputStream(path(id).toFile())) {
                 NbtIo.writeCompressed(tag, output);
@@ -254,6 +263,7 @@ public final class MIStructureTemplateManager {
 
     @Nullable
     public static CompoundTag load(ResourceLocation id) {
+        Objects.requireNonNull(id);
         try {
             Path path = path(id);
             if (Files.exists(path)) {

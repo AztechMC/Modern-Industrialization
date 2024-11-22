@@ -33,7 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-public record StructureUpdateControllerPacket(BlockPos pos, String inputId, String inputCasing, BoundingBox bounds) implements BasePacket {
+public record StructureUpdateControllerPacket(BlockPos pos, String inputId, String inputCasing, BoundingBox bounds, boolean showBounds) implements BasePacket {
 
     public static final StreamCodec<ByteBuf, StructureUpdateControllerPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
@@ -44,6 +44,8 @@ public record StructureUpdateControllerPacket(BlockPos pos, String inputId, Stri
             StructureUpdateControllerPacket::inputCasing,
             ByteBufCodecs.fromCodec(BoundingBox.CODEC),
             StructureUpdateControllerPacket::bounds,
+            ByteBufCodecs.BOOL,
+            StructureUpdateControllerPacket::showBounds,
             StructureUpdateControllerPacket::new);
 
     @Override
@@ -61,6 +63,7 @@ public record StructureUpdateControllerPacket(BlockPos pos, String inputId, Stri
             controller.setInputId(inputId);
             controller.setInputCasing(inputCasing);
             controller.setBounds(bounds);
+            controller.setShowBounds(showBounds);
 
             controller.sync();
             controller.setChanged();

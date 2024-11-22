@@ -48,6 +48,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
     private ResourceLocation id;
     private MachineCasing casing;
     private BoundingBox bounds;
+    private boolean showBounds;
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
@@ -85,6 +86,14 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
     @Nullable
     public ResourceLocation getId() {
         return id;
+    }
+    
+    public boolean shouldShowBounds() {
+        return showBounds;
+    }
+    
+    public void setShowBounds(boolean showBounds) {
+        this.showBounds = showBounds;
     }
 
     @Nullable
@@ -134,6 +143,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
             boundsTag.put("max", NbtUtils.writeBlockPos(new BlockPos(bounds.maxX(), bounds.maxY(), bounds.maxZ())));
             tag.put("bounds", boundsTag);
         }
+        tag.putBoolean("show_bounds", showBounds);
     }
 
     @Override
@@ -147,5 +157,6 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
             BlockPos max = NbtUtils.readBlockPos(boundsTag, "max").orElseThrow();
             bounds = BoundingBox.fromCorners(min, max);
         }
+        showBounds = tag.getBoolean("show_bounds");
     }
 }

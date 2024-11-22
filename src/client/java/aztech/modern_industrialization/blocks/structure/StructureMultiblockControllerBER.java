@@ -37,6 +37,9 @@ public class StructureMultiblockControllerBER implements BlockEntityRenderer<Str
     @Override
     public void render(StructureMultiblockControllerBlockEntity controller, float tickDelta, PoseStack matrices, MultiBufferSource vcs, int light,
             int overlay) {
+        if (!controller.shouldShowBounds()) {
+            return;
+        }
         BlockPos pos = controller.getBlockPos();
         BoundingBox bounds = controller.getBounds();
         if (bounds == null) {
@@ -45,7 +48,6 @@ public class StructureMultiblockControllerBER implements BlockEntityRenderer<Str
         matrices.pushPose();
         VertexConsumer buffer = vcs.getBuffer(RenderType.lines());
         AABB box = AABB.of(bounds);
-        // MI.LOGGER.info("box: {}", box);
         LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
         matrices.popPose();
     }

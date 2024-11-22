@@ -34,6 +34,7 @@ import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -55,12 +56,14 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private EditBox idBox;
     private EditBox casingBox;
 
-    private EditBox posX;
-    private EditBox posY;
-    private EditBox posZ;
-    private EditBox sizeX;
-    private EditBox sizeY;
-    private EditBox sizeZ;
+    private EditBox posXBox;
+    private EditBox posYBox;
+    private EditBox posZBox;
+    private EditBox sizeXBox;
+    private EditBox sizeYBox;
+    private EditBox sizeZBox;
+    
+    private CycleButton<Boolean> showBoundsBox;
 
     public StructureMultiblockControllerEditScreen(StructureMultiblockControllerBlockEntity controller) {
         super(Component.translatable(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.asBlock().getDescriptionId()));
@@ -78,13 +81,13 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     // TODO this needs to be reworked to allow for negative sizes and whatnot
     private Optional<BoundingBox> getBoundingBox() {
         try {
-            int minX = Integer.parseInt(posX.getValue());
-            int minY = Integer.parseInt(posY.getValue());
-            int minZ = Integer.parseInt(posZ.getValue());
+            int minX = Integer.parseInt(posXBox.getValue());
+            int minY = Integer.parseInt(posYBox.getValue());
+            int minZ = Integer.parseInt(posZBox.getValue());
             BlockPos min = new BlockPos(minX, minY, minZ);
-            int maxX = Integer.parseInt(sizeX.getValue()) + minX - 1;
-            int maxY = Integer.parseInt(sizeY.getValue()) + minY - 1;
-            int maxZ = Integer.parseInt(sizeZ.getValue()) + minZ - 1;
+            int maxX = Integer.parseInt(sizeXBox.getValue()) + minX - 1;
+            int maxY = Integer.parseInt(sizeYBox.getValue()) + minY - 1;
+            int maxZ = Integer.parseInt(sizeZBox.getValue()) + minZ - 1;
             BlockPos max = new BlockPos(maxX, maxY, maxZ);
             return Optional.of(BoundingBox.fromCorners(min, max));
         } catch (NumberFormatException ignored) {
@@ -117,7 +120,8 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 controller.getBlockPos(),
                 idBox.getValue(),
                 casingBox.getValue(),
-                this.getBoundingBox().orElse(new BoundingBox(0, 0, 0, 0, 0, 0))));
+                this.getBoundingBox().orElse(new BoundingBox(0, 0, 0, 0, 0, 0)),
+                showBoundsBox.getValue()));
     }
 
     private void cancel() {
@@ -127,6 +131,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private void save() {
         this.sendToServer();
         minecraft.getConnection().send(new StructureSaveControllerPacket(controller.getBlockPos()));
+        minecraft.setScreen(null);
     }
 
     @Override
@@ -166,31 +171,35 @@ public class StructureMultiblockControllerEditScreen extends Screen {
             bounds = new BoundingBox(0, 0, 0, 0, 0, 0);
         }
 
-        posX = new EditBox(font, width / 2 - 152, 130, 80, 20, Component.translatable("structure_block.position.x"));
-        posX.setMaxLength(15);
-        posX.setValue(Integer.toString(bounds.minX()));
-        this.addRenderableWidget(posX);
-        posY = new EditBox(font, width / 2 - 72, 130, 80, 20, Component.translatable("structure_block.position.y"));
-        posY.setMaxLength(15);
-        posY.setValue(Integer.toString(bounds.minY()));
-        this.addRenderableWidget(posY);
-        posZ = new EditBox(font, width / 2 + 8, 130, 80, 20, Component.translatable("structure_block.position.z"));
-        posZ.setMaxLength(15);
-        posZ.setValue(Integer.toString(bounds.minZ()));
-        this.addRenderableWidget(posZ);
+        posXBox = new EditBox(font, width / 2 - 152, 130, 80, 20, Component.translatable("structure_block.position.x"));
+        posXBox.setMaxLength(15);
+        posXBox.setValue(Integer.toString(bounds.minX()));
+        this.addRenderableWidget(posXBox);
+        posYBox = new EditBox(font, width / 2 - 72, 130, 80, 20, Component.translatable("structure_block.position.y"));
+        posYBox.setMaxLength(15);
+        posYBox.setValue(Integer.toString(bounds.minY()));
+        this.addRenderableWidget(posYBox);
+        posZBox = new EditBox(font, width / 2 + 8, 130, 80, 20, Component.translatable("structure_block.position.z"));
+        posZBox.setMaxLength(15);
+        posZBox.setValue(Integer.toString(bounds.minZ()));
+        this.addRenderableWidget(posZBox);
 
-        sizeX = new EditBox(font, width / 2 - 152, 170, 80, 20, Component.translatable("structure_block.size.x"));
-        sizeX.setMaxLength(15);
-        sizeX.setValue(Integer.toString(bounds.maxX() - bounds.minX() + 1));
-        this.addRenderableWidget(sizeX);
-        sizeY = new EditBox(font, width / 2 - 72, 170, 80, 20, Component.translatable("structure_block.size.y"));
-        sizeY.setMaxLength(15);
-        sizeY.setValue(Integer.toString(bounds.maxY() - bounds.minY() + 1));
-        this.addRenderableWidget(sizeY);
-        sizeZ = new EditBox(font, width / 2 + 8, 170, 80, 20, Component.translatable("structure_block.size.z"));
-        sizeZ.setMaxLength(15);
-        sizeZ.setValue(Integer.toString(bounds.maxZ() - bounds.minZ() + 1));
-        this.addRenderableWidget(sizeZ);
+        sizeXBox = new EditBox(font, width / 2 - 152, 170, 80, 20, Component.translatable("structure_block.size.x"));
+        sizeXBox.setMaxLength(15);
+        sizeXBox.setValue(Integer.toString(bounds.maxX() - bounds.minX() + 1));
+        this.addRenderableWidget(sizeXBox);
+        sizeYBox = new EditBox(font, width / 2 - 72, 170, 80, 20, Component.translatable("structure_block.size.y"));
+        sizeYBox.setMaxLength(15);
+        sizeYBox.setValue(Integer.toString(bounds.maxY() - bounds.minY() + 1));
+        this.addRenderableWidget(sizeYBox);
+        sizeZBox = new EditBox(font, width / 2 + 8, 170, 80, 20, Component.translatable("structure_block.size.z"));
+        sizeZBox.setMaxLength(15);
+        sizeZBox.setValue(Integer.toString(bounds.maxZ() - bounds.minZ() + 1));
+        this.addRenderableWidget(sizeZBox);
+        
+        this.addRenderableWidget(showBoundsBox = CycleButton.onOffBuilder(controller.shouldShowBounds())
+                .displayOnlyValue()
+                .create(width / 2 + 4 + 100, 130, 50, 20, Component.translatable("structure_block.show_boundingbox")));
 
         this.updateAll();
     }
@@ -208,6 +217,8 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 153, 120, 0xA0A0A0);
 
         graphics.drawString(font, Component.translatable("structure_block.size"), width / 2 - 153, 160, 0xA0A0A0);
+        
+        graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"), width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 10526880);
     }
 
     @Override
@@ -224,23 +235,23 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     public void resize(Minecraft minecraft, int width, int height) {
         String idBoxValue = idBox.getValue();
         String casingBoxValue = casingBox.getValue();
-        String posXValue = posX.getValue();
-        String posYValue = posY.getValue();
-        String posZValue = posZ.getValue();
-        String sizeXValue = sizeX.getValue();
-        String sizeYValue = sizeY.getValue();
-        String sizeZValue = sizeZ.getValue();
+        String posXValue = posXBox.getValue();
+        String posYValue = posYBox.getValue();
+        String posZValue = posZBox.getValue();
+        String sizeXValue = sizeXBox.getValue();
+        String sizeYValue = sizeYBox.getValue();
+        String sizeZValue = sizeZBox.getValue();
 
         this.init(minecraft, width, height);
 
         idBox.setValue(idBoxValue);
         casingBox.setValue(casingBoxValue);
-        posX.setValue(posXValue);
-        posY.setValue(posYValue);
-        posZ.setValue(posZValue);
-        sizeX.setValue(sizeXValue);
-        sizeY.setValue(sizeYValue);
-        sizeZ.setValue(sizeZValue);
+        posXBox.setValue(posXValue);
+        posYBox.setValue(posYValue);
+        posZBox.setValue(posZValue);
+        sizeXBox.setValue(sizeXValue);
+        sizeYBox.setValue(sizeYValue);
+        sizeZBox.setValue(sizeZValue);
     }
 
     @Override

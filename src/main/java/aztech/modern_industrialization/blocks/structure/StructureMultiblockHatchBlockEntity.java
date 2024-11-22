@@ -27,9 +27,10 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import java.util.List;
-import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +47,7 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity impleme
     private String inputFlags;
 
     private BlockState preview;
-    private List<Predicate<BlockState>> members;
+    private List<StructureMemberTest> members;
     private MachineCasing casing;
     private HatchFlags flags = HatchFlags.NO_HATCH;
 
@@ -80,7 +81,7 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity impleme
     }
 
     @Nullable
-    public List<Predicate<BlockState>> getMembers() {
+    public List<StructureMemberTest> getMembers() {
         return members;
     }
 
@@ -115,13 +116,8 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity impleme
     }
 
     @Override
-    public SimpleMember getMemberOverride() {
-        return SimpleMember.anyOf(members, preview);
-    }
-
-    @Override
-    public HatchFlags getHatchFlagsOverride() {
-        return flags;
+    public StructureMember getMemberOverride() {
+        return new StructureMember(preview, members, flags);
     }
 
     @Override
@@ -162,16 +158,11 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity impleme
     }
 
     @Override
-    public void loadStructureData(CompoundTag tag) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.setInputPreview(tag.getString("preview"));
         this.setInputMembers(tag.getString("members"));
         this.setInputCasing(tag.getString("casing"));
         this.setInputFlags(tag.getString("flags"));
-    }
-
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.loadStructureData(tag);
     }
 }

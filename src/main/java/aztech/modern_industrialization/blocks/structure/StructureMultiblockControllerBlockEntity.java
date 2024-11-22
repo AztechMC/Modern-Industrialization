@@ -26,7 +26,8 @@ package aztech.modern_industrialization.blocks.structure;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -99,7 +100,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     }
 
     @Override
-    public SimpleMember getMemberOverride() {
+    public StructureMember getMemberOverride() {
         return null;
     }
 
@@ -137,7 +138,8 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     }
 
     @Override
-    public void loadStructureData(CompoundTag tag) {
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         this.setInputId(tag.getString("structure_id"));
         this.setInputCasing(tag.getString("casing"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {
@@ -151,11 +153,5 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
             bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
         }
         showBounds = tag.getBoolean("show_bounds");
-    }
-
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.loadStructureData(tag);
     }
 }

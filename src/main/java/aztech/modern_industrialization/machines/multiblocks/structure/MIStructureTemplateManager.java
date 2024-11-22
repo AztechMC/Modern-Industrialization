@@ -21,16 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.structure;
+package aztech.modern_industrialization.machines.multiblocks.structure;
+
+import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.FileUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,25 +56,11 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.neoforged.fml.loading.FMLPaths;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
 
 public final class MIStructureTemplateManager {
     public enum ValidationResult {
@@ -131,9 +128,9 @@ public final class MIStructureTemplateManager {
         BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());
         BlockPos maxPos = controllerPos.offset(boundsBox.maxX(), boundsBox.maxY(), boundsBox.maxZ());
 
-        List<BlockState> paletteStates = new ArrayList<>();
-        ListTag palette = new ListTag();
-        ListTag blocks = new ListTag();
+        List<StructureMember> members = new ArrayList<>();
+        ListTag membersTag = new ListTag();
+        ListTag blocksTag = new ListTag();
 
         boolean hasController = false;
         boolean hasHatch = false;
@@ -145,34 +142,36 @@ public final class MIStructureTemplateManager {
 
             blockTag.put("pos", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, pos)));
 
-            if (!paletteStates.contains(state)) {
-                paletteStates.add(state);
-                palette.add(NbtUtils.writeBlockState(state));
-            }
-            int paletteIndex = paletteStates.indexOf(state);
-            blockTag.putInt("state", paletteIndex);
+            StructureMember member = new StructureMember(state);
 
-            // TODO replace this direct member and hatch data
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                if (blockEntity instanceof StructureMemberOverride override) {
-                    if (!override.isConfigurationValid()) {
-                        return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, pos.toShortString());
-                    }
-                    if (override.isController()) {
-                        if (hasController) {
-                            return new FromWorldResult(ValidationResult.TOO_MANY_CONTROLLERS);
-                        }
-                        hasController = true;
-                    }
-                    if (override.getHatchFlagsOverride() != null) {
-                        hasHatch = true;
-                    }
+            if (blockEntity instanceof StructureMemberOverride override) {
+                if (!override.isConfigurationValid()) {
+                    return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, pos.toShortString());
                 }
-                blockTag.put("nbt", blockEntity.saveWithId(level.registryAccess()));
+                if (override.isController()) {
+                    if (hasController) {
+                        return new FromWorldResult(ValidationResult.TOO_MANY_CONTROLLERS);
+                    }
+                    hasController = true;
+                }
+                member = override.getMemberOverride();
             }
 
-            blocks.add(blockTag);
+            if (member != null) {
+                if (member.hatchFlags() != null) {
+                    hasHatch = true;
+                }
+                CompoundTag memberTag = new CompoundTag();
+                member.save(memberTag);
+                if (!members.contains(member)) {
+                    members.add(member);
+                    membersTag.add(memberTag);
+                }
+                blockTag.putInt("member_index", members.indexOf(member));
+            }
+
+            blocksTag.add(blockTag);
         }
 
         if (!hasController) {
@@ -182,8 +181,8 @@ public final class MIStructureTemplateManager {
             return new FromWorldResult(ValidationResult.NO_HATCHES);
         }
 
-        tag.put("palette", palette);
-        tag.put("blocks", blocks);
+        tag.put("members", membersTag);
+        tag.put("blocks", blocksTag);
 
         return new FromWorldResult(tag);
     }
@@ -193,35 +192,18 @@ public final class MIStructureTemplateManager {
 
         ShapeTemplate.Builder builder = new ShapeTemplate.Builder(hatchCasing);
 
-        ListTag palette = tag.getList("palette", Tag.TAG_COMPOUND);
+        ListTag members = tag.getList("members", Tag.TAG_COMPOUND);
         ListTag blocks = tag.getList("blocks", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < blocks.size(); i++) {
-            CompoundTag block = blocks.getCompound(i);
+            CompoundTag blockTag = blocks.getCompound(i);
 
-            BlockPos pos = NbtUtils.readBlockPos(block, "pos").orElseThrow();
+            BlockPos pos = NbtUtils.readBlockPos(blockTag, "pos").orElseThrow();
 
-            int paletteIndex = block.getInt("state");
-            BlockState state = NbtUtils.readBlockState(blockRegistry, palette.getCompound(paletteIndex));
-
-            SimpleMember member = SimpleMember.forBlockState(state);
-            HatchFlags flags = null;
-
-            // TODO replace this direct member and hatch data
-            if (block.contains("nbt", Tag.TAG_COMPOUND)) {
-                CompoundTag nbt = block.getCompound("nbt");
-                if (state.getBlock() instanceof EntityBlock entityBlock) {
-                    BlockEntity blockEntity = entityBlock.newBlockEntity(pos, state);
-                    if (blockEntity instanceof StructureMemberOverride override) {
-                        override.loadStructureData(nbt);
-                        member = override.getMemberOverride();
-                        flags = override.getHatchFlagsOverride();
-                    }
-                }
-            }
-
-            if (member != null) {
-                builder.add(pos.getX(), pos.getY(), pos.getZ(), member, flags);
+            if (blockTag.contains("member_index", Tag.TAG_INT)) {
+                int memberIndex = blockTag.getInt("member_index");
+                StructureMember member = StructureMember.from(members.getCompound(memberIndex));
+                builder.add(pos.getX(), pos.getY(), pos.getZ(), member, member.hatchFlags());
             }
         }
 

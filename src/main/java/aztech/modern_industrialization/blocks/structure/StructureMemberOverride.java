@@ -23,22 +23,14 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
-import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
-import net.minecraft.nbt.CompoundTag;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 
 public interface StructureMemberOverride {
     default boolean isController() {
         return false;
     }
 
-    SimpleMember getMemberOverride();
-
-    default HatchFlags getHatchFlagsOverride() {
-        return null;
-    }
+    StructureMember getMemberOverride();
 
     boolean isConfigurationValid();
-
-    void loadStructureData(CompoundTag tag);
 }

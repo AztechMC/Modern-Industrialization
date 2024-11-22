@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -94,18 +94,18 @@ public interface SimpleMember {
         };
     }
 
-    static SimpleMember anyOf(Collection<Predicate<BlockState>> predicates, BlockState preview) {
-        Objects.requireNonNull(predicates);
-        if (predicates.isEmpty()) {
-            throw new IllegalArgumentException("Cannot use empty predicate collection");
+    static SimpleMember anyOf(Collection<StructureMemberTest> members, BlockState preview) {
+        Objects.requireNonNull(members);
+        if (members.isEmpty()) {
+            throw new IllegalArgumentException("Cannot use empty member collection");
         }
         Objects.requireNonNull(preview);
 
         return new SimpleMember() {
             @Override
             public boolean matchesState(BlockState state) {
-                for (Predicate<BlockState> predicate : predicates) {
-                    if (predicate.test(state)) {
+                for (StructureMemberTest member : members) {
+                    if (member.matchesState(state)) {
                         return true;
                     }
                 }

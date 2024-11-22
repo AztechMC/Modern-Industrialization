@@ -21,48 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks;
+package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
-public class HatchFlags {
-    public static final HatchFlags NO_HATCH = new Builder().build();
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
 
-    public final int flags;
+public interface StructureMemberTest {
+    String id();
 
-    public HatchFlags(int flags) {
-        this.flags = flags;
-    }
+    boolean matchesState(BlockState state);
 
-    public boolean allows(HatchType type) {
-        return (flags & (1 << type.getId())) > 0;
-    }
+    void load(CompoundTag tag);
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof HatchFlags other && flags == other.flags;
-    }
+    void save(CompoundTag tag);
 
-    public static class Builder {
-        private int flags = 0;
-
-        public Builder with(int flag) {
-            flags |= 1 << flag;
-            return this;
+    static StructureMemberTest from(CompoundTag tag) {
+        if (tag.contains("id", Tag.TAG_STRING)) {
+            String id = tag.getString("id");
+            StructureMemberTest member = switch (id) {
+            case "tag" -> new StructureMemberTestTag();
+            case "state" -> new StructureMemberTestState();
+            default -> throw new IllegalStateException("Unexpected value: " + id);
+            };
+            member.load(tag);
+            return member;
         }
-
-        public Builder with(HatchType type) {
-            return this.with(type.getId());
-        }
-
-        public Builder with(HatchType... types) {
-            for (HatchType type : types) {
-                with(type);
-            }
-
-            return this;
-        }
-
-        public HatchFlags build() {
-            return new HatchFlags(flags);
-        }
+        return null;
     }
 }

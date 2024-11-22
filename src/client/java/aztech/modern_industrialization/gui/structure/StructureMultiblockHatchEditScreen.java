@@ -25,15 +25,15 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateHatchPacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -68,7 +68,7 @@ public class StructureMultiblockHatchEditScreen extends Screen {
         return Optional.ofNullable(StructureMultiblockFormatters.preview(previewBox.getValue()));
     }
 
-    private Optional<List<Predicate<BlockState>>> getMembers() {
+    private Optional<List<StructureMemberTest>> getMembers() {
         return Optional.ofNullable(StructureMultiblockFormatters.members(membersBox.getValue()));
     }
 

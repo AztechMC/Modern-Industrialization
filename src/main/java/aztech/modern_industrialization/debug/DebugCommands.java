@@ -27,17 +27,18 @@ import static net.minecraft.commands.Commands.*;
 import static net.minecraft.commands.arguments.ResourceLocationArgument.*;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
-import aztech.modern_industrialization.structure.MIStructureTemplateManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -196,7 +197,7 @@ public class DebugCommands {
 
     private static int testStructure(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
         BlockState controllerState = src.getLevel().getBlockState(controllerPos);
-        if (controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+        if (controllerState.is(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())) {
             CompoundTag tag = MIStructureTemplateManager.load(id);
             if (tag == null) {
                 src.sendFailure(Component.literal("Could not find structure by the id '%s'".formatted(id)));

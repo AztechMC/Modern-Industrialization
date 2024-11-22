@@ -21,48 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks;
+package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
-public class HatchFlags {
-    public static final HatchFlags NO_HATCH = new Builder().build();
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.block.state.BlockState;
 
-    public final int flags;
+public class StructureMemberTestState implements StructureMemberTest {
+    private BlockState blockState;
 
-    public HatchFlags(int flags) {
-        this.flags = flags;
+    public StructureMemberTestState(BlockState blockState) {
+        this.blockState = blockState;
     }
 
-    public boolean allows(HatchType type) {
-        return (flags & (1 << type.getId())) > 0;
+    public StructureMemberTestState() {
+        this(null);
+    }
+
+    @Override
+    public String id() {
+        return "state";
+    }
+
+    @Override
+    public boolean matchesState(BlockState state) {
+        return blockState == state;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        var registry = BuiltInRegistries.BLOCK.asLookup();
+        blockState = NbtUtils.readBlockState(registry, tag.getCompound("state"));
+    }
+
+    @Override
+    public void save(CompoundTag tag) {
+        tag.put("state", NbtUtils.writeBlockState(blockState));
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof HatchFlags other && flags == other.flags;
-    }
-
-    public static class Builder {
-        private int flags = 0;
-
-        public Builder with(int flag) {
-            flags |= 1 << flag;
-            return this;
+        if (o instanceof StructureMemberTestState other) {
+            return blockState == other.blockState;
         }
-
-        public Builder with(HatchType type) {
-            return this.with(type.getId());
-        }
-
-        public Builder with(HatchType... types) {
-            for (HatchType type : types) {
-                with(type);
-            }
-
-            return this;
-        }
-
-        public HatchFlags build() {
-            return new HatchFlags(flags);
-        }
+        return false;
     }
 }

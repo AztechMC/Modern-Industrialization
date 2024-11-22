@@ -25,9 +25,10 @@ package aztech.modern_industrialization.blocks.structure;
 
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import java.util.List;
-import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     private String inputMembers;
 
     private BlockState preview;
-    private List<Predicate<BlockState>> members;
+    private List<StructureMemberTest> members;
 
     public StructureMultiblockMemberBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), pos, state);
@@ -74,13 +75,13 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     @Nullable
-    public List<Predicate<BlockState>> getMembers() {
+    public List<StructureMemberTest> getMembers() {
         return members;
     }
 
     @Override
-    public SimpleMember getMemberOverride() {
-        return SimpleMember.anyOf(members, preview);
+    public StructureMember getMemberOverride() {
+        return new StructureMember(preview, members, null);
     }
 
     @Override
@@ -113,14 +114,9 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     @Override
-    public void loadStructureData(CompoundTag tag) {
-        this.setInputPreview(tag.getString("preview"));
-        this.setInputMembers(tag.getString("members"));
-    }
-
-    @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.loadStructureData(tag);
+        this.setInputPreview(tag.getString("preview"));
+        this.setInputMembers(tag.getString("members"));
     }
 }

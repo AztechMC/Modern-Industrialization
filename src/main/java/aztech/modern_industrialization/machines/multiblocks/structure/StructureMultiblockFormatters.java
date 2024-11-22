@@ -21,18 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.structure;
+package aztech.modern_industrialization.machines.multiblocks.structure;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTestState;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTestTag;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Predicate;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -78,13 +80,13 @@ public final class StructureMultiblockFormatters {
     }
 
     @Nullable
-    public static List<Predicate<BlockState>> members(String inputMembers) {
+    public static List<StructureMemberTest> members(String inputMembers) {
         if (inputMembers == null || inputMembers.isEmpty()) {
             return new ArrayList<>();
         }
         var registry = BuiltInRegistries.BLOCK.asLookup();
 
-        List<Predicate<BlockState>> predicates = new ArrayList<>();
+        List<StructureMemberTest> members = new ArrayList<>();
         for (String part : inputMembers.split(";")) {
             if (part.startsWith("#")) {
                 ResourceLocation tagId = ResourceLocation.tryParse(part.substring(1));
@@ -92,17 +94,17 @@ public final class StructureMultiblockFormatters {
                     return null;
                 }
                 var tag = BlockTags.create(tagId);
-                predicates.add(state -> state.is(tag));
+                members.add(new StructureMemberTestTag(tag));
             } else {
                 try {
                     var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    predicates.add(state -> state == blockResult.blockState());
+                    members.add(new StructureMemberTestState(blockResult.blockState()));
                 } catch (CommandSyntaxException ignored) {
                     return null;
                 }
             }
         }
-        return predicates;
+        return members;
     }
 
     @Nullable

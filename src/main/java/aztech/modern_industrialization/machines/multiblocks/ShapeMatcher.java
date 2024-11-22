@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.ArrayList;
@@ -247,9 +248,14 @@ public class ShapeMatcher implements ChunkEventListener {
         int setBlocks = 0;
 
         for (var entry : simpleMembers.entrySet()) {
-            var current = level.getBlockState(entry.getKey()); // TODO SWEDZ: account for rotation
+            BlockPos pos = entry.getKey();
+            var current = level.getBlockState(pos);
             if (!entry.getValue().matchesState(current)) {
-                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState()); // TODO SWEDZ: account for rotation
+                BlockState state = entry.getValue().getPreviewState();
+                if (entry.getValue() instanceof StructureMember) {
+                    state = toWorldState(level, pos, state, controllerDirection);
+                }
+                level.setBlockAndUpdate(pos, state);
                 ++setBlocks;
             }
         }

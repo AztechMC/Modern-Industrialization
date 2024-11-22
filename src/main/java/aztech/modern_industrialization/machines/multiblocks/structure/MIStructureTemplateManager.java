@@ -56,6 +56,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -137,6 +138,10 @@ public final class MIStructureTemplateManager {
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
+
+            if (state.isAir() || state.is(Blocks.STRUCTURE_VOID)) {
+                continue;
+            }
 
             CompoundTag blockTag = new CompoundTag();
 

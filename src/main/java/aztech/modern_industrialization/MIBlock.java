@@ -134,7 +134,7 @@ public class MIBlock {
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
     
-    // TODO make these blocks not show up in the creative tab and dont give them mineable tags
+    // TODO SWEDZ: make these blocks not show up in the creative tab and dont give them mineable tags
     public static final BlockDefinition<StructureMultiblockControllerBlock> STRUCTURE_MULTIBLOCK_CONTROLLER = block("Structure Multiblock Controller",
             "structure_multiblock_controller", BlockDefinitionParams.defaultStone()
                     .withBlockConstructor(StructureMultiblockControllerBlock::new)

@@ -247,9 +247,9 @@ public class ShapeMatcher implements ChunkEventListener {
         int setBlocks = 0;
 
         for (var entry : simpleMembers.entrySet()) {
-            var current = level.getBlockState(entry.getKey()); // TODO account for rotation
+            var current = level.getBlockState(entry.getKey()); // TODO SWEDZ: account for rotation
             if (!entry.getValue().matchesState(current)) {
-                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState()); // TODO account for rotation
+                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState()); // TODO SWEDZ: account for rotation
                 ++setBlocks;
             }
         }

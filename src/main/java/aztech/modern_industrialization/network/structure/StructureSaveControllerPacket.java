@@ -58,7 +58,7 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-            // TODO dont do this on dedicated server maybe?
+            // TODO SWEDZ: dont do this on dedicated server maybe?
             MIStructureTemplateManager.FromWorldResult result = MIStructureTemplateManager.fromWorld(level, pos,
                     state.getValue(StructureMultiblockControllerBlock.FACING), controller.getBounds());
             if (result.isSuccess()) {

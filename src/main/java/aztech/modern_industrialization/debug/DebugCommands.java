@@ -226,14 +226,18 @@ public class DebugCommands {
             matcher.rematch(src.getLevel());
             boolean success = matcher.isMatchSuccessful();
             matcher.unlinkHatches();
-            src.sendSuccess(() -> Component.literal("Match test results for %s at position %s: %s".formatted(id.toString(), controllerPos.toShortString(), success)), true);
+            src.sendSuccess(
+                    () -> Component
+                            .literal("Match test results for %s at position %s: %s".formatted(id.toString(), controllerPos.toShortString(), success)),
+                    true);
         });
     }
 
     private static int structuresBuild(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
         return structures(src, id, controllerPos, (matcher) -> {
             matcher.buildMultiblock(src.getLevel());
-            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id.toString(), controllerPos.toShortString())), true);
+            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id.toString(), controllerPos.toShortString())),
+                    true);
         });
     }
 }

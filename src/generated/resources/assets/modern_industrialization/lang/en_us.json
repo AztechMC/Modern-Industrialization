@@ -1699,6 +1699,7 @@
   "text.modern_industrialization.StructureMultiblockMemberMembers": "Members",
   "text.modern_industrialization.StructureMultiblockMemberPreview": "Preview",
   "text.modern_industrialization.StructureMultiblockSaveFailNoBounds": "Failed to save structure. The bounds provided are not valid.",
+  "text.modern_industrialization.StructureMultiblockSaveFailUnknown": "Failed to save structure. See logs for more info.",
   "text.modern_industrialization.StructureMultiblockStructureName": "Structure Name",
   "text.modern_industrialization.SuperconductorPowerOnly": "Can only connect to Superconductor cables and machines. Must be directly connected to a machine on at least one end of the tunnel.",
   "text.modern_industrialization.Temperature": "Temperature: %d °C",

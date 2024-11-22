@@ -185,9 +185,9 @@ public final class MIStructureTemplateManager {
                     membersTag.add(memberTag);
                 }
                 blockTag.putInt("member_index", members.indexOf(member));
-            }
 
-            blocksTag.add(blockTag);
+                blocksTag.add(blockTag);
+            }
         }
 
         if (!hasController) {

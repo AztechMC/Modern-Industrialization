@@ -75,7 +75,7 @@ public final class MIStructureTemplateManager {
         ListTag blocks = new ListTag();
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            BlockState state = level.getBlockState(pos);
+            BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
 
             CompoundTag blockTag = new CompoundTag();
 
@@ -120,7 +120,6 @@ public final class MIStructureTemplateManager {
 
             /*
              * TODO:
-             * - rotate blockstates ... that needs to be done in the ShapeMatcher?
              * - get the simple member from the blockentity if its one of our structure blocks
              */
 

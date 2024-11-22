@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
-import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
@@ -34,6 +33,15 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -96,6 +104,40 @@ public class ShapeMatcher implements ChunkEventListener {
         }
         return result;
     }
+    
+    private static Rotation templateRotation(Direction controllerDirection) {
+        return switch (controllerDirection) {
+            case SOUTH -> Rotation.NONE;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            case EAST -> Rotation.CLOCKWISE_90;
+            case WEST -> Rotation.COUNTERCLOCKWISE_90;
+            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        };
+    }
+    
+    private static Rotation worldRotation(Direction controllerDirection) {
+        return switch (controllerDirection) {
+            case SOUTH -> Rotation.NONE;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            case EAST -> Rotation.COUNTERCLOCKWISE_90;
+            case WEST -> Rotation.CLOCKWISE_90;
+            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
+        };
+    }
+    
+    /**
+     * Convert a in-world block state to a rotated block state as it should be saved for a shape template.
+     */
+    public static BlockState toTemplateState(Level level, BlockPos pos, BlockState state, Direction controllerDirection) {
+        return state.rotate(level, pos, templateRotation(controllerDirection));
+    }
+    
+    /**
+     * Convert a template block state to a rotated block state as it should be placed in world.
+     */
+    public static BlockState toWorldState(Level level, BlockPos pos, BlockState state, Direction controllerDirection) {
+        return state.rotate(level, pos, worldRotation(controllerDirection));
+    }
 
     public Set<BlockPos> getPositions() {
         return new HashSet<>(simpleMembers.keySet());
@@ -123,16 +165,6 @@ public class ShapeMatcher implements ChunkEventListener {
         matchSuccessful = false;
         needsRematch = true;
     }
-    
-    private Rotation rotation() {
-        return switch (controllerDirection) {
-            case NORTH -> Rotation.NONE;
-            case SOUTH -> Rotation.CLOCKWISE_180;
-            case WEST -> Rotation.CLOCKWISE_90;
-            case EAST -> Rotation.COUNTERCLOCKWISE_90;
-            default -> throw new IllegalStateException("Unexpected value: " + controllerDirection);
-        };
-    }
 
     /**
      * Return true if there was a match, and append matched hatches to the list if
@@ -143,7 +175,7 @@ public class ShapeMatcher implements ChunkEventListener {
         if (simpleMember == null)
             return false;
 
-        BlockState state = world.getBlockState(pos).rotate(world, pos, this.rotation());
+        BlockState state = toTemplateState(world, pos, world.getBlockState(pos), controllerDirection);
         if (simpleMember.matchesState(state))
             return true;
 
@@ -216,9 +248,9 @@ public class ShapeMatcher implements ChunkEventListener {
         int setBlocks = 0;
 
         for (var entry : simpleMembers.entrySet()) {
-            var current = level.getBlockState(entry.getKey());
+            var current = level.getBlockState(entry.getKey()); // TODO account for rotation
             if (!entry.getValue().matchesState(current)) {
-                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState());
+                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState()); // TODO account for rotation
                 ++setBlocks;
             }
         }

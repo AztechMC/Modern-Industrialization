@@ -23,20 +23,17 @@
  */
 package aztech.modern_industrialization.debug;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.getId;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.id;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
-
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
+import aztech.modern_industrialization.structure.MIStructureTemplateManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -44,13 +41,20 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+import static net.minecraft.commands.Commands.*;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.*;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
 
 public class DebugCommands {
     private static final SuggestionProvider<CommandSourceStack> PIPE_TYPES_SUGGESTION_PROVIDER = (context, builder) -> {
@@ -100,11 +104,11 @@ public class DebugCommands {
                                             }))
                             )
                             .then(literal("test_structure")
-                                    .then(argument("structure_id", id()))
-                                    .then(argument("controller_pos", blockPos()))
-                                    .executes(ctx -> {
-                                        return testStructure(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
-                                    }))
+                                    .then(argument("structure_id", id())
+                                            .then(argument("controller_pos", blockPos())
+                                                    .executes(ctx -> {
+                                                        return testStructure(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
+                                                    }))))
                     )
             );
         });
@@ -191,7 +195,16 @@ public class DebugCommands {
     }
 
     private static int testStructure(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
-        // TODO do stuff
+        BlockState controllerState = src.getLevel().getBlockState(controllerPos);
+        if(controllerState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            CompoundTag tag = MIStructureTemplateManager.load(id);
+            ShapeTemplate shape = MIStructureTemplateManager.deserialize(MachineCasings.CLEAN_STAINLESS_STEEL, tag);
+            ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING), shape);
+            matcher.rematch(src.getLevel());
+            src.sendSuccess(() -> Component.literal("Match test results: %s".formatted(matcher.isMatchSuccessful())), true);
+        } else {
+            src.sendFailure(Component.literal("Block at position %s is not a controller.".formatted(controllerPos)));
+        }
         return Command.SINGLE_SUCCESS;
     }
 }

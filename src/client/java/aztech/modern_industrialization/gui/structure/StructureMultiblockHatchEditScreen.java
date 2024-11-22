@@ -25,12 +25,15 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.network.structure.StructureUpdateHatchPacket;
 import com.mojang.blaze3d.platform.InputConstants;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,6 +42,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class StructureMultiblockHatchEditScreen extends Screen {
     private static final int VALID_TEXT_COLOR = 0xE0E0E0;
@@ -49,8 +53,10 @@ public class StructureMultiblockHatchEditScreen extends Screen {
     private Button doneButton;
     private Button cancelButton;
 
-    private EditBox casingBox;
+    private EditBox previewBox;
+    private EditBox membersBox;
 
+    private EditBox casingBox;
     private EditBox flagsBox;
 
     public StructureMultiblockHatchEditScreen(StructureMultiblockHatchBlockEntity hatch) {
@@ -58,12 +64,30 @@ public class StructureMultiblockHatchEditScreen extends Screen {
         this.hatch = hatch;
     }
 
+    private Optional<BlockState> getPreview() {
+        return Optional.ofNullable(StructureMultiblockFormatters.preview(previewBox.getValue()));
+    }
+
+    private Optional<List<Predicate<BlockState>>> getMembers() {
+        return Optional.ofNullable(StructureMultiblockFormatters.members(membersBox.getValue()));
+    }
+
     private Optional<MachineCasing> getCasing() {
-        return Optional.ofNullable(StructureMultiblockHatchBlockEntity.formatCasing(casingBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockFormatters.casing(casingBox.getValue()));
     }
 
     private Optional<HatchFlags> getHatchFlags() {
-        return Optional.ofNullable(StructureMultiblockHatchBlockEntity.formatFlags(flagsBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockFormatters.hatchFlags(flagsBox.getValue()));
+    }
+
+    private void updatePreview() {
+        boolean validPreview = previewBox.getValue().isEmpty() || this.getPreview().isPresent();
+        previewBox.setTextColor(validPreview ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
+    }
+
+    private void updateMembers() {
+        boolean validMembers = membersBox.getValue().isEmpty() || this.getMembers().isPresent();
+        membersBox.setTextColor(validMembers ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
     }
 
     private void updateCasing() {
@@ -77,6 +101,8 @@ public class StructureMultiblockHatchEditScreen extends Screen {
     }
 
     private void updateAll() {
+        this.updatePreview();
+        this.updateMembers();
         this.updateCasing();
         this.updateFlags();
     }
@@ -89,6 +115,8 @@ public class StructureMultiblockHatchEditScreen extends Screen {
     private void sendToServer() {
         minecraft.getConnection().send(new StructureUpdateHatchPacket(
                 hatch.getBlockPos(),
+                previewBox.getValue(),
+                membersBox.getValue(),
                 casingBox.getValue(),
                 flagsBox.getValue()));
     }
@@ -104,7 +132,19 @@ public class StructureMultiblockHatchEditScreen extends Screen {
         this.addRenderableWidget(
                 cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
 
-        casingBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
+        previewBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockMemberPreview.text());
+        previewBox.setMaxLength(Short.MAX_VALUE);
+        previewBox.setValue(hatch.getInputPreview());
+        previewBox.setResponder(text -> this.updatePreview());
+        this.addRenderableWidget(previewBox);
+
+        membersBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockMemberMembers.text());
+        membersBox.setMaxLength(Short.MAX_VALUE);
+        membersBox.setValue(hatch.getInputMembers());
+        membersBox.setResponder(text -> this.updateMembers());
+        this.addRenderableWidget(membersBox);
+
+        casingBox = new EditBox(font, width / 2 - 152, 130, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
@@ -115,7 +155,7 @@ public class StructureMultiblockHatchEditScreen extends Screen {
         casingBox.setResponder(text -> this.updateCasing());
         this.addRenderableWidget(casingBox);
 
-        flagsBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
+        flagsBox = new EditBox(font, width / 2 - 152, 170, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return (Character.isDigit(codePoint) || Character.isAlphabetic(codePoint) || codePoint == ';' || codePoint == '_')
@@ -136,9 +176,13 @@ public class StructureMultiblockHatchEditScreen extends Screen {
 
         graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 153, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 153, 40, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 153, 80, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 153, 80, 0xA0A0A0);
+
+        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 153, 120, 0xA0A0A0);
+
+        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 153, 160, 0xA0A0A0);
     }
 
     @Override
@@ -148,16 +192,20 @@ public class StructureMultiblockHatchEditScreen extends Screen {
 
     @Override
     protected void setInitialFocus() {
-        this.setInitialFocus(casingBox);
+        this.setInitialFocus(previewBox);
     }
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
+        String previewBoxValue = previewBox.getValue();
+        String membersBoxValue = membersBox.getValue();
         String casingBoxValue = casingBox.getValue();
         String flagsBoxValue = flagsBox.getValue();
 
         this.init(minecraft, width, height);
 
+        previewBox.setValue(previewBoxValue);
+        membersBox.setValue(membersBoxValue);
         casingBox.setValue(casingBoxValue);
         flagsBox.setValue(flagsBoxValue);
     }

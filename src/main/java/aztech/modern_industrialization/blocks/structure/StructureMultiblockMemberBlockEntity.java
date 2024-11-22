@@ -25,25 +25,19 @@ package aztech.modern_industrialization.blocks.structure;
 
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import java.util.ArrayList;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.util.List;
 import java.util.function.Predicate;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class StructureMultiblockMemberBlockEntity extends FastBlockEntity {
+public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implements StructureMemberOverride {
     private String inputPreview;
     private String inputMembers;
 
@@ -61,7 +55,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity {
 
     public void setInputPreview(String inputPreview) {
         this.inputPreview = inputPreview;
-        preview = formatPreview(inputPreview);
+        preview = StructureMultiblockFormatters.preview(inputPreview);
     }
 
     @Nullable
@@ -74,10 +68,9 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity {
         return inputMembers;
     }
 
-    public void setInputMembers(String inputPreview, String inputMembers) {
-        this.inputPreview = inputPreview;
+    public void setInputMembers(String inputMembers) {
         this.inputMembers = inputMembers;
-        members = formatMembers(inputMembers);
+        members = StructureMultiblockFormatters.members(inputMembers);
     }
 
     @Nullable
@@ -85,47 +78,15 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity {
         return members;
     }
 
-    @Nullable
-    public static BlockState formatPreview(String inputPreview) {
-        if (inputPreview == null || inputPreview.isEmpty()) {
-            return Blocks.AIR.defaultBlockState();
-        }
-        var registry = BuiltInRegistries.BLOCK.asLookup();
-
-        try {
-            var blockResult = BlockStateParser.parseForBlock(registry, inputPreview, true);
-            return blockResult.blockState();
-        } catch (CommandSyntaxException ignored) {
-            return null;
-        }
+    @Override
+    public SimpleMember getMemberOverride() {
+        return SimpleMember.anyOf(members, preview);
     }
 
-    @Nullable
-    public static List<Predicate<BlockState>> formatMembers(String inputMembers) {
-        if (inputMembers == null || inputMembers.isEmpty()) {
-            return new ArrayList<>();
-        }
-        var registry = BuiltInRegistries.BLOCK.asLookup();
-
-        List<Predicate<BlockState>> predicates = new ArrayList<>();
-        for (String part : inputMembers.split(";")) {
-            if (part.startsWith("#")) {
-                ResourceLocation tagId = ResourceLocation.tryParse(part.substring(1));
-                if (tagId == null) {
-                    return null;
-                }
-                var tag = BlockTags.create(tagId);
-                predicates.add(state -> state.is(tag));
-            } else {
-                try {
-                    var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    predicates.add(state -> state == blockResult.blockState());
-                } catch (CommandSyntaxException ignored) {
-                    return null;
-                }
-            }
-        }
-        return predicates;
+    @Override
+    public boolean isConfigurationValid() {
+        return preview != null &&
+                members != null && !members.isEmpty();
     }
 
     @Override
@@ -152,8 +113,14 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity {
     }
 
     @Override
+    public void loadStructureData(CompoundTag tag) {
+        this.setInputPreview(tag.getString("preview"));
+        this.setInputMembers(tag.getString("members"));
+    }
+
+    @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        this.setInputMembers(tag.getString("preview"), tag.getString("members"));
+        this.loadStructureData(tag);
     }
 }

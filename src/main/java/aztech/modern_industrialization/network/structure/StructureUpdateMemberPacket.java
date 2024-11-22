@@ -57,7 +57,8 @@ public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, Str
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockMemberBlockEntity member) {
-            member.setInputMembers(inputPreview, inputMembers);
+            member.setInputPreview(inputPreview);
+            member.setInputMembers(inputMembers);
 
             member.sync();
             member.setChanged();

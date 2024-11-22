@@ -31,7 +31,6 @@ import aztech.modern_industrialization.structure.MIStructureTemplateManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -59,15 +58,17 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-            if (controller.getBounds().isEmpty()) {
-                player.sendSystemMessage(MIText.StructureMultiblockSaveFailNoBounds.text().withStyle(ChatFormatting.RED));
-                return;
-            }
             // TODO dont do this on dedicated server maybe?
-            CompoundTag tag = MIStructureTemplateManager.fromWorld(level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
-                    controller.getBounds());
-            if (!MIStructureTemplateManager.save(controller.getId(), tag)) {
-                player.sendSystemMessage(MIText.StructureMultiblockSaveFailUnknown.text().withStyle(ChatFormatting.RED));
+            MIStructureTemplateManager.FromWorldResult result = MIStructureTemplateManager.fromWorld(level, pos,
+                    state.getValue(StructureMultiblockControllerBlock.FACING), controller.getBounds());
+            if (result.isSuccess()) {
+                if (!MIStructureTemplateManager.save(controller.getId(), result.tag())) {
+                    player.sendSystemMessage(MIText.StructureMultiblockSaveFailUnknown.text().withStyle(ChatFormatting.RED));
+                } else {
+                    player.sendSystemMessage(result.text(controller.getId().toString()));
+                }
+            } else {
+                player.sendSystemMessage(result.text().withStyle(ChatFormatting.RED));
             }
         }
     }

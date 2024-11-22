@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateControllerPacket;
@@ -74,7 +75,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     }
 
     private Optional<MachineCasing> getCasing() {
-        return Optional.ofNullable(StructureMultiblockControllerBlockEntity.formatCasing(casingBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockFormatters.casing(casingBox.getValue()));
     }
 
     private Optional<StructureControllerBounds> getBounds() {

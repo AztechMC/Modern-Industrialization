@@ -27,8 +27,9 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import java.util.Locale;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import java.util.List;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -38,15 +39,49 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
+public class StructureMultiblockHatchBlockEntity extends FastBlockEntity implements StructureMemberOverride {
+    private String inputPreview;
+    private String inputMembers;
     private String inputCasing;
     private String inputFlags;
 
+    private BlockState preview;
+    private List<Predicate<BlockState>> members;
     private MachineCasing casing;
     private HatchFlags flags = HatchFlags.NO_HATCH;
 
     public StructureMultiblockHatchBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_HATCH_BE.get(), pos, state);
+    }
+
+    @Nullable
+    public String getInputPreview() {
+        return inputPreview;
+    }
+
+    public void setInputPreview(String inputPreview) {
+        this.inputPreview = inputPreview;
+        preview = StructureMultiblockFormatters.preview(inputPreview);
+    }
+
+    @Nullable
+    public BlockState getPreview() {
+        return preview;
+    }
+
+    @Nullable
+    public String getInputMembers() {
+        return inputMembers;
+    }
+
+    public void setInputMembers(String inputMembers) {
+        this.inputMembers = inputMembers;
+        members = StructureMultiblockFormatters.members(inputMembers);
+    }
+
+    @Nullable
+    public List<Predicate<BlockState>> getMembers() {
+        return members;
     }
 
     @Nullable
@@ -56,7 +91,7 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
 
     public void setInputCasing(String inputCasing) {
         this.inputCasing = inputCasing;
-        casing = formatCasing(inputCasing);
+        casing = StructureMultiblockFormatters.casing(inputCasing);
     }
 
     @Nullable
@@ -66,7 +101,7 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
 
     public void setInputFlags(String inputFlags) {
         this.inputFlags = inputFlags;
-        flags = formatFlags(inputFlags);
+        flags = StructureMultiblockFormatters.hatchFlags(inputFlags);
     }
 
     @Nullable
@@ -79,30 +114,22 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
         return flags;
     }
 
-    @Nullable
-    public static MachineCasing formatCasing(String input) {
-        return StructureMultiblockControllerBlockEntity.formatCasing(input);
+    @Override
+    public SimpleMember getMemberOverride() {
+        return SimpleMember.anyOf(members, preview);
     }
 
-    @Nullable
-    public static HatchFlags formatFlags(String input) {
-        if (input == null || input.isEmpty()) {
-            return HatchFlags.NO_HATCH;
-        }
-        HatchFlags.Builder builder = new HatchFlags.Builder();
-        for (String part : input.split(";")) {
-            try {
-                builder.with(Integer.parseInt(part));
-            } catch (NumberFormatException ignored) {
-                try {
-                    HatchType hatchType = HatchType.valueOf(part.toUpperCase(Locale.ROOT));
-                    builder.with(hatchType);
-                } catch (IllegalArgumentException ignored2) {
-                    return null;
-                }
-            }
-        }
-        return builder.build();
+    @Override
+    public HatchFlags getHatchFlagsOverride() {
+        return flags;
+    }
+
+    @Override
+    public boolean isConfigurationValid() {
+        return preview != null &&
+                members != null && !members.isEmpty() &&
+                casing != null &&
+                flags != null;
     }
 
     @Override
@@ -120,6 +147,12 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        if (inputPreview != null) {
+            tag.putString("preview", inputPreview);
+        }
+        if (inputMembers != null) {
+            tag.putString("members", inputMembers);
+        }
         if (inputCasing != null) {
             tag.putString("casing", inputCasing);
         }
@@ -129,9 +162,16 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void loadStructureData(CompoundTag tag) {
+        this.setInputPreview(tag.getString("preview"));
+        this.setInputMembers(tag.getString("members"));
         this.setInputCasing(tag.getString("casing"));
         this.setInputFlags(tag.getString("flags"));
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.loadStructureData(tag);
     }
 }

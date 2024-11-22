@@ -25,6 +25,7 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -58,11 +59,11 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     }
 
     private Optional<BlockState> getPreview() {
-        return Optional.ofNullable(StructureMultiblockMemberBlockEntity.formatPreview(previewBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockFormatters.preview(previewBox.getValue()));
     }
 
     private Optional<List<Predicate<BlockState>>> getMembers() {
-        return Optional.ofNullable(StructureMultiblockMemberBlockEntity.formatMembers(membersBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockFormatters.members(membersBox.getValue()));
     }
 
     private void updatePreview() {

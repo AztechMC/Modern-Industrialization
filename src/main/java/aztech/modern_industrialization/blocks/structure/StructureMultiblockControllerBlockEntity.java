@@ -23,11 +23,10 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -40,7 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
+public class StructureMultiblockControllerBlockEntity extends FastBlockEntity implements StructureMemberOverride {
     private String inputId;
     private String inputCasing;
 
@@ -70,10 +69,9 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
 
     public void setInputCasing(String inputCasing) {
         this.inputCasing = inputCasing;
-        casing = formatCasing(inputCasing);
+        casing = StructureMultiblockFormatters.casing(inputCasing);
     }
 
-    @Nullable
     public StructureControllerBounds getBounds() {
         return bounds;
     }
@@ -95,24 +93,19 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
         this.showBounds = showBounds;
     }
 
-    @Nullable
-    public static MachineCasing formatCasing(String input) {
-        if (input == null || input.isEmpty()) {
-            return null;
-        }
-        ResourceLocation casingId = null;
-        if (input.contains(":")) {
-            casingId = ResourceLocation.tryParse(input);
-        } else if (ResourceLocation.isValidPath(input)) {
-            casingId = MI.id(input);
-        }
-        if (casingId == null) {
-            return null;
-        }
-        if (MachineCasings.registeredCasings.containsKey(casingId)) {
-            return MachineCasings.get(casingId);
-        }
+    @Override
+    public boolean isController() {
+        return true;
+    }
+
+    @Override
+    public SimpleMember getMemberOverride() {
         return null;
+    }
+
+    @Override
+    public boolean isConfigurationValid() {
+        return !bounds.isEmpty();
     }
 
     @Override
@@ -144,8 +137,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void loadStructureData(CompoundTag tag) {
         this.setInputId(tag.getString("structure_id"));
         this.setInputCasing(tag.getString("casing"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {
@@ -159,5 +151,11 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity {
             bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
         }
         showBounds = tag.getBoolean("show_bounds");
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.loadStructureData(tag);
     }
 }

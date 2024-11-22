@@ -33,11 +33,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record StructureUpdateHatchPacket(BlockPos pos, String inputCasing, String inputFlags) implements BasePacket {
+public record StructureUpdateHatchPacket(BlockPos pos, String inputPreview, String inputMembers, String inputCasing, String inputFlags)
+        implements BasePacket {
 
     public static final StreamCodec<ByteBuf, StructureUpdateHatchPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             StructureUpdateHatchPacket::pos,
+            ByteBufCodecs.STRING_UTF8,
+            StructureUpdateHatchPacket::inputPreview,
+            ByteBufCodecs.STRING_UTF8,
+            StructureUpdateHatchPacket::inputMembers,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateHatchPacket::inputCasing,
             ByteBufCodecs.STRING_UTF8,
@@ -57,6 +62,8 @@ public record StructureUpdateHatchPacket(BlockPos pos, String inputCasing, Strin
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockHatchBlockEntity hatch) {
+            hatch.setInputPreview(inputPreview);
+            hatch.setInputMembers(inputMembers);
             hatch.setInputCasing(inputCasing);
             hatch.setInputFlags(inputFlags);
 

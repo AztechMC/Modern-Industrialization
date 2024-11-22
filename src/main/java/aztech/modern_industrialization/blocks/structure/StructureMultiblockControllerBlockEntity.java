@@ -73,17 +73,22 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         casing = StructureMultiblockFormatters.casing(inputCasing);
     }
 
+    @Nullable
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Nullable
+    public MachineCasing getCasing() {
+        return casing;
+    }
+
     public StructureControllerBounds getBounds() {
         return bounds;
     }
 
     public void setBounds(StructureControllerBounds bounds) {
         this.bounds = bounds;
-    }
-
-    @Nullable
-    public ResourceLocation getId() {
-        return id;
     }
 
     public boolean shouldShowBounds() {
@@ -106,7 +111,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     @Override
     public boolean isConfigurationValid() {
-        return !bounds.isEmpty();
+        return casing != null && !bounds.isEmpty();
     }
 
     @Override

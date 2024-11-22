@@ -60,7 +60,7 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
             // TODO SWEDZ: dont do this on dedicated server maybe?
             MIStructureTemplateManager.FromWorldResult result = MIStructureTemplateManager.fromWorld(level, pos,
-                    state.getValue(StructureMultiblockControllerBlock.FACING), controller.getBounds());
+                    state.getValue(StructureMultiblockControllerBlock.FACING), controller.getCasing(), controller.getBounds());
             if (result.isSuccess()) {
                 if (!MIStructureTemplateManager.save(controller.getId(), result.tag())) {
                     player.sendSystemMessage(MIText.StructureMultiblockSaveFailUnknown.text().withStyle(ChatFormatting.RED));

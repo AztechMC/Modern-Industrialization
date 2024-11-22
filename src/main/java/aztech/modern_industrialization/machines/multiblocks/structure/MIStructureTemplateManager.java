@@ -30,6 +30,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import java.io.FileInputStream;
@@ -118,12 +119,18 @@ public final class MIStructureTemplateManager {
         }
     }
 
-    public static FromWorldResult fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection, StructureControllerBounds bounds) {
+    public static FromWorldResult fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection,
+            MachineCasing hatchCasing, StructureControllerBounds bounds) {
+        if (hatchCasing == null) {
+            return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, controllerPos.toShortString());
+        }
         if (bounds.isEmpty()) {
             return new FromWorldResult(ValidationResult.INVALID_BOUNDS);
         }
 
         CompoundTag tag = new CompoundTag();
+
+        tag.putString("hatch_casing", hatchCasing.key.toString());
 
         BoundingBox boundsBox = bounds.boundingBox();
         BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());
@@ -192,8 +199,15 @@ public final class MIStructureTemplateManager {
         return new FromWorldResult(tag);
     }
 
-    public static ShapeTemplate deserialize(MachineCasing hatchCasing, CompoundTag tag) {
+    @Nullable
+    public static ShapeTemplate deserialize(CompoundTag tag) {
         var blockRegistry = BuiltInRegistries.BLOCK.asLookup();
+
+        ResourceLocation hatchCasingId = ResourceLocation.tryParse(tag.getString("hatch_casing"));
+        if (hatchCasingId == null || !MachineCasings.registeredCasings.containsKey(hatchCasingId)) {
+            return null;
+        }
+        MachineCasing hatchCasing = MachineCasings.get(hatchCasingId);
 
         ShapeTemplate.Builder builder = new ShapeTemplate.Builder(hatchCasing);
 

@@ -30,7 +30,6 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
@@ -208,10 +207,14 @@ public class DebugCommands {
         if (controllerState.is(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())) {
             CompoundTag tag = MIStructureTemplateManager.load(id);
             if (tag == null) {
-                src.sendFailure(Component.literal("Could not find structure by the id '%s'".formatted(id)));
+                src.sendFailure(Component.literal("Could not find structure with the id %s".formatted(id)));
                 return Command.SINGLE_SUCCESS;
             }
-            ShapeTemplate shape = MIStructureTemplateManager.deserialize(MachineCasings.CLEAN_STAINLESS_STEEL, tag);
+            ShapeTemplate shape = MIStructureTemplateManager.deserialize(tag);
+            if (shape == null) {
+                src.sendFailure(Component.literal("Failed to read structure file for structure %s".formatted(id)));
+                return Command.SINGLE_SUCCESS;
+            }
             ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING),
                     shape);
             action.accept(matcher);
@@ -228,7 +231,7 @@ public class DebugCommands {
             matcher.unlinkHatches();
             src.sendSuccess(
                     () -> Component
-                            .literal("Match test results for %s at position %s: %s".formatted(id.toString(), controllerPos.toShortString(), success)),
+                            .literal("Match test results for %s at position %s: %s".formatted(id, controllerPos.toShortString(), success)),
                     true);
         });
     }
@@ -236,7 +239,7 @@ public class DebugCommands {
     private static int structuresBuild(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
         return structures(src, id, controllerPos, (matcher) -> {
             matcher.buildMultiblock(src.getLevel());
-            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id.toString(), controllerPos.toShortString())),
+            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id, controllerPos.toShortString())),
                     true);
         });
     }

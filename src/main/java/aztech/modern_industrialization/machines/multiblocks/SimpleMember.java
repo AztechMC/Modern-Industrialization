@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
@@ -90,31 +88,6 @@ public interface SimpleMember {
             @Override
             public BlockState getPreviewState() {
                 return Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
-            }
-        };
-    }
-
-    static SimpleMember anyOf(Collection<StructureMemberTest> members, BlockState preview) {
-        Objects.requireNonNull(members);
-        if (members.isEmpty()) {
-            throw new IllegalArgumentException("Cannot use empty member collection");
-        }
-        Objects.requireNonNull(preview);
-
-        return new SimpleMember() {
-            @Override
-            public boolean matchesState(BlockState state) {
-                for (StructureMemberTest member : members) {
-                    if (member.matchesState(state)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public BlockState getPreviewState() {
-                return preview;
             }
         };
     }

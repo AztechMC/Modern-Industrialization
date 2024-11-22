@@ -43,6 +43,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import java.util.function.Consumer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
@@ -104,12 +105,19 @@ public class DebugCommands {
                                                 return buildMultiblock(ctx.getSource(), getLoadedBlockPos(ctx, "controller_pos"));
                                             }))
                             )
-                            .then(literal("test_structure")
-                                    .then(argument("structure_id", id())
-                                            .then(argument("controller_pos", blockPos())
-                                                    .executes(ctx -> {
-                                                        return testStructure(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
-                                                    }))))
+                            .then(literal("structures")
+                                    .then(literal("test")
+                                            .then(argument("structure_id", id())
+                                                    .then(argument("controller_pos", blockPos())
+                                                            .executes(ctx -> {
+                                                                return structuresTest(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
+                                                            }))))
+                                    .then(literal("build")
+                                            .then(argument("structure_id", id())
+                                                    .then(argument("controller_pos", blockPos())
+                                                            .executes(ctx -> {
+                                                                return structuresBuild(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
+                                                            })))))
                     )
             );
         });
@@ -195,7 +203,7 @@ public class DebugCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int testStructure(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
+    private static int structures(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos, Consumer<ShapeMatcher> action) {
         BlockState controllerState = src.getLevel().getBlockState(controllerPos);
         if (controllerState.is(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())) {
             CompoundTag tag = MIStructureTemplateManager.load(id);
@@ -206,11 +214,26 @@ public class DebugCommands {
             ShapeTemplate shape = MIStructureTemplateManager.deserialize(MachineCasings.CLEAN_STAINLESS_STEEL, tag);
             ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING),
                     shape);
-            matcher.rematch(src.getLevel());
-            src.sendSuccess(() -> Component.literal("Match test results: %s".formatted(matcher.isMatchSuccessful())), true);
+            action.accept(matcher);
         } else {
-            src.sendFailure(Component.literal("Block at position %s is not a controller.".formatted(controllerPos)));
+            src.sendFailure(Component.literal("Block at position %s is not a structure controller.".formatted(controllerPos.toShortString())));
         }
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int structuresTest(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
+        return structures(src, id, controllerPos, (matcher) -> {
+            matcher.rematch(src.getLevel());
+            boolean success = matcher.isMatchSuccessful();
+            matcher.unlinkHatches();
+            src.sendSuccess(() -> Component.literal("Match test results for %s at position %s: %s".formatted(id.toString(), controllerPos.toShortString(), success)), true);
+        });
+    }
+
+    private static int structuresBuild(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
+        return structures(src, id, controllerPos, (matcher) -> {
+            matcher.buildMultiblock(src.getLevel());
+            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id.toString(), controllerPos.toShortString())), true);
+        });
     }
 }

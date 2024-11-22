@@ -138,12 +138,18 @@ public final class MIStructureTemplateManager {
         return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".nbt");
     }
 
-    public static void save(ResourceLocation id, CompoundTag tag) {
-        try (OutputStream output = new FileOutputStream(path(id).toFile())) {
-            NbtIo.writeCompressed(tag, output);
+    public static boolean save(ResourceLocation id, CompoundTag tag) {
+        try {
+            try (OutputStream output = new FileOutputStream(path(id).toFile())) {
+                NbtIo.writeCompressed(tag, output);
+                return true;
+            } catch (Exception ex) {
+                MI.LOGGER.error("Failed to save structure '{}'", id, ex);
+            }
         } catch (Exception ex) {
             MI.LOGGER.error("Failed to save structure '{}'", id, ex);
         }
+        return false;
     }
 
     @Nullable

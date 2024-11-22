@@ -66,7 +66,9 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
             // TODO dont do this on dedicated server maybe?
             CompoundTag tag = MIStructureTemplateManager.fromWorld(level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
                     controller.getBounds());
-            MIStructureTemplateManager.save(controller.getId(), tag);
+            if (!MIStructureTemplateManager.save(controller.getId(), tag)) {
+                player.sendSystemMessage(MIText.StructureMultiblockSaveFailUnknown.text().withStyle(ChatFormatting.RED));
+            }
         }
     }
 }

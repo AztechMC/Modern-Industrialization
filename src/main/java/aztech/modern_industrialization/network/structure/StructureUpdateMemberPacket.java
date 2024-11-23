@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.network.structure;
 
+import aztech.modern_industrialization.blocks.structure.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
@@ -34,12 +35,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, String inputMembers, String inputCasing, String inputFlags)
+public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode, String inputPreview, String inputMembers, String inputCasing,
+        String inputFlags)
         implements BasePacket {
 
     public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
             StructureUpdateMemberPacket::pos,
+            ByteBufCodecs.idMapper((i) -> StructureMemberMode.values()[i], Enum::ordinal),
+            StructureUpdateMemberPacket::mode,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateMemberPacket::inputPreview,
             ByteBufCodecs.STRING_UTF8,
@@ -62,17 +66,18 @@ public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, Str
         }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof StructureMultiblockMemberBlockEntity hatch) {
-            hatch.setInputPreview(inputPreview);
-            hatch.setInputMembers(inputMembers);
-            hatch.setInputCasing(inputCasing);
-            hatch.setInputFlags(inputFlags);
+        if (blockEntity instanceof StructureMultiblockMemberBlockEntity member) {
+            member.setMode(mode);
+            member.setInputPreview(inputPreview);
+            member.setInputMembers(inputMembers);
+            member.setInputCasing(inputCasing);
+            member.setInputFlags(inputFlags);
 
-            hatch.sync();
-            hatch.setChanged();
+            member.sync();
+            member.setChanged();
 
-            if (player instanceof ServerPlayer serverPlayer && hatch.isConfigurationValid()) {
-                StructureMisconfiguredBlocksPacket.forget(hatch.getBlockPos()).sendToClient(serverPlayer);
+            if (player instanceof ServerPlayer serverPlayer && member.isConfigurationValid()) {
+                StructureMisconfiguredBlocksPacket.forget(member.getBlockPos()).sendToClient(serverPlayer);
             }
         }
     }

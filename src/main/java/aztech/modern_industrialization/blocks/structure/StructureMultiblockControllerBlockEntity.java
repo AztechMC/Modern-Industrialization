@@ -43,10 +43,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class StructureMultiblockControllerBlockEntity extends FastBlockEntity implements StructureMemberOverride {
+    private StructureControllerMode mode = StructureControllerMode.SAVE;
+
     private String inputId;
     private String inputCasing;
-
-    private StructureControllerMode mode = StructureControllerMode.SAVE;
 
     private ResourceLocation id;
     private MachineCasing casing;

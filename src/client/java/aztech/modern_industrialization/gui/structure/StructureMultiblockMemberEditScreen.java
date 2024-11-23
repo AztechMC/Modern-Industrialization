@@ -25,18 +25,21 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.blocks.structure.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -48,10 +51,13 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     private static final int VALID_TEXT_COLOR = 0xE0E0E0;
     private static final int INVALID_TEXT_COLOR = 0xE07272;
 
+    private static final ImmutableList<StructureMemberMode> ALL_MODES = ImmutableList.copyOf(StructureMemberMode.values());
+
     private final StructureMultiblockMemberBlockEntity member;
 
     private Button doneButton;
     private Button cancelButton;
+    private CycleButton<StructureMemberMode> modeButton;
 
     private EditBox previewBox;
     private EditBox membersBox;
@@ -80,6 +86,22 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         return Optional.ofNullable(StructureMultiblockInputFormatters.hatchFlags(flagsBox.getValue()));
     }
 
+    private void updateMode(StructureMemberMode mode) {
+        this.sendToServer();
+
+        casingBox.visible = false;
+        flagsBox.visible = false;
+
+        switch (mode) {
+        case HATCH -> {
+            casingBox.visible = true;
+            flagsBox.visible = true;
+        }
+        case SIMPLE -> {
+        }
+        }
+    }
+
     private void updatePreview() {
         boolean validPreview = previewBox.getValue().isEmpty() || this.getPreview().isPresent();
         previewBox.setTextColor(validPreview ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
@@ -101,6 +123,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     }
 
     private void updateAll() {
+        this.updateMode(member.getMode());
         this.updatePreview();
         this.updateMembers();
         this.updateCasing();
@@ -115,6 +138,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     private void sendToServer() {
         new StructureUpdateMemberPacket(
                 member.getBlockPos(),
+                modeButton.getValue(),
                 previewBox.getValue(),
                 membersBox.getValue(),
                 casingBox.getValue(),
@@ -131,20 +155,25 @@ public class StructureMultiblockMemberEditScreen extends Screen {
                 doneButton = Button.builder(CommonComponents.GUI_DONE, button -> this.done()).bounds(width / 2 - 4 - 150, 210, 150, 20).build());
         this.addRenderableWidget(
                 cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
+        this.addRenderableWidget(modeButton = CycleButton.builder(StructureMemberMode::text)
+                .withValues(ALL_MODES, ALL_MODES)
+                .displayOnlyValue()
+                .withInitialValue(member.getMode())
+                .create(width / 2 - 4 - 150, 185, 50, 20, Component.literal("MODE"), (button, mode) -> this.updateMode(mode)));
 
-        previewBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockMemberPreview.text());
+        previewBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockMemberPreview.text());
         previewBox.setMaxLength(Short.MAX_VALUE);
         previewBox.setValue(member.getInputPreview());
         previewBox.setResponder(text -> this.updatePreview());
         this.addRenderableWidget(previewBox);
 
-        membersBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockMemberMembers.text());
+        membersBox = new EditBox(font, width / 2 - 152, 60, 304, 20, MIText.StructureMultiblockMemberMembers.text());
         membersBox.setMaxLength(Short.MAX_VALUE);
         membersBox.setValue(member.getInputMembers());
         membersBox.setResponder(text -> this.updateMembers());
         this.addRenderableWidget(membersBox);
 
-        casingBox = new EditBox(font, width / 2 - 152, 130, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
+        casingBox = new EditBox(font, width / 2 - 152, 100, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
@@ -155,7 +184,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         casingBox.setResponder(text -> this.updateCasing());
         this.addRenderableWidget(casingBox);
 
-        flagsBox = new EditBox(font, width / 2 - 152, 170, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
+        flagsBox = new EditBox(font, width / 2 - 152, 140, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return (Character.isDigit(codePoint) || Character.isAlphabetic(codePoint) || codePoint == ';' || codePoint == '_')
@@ -174,15 +203,17 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
 
-        graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
+        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 10, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 50, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 80, 0xA0A0A0);
+        if (casingBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 90, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 120, 0xA0A0A0);
+        if (flagsBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 152, 130, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 152, 160, 0xA0A0A0);
+        graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }
 
     @Override

@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -65,19 +65,19 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     }
 
     private Optional<BlockState> getPreview() {
-        return Optional.ofNullable(StructureMultiblockFormatters.preview(previewBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockInputFormatters.preview(previewBox.getValue()));
     }
 
     private Optional<List<StructureMemberTest>> getMembers() {
-        return Optional.ofNullable(StructureMultiblockFormatters.members(membersBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockInputFormatters.members(membersBox.getValue()));
     }
 
     private Optional<MachineCasing> getCasing() {
-        return Optional.ofNullable(StructureMultiblockFormatters.casing(casingBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockInputFormatters.casing(casingBox.getValue()));
     }
 
     private Optional<HatchFlags> getHatchFlags() {
-        return Optional.ofNullable(StructureMultiblockFormatters.hatchFlags(flagsBox.getValue()));
+        return Optional.ofNullable(StructureMultiblockInputFormatters.hatchFlags(flagsBox.getValue()));
     }
 
     private void updatePreview() {

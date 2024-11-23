@@ -26,7 +26,7 @@ package aztech.modern_industrialization.blocks.structure;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import java.util.Locale;
 import java.util.Objects;
@@ -82,7 +82,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public void setInputCasing(String inputCasing) {
         this.inputCasing = inputCasing;
-        casing = StructureMultiblockFormatters.casing(inputCasing);
+        casing = StructureMultiblockInputFormatters.casing(inputCasing);
     }
 
     @Nullable

@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public final class StructureMultiblockFormatters {
+public final class StructureMultiblockInputFormatters {
     @Nullable
     public static MachineCasing casing(String input) {
         if (input == null || input.isEmpty()) {
@@ -188,6 +188,6 @@ public final class StructureMultiblockFormatters {
         return string.toString();
     }
 
-    private StructureMultiblockFormatters() {
+    private StructureMultiblockInputFormatters() {
     }
 }

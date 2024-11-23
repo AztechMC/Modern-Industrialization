@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
@@ -265,11 +265,11 @@ public class ShapeMatcher implements ChunkEventListener {
                             state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
                             level.setBlockAndUpdate(pos, state);
                             StructureMultiblockMemberBlockEntity be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
-                            be.setInputPreview(StructureMultiblockFormatters.preview(member.preview()));
-                            be.setInputMembers(StructureMultiblockFormatters.members(member.tests()));
+                            be.setInputPreview(StructureMultiblockInputFormatters.preview(member.preview()));
+                            be.setInputMembers(StructureMultiblockInputFormatters.members(member.tests()));
                             if (hasHatchFlags) {
-                                be.setInputCasing(StructureMultiblockFormatters.casing(member.casing()));
-                                be.setInputFlags(StructureMultiblockFormatters.hatchFlags(member.hatchFlags()));
+                                be.setInputCasing(StructureMultiblockInputFormatters.casing(member.casing()));
+                                be.setInputFlags(StructureMultiblockInputFormatters.hatchFlags(member.hatchFlags()));
                             }
                             level.setBlockEntity(be);
                             be.setChanged();

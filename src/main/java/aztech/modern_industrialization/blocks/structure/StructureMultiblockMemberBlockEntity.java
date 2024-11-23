@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import java.util.List;
@@ -62,7 +62,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     public void setInputPreview(String inputPreview) {
         this.inputPreview = inputPreview;
-        preview = StructureMultiblockFormatters.preview(inputPreview);
+        preview = StructureMultiblockInputFormatters.preview(inputPreview);
     }
 
     @Nullable
@@ -77,7 +77,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     public void setInputMembers(String inputMembers) {
         this.inputMembers = inputMembers;
-        members = StructureMultiblockFormatters.members(inputMembers);
+        members = StructureMultiblockInputFormatters.members(inputMembers);
     }
 
     @Nullable
@@ -92,7 +92,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     public void setInputCasing(String inputCasing) {
         this.inputCasing = inputCasing;
-        casing = StructureMultiblockFormatters.casing(inputCasing);
+        casing = StructureMultiblockInputFormatters.casing(inputCasing);
     }
 
     @Nullable
@@ -102,7 +102,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     public void setInputFlags(String inputFlags) {
         this.inputFlags = inputFlags;
-        flags = StructureMultiblockFormatters.hatchFlags(inputFlags);
+        flags = StructureMultiblockInputFormatters.hatchFlags(inputFlags);
     }
 
     @Nullable

@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.util.ArrayList;
@@ -35,23 +37,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public final class StructureMember implements SimpleMember {
     private final Supplier<BlockState> previewSupplier;
     private final List<StructureMemberTest> tests;
+    private final MachineCasing casing;
     private final HatchFlags hatchFlags;
 
     private BlockState preview;
 
-    public StructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests, HatchFlags hatchFlags) {
+    public StructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests, @Nullable MachineCasing casing,
+            @Nullable HatchFlags hatchFlags) {
         this.previewSupplier = preview;
         this.tests = tests;
+        this.casing = casing;
         this.hatchFlags = hatchFlags;
     }
 
     public StructureMember(Supplier<BlockState> state) {
-        this(state, List.of(new StructureMemberTestState(state)), null);
+        this(state, List.of(new StructureMemberTestState(state)), null, null);
     }
 
     public BlockState preview() {
@@ -65,6 +72,12 @@ public final class StructureMember implements SimpleMember {
         return Collections.unmodifiableList(tests);
     }
 
+    @Nullable
+    public MachineCasing casing() {
+        return casing;
+    }
+
+    @Nullable
     public HatchFlags hatchFlags() {
         return hatchFlags;
     }
@@ -89,6 +102,7 @@ public final class StructureMember implements SimpleMember {
         if (o instanceof StructureMember other) {
             return this.preview() == other.preview() &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
+                    Objects.equals(casing, other.casing) &&
                     Objects.equals(hatchFlags, other.hatchFlags);
         }
         return false;
@@ -105,6 +119,10 @@ public final class StructureMember implements SimpleMember {
             testsTag.add(testTag);
         }
         tag.put("tests", testsTag);
+
+        if (casing != null) {
+            tag.putString("casing", casing.key.toString());
+        }
 
         if (hatchFlags != null) {
             tag.putInt("hatch_flags", hatchFlags.flags);
@@ -133,12 +151,21 @@ public final class StructureMember implements SimpleMember {
             return null;
         }
 
+        MachineCasing casing = null;
+        if (tag.contains("casing", Tag.TAG_STRING)) {
+            ResourceLocation casingId = ResourceLocation.tryParse(tag.getString("casing"));
+            if (casingId == null || !MachineCasings.registeredCasings.containsKey(casingId)) {
+                return null;
+            }
+            casing = MachineCasings.get(casingId);
+        }
+
         int hatchFlagsValue = tag.getInt("hatch_flags");
         HatchFlags hatchFlags = null;
         if (hatchFlagsValue != 0) {
             hatchFlags = new HatchFlags(hatchFlagsValue);
         }
 
-        return new StructureMember(preview, tests, hatchFlags);
+        return new StructureMember(preview, tests, casing, hatchFlags);
     }
 }

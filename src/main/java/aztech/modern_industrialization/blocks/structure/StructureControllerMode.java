@@ -21,19 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.models;
+package aztech.modern_industrialization.blocks.structure;
 
-import net.minecraft.resources.ResourceLocation;
+import java.util.Locale;
+import net.minecraft.network.chat.Component;
 
-public class MachineCasing {
-    public final ResourceLocation key;
+public enum StructureControllerMode {
+    SAVE,
+    LOAD;
 
-    MachineCasing(ResourceLocation key) {
-        this.key = key;
+    public Component textInfo() {
+        return Component.translatable("structure_block.mode_info." + this.name().toLowerCase(Locale.ROOT));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof MachineCasing other && key.equals(other.key);
+    public Component text() {
+        return Component.translatable("structure_block.mode." + this.name().toLowerCase(Locale.ROOT));
     }
 }

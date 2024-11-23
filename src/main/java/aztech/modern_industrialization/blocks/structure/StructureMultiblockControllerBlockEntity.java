@@ -28,6 +28,8 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import java.util.Locale;
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -44,6 +46,8 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     private String inputId;
     private String inputCasing;
 
+    private StructureControllerMode mode = StructureControllerMode.SAVE;
+
     private ResourceLocation id;
     private MachineCasing casing;
     private StructureControllerBounds bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
@@ -51,6 +55,14 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
+    }
+
+    public StructureControllerMode getMode() {
+        return mode;
+    }
+
+    public void setMode(StructureControllerMode mode) {
+        this.mode = Objects.requireNonNull(mode);
     }
 
     @Nullable
@@ -129,6 +141,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        tag.putString("mode", mode.toString().toLowerCase(Locale.ROOT));
         if (inputId != null) {
             tag.putString("structure_id", inputId);
         }
@@ -145,6 +158,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        mode = StructureControllerMode.valueOf(tag.getString("mode").toUpperCase(Locale.ROOT));
         this.setInputId(tag.getString("structure_id"));
         this.setInputCasing(tag.getString("casing"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {

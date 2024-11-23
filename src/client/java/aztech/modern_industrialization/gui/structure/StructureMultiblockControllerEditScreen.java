@@ -26,11 +26,15 @@ package aztech.modern_industrialization.gui.structure;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
+import aztech.modern_industrialization.blocks.structure.StructureControllerMode;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
+import aztech.modern_industrialization.network.structure.StructureLoadControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateControllerPacket;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
@@ -38,6 +42,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -47,11 +52,15 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private static final int VALID_TEXT_COLOR = 0xE0E0E0;
     private static final int INVALID_TEXT_COLOR = 0xE07272;
 
+    private static final ImmutableList<StructureControllerMode> ALL_MODES = ImmutableList.copyOf(StructureControllerMode.values());
+
     private final StructureMultiblockControllerBlockEntity controller;
 
     private Button doneButton;
     private Button cancelButton;
+    private CycleButton<StructureControllerMode> modeButton;
     private Button saveButton;
+    private Button loadButton;
 
     private EditBox idBox;
     private EditBox casingBox;
@@ -71,7 +80,11 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     }
 
     private Optional<ResourceLocation> getId() {
-        return Optional.ofNullable(ResourceLocation.tryParse(idBox.getValue()));
+        ResourceLocation id = ResourceLocation.tryParse(idBox.getValue());
+        return switch (modeButton.getValue()) {
+        case SAVE -> Optional.ofNullable(id);
+        case LOAD -> id != null && MIStructureTemplateManager.exists(id) ? Optional.of(id) : Optional.empty();
+        };
     }
 
     private Optional<MachineCasing> getCasing() {
@@ -92,9 +105,44 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         }
     }
 
+    private void updateMode(StructureControllerMode mode) {
+        this.sendToServer();
+
+        saveButton.visible = false;
+        loadButton.visible = false;
+        casingBox.visible = false;
+        posXBox.visible = false;
+        posYBox.visible = false;
+        posZBox.visible = false;
+        sizeXBox.visible = false;
+        sizeYBox.visible = false;
+        sizeZBox.visible = false;
+        showBoundsBox.visible = false;
+
+        switch (mode) {
+        case SAVE -> {
+            saveButton.visible = true;
+            casingBox.visible = true;
+            posXBox.visible = true;
+            posYBox.visible = true;
+            posZBox.visible = true;
+            sizeXBox.visible = true;
+            sizeYBox.visible = true;
+            sizeZBox.visible = true;
+            showBoundsBox.visible = true;
+        }
+        case LOAD -> {
+            loadButton.visible = true;
+        }
+        }
+
+        idBox.setValue(idBox.getValue());
+    }
+
     private void updateId() {
         boolean validId = idBox.getValue().isEmpty() || this.getId().isPresent();
         idBox.setTextColor(validId ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
+        loadButton.active = validId;
     }
 
     private void updateCasing() {
@@ -108,6 +156,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     }
 
     private void updateAll() {
+        this.updateMode(controller.getMode());
         this.updateId();
         this.updateCasing();
         this.updateBounds();
@@ -119,12 +168,13 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     }
 
     private void sendToServer() {
-        minecraft.getConnection().send(new StructureUpdateControllerPacket(
+        new StructureUpdateControllerPacket(
                 controller.getBlockPos(),
+                modeButton.getValue(),
                 idBox.getValue(),
                 casingBox.getValue(),
                 this.getBounds().orElse(new StructureControllerBounds(0, 0, 0, 1, 1, 1)),
-                showBoundsBox.getValue()));
+                showBoundsBox.getValue()).sendToServer();
     }
 
     private void cancel() {
@@ -133,7 +183,13 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
     private void save() {
         this.sendToServer();
-        minecraft.getConnection().send(new StructureSaveControllerPacket(controller.getBlockPos()));
+        new StructureSaveControllerPacket(controller.getBlockPos()).sendToServer();
+        minecraft.setScreen(null);
+    }
+
+    private void load() {
+        this.sendToServer();
+        new StructureLoadControllerPacket(controller.getBlockPos(), !hasShiftDown()).sendToServer();
         minecraft.setScreen(null);
     }
 
@@ -146,6 +202,16 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         this.addRenderableWidget(
                 saveButton = Button.builder(Component.translatable("structure_block.button.save"), button -> this.save())
                         .bounds(width / 2 + 4 + 100, 185, 50, 20).build());
+        this.addRenderableWidget(
+                loadButton = Button.builder(Component.translatable("structure_block.button.load"), button -> this.load())
+                        .bounds(width / 2 + 4 + 100, 185, 50, 20)
+                        .tooltip(Tooltip.create(MIText.StructureMultiblockLoadTooltip.text()))
+                        .build());
+        this.addRenderableWidget(modeButton = CycleButton.builder(StructureControllerMode::text)
+                .withValues(ALL_MODES, ALL_MODES)
+                .displayOnlyValue()
+                .withInitialValue(controller.getMode())
+                .create(width / 2 - 4 - 150, 185, 50, 20, Component.literal("MODE"), (button, mode) -> this.updateMode(mode)));
 
         idBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override
@@ -171,33 +237,33 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         StructureControllerBounds bounds = controller.getBounds();
 
-        posXBox = new EditBox(font, width / 2 - 152, 130, 80, 20, Component.translatable("structure_block.position.x"));
+        posXBox = new EditBox(font, width / 2 - 152, 130, 35, 20, Component.translatable("structure_block.position.x"));
         posXBox.setMaxLength(15);
         posXBox.setValue(Integer.toString(bounds.x()));
         posXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posXBox);
-        posYBox = new EditBox(font, width / 2 - 72, 130, 80, 20, Component.translatable("structure_block.position.y"));
+        posYBox = new EditBox(font, width / 2 - 117, 130, 35, 20, Component.translatable("structure_block.position.y"));
         posYBox.setMaxLength(15);
         posYBox.setValue(Integer.toString(bounds.y()));
         posYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posYBox);
-        posZBox = new EditBox(font, width / 2 + 8, 130, 80, 20, Component.translatable("structure_block.position.z"));
+        posZBox = new EditBox(font, width / 2 - 82, 130, 35, 20, Component.translatable("structure_block.position.z"));
         posZBox.setMaxLength(15);
         posZBox.setValue(Integer.toString(bounds.z()));
         posZBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posZBox);
 
-        sizeXBox = new EditBox(font, width / 2 - 152, 170, 80, 20, Component.translatable("structure_block.size.x"));
+        sizeXBox = new EditBox(font, width / 2 - 47 + 8, 130, 35, 20, Component.translatable("structure_block.size.x"));
         sizeXBox.setMaxLength(15);
         sizeXBox.setValue(Integer.toString(bounds.sizeX()));
         sizeXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeXBox);
-        sizeYBox = new EditBox(font, width / 2 - 72, 170, 80, 20, Component.translatable("structure_block.size.y"));
+        sizeYBox = new EditBox(font, width / 2 - 4, 130, 35, 20, Component.translatable("structure_block.size.y"));
         sizeYBox.setMaxLength(15);
         sizeYBox.setValue(Integer.toString(bounds.sizeY()));
         sizeYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeYBox);
-        sizeZBox = new EditBox(font, width / 2 + 8, 170, 80, 20, Component.translatable("structure_block.size.z"));
+        sizeZBox = new EditBox(font, width / 2 + 31, 130, 35, 20, Component.translatable("structure_block.size.z"));
         sizeZBox.setMaxLength(15);
         sizeZBox.setValue(Integer.toString(bounds.sizeZ()));
         sizeZBox.setResponder(text -> this.updateBounds());
@@ -216,16 +282,22 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
 
-        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 153, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 40, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 153, 80, 0xA0A0A0);
+        if (casingBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 80, 0xA0A0A0);
 
-        graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 153, 120, 0xA0A0A0);
+        if (posXBox.visible || posYBox.visible || posZBox.visible)
+            graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 152, 120, 0xA0A0A0);
 
-        graphics.drawString(font, Component.translatable("structure_block.size"), width / 2 - 153, 160, 0xA0A0A0);
+        if (sizeXBox.visible || sizeYBox.visible || sizeZBox.visible)
+            graphics.drawString(font, Component.translatable("structure_block.size"), width / 2 - 47 + 8, 120, 0xA0A0A0);
 
-        graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"),
-                width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 10526880);
+        if (showBoundsBox.visible)
+            graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"),
+                    width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 0xA0A0A0);
+
+        graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }
 
     @Override

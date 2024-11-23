@@ -42,7 +42,7 @@ public class StructureMemberTestState implements StructureMemberTest {
         this(null);
     }
 
-    private BlockState blockState() {
+    public BlockState blockState() {
         if (blockState == null) {
             blockState = blockStateSupplier.get();
         }

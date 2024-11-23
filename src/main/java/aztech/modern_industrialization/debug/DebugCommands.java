@@ -109,12 +109,6 @@ public class DebugCommands {
                                                     .then(argument("controller_pos", blockPos())
                                                             .executes(ctx -> {
                                                                 return structuresTest(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
-                                                            }))))
-                                    .then(literal("build")
-                                            .then(argument("structure_id", id())
-                                                    .then(argument("controller_pos", blockPos())
-                                                            .executes(ctx -> {
-                                                                return structuresBuild(ctx.getSource(), getId(ctx, "structure_id"), getLoadedBlockPos(ctx, "controller_pos"));
                                                             })))))
                     )
             );
@@ -191,7 +185,7 @@ public class DebugCommands {
         var be = src.getLevel().getBlockEntity(controllerPos);
         if (be instanceof MultiblockMachineBlockEntity multiblock) {
             var shapeMatcher = multiblock.createShapeMatcher();
-            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
+            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel(), false);
 
             src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(
                     controllerPos, updatedBlocks)), true);
@@ -226,14 +220,6 @@ public class DebugCommands {
             src.sendSuccess(
                     () -> Component
                             .literal("Match test results for %s at position %s: %s".formatted(id, controllerPos.toShortString(), success)),
-                    true);
-        });
-    }
-
-    private static int structuresBuild(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos) {
-        return structures(src, id, controllerPos, (matcher) -> {
-            matcher.buildMultiblock(src.getLevel());
-            src.sendSuccess(() -> Component.literal("Built multiblock %s at position %s".formatted(id, controllerPos.toShortString())),
                     true);
         });
     }

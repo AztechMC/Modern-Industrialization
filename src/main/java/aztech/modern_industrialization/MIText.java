@@ -27,6 +27,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+// TODO SWEDZ: alphabetize
 public enum MIText {
 
     ModernIndustrialization("Modern Industrialization"),
@@ -251,6 +252,10 @@ public enum MIText {
     StructureMultiblockMemberMembers("Members"),
     StructureMultiblockMemberPreview("Preview"),
     StructureMultiblockStructureName("Structure Name"),
+    StructureMultiblockLoadTooltip("Hold SHIFT to place actual blocks instead of structure blocks."),
+    StructureMultiblockLoadFailInvalidId("Failed to place the structure. No id was provided."),
+    StructureMultiblockLoadFailDoesntExist("Failed to place the structure. No structure exists as %s."),
+    StructureMultiblockLoadSuccess("Successfully placed the structure %s."),
     StructureMultiblockSaveFailInvalidBounds("Failed to save structure. The bounds provided are not valid."),
     StructureMultiblockSaveFailMisconfiguredBlock("Failed to save structure. Some blocks are not properly configured."),
     StructureMultiblockSaveFailTooManyControllers("Failed to save structure. Too many controllers exist within the bounds."),

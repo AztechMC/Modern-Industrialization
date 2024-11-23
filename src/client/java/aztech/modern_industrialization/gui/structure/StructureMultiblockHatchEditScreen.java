@@ -113,12 +113,12 @@ public class StructureMultiblockHatchEditScreen extends Screen {
     }
 
     private void sendToServer() {
-        minecraft.getConnection().send(new StructureUpdateHatchPacket(
+        new StructureUpdateHatchPacket(
                 hatch.getBlockPos(),
                 previewBox.getValue(),
                 membersBox.getValue(),
                 casingBox.getValue(),
-                flagsBox.getValue()));
+                flagsBox.getValue()).sendToServer();
     }
 
     private void cancel() {
@@ -176,13 +176,13 @@ public class StructureMultiblockHatchEditScreen extends Screen {
 
         graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 153, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 40, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 153, 80, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 80, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 153, 120, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 120, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 153, 160, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 152, 160, 0xA0A0A0);
     }
 
     @Override

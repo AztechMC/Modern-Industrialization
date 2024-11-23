@@ -41,6 +41,10 @@ public class StructureMemberTestTag implements StructureMemberTest {
         this(null);
     }
 
+    public TagKey<Block> blockTag() {
+        return blockTag;
+    }
+
     @Override
     public String id() {
         return "tag";

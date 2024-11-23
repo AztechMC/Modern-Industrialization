@@ -117,7 +117,7 @@ public class StructureMultiblockHatchBlockEntity extends FastBlockEntity impleme
 
     @Override
     public StructureMember getMemberOverride() {
-        return new StructureMember(() -> preview, members, flags);
+        return new StructureMember(() -> preview, members, casing, flags);
     }
 
     @Override

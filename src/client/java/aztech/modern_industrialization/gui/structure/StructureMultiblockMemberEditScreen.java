@@ -87,10 +87,10 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     }
 
     private void sendToServer() {
-        minecraft.getConnection().send(new StructureUpdateMemberPacket(
+        new StructureUpdateMemberPacket(
                 member.getBlockPos(),
                 previewBox.getValue(),
-                membersBox.getValue()));
+                membersBox.getValue()).sendToServer();
     }
 
     private void cancel() {
@@ -125,9 +125,9 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
         graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 153, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 40, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 153, 80, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 80, 0xA0A0A0);
     }
 
     @Override

@@ -23,37 +23,32 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
-import aztech.modern_industrialization.blocks.structure.StructureControllerMode;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public record StructureUpdateControllerPacket(BlockPos pos, StructureControllerMode mode, String inputId, String inputCasing,
-        StructureControllerBounds bounds, boolean showBounds)
-        implements BasePacket {
+public record StructureLoadControllerPacket(BlockPos pos, boolean structureBlocks) implements BasePacket {
 
-    public static final StreamCodec<ByteBuf, StructureUpdateControllerPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, StructureLoadControllerPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
-            StructureUpdateControllerPacket::pos,
-            ByteBufCodecs.idMapper((i) -> StructureControllerMode.values()[i], Enum::ordinal),
-            StructureUpdateControllerPacket::mode,
-            ByteBufCodecs.STRING_UTF8,
-            StructureUpdateControllerPacket::inputId,
-            ByteBufCodecs.STRING_UTF8,
-            StructureUpdateControllerPacket::inputCasing,
-            ByteBufCodecs.fromCodec(StructureControllerBounds.CODEC),
-            StructureUpdateControllerPacket::bounds,
+            StructureLoadControllerPacket::pos,
             ByteBufCodecs.BOOL,
-            StructureUpdateControllerPacket::showBounds,
-            StructureUpdateControllerPacket::new);
+            StructureLoadControllerPacket::structureBlocks,
+            StructureLoadControllerPacket::new);
 
     @Override
     public void handle(Context ctx) {
@@ -66,20 +61,22 @@ public record StructureUpdateControllerPacket(BlockPos pos, StructureControllerM
             return;
         }
 
+        BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-            controller.setMode(mode);
-            controller.setInputId(inputId);
-            controller.setInputCasing(inputCasing);
-            controller.setBounds(bounds);
-            controller.setShowBounds(showBounds);
-
-            controller.sync();
-            controller.setChanged();
-
-            if (player instanceof ServerPlayer serverPlayer && controller.isConfigurationValid()) {
-                StructureMisconfiguredBlocksPacket.forget(controller.getBlockPos()).sendToClient(serverPlayer);
+            ResourceLocation id = controller.getId();
+            if (id == null) {
+                player.sendSystemMessage(MIText.StructureMultiblockLoadFailInvalidId.text().withStyle(ChatFormatting.RED));
+                return;
             }
+            if (!MIStructureTemplateManager.exists(id)) {
+                player.sendSystemMessage(MIText.StructureMultiblockLoadFailDoesntExist.text(id.toString()).withStyle(ChatFormatting.RED));
+                return;
+            }
+            ShapeTemplate template = MIStructureTemplateManager.get(id);
+            ShapeMatcher shapeMatcher = new ShapeMatcher(level, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), template);
+            shapeMatcher.buildMultiblock(level, structureBlocks);
+            player.sendSystemMessage(MIText.StructureMultiblockLoadSuccess.text(id.toString()));
         }
     }
 }

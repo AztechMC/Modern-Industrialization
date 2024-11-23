@@ -65,6 +65,14 @@ public final class StructureMultiblockFormatters {
     }
 
     @Nullable
+    public static String casing(MachineCasing casing) {
+        if (casing == null) {
+            return null;
+        }
+        return casing.key.toString();
+    }
+
+    @Nullable
     public static BlockState preview(String inputPreview) {
         if (inputPreview == null || inputPreview.isEmpty()) {
             return Blocks.AIR.defaultBlockState();
@@ -77,6 +85,14 @@ public final class StructureMultiblockFormatters {
         } catch (CommandSyntaxException ignored) {
             return null;
         }
+    }
+
+    @Nullable
+    public static String preview(BlockState preview) {
+        if (preview == null) {
+            return null;
+        }
+        return BlockStateParser.serialize(preview);
     }
 
     @Nullable
@@ -108,6 +124,29 @@ public final class StructureMultiblockFormatters {
     }
 
     @Nullable
+    public static String members(List<StructureMemberTest> members) {
+        if (members == null) {
+            return null;
+        }
+
+        StringBuilder string = new StringBuilder();
+        for (StructureMemberTest test : members) {
+            if (test instanceof StructureMemberTestTag testTag) {
+                if (!string.isEmpty()) {
+                    string.append(";");
+                }
+                string.append("#").append(testTag.blockTag().location());
+            } else if (test instanceof StructureMemberTestState stateTest) {
+                if (!string.isEmpty()) {
+                    string.append(";");
+                }
+                string.append(BlockStateParser.serialize(stateTest.blockState()));
+            }
+        }
+        return string.toString();
+    }
+
+    @Nullable
     public static HatchFlags hatchFlags(String input) {
         if (input == null || input.isEmpty()) {
             return HatchFlags.NO_HATCH;
@@ -126,6 +165,27 @@ public final class StructureMultiblockFormatters {
             }
         }
         return builder.build();
+    }
+
+    @Nullable
+    public static String hatchFlags(HatchFlags hatchFlags) {
+        if (hatchFlags == null || hatchFlags.flags == 0) {
+            return null;
+        }
+
+        StringBuilder string = new StringBuilder();
+        for (HatchType hatchType : HatchType.values()) {
+            if (hatchFlags.allows(hatchType)) {
+                if (!string.isEmpty()) {
+                    string.append(";");
+                }
+                string.append(hatchType.toString().toLowerCase(Locale.ROOT));
+            }
+        }
+        if (string.isEmpty()) {
+            return String.valueOf(hatchFlags.flags);
+        }
+        return string.toString();
     }
 
     private StructureMultiblockFormatters() {

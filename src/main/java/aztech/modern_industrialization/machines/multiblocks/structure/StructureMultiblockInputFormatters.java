@@ -73,14 +73,14 @@ public final class StructureMultiblockInputFormatters {
     }
 
     @Nullable
-    public static BlockState preview(String inputPreview) {
-        if (inputPreview == null || inputPreview.isEmpty()) {
+    public static BlockState preview(String input) {
+        if (input == null || input.isEmpty()) {
             return Blocks.AIR.defaultBlockState();
         }
         var registry = BuiltInRegistries.BLOCK.asLookup();
 
         try {
-            var blockResult = BlockStateParser.parseForBlock(registry, inputPreview, true);
+            var blockResult = BlockStateParser.parseForBlock(registry, input, true);
             return blockResult.blockState();
         } catch (CommandSyntaxException ignored) {
             return null;
@@ -96,14 +96,14 @@ public final class StructureMultiblockInputFormatters {
     }
 
     @Nullable
-    public static List<StructureMemberTest> members(String inputMembers) {
-        if (inputMembers == null || inputMembers.isEmpty()) {
+    public static List<StructureMemberTest> members(String input) {
+        if (input == null || input.isEmpty()) {
             return new ArrayList<>();
         }
         var registry = BuiltInRegistries.BLOCK.asLookup();
 
         List<StructureMemberTest> members = new ArrayList<>();
-        for (String part : inputMembers.split(";")) {
+        for (String part : input.split(";")) {
             if (part.startsWith("#")) {
                 ResourceLocation tagId = ResourceLocation.tryParse(part.substring(1));
                 if (tagId == null) {

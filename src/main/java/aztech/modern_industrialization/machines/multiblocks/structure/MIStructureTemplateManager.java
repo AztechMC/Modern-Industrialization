@@ -32,16 +32,18 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import net.minecraft.FileUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -58,10 +60,35 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforgespi.language.IModFileInfo;
 import org.jetbrains.annotations.Nullable;
 
 public final class MIStructureTemplateManager {
+    private static Map<ResourceLocation, ShapeTemplate> STRUCTURE_TEMPLATES;
+
+    private static void assertLoaded() {
+        if (STRUCTURE_TEMPLATES == null) {
+            throw new IllegalStateException("Structure templates have not yet been loaded");
+        }
+    }
+
+    public static boolean exists(ResourceLocation id) {
+        assertLoaded();
+        return STRUCTURE_TEMPLATES.containsKey(id);
+    }
+
+    public static ShapeTemplate get(ResourceLocation id) {
+        assertLoaded();
+        ShapeTemplate template = STRUCTURE_TEMPLATES.get(id);
+        if (template != null) {
+            return template;
+        } else {
+            throw new IllegalArgumentException("Structure shape template \"" + id.toString() + "\" does not exist.");
+        }
+    }
+
     public static StructureResult fromWorld(ResourceLocation id, Level level,
             BlockPos controllerPos, Direction controllerDirection,
             MachineCasing hatchCasing, StructureControllerBounds bounds) {
@@ -160,7 +187,7 @@ public final class MIStructureTemplateManager {
     }
 
     @Nullable
-    public static ShapeTemplate deserialize(CompoundTag tag) {
+    private static ShapeTemplate deserialize(CompoundTag tag) {
         Objects.requireNonNull(tag);
 
         ResourceLocation hatchCasingId = ResourceLocation.tryParse(tag.getString("hatch_casing"));
@@ -189,12 +216,15 @@ public final class MIStructureTemplateManager {
         return builder.build();
     }
 
+    private static Path structuresPath() {
+        return FMLPaths.GAMEDIR.get()
+                .resolve(MI.ID)
+                .resolve("structures");
+    }
+
     private static Path path(ResourceLocation id) throws IOException {
         Objects.requireNonNull(id);
-        var miFolder = FMLPaths.GAMEDIR.get().resolve(MI.ID);
-        var structuresFolder = miFolder
-                .resolve("structures")
-                .resolve(id.getNamespace());
+        var structuresFolder = structuresPath().resolve(id.getNamespace());
         Files.createDirectories(structuresFolder);
         return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".nbt");
     }
@@ -203,36 +233,94 @@ public final class MIStructureTemplateManager {
         Objects.requireNonNull(id);
         Objects.requireNonNull(tag);
         try {
-            try (OutputStream output = new FileOutputStream(path(id).toFile())) {
+            try (OutputStream output = Files.newOutputStream(path(id))) {
                 NbtIo.writeCompressed(tag, output);
                 return true;
             } catch (Exception ex) {
-                MI.LOGGER.error("Failed to save structure '{}'", id, ex);
+                MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
             }
         } catch (Exception ex) {
-            MI.LOGGER.error("Failed to save structure '{}'", id, ex);
+            MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
         }
         return false;
     }
 
     @Nullable
-    public static CompoundTag load(ResourceLocation id) {
-        Objects.requireNonNull(id);
+    private static CompoundTag load(Path path) {
+        Objects.requireNonNull(path);
         try {
-            Path path = path(id);
             if (Files.exists(path)) {
-                try (InputStream input = new FileInputStream(path.toFile());
+                try (InputStream input = Files.newInputStream(path);
                         InputStream fastInput = new FastBufferedInputStream(input)) {
                     return NbtIo.readCompressed(fastInput, NbtAccounter.unlimitedHeap());
                 } catch (Exception ex) {
-                    MI.LOGGER.error("Failed to load structure '{}'", id, ex);
+                    MI.LOGGER.error("Failed to load structure at \"{}\"", path, ex);
                     return null;
                 }
             }
+            MI.LOGGER.error("Could not find structure at \"{}\"", path);
             return null;
         } catch (Exception ex) {
-            MI.LOGGER.error("Failed to load structure '{}'", id, ex);
+            MI.LOGGER.error("Failed to load structure at \"{}\"", path, ex);
             return null;
+        }
+    }
+
+    private static void iterateStructureFiles(Path origin, BiConsumer<ResourceLocation, Path> action) throws IOException {
+        try (DirectoryStream<Path> subdirectories = Files.newDirectoryStream(origin, Files::isDirectory)) {
+            for (Path subdirectory : subdirectories) {
+                String namespace = subdirectory.getFileName().toString();
+                try (DirectoryStream<Path> files = Files.newDirectoryStream(subdirectory)) {
+                    for (Path file : files) {
+                        if (file.toString().endsWith(".nbt")) {
+                            String rawFileName = file.getFileName().toString();
+                            String path = rawFileName.substring(0, rawFileName.lastIndexOf('.'));
+                            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, path);
+                            action.accept(id, file);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void register(ResourceLocation id, Path path) {
+        CompoundTag structureTag = load(path);
+        if (structureTag != null) {
+            ShapeTemplate structure = deserialize(structureTag);
+            if (structure != null) {
+                STRUCTURE_TEMPLATES.put(id, structure);
+            } else {
+                MI.LOGGER.error("Failed to load structure with id \"{}\"", id);
+            }
+        }
+    }
+
+    public static void init() {
+        if (STRUCTURE_TEMPLATES != null) {
+            throw new IllegalStateException("Structures have already been loaded");
+        }
+
+        STRUCTURE_TEMPLATES = new HashMap<>();
+
+        try {
+            var structuresPath = structuresPath();
+            Files.createDirectories(structuresPath);
+            iterateStructureFiles(structuresPath, MIStructureTemplateManager::register);
+
+            for (IModFileInfo modFile : ModList.get().getModFiles()) {
+                Path modStructuresPath = modFile.getFile().findResource("mi_structures");
+                iterateStructureFiles(modStructuresPath, (id, path) -> {
+                    if (STRUCTURE_TEMPLATES.containsKey(id)) {
+                        return;
+                    }
+                    register(id, path);
+                });
+            }
+
+            MI.LOGGER.info("Loaded {} structures.", STRUCTURE_TEMPLATES.size());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

@@ -62,10 +62,9 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
             var result = MIStructureTemplateManager.fromWorld(id,
                     level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
                     controller.getCasing(), controller.getBounds());
-            if (result instanceof StructureResult.Success success) {
-                if (!MIStructureTemplateManager.save(id, success.tag())) {
-                    result = new StructureResult.Unknown();
-                }
+            if (result instanceof StructureResult.Success success &&
+                    !MIStructureTemplateManager.save(id, success.tag())) {
+                result = new StructureResult.Unknown();
             }
             result.send(player);
         }

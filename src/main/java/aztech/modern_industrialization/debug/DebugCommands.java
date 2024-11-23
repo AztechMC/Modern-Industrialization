@@ -46,7 +46,6 @@ import java.util.function.Consumer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -205,16 +204,11 @@ public class DebugCommands {
     private static int structures(CommandSourceStack src, ResourceLocation id, BlockPos controllerPos, Consumer<ShapeMatcher> action) {
         BlockState controllerState = src.getLevel().getBlockState(controllerPos);
         if (controllerState.is(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())) {
-            CompoundTag tag = MIStructureTemplateManager.load(id);
-            if (tag == null) {
+            if (!MIStructureTemplateManager.exists(id)) {
                 src.sendFailure(Component.literal("Could not find structure with the id %s".formatted(id)));
                 return Command.SINGLE_SUCCESS;
             }
-            ShapeTemplate shape = MIStructureTemplateManager.deserialize(tag);
-            if (shape == null) {
-                src.sendFailure(Component.literal("Failed to read structure file for structure %s".formatted(id)));
-                return Command.SINGLE_SUCCESS;
-            }
+            ShapeTemplate shape = MIStructureTemplateManager.get(id);
             ShapeMatcher matcher = new ShapeMatcher(src.getLevel(), controllerPos, controllerState.getValue(BlockStateProperties.HORIZONTAL_FACING),
                     shape);
             action.accept(matcher);

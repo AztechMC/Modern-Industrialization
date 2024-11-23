@@ -42,6 +42,7 @@ import aztech.modern_industrialization.machines.init.MultiblockHatches;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
@@ -73,6 +74,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -96,8 +98,10 @@ public class MI {
         return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
-    public MI(IEventBus modBus, Dist dist) {
+    public MI(FMLModContainer container, IEventBus modBus, Dist dist) {
         KubeJSProxy.checkThatKubeJsIsLoaded();
+
+        MIStructureTemplateManager.init();
 
         MIAdvancementTriggers.init(modBus);
         MIComponents.init(modBus);

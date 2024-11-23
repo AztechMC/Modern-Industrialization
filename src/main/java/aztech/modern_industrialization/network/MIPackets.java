@@ -46,7 +46,6 @@ import aztech.modern_industrialization.network.structure.StructureLoadController
 import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;
 import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateControllerPacket;
-import aztech.modern_industrialization.network.structure.StructureUpdateHatchPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +100,6 @@ public class MIPackets {
         register("structure_misconfigured_blocks", StructureMisconfiguredBlocksPacket.class, StructureMisconfiguredBlocksPacket.STREAM_CODEC);
         register("structure_save_controller", StructureSaveControllerPacket.class, StructureSaveControllerPacket.STREAM_CODEC);
         register("structure_update_controller", StructureUpdateControllerPacket.class, StructureUpdateControllerPacket.STREAM_CODEC);
-        register("structure_update_hatch", StructureUpdateHatchPacket.class, StructureUpdateHatchPacket.STREAM_CODEC);
         register("structure_update_member", StructureUpdateMemberPacket.class, StructureUpdateMemberPacket.STREAM_CODEC);
     }
 

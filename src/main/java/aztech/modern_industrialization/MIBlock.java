@@ -36,7 +36,6 @@ import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlock;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
@@ -146,15 +145,6 @@ public class MIBlock {
                                 gen.blockTexture("structure_multiblock_controller_side"));
                         gen.horizontalBlock(block, model);
                         gen.simpleBlockItem(block, model);
-                    }));
-    
-    public static final BlockDefinition<StructureMultiblockHatchBlock> STRUCTURE_MULTIBLOCK_HATCH = block("Structure Multiblock Hatch",
-            "structure_multiblock_hatch", BlockDefinitionParams.defaultCreativeOnly()
-                    .withBlockConstructor(StructureMultiblockHatchBlock::new)
-                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
-                    .withModel((block, gen) -> {
-                        String name = gen.name(block);
-                        gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_hatch")));
                     }));
     
     public static final BlockDefinition<StructureMultiblockMemberBlock> STRUCTURE_MULTIBLOCK_MEMBER = block("Structure Multiblock Member",

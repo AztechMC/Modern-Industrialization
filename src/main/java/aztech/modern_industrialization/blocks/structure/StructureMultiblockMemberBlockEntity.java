@@ -25,6 +25,8 @@ package aztech.modern_industrialization.blocks.structure;
 
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
@@ -41,9 +43,13 @@ import org.jetbrains.annotations.Nullable;
 public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implements StructureMemberOverride {
     private String inputPreview;
     private String inputMembers;
+    private String inputCasing;
+    private String inputFlags;
 
     private BlockState preview;
     private List<StructureMemberTest> members;
+    private MachineCasing casing;
+    private HatchFlags flags = HatchFlags.NO_HATCH;
 
     public StructureMultiblockMemberBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), pos, state);
@@ -79,15 +85,54 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         return members;
     }
 
+    @Nullable
+    public String getInputCasing() {
+        return inputCasing;
+    }
+
+    public void setInputCasing(String inputCasing) {
+        this.inputCasing = inputCasing;
+        casing = StructureMultiblockFormatters.casing(inputCasing);
+    }
+
+    @Nullable
+    public String getInputFlags() {
+        return inputFlags;
+    }
+
+    public void setInputFlags(String inputFlags) {
+        this.inputFlags = inputFlags;
+        flags = StructureMultiblockFormatters.hatchFlags(inputFlags);
+    }
+
+    @Nullable
+    public MachineCasing getCasing() {
+        return casing;
+    }
+
+    @Nullable
+    public HatchFlags getFlags() {
+        return flags;
+    }
+
     @Override
     public StructureMember getMemberOverride() {
-        return new StructureMember(() -> preview, members, null, null);
+        if (casing == null || (flags == null || flags.flags == 0)) {
+            return new StructureMember(() -> preview, members, null, null);
+        }
+        return new StructureMember(() -> preview, members, casing, flags);
     }
 
     @Override
     public boolean isConfigurationValid() {
-        return preview != null &&
-                members != null && !members.isEmpty();
+        if (preview != null && members != null && !members.isEmpty()) {
+            boolean hasCasing = casing != null;
+            boolean hasHatchFlags = flags != null && flags.flags != 0;
+            boolean noCasing = (inputCasing == null || inputCasing.isEmpty()) && !hasCasing;
+            boolean noFlags = (inputFlags == null || inputFlags.isEmpty()) && !hasHatchFlags;
+            return (hasCasing && hasHatchFlags) || (noCasing && noFlags);
+        }
+        return false;
     }
 
     @Override
@@ -111,6 +156,12 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         if (inputMembers != null) {
             tag.putString("members", inputMembers);
         }
+        if (inputCasing != null) {
+            tag.putString("casing", inputCasing);
+        }
+        if (inputFlags != null) {
+            tag.putString("flags", inputFlags);
+        }
     }
 
     @Override
@@ -118,5 +169,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         super.loadAdditional(tag, registries);
         this.setInputPreview(tag.getString("preview"));
         this.setInputMembers(tag.getString("members"));
+        this.setInputCasing(tag.getString("casing"));
+        this.setInputFlags(tag.getString("flags"));
     }
 }

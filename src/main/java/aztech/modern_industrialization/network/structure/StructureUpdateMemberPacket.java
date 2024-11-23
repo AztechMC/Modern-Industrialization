@@ -34,7 +34,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, String inputMembers) implements BasePacket {
+public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, String inputMembers, String inputCasing, String inputFlags)
+        implements BasePacket {
 
     public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC,
@@ -43,6 +44,10 @@ public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, Str
             StructureUpdateMemberPacket::inputPreview,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateMemberPacket::inputMembers,
+            ByteBufCodecs.STRING_UTF8,
+            StructureUpdateMemberPacket::inputCasing,
+            ByteBufCodecs.STRING_UTF8,
+            StructureUpdateMemberPacket::inputFlags,
             StructureUpdateMemberPacket::new);
 
     @Override
@@ -57,15 +62,17 @@ public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, Str
         }
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof StructureMultiblockMemberBlockEntity member) {
-            member.setInputPreview(inputPreview);
-            member.setInputMembers(inputMembers);
+        if (blockEntity instanceof StructureMultiblockMemberBlockEntity hatch) {
+            hatch.setInputPreview(inputPreview);
+            hatch.setInputMembers(inputMembers);
+            hatch.setInputCasing(inputCasing);
+            hatch.setInputFlags(inputFlags);
 
-            member.sync();
-            member.setChanged();
+            hatch.sync();
+            hatch.setChanged();
 
-            if (player instanceof ServerPlayer serverPlayer && member.isConfigurationValid()) {
-                StructureMisconfiguredBlocksPacket.forget(member.getBlockPos()).sendToClient(serverPlayer);
+            if (player instanceof ServerPlayer serverPlayer && hatch.isConfigurationValid()) {
+                StructureMisconfiguredBlocksPacket.forget(hatch.getBlockPos()).sendToClient(serverPlayer);
             }
         }
     }

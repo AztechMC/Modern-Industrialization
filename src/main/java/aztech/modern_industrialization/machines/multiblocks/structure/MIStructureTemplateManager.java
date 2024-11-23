@@ -35,6 +35,7 @@ import aztech.modern_industrialization.machines.multiblocks.structure.member.Str
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,10 +50,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.SnbtPrinterTagVisitor;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
@@ -226,7 +227,7 @@ public final class MIStructureTemplateManager {
         Objects.requireNonNull(id);
         var structuresFolder = structuresPath().resolve(id.getNamespace());
         Files.createDirectories(structuresFolder);
-        return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".nbt");
+        return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".snbt");
     }
 
     public static boolean save(ResourceLocation id, CompoundTag tag) {
@@ -234,7 +235,7 @@ public final class MIStructureTemplateManager {
         Objects.requireNonNull(tag);
         try {
             try (OutputStream output = Files.newOutputStream(path(id))) {
-                NbtIo.writeCompressed(tag, output);
+                output.write(new SnbtPrinterTagVisitor().visit(tag).getBytes(StandardCharsets.UTF_8));
                 return true;
             } catch (Exception ex) {
                 MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
@@ -252,7 +253,7 @@ public final class MIStructureTemplateManager {
             if (Files.exists(path)) {
                 try (InputStream input = Files.newInputStream(path);
                         InputStream fastInput = new FastBufferedInputStream(input)) {
-                    return NbtIo.readCompressed(fastInput, NbtAccounter.unlimitedHeap());
+                    return TagParser.parseTag(new String(fastInput.readAllBytes(), StandardCharsets.UTF_8));
                 } catch (Exception ex) {
                     MI.LOGGER.error("Failed to load structure at \"{}\"", path, ex);
                     return null;
@@ -272,7 +273,7 @@ public final class MIStructureTemplateManager {
                 String namespace = subdirectory.getFileName().toString();
                 try (DirectoryStream<Path> files = Files.newDirectoryStream(subdirectory)) {
                     for (Path file : files) {
-                        if (file.toString().endsWith(".nbt")) {
+                        if (file.toString().endsWith(".snbt")) {
                             String rawFileName = file.getFileName().toString();
                             String path = rawFileName.substring(0, rawFileName.lastIndexOf('.'));
                             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, path);

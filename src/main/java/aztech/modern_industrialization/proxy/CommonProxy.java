@@ -26,7 +26,6 @@ package aztech.modern_industrialization.proxy;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.network.BasePacket;
@@ -131,9 +130,6 @@ public class CommonProxy {
     }
 
     public void openStructureMultiblockControllerScreen(Player player, StructureMultiblockControllerBlockEntity controller) {
-    }
-
-    public void openStructureMultiblockHatchScreen(Player player, StructureMultiblockHatchBlockEntity hatch) {
     }
 
     public void openStructureMultiblockMemberScreen(Player player, StructureMultiblockMemberBlockEntity member) {

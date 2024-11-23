@@ -31,10 +31,8 @@ import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEnti
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.gui.structure.StructureMultiblockControllerEditScreen;
-import aztech.modern_industrialization.gui.structure.StructureMultiblockHatchEditScreen;
 import aztech.modern_industrialization.gui.structure.StructureMultiblockMemberEditScreen;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
@@ -166,13 +164,6 @@ public class ClientProxy extends CommonProxy {
     public void openStructureMultiblockControllerScreen(Player player, StructureMultiblockControllerBlockEntity controller) {
         if (player.getCommandSenderWorld().isClientSide()) {
             Minecraft.getInstance().setScreen(new StructureMultiblockControllerEditScreen(controller));
-        }
-    }
-
-    @Override
-    public void openStructureMultiblockHatchScreen(Player player, StructureMultiblockHatchBlockEntity hatch) {
-        if (player.getCommandSenderWorld().isClientSide()) {
-            Minecraft.getInstance().setScreen(new StructureMultiblockHatchEditScreen(hatch));
         }
     }
 

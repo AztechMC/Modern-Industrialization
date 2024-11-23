@@ -46,8 +46,8 @@ public class StructureMultiblockMemberBlock extends Block implements EntityBlock
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof StructureMultiblockMemberBlockEntity member && player.canUseGameMasterBlocks()) {
-            CommonProxy.INSTANCE.openStructureMultiblockMemberScreen(player, member);
+        if (blockEntity instanceof StructureMultiblockMemberBlockEntity hatch && player.canUseGameMasterBlocks()) {
+            CommonProxy.INSTANCE.openStructureMultiblockMemberScreen(player, hatch);
             return InteractionResult.sidedSuccess(level.isClientSide());
         } else {
             return InteractionResult.PASS;

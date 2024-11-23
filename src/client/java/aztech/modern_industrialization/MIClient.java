@@ -243,7 +243,6 @@ public class MIClient {
         BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.CREATIVE_TANK_BE.get(), context -> new TankRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), context -> new StructureMultiblockControllerBER());
-        BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_HATCH_BE.get(), context -> new StructureMultiblockBER<>());
         BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), context -> new StructureMultiblockBER<>());
 
         blockEntityRendererRegistrations.forEach(Runnable::run);

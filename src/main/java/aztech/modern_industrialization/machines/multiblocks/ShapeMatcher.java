@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
@@ -260,27 +259,18 @@ public class ShapeMatcher implements ChunkEventListener {
                     // TODO SWEDZ: there has gotta be a better way to do this
                     if (structureBlocks) {
                         boolean hasMultipleTests = member.tests().size() > 1;
-                        boolean hasHatchFlags = member.hatchFlags() != null && member.hatchFlags().flags != 0;
+                        boolean hasHatchFlags = member.casing() != null && member.hatchFlags() != null && member.hatchFlags().flags != 0;
 
-                        if (hasMultipleTests && !hasHatchFlags) {
+                        if (hasMultipleTests || hasHatchFlags) {
                             state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
                             level.setBlockAndUpdate(pos, state);
                             StructureMultiblockMemberBlockEntity be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
                             be.setInputPreview(StructureMultiblockFormatters.preview(member.preview()));
                             be.setInputMembers(StructureMultiblockFormatters.members(member.tests()));
-                            level.setBlockEntity(be);
-                            be.setChanged();
-                            be.sync();
-                            setBlocks++;
-                            continue;
-                        } else if (hasHatchFlags) {
-                            state = MIBlock.STRUCTURE_MULTIBLOCK_HATCH.asBlock().defaultBlockState();
-                            level.setBlockAndUpdate(pos, state);
-                            StructureMultiblockHatchBlockEntity be = MIBlock.STRUCTURE_MULTIBLOCK_HATCH.get().newBlockEntity(pos, state);
-                            be.setInputPreview(StructureMultiblockFormatters.preview(member.preview()));
-                            be.setInputMembers(StructureMultiblockFormatters.members(member.tests()));
-                            be.setInputCasing(StructureMultiblockFormatters.casing(member.casing()));
-                            be.setInputFlags(StructureMultiblockFormatters.hatchFlags(member.hatchFlags()));
+                            if (hasHatchFlags) {
+                                be.setInputCasing(StructureMultiblockFormatters.casing(member.casing()));
+                                be.setInputFlags(StructureMultiblockFormatters.hatchFlags(member.hatchFlags()));
+                            }
                             level.setBlockEntity(be);
                             be.setChanged();
                             be.sync();

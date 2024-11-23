@@ -26,6 +26,8 @@ package aztech.modern_industrialization.gui.structure;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
@@ -39,6 +41,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class StructureMultiblockMemberEditScreen extends Screen {
@@ -53,6 +56,9 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     private EditBox previewBox;
     private EditBox membersBox;
 
+    private EditBox casingBox;
+    private EditBox flagsBox;
+
     public StructureMultiblockMemberEditScreen(StructureMultiblockMemberBlockEntity member) {
         super(Component.translatable(MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().getDescriptionId()));
         this.member = member;
@@ -66,6 +72,14 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         return Optional.ofNullable(StructureMultiblockFormatters.members(membersBox.getValue()));
     }
 
+    private Optional<MachineCasing> getCasing() {
+        return Optional.ofNullable(StructureMultiblockFormatters.casing(casingBox.getValue()));
+    }
+
+    private Optional<HatchFlags> getHatchFlags() {
+        return Optional.ofNullable(StructureMultiblockFormatters.hatchFlags(flagsBox.getValue()));
+    }
+
     private void updatePreview() {
         boolean validPreview = previewBox.getValue().isEmpty() || this.getPreview().isPresent();
         previewBox.setTextColor(validPreview ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
@@ -76,9 +90,21 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         membersBox.setTextColor(validMembers ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
     }
 
+    private void updateCasing() {
+        boolean validCasing = casingBox.getValue().isEmpty() || this.getCasing().isPresent();
+        casingBox.setTextColor(validCasing ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
+    }
+
+    private void updateFlags() {
+        boolean validFlags = flagsBox.getValue().isEmpty() || this.getHatchFlags().isPresent();
+        flagsBox.setTextColor(validFlags ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
+    }
+
     private void updateAll() {
         this.updatePreview();
         this.updateMembers();
+        this.updateCasing();
+        this.updateFlags();
     }
 
     private void done() {
@@ -90,7 +116,9 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         new StructureUpdateMemberPacket(
                 member.getBlockPos(),
                 previewBox.getValue(),
-                membersBox.getValue()).sendToServer();
+                membersBox.getValue(),
+                casingBox.getValue(),
+                flagsBox.getValue()).sendToServer();
     }
 
     private void cancel() {
@@ -116,6 +144,29 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         membersBox.setResponder(text -> this.updateMembers());
         this.addRenderableWidget(membersBox);
 
+        casingBox = new EditBox(font, width / 2 - 152, 130, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
+            @Override
+            public boolean charTyped(char codePoint, int modifiers) {
+                return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
+            }
+        };
+        casingBox.setMaxLength(Short.MAX_VALUE);
+        casingBox.setValue(member.getInputCasing());
+        casingBox.setResponder(text -> this.updateCasing());
+        this.addRenderableWidget(casingBox);
+
+        flagsBox = new EditBox(font, width / 2 - 152, 170, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
+            @Override
+            public boolean charTyped(char codePoint, int modifiers) {
+                return (Character.isDigit(codePoint) || Character.isAlphabetic(codePoint) || codePoint == ';' || codePoint == '_')
+                        && super.charTyped(codePoint, modifiers);
+            }
+        };
+        flagsBox.setMaxLength(Short.MAX_VALUE);
+        flagsBox.setValue(member.getInputFlags());
+        flagsBox.setResponder(text -> this.updateFlags());
+        this.addRenderableWidget(flagsBox);
+
         this.updateAll();
     }
 
@@ -128,6 +179,10 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 40, 0xA0A0A0);
 
         graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 80, 0xA0A0A0);
+
+        graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 120, 0xA0A0A0);
+
+        graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 152, 160, 0xA0A0A0);
     }
 
     @Override
@@ -144,11 +199,15 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     public void resize(Minecraft minecraft, int width, int height) {
         String previewBoxValue = previewBox.getValue();
         String membersBoxValue = membersBox.getValue();
+        String casingBoxValue = casingBox.getValue();
+        String flagsBoxValue = flagsBox.getValue();
 
         this.init(minecraft, width, height);
 
         previewBox.setValue(previewBoxValue);
         membersBox.setValue(membersBoxValue);
+        casingBox.setValue(casingBoxValue);
+        flagsBox.setValue(flagsBoxValue);
     }
 
     @Override

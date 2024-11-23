@@ -29,6 +29,8 @@ import aztech.modern_industrialization.blocks.structure.StructureMultiblockContr
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import java.util.ArrayList;
@@ -135,5 +137,8 @@ public class CommonProxy {
     }
 
     public void openStructureMultiblockMemberScreen(Player player, StructureMultiblockMemberBlockEntity member) {
+    }
+
+    public void receiveStructureMisconfiguredBlocksPacket(StructureMisconfiguredBlocksPacket packet, BasePacket.Context ctx) {
     }
 }

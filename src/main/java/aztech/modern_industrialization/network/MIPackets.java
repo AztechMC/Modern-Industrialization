@@ -42,6 +42,7 @@ import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
 import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
+import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;
 import aztech.modern_industrialization.network.structure.StructureSaveControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateControllerPacket;
 import aztech.modern_industrialization.network.structure.StructureUpdateHatchPacket;
@@ -95,6 +96,7 @@ public class MIPackets {
         register("set_network_fluid", SetNetworkFluidPacket.class, SetNetworkFluidPacket.STREAM_CODEC);
         register("set_priority", SetPriorityPacket.class, SetPriorityPacket.STREAM_CODEC);
         // Structure blocks
+        register("structure_misconfigured_blocks", StructureMisconfiguredBlocksPacket.class, StructureMisconfiguredBlocksPacket.STREAM_CODEC);
         register("structure_save_controller", StructureSaveControllerPacket.class, StructureSaveControllerPacket.STREAM_CODEC);
         register("structure_update_controller", StructureUpdateControllerPacket.class, StructureUpdateControllerPacket.STREAM_CODEC);
         register("structure_update_hatch", StructureUpdateHatchPacket.class, StructureUpdateHatchPacket.STREAM_CODEC);

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBER;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
@@ -104,6 +105,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID, bus = EventBusSubscriber.Bus.MOD)
 public class MIClient {
@@ -148,6 +150,11 @@ public class MIClient {
                 for (ResourceLocation id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
                 }
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(LevelEvent.Unload.class, event -> {
+            if (event.getLevel().isClientSide()) {
+                StructureMultiblockBER.setMisconfigured(List.of());
             }
         });
 
@@ -236,6 +243,8 @@ public class MIClient {
         BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.CREATIVE_TANK_BE.get(), context -> new TankRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), context -> new StructureMultiblockControllerBER());
+        BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_HATCH_BE.get(), context -> new StructureMultiblockBER<>());
+        BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), context -> new StructureMultiblockBER<>());
 
         blockEntityRendererRegistrations.forEach(Runnable::run);
     }

@@ -23,15 +23,15 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureResult;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,17 +58,16 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
         BlockState state = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-            MIStructureTemplateManager.FromWorldResult result = MIStructureTemplateManager.fromWorld(level, pos,
-                    state.getValue(StructureMultiblockControllerBlock.FACING), controller.getCasing(), controller.getBounds());
-            if (result.isSuccess()) {
-                if (!MIStructureTemplateManager.save(controller.getId(), result.tag())) {
-                    player.sendSystemMessage(MIText.StructureMultiblockSaveFailUnknown.text().withStyle(ChatFormatting.RED));
-                } else {
-                    player.sendSystemMessage(result.text(controller.getId().toString()));
+            ResourceLocation id = controller.getId();
+            var result = MIStructureTemplateManager.fromWorld(id,
+                    level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
+                    controller.getCasing(), controller.getBounds());
+            if (result instanceof StructureResult.Success success) {
+                if (!MIStructureTemplateManager.save(id, success.tag())) {
+                    result = new StructureResult.Unknown();
                 }
-            } else {
-                player.sendSystemMessage(result.text().withStyle(ChatFormatting.RED));
             }
+            result.send(player);
         }
     }
 }

@@ -252,7 +252,7 @@ public enum MIText {
     StructureMultiblockMemberPreview("Preview"),
     StructureMultiblockStructureName("Structure Name"),
     StructureMultiblockSaveFailInvalidBounds("Failed to save structure. The bounds provided are not valid."),
-    StructureMultiblockSaveFailMisconfiguredBlock("Failed to save structure. The block at (%s) is not properly configured."),
+    StructureMultiblockSaveFailMisconfiguredBlock("Failed to save structure. Some blocks are not properly configured."),
     StructureMultiblockSaveFailTooManyControllers("Failed to save structure. Too many controllers exist within the bounds."),
     StructureMultiblockSaveFailNoController("Failed to save structure. No controller could be found within the bounds."),
     StructureMultiblockSaveFailNoHatches("Failed to save structure. No hatches could be found within the bounds."),

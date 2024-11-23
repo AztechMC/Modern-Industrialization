@@ -29,6 +29,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockHatchBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
@@ -43,6 +44,8 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.Objects;
@@ -177,6 +180,15 @@ public class ClientProxy extends CommonProxy {
     public void openStructureMultiblockMemberScreen(Player player, StructureMultiblockMemberBlockEntity member) {
         if (player.getCommandSenderWorld().isClientSide()) {
             Minecraft.getInstance().setScreen(new StructureMultiblockMemberEditScreen(member));
+        }
+    }
+
+    @Override
+    public void receiveStructureMisconfiguredBlocksPacket(StructureMisconfiguredBlocksPacket packet, BasePacket.Context ctx) {
+        if (packet.forget()) {
+            StructureMultiblockBER.forgetMisconfigured(packet.positions());
+        } else {
+            StructureMultiblockBER.setMisconfigured(packet.positions());
         }
     }
 }

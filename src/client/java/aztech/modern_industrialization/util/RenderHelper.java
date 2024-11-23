@@ -75,11 +75,15 @@ public class RenderHelper {
     private static final float W = 0.05f;
     private static final ResourceLocation LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
 
-    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
+    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay, boolean depth) {
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight(depth));
         for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
             vc.putBulkData(ms.last(), overlayQuad, r, g, b, 1.0f, light, overlay);
         }
+    }
+
+    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
+        drawOverlay(ms, vcp, r, g, b, light, overlay, true);
     }
 
     static {
@@ -103,11 +107,15 @@ public class RenderHelper {
 
     private static final Supplier<BakedQuad[]> CUBE_QUADS;
 
-    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
+    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay, boolean depth) {
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight(depth));
         for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
             vc.putBulkData(ms.last(), cubeQuad, r, g, b, 1.0f, light, overlay);
         }
+    }
+
+    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
+        drawCube(ms, vcp, r, g, b, light, overlay, true);
     }
 
     static {

@@ -25,11 +25,14 @@ package aztech.modern_industrialization.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
 public class MIRenderTypes {
     private static RenderType MACHINE_WRENCH_OVERLAY;
-    private static RenderType SOLID_HIGHLIGHT; // used by hatch preview and wrong block highlight
+    // used by hatch preview and wrong block highlight
+    private static RenderType SOLID_HIGHLIGHT_DEPTH;
+    private static RenderType SOLID_HIGHLIGHT_NO_DEPTH;
 
     public static RenderType machineOverlay() {
         if (MACHINE_WRENCH_OVERLAY == null) {
@@ -38,11 +41,18 @@ public class MIRenderTypes {
         return MACHINE_WRENCH_OVERLAY;
     }
 
-    public static RenderType solidHighlight() {
-        if (SOLID_HIGHLIGHT == null) {
-            SOLID_HIGHLIGHT = Factory.makeSolidHighlight();
+    public static RenderType solidHighlight(boolean depth) {
+        if (depth) {
+            if (SOLID_HIGHLIGHT_DEPTH == null) {
+                SOLID_HIGHLIGHT_DEPTH = Factory.makeSolidHighlight(true);
+            }
+            return SOLID_HIGHLIGHT_DEPTH;
+        } else {
+            if (SOLID_HIGHLIGHT_NO_DEPTH == null) {
+                SOLID_HIGHLIGHT_NO_DEPTH = Factory.makeSolidHighlight(false);
+            }
+            return SOLID_HIGHLIGHT_NO_DEPTH;
         }
-        return SOLID_HIGHLIGHT;
     }
 
     // This is a subclass to get access to a bunch of fields and classes.
@@ -63,14 +73,17 @@ public class MIRenderTypes {
                             .createCompositeState(false));
         }
 
-        private static RenderType makeSolidHighlight() {
-            return create("solid_highlight", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS, 65536, false, false,
-                    CompositeState.builder()
-                            .setTransparencyState(NO_TRANSPARENCY)
-                            .setTextureState(NO_TEXTURE)
-                            .setLightmapState(NO_LIGHTMAP)
-                            .setShaderState(POSITION_COLOR_SHADER)
-                            .createCompositeState(false));
+        private static RenderType makeSolidHighlight(boolean depth) {
+            var builder = CompositeState.builder()
+                    .setTransparencyState(NO_TRANSPARENCY)
+                    .setTextureState(NO_TEXTURE)
+                    .setLightmapState(NO_LIGHTMAP)
+                    .setShaderState(POSITION_COLOR_SHADER);
+            if (!depth) {
+                builder = builder.setDepthTestState(RenderStateShard.NO_DEPTH_TEST);
+            }
+            return create("solid_highlight" + (depth ? "_depth" : "_no_depth"), DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS,
+                    65536, false, false, builder.createCompositeState(false));
         }
     }
 }

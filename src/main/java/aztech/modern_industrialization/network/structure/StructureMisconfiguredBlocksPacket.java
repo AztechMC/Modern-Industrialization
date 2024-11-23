@@ -23,31 +23,36 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, String inputMembers) implements BasePacket {
+public record StructureMisconfiguredBlocksPacket(List<BlockPos> positions, boolean forget) implements BasePacket {
 
-    public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC,
-            StructureUpdateMemberPacket::pos,
-            ByteBufCodecs.STRING_UTF8,
-            StructureUpdateMemberPacket::inputPreview,
-            ByteBufCodecs.STRING_UTF8,
-            StructureUpdateMemberPacket::inputMembers,
-            StructureUpdateMemberPacket::new);
+    public static final StreamCodec<ByteBuf, StructureMisconfiguredBlocksPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.<ByteBuf, BlockPos>list().apply(BlockPos.STREAM_CODEC),
+            StructureMisconfiguredBlocksPacket::positions,
+            ByteBufCodecs.BOOL,
+            StructureMisconfiguredBlocksPacket::forget,
+            StructureMisconfiguredBlocksPacket::new);
+
+    public static StructureMisconfiguredBlocksPacket misconfigured(List<BlockPos> positions) {
+        return new StructureMisconfiguredBlocksPacket(positions, false);
+    }
+
+    public static StructureMisconfiguredBlocksPacket forget(BlockPos pos) {
+        return new StructureMisconfiguredBlocksPacket(List.of(pos), true);
+    }
 
     @Override
     public void handle(Context ctx) {
-        ctx.assertOnServer();
+        ctx.assertOnClient();
 
         Player player = ctx.getPlayer();
         Level level = player.level();
@@ -56,17 +61,6 @@ public record StructureUpdateMemberPacket(BlockPos pos, String inputPreview, Str
             return;
         }
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof StructureMultiblockMemberBlockEntity member) {
-            member.setInputPreview(inputPreview);
-            member.setInputMembers(inputMembers);
-
-            member.sync();
-            member.setChanged();
-
-            if (player instanceof ServerPlayer serverPlayer && member.isConfigurationValid()) {
-                StructureMisconfiguredBlocksPacket.forget(member.getBlockPos()).sendToClient(serverPlayer);
-            }
-        }
+        CommonProxy.INSTANCE.receiveStructureMisconfiguredBlocksPacket(this, ctx);
     }
 }

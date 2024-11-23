@@ -23,31 +23,46 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
+import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.LevelRenderer;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
-public class StructureMultiblockControllerBER extends StructureMultiblockBER<StructureMultiblockControllerBlockEntity> {
-    @Override
-    public void render(StructureMultiblockControllerBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light,
-            int overlay) {
-        super.render(be, tickDelta, matrices, vcp, light, overlay);
+public class StructureMultiblockBER<T extends BlockEntity> implements BlockEntityRenderer<T> {
+    private static List<BlockPos> MISCONFIGURED_BLOCKS = new ArrayList<>();
 
-        if (!be.shouldShowBounds()) {
-            return;
-        }
+    public static void setMisconfigured(List<BlockPos> positions) {
+        MISCONFIGURED_BLOCKS = new ArrayList<>(positions);
+    }
+
+    public static void forgetMisconfigured(List<BlockPos> positions) {
+        MISCONFIGURED_BLOCKS.removeAll(positions);
+    }
+
+    @Override
+    public void render(T be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
         BlockPos pos = be.getBlockPos();
-        StructureControllerBounds bounds = be.getBounds();
-        AABB box = bounds.aabb();
-        if (box != null) {
+        if (MISCONFIGURED_BLOCKS.contains(pos) && (System.currentTimeMillis() / 500L) % 2 == 0) {
             matrices.pushPose();
-            VertexConsumer buffer = vcp.getBuffer(RenderType.lines());
-            LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
+            matrices.translate(-0.005f, -0.005f, -0.005f);
+            matrices.scale(1.01f, 1.01f, 1.01f);
+            RenderHelper.drawOverlay(matrices, vcp, 1.0f, 111f / 256f, 111f / 256f, RenderHelper.FULL_LIGHT, overlay, false);
             matrices.popPose();
         }
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(T be) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(T be) {
+        return AABB.INFINITE;
     }
 }

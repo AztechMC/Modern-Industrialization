@@ -29,6 +29,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -69,6 +70,10 @@ public record StructureUpdateHatchPacket(BlockPos pos, String inputPreview, Stri
 
             hatch.sync();
             hatch.setChanged();
+
+            if (player instanceof ServerPlayer serverPlayer && hatch.isConfigurationValid()) {
+                StructureMisconfiguredBlocksPacket.forget(hatch.getBlockPos()).sendToClient(serverPlayer);
+            }
         }
     }
 }

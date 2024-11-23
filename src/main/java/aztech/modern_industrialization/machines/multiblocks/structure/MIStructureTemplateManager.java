@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.multiblocks.structure;
 import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -52,7 +51,6 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
@@ -64,76 +62,31 @@ import net.neoforged.fml.loading.FMLPaths;
 import org.jetbrains.annotations.Nullable;
 
 public final class MIStructureTemplateManager {
-    public enum ValidationResult {
-        INVALID_BOUNDS(false, MIText.StructureMultiblockSaveFailInvalidBounds),
-        MISCONFIGURED_BLOCK(false, MIText.StructureMultiblockSaveFailMisconfiguredBlock),
-        TOO_MANY_CONTROLLERS(false, MIText.StructureMultiblockSaveFailTooManyControllers),
-        NO_CONTROLLER(false, MIText.StructureMultiblockSaveFailNoController),
-        NO_HATCHES(false, MIText.StructureMultiblockSaveFailNoHatches),
-        SUCCESS(true, MIText.StructureMultiblockSaveSuccess);
-
-        private final boolean success;
-        private final MIText text;
-
-        ValidationResult(boolean success, MIText text) {
-            this.success = success;
-            this.text = text;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public MIText text() {
-            return text;
-        }
-    }
-
-    public record FromWorldResult(CompoundTag tag, ValidationResult result, Object... args) {
-        public FromWorldResult {
-            Objects.requireNonNull(result);
-            if (tag == null && result.isSuccess()) {
-                throw new IllegalArgumentException("Cannot create successful result with no tag");
-            }
-        }
-
-        public FromWorldResult(ValidationResult result, Object... args) {
-            this(null, result, args);
-        }
-
-        public FromWorldResult(CompoundTag tag, Object... args) {
-            this(tag, ValidationResult.SUCCESS, args);
-        }
-
-        public boolean isSuccess() {
-            return result.isSuccess();
-        }
-
-        public MutableComponent text(Object... args) {
-            return result.text().text(args);
-        }
-
-        public MutableComponent text() {
-            return this.text(args);
-        }
-    }
-
-    public static FromWorldResult fromWorld(Level level, BlockPos controllerPos, Direction controllerDirection,
+    public static StructureResult fromWorld(ResourceLocation id, Level level,
+            BlockPos controllerPos, Direction controllerDirection,
             MachineCasing hatchCasing, StructureControllerBounds bounds) {
+        Objects.requireNonNull(id);
         Objects.requireNonNull(level);
         Objects.requireNonNull(controllerPos);
         Objects.requireNonNull(controllerDirection);
         Objects.requireNonNull(bounds);
-        if (hatchCasing == null) {
-            return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, controllerPos.toShortString());
-        }
         if (bounds.isEmpty()) {
-            return new FromWorldResult(ValidationResult.INVALID_BOUNDS);
+            return new StructureResult.InvalidBounds();
+        }
+
+        List<BlockPos> misconfiguredBlocks = new ArrayList<>();
+        List<BlockPos> controllerBlocks = new ArrayList<>();
+        List<BlockPos> hatchBlocks = new ArrayList<>();
+
+        if (hatchCasing == null) {
+            misconfiguredBlocks.add(controllerPos);
         }
 
         CompoundTag tag = new CompoundTag();
 
-        tag.putString("hatch_casing", hatchCasing.key.toString());
+        if (hatchCasing != null) {
+            tag.putString("hatch_casing", hatchCasing.key.toString());
+        }
 
         BoundingBox boundsBox = bounds.boundingBox();
         BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());
@@ -142,9 +95,6 @@ public final class MIStructureTemplateManager {
         List<StructureMember> members = new ArrayList<>();
         ListTag membersTag = new ListTag();
         ListTag blocksTag = new ListTag();
-
-        boolean hasController = false;
-        boolean hasHatch = false;
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
@@ -162,20 +112,21 @@ public final class MIStructureTemplateManager {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof StructureMemberOverride override) {
                 if (!override.isConfigurationValid()) {
-                    return new FromWorldResult(ValidationResult.MISCONFIGURED_BLOCK, pos.toShortString());
+                    misconfiguredBlocks.add(pos.immutable());
+                    continue;
                 }
                 if (override.isController()) {
-                    if (hasController) {
-                        return new FromWorldResult(ValidationResult.TOO_MANY_CONTROLLERS);
+                    controllerBlocks.add(pos.immutable());
+                    if (controllerBlocks.size() > 1) {
+                        continue;
                     }
-                    hasController = true;
                 }
                 member = override.getMemberOverride();
             }
 
             if (member != null) {
                 if (member.hatchFlags() != null) {
-                    hasHatch = true;
+                    hatchBlocks.add(pos.immutable());
                 }
                 CompoundTag memberTag = new CompoundTag();
                 member.save(memberTag);
@@ -189,17 +140,23 @@ public final class MIStructureTemplateManager {
             }
         }
 
-        if (!hasController) {
-            return new FromWorldResult(ValidationResult.NO_CONTROLLER);
+        if (controllerBlocks.isEmpty()) {
+            return new StructureResult.NoController();
         }
-        if (!hasHatch) {
-            return new FromWorldResult(ValidationResult.NO_HATCHES);
+        if (hatchBlocks.isEmpty()) {
+            return new StructureResult.NoHatches();
+        }
+        if (controllerBlocks.size() > 1) {
+            return new StructureResult.TooManyControllers(controllerBlocks);
+        }
+        if (!misconfiguredBlocks.isEmpty()) {
+            return new StructureResult.MisconfiguredBlocks(misconfiguredBlocks);
         }
 
         tag.put("members", membersTag);
         tag.put("blocks", blocksTag);
 
-        return new FromWorldResult(tag);
+        return new StructureResult.Success(id, tag);
     }
 
     @Nullable

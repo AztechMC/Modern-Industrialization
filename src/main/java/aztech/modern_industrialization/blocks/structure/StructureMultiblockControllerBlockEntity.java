@@ -129,7 +129,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        if (id != null) {
+        if (inputId != null) {
             tag.putString("structure_id", inputId);
         }
         if (inputCasing != null) {

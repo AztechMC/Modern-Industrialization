@@ -157,7 +157,7 @@ public final class StructureMember implements SimpleMember {
         ListTag testsTag = new ListTag();
         for (StructureMemberTest test : tests) {
             CompoundTag testTag = new CompoundTag();
-            testTag.putString("id", test.id());
+            testTag.putString("type", test.typeId());
             test.save(testTag);
             testsTag.add(testTag);
         }

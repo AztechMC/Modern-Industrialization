@@ -50,7 +50,7 @@ public class StructureMemberTestState implements StructureMemberTest {
     }
 
     @Override
-    public String id() {
+    public String typeId() {
         return "state";
     }
 

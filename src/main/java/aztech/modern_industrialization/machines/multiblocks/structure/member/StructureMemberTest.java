@@ -28,7 +28,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface StructureMemberTest {
-    String id();
+    String typeId();
 
     boolean matchesState(BlockState state);
 
@@ -37,8 +37,8 @@ public interface StructureMemberTest {
     void save(CompoundTag tag);
 
     static StructureMemberTest from(CompoundTag tag) {
-        if (tag.contains("id", Tag.TAG_STRING)) {
-            String id = tag.getString("id");
+        if (tag.contains("type", Tag.TAG_STRING)) {
+            String id = tag.getString("type");
             StructureMemberTest member = switch (id) {
             case "tag" -> new StructureMemberTestTag();
             case "state" -> new StructureMemberTestState();

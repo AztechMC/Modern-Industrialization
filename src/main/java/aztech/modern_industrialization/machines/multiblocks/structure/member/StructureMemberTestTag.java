@@ -46,7 +46,7 @@ public class StructureMemberTestTag implements StructureMemberTest {
     }
 
     @Override
-    public String id() {
+    public String typeId() {
         return "tag";
     }
 

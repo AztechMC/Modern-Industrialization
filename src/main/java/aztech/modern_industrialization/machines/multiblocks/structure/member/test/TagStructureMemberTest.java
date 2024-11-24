@@ -32,10 +32,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TagStructureMemberTest implements StructureMemberTest {
+public class TagStructureMemberTest extends StructureMemberTest {
     private TagKey<Block> blockTag;
 
     public TagStructureMemberTest(TagKey<Block> blockTag) {
+        Objects.requireNonNull(blockTag);
         this.blockTag = blockTag;
     }
 
@@ -54,7 +55,8 @@ public class TagStructureMemberTest implements StructureMemberTest {
 
     @Override
     public boolean matchesState(BlockState state) {
-        return blockTag != null && state.is(blockTag);
+        assertLoaded();
+        return state.is(blockTag);
     }
 
     @Override
@@ -64,7 +66,7 @@ public class TagStructureMemberTest implements StructureMemberTest {
 
     @Override
     public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
+        super.load(tag);
         if (!tag.contains("tag", Tag.TAG_STRING)) {
             throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
         }
@@ -74,17 +76,18 @@ public class TagStructureMemberTest implements StructureMemberTest {
 
     @Override
     public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        StructureMemberTest.super.save(tag);
+        super.save(tag);
 
         tag.putString("tag", blockTag.location().toString());
     }
 
     @Override
     public boolean equals(Object o) {
+        assertLoaded();
         if (o instanceof TagStructureMemberTest other) {
+            other.assertLoaded();
             return blockTag == other.blockTag ||
-                    (blockTag != null && other.blockTag != null && blockTag.location().equals(other.blockTag.location()));
+                    blockTag.location().equals(other.blockTag.location());
         }
         return false;
     }

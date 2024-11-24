@@ -35,7 +35,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class VariableStructureMember implements StructureMember {
+public class VariableStructureMember extends StructureMember {
     protected String name;
 
     public VariableStructureMember(String name) {
@@ -63,7 +63,7 @@ public class VariableStructureMember implements StructureMember {
 
     @Override
     public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
+        super.load(tag);
         if (!tag.contains("name", Tag.TAG_STRING)) {
             throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
         }
@@ -76,8 +76,7 @@ public class VariableStructureMember implements StructureMember {
 
     @Override
     public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        StructureMember.super.save(tag);
+        super.save(tag);
 
         tag.putString("name", name);
     }

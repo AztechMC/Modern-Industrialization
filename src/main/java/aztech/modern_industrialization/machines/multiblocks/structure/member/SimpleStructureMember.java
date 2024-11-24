@@ -45,7 +45,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SimpleStructureMember implements StructureMember {
+public class SimpleStructureMember extends StructureMember {
     protected Supplier<BlockState> previewSupplier;
     protected List<StructureMemberTest> tests;
 
@@ -78,7 +78,7 @@ public class SimpleStructureMember implements StructureMember {
 
     @Override
     public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
+        super.load(tag);
         if (!tag.contains("preview", CompoundTag.TAG_COMPOUND) ||
                 !tag.contains("tests", CompoundTag.TAG_LIST)) {
             throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
@@ -102,8 +102,7 @@ public class SimpleStructureMember implements StructureMember {
 
     @Override
     public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        StructureMember.super.save(tag);
+        super.save(tag);
 
         tag.put("preview", NbtUtils.writeBlockState(getPreviewState()));
 
@@ -138,6 +137,7 @@ public class SimpleStructureMember implements StructureMember {
 
     @Override
     public boolean matchesState(BlockState state) {
+        assertLoaded();
         for (StructureMemberTest test : tests) {
             if (test.matchesState(state)) {
                 return true;
@@ -148,6 +148,7 @@ public class SimpleStructureMember implements StructureMember {
 
     @Override
     public BlockState getPreviewState() {
+        assertLoaded();
         if (preview == null) {
             preview = previewSupplier.get();
             if (preview == null) {

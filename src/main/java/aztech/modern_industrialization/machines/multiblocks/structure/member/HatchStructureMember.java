@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.multiblocks.structure.StructureM
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
@@ -48,6 +49,8 @@ public class HatchStructureMember extends SimpleStructureMember {
 
     public HatchStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
         super(previewSupplier, tests);
+        Objects.requireNonNull(casing);
+        Objects.requireNonNull(hatchFlags);
         this.casing = casing;
         this.hatchFlags = hatchFlags;
     }

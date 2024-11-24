@@ -29,14 +29,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StateStructureMemberTest implements StructureMemberTest {
+public class StateStructureMemberTest extends StructureMemberTest {
     private Supplier<BlockState> blockStateSupplier;
 
     private BlockState blockState;
 
     public StateStructureMemberTest(Supplier<BlockState> blockState) {
+        Objects.requireNonNull(blockState);
         this.blockStateSupplier = blockState;
     }
 
@@ -45,8 +47,12 @@ public class StateStructureMemberTest implements StructureMemberTest {
     }
 
     public BlockState blockState() {
+        assertLoaded();
         if (blockState == null) {
             blockState = blockStateSupplier.get();
+            if (blockState == null) {
+                blockState = Blocks.AIR.defaultBlockState();
+            }
         }
         return blockState;
     }
@@ -58,6 +64,7 @@ public class StateStructureMemberTest implements StructureMemberTest {
 
     @Override
     public boolean matchesState(BlockState state) {
+        assertLoaded();
         return this.blockState() == state;
     }
 
@@ -68,7 +75,7 @@ public class StateStructureMemberTest implements StructureMemberTest {
 
     @Override
     public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
+        super.load(tag);
         if (!tag.contains("state", Tag.TAG_COMPOUND)) {
             throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
         }
@@ -79,15 +86,16 @@ public class StateStructureMemberTest implements StructureMemberTest {
 
     @Override
     public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        StructureMemberTest.super.save(tag);
+        super.save(tag);
 
         tag.put("state", NbtUtils.writeBlockState(this.blockState()));
     }
 
     @Override
     public boolean equals(Object o) {
+        assertLoaded();
         if (o instanceof StateStructureMemberTest other) {
+            other.assertLoaded();
             return this.blockState() == other.blockState();
         }
         return false;

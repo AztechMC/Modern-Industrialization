@@ -31,48 +31,54 @@ import aztech.modern_industrialization.machines.multiblocks.structure.member.tes
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface StructureMember extends SimpleMember {
-    String typeId();
+public abstract class StructureMember implements SimpleMember {
+    public abstract String typeId();
 
-    boolean isLoaded();
+    public abstract boolean isLoaded();
 
-    default void assertLoaded() {
+    protected final void assertLoaded() {
         if (!isLoaded()) {
             throw new IllegalStateException("Member is not loaded");
         }
     }
 
-    void load(CompoundTag tag);
+    public void load(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+    }
 
-    default void save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
+        Objects.requireNonNull(tag);
         assertLoaded();
     }
 
-    Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean attempt);
+    public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean attempt);
 
-    static SimpleStructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
+    public static SimpleStructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
         return new SimpleStructureMember(preview, tests);
     }
 
-    static SimpleStructureMember literal(Supplier<BlockState> blockState) {
+    public static SimpleStructureMember literal(Supplier<BlockState> blockState) {
         return simple(blockState, List.of(new StateStructureMemberTest(blockState)));
     }
 
-    static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
+    public static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing,
+            HatchFlags hatchFlags) {
         return new HatchStructureMember(preview, tests, casing, hatchFlags);
     }
 
-    static VariableStructureMember variable(String name) {
+    public static VariableStructureMember variable(String name) {
         return new VariableStructureMember(name);
     }
 
-    static StructureMember from(CompoundTag tag) {
+    public static StructureMember from(CompoundTag tag) {
+        Objects.requireNonNull(tag);
         if (!tag.contains("type", CompoundTag.TAG_STRING)) {
             throw new IllegalArgumentException("Invalid structure member format: " + tag);
         }
@@ -81,7 +87,7 @@ public interface StructureMember extends SimpleMember {
         case "simple" -> new SimpleStructureMember();
         case "hatch" -> new HatchStructureMember();
         case "variable" -> new VariableStructureMember();
-        default -> throw new IllegalStateException("Unexpected value: " + type);
+        default -> throw new IllegalStateException("Unexpected type: " + type);
         };
         member.load(tag);
         return member;

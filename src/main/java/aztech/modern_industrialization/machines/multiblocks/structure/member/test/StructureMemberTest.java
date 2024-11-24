@@ -23,30 +23,35 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public interface StructureMemberTest {
-    String typeId();
+public abstract class StructureMemberTest {
+    public abstract String typeId();
 
-    boolean matchesState(BlockState state);
+    public abstract boolean matchesState(BlockState state);
 
-    boolean isLoaded();
+    public abstract boolean isLoaded();
 
-    default void assertLoaded() {
+    protected final void assertLoaded() {
         if (!isLoaded()) {
             throw new IllegalStateException("Member test is not loaded");
         }
     }
 
-    void load(CompoundTag tag);
+    public void load(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+    }
 
-    default void save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
+        Objects.requireNonNull(tag);
         assertLoaded();
     }
 
-    static StructureMemberTest from(CompoundTag tag) {
+    public static StructureMemberTest from(CompoundTag tag) {
+        Objects.requireNonNull(tag);
         if (!tag.contains("type", Tag.TAG_STRING)) {
             throw new IllegalArgumentException("Invalid structure member test format: " + tag);
         }
@@ -54,7 +59,7 @@ public interface StructureMemberTest {
         StructureMemberTest test = switch (type) {
         case "tag" -> new TagStructureMemberTest();
         case "state" -> new StateStructureMemberTest();
-        default -> throw new IllegalStateException("Unexpected value: " + type);
+        default -> throw new IllegalStateException("Unexpected type: " + type);
         };
         test.load(tag);
         return test;

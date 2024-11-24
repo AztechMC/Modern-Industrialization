@@ -43,7 +43,6 @@ public class StateStructureMemberTest extends StructureMemberTest {
     }
 
     public StateStructureMemberTest() {
-        this(null);
     }
 
     public BlockState blockState() {

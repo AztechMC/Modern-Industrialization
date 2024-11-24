@@ -41,7 +41,6 @@ public class TagStructureMemberTest extends StructureMemberTest {
     }
 
     public TagStructureMemberTest() {
-        this(null);
     }
 
     public TagKey<Block> blockTag() {

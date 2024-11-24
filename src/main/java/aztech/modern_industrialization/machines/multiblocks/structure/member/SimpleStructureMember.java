@@ -62,9 +62,7 @@ public class SimpleStructureMember implements StructureMember {
     }
 
     public List<StructureMemberTest> tests() {
-        if (!isLoaded()) {
-            throw new IllegalStateException("Member is not loaded");
-        }
+        assertLoaded();
         return Collections.unmodifiableList(tests);
     }
 

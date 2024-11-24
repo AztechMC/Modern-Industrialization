@@ -47,9 +47,7 @@ public class VariableStructureMember implements StructureMember {
     }
 
     public String name() {
-        if (!isLoaded()) {
-            throw new IllegalStateException("Member is not loaded");
-        }
+        assertLoaded();
         return name;
     }
 

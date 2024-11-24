@@ -63,6 +63,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -152,8 +153,15 @@ public class MIBlock {
                     .withBlockConstructor(StructureMultiblockMemberBlock::new)
                     .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
-                        String name = gen.name(block);
-                        gen.simpleBlockWithItem(block, gen.models().cubeAll(name, gen.blockTexture("structure_multiblock_member")));
+                        gen.getVariantBuilder(block).forAllStates(state -> {
+                            var mode = state.getValue(StructureMultiblockMemberBlock.MODE);
+                            String texture = "structure_multiblock_member_" + mode.getSerializedName();
+                            return ConfiguredModel.builder()
+                                    .modelFile(gen.models().cubeAll(texture, gen.blockTexture(texture)))
+                                    .build();
+                        });
+                        String simpleTexture = "structure_multiblock_member_simple";
+                        gen.simpleBlockItem(block, gen.models().cubeAll(simpleTexture, gen.blockTexture(simpleTexture)));
                     }));
 
     // Materials

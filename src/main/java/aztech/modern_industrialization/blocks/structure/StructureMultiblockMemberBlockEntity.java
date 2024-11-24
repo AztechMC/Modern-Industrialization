@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -43,8 +44,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implements StructureMemberOverride {
-    private StructureMemberMode mode = StructureMemberMode.HATCH;
+    private StructureMemberMode mode;
 
+    private String inputName;
     private String inputPreview;
     private String inputMembers;
     private String inputCasing;
@@ -57,6 +59,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     public StructureMultiblockMemberBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), pos, state);
+        mode = state.getValue(StructureMultiblockMemberBlock.MODE);
     }
 
     public StructureMemberMode getMode() {
@@ -64,7 +67,17 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     public void setMode(StructureMemberMode mode) {
-        this.mode = Objects.requireNonNull(mode);
+        Objects.requireNonNull(mode);
+        this.mode = mode;
+        this.updateBlockState();
+    }
+
+    public String getInputName() {
+        return inputName;
+    }
+
+    public void setInputName(String inputName) {
+        this.inputName = inputName;
     }
 
     @Nullable
@@ -129,15 +142,18 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
 
     @Override
     public StructureMember getMemberOverride() {
-        return switch (mode) {
-        case HATCH -> new StructureMember(() -> preview, members, casing, flags);
-        case SIMPLE -> new StructureMember(() -> preview, members, null, null);
+        return switch (getMode()) {
+        case HATCH -> StructureMember.hatch(() -> preview, members, casing, flags);
+        case SIMPLE -> StructureMember.simple(() -> preview, members);
+        case VARIABLE -> StructureMember.variable(inputName);
         };
     }
 
     @Override
     public boolean isConfigurationValid() {
-        if (preview != null && members != null && !members.isEmpty()) {
+        if (mode == StructureMemberMode.VARIABLE) {
+            return inputName != null && !inputName.isEmpty();
+        } else if (preview != null && members != null && !members.isEmpty()) {
             if (mode == StructureMemberMode.HATCH) {
                 return casing != null && flags != null && !inputFlags.isEmpty();
             }
@@ -162,6 +178,9 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putString("mode", mode.toString().toLowerCase(Locale.ROOT));
+        if (inputName != null) {
+            tag.putString("name", inputName);
+        }
         if (inputPreview != null) {
             tag.putString("preview", inputPreview);
         }
@@ -180,9 +199,21 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         mode = StructureMemberMode.valueOf(tag.getString("mode").toUpperCase(Locale.ROOT));
+        this.setInputName(tag.getString("name"));
         this.setInputPreview(tag.getString("preview"));
         this.setInputMembers(tag.getString("members"));
         this.setInputCasing(tag.getString("casing"));
         this.setInputFlags(tag.getString("flags"));
+        this.updateBlockState();
+    }
+
+    private void updateBlockState() {
+        if (level != null) {
+            BlockPos pos = getBlockPos();
+            BlockState state = level.getBlockState(pos);
+            if (state.is(MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get())) {
+                level.setBlock(pos, state.setValue(StructureMultiblockMemberBlock.MODE, mode), 2);
+            }
+        }
     }
 }

@@ -59,6 +59,8 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     private Button cancelButton;
     private CycleButton<StructureMemberMode> modeButton;
 
+    private EditBox nameBox;
+
     private EditBox previewBox;
     private EditBox membersBox;
 
@@ -89,17 +91,32 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     private void updateMode(StructureMemberMode mode) {
         this.sendToServer();
 
+        nameBox.visible = false;
+        previewBox.visible = false;
+        membersBox.visible = false;
         casingBox.visible = false;
         flagsBox.visible = false;
 
         switch (mode) {
         case HATCH -> {
+            previewBox.visible = true;
+            membersBox.visible = true;
             casingBox.visible = true;
             flagsBox.visible = true;
         }
         case SIMPLE -> {
+            previewBox.visible = true;
+            membersBox.visible = true;
+        }
+        case VARIABLE -> {
+            nameBox.visible = true;
         }
         }
+    }
+
+    private void updateName() {
+        boolean validName = !nameBox.getValue().isEmpty();
+        nameBox.setTextColor(validName ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
     }
 
     private void updatePreview() {
@@ -124,6 +141,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
     private void updateAll() {
         this.updateMode(member.getMode());
+        this.updateName();
         this.updatePreview();
         this.updateMembers();
         this.updateCasing();
@@ -139,6 +157,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         new StructureUpdateMemberPacket(
                 member.getBlockPos(),
                 modeButton.getValue(),
+                nameBox.getValue(),
                 previewBox.getValue(),
                 membersBox.getValue(),
                 casingBox.getValue(),
@@ -161,6 +180,12 @@ public class StructureMultiblockMemberEditScreen extends Screen {
                 .withInitialValue(member.getMode())
                 .create(width / 2 - 4 - 150, 185, 50, 20, Component.literal("MODE"), (button, mode) -> this.updateMode(mode)));
 
+        nameBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockMemberName.text());
+        nameBox.setMaxLength(Short.MAX_VALUE);
+        nameBox.setValue(member.getInputName());
+        nameBox.setResponder(text -> this.updateName());
+        this.addRenderableWidget(nameBox);
+
         previewBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockMemberPreview.text());
         previewBox.setMaxLength(Short.MAX_VALUE);
         previewBox.setValue(member.getInputPreview());
@@ -173,7 +198,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         membersBox.setResponder(text -> this.updateMembers());
         this.addRenderableWidget(membersBox);
 
-        casingBox = new EditBox(font, width / 2 - 152, 100, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
+        casingBox = new EditBox(font, width / 2 - 152, 100, 304, 20, MIText.StructureMultiblockCasing.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
@@ -184,7 +209,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         casingBox.setResponder(text -> this.updateCasing());
         this.addRenderableWidget(casingBox);
 
-        flagsBox = new EditBox(font, width / 2 - 152, 140, 304, 20, MIText.StructureMultiblockHatchFlags.text()) {
+        flagsBox = new EditBox(font, width / 2 - 152, 140, 304, 20, MIText.StructureMultiblockMemberHatchFlags.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return (Character.isDigit(codePoint) || Character.isAlphabetic(codePoint) || codePoint == ';' || codePoint == '_')
@@ -203,15 +228,20 @@ public class StructureMultiblockMemberEditScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 10, 0xA0A0A0);
+        if (nameBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockMemberName.text(), width / 2 - 152, 10, 0xA0A0A0);
 
-        graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 50, 0xA0A0A0);
+        if (previewBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockMemberPreview.text(), width / 2 - 152, 10, 0xA0A0A0);
+
+        if (membersBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockMemberMembers.text(), width / 2 - 152, 50, 0xA0A0A0);
 
         if (casingBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 90, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 90, 0xA0A0A0);
 
         if (flagsBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockHatchFlags.text(), width / 2 - 152, 130, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockMemberHatchFlags.text(), width / 2 - 152, 130, 0xA0A0A0);
 
         graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }
@@ -228,6 +258,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
+        String nameBoxValue = nameBox.getValue();
         String previewBoxValue = previewBox.getValue();
         String membersBoxValue = membersBox.getValue();
         String casingBoxValue = casingBox.getValue();
@@ -235,6 +266,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
         this.init(minecraft, width, height);
 
+        nameBox.setValue(nameBoxValue);
         previewBox.setValue(previewBoxValue);
         membersBox.setValue(membersBoxValue);
         casingBox.setValue(casingBoxValue);

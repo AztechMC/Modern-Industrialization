@@ -25,9 +25,13 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -204,14 +208,49 @@ public class ShapeTemplate {
     }
 
     public static class Structure {
-        private final ResourceLocation id;
+        private final ShapeTemplate template;
 
         public Structure(ResourceLocation id) {
-            this.id = id;
+            ShapeTemplate referenceTemplate = MIStructureTemplateManager.get(id);
+            template = new ShapeTemplate(referenceTemplate.hatchCasing);
+            template.simpleMembers.putAll(referenceTemplate.simpleMembers);
+            template.hatchFlags.putAll(referenceTemplate.hatchFlags);
+        }
+
+        public Structure replace(String name, SimpleMember member, @Nullable HatchFlags flags) {
+            List<BlockPos> positions = new ArrayList<>();
+            for (var entry : template.simpleMembers.entrySet()) {
+                SimpleMember other = entry.getValue();
+                if (other instanceof StructureMember structureMember && Objects.equals(name, structureMember.name())) {
+                    positions.add(entry.getKey());
+                }
+            }
+            if (positions.isEmpty()) {
+                throw new IllegalArgumentException("No members with the name \"" + name + "\" could be found");
+            }
+            for (BlockPos pos : positions) {
+                template.simpleMembers.put(pos, member);
+                if (flags != null) {
+                    template.hatchFlags.put(pos, flags);
+                }
+            }
+            return this;
+        }
+
+        public Structure replace(String name, SimpleMember member) {
+            return replace(name, member, null);
         }
 
         public ShapeTemplate build() {
-            return MIStructureTemplateManager.get(id);
+            for (SimpleMember member : template.simpleMembers.values()) {
+                if (member instanceof StructureMember structureMember) {
+                    if (structureMember.name() != null) {
+                        throw new IllegalArgumentException(
+                                "Tried to build structure template without replacing member with the name \"" + structureMember.name() + "\"");
+                    }
+                }
+            }
+            return template;
         }
     }
 }

@@ -37,14 +37,24 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class StructureMultiblockControllerBlock extends HorizontalDirectionalBlock implements EntityBlock, GameMasterBlock {
     private static final MapCodec<StructureMultiblockControllerBlock> CODEC = simpleCodec(
             StructureMultiblockControllerBlock::new);
 
+    public static final EnumProperty<StructureControllerMode> MODE = EnumProperty.create("mode", StructureControllerMode.class);
+
     public StructureMultiblockControllerBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(stateDefinition.any()
+                .setValue(MODE, StructureControllerMode.SAVE));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(MODE, FACING);
     }
 
     @Override
@@ -66,11 +76,6 @@ public class StructureMultiblockControllerBlock extends HorizontalDirectionalBlo
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
     }
 
     @Override

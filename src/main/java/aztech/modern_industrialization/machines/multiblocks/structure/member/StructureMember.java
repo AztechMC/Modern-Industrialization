@@ -38,10 +38,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public final class StructureMember implements SimpleMember {
+    private final String name;
     private final Supplier<BlockState> previewSupplier;
     private final List<StructureMemberTest> tests;
     private final MachineCasing casing;
@@ -49,19 +51,46 @@ public final class StructureMember implements SimpleMember {
 
     private BlockState preview;
 
-    public StructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests, @Nullable MachineCasing casing,
-            @Nullable HatchFlags hatchFlags) {
+    private StructureMember(@Nullable String name, @Nullable Supplier<BlockState> preview, List<StructureMemberTest> tests,
+            @Nullable MachineCasing casing, @Nullable HatchFlags hatchFlags) {
+        this.name = name;
         this.previewSupplier = preview;
         this.tests = tests;
         this.casing = casing;
         this.hatchFlags = hatchFlags;
     }
 
-    public StructureMember(Supplier<BlockState> state) {
-        this(state, List.of(new StructureMemberTestState(state)), null, null);
+    public static StructureMember literal(Supplier<BlockState> state) {
+        return new StructureMember(null, state, List.of(new StructureMemberTestState(state)), null, null);
+    }
+
+    public static StructureMember variable(String name) {
+        Objects.requireNonNull(name);
+        return new StructureMember(name, null, List.of(), null, null);
+    }
+
+    public static StructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
+        Objects.requireNonNull(preview);
+        Objects.requireNonNull(tests);
+        return new StructureMember(null, preview, tests, null, null);
+    }
+
+    public static StructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
+        Objects.requireNonNull(preview);
+        Objects.requireNonNull(tests);
+        Objects.requireNonNull(casing);
+        Objects.requireNonNull(hatchFlags);
+        return new StructureMember(null, preview, tests, casing, hatchFlags);
+    }
+
+    public String name() {
+        return name;
     }
 
     public BlockState preview() {
+        if (previewSupplier == null) {
+            return null;
+        }
         if (preview == null) {
             preview = previewSupplier.get();
         }
@@ -84,6 +113,9 @@ public final class StructureMember implements SimpleMember {
 
     @Override
     public boolean matchesState(BlockState state) {
+        if (name != null) {
+            throw new IllegalStateException("Tried to use a structure member with a name without replacing it in the template.");
+        }
         for (StructureMemberTest test : tests) {
             if (test.matchesState(state)) {
                 return true;
@@ -94,13 +126,17 @@ public final class StructureMember implements SimpleMember {
 
     @Override
     public BlockState getPreviewState() {
-        return this.preview();
+        if (name != null) {
+            throw new IllegalStateException("Tried to use a structure member with a name without replacing it in the template.");
+        }
+        return this.preview() == null ? Blocks.AIR.defaultBlockState() : this.preview();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof StructureMember other) {
-            return this.preview() == other.preview() &&
+            return Objects.equals(name, other.name) &&
+                    this.preview() == other.preview() &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
                     Objects.equals(casing, other.casing) &&
                     Objects.equals(hatchFlags, other.hatchFlags);
@@ -109,7 +145,14 @@ public final class StructureMember implements SimpleMember {
     }
 
     public void save(CompoundTag tag) {
-        tag.put("preview", NbtUtils.writeBlockState(this.preview()));
+        if (name != null) {
+            tag.putString("name", name);
+        }
+
+        BlockState preview = this.preview();
+        if (preview != null) {
+            tag.put("preview", NbtUtils.writeBlockState(preview));
+        }
 
         ListTag testsTag = new ListTag();
         for (StructureMemberTest test : tests) {
@@ -118,7 +161,9 @@ public final class StructureMember implements SimpleMember {
             test.save(testTag);
             testsTag.add(testTag);
         }
-        tag.put("tests", testsTag);
+        if (!testsTag.isEmpty()) {
+            tag.put("tests", testsTag);
+        }
 
         if (casing != null) {
             tag.putString("casing", casing.key.toString());
@@ -130,13 +175,16 @@ public final class StructureMember implements SimpleMember {
     }
 
     public static StructureMember from(CompoundTag tag) {
-        if (tag.isEmpty() ||
-                !tag.contains("preview", Tag.TAG_COMPOUND) ||
-                !tag.contains("tests", Tag.TAG_LIST)) {
+        if (tag.isEmpty()) {
             return null;
         }
 
-        Supplier<BlockState> preview = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("preview"));
+        String name = tag.contains("name", Tag.TAG_STRING) ? tag.getString("name") : null;
+
+        Supplier<BlockState> preview = null;
+        if (tag.contains("preview", Tag.TAG_COMPOUND)) {
+            preview = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("preview"));
+        }
 
         ListTag testsTag = tag.getList("tests", Tag.TAG_COMPOUND);
         List<StructureMemberTest> tests = new ArrayList<>();
@@ -146,9 +194,6 @@ public final class StructureMember implements SimpleMember {
             if (test != null) {
                 tests.add(test);
             }
-        }
-        if (tests.isEmpty()) {
-            return null;
         }
 
         MachineCasing casing = null;
@@ -166,6 +211,6 @@ public final class StructureMember implements SimpleMember {
             hatchFlags = new HatchFlags(hatchFlagsValue);
         }
 
-        return new StructureMember(preview, tests, casing, hatchFlags);
+        return new StructureMember(name, preview, tests, casing, hatchFlags);
     }
 }

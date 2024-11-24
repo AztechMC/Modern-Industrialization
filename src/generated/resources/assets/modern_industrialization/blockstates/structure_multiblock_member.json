@@ -1,7 +1,13 @@
 {
   "variants": {
-    "": {
-      "model": "modern_industrialization:block/structure_multiblock_member"
+    "mode=hatch": {
+      "model": "modern_industrialization:block/structure_multiblock_member_hatch"
+    },
+    "mode=simple": {
+      "model": "modern_industrialization:block/structure_multiblock_member_simple"
+    },
+    "mode=variable": {
+      "model": "modern_industrialization:block/structure_multiblock_member_variable"
     }
   }
 }

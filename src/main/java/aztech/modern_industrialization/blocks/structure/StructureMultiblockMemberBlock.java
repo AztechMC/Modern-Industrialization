@@ -34,13 +34,24 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.GameMasterBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class StructureMultiblockMemberBlock extends Block implements EntityBlock, GameMasterBlock {
     private static final MapCodec<StructureMultiblockMemberBlock> CODEC = simpleCodec(StructureMultiblockMemberBlock::new);
 
+    public static final EnumProperty<StructureMemberMode> MODE = EnumProperty.create("mode", StructureMemberMode.class);
+
     public StructureMultiblockMemberBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(stateDefinition.any()
+                .setValue(MODE, StructureMemberMode.SIMPLE));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(MODE);
     }
 
     @Override

@@ -25,16 +25,22 @@ package aztech.modern_industrialization.blocks.structure;
 
 import java.util.Locale;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 
-public enum StructureControllerMode {
+public enum StructureControllerMode implements StringRepresentable {
     SAVE,
     LOAD;
 
     public Component textInfo() {
-        return Component.translatable("structure_block.mode_info." + this.name().toLowerCase(Locale.ROOT));
+        return Component.translatable("structure_block.mode_info." + this.getSerializedName());
     }
 
     public Component text() {
-        return Component.translatable("structure_block.mode." + this.name().toLowerCase(Locale.ROOT));
+        return Component.translatable("structure_block.mode." + this.getSerializedName());
+    }
+
+    @Override
+    public String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

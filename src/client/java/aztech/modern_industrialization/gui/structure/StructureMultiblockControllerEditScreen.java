@@ -224,7 +224,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         idBox.setResponder(text -> this.updateId());
         this.addRenderableWidget(idBox);
 
-        casingBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockHatchCasing.text()) {
+        casingBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockCasing.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
@@ -285,7 +285,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 40, 0xA0A0A0);
 
         if (casingBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockHatchCasing.text(), width / 2 - 152, 80, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 80, 0xA0A0A0);
 
         if (posXBox.visible || posYBox.visible || posZBox.visible)
             graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 152, 120, 0xA0A0A0);

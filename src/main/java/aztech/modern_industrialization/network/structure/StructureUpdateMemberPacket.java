@@ -34,16 +34,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode, String inputPreview, String inputMembers, String inputCasing,
+public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode, String inputName, String inputPreview, String inputMembers,
+        String inputCasing,
         String inputFlags)
         implements BasePacket {
 
-    public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = NeoForgeStreamCodecs.composite(
             BlockPos.STREAM_CODEC,
             StructureUpdateMemberPacket::pos,
             ByteBufCodecs.idMapper((i) -> StructureMemberMode.values()[i], Enum::ordinal),
             StructureUpdateMemberPacket::mode,
+            ByteBufCodecs.STRING_UTF8,
+            StructureUpdateMemberPacket::inputName,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateMemberPacket::inputPreview,
             ByteBufCodecs.STRING_UTF8,
@@ -68,6 +72,7 @@ public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof StructureMultiblockMemberBlockEntity member) {
             member.setMode(mode);
+            member.setInputName(inputName);
             member.setInputPreview(inputPreview);
             member.setInputMembers(inputMembers);
             member.setInputCasing(inputCasing);

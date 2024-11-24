@@ -31,8 +31,8 @@ import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.minecraft.resources.ResourceLocation;
 
 public interface ShapeTemplateHelper {
-    default ShapeTemplate structureShape(ResourceLocation id) {
-        return new ShapeTemplate.Structure(id).build();
+    default ShapeTemplate.Structure structureShape(ResourceLocation id) {
+        return new ShapeTemplate.Structure(id);
     }
 
     default ShapeTemplate.LayeredBuilder layeredShape(String hatchCasing, String[][] layers) {

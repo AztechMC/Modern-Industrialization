@@ -24,11 +24,14 @@
 package aztech.modern_industrialization.blocks.structure;
 
 import aztech.modern_industrialization.MIText;
+import java.util.Locale;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringRepresentable;
 
-public enum StructureMemberMode {
+public enum StructureMemberMode implements StringRepresentable {
+    SIMPLE(MIText.StructureMultiblockMemberModeInfoSimple, MIText.StructureMultiblockMemberModeSimple),
     HATCH(MIText.StructureMultiblockMemberModeInfoHatch, MIText.StructureMultiblockMemberModeHatch),
-    SIMPLE(MIText.StructureMultiblockMemberModeInfoSimple, MIText.StructureMultiblockMemberModeSimple);
+    VARIABLE(MIText.StructureMultiblockMemberModeInfoVariable, MIText.StructureMultiblockMemberModeVariable);
 
     private final MIText textInfo, text;
 
@@ -43,5 +46,10 @@ public enum StructureMemberMode {
 
     public Component text() {
         return text.text();
+    }
+
+    @Override
+    public String getSerializedName() {
+        return this.name().toLowerCase(Locale.ROOT);
     }
 }

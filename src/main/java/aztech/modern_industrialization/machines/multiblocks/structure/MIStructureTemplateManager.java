@@ -135,7 +135,7 @@ public final class MIStructureTemplateManager {
 
             blockTag.put("pos", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, pos)));
 
-            StructureMember member = new StructureMember(() -> state);
+            StructureMember member = StructureMember.literal(() -> state);
 
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof StructureMemberOverride override) {

@@ -1,17 +1,32 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,mode=load": {
       "model": "modern_industrialization:block/structure_multiblock_controller",
       "y": 90
     },
-    "facing=north": {
+    "facing=east,mode=save": {
+      "model": "modern_industrialization:block/structure_multiblock_controller",
+      "y": 90
+    },
+    "facing=north,mode=load": {
       "model": "modern_industrialization:block/structure_multiblock_controller"
     },
-    "facing=south": {
+    "facing=north,mode=save": {
+      "model": "modern_industrialization:block/structure_multiblock_controller"
+    },
+    "facing=south,mode=load": {
       "model": "modern_industrialization:block/structure_multiblock_controller",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,mode=save": {
+      "model": "modern_industrialization:block/structure_multiblock_controller",
+      "y": 180
+    },
+    "facing=west,mode=load": {
+      "model": "modern_industrialization:block/structure_multiblock_controller",
+      "y": 270
+    },
+    "facing=west,mode=save": {
       "model": "modern_industrialization:block/structure_multiblock_controller",
       "y": 270
     }

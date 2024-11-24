@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -43,7 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class StructureMultiblockControllerBlockEntity extends FastBlockEntity implements StructureMemberOverride {
-    private StructureControllerMode mode = StructureControllerMode.SAVE;
+    private StructureControllerMode mode;
 
     private String inputId;
     private String inputCasing;
@@ -55,6 +56,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
+        mode = state.getValue(StructureMultiblockControllerBlock.MODE);
     }
 
     public StructureControllerMode getMode() {
@@ -62,7 +64,9 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     }
 
     public void setMode(StructureControllerMode mode) {
-        this.mode = Objects.requireNonNull(mode);
+        Objects.requireNonNull(mode);
+        this.mode = mode;
+        this.updateBlockState();
     }
 
     @Nullable
@@ -172,5 +176,16 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
             bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
         }
         showBounds = tag.getBoolean("show_bounds");
+        this.updateBlockState();
+    }
+
+    private void updateBlockState() {
+        if (level != null) {
+            BlockPos pos = getBlockPos();
+            BlockState state = level.getBlockState(pos);
+            if (state.is(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.get())) {
+                level.setBlock(pos, state.setValue(StructureMultiblockControllerBlock.MODE, mode), 2);
+            }
+        }
     }
 }

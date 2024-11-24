@@ -257,7 +257,7 @@ public enum MIText {
     StructureMultiblockMemberModeVariable("Variable"),
     StructureMultiblockMemberModeInfoSimple("Simple Mode - Just a block"),
     StructureMultiblockMemberModeInfoHatch("Hatch Mode - Include hatches"),
-    StructureMultiblockMemberModeInfoVariable("Variable Mode - Filled in at runtime"),
+    StructureMultiblockMemberModeInfoVariable("Variable Mode - Filled in at startup"),
     StructureMultiblockStructureName("Structure Name"),
     StructureMultiblockLoadTooltip("Hold SHIFT to place actual blocks instead of structure blocks."),
     StructureMultiblockLoadFailInvalidId("Failed to place the structure. No id was provided."),

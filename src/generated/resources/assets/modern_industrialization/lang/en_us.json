@@ -1703,7 +1703,7 @@
   "text.modern_industrialization.StructureMultiblockMemberModeHatch": "Hatch",
   "text.modern_industrialization.StructureMultiblockMemberModeInfoHatch": "Hatch Mode - Include hatches",
   "text.modern_industrialization.StructureMultiblockMemberModeInfoSimple": "Simple Mode - Just a block",
-  "text.modern_industrialization.StructureMultiblockMemberModeInfoVariable": "Variable Mode - Filled in at runtime",
+  "text.modern_industrialization.StructureMultiblockMemberModeInfoVariable": "Variable Mode - Filled in at startup",
   "text.modern_industrialization.StructureMultiblockMemberModeSimple": "Simple",
   "text.modern_industrialization.StructureMultiblockMemberModeVariable": "Variable",
   "text.modern_industrialization.StructureMultiblockMemberName": "Member Name",

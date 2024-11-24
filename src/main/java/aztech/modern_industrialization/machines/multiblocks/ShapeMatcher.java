@@ -23,11 +23,7 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
-import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
-import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
@@ -256,40 +252,16 @@ public class ShapeMatcher implements ChunkEventListener {
             BlockPos pos = entry.getKey();
             var current = level.getBlockState(pos);
             if (entry.getValue() instanceof StructureMember member) {
-                // TODO SWEDZ: there has gotta be a better way to do this
-                boolean hasName = member.name() != null && !member.name().isEmpty();
-                boolean hasMultipleTests = member.tests().size() > 1;
-                boolean hasHatchFlags = member.casing() != null && member.hatchFlags() != null && member.hatchFlags().flags != 0;
-
-                if (structureBlocks || hasName) {
-                    if (hasName || hasMultipleTests || hasHatchFlags) {
-                        BlockState state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
-                        StructureMultiblockMemberBlockEntity be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
-                        if (hasName) {
-                            state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.VARIABLE);
-                            be.setMode(StructureMemberMode.VARIABLE);
-                            be.setInputName(member.name());
-                        }
-                        if (hasMultipleTests || hasHatchFlags) {
-                            be.setInputPreview(StructureMultiblockInputFormatters.preview(member.preview()));
-                            be.setInputMembers(StructureMultiblockInputFormatters.members(member.tests()));
-                            if (hasHatchFlags) {
-                                state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.HATCH);
-                                be.setMode(StructureMemberMode.HATCH);
-                                be.setInputCasing(StructureMultiblockInputFormatters.casing(member.casing()));
-                                be.setInputFlags(StructureMultiblockInputFormatters.hatchFlags(member.hatchFlags()));
-                            } else {
-                                state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.SIMPLE);
-                                be.setMode(StructureMemberMode.SIMPLE);
-                            }
-                        }
-                        level.setBlockAndUpdate(pos, state);
-                        level.setBlockEntity(be);
-                        be.setChanged();
-                        be.sync();
-                        setBlocks++;
-                        continue;
-                    }
+                var optionalStructureBlock = member.asStructureBlock(pos, structureBlocks);
+                if (optionalStructureBlock.isPresent()) {
+                    BlockState state = optionalStructureBlock.get().getFirst();
+                    FastBlockEntity be = optionalStructureBlock.get().getSecond();
+                    level.setBlockAndUpdate(pos, state);
+                    level.setBlockEntity(be);
+                    be.setChanged();
+                    be.sync();
+                    setBlocks++;
+                    continue;
                 }
             }
             if (!entry.getValue().matchesState(current)) {

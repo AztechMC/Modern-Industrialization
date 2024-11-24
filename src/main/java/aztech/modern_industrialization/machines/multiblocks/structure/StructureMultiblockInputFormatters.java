@@ -28,9 +28,9 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTestState;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTestTag;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.TagStructureMemberTest;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,11 +110,11 @@ public final class StructureMultiblockInputFormatters {
                     return null;
                 }
                 var tag = BlockTags.create(tagId);
-                members.add(new StructureMemberTestTag(tag));
+                members.add(new TagStructureMemberTest(tag));
             } else {
                 try {
                     var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    members.add(new StructureMemberTestState(blockResult::blockState));
+                    members.add(new StateStructureMemberTest(blockResult::blockState));
                 } catch (CommandSyntaxException ignored) {
                     return null;
                 }
@@ -131,12 +131,12 @@ public final class StructureMultiblockInputFormatters {
 
         StringBuilder string = new StringBuilder();
         for (StructureMemberTest test : members) {
-            if (test instanceof StructureMemberTestTag testTag) {
+            if (test instanceof TagStructureMemberTest testTag) {
                 if (!string.isEmpty()) {
                     string.append(";");
                 }
                 string.append("#").append(testTag.blockTag().location());
-            } else if (test instanceof StructureMemberTestState stateTest) {
+            } else if (test instanceof StateStructureMemberTest stateTest) {
                 if (!string.isEmpty()) {
                     string.append(";");
                 }

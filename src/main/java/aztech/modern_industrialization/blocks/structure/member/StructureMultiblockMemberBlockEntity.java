@@ -31,7 +31,7 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;

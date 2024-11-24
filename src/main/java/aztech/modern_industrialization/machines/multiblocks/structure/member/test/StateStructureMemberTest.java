@@ -21,24 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks.structure.member;
+package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StructureMemberTestState implements StructureMemberTest {
+public class StateStructureMemberTest implements StructureMemberTest {
     private Supplier<BlockState> blockStateSupplier;
 
     private BlockState blockState;
 
-    public StructureMemberTestState(Supplier<BlockState> blockState) {
+    public StateStructureMemberTest(Supplier<BlockState> blockState) {
         this.blockStateSupplier = blockState;
     }
 
-    public StructureMemberTestState() {
+    public StateStructureMemberTest() {
         this(null);
     }
 
@@ -60,19 +62,32 @@ public class StructureMemberTestState implements StructureMemberTest {
     }
 
     @Override
+    public boolean isLoaded() {
+        return blockStateSupplier != null;
+    }
+
+    @Override
     public void load(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+        if (!tag.contains("state", Tag.TAG_COMPOUND)) {
+            throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
+        }
+
         blockStateSupplier = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("state"));
         blockState = null;
     }
 
     @Override
     public void save(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+        StructureMemberTest.super.save(tag);
+
         tag.put("state", NbtUtils.writeBlockState(this.blockState()));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof StructureMemberTestState other) {
+        if (o instanceof StateStructureMemberTest other) {
             return this.blockState() == other.blockState();
         }
         return false;

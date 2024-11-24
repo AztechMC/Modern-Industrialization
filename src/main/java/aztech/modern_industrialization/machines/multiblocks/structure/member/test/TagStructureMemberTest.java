@@ -21,23 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks.structure.member;
+package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import java.util.Objects;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StructureMemberTestTag implements StructureMemberTest {
+public class TagStructureMemberTest implements StructureMemberTest {
     private TagKey<Block> blockTag;
 
-    public StructureMemberTestTag(TagKey<Block> blockTag) {
+    public TagStructureMemberTest(TagKey<Block> blockTag) {
         this.blockTag = blockTag;
     }
 
-    public StructureMemberTestTag() {
+    public TagStructureMemberTest() {
         this(null);
     }
 
@@ -56,18 +58,31 @@ public class StructureMemberTestTag implements StructureMemberTest {
     }
 
     @Override
+    public boolean isLoaded() {
+        return blockTag != null;
+    }
+
+    @Override
     public void load(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+        if (!tag.contains("tag", Tag.TAG_STRING)) {
+            throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
+        }
+
         blockTag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(tag.getString("tag")));
     }
 
     @Override
     public void save(CompoundTag tag) {
+        Objects.requireNonNull(tag);
+        StructureMemberTest.super.save(tag);
+
         tag.putString("tag", blockTag.location().toString());
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof StructureMemberTestTag other) {
+        if (o instanceof TagStructureMemberTest other) {
             return blockTag == other.blockTag ||
                     (blockTag != null && other.blockTag != null && blockTag.location().equals(other.blockTag.location()));
         }

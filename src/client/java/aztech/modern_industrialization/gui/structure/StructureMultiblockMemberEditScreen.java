@@ -30,7 +30,7 @@ import aztech.modern_industrialization.blocks.structure.member.StructureMultiblo
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;

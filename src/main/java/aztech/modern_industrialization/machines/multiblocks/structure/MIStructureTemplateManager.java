@@ -31,6 +31,7 @@ import aztech.modern_industrialization.blocks.structure.controller.StructureCont
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,10 +154,11 @@ public final class MIStructureTemplateManager {
             }
 
             if (member != null) {
-                if (member.hatchFlags() != null) {
+                if (member instanceof HatchStructureMember hatch && hatch.hatchFlags() != null) {
                     hatchBlocks.add(pos.immutable());
                 }
                 CompoundTag memberTag = new CompoundTag();
+                memberTag.putString("type", member.typeId());
                 member.save(memberTag);
                 if (!members.contains(member)) {
                     members.add(member);
@@ -210,7 +212,7 @@ public final class MIStructureTemplateManager {
             if (blockTag.contains("member_index", Tag.TAG_INT)) {
                 int memberIndex = blockTag.getInt("member_index");
                 StructureMember member = StructureMember.from(members.getCompound(memberIndex));
-                builder.add(pos.getX(), pos.getY(), pos.getZ(), member, member.hatchFlags());
+                builder.add(pos.getX(), pos.getY(), pos.getZ(), member, member instanceof HatchStructureMember hatch ? hatch.hatchFlags() : null);
             }
         }
 

@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.VariableStructureMember;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -221,7 +221,7 @@ public class ShapeTemplate {
             List<BlockPos> positions = new ArrayList<>();
             for (var entry : template.simpleMembers.entrySet()) {
                 SimpleMember other = entry.getValue();
-                if (other instanceof StructureMember structureMember && Objects.equals(name, structureMember.name())) {
+                if (other instanceof VariableStructureMember structureMember && Objects.equals(name, structureMember.name())) {
                     positions.add(entry.getKey());
                 }
             }
@@ -243,11 +243,9 @@ public class ShapeTemplate {
 
         public ShapeTemplate build() {
             for (SimpleMember member : template.simpleMembers.values()) {
-                if (member instanceof StructureMember structureMember) {
-                    if (structureMember.name() != null) {
-                        throw new IllegalArgumentException(
-                                "Tried to build structure template without replacing member with the name \"" + structureMember.name() + "\"");
-                    }
+                if (member instanceof VariableStructureMember structureMember) {
+                    throw new IllegalArgumentException(
+                            "Tried to build structure template without replacing member with the name \"" + structureMember.name() + "\"");
                 }
             }
             return template;

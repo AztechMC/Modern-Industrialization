@@ -25,9 +25,9 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
-import aztech.modern_industrialization.blocks.structure.StructureControllerMode;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerMode;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;

@@ -21,31 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.structure;
+package aztech.modern_industrialization.blocks.structure.controller;
 
-import aztech.modern_industrialization.MIText;
 import java.util.Locale;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
-public enum StructureMemberMode implements StringRepresentable {
-    SIMPLE(MIText.StructureMultiblockMemberModeInfoSimple, MIText.StructureMultiblockMemberModeSimple),
-    HATCH(MIText.StructureMultiblockMemberModeInfoHatch, MIText.StructureMultiblockMemberModeHatch),
-    VARIABLE(MIText.StructureMultiblockMemberModeInfoVariable, MIText.StructureMultiblockMemberModeVariable);
-
-    private final MIText textInfo, text;
-
-    StructureMemberMode(MIText textInfo, MIText text) {
-        this.textInfo = textInfo;
-        this.text = text;
-    }
+public enum StructureControllerMode implements StringRepresentable {
+    SAVE,
+    LOAD;
 
     public Component textInfo() {
-        return textInfo.text();
+        return Component.translatable("structure_block.mode_info." + this.getSerializedName());
     }
 
     public Component text() {
-        return text.text();
+        return Component.translatable("structure_block.mode." + this.getSerializedName());
     }
 
     @Override

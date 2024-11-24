@@ -35,8 +35,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlock;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlock;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;

@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.structure;
 
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;

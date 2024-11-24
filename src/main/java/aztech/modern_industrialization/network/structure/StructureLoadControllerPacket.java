@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.network.structure;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;

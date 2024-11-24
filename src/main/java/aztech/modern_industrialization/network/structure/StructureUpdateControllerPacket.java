@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
-import aztech.modern_industrialization.blocks.structure.StructureControllerMode;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerMode;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;

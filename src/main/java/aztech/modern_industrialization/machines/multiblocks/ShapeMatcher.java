@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMemberMode;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;

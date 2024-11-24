@@ -26,8 +26,8 @@ package aztech.modern_industrialization.machines.multiblocks.structure;
 import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.blocks.structure.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
+import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;

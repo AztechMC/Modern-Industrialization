@@ -25,8 +25,8 @@ package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;

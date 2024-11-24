@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.blocks.structure.StructureMemberMode;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.network.BasePacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;

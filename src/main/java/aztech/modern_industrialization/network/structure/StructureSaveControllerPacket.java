@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.network.structure;
 
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlock;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlock;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureResult;
 import aztech.modern_industrialization.network.BasePacket;

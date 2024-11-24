@@ -25,8 +25,8 @@ package aztech.modern_industrialization.gui.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.blocks.structure.StructureMemberMode;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;

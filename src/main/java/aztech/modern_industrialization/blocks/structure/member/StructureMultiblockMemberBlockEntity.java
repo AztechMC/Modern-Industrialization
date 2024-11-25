@@ -51,12 +51,12 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     private String inputPreview;
     private String inputMembers;
     private String inputCasing;
-    private String inputFlags;
+    private String inputHatchFlags;
 
     private BlockState preview;
     private List<StructureMemberTest> members;
     private MachineCasing casing;
-    private HatchFlags flags = HatchFlags.NO_HATCH;
+    private HatchFlags hatchFlags = HatchFlags.NO_HATCH;
 
     public StructureMultiblockMemberBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), pos, state);
@@ -122,13 +122,13 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     @Nullable
-    public String getInputFlags() {
-        return inputFlags;
+    public String getInputHatchFlags() {
+        return inputHatchFlags;
     }
 
-    public void setInputFlags(String inputFlags) {
-        this.inputFlags = inputFlags;
-        flags = StructureMultiblockInputFormatters.hatchFlags(inputFlags);
+    public void setInputHatchFlags(String inputHatchFlags) {
+        this.inputHatchFlags = inputHatchFlags;
+        hatchFlags = StructureMultiblockInputFormatters.hatchFlags(inputHatchFlags);
     }
 
     @Nullable
@@ -137,14 +137,14 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     @Nullable
-    public HatchFlags getFlags() {
-        return flags;
+    public HatchFlags getHatchFlags() {
+        return hatchFlags;
     }
 
     @Override
     public StructureMember getMemberOverride() {
         return switch (getMode()) {
-        case HATCH -> StructureMember.hatch(() -> preview, members, casing, flags);
+        case HATCH -> StructureMember.hatch(() -> preview, members, casing, hatchFlags);
         case SIMPLE -> StructureMember.simple(() -> preview, members);
         case VARIABLE -> StructureMember.variable(inputName);
         };
@@ -156,7 +156,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
             return inputName != null && !inputName.isEmpty();
         } else if (preview != null && members != null && !members.isEmpty()) {
             if (mode == StructureMemberMode.HATCH) {
-                return casing != null && flags != null && !inputFlags.isEmpty();
+                return casing != null && hatchFlags != null && !inputHatchFlags.isEmpty();
             }
             return true;
         }
@@ -191,8 +191,8 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         if (inputCasing != null) {
             tag.putString("casing", inputCasing);
         }
-        if (inputFlags != null) {
-            tag.putString("flags", inputFlags);
+        if (inputHatchFlags != null) {
+            tag.putString("hatch_flags", inputHatchFlags);
         }
     }
 
@@ -204,7 +204,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         this.setInputPreview(tag.getString("preview"));
         this.setInputMembers(tag.getString("members"));
         this.setInputCasing(tag.getString("casing"));
-        this.setInputFlags(tag.getString("flags"));
+        this.setInputHatchFlags(tag.getString("hatch_flags"));
         this.updateBlockState();
     }
 

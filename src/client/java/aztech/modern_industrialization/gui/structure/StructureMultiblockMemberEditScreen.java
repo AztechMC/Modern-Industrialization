@@ -217,7 +217,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
             }
         };
         flagsBox.setMaxLength(Short.MAX_VALUE);
-        flagsBox.setValue(member.getInputFlags());
+        flagsBox.setValue(member.getInputHatchFlags());
         flagsBox.setResponder(text -> this.updateFlags());
         this.addRenderableWidget(flagsBox);
 

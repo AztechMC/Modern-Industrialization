@@ -76,7 +76,7 @@ public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode
             member.setInputPreview(inputPreview);
             member.setInputMembers(inputMembers);
             member.setInputCasing(inputCasing);
-            member.setInputFlags(inputFlags);
+            member.setInputHatchFlags(inputFlags);
 
             member.sync();
             member.setChanged();

@@ -117,7 +117,7 @@ public class HatchStructureMember extends SimpleStructureMember {
             be.setInputPreview(StructureMultiblockInputFormatters.preview(getPreviewState()));
             be.setInputMembers(StructureMultiblockInputFormatters.members(tests));
             be.setInputCasing(StructureMultiblockInputFormatters.casing(casing));
-            be.setInputFlags(StructureMultiblockInputFormatters.hatchFlags(hatchFlags));
+            be.setInputHatchFlags(StructureMultiblockInputFormatters.hatchFlags(hatchFlags));
             return Optional.of(Pair.of(state, be));
         }
 

@@ -78,17 +78,26 @@ public final class MIStructureTemplateManager {
 
     public static boolean exists(ResourceLocation id) {
         assertLoaded();
+        Objects.requireNonNull(id);
         return STRUCTURE_TEMPLATES.containsKey(id);
     }
 
     public static ShapeTemplate get(ResourceLocation id) {
         assertLoaded();
+        Objects.requireNonNull(id);
         ShapeTemplate template = STRUCTURE_TEMPLATES.get(id);
         if (template != null) {
             return template;
         } else {
-            throw new IllegalArgumentException("Structure shape template \"" + id.toString() + "\" does not exist.");
+            throw new IllegalArgumentException("Structure shape template \"" + id + "\" does not exist.");
         }
+    }
+
+    public static void register(ResourceLocation id, ShapeTemplate template) {
+        assertLoaded();
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(template);
+        STRUCTURE_TEMPLATES.put(id, template);
     }
 
     public static StructureResult fromWorld(ResourceLocation id, Level level,
@@ -186,7 +195,13 @@ public final class MIStructureTemplateManager {
         tag.put("members", membersTag);
         tag.put("blocks", blocksTag);
 
-        return new StructureResult.Success(id, tag);
+        ShapeTemplate template = deserialize(tag);
+        if (template == null) {
+            MI.LOGGER.error("Failed to deserialize structure tag immediately after it was created. Have you changed the deserialier or serializer?");
+            return new StructureResult.Unknown();
+        }
+
+        return new StructureResult.Success(id, template, tag);
     }
 
     @Nullable
@@ -292,7 +307,7 @@ public final class MIStructureTemplateManager {
         if (structureTag != null) {
             ShapeTemplate structure = deserialize(structureTag);
             if (structure != null) {
-                STRUCTURE_TEMPLATES.put(id, structure);
+                register(id, structure);
             } else {
                 MI.LOGGER.error("Failed to load structure with id \"{}\"", id);
             }

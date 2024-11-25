@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.multiblocks.structure;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.network.structure.StructureMisconfiguredBlocksPacket;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +116,7 @@ public interface StructureResult {
         }
     }
 
-    record Success(ResourceLocation structureId, CompoundTag tag) implements StructureResult {
+    record Success(ResourceLocation structureId, ShapeTemplate template, CompoundTag tag) implements StructureResult {
         @Override
         public boolean isSuccess() {
             return true;

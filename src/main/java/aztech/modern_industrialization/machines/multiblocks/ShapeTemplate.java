@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -221,7 +220,7 @@ public class ShapeTemplate {
             List<BlockPos> positions = new ArrayList<>();
             for (var entry : template.simpleMembers.entrySet()) {
                 SimpleMember other = entry.getValue();
-                if (other instanceof VariableStructureMember structureMember && Objects.equals(name, structureMember.name())) {
+                if (other instanceof VariableStructureMember structureMember && name.equals(structureMember.name())) {
                     positions.add(entry.getKey());
                 }
             }

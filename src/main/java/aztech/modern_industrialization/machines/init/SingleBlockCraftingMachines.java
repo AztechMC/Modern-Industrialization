@@ -245,7 +245,7 @@ public final class SingleBlockCraftingMachines {
                 new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
                         items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
-                        null, false, SteamMode.BOTH),
+                        null, null, false, SteamMode.BOTH),
                 tiers);
     }
 
@@ -265,7 +265,7 @@ public final class SingleBlockCraftingMachines {
                 MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, MI.id(itemId), categoryParams.itemInputs,
                         categoryParams.itemOutputs,
                         categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
-                        recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
+                        recipeType, recipe -> minEu <= recipe.eu && recipe.eu <= maxEu, false,
                         i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
                 ReiMachineRecipes.registerCategory(MI.id(itemId), category);
                 ReiMachineRecipes.registerMachineClickArea(MI.id(itemId), categoryParams.progressBarParams.toRectangle());

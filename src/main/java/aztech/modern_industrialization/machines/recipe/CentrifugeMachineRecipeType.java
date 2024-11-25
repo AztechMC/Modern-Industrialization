@@ -23,7 +23,9 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
+import java.util.List;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ComposterBlock;
 
@@ -34,7 +36,7 @@ public class CentrifugeMachineRecipeType extends ProxyableMachineRecipeType {
     }
 
     @Override
-    protected void fillRecipeList(Level world) {
+    protected void fillRecipeList(Level world, List<RecipeHolder<MachineRecipe>> recipeList) {
         recipeList.addAll(getManagerRecipes(world));
 
         for (var itemCompostable : ComposterBlock.COMPOSTABLES.keySet()) {

@@ -35,7 +35,6 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -93,8 +92,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<MachineRecipe>> consumer) {
-        MIMachineRecipeTypes.getRecipeTypes().stream()
-                .flatMap(type -> type.getRecipes(Minecraft.getInstance().level).stream())
+        params.recipeType.getRecipesWithoutCache(Minecraft.getInstance().level).stream()
                 .filter(recipe -> params.recipePredicate.test(recipe.value()))
                 .sorted(Comparator.comparing(RecipeHolder::id))
                 .forEach(consumer);

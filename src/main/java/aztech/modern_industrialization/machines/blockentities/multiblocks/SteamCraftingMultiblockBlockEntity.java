@@ -38,10 +38,10 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
@@ -105,8 +105,8 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         }
 
         @Override
-        public Level getCrafterWorld() {
-            return level;
+        public ServerLevel getCrafterWorld() {
+            return (ServerLevel) level;
         }
 
         @Override

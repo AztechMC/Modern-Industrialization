@@ -24,24 +24,24 @@
 package aztech.modern_industrialization.compat.viewer.impl;
 
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
-import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
+import java.util.Optional;
 
 public class MachineScreenPredicateTest {
     public static boolean test(ReiMachineRecipes.MachineScreenPredicate predicate, MachineScreen screen) {
         return switch (predicate) {
         case ANY -> true;
-        case MULTIBLOCK -> {
-            for (GuiComponentClient client : screen.getMenu().components) {
-                if (client instanceof CraftingMultiblockGuiClient cmGui) {
-                    if (cmGui.isShapeValid) {
-                        yield true;
+        case MULTIBLOCK -> screen.getMenu().components.findOrDefault(
+                client -> {
+                    if (client instanceof CraftingMultiblockGuiClient cmGui) {
+                        if (cmGui.isShapeValid) {
+                            return Optional.of(true);
+                        }
                     }
-                }
-            }
-            yield false;
-        }
+                    return Optional.empty();
+                },
+                false);
         };
     }
 }

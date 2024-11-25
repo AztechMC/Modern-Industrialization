@@ -33,7 +33,6 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getL
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
@@ -175,7 +174,7 @@ public class DebugCommands {
         var be = src.getLevel().getBlockEntity(controllerPos);
         if (be instanceof MultiblockMachineBlockEntity multiblock) {
             var shape = multiblock.getActiveShape();
-            var shapeMatcher = new ShapeMatcher(src.getLevel(), controllerPos, multiblock.orientation.facingDirection, shape);
+            var shapeMatcher = multiblock.createShapeMatcher();
             int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
 
             src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(

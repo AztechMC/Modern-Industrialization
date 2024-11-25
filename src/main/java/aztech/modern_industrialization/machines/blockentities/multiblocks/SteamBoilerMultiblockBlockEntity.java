@@ -35,7 +35,6 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
@@ -44,7 +43,6 @@ import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
-    private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
     private final IsActiveComponent isActiveComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -81,33 +79,9 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, shapeTemplate);
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                inventory.rebuild(shapeMatcher);
-                shapeValid.shapeValid = true;
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
     @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
-        }
+    protected void onMatchSuccessful() {
+        inventory.rebuild(shapeMatcher);
     }
 
     @Override

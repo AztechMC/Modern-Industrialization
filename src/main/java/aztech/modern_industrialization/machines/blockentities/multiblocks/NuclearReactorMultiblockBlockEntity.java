@@ -58,7 +58,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     private final RedstoneControlComponent redstoneControl;
     private final IsActiveComponent isActive;
     private final NuclearEfficiencyHistoryComponent efficiencyHistory;
-    private ShapeMatcher shapeMatcher;
 
     private NuclearGrid nuclearGrid;
     private Supplier<NuclearReactorGui.Data> dataSupplier;
@@ -125,7 +124,18 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         }
     }
 
-    protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
+    @Override
+    public ShapeTemplate getActiveShape() {
+        return activeShape.getActiveShape();
+    }
+
+    @Override
+    protected void onRematch() {
+        nuclearGrid = null;
+    }
+
+    @Override
+    protected void onMatchSuccessful() {
         shapeValid.shapeValid = true;
         int size = gridLayout[activeShape.getActiveShapeIndex()].length;
         NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
@@ -172,41 +182,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
                     efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
         };
-    }
-
-    @Override
-    public ShapeTemplate getActiveShape() {
-        return activeShape.getActiveShape();
-    }
-
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            nuclearGrid = null;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                shapeValid.shapeValid = true;
-                onSuccessfulMatch(shapeMatcher);
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
-    @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
-        }
     }
 
     public static void registerReiShapes() {

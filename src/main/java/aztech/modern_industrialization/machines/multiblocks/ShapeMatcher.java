@@ -47,14 +47,14 @@ public class ShapeMatcher implements ChunkEventListener {
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
     }
 
-    private final BlockPos controllerPos;
-    private final ShapeTemplate template;
-    private final Map<BlockPos, SimpleMember> simpleMembers;
-    private final Map<BlockPos, HatchFlags> hatchFlags;
+    protected final BlockPos controllerPos;
+    protected final ShapeTemplate template;
+    protected final Map<BlockPos, SimpleMember> simpleMembers;
+    protected final Map<BlockPos, HatchFlags> hatchFlags;
 
-    private boolean needsRematch = true;
-    private boolean matchSuccessful = false;
-    private final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
+    protected boolean needsRematch = true;
+    protected boolean matchSuccessful = false;
+    protected final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
     /**
      * Convert a relative position in the shape template to the real position in the
@@ -73,7 +73,7 @@ public class ShapeMatcher implements ChunkEventListener {
         return rotatedPos.offset(controllerPos);
     }
 
-    private static <V> Map<BlockPos, V> toWorldPos(BlockPos controllerPos, Direction controllerDirection, Map<BlockPos, V> templateMap) {
+    protected static <V> Map<BlockPos, V> toWorldPos(BlockPos controllerPos, Direction controllerDirection, Map<BlockPos, V> templateMap) {
         Map<BlockPos, V> result = new HashMap<>();
         for (Map.Entry<BlockPos, V> entry : templateMap.entrySet()) {
             result.put(toWorldPos(controllerPos, controllerDirection, entry.getKey()), entry.getValue());

@@ -54,7 +54,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
-import org.jetbrains.annotations.Nullable;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, FluidStorageComponentHolder {
@@ -148,9 +147,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return templateBuilder.build();
     }
 
-    @Nullable
-    private ShapeMatcher shapeMatcher = null;
-
     private final ActiveShapeComponent activeShape;
     private final FluidStorageComponent fluidStorage;
 
@@ -226,35 +222,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                shapeValid.shapeValid = true;
-                onMatchSuccessful();
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
-    @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
-        }
-    }
-
     @Override
     public void tick() {
         if (!level.isClientSide) {
@@ -275,7 +242,8 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return volume * BUCKET_PER_STRUCTURE_BLOCK * FluidType.BUCKET_VOLUME;
     }
 
-    private void onMatchSuccessful() {
+    @Override
+    protected void onMatchSuccessful() {
         int index = activeShape.getActiveShapeIndex();
         long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
         fluidStorage.setCapacity(capacity);

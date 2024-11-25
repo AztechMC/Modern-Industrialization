@@ -51,10 +51,10 @@ public class SimpleStructureMember extends StructureMember {
 
     private BlockState preview;
 
-    public SimpleStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests) {
-        Objects.requireNonNull(previewSupplier);
+    public SimpleStructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
+        Objects.requireNonNull(preview);
         Objects.requireNonNull(tests);
-        this.previewSupplier = previewSupplier;
+        this.previewSupplier = preview;
         this.tests = tests;
     }
 
@@ -120,10 +120,10 @@ public class SimpleStructureMember extends StructureMember {
     }
 
     @Override
-    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean attempt) {
+    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
         assertLoaded();
 
-        if (attempt && tests.size() > 1) {
+        if (required) {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.SIMPLE);
             var be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);

@@ -27,7 +27,6 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
 import java.util.List;
@@ -58,14 +57,14 @@ public abstract class StructureMember implements SimpleMember {
         assertLoaded();
     }
 
-    public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean attempt);
+    public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required);
 
     public static SimpleStructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
         return new SimpleStructureMember(preview, tests);
     }
 
-    public static SimpleStructureMember literal(Supplier<BlockState> blockState) {
-        return simple(blockState, List.of(new StateStructureMemberTest(blockState)));
+    public static LiteralStructureMember literal(Supplier<BlockState> blockState) {
+        return new LiteralStructureMember(blockState);
     }
 
     public static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing,
@@ -85,6 +84,7 @@ public abstract class StructureMember implements SimpleMember {
         String type = tag.getString("type");
         StructureMember member = switch (type) {
         case "simple" -> new SimpleStructureMember();
+        case "literal" -> new LiteralStructureMember();
         case "hatch" -> new HatchStructureMember();
         case "variable" -> new VariableStructureMember();
         default -> throw new IllegalStateException("Unexpected type: " + type);

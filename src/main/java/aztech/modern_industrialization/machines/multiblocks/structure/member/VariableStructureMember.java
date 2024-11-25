@@ -82,7 +82,7 @@ public class VariableStructureMember extends StructureMember {
     }
 
     @Override
-    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean attempt) {
+    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
         assertLoaded();
 
         var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();

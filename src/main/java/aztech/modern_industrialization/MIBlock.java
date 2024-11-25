@@ -36,7 +36,9 @@ import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlock;
+import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -151,17 +153,23 @@ public class MIBlock {
     public static final BlockDefinition<StructureMultiblockMemberBlock> STRUCTURE_MULTIBLOCK_MEMBER = block("Structure Multiblock Member",
             "structure_multiblock_member", BlockDefinitionParams.defaultCreativeOnly()
                     .withBlockConstructor(StructureMultiblockMemberBlock::new)
-                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
+                    .withBlockItemConstructor((block, p) -> new StructureMultiblockMemberBlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
+                        Function<StructureMemberMode, ModelFile> modelCreator = (mode) -> {
+                            String texture = "structure_multiblock_member_" + mode.getSerializedName();
+                            return gen.models().cubeAll(texture, gen.blockTexture(texture));
+                        };
                         gen.getVariantBuilder(block).forAllStates(state -> {
                             var mode = state.getValue(StructureMultiblockMemberBlock.MODE);
-                            String texture = "structure_multiblock_member_" + mode.getSerializedName();
                             return ConfiguredModel.builder()
-                                    .modelFile(gen.models().cubeAll(texture, gen.blockTexture(texture)))
+                                    .modelFile(modelCreator.apply(mode))
                                     .build();
                         });
-                        String simpleTexture = "structure_multiblock_member_simple";
-                        gen.simpleBlockItem(block, gen.models().cubeAll(simpleTexture, gen.blockTexture(simpleTexture)));
+                        gen.itemModels().getBuilder(gen.name(block))
+                                .parent(modelCreator.apply(StructureMemberMode.SIMPLE))
+                                .override().predicate(MI.id("member_mode"), 0.0f).model(modelCreator.apply(StructureMemberMode.SIMPLE)).end()
+                                .override().predicate(MI.id("member_mode"), 0.5f).model(modelCreator.apply(StructureMemberMode.HATCH)).end()
+                                .override().predicate(MI.id("member_mode"), 1.0f).model(modelCreator.apply(StructureMemberMode.VARIABLE)).end();
                     }));
 
     // Materials

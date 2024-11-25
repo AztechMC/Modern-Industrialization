@@ -1,3 +1,23 @@
 {
-  "parent": "modern_industrialization:block/structure_multiblock_member_simple"
+  "parent": "modern_industrialization:block/structure_multiblock_member_simple",
+  "overrides": [
+    {
+      "model": "modern_industrialization:block/structure_multiblock_member_simple",
+      "predicate": {
+        "modern_industrialization:member_mode": 0.0
+      }
+    },
+    {
+      "model": "modern_industrialization:block/structure_multiblock_member_hatch",
+      "predicate": {
+        "modern_industrialization:member_mode": 0.5
+      }
+    },
+    {
+      "model": "modern_industrialization:block/structure_multiblock_member_variable",
+      "predicate": {
+        "modern_industrialization:member_mode": 1.0
+      }
+    }
+  ]
 }

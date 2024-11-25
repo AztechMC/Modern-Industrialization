@@ -31,6 +31,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelToolti
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBER;
+import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
@@ -43,6 +45,7 @@ import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.items.client.ClientConfigCardTooltip;
+import aztech.modern_industrialization.items.client.ClientStructureMemberBlockTooltip;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.machines.MachineOverlayClient;
@@ -253,6 +256,7 @@ public class MIClient {
         event.register(BarrelTooltipData.class, BarrelTooltipComponent::new);
         event.register(ConfigCardItem.TooltipData.class, ClientConfigCardTooltip::new);
         event.register(SteamDrillItem.SteamDrillTooltipData.class, SteamDrillTooltipComponent::new);
+        event.register(StructureMultiblockMemberBlockItem.TooltipData.class, ClientStructureMemberBlockTooltip::new);
     }
 
     @SubscribeEvent
@@ -271,6 +275,18 @@ public class MIClient {
             ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
                     (stack, level, entity, seed) -> {
                         return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
+                    });
+            ItemProperties.register(MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asItem(), MI.id("member_mode"),
+                    (stack, level, entity, seed) -> {
+                        StructureMemberMode mode = StructureMultiblockMemberBlockItem.getMode(stack);
+                        if (mode == null) {
+                            return 0;
+                        }
+                        return switch (mode) {
+                        case SIMPLE -> 0.0f;
+                        case HATCH -> 0.5f;
+                        case VARIABLE -> 1.0f;
+                        };
                     });
         });
     }

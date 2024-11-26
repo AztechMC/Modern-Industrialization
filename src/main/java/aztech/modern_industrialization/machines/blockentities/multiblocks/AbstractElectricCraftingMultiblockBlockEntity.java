@@ -76,13 +76,13 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         if (!result.consumesAction()) {
-            result = icomponents.mapOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
+            result = components.mapOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
         }
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);
         }
         if (!result.consumesAction()) {
-            result = icomponents.mapOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
+            result = components.mapOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
         }
         return result;
     }

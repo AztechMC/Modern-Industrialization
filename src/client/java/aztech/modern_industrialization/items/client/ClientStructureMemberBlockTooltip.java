@@ -33,6 +33,7 @@ import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -40,18 +41,20 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-// TODO SWEDZ: there has to be a better way to align all the text and stuff. maybe some kind of builder?
 public final class ClientStructureMemberBlockTooltip implements ClientTooltipComponent {
     private static final int TEXT_ROW_HEIGHT = 9;
-    private static final int TEXT_BEFORE_IMAGE_ROW_HEIGHT = TEXT_ROW_HEIGHT + 4;
+    private static final int TEXT_BEFORE_IMAGE_EXTRA_ROW_HEIGHT = 4;
     private static final int IMAGE_ROW_HEIGHT = 20;
 
     private final StructureMultiblockMemberBlockItem.TooltipData data;
 
     private final ItemStack preview;
     private final List<ItemStack> members;
+
+    private final List<Object> lines = new ArrayList<>();
 
     public ClientStructureMemberBlockTooltip(StructureMultiblockMemberBlockItem.TooltipData data) {
         this.data = data;
@@ -64,42 +67,64 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
                 members.add(stateTest.blockState().getBlock().asItem().getDefaultInstance());
             }
         }
+
+        // TODO SWEDZ: use translations
+        lines.add(Component.literal("Mode: ").append(data.mode().text()));
+
+        if (data.mode() == StructureMemberMode.VARIABLE) {
+            lines.add(Component.literal("Name: %s".formatted(data.name())));
+        }
+
+        if (data.mode() == StructureMemberMode.HATCH) {
+            lines.add(Component.literal("Casing: %s".formatted(data.casing().key.getPath())));
+        }
+
+        if (data.mode() == StructureMemberMode.SIMPLE || data.mode() == StructureMemberMode.HATCH) {
+            lines.add(Component.literal("Preview").withStyle(ChatFormatting.UNDERLINE));
+            lines.add(List.of(preview));
+            lines.add(Component.literal("Members").withStyle(ChatFormatting.UNDERLINE));
+            lines.add(members);
+        }
+
+        if (data.mode() == StructureMemberMode.HATCH && data.hatchFlags().flags != 0) {
+            lines.add(Component.literal("Hatches").withStyle(ChatFormatting.UNDERLINE));
+            for (HatchType hatchType : HatchType.values()) {
+                if (data.hatchFlags().allows(hatchType)) {
+                    lines.add(Component.literal("- %s".formatted(hatchType.name().toLowerCase(Locale.ROOT))));
+                }
+            }
+        }
+    }
+
+    private int iterateLines(int startY, @Nullable BiConsumer<Integer, Component> actionText,
+            @Nullable BiConsumer<Integer, List<ItemStack>> actionStacks) {
+        int y = startY;
+        for (int i = 0; i < lines.size(); i++) {
+            Object line = lines.get(i);
+            if (i > 0) {
+                Object last = lines.get(i - 1);
+                if (line instanceof List) {
+                    y += TEXT_BEFORE_IMAGE_EXTRA_ROW_HEIGHT;
+                }
+            }
+            if (line instanceof Component text) {
+                if (actionText != null) {
+                    actionText.accept(y, text);
+                }
+                y += TEXT_ROW_HEIGHT;
+            } else if (line instanceof List list) {
+                if (actionStacks != null) {
+                    actionStacks.accept(y, list);
+                }
+                y += IMAGE_ROW_HEIGHT;
+            }
+        }
+        return y;
     }
 
     @Override
     public int getHeight() {
-        int height = 0;
-
-        height += TEXT_ROW_HEIGHT;
-
-        if (renderName()) {
-            height += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderCasing()) {
-            height += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderPreview()) {
-            height += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            height += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderMembers()) {
-            height += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            height += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderHatch()) {
-            height += TEXT_ROW_HEIGHT;
-            for (HatchType hatchType : HatchType.values()) {
-                if (data.hatchFlags().allows(hatchType)) {
-                    height += TEXT_ROW_HEIGHT;
-                }
-            }
-        }
-
-        return height;
+        return iterateLines(0, null, null);
     }
 
     @Override
@@ -129,102 +154,14 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         font.drawInBatch(text, x, y, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
     }
 
-    private boolean renderName() {
-        return data.mode() == StructureMemberMode.VARIABLE;
-    }
-
-    private boolean renderPreview() {
-        return data.mode() == StructureMemberMode.SIMPLE || data.mode() == StructureMemberMode.HATCH;
-    }
-
-    private boolean renderMembers() {
-        return data.mode() == StructureMemberMode.SIMPLE || data.mode() == StructureMemberMode.HATCH;
-    }
-
-    private boolean renderCasing() {
-        return data.mode() == StructureMemberMode.HATCH;
-    }
-
-    private boolean renderHatch() {
-        return data.mode() == StructureMemberMode.HATCH && data.hatchFlags().flags != 0;
-    }
-
     @Override
     public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
-        int lineY = y;
-
-        lineY += TEXT_ROW_HEIGHT;
-
-        if (renderName()) {
-            lineY += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderCasing()) {
-            lineY += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderPreview()) {
-            lineY += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            renderRowImage(List.of(preview), font, x, lineY, graphics);
-            lineY += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderMembers()) {
-            lineY += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            renderRowImage(members, font, x, lineY, graphics);
-            lineY += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderHatch()) {
-            lineY += TEXT_ROW_HEIGHT;
-            for (HatchType hatchType : HatchType.values()) {
-                if (data.hatchFlags().allows(hatchType)) {
-                    lineY += TEXT_ROW_HEIGHT;
-                }
-            }
-        }
+        iterateLines(y, null, (lineY, stacks) -> renderRowImage(stacks, font, x, lineY, graphics));
     }
 
     @Override
     public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
-        int lineY = y;
-
-        // TODO SWEDZ: use translations
-        renderRowText(Component.literal("Mode: ").append(data.mode().text()), font, x, lineY, matrix, buffer);
-        lineY += TEXT_ROW_HEIGHT;
-
-        if (renderName()) {
-            renderRowText(Component.literal("Name: %s".formatted(data.name())), font, x, lineY, matrix, buffer);
-            lineY += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderCasing()) {
-            renderRowText(Component.literal("Casing: %s".formatted(data.casing().key.getPath())), font, x, lineY, matrix, buffer);
-            lineY += TEXT_ROW_HEIGHT;
-        }
-
-        if (renderPreview()) {
-            renderRowText(Component.literal("Preview").withStyle(ChatFormatting.UNDERLINE), font, x, lineY, matrix, buffer);
-            lineY += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            lineY += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderMembers()) {
-            renderRowText(Component.literal("Members").withStyle(ChatFormatting.UNDERLINE), font, x, lineY, matrix, buffer);
-            lineY += TEXT_BEFORE_IMAGE_ROW_HEIGHT;
-            renderRowImageText(members.size(), font, x, lineY, matrix, buffer);
-            lineY += IMAGE_ROW_HEIGHT;
-        }
-
-        if (renderHatch()) {
-            renderRowText(Component.literal("Hatches").withStyle(ChatFormatting.UNDERLINE), font, x, lineY, matrix, buffer);
-            lineY += TEXT_ROW_HEIGHT;
-            for (HatchType hatchType : HatchType.values()) {
-                if (data.hatchFlags().allows(hatchType)) {
-                    renderRowText(Component.literal("- %s".formatted(hatchType.name().toLowerCase(Locale.ROOT))), font, x, lineY, matrix, buffer);
-                    lineY += TEXT_ROW_HEIGHT;
-                }
-            }
-        }
+        iterateLines(y, (lineY, text) -> renderRowText(text, font, x, lineY, matrix, buffer),
+                (lineY, stacks) -> renderRowImageText(stacks.size(), font, x, lineY, matrix, buffer));
     }
 }

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:tin_wire"
+      "tag": "c:wires/tin"
     }
   ],
   "item_outputs": [

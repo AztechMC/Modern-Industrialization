@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:tin_wire"
+      "tag": "c:wires/tin"
     }
   ],
   "item_outputs": [

@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:aluminum_wire"
+      "tag": "c:wires/aluminum"
     }
   ],
   "item_outputs": [

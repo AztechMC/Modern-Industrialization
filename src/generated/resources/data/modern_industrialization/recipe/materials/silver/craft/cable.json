@@ -6,7 +6,7 @@
       "item": "modern_industrialization:rubber_sheet"
     },
     "w": {
-      "item": "modern_industrialization:silver_wire"
+      "tag": "c:wires/silver"
     }
   },
   "pattern": [

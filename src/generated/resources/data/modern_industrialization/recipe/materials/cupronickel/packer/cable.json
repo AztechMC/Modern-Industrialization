@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:cupronickel_wire"
+      "tag": "c:wires/cupronickel"
     }
   ],
   "item_outputs": [

@@ -6,7 +6,7 @@
       "item": "modern_industrialization:rubber_sheet"
     },
     "w": {
-      "item": "modern_industrialization:tin_wire"
+      "tag": "c:wires/tin"
     }
   },
   "pattern": [

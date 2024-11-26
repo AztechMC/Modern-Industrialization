@@ -6,7 +6,7 @@
       "item": "modern_industrialization:rubber_sheet"
     },
     "w": {
-      "item": "modern_industrialization:electrum_wire"
+      "tag": "c:wires/electrum"
     }
   },
   "pattern": [

@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#c:wires/aluminum",
+    "#c:wires/annealed_copper",
+    "#c:wires/copper",
+    "#c:wires/cupronickel",
+    "#c:wires/electrum",
+    "#c:wires/kanthal",
+    "#c:wires/platinum",
+    "#c:wires/silver",
+    "#c:wires/superconductor",
+    "#c:wires/tin"
+  ]
+}

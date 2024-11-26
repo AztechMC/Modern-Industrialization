@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:electrum_wire"
+      "tag": "c:wires/electrum"
     }
   ],
   "item_outputs": [

@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:copper_wire"
+      "tag": "c:wires/copper"
     }
   ],
   "item_outputs": [

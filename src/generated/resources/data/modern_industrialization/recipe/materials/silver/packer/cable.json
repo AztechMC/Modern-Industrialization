@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:silver_wire"
+      "tag": "c:wires/silver"
     }
   ],
   "item_outputs": [

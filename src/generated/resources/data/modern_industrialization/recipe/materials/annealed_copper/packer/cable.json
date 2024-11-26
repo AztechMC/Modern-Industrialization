@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:annealed_copper_wire"
+      "tag": "c:wires/annealed_copper"
     }
   ],
   "item_outputs": [

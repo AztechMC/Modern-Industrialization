@@ -9,7 +9,7 @@
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:platinum_wire"
+      "tag": "c:wires/platinum"
     }
   ],
   "item_outputs": [

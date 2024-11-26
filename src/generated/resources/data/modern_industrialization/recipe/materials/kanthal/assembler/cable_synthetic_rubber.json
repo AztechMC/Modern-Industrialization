@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:kanthal_wire"
+      "tag": "c:wires/kanthal"
     }
   ],
   "item_outputs": [

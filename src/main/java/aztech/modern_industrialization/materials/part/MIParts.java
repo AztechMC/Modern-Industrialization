@@ -27,6 +27,8 @@ import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Typ
 
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -101,20 +103,26 @@ public class MIParts {
     public static final PartTemplate[] ITEM_PURE_METAL = new PartTemplate[] { INGOT, NUGGET, TINY_DUST, DUST };
 
     public static final List<PartKey> TAGGED_PARTS_LIST = PartKeyProvider.of(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, ROD,
-            TINY_DUST, RAW_METAL, RAW_METAL_BLOCK);
+            TINY_DUST, RAW_METAL, RAW_METAL_BLOCK, WIRE);
     public static final Set<PartKey> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
-    public static final Map<PartKey, CategoryTag> CATEGORY_TAGS = Map.of(
-            BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"),
-            DUST.key(), new CategoryTag(Tags.Items.DUSTS, "Dusts"),
-            GEAR.key(), new CategoryTag("c:gears", "Gears"),
-            INGOT.key(), new CategoryTag(Tags.Items.INGOTS, "Ingots"),
-            NUGGET.key(), new CategoryTag(Tags.Items.NUGGETS, "Nuggets"),
-            PLATE.key(), new CategoryTag("c:plates", "Plates"),
-            ROD.key(), new CategoryTag(Tags.Items.RODS, "Rods"),
-            RAW_METAL.key(), new CategoryTag(Tags.Items.RAW_MATERIALS, "Raw Ores"),
-            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"),
-            RAW_METAL_BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"));
+    public static final Map<PartKey, CategoryTag> CATEGORY_TAGS;
+
+    static {
+        Map<PartKey, CategoryTag> categoryTags = new HashMap<>();
+        categoryTags.put(BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"));
+        categoryTags.put(DUST.key(), new CategoryTag(Tags.Items.DUSTS, "Dusts"));
+        categoryTags.put(GEAR.key(), new CategoryTag("c:gears", "Gears"));
+        categoryTags.put(INGOT.key(), new CategoryTag(Tags.Items.INGOTS, "Ingots"));
+        categoryTags.put(NUGGET.key(), new CategoryTag(Tags.Items.NUGGETS, "Nuggets"));
+        categoryTags.put(PLATE.key(), new CategoryTag("c:plates", "Plates"));
+        categoryTags.put(ROD.key(), new CategoryTag(Tags.Items.RODS, "Rods"));
+        categoryTags.put(RAW_METAL.key(), new CategoryTag(Tags.Items.RAW_MATERIALS, "Raw Ores"));
+        categoryTags.put(TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"));
+        categoryTags.put(RAW_METAL_BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"));
+        categoryTags.put(WIRE.key(), new CategoryTag("c:wires", "Wires"));
+        CATEGORY_TAGS = Collections.unmodifiableMap(categoryTags);
+    }
 
     public record CategoryTag(String tag, String englishName) {
         public CategoryTag(TagKey<Item> tag, String englishName) {

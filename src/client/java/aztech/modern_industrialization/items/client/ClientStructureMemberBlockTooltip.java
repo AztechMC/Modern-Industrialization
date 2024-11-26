@@ -51,17 +51,14 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
     private final StructureMultiblockMemberBlockItem.TooltipData data;
 
-    private final ItemStack preview;
-    private final List<ItemStack> members;
-
     private final List<Object> lines = new ArrayList<>();
 
     public ClientStructureMemberBlockTooltip(StructureMultiblockMemberBlockItem.TooltipData data) {
         this.data = data;
 
-        preview = data.preview().getBlock().asItem().getDefaultInstance();
+        ItemStack preview = data.preview().getBlock().asItem().getDefaultInstance();
 
-        members = new ArrayList<>();
+        List<ItemStack> members = new ArrayList<>();
         for (StructureMemberTest member : data.members()) {
             if (member instanceof StateStructureMemberTest stateTest) {
                 members.add(stateTest.blockState().getBlock().asItem().getDefaultInstance());

@@ -139,10 +139,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         inv.fluidPositions.write(buf);
         buf.writeInt(guiComponents.size());
         // Write components
-        guiComponents.forEach(component -> {
+        for (GuiComponent.Server component : guiComponents) {
             buf.writeResourceLocation(component.getId());
             component.writeInitialData(buf);
-        });
+        }
         // Write GUI params
         guiParams.write(buf);
     }
@@ -201,13 +201,17 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
-        icomponents.forEach(component -> component.writeClientNbt(tag, registries));
+        for (IComponent component : icomponents) {
+            component.writeClientNbt(tag, registries);
+        }
         return tag;
     }
 
     @Override
     public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        icomponents.forEach(component -> component.writeNbt(tag, registries));
+        for (IComponent component : icomponents) {
+            component.writeNbt(tag, registries);
+        }
     }
 
     @Override
@@ -217,10 +221,14 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
-            icomponents.forEach(component -> component.readNbt(tag, registries, isUpgradingMachine));
+            for (IComponent component : icomponents) {
+                component.readNbt(tag, registries, isUpgradingMachine);
+            }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");
-            icomponents.forEach(component -> component.readClientNbt(tag, registries));
+            for (IComponent component : icomponents) {
+                component.readClientNbt(tag, registries);
+            }
             if (forceChunkRemesh) {
                 WorldHelper.forceChunkRemesh(level, worldPosition);
                 requestModelDataUpdate();

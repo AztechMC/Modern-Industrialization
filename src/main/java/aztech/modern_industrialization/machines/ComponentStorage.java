@@ -26,15 +26,23 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
+public sealed class ComponentStorage<C> implements Iterable<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
     protected final List<C> components = new ArrayList<>();
+
+    @NotNull
+    @Override
+    public Iterator<C> iterator() {
+        return components.iterator();
+    }
 
     @SafeVarargs
     public final void register(C... components) {
@@ -54,10 +62,6 @@ public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, Comp
 
     public final C get(int index) {
         return components.get(index);
-    }
-
-    public final void forEach(Consumer<C> action) {
-        components.forEach(action);
     }
 
     public final void forEachIndexed(BiConsumer<Integer, C> action) {

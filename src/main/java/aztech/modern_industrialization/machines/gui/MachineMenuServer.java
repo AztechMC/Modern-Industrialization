@@ -42,7 +42,9 @@ public class MachineMenuServer extends MachineMenuCommon {
         super(syncId, playerInventory, blockEntity.getInventory(), guiParams, blockEntity.getGuiComponents());
         this.blockEntity = blockEntity;
         trackedData = new ArrayList<>();
-        blockEntity.getGuiComponents().forEach(component -> trackedData.add(component.copyData()));
+        for (GuiComponent.Server component : blockEntity.getGuiComponents()) {
+            trackedData.add(component.copyData());
+        }
     }
 
     @Override

@@ -53,7 +53,9 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
         }
 
         // Gui components first (we want to prioritize them with shift click)
-        guiComponents.forEach(component -> component.setupMenu(this));
+        for (GuiComponent.Common component : guiComponents) {
+            component.setupMenu(this);
+        }
 
         // Configurable slots
         for (int i = 0; i < inventory.getItemStacks().size(); ++i) {

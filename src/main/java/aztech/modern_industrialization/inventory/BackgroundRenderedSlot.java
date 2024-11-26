@@ -23,19 +23,18 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.MI;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Implement this on a slot to render its background automatically.
  */
 public interface BackgroundRenderedSlot {
     /**
-     * @return the {@link ResourceLocation} of the slot atlas texture to use for the slot background. When null, uses the MI slot atlas
+     * @return the {@link ResourceLocation} of the slot atlas texture to use for the slot background.
      */
-    @Nullable
     default ResourceLocation getBackgroundAtlasLocation() {
-        return null;
+        return MI.id("textures/gui/container/slot_atlas.png");
     }
 
     default int getBackgroundU() {

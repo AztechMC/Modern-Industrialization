@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.client;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
@@ -36,7 +37,6 @@ import aztech.modern_industrialization.machines.multiblocks.structure.member.tes
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -44,6 +44,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -54,6 +55,8 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public final class ClientStructureMemberBlockTooltip implements ClientTooltipComponent {
+    private static final ResourceLocation HATCH_ICON_ATLAS = MI.id("textures/gui/tooltip/hatch_icons.png");
+
     private final StructureMultiblockMemberBlockItem.TooltipData data;
 
     private final List<Line> lines = new ArrayList<>();
@@ -76,22 +79,22 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             BlockState preview = data.preview();
             if (preview != null && !preview.isAir()) {
                 ItemStack previewStack = preview.getBlock().asItem().getDefaultInstance();
-                lines.add(new ItemStacksLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" "),
-                        List.of(new ItemStacksLine.StackEntry(previewStack))));
+                lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" "),
+                        List.of(new IconsLine.StackEntry(previewStack)), 6));
             }
 
-            List<ItemStacksLine.Entry> members = new ArrayList<>();
+            List<IconsLine.Entry> members = new ArrayList<>();
             if (data.members() != null) {
                 for (StructureMemberTest member : data.members()) {
                     if (member instanceof StateStructureMemberTest stateTest) {
-                        members.add(new ItemStacksLine.StackEntry(stateTest.blockState().getBlock().asItem().getDefaultInstance()));
+                        members.add(new IconsLine.StackEntry(stateTest.blockState().getBlock().asItem().getDefaultInstance()));
                     } else if (member instanceof TagStructureMemberTest tagTest) {
-                        members.add(new ItemStacksLine.TagEntry(tagTest.blockTag()));
+                        members.add(new IconsLine.TagEntry(tagTest.blockTag()));
                     }
                 }
             }
             if (!members.isEmpty()) {
-                lines.add(new ItemStacksLine(MIText.StructureMultiblockMemberTooltipMembers.text().append(" "), members));
+                lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipMembers.text().append(" "), members, 6));
             }
         }
 
@@ -103,17 +106,13 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
             HatchFlags hatchFlags = data.hatchFlags();
             if (hatchFlags != null && hatchFlags.flags != 0) {
-                StringBuilder hatchText = new StringBuilder();
+                List<IconsLine.Entry> hatches = new ArrayList<>();
                 for (HatchType hatchType : HatchType.values()) {
                     if (hatchFlags.allows(hatchType)) {
-                        if (!hatchText.isEmpty()) {
-                            hatchText.append(", ");
-                        }
-                        hatchText.append(hatchType.name().toLowerCase(Locale.ROOT));
+                        hatches.add(new IconsLine.HatchEntry(hatchType));
                     }
                 }
-                lines.add(new ComponentLine(MIText.StructureMultiblockMemberTooltipHatches.text().append(" "),
-                        Component.literal(hatchText.toString())));
+                lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipHatches.text().append(" "), hatches, 9));
             }
         }
     }
@@ -211,7 +210,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         }
     }
 
-    private record ItemStacksLine(Component label, List<Entry> entries) implements Line {
+    private record IconsLine(Component label, List<Entry> entries, int maxToDisplay) implements Line {
 
         @Override
         public int height(Font font) {
@@ -220,17 +219,17 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
         @Override
         public int width(Font font) {
-            return font.width(label) + (18 * Math.min(6, entries.size())) + (entries.size() >= 6 ? font.width(Component.literal("+ ...")) : 0);
+            return font.width(label) + (18 * Math.min(maxToDisplay, entries.size()))
+                    + (entries.size() > maxToDisplay ? font.width(Component.literal("+ ...")) : 0);
         }
 
         @Override
         public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
             int i = 0;
             for (var entry : entries) {
-                if (entry.renderImage(font, x + (i * 18) + font.width(label), y + 1, graphics)) {
-                    if (++i >= 5) {
-                        break;
-                    }
+                entry.renderImage(font, x + (i * 18) + font.width(label), y + 1, graphics);
+                if (++i >= maxToDisplay) {
+                    break;
                 }
             }
         }
@@ -239,28 +238,28 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
             font.drawInBatch(label, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
 
-            if (entries.size() >= 6) {
-                font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + (18 * 5) + 2 + font.width(label), y + 5, -1,
+            if (entries.size() > maxToDisplay) {
+                font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + (18 * maxToDisplay) + 2 + font.width(label),
+                        y + 5, -1,
                         true, matrix, buffer,
                         Font.DisplayMode.NORMAL, 0, 0xF000F0);
             }
         }
 
         private interface Entry {
-            boolean renderImage(Font font, int x, int y, GuiGraphics graphics);
+            void renderImage(Font font, int x, int y, GuiGraphics graphics);
         }
 
         private record StackEntry(ItemStack stack) implements Entry {
             @Override
-            public boolean renderImage(Font font, int x, int y, GuiGraphics graphics) {
+            public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
                 RenderHelper.renderAndDecorateItem(graphics, font, stack, x, y);
-                return true;
             }
         }
 
         private record TagEntry(TagKey<Block> tag) implements Entry {
             @Override
-            public boolean renderImage(Font font, int x, int y, GuiGraphics graphics) {
+            public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
                 var maybeTag = BuiltInRegistries.BLOCK.getTag(tag);
                 ItemStack stack;
                 if (maybeTag.isPresent()) {
@@ -275,8 +274,14 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
                 graphics.pose().translate(0, 0, 200);
                 graphics.drawString(font, Component.literal("#").withStyle(MITooltips.DEFAULT_STYLE), x, y, 0xFFFFFF, true);
                 graphics.pose().popPose();
+            }
+        }
 
-                return true;
+        private record HatchEntry(HatchType type) implements Entry {
+            @Override
+            public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+                int u = type.getId() * 16;
+                graphics.blit(HATCH_ICON_ATLAS, x, y, u, 0, 16, 16);
             }
         }
     }

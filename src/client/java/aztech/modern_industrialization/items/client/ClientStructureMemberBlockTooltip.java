@@ -73,7 +73,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         }
 
         if (data.mode() == StructureMemberMode.HATCH) {
-            lines.add(Component.literal("Casing: %s".formatted(data.casing().key.getPath())));
+            lines.add(Component.literal("Casing: %s".formatted(data.casing().key.toString())));
         }
 
         if (data.mode() == StructureMemberMode.SIMPLE || data.mode() == StructureMemberMode.HATCH) {
@@ -126,8 +126,19 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
     @Override
     public int getWidth(Font font) {
-        // TODO SWEDZ: get actual width
-        return 18 * 6;
+        int width = 0;
+        for (Object line : lines) {
+            int lineWidth = 0;
+            if (line instanceof Component text) {
+                lineWidth = font.width(text.getVisualOrderText());
+            } else if (line instanceof List list) {
+                lineWidth = 18 * 6;
+            }
+            if (lineWidth > width) {
+                width = lineWidth;
+            }
+        }
+        return width;
     }
 
     private void renderRowImage(List<ItemStack> stacks, Font font, int x, int y, GuiGraphics graphics) {

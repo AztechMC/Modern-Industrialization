@@ -53,7 +53,7 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
         }
 
         // Gui components first (we want to prioritize them with shift click)
-        for (GuiComponent.Common component : guiComponents) {
+        for (var component : guiComponents) {
             component.setupMenu(this);
         }
 

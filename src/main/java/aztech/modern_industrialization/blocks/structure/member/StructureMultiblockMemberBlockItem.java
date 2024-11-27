@@ -53,7 +53,11 @@ public class StructureMultiblockMemberBlockItem extends BlockItem {
                 ? stack.get(DataComponents.BLOCK_ENTITY_DATA).copyTag().getString("mode")
                 : "";
         if (!modeId.isEmpty()) {
-            return StructureMemberMode.valueOf(modeId.toUpperCase(Locale.ROOT));
+            try {
+                return StructureMemberMode.valueOf(modeId.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException ignored) {
+                return StructureMemberMode.SIMPLE;
+            }
         }
         return StructureMemberMode.SIMPLE;
     }

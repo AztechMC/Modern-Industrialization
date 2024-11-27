@@ -26,6 +26,8 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
+import aztech.modern_industrialization.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
 import aztech.modern_industrialization.thirdparty.fabricrendering.QuadBuffer;
 import aztech.modern_industrialization.thirdparty.fabricrendering.QuadEmitter;
@@ -53,6 +55,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -60,6 +63,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -301,5 +305,19 @@ public class RenderHelper {
     public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, @Nullable String text) {
         guiGraphics.renderItem(stack, x, y);
         guiGraphics.renderItemDecorations(font, stack, x, y, text);
+    }
+
+    public static void renderMachineCasingItem(GuiGraphics guiGraphics, MachineCasing casing, int x, int y) {
+        var renderer = Minecraft.getInstance().getItemRenderer();
+        var pose = guiGraphics.pose();
+
+        BakedModel casingModel = MachineBakedModel.getCasingModel(casing);
+
+        pose.pushPose();
+        pose.translate(x + 8, y + 8, 150);
+        pose.scale(16, -16, 16);
+        renderer.render(Items.STONE.getDefaultInstance(), ItemDisplayContext.GUI, false, pose, guiGraphics.bufferSource(), 0xF000F0,
+                OverlayTexture.NO_OVERLAY, casingModel);
+        pose.popPose();
     }
 }

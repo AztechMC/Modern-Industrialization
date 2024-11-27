@@ -26,6 +26,8 @@ package aztech.modern_industrialization.items.client;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
@@ -41,6 +43,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -52,51 +55,68 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
     public ClientStructureMemberBlockTooltip(StructureMultiblockMemberBlockItem.TooltipData data) {
         this.data = data;
 
-        ItemStack preview = data.preview().getBlock().asItem().getDefaultInstance();
+        StructureMemberMode mode = data.mode();
 
-        List<ItemStack> members = new ArrayList<>();
-        for (StructureMemberTest member : data.members()) {
-            if (member instanceof StateStructureMemberTest stateTest) {
-                members.add(stateTest.blockState().getBlock().asItem().getDefaultInstance());
+        // TODO SWEDZ: use translations
+        lines.add(Component.literal("Mode: ").append(mode.text()));
+
+        if (mode == StructureMemberMode.VARIABLE) {
+            String name = data.name();
+            if (name != null && !name.isEmpty()) {
+                lines.add(Component.literal("Name: %s".formatted(name)));
             }
         }
 
-        // TODO SWEDZ: use translations
-        lines.add(Component.literal("Mode: ").append(data.mode().text()));
+        if (mode == StructureMemberMode.SIMPLE || mode == StructureMemberMode.HATCH) {
+            BlockState preview = data.preview();
+            if (preview != null && !preview.isAir()) {
+                ItemStack previewStack = preview.getBlock().asItem().getDefaultInstance();
+                lines.add(Component.literal("Preview:").withStyle(ChatFormatting.UNDERLINE));
+                lines.add(List.of(previewStack));
+            }
 
-        if (data.mode() == StructureMemberMode.VARIABLE) {
-            lines.add(Component.literal("Name: %s".formatted(data.name())));
+            List<ItemStack> members = new ArrayList<>();
+            if (data.members() != null) {
+                for (StructureMemberTest member : data.members()) {
+                    if (member instanceof StateStructureMemberTest stateTest) {
+                        members.add(stateTest.blockState().getBlock().asItem().getDefaultInstance());
+                    }
+                }
+            }
+            if (!members.isEmpty()) {
+                lines.add(Component.literal("Members:").withStyle(ChatFormatting.UNDERLINE));
+                lines.add(members);
+            }
         }
 
-        if (data.mode() == StructureMemberMode.HATCH) {
-            lines.add(Component.literal("Casing: %s".formatted(data.casing().key.toString())));
-        }
+        if (mode == StructureMemberMode.HATCH) {
+            MachineCasing casing = data.casing();
+            if (casing != null) {
+                lines.add(Component.literal("Casing:").withStyle(ChatFormatting.UNDERLINE));
+                lines.add(casing);
+            }
 
-        if (data.mode() == StructureMemberMode.SIMPLE || data.mode() == StructureMemberMode.HATCH) {
-            lines.add(Component.literal("Preview").withStyle(ChatFormatting.UNDERLINE));
-            lines.add(List.of(preview));
-            lines.add(Component.literal("Members").withStyle(ChatFormatting.UNDERLINE));
-            lines.add(members);
-        }
-
-        if (data.mode() == StructureMemberMode.HATCH && data.hatchFlags().flags != 0) {
-            lines.add(Component.literal("Hatches").withStyle(ChatFormatting.UNDERLINE));
-            for (HatchType hatchType : HatchType.values()) {
-                if (data.hatchFlags().allows(hatchType)) {
-                    lines.add(Component.literal("- %s".formatted(hatchType.name().toLowerCase(Locale.ROOT))));
+            HatchFlags hatchFlags = data.hatchFlags();
+            if (hatchFlags != null && hatchFlags.flags != 0) {
+                lines.add(Component.literal("Hatches:").withStyle(ChatFormatting.UNDERLINE));
+                for (HatchType hatchType : HatchType.values()) {
+                    if (hatchFlags.allows(hatchType)) {
+                        lines.add(Component.literal("- %s".formatted(hatchType.name().toLowerCase(Locale.ROOT))));
+                    }
                 }
             }
         }
     }
 
     private int iterateLines(int startY, @Nullable BiConsumer<Integer, Component> actionText,
-            @Nullable BiConsumer<Integer, List<ItemStack>> actionStacks) {
+            @Nullable BiConsumer<Integer, List<ItemStack>> actionStacks,
+            @Nullable BiConsumer<Integer, MachineCasing> actionCasing) {
         int y = startY;
         for (int i = 0; i < lines.size(); i++) {
             Object line = lines.get(i);
             if (i > 0) {
                 Object last = lines.get(i - 1);
-                if (line instanceof List) {
+                if (line instanceof List || line instanceof MachineCasing) {
                     y += 4;
                 }
             }
@@ -110,6 +130,11 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
                     actionStacks.accept(y, list);
                 }
                 y += 20;
+            } else if (line instanceof MachineCasing casing) {
+                if (actionCasing != null) {
+                    actionCasing.accept(y, casing);
+                }
+                y += 20;
             }
         }
         return y;
@@ -117,7 +142,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
     @Override
     public int getHeight() {
-        return iterateLines(0, null, null);
+        return iterateLines(0, null, null, null);
     }
 
     @Override
@@ -127,8 +152,10 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             int lineWidth = 0;
             if (line instanceof Component text) {
                 lineWidth = font.width(text.getVisualOrderText());
-            } else if (line instanceof List list) {
+            } else if (line instanceof List) {
                 lineWidth = 18 * 6;
+            } else if (line instanceof MachineCasing) {
+                lineWidth = 20;
             }
             if (lineWidth > width) {
                 width = lineWidth;
@@ -147,6 +174,10 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         }
     }
 
+    private void renderRowImage(MachineCasing casing, Font font, int x, int y, GuiGraphics graphics) {
+        RenderHelper.renderMachineCasingItem(graphics, casing, x, y);
+    }
+
     private void renderRowImageText(int count, Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
         if (count >= 6) {
             font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + 18 * 5, y + 5, -1, true, matrix, buffer,
@@ -160,12 +191,13 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
     @Override
     public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
-        iterateLines(y, null, (lineY, stacks) -> renderRowImage(stacks, font, x, lineY, graphics));
+        iterateLines(y, null, (lineY, stacks) -> renderRowImage(stacks, font, x, lineY, graphics),
+                (lineY, casing) -> renderRowImage(casing, font, x, lineY, graphics));
     }
 
     @Override
     public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
         iterateLines(y, (lineY, text) -> renderRowText(text, font, x, lineY, matrix, buffer),
-                (lineY, stacks) -> renderRowImageText(stacks.size(), font, x, lineY, matrix, buffer));
+                (lineY, stacks) -> renderRowImageText(stacks.size(), font, x, lineY, matrix, buffer), null);
     }
 }

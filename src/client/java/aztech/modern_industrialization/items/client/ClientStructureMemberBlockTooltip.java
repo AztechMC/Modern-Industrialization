@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.client;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
@@ -31,18 +32,23 @@ import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.TagStructureMemberTest;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.BiConsumer;
-import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -50,20 +56,19 @@ import org.joml.Matrix4f;
 public final class ClientStructureMemberBlockTooltip implements ClientTooltipComponent {
     private final StructureMultiblockMemberBlockItem.TooltipData data;
 
-    private final List<Object> lines = new ArrayList<>();
+    private final List<Line> lines = new ArrayList<>();
 
     public ClientStructureMemberBlockTooltip(StructureMultiblockMemberBlockItem.TooltipData data) {
         this.data = data;
 
         StructureMemberMode mode = data.mode();
 
-        // TODO SWEDZ: use translations
-        lines.add(Component.literal("Mode: ").append(mode.text()));
+        lines.add(new ComponentLine(MIText.StructureMultiblockMemberTooltipMode.text(mode.text())));
 
         if (mode == StructureMemberMode.VARIABLE) {
             String name = data.name();
             if (name != null && !name.isEmpty()) {
-                lines.add(Component.literal("Name: %s".formatted(name)));
+                lines.add(new ComponentLine(MIText.StructureMultiblockMemberTooltipVariableName.text(name)));
             }
         }
 
@@ -71,92 +76,63 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             BlockState preview = data.preview();
             if (preview != null && !preview.isAir()) {
                 ItemStack previewStack = preview.getBlock().asItem().getDefaultInstance();
-                lines.add(Component.literal("Preview:").withStyle(ChatFormatting.UNDERLINE));
-                lines.add(List.of(previewStack));
+                lines.add(new ItemStacksLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" "),
+                        List.of(new ItemStacksLine.StackEntry(previewStack))));
             }
 
-            List<ItemStack> members = new ArrayList<>();
+            List<ItemStacksLine.Entry> members = new ArrayList<>();
             if (data.members() != null) {
                 for (StructureMemberTest member : data.members()) {
                     if (member instanceof StateStructureMemberTest stateTest) {
-                        members.add(stateTest.blockState().getBlock().asItem().getDefaultInstance());
+                        members.add(new ItemStacksLine.StackEntry(stateTest.blockState().getBlock().asItem().getDefaultInstance()));
+                    } else if (member instanceof TagStructureMemberTest tagTest) {
+                        members.add(new ItemStacksLine.TagEntry(tagTest.blockTag()));
                     }
                 }
             }
             if (!members.isEmpty()) {
-                lines.add(Component.literal("Members:").withStyle(ChatFormatting.UNDERLINE));
-                lines.add(members);
+                lines.add(new ItemStacksLine(MIText.StructureMultiblockMemberTooltipMembers.text().append(" "), members));
             }
         }
 
         if (mode == StructureMemberMode.HATCH) {
             MachineCasing casing = data.casing();
             if (casing != null) {
-                lines.add(Component.literal("Casing:").withStyle(ChatFormatting.UNDERLINE));
-                lines.add(casing);
+                lines.add(new MachineCasingLine(MIText.StructureMultiblockMemberTooltipCasing.text().append(" "), casing));
             }
 
             HatchFlags hatchFlags = data.hatchFlags();
             if (hatchFlags != null && hatchFlags.flags != 0) {
-                lines.add(Component.literal("Hatches:").withStyle(ChatFormatting.UNDERLINE));
+                StringBuilder hatchText = new StringBuilder();
                 for (HatchType hatchType : HatchType.values()) {
                     if (hatchFlags.allows(hatchType)) {
-                        lines.add(Component.literal("- %s".formatted(hatchType.name().toLowerCase(Locale.ROOT))));
+                        if (!hatchText.isEmpty()) {
+                            hatchText.append(", ");
+                        }
+                        hatchText.append(hatchType.name().toLowerCase(Locale.ROOT));
                     }
                 }
+                lines.add(new ComponentLine(MIText.StructureMultiblockMemberTooltipHatches.text().append(" "),
+                        Component.literal(hatchText.toString())));
             }
         }
-    }
-
-    private int iterateLines(int startY, @Nullable BiConsumer<Integer, Component> actionText,
-            @Nullable BiConsumer<Integer, List<ItemStack>> actionStacks,
-            @Nullable BiConsumer<Integer, MachineCasing> actionCasing) {
-        int y = startY;
-        for (int i = 0; i < lines.size(); i++) {
-            Object line = lines.get(i);
-            if (i > 0) {
-                Object last = lines.get(i - 1);
-                if (line instanceof List || line instanceof MachineCasing) {
-                    y += 4;
-                }
-            }
-            if (line instanceof Component text) {
-                if (actionText != null) {
-                    actionText.accept(y, text);
-                }
-                y += 9;
-            } else if (line instanceof List list) {
-                if (actionStacks != null) {
-                    actionStacks.accept(y, list);
-                }
-                y += 20;
-            } else if (line instanceof MachineCasing casing) {
-                if (actionCasing != null) {
-                    actionCasing.accept(y, casing);
-                }
-                y += 20;
-            }
-        }
-        return y;
     }
 
     @Override
     public int getHeight() {
-        return iterateLines(0, null, null, null);
+        Font font = Minecraft.getInstance().font;
+        int height = 0;
+        for (Line line : lines) {
+            height += line.height(font);
+        }
+        return height;
     }
 
     @Override
     public int getWidth(Font font) {
         int width = 0;
-        for (Object line : lines) {
-            int lineWidth = 0;
-            if (line instanceof Component text) {
-                lineWidth = font.width(text.getVisualOrderText());
-            } else if (line instanceof List) {
-                lineWidth = 18 * 6;
-            } else if (line instanceof MachineCasing) {
-                lineWidth = 20;
-            }
+        for (Line line : lines) {
+            int lineWidth = line.width(font);
             if (lineWidth > width) {
                 width = lineWidth;
             }
@@ -164,40 +140,166 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         return width;
     }
 
-    private void renderRowImage(List<ItemStack> stacks, Font font, int x, int y, GuiGraphics graphics) {
-        int i = 0;
-        for (var stack : stacks) {
-            RenderHelper.renderAndDecorateItem(graphics, font, stack, x + i * 18, y);
-            if (++i >= 5) {
-                break;
-            }
-        }
-    }
-
-    private void renderRowImage(MachineCasing casing, Font font, int x, int y, GuiGraphics graphics) {
-        RenderHelper.renderMachineCasingItem(graphics, casing, x, y);
-    }
-
-    private void renderRowImageText(int count, Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
-        if (count >= 6) {
-            font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + 18 * 5, y + 5, -1, true, matrix, buffer,
-                    Font.DisplayMode.NORMAL, 0, 0xF000F0);
-        }
-    }
-
-    private void renderRowText(Component text, Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
-        font.drawInBatch(text, x, y, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
-    }
-
     @Override
     public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
-        iterateLines(y, null, (lineY, stacks) -> renderRowImage(stacks, font, x, lineY, graphics),
-                (lineY, casing) -> renderRowImage(casing, font, x, lineY, graphics));
+        int lineY = y;
+        for (Line line : lines) {
+            line.renderImage(font, x, lineY, graphics);
+            lineY += line.height(font);
+        }
     }
 
     @Override
     public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
-        iterateLines(y, (lineY, text) -> renderRowText(text, font, x, lineY, matrix, buffer),
-                (lineY, stacks) -> renderRowImageText(stacks.size(), font, x, lineY, matrix, buffer), null);
+        int lineY = y;
+        for (Line line : lines) {
+            line.renderText(font, x, lineY, matrix, buffer);
+            lineY += line.height(font);
+        }
+    }
+
+    private interface Line {
+        int height(Font font);
+
+        int width(Font font);
+
+        default void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+        }
+
+        default void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
+        }
+    }
+
+    private record ComponentLine(@Nullable Component label, Component text) implements Line {
+        public ComponentLine(Component text) {
+            this(null, text);
+        }
+
+        // 200 is the max width used by most tooltips
+        private static final int MAX_WIDTH = 200;
+
+        private Component fullText() {
+            return label == null ? text : label.copy().append(text);
+        }
+
+        private int labelWidth(Font font) {
+            return label == null ? 0 : font.width(label);
+        }
+
+        @Override
+        public int height(Font font) {
+            return 9 * font.split(text, MAX_WIDTH - labelWidth(font)).size();
+        }
+
+        @Override
+        public int width(Font font) {
+            return Math.min(font.width(fullText().getVisualOrderText()), MAX_WIDTH);
+        }
+
+        @Override
+        public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
+            if (label != null) {
+                font.drawInBatch(label, x, y, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+            }
+            int labelWidth = labelWidth(font);
+            int lineY = y;
+            for (FormattedCharSequence line : font.split(text, MAX_WIDTH - labelWidth)) {
+                int lineX = x + labelWidth;
+                font.drawInBatch(line, lineX, lineY, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+                lineY += 9;
+            }
+        }
+    }
+
+    private record ItemStacksLine(Component label, List<Entry> entries) implements Line {
+
+        @Override
+        public int height(Font font) {
+            return 18;
+        }
+
+        @Override
+        public int width(Font font) {
+            return font.width(label) + (18 * Math.min(6, entries.size())) + (entries.size() >= 6 ? font.width(Component.literal("+ ...")) : 0);
+        }
+
+        @Override
+        public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+            int i = 0;
+            for (var entry : entries) {
+                if (entry.renderImage(font, x + (i * 18) + font.width(label), y + 1, graphics)) {
+                    if (++i >= 5) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
+            font.drawInBatch(label, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+
+            if (entries.size() >= 6) {
+                font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + (18 * 5) + 2 + font.width(label), y + 5, -1,
+                        true, matrix, buffer,
+                        Font.DisplayMode.NORMAL, 0, 0xF000F0);
+            }
+        }
+
+        private interface Entry {
+            boolean renderImage(Font font, int x, int y, GuiGraphics graphics);
+        }
+
+        private record StackEntry(ItemStack stack) implements Entry {
+            @Override
+            public boolean renderImage(Font font, int x, int y, GuiGraphics graphics) {
+                RenderHelper.renderAndDecorateItem(graphics, font, stack, x, y);
+                return true;
+            }
+        }
+
+        private record TagEntry(TagKey<Block> tag) implements Entry {
+            @Override
+            public boolean renderImage(Font font, int x, int y, GuiGraphics graphics) {
+                var maybeTag = BuiltInRegistries.BLOCK.getTag(tag);
+                ItemStack stack;
+                if (maybeTag.isPresent()) {
+                    var blocks = maybeTag.get();
+                    stack = blocks.get(0).value().asItem().getDefaultInstance();
+                } else {
+                    stack = Items.BARRIER.getDefaultInstance();
+                }
+                RenderHelper.renderAndDecorateItem(graphics, font, stack, x, y);
+
+                graphics.pose().pushPose();
+                graphics.pose().translate(0, 0, 200);
+                graphics.drawString(font, Component.literal("#").withStyle(MITooltips.DEFAULT_STYLE), x, y, 0xFFFFFF, true);
+                graphics.pose().popPose();
+
+                return true;
+            }
+        }
+    }
+
+    private record MachineCasingLine(Component label, MachineCasing casing) implements Line {
+        @Override
+        public int height(Font font) {
+            return 18;
+        }
+
+        @Override
+        public int width(Font font) {
+            return font.width(label) + 20;
+        }
+
+        @Override
+        public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+            RenderHelper.renderMachineCasingItem(graphics, casing, x + font.width(label), y + 1);
+        }
+
+        @Override
+        public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
+            font.drawInBatch(label, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+        }
     }
 }

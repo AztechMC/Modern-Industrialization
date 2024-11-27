@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.gui.structure;
+package aztech.modern_industrialization.client.screen.structure;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIText;

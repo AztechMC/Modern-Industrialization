@@ -305,7 +305,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
 
         @Override
         public int width(Font font) {
-            return font.width(label) + 20 + font.width(Component.literal(casing.key.toString()));
+            return font.width(label) + 20 + font.width(casing.getDisplayName());
         }
 
         @Override
@@ -317,8 +317,8 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
             font.drawInBatch(label, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
 
-            font.drawInBatch(Component.literal(casing.key.toString()), x + font.width(label) + 20, y + 5, -1, true, matrix, buffer,
-                    Font.DisplayMode.NORMAL, 0, 0xF000F0);
+            font.drawInBatch(casing.getDisplayName().copy().withStyle(MITooltips.DEFAULT_STYLE), x + font.width(label) + 20, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0,
+                    0xF000F0);
         }
     }
 }

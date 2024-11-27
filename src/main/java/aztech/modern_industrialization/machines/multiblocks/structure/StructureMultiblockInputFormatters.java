@@ -44,6 +44,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public final class StructureMultiblockInputFormatters {
+    public static boolean isValidIdCharacter(char character) {
+        return (character >= '0' && character <= '9') || (character >= 'a' && character <= 'z') || character == '_' || character == ':';
+    }
+
+    @Nullable
+    public static ResourceLocation id(String input) {
+        for (char character : input.toCharArray()) {
+            if (!isValidIdCharacter(character)) {
+                return null;
+            }
+        }
+        return ResourceLocation.tryParse(input);
+    }
+
     @Nullable
     public static MachineCasing casing(String input) {
         if (input == null || input.isEmpty()) {

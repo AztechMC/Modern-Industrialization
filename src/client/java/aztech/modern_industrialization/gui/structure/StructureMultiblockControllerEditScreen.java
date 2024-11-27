@@ -80,7 +80,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     }
 
     private Optional<ResourceLocation> getId() {
-        ResourceLocation id = ResourceLocation.tryParse(idBox.getValue());
+        ResourceLocation id = StructureMultiblockInputFormatters.id(idBox.getValue());
         return switch (modeButton.getValue()) {
         case SAVE -> Optional.ofNullable(id);
         case LOAD -> id != null && MIStructureTemplateManager.exists(id) ? Optional.of(id) : Optional.empty();
@@ -216,7 +216,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         idBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
-                return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
+                return StructureMultiblockInputFormatters.isValidIdCharacter(codePoint) && super.charTyped(codePoint, modifiers);
             }
         };
         idBox.setMaxLength(Short.MAX_VALUE);

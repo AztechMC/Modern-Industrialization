@@ -77,7 +77,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public void setInputId(String inputId) {
         this.inputId = inputId;
-        id = ResourceLocation.tryParse(inputId);
+        id = StructureMultiblockInputFormatters.id(inputId);
     }
 
     @Nullable

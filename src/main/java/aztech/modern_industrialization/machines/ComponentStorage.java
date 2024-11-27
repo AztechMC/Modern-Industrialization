@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -105,20 +104,6 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
         } else {
             throw new RuntimeException("Multiple components of type " + clazz.getName() + " found");
         }
-    }
-
-    public final <R> R findOrDefault(Function<C, Optional<? extends R>> action, R defaultValue) {
-        for (C component : components) {
-            Optional<? extends R> result = action.apply(component);
-            if (result.isPresent()) {
-                return result.get();
-            }
-        }
-        return defaultValue;
-    }
-
-    public final <T, R> R findOrDefault(Class<T> clazz, Function<? super T, Optional<? extends R>> action, R defaultValue) {
-        return findOrDefault(component -> clazz.isInstance(component) ? action.apply((T) component) : Optional.empty(), defaultValue);
     }
 
     public static final class GuiServer extends ComponentStorage<GuiComponent.Server> {

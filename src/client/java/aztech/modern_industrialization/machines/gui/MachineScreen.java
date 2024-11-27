@@ -218,11 +218,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 }
                 int px = leftPos + slot.x - 1;
                 int py = topPos + slot.y - 1;
-                if (slot.getItem().isEmpty()) {
-                    guiGraphics.blit(atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
-                } else {
-                    guiGraphics.blit(atlas, px, py, 0, 0, 18, 18);
-                }
+                guiGraphics.blit(atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
             }
         }
     }

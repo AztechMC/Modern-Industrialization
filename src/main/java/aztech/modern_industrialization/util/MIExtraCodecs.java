@@ -41,17 +41,7 @@ public class MIExtraCodecs {
     public static final Codec<Float> FLOAT_01 = Codec.floatRange(0, 1);
     public static final Codec<Long> NON_NEGATIVE_LONG = longRange(0, Long.MAX_VALUE);
     public static final Codec<Long> POSITIVE_LONG = longRange(1, Long.MAX_VALUE);
-    public static final Codec<Lazy<BlockState>> LAZY_BLOCK_STATE = new Codec<>() {
-        @Override
-        public <T> DataResult<Pair<Lazy<BlockState>, T>> decode(DynamicOps<T> ops, T input) {
-            return DataResult.success(Pair.of(Lazy.of(() -> BlockState.CODEC.decode(ops, input).getOrThrow().getFirst()), input));
-        }
-
-        @Override
-        public <T> DataResult<T> encode(Lazy<BlockState> input, DynamicOps<T> ops, T prefix) {
-            return BlockState.CODEC.encode(input.get(), ops, prefix);
-        }
-    };
+    public static final Codec<Lazy<BlockState>> LAZY_BLOCK_STATE = lazy(BlockState.CODEC);
 
     private static <N extends Number & Comparable<N>> Function<N, DataResult<N>> checkRange(final N minInclusive, final N maxInclusive) {
         return value -> {
@@ -83,5 +73,22 @@ public class MIExtraCodecs {
     public static <T> MapCodec<T> optionalFieldAlwaysWrite(Codec<T> baseCodec, String field, T defaultValue) {
         return baseCodec.optionalFieldOf(field)
                 .xmap(read -> read.orElse(defaultValue), Optional::of);
+    }
+
+    /**
+     * A codec that wraps another codec in a Lazy object.
+     */
+    public static <B> Codec<Lazy<B>> lazy(Codec<B> baseCodec) {
+        return new Codec<>() {
+            @Override
+            public <T> DataResult<Pair<Lazy<B>, T>> decode(DynamicOps<T> ops, T input) {
+                return DataResult.success(Pair.of(Lazy.of(() -> baseCodec.decode(ops, input).getOrThrow().getFirst()), input));
+            }
+
+            @Override
+            public <T> DataResult<T> encode(Lazy<B> input, DynamicOps<T> ops, T prefix) {
+                return baseCodec.encode(input.get(), ops, prefix);
+            }
+        };
     }
 }

@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -51,19 +52,19 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
             @Override
             public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 if (matchedCasing != null) {
-                    tag.putString("matchedCasing", matchedCasing);
+                    tag.putString("matchedCasing", matchedCasing.toString());
                 }
             }
 
             @Override
             public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-                matchedCasing = tag.contains("matchedCasing") ? tag.getString("matchedCasing") : null;
+                matchedCasing = tag.contains("matchedCasing") ? ResourceLocation.tryParse(tag.getString("matchedCasing")) : null;
             }
         });
     }
 
-    private String lastSyncedMachineCasing = null;
-    private String matchedCasing = null;
+    private ResourceLocation lastSyncedMachineCasing = null;
+    private ResourceLocation matchedCasing = null;
 
     public abstract HatchType getHatchType();
 
@@ -89,7 +90,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     public void link(MachineCasing casing) {
-        matchedCasing = casing.name;
+        matchedCasing = casing.key;
     }
 
     protected void clearMachineLock() {

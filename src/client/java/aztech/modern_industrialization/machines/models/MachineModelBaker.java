@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import java.util.Map;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-public class MachineCasing {
-    public final ResourceLocation key;
-
-    MachineCasing(ResourceLocation key) {
-        this.key = key;
-    }
+public interface MachineModelBaker {
+    MachineBakedModel bake(MachineCasing baseCasing,
+            int[] outputOverlayIndexes, TextureAtlasSprite[] defaultOverlays,
+            Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays);
 }

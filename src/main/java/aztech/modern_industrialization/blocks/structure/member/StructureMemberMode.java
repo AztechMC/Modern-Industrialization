@@ -25,7 +25,7 @@ package aztech.modern_industrialization.blocks.structure.member;
 
 import aztech.modern_industrialization.MIText;
 import java.util.Locale;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.StringRepresentable;
 
 public enum StructureMemberMode implements StringRepresentable {
@@ -40,11 +40,11 @@ public enum StructureMemberMode implements StringRepresentable {
         this.text = text;
     }
 
-    public Component textInfo() {
+    public MutableComponent textInfo() {
         return textInfo.text();
     }
 
-    public Component text() {
+    public MutableComponent text() {
         return text.text();
     }
 

@@ -33,6 +33,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public sealed class ComponentStorage<C> implements Iterable<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
     protected final List<C> components = new ArrayList<>();
@@ -68,13 +69,14 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
         }
     }
 
-    public final <T> Optional<T> get(Class<T> clazz) {
+    @Nullable
+    public final <T> T get(Class<T> clazz) {
         for (C component : components) {
             if (clazz.isInstance(component)) {
-                return Optional.of((T) component);
+                return (T) component;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
     public final <T> List<T> tryGet(Class<T> clazz) {

@@ -75,7 +75,7 @@ public class MachineMenuClient extends MachineMenuCommon {
 
     @Nullable
     public <T extends GuiComponentClient> T getComponent(Class<T> klass) {
-        return components.get(klass).orElse(null);
+        return components.get(klass);
     }
 
     @Override

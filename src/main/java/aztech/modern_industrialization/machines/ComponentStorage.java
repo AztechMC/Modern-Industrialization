@@ -79,7 +79,7 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
         return null;
     }
 
-    public final <T> List<T> tryGet(Class<T> clazz) {
+    public final <T> List<T> getAll(Class<T> clazz) {
         List<T> components = new ArrayList<>();
         for (C component : this.components) {
             if (clazz.isInstance(component)) {
@@ -90,14 +90,14 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
     }
 
     public final <T> void forType(Class<T> clazz, Consumer<? super T> action) {
-        List<T> component = tryGet(clazz);
+        List<T> component = getAll(clazz);
         for (T c : component) {
             action.accept(c);
         }
     }
 
     public final <T, R> R mapOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
-        List<T> components = tryGet(clazz);
+        List<T> components = getAll(clazz);
         if (components.isEmpty()) {
             return defaultValue;
         } else if (components.size() == 1) {

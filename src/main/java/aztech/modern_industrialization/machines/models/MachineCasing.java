@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.models;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class MachineCasing {
@@ -37,7 +38,7 @@ public class MachineCasing {
         return "machine_casing.%s.%s".formatted(key.getNamespace(), key.getPath());
     }
 
-    public Component getDisplayName() {
+    public MutableComponent getDisplayName() {
         return Component.translatable(getTranslationKey());
     }
 }

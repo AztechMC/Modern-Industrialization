@@ -84,7 +84,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             if (preview != null && !preview.isAir()) {
                 ItemStack previewStack = preview.getBlock().asItem().getDefaultInstance();
                 lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" ").withStyle(MITooltips.DEFAULT_STYLE),
-                        List.of(new IconsLine.StackEntry(previewStack)), 6));
+                        List.of(new IconsLine.StackEntry(previewStack)), 6, previewStack.getHoverName().copy()));
             }
 
             List<IconsLine.Entry> members = new ArrayList<>();
@@ -109,7 +109,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             }
             if (!members.isEmpty()) {
                 lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipMembers.text().append(" ").withStyle(MITooltips.DEFAULT_STYLE),
-                        members, 6));
+                        members, 6, null));
             }
         }
 
@@ -129,7 +129,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
                     }
                 }
                 lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipHatches.text().append(" ").withStyle(MITooltips.DEFAULT_STYLE),
-                        hatches, 9));
+                        hatches, 9, null));
             }
         }
     }
@@ -227,7 +227,7 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         }
     }
 
-    private record IconsLine(MutableComponent label, List<Entry> entries, int maxToDisplay) implements Line {
+    private record IconsLine(MutableComponent label, List<Entry> entries, int maxToDisplay, @Nullable MutableComponent suffix) implements Line {
 
         @Override
         public int height(Font font) {
@@ -237,7 +237,8 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         @Override
         public int width(Font font) {
             return font.width(label) + (18 * Math.min(maxToDisplay, entries.size()))
-                    + (entries.size() > maxToDisplay ? font.width(Component.literal("+ ...")) : 0);
+                    + (entries.size() > maxToDisplay ? font.width(Component.literal("+ ...")) : 0)
+                    + (suffix != null ? font.width(suffix) : 0);
         }
 
         @Override
@@ -254,12 +255,20 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         @Override
         public void renderText(Font font, int x, int y, Matrix4f matrix, MultiBufferSource.BufferSource buffer) {
             font.drawInBatch(label, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+            x += font.width(label);
 
             if (entries.size() > maxToDisplay) {
-                font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.HIGHLIGHT_STYLE), x + (18 * maxToDisplay) + 2 + font.width(label),
-                        y + 5, -1,
-                        true, matrix, buffer,
-                        Font.DisplayMode.NORMAL, 0, 0xF000F0);
+                x += (18 * maxToDisplay) + 2;
+                Component moreText = Component.literal("+ ...").withStyle(MITooltips.HIGHLIGHT_STYLE);
+                font.drawInBatch(moreText, x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+                x += font.width(moreText);
+            } else {
+                x += (18 * entries.size()) + 2;
+            }
+
+            if (suffix != null) {
+                font.drawInBatch(suffix.withStyle(MITooltips.HIGHLIGHT_STYLE), x, y + 5, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0,
+                        0xF000F0);
             }
         }
 

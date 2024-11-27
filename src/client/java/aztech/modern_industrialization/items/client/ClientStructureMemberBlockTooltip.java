@@ -50,6 +50,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -87,7 +88,17 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             if (data.members() != null) {
                 for (StructureMemberTest member : data.members()) {
                     if (member instanceof StateStructureMemberTest stateTest) {
-                        members.add(new IconsLine.StackEntry(stateTest.blockState().getBlock().asItem().getDefaultInstance()));
+                        Block block = stateTest.blockState().getBlock();
+                        ItemStack stack;
+                        if (block instanceof LiquidBlock liquidBlock) {
+                            stack = liquidBlock.fluid.getBucket().getDefaultInstance();
+                        } else {
+                            stack = block.asItem().getDefaultInstance();
+                            if (stack.isEmpty()) {
+                                stack = Items.BUCKET.getDefaultInstance();
+                            }
+                        }
+                        members.add(new IconsLine.StackEntry(stack));
                     } else if (member instanceof TagStructureMemberTest tagTest) {
                         members.add(new IconsLine.TagEntry(tagTest.blockTag()));
                     }

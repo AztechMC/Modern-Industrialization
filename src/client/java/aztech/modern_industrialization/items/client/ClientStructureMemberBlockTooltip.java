@@ -45,10 +45,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public final class ClientStructureMemberBlockTooltip implements ClientTooltipComponent {
-    private static final int TEXT_ROW_HEIGHT = 9;
-    private static final int TEXT_BEFORE_IMAGE_EXTRA_ROW_HEIGHT = 4;
-    private static final int IMAGE_ROW_HEIGHT = 20;
-
     private final StructureMultiblockMemberBlockItem.TooltipData data;
 
     private final List<Object> lines = new ArrayList<>();
@@ -101,19 +97,19 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
             if (i > 0) {
                 Object last = lines.get(i - 1);
                 if (line instanceof List) {
-                    y += TEXT_BEFORE_IMAGE_EXTRA_ROW_HEIGHT;
+                    y += 4;
                 }
             }
             if (line instanceof Component text) {
                 if (actionText != null) {
                     actionText.accept(y, text);
                 }
-                y += TEXT_ROW_HEIGHT;
+                y += 9;
             } else if (line instanceof List list) {
                 if (actionStacks != null) {
                     actionStacks.accept(y, list);
                 }
-                y += IMAGE_ROW_HEIGHT;
+                y += 20;
             }
         }
         return y;

@@ -30,22 +30,19 @@ import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 
 public class RegisterCasingsEventJS implements KubeEvent {
-    public void register(String... names) {
-        for (var name : names) {
-            if (name.contains(":")) {
-                throw new IllegalArgumentException("Casing name cannot contain ':'.");
-            }
-
-            MachineCasings.create(name);
+    public void register(String name, String englishName) {
+        if (name.contains(":")) {
+            throw new IllegalArgumentException("Casing name cannot contain ':'.");
         }
+        MachineCasings.create(name, englishName);
     }
 
-    public void registerBlockImitation(String name, ResourceLocation block) {
+    public void registerBlockImitation(String name, String englishName, ResourceLocation block) {
         Objects.requireNonNull(block, "block may not be null");
         if (name.contains(":")) {
             throw new IllegalArgumentException("Casing name cannot contain ':'.");
         }
 
-        MachineCasingImitations.imitationsToGenerate.put(MachineCasings.create(name), block);
+        MachineCasingImitations.imitationsToGenerate.put(MachineCasings.create(name, englishName), block);
     }
 }

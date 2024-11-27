@@ -56,9 +56,6 @@ public interface MachineOverlaysJson {
         return overlays;
     }
 
-    /**
-     * Select first non-null id, and convert it to a sprite id.
-     */
     default Material select(ResourceLocation... candidates) {
         for (ResourceLocation id : candidates) {
             if (id != null) {

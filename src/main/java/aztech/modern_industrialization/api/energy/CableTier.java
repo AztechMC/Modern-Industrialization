@@ -83,7 +83,7 @@ public final class CableTier implements Comparable<CableTier> {
         this.longEnglishName = longEnglishName;
         this.eu = eu;
         this.itemKey = itemKey;
-        this.casing = MachineCasings.create(name);
+        this.casing = MachineCasings.create(name, shortEnglishName);
         this.builtin = builtin;
     }
 

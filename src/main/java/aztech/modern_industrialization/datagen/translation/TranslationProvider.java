@@ -32,6 +32,7 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -131,6 +132,11 @@ public final class TranslationProvider implements DataProvider {
         for (var cableTier : CableTier.allTiers()) {
             addTranslation(cableTier.shortEnglishKey(), cableTier.shortEnglishName);
             addTranslation(cableTier.longEnglishKey(), cableTier.longEnglishName);
+        }
+
+        for (var casing : MachineCasings.registeredCasings.values()) {
+            var englishName = MachineCasings.casingNames.get(casing.key);
+            addTranslation(casing.getTranslationKey(), englishName);
         }
     }
 

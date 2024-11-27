@@ -23,45 +23,16 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
-import java.util.Objects;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class StructureMemberTest {
-    public abstract String typeId();
+public sealed abstract class StructureMemberTest permits StateStructureMemberTest, TagStructureMemberTest {
+    public static final Codec<StructureMemberTest> CODEC = Codec.STRING.flatComapMap(
+            StructureMemberTestType::getType, type -> DataResult.success(type.name()))
+            .dispatch(test -> (StructureMemberTestType) test.type(), StructureMemberTestType::codec);
+
+    public abstract StructureMemberTestType<?> type();
 
     public abstract boolean matchesState(BlockState state);
-
-    public abstract boolean isLoaded();
-
-    protected final void assertLoaded() {
-        if (!isLoaded()) {
-            throw new IllegalStateException("Member test is not loaded");
-        }
-    }
-
-    public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-    }
-
-    public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        assertLoaded();
-    }
-
-    public static StructureMemberTest from(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        if (!tag.contains("type", Tag.TAG_STRING)) {
-            throw new IllegalArgumentException("Invalid structure member test format: " + tag);
-        }
-        String type = tag.getString("type");
-        StructureMemberTest test = switch (type) {
-        case "tag" -> new TagStructureMemberTest();
-        case "state" -> new StateStructureMemberTest();
-        default -> throw new IllegalStateException("Unexpected type: " + type);
-        };
-        test.load(tag);
-        return test;
-    }
 }

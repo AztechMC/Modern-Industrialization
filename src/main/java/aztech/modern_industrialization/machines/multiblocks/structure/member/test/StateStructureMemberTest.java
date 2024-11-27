@@ -23,30 +23,30 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import aztech.modern_industrialization.util.MIExtraCodecs;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.function.Supplier;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StateStructureMemberTest extends StructureMemberTest {
-    private Supplier<BlockState> blockStateSupplier;
+public final class StateStructureMemberTest extends StructureMemberTest {
+    public static final MapCodec<StateStructureMemberTest> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("state").forGetter(test -> test.blockStateSupplier))
+            .apply(instance, StateStructureMemberTest::new));
+
+    private final Supplier<BlockState> blockStateSupplier;
 
     private BlockState blockState;
 
-    public StateStructureMemberTest(Supplier<BlockState> blockState) {
-        Objects.requireNonNull(blockState);
-        this.blockStateSupplier = blockState;
-    }
-
-    public StateStructureMemberTest() {
+    public StateStructureMemberTest(Supplier<BlockState> blockStateSupplier) {
+        Objects.requireNonNull(blockStateSupplier);
+        this.blockStateSupplier = blockStateSupplier;
     }
 
     public BlockState blockState() {
-        assertLoaded();
         if (blockState == null) {
             blockState = blockStateSupplier.get();
             if (blockState == null) {
@@ -57,44 +57,18 @@ public class StateStructureMemberTest extends StructureMemberTest {
     }
 
     @Override
-    public String typeId() {
-        return "state";
+    public StructureMemberTestType<?> type() {
+        return StructureMemberTestType.STATE;
     }
 
     @Override
     public boolean matchesState(BlockState state) {
-        assertLoaded();
         return this.blockState() == state;
     }
 
     @Override
-    public boolean isLoaded() {
-        return blockStateSupplier != null;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (!tag.contains("state", Tag.TAG_COMPOUND)) {
-            throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
-        }
-
-        blockStateSupplier = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("state"));
-        blockState = null;
-    }
-
-    @Override
-    public void save(CompoundTag tag) {
-        super.save(tag);
-
-        tag.put("state", NbtUtils.writeBlockState(this.blockState()));
-    }
-
-    @Override
     public boolean equals(Object o) {
-        assertLoaded();
         if (o instanceof StateStructureMemberTest other) {
-            other.assertLoaded();
             return this.blockState() == other.blockState();
         }
         return false;

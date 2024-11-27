@@ -24,12 +24,16 @@
 package aztech.modern_industrialization.util;
 
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
@@ -37,6 +41,17 @@ public class MIExtraCodecs {
     public static final Codec<Float> FLOAT_01 = Codec.floatRange(0, 1);
     public static final Codec<Long> NON_NEGATIVE_LONG = longRange(0, Long.MAX_VALUE);
     public static final Codec<Long> POSITIVE_LONG = longRange(1, Long.MAX_VALUE);
+    public static final Codec<Supplier<BlockState>> LAZY_BLOCK_STATE = new Codec<>() {
+        @Override
+        public <T> DataResult<Pair<Supplier<BlockState>, T>> decode(DynamicOps<T> ops, T input) {
+            return DataResult.success(Pair.of(() -> BlockState.CODEC.decode(ops, input).getOrThrow().getFirst(), input));
+        }
+
+        @Override
+        public <T> DataResult<T> encode(Supplier<BlockState> input, DynamicOps<T> ops, T prefix) {
+            return BlockState.CODEC.encode(input.get(), ops, prefix);
+        }
+    };
 
     private static <N extends Number & Comparable<N>> Function<N, DataResult<N>> checkRange(final N minInclusive, final N maxInclusive) {
         return value -> {

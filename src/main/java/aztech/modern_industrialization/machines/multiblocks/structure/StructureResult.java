@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -116,7 +115,7 @@ public interface StructureResult {
         }
     }
 
-    record Success(ResourceLocation structureId, ShapeTemplate template, CompoundTag tag) implements StructureResult {
+    record Success(ResourceLocation structureId, ShapeTemplate template) implements StructureResult {
         @Override
         public boolean isSuccess() {
             return true;

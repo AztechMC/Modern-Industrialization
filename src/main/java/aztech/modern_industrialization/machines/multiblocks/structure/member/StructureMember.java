@@ -29,33 +29,20 @@ import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class StructureMember implements SimpleMember {
-    public abstract String typeId();
+public sealed abstract class StructureMember implements SimpleMember permits SimpleStructureMember, VariableStructureMember {
+    public static final Codec<StructureMember> CODEC = Codec.STRING.flatComapMap(
+            StructureMemberType::getType, type -> DataResult.success(type.name()))
+            .dispatch(member -> (StructureMemberType) member.type(), StructureMemberType::codec);
 
-    public abstract boolean isLoaded();
-
-    protected final void assertLoaded() {
-        if (!isLoaded()) {
-            throw new IllegalStateException("Member is not loaded");
-        }
-    }
-
-    public void load(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-    }
-
-    public void save(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        assertLoaded();
-    }
+    public abstract StructureMemberType<?> type();
 
     public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required);
 
@@ -74,22 +61,5 @@ public abstract class StructureMember implements SimpleMember {
 
     public static VariableStructureMember variable(String name) {
         return new VariableStructureMember(name);
-    }
-
-    public static StructureMember from(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-        if (!tag.contains("type", CompoundTag.TAG_STRING)) {
-            throw new IllegalArgumentException("Invalid structure member format: " + tag);
-        }
-        String type = tag.getString("type");
-        StructureMember member = switch (type) {
-        case "simple" -> new SimpleStructureMember();
-        case "literal" -> new LiteralStructureMember();
-        case "hatch" -> new HatchStructureMember();
-        case "variable" -> new VariableStructureMember();
-        default -> throw new IllegalStateException("Unexpected type: " + type);
-        };
-        member.load(tag);
-        return member;
     }
 }

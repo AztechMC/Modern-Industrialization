@@ -23,7 +23,11 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import com.mojang.serialization.Codec;
+
 public class HatchFlags {
+    public static final Codec<HatchFlags> CODEC = Codec.INT.xmap(HatchFlags::new, flags -> flags.flags);
+
     public static final HatchFlags NO_HATCH = new Builder().build();
 
     public final int flags;

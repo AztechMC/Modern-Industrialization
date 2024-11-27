@@ -23,16 +23,21 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure;
 
-import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.*;
+import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.toTemplatePos;
+import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.toTemplateState;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
+import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.serialization.JsonOps;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,21 +45,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import net.minecraft.FileUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.SnbtPrinterTagVisitor;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
@@ -120,19 +115,11 @@ public final class MIStructureTemplateManager {
             misconfiguredBlocks.add(controllerPos);
         }
 
-        CompoundTag tag = new CompoundTag();
-
-        if (hatchCasing != null) {
-            tag.putString("hatch_casing", hatchCasing.key.toString());
-        }
+        ShapeTemplate.Builder template = new ShapeTemplate.Builder(hatchCasing);
 
         BoundingBox boundsBox = bounds.boundingBox();
         BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());
         BlockPos maxPos = controllerPos.offset(boundsBox.maxX(), boundsBox.maxY(), boundsBox.maxZ());
-
-        List<StructureMember> members = new ArrayList<>();
-        ListTag membersTag = new ListTag();
-        ListTag blocksTag = new ListTag();
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
@@ -141,10 +128,7 @@ public final class MIStructureTemplateManager {
                 continue;
             }
 
-            CompoundTag blockTag = new CompoundTag();
-
-            blockTag.put("pos", NbtUtils.writeBlockPos(toTemplatePos(controllerPos, controllerDirection, pos)));
-
+            BlockPos templatePos = toTemplatePos(controllerPos, controllerDirection, pos);
             StructureMember member = StructureMember.literal(() -> state);
 
             BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -163,19 +147,12 @@ public final class MIStructureTemplateManager {
             }
 
             if (member != null) {
+                HatchFlags hatchFlags = null;
                 if (member instanceof HatchStructureMember hatch && hatch.hatchFlags() != null) {
                     hatchBlocks.add(pos.immutable());
+                    hatchFlags = hatch.hatchFlags();
                 }
-                CompoundTag memberTag = new CompoundTag();
-                memberTag.putString("type", member.typeId());
-                member.save(memberTag);
-                if (!members.contains(member)) {
-                    members.add(member);
-                    membersTag.add(memberTag);
-                }
-                blockTag.putInt("member_index", members.indexOf(member));
-
-                blocksTag.add(blockTag);
+                template.add(templatePos.getX(), templatePos.getY(), templatePos.getZ(), member, hatchFlags);
             }
         }
 
@@ -192,46 +169,7 @@ public final class MIStructureTemplateManager {
             return new StructureResult.MisconfiguredBlocks(misconfiguredBlocks);
         }
 
-        tag.put("members", membersTag);
-        tag.put("blocks", blocksTag);
-
-        ShapeTemplate template = deserialize(tag);
-        if (template == null) {
-            MI.LOGGER.error("Failed to deserialize structure tag immediately after it was created. Have you changed the deserialier or serializer?");
-            return new StructureResult.Unknown();
-        }
-
-        return new StructureResult.Success(id, template, tag);
-    }
-
-    @Nullable
-    private static ShapeTemplate deserialize(CompoundTag tag) {
-        Objects.requireNonNull(tag);
-
-        ResourceLocation hatchCasingId = ResourceLocation.tryParse(tag.getString("hatch_casing"));
-        if (hatchCasingId == null || !MachineCasings.registeredCasings.containsKey(hatchCasingId)) {
-            return null;
-        }
-        MachineCasing hatchCasing = MachineCasings.get(hatchCasingId);
-
-        ShapeTemplate.Builder builder = new ShapeTemplate.Builder(hatchCasing);
-
-        ListTag members = tag.getList("members", Tag.TAG_COMPOUND);
-        ListTag blocks = tag.getList("blocks", Tag.TAG_COMPOUND);
-
-        for (int i = 0; i < blocks.size(); i++) {
-            CompoundTag blockTag = blocks.getCompound(i);
-
-            BlockPos pos = NbtUtils.readBlockPos(blockTag, "pos").orElseThrow();
-
-            if (blockTag.contains("member_index", Tag.TAG_INT)) {
-                int memberIndex = blockTag.getInt("member_index");
-                StructureMember member = StructureMember.from(members.getCompound(memberIndex));
-                builder.add(pos.getX(), pos.getY(), pos.getZ(), member, member instanceof HatchStructureMember hatch ? hatch.hatchFlags() : null);
-            }
-        }
-
-        return builder.build();
+        return new StructureResult.Success(id, template.build());
     }
 
     private static Path structuresPath() {
@@ -244,15 +182,16 @@ public final class MIStructureTemplateManager {
         Objects.requireNonNull(id);
         var structuresFolder = structuresPath().resolve(id.getNamespace());
         Files.createDirectories(structuresFolder);
-        return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".snbt");
+        return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".json");
     }
 
-    public static boolean save(ResourceLocation id, CompoundTag tag) {
+    public static boolean save(ResourceLocation id, ShapeTemplate template) {
         Objects.requireNonNull(id);
-        Objects.requireNonNull(tag);
+        Objects.requireNonNull(template);
         try {
+            var json = ShapeTemplate.STRUCTURE_CODEC.encodeStart(JsonOps.INSTANCE, template).getOrThrow();
             try (OutputStream output = Files.newOutputStream(path(id))) {
-                output.write(new SnbtPrinterTagVisitor().visit(tag).getBytes(StandardCharsets.UTF_8));
+                output.write(new GsonBuilder().setPrettyPrinting().create().toJson(json).getBytes(StandardCharsets.UTF_8));
                 return true;
             } catch (Exception ex) {
                 MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
@@ -264,13 +203,13 @@ public final class MIStructureTemplateManager {
     }
 
     @Nullable
-    private static CompoundTag load(Path path) {
+    private static JsonElement load(Path path) {
         Objects.requireNonNull(path);
         try {
             if (Files.exists(path)) {
                 try (InputStream input = Files.newInputStream(path);
                         InputStream fastInput = new FastBufferedInputStream(input)) {
-                    return TagParser.parseTag(new String(fastInput.readAllBytes(), StandardCharsets.UTF_8));
+                    return JsonParser.parseString(new String(fastInput.readAllBytes(), StandardCharsets.UTF_8));
                 } catch (Exception ex) {
                     MI.LOGGER.error("Failed to load structure at \"{}\"", path, ex);
                     return null;
@@ -290,7 +229,7 @@ public final class MIStructureTemplateManager {
                 String namespace = subdirectory.getFileName().toString();
                 try (DirectoryStream<Path> files = Files.newDirectoryStream(subdirectory)) {
                     for (Path file : files) {
-                        if (file.toString().endsWith(".snbt")) {
+                        if (file.toString().endsWith(".json")) {
                             String rawFileName = file.getFileName().toString();
                             String path = rawFileName.substring(0, rawFileName.lastIndexOf('.'));
                             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, path);
@@ -303,13 +242,13 @@ public final class MIStructureTemplateManager {
     }
 
     private static void register(ResourceLocation id, Path path) {
-        CompoundTag structureTag = load(path);
-        if (structureTag != null) {
-            ShapeTemplate structure = deserialize(structureTag);
-            if (structure != null) {
+        JsonElement structureJson = load(path);
+        if (structureJson != null) {
+            try {
+                ShapeTemplate structure = ShapeTemplate.STRUCTURE_CODEC.decode(JsonOps.INSTANCE, structureJson).getOrThrow().getFirst();
                 register(id, structure);
-            } else {
-                MI.LOGGER.error("Failed to load structure with id \"{}\"", id);
+            } catch (Exception ex) {
+                MI.LOGGER.error("Failed to load structure with id \"{}\"", id, ex);
             }
         }
     }
@@ -329,10 +268,9 @@ public final class MIStructureTemplateManager {
             for (IModFileInfo modFile : ModList.get().getModFiles()) {
                 Path modStructuresPath = modFile.getFile().findResource("mi_structures");
                 iterateStructureFiles(modStructuresPath, (id, path) -> {
-                    if (STRUCTURE_TEMPLATES.containsKey(id)) {
-                        return;
+                    if (!STRUCTURE_TEMPLATES.containsKey(id)) {
+                        register(id, path);
                     }
-                    register(id, path);
                 });
             }
 

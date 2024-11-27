@@ -28,24 +28,31 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class HatchStructureMember extends SimpleStructureMember {
-    protected MachineCasing casing;
-    protected HatchFlags hatchFlags;
+public final class HatchStructureMember extends SimpleStructureMember {
+    public static final MapCodec<HatchStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.previewSupplier),
+                    StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(HatchStructureMember::tests),
+                    MachineCasing.CODEC.fieldOf("casing").forGetter(HatchStructureMember::casing),
+                    HatchFlags.CODEC.fieldOf("hatch_flags").forGetter(HatchStructureMember::hatchFlags))
+            .apply(instance, HatchStructureMember::new));
+
+    private final MachineCasing casing;
+    private final HatchFlags hatchFlags;
 
     public HatchStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
         super(previewSupplier, tests);
@@ -55,61 +62,21 @@ public class HatchStructureMember extends SimpleStructureMember {
         this.hatchFlags = hatchFlags;
     }
 
-    public HatchStructureMember() {
-    }
-
     public MachineCasing casing() {
-        assertLoaded();
         return casing;
     }
 
     public HatchFlags hatchFlags() {
-        assertLoaded();
         return hatchFlags;
     }
 
     @Override
-    public String typeId() {
-        return "hatch";
-    }
-
-    @Override
-    public boolean isLoaded() {
-        return super.isLoaded() && casing != null && hatchFlags != null;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-
-        if (!tag.contains("casing", Tag.TAG_STRING) ||
-                !tag.contains("hatch_flags", Tag.TAG_INT)) {
-            throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
-        }
-
-        ResourceLocation casingId = ResourceLocation.tryParse(tag.getString("casing"));
-        if (casingId == null || !MachineCasings.registeredCasings.containsKey(casingId)) {
-            throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
-        }
-        casing = MachineCasings.get(casingId);
-
-        int hatchFlagsValue = tag.getInt("hatch_flags");
-        hatchFlags = hatchFlagsValue == 0 ? HatchFlags.NO_HATCH : new HatchFlags(hatchFlagsValue);
-    }
-
-    @Override
-    public void save(CompoundTag tag) {
-        super.save(tag);
-
-        tag.putString("casing", casing.key.toString());
-
-        tag.putInt("hatch_flags", hatchFlags.flags);
+    public StructureMemberType<?> type() {
+        return StructureMemberType.HATCH;
     }
 
     @Override
     public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
-        assertLoaded();
-
         if (required) {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.HATCH);
@@ -126,9 +93,7 @@ public class HatchStructureMember extends SimpleStructureMember {
 
     @Override
     public boolean equals(Object o) {
-        assertLoaded();
         if (o instanceof HatchStructureMember other && this.getClass() == other.getClass()) {
-            other.assertLoaded();
             return this.getPreviewState() == other.getPreviewState() &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
                     casing.equals(other.casing) &&

@@ -23,24 +23,25 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TagStructureMemberTest extends StructureMemberTest {
-    private TagKey<Block> blockTag;
+public final class TagStructureMemberTest extends StructureMemberTest {
+    public static final MapCodec<TagStructureMemberTest> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    TagKey.codec(Registries.BLOCK).fieldOf("tag").forGetter(TagStructureMemberTest::blockTag))
+            .apply(instance, TagStructureMemberTest::new));
+
+    private final TagKey<Block> blockTag;
 
     public TagStructureMemberTest(TagKey<Block> blockTag) {
         Objects.requireNonNull(blockTag);
         this.blockTag = blockTag;
-    }
-
-    public TagStructureMemberTest() {
     }
 
     public TagKey<Block> blockTag() {
@@ -48,43 +49,18 @@ public class TagStructureMemberTest extends StructureMemberTest {
     }
 
     @Override
-    public String typeId() {
-        return "tag";
+    public StructureMemberTestType<?> type() {
+        return StructureMemberTestType.TAG;
     }
 
     @Override
     public boolean matchesState(BlockState state) {
-        assertLoaded();
         return state.is(blockTag);
     }
 
     @Override
-    public boolean isLoaded() {
-        return blockTag != null;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (!tag.contains("tag", Tag.TAG_STRING)) {
-            throw new IllegalArgumentException("Invalid structure member test format for type \"" + typeId() + "\": " + tag);
-        }
-
-        blockTag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(tag.getString("tag")));
-    }
-
-    @Override
-    public void save(CompoundTag tag) {
-        super.save(tag);
-
-        tag.putString("tag", blockTag.location().toString());
-    }
-
-    @Override
     public boolean equals(Object o) {
-        assertLoaded();
         if (o instanceof TagStructureMemberTest other) {
-            other.assertLoaded();
             return blockTag == other.blockTag ||
                     blockTag.location().equals(other.blockTag.location());
         }

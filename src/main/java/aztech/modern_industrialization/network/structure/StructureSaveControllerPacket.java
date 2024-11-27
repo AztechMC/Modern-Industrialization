@@ -63,7 +63,7 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
                     level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
                     controller.getCasing(), controller.getBounds());
             if (result instanceof StructureResult.Success success) {
-                if (MIStructureTemplateManager.save(id, success.tag())) {
+                if (MIStructureTemplateManager.save(id, success.template())) {
                     MIStructureTemplateManager.register(id, success.template());
                 } else {
                     result = new StructureResult.Unknown();

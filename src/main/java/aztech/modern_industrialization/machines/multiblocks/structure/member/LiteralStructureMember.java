@@ -25,24 +25,26 @@ package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class LiteralStructureMember extends SimpleStructureMember {
-    public LiteralStructureMember(Supplier<BlockState> blockState) {
-        super(blockState, List.of(new StateStructureMemberTest(blockState)));
-    }
+public final class LiteralStructureMember extends SimpleStructureMember {
+    public static final MapCodec<LiteralStructureMember> CODEC = MIExtraCodecs.LAZY_BLOCK_STATE
+            .xmap(LiteralStructureMember::new, member -> member.previewSupplier).fieldOf("state");
 
-    public LiteralStructureMember() {
+    public LiteralStructureMember(Supplier<BlockState> previewSupplier) {
+        super(previewSupplier, List.of(new StateStructureMemberTest(previewSupplier)));
     }
 
     @Override
-    public String typeId() {
-        return "literal";
+    public StructureMemberType<?> type() {
+        return StructureMemberType.LITERAL;
     }
 
     @Override

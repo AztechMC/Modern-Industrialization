@@ -29,100 +29,49 @@ import aztech.modern_industrialization.blocks.structure.member.StructureMemberMo
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Pair;
-import java.util.ArrayList;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SimpleStructureMember extends StructureMember {
-    protected Supplier<BlockState> previewSupplier;
-    protected List<StructureMemberTest> tests;
+public sealed class SimpleStructureMember extends StructureMember permits HatchStructureMember, LiteralStructureMember {
+    public static final MapCodec<SimpleStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.previewSupplier),
+                    StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(SimpleStructureMember::tests))
+            .apply(instance, SimpleStructureMember::new));
 
-    private BlockState preview;
+    protected final Supplier<BlockState> previewSupplier;
 
-    public SimpleStructureMember(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
-        Objects.requireNonNull(preview);
+    protected BlockState preview;
+    protected final List<StructureMemberTest> tests;
+
+    public SimpleStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests) {
+        Objects.requireNonNull(previewSupplier);
         Objects.requireNonNull(tests);
-        this.previewSupplier = preview;
+        this.previewSupplier = previewSupplier;
         this.tests = tests;
     }
 
-    public SimpleStructureMember() {
-    }
-
     public List<StructureMemberTest> tests() {
-        assertLoaded();
         return Collections.unmodifiableList(tests);
     }
 
     @Override
-    public String typeId() {
-        return "simple";
-    }
-
-    @Override
-    public boolean isLoaded() {
-        return previewSupplier != null && tests != null;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (!tag.contains("preview", CompoundTag.TAG_COMPOUND) ||
-                !tag.contains("tests", CompoundTag.TAG_LIST)) {
-            throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
-        }
-
-        previewSupplier = () -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("preview"));
-
-        ListTag testsTag = tag.getList("tests", Tag.TAG_COMPOUND);
-        if (testsTag.isEmpty()) {
-            throw new IllegalArgumentException("Member cannot have no tests: " + tag);
-        }
-        tests = new ArrayList<>();
-        for (int i = 0; i < testsTag.size(); i++) {
-            CompoundTag testTag = testsTag.getCompound(i);
-            StructureMemberTest test = StructureMemberTest.from(testTag);
-            if (test != null) {
-                tests.add(test);
-            }
-        }
-    }
-
-    @Override
-    public void save(CompoundTag tag) {
-        super.save(tag);
-
-        tag.put("preview", NbtUtils.writeBlockState(getPreviewState()));
-
-        ListTag testsTag = new ListTag();
-        for (StructureMemberTest test : tests) {
-            CompoundTag testTag = new CompoundTag();
-            testTag.putString("type", test.typeId());
-            test.save(testTag);
-            testsTag.add(testTag);
-        }
-        if (testsTag.isEmpty()) {
-            throw new IllegalArgumentException("Member cannot have no tests");
-        }
-        tag.put("tests", testsTag);
+    public StructureMemberType<?> type() {
+        return StructureMemberType.SIMPLE;
     }
 
     @Override
     public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
-        assertLoaded();
-
         if (required) {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.SIMPLE);
@@ -137,7 +86,6 @@ public class SimpleStructureMember extends StructureMember {
 
     @Override
     public boolean matchesState(BlockState state) {
-        assertLoaded();
         for (StructureMemberTest test : tests) {
             if (test.matchesState(state)) {
                 return true;
@@ -148,7 +96,6 @@ public class SimpleStructureMember extends StructureMember {
 
     @Override
     public BlockState getPreviewState() {
-        assertLoaded();
         if (preview == null) {
             preview = previewSupplier.get();
             if (preview == null) {
@@ -160,9 +107,7 @@ public class SimpleStructureMember extends StructureMember {
 
     @Override
     public boolean equals(Object o) {
-        assertLoaded();
         if (o instanceof SimpleStructureMember other && this.getClass() == other.getClass()) {
-            other.assertLoaded();
             return this.getPreviewState() == other.getPreviewState() &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests);
         }

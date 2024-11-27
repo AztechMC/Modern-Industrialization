@@ -25,13 +25,12 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.VariableStructureMember;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +39,52 @@ import org.jetbrains.annotations.Nullable;
  * An immutable description of a multiblock shape.
  */
 public class ShapeTemplate {
+    public static final Codec<ShapeTemplate> STRUCTURE_CODEC = InternalStructureTemplate.CODEC
+            .xmap(structure -> {
+                Builder template = new Builder(structure.casing());
+                for (InternalStructureBlockPos block : structure.blocks()) {
+                    BlockPos pos = block.pos();
+                    int memberIndex = block.memberIndex();
+                    StructureMember member = structure.members().get(memberIndex);
+                    template.add(pos.getX(), pos.getY(), pos.getZ(), member,
+                            member instanceof HatchStructureMember hatch ? hatch.hatchFlags() : null);
+                }
+                return template.build();
+            }, template -> {
+                List<StructureMember> members = new ArrayList<>();
+                List<InternalStructureBlockPos> blocks = new ArrayList<>();
+                for (var entry : template.simpleMembers.entrySet()) {
+                    if (entry.getValue() instanceof StructureMember member) {
+                        if (!members.contains(member)) {
+                            members.add(member);
+                        }
+                        int memberIndex = members.indexOf(member);
+                        blocks.add(new InternalStructureBlockPos(memberIndex, entry.getKey()));
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Cannot convert ShapeTemplate to a structure ShapeTemplate if all members aren't StructureMembers");
+                    }
+                }
+                return new InternalStructureTemplate(template.hatchCasing, blocks, members);
+            });
+
+    private record InternalStructureBlockPos(int memberIndex, BlockPos pos) {
+        private static final Codec<InternalStructureBlockPos> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        Codec.INT.fieldOf("member_index").forGetter(InternalStructureBlockPos::memberIndex),
+                        BlockPos.CODEC.fieldOf("pos").forGetter(InternalStructureBlockPos::pos))
+                .apply(instance, InternalStructureBlockPos::new));
+    }
+
+    private record InternalStructureTemplate(MachineCasing casing, List<InternalStructureBlockPos> blocks, List<StructureMember> members) {
+        private static final Codec<InternalStructureTemplate> CODEC = RecordCodecBuilder.create(instance -> instance
+                .group(
+                        MachineCasing.CODEC.fieldOf("hatch_casing").forGetter(InternalStructureTemplate::casing),
+                        InternalStructureBlockPos.CODEC.listOf().fieldOf("blocks").forGetter(InternalStructureTemplate::blocks),
+                        StructureMember.CODEC.listOf().fieldOf("members").forGetter(InternalStructureTemplate::members))
+                .apply(instance, InternalStructureTemplate::new));
+    }
+
     public final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
     public final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
     public final MachineCasing hatchCasing;

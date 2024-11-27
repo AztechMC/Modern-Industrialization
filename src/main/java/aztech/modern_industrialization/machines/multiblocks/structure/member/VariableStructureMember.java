@@ -28,63 +28,35 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class VariableStructureMember extends StructureMember {
-    protected String name;
+public final class VariableStructureMember extends StructureMember {
+    public static final MapCodec<VariableStructureMember> CODEC = Codec.STRING.xmap(VariableStructureMember::new, VariableStructureMember::name)
+            .fieldOf("name");
+
+    private final String name;
 
     public VariableStructureMember(String name) {
         Objects.requireNonNull(name);
         this.name = name;
     }
 
-    public VariableStructureMember() {
-    }
-
     public String name() {
-        assertLoaded();
         return name;
     }
 
     @Override
-    public String typeId() {
-        return "variable";
-    }
-
-    @Override
-    public boolean isLoaded() {
-        return name != null;
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (!tag.contains("name", Tag.TAG_STRING)) {
-            throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
-        }
-
-        name = tag.getString("name");
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Invalid structure member format for type \"" + typeId() + "\": " + tag);
-        }
-    }
-
-    @Override
-    public void save(CompoundTag tag) {
-        super.save(tag);
-
-        tag.putString("name", name);
+    public StructureMemberType<?> type() {
+        return StructureMemberType.VARIABLE;
     }
 
     @Override
     public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
-        assertLoaded();
-
         var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
         state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.VARIABLE);
         var be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
@@ -105,9 +77,7 @@ public class VariableStructureMember extends StructureMember {
 
     @Override
     public boolean equals(Object o) {
-        assertLoaded();
         if (o instanceof VariableStructureMember other && this.getClass() == other.getClass()) {
-            other.assertLoaded();
             return name.equals(other.name);
         }
         return false;

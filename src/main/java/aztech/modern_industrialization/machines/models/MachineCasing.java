@@ -23,9 +23,12 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
 public class MachineCasing {
+    public static final Codec<MachineCasing> CODEC = ResourceLocation.CODEC.xmap(MachineCasings::get, casing -> casing.key);
+
     public final ResourceLocation key;
 
     MachineCasing(ResourceLocation key) {

@@ -33,12 +33,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 public sealed class ComponentStorage<C> implements Iterable<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
     protected final List<C> components = new ArrayList<>();
 
-    @NotNull
     @Override
     public Iterator<C> iterator() {
         return components.iterator();

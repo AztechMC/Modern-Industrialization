@@ -211,8 +211,11 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     private void renderConfigurableSlotBackgrounds(GuiGraphics guiGraphics) {
         for (Slot slot : this.menu.slots) {
-            if (slot.isActive() && slot instanceof BackgroundRenderedSlot brs) {
+            if (slot instanceof BackgroundRenderedSlot brs) {
                 var atlas = brs.getBackgroundAtlasLocation();
+                if (atlas == null) {
+                    continue;
+                }
                 int px = leftPos + slot.x - 1;
                 int py = topPos + slot.y - 1;
                 if (slot.getItem().isEmpty()) {

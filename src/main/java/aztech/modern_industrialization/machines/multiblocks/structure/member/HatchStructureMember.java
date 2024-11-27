@@ -38,14 +38,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public final class HatchStructureMember extends SimpleStructureMember {
     public static final MapCodec<HatchStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.previewSupplier),
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.preview),
                     StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(HatchStructureMember::tests),
                     MachineCasing.CODEC.fieldOf("casing").forGetter(HatchStructureMember::casing),
                     HatchFlags.CODEC.fieldOf("hatch_flags").forGetter(HatchStructureMember::hatchFlags))
@@ -54,7 +54,7 @@ public final class HatchStructureMember extends SimpleStructureMember {
     private final MachineCasing casing;
     private final HatchFlags hatchFlags;
 
-    public HatchStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
+    public HatchStructureMember(Lazy<BlockState> previewSupplier, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
         super(previewSupplier, tests);
         Objects.requireNonNull(casing);
         Objects.requireNonNull(hatchFlags);

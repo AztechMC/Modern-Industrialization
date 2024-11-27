@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public sealed abstract class StructureMember implements SimpleMember permits SimpleStructureMember, VariableStructureMember {
     public static final Codec<StructureMember> CODEC = Codec.STRING.flatComapMap(
@@ -47,16 +48,16 @@ public sealed abstract class StructureMember implements SimpleMember permits Sim
     public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required);
 
     public static SimpleStructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
-        return new SimpleStructureMember(preview, tests);
+        return new SimpleStructureMember(Lazy.of(preview), tests);
     }
 
     public static LiteralStructureMember literal(Supplier<BlockState> blockState) {
-        return new LiteralStructureMember(blockState);
+        return new LiteralStructureMember(Lazy.of(blockState));
     }
 
     public static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing,
             HatchFlags hatchFlags) {
-        return new HatchStructureMember(preview, tests, casing, hatchFlags);
+        return new HatchStructureMember(Lazy.of(preview), tests, casing, hatchFlags);
     }
 
     public static VariableStructureMember variable(String name) {

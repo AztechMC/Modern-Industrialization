@@ -37,27 +37,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public sealed class SimpleStructureMember extends StructureMember permits HatchStructureMember, LiteralStructureMember {
     public static final MapCodec<SimpleStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.previewSupplier),
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.preview),
                     StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(SimpleStructureMember::tests))
             .apply(instance, SimpleStructureMember::new));
 
-    protected final Supplier<BlockState> previewSupplier;
-
-    protected BlockState preview;
+    protected final Lazy<BlockState> preview;
     protected final List<StructureMemberTest> tests;
 
-    public SimpleStructureMember(Supplier<BlockState> previewSupplier, List<StructureMemberTest> tests) {
-        Objects.requireNonNull(previewSupplier);
+    public SimpleStructureMember(Lazy<BlockState> preview, List<StructureMemberTest> tests) {
+        Objects.requireNonNull(preview);
         Objects.requireNonNull(tests);
-        this.previewSupplier = previewSupplier;
+        this.preview = preview;
         this.tests = tests;
     }
 
@@ -96,13 +93,7 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
 
     @Override
     public BlockState getPreviewState() {
-        if (preview == null) {
-            preview = previewSupplier.get();
-            if (preview == null) {
-                preview = Blocks.AIR.defaultBlockState();
-            }
-        }
-        return preview;
+        return preview.get();
     }
 
     @Override

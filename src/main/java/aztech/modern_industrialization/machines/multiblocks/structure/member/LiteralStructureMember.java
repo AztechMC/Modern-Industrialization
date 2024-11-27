@@ -30,15 +30,15 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public final class LiteralStructureMember extends SimpleStructureMember {
     public static final MapCodec<LiteralStructureMember> CODEC = MIExtraCodecs.LAZY_BLOCK_STATE
-            .xmap(LiteralStructureMember::new, member -> member.previewSupplier).fieldOf("state");
+            .xmap(LiteralStructureMember::new, member -> member.preview).fieldOf("state");
 
-    public LiteralStructureMember(Supplier<BlockState> previewSupplier) {
+    public LiteralStructureMember(Lazy<BlockState> previewSupplier) {
         super(previewSupplier, List.of(new StateStructureMemberTest(previewSupplier)));
     }
 

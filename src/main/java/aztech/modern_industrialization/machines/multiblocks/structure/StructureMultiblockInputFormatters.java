@@ -41,6 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public final class StructureMultiblockInputFormatters {
@@ -128,7 +129,7 @@ public final class StructureMultiblockInputFormatters {
             } else {
                 try {
                     var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    members.add(new StateStructureMemberTest(blockResult::blockState));
+                    members.add(new StateStructureMemberTest(Lazy.of(blockResult::blockState)));
                 } catch (CommandSyntaxException ignored) {
                     return null;
                 }

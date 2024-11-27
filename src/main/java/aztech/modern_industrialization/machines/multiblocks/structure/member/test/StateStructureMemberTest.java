@@ -27,33 +27,24 @@ import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
-import java.util.function.Supplier;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public final class StateStructureMemberTest extends StructureMemberTest {
     public static final MapCodec<StateStructureMemberTest> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("state").forGetter(test -> test.blockStateSupplier))
+                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("state").forGetter(test -> test.blockState))
             .apply(instance, StateStructureMemberTest::new));
 
-    private final Supplier<BlockState> blockStateSupplier;
+    private final Lazy<BlockState> blockState;
 
-    private BlockState blockState;
-
-    public StateStructureMemberTest(Supplier<BlockState> blockStateSupplier) {
-        Objects.requireNonNull(blockStateSupplier);
-        this.blockStateSupplier = blockStateSupplier;
+    public StateStructureMemberTest(Lazy<BlockState> blockState) {
+        Objects.requireNonNull(blockState);
+        this.blockState = blockState;
     }
 
     public BlockState blockState() {
-        if (blockState == null) {
-            blockState = blockStateSupplier.get();
-            if (blockState == null) {
-                blockState = Blocks.AIR.defaultBlockState();
-            }
-        }
-        return blockState;
+        return blockState.get();
     }
 
     @Override

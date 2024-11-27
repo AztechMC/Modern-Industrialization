@@ -312,6 +312,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
+        StructureControllerMode modeButtonValue = modeButton.getValue();
         String idBoxValue = idBox.getValue();
         String casingBoxValue = casingBox.getValue();
         String posXBoxValue = posXBox.getValue();
@@ -324,6 +325,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         this.init(minecraft, width, height);
 
+        modeButton.setValue(modeButtonValue);
         idBox.setValue(idBoxValue);
         casingBox.setValue(casingBoxValue);
         posXBox.setValue(posXBoxValue);

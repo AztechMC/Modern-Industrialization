@@ -258,6 +258,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
+        StructureMemberMode modeButtonValue = modeButton.getValue();
         String nameBoxValue = nameBox.getValue();
         String previewBoxValue = previewBox.getValue();
         String membersBoxValue = membersBox.getValue();
@@ -266,6 +267,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
         this.init(minecraft, width, height);
 
+        modeButton.setValue(modeButtonValue);
         nameBox.setValue(nameBoxValue);
         previewBox.setValue(previewBoxValue);
         membersBox.setValue(membersBoxValue);

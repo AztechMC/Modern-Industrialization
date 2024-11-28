@@ -50,6 +50,7 @@ import java.util.function.BiConsumer;
 import net.minecraft.FileUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastBufferedInputStream;
 import net.minecraft.world.level.Level;
@@ -95,9 +96,15 @@ public final class MIStructureTemplateManager {
         STRUCTURE_TEMPLATES.put(id, template);
     }
 
+    @Nullable
+    public static CompoundTag maybeTag(@Nullable BlockEntity blockEntity) {
+        return blockEntity == null ? null : blockEntity.saveCustomOnly(blockEntity.getLevel().registryAccess());
+    }
+
     public static StructureResult fromWorld(ResourceLocation id, Level level,
             BlockPos controllerPos, Direction controllerDirection,
-            MachineCasing hatchCasing, StructureControllerBounds bounds) {
+            MachineCasing hatchCasing, StructureControllerBounds bounds,
+            boolean includeBlockEntities) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(level);
         Objects.requireNonNull(controllerPos);
@@ -123,15 +130,13 @@ public final class MIStructureTemplateManager {
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
-
             if (state.isAir() || state.is(Blocks.STRUCTURE_VOID)) {
                 continue;
             }
-
-            BlockPos templatePos = toTemplatePos(controllerPos, controllerDirection, pos);
-            StructureMember member = StructureMember.literal(() -> state);
-
             BlockEntity blockEntity = level.getBlockEntity(pos);
+
+            StructureMember member = StructureMember.literal(() -> state, includeBlockEntities ? blockEntity : null);
+
             if (blockEntity instanceof StructureMemberOverride override) {
                 if (!override.isConfigurationValid()) {
                     misconfiguredBlocks.add(pos.immutable());
@@ -152,6 +157,7 @@ public final class MIStructureTemplateManager {
                     hatchBlocks.add(pos.immutable());
                     hatchFlags = hatch.hatchFlags();
                 }
+                BlockPos templatePos = toTemplatePos(controllerPos, controllerDirection, pos);
                 template.add(templatePos.getX(), templatePos.getY(), templatePos.getZ(), member, hatchFlags);
             }
         }
@@ -159,14 +165,14 @@ public final class MIStructureTemplateManager {
         if (controllerBlocks.isEmpty()) {
             return new StructureResult.NoController();
         }
-        if (hatchBlocks.isEmpty()) {
-            return new StructureResult.NoHatches();
-        }
         if (controllerBlocks.size() > 1) {
             return new StructureResult.TooManyControllers(controllerBlocks);
         }
         if (!misconfiguredBlocks.isEmpty()) {
             return new StructureResult.MisconfiguredBlocks(misconfiguredBlocks);
+        }
+        if (hatchBlocks.isEmpty()) {
+            return new StructureResult.NoHatches();
         }
 
         return new StructureResult.Success(id, template.build());

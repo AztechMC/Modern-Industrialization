@@ -27,6 +27,7 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -35,8 +36,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
+import org.jetbrains.annotations.Nullable;
 
 public sealed abstract class StructureMember implements SimpleMember permits SimpleStructureMember, VariableStructureMember {
     public static final Codec<StructureMember> CODEC = Codec.STRING.flatComapMap(
@@ -51,8 +54,8 @@ public sealed abstract class StructureMember implements SimpleMember permits Sim
         return new SimpleStructureMember(Lazy.of(preview), tests);
     }
 
-    public static LiteralStructureMember literal(Supplier<BlockState> blockState) {
-        return new LiteralStructureMember(Lazy.of(blockState));
+    public static LiteralStructureMember literal(Supplier<BlockState> blockState, @Nullable BlockEntity blockEntity) {
+        return new LiteralStructureMember(Lazy.of(blockState), MIStructureTemplateManager.maybeTag(blockEntity));
     }
 
     public static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing,

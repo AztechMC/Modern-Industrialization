@@ -247,6 +247,7 @@ public enum MIText {
     SteamDrillToggle("- Toggle Silk Touch with %s + %s."),
     SteamDrillWaterHelp("- Press %s on still or flowing water to fill."),
     StructureMultiblockCasing("Machine Casing"),
+    StructureMultiblockGuiIncludeBlockEntities("Include NBT"),
     StructureMultiblockGuiLoad("LOAD"),
     StructureMultiblockGuiLoadTooltip("Hold SHIFT to place actual blocks instead of structure blocks."),
     StructureMultiblockGuiMode("MODE"),

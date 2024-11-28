@@ -73,6 +73,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private EditBox sizeZBox;
 
     private CycleButton<Boolean> showBoundsBox;
+    private CycleButton<Boolean> includeBlockEntitiesBox;
 
     public StructureMultiblockControllerEditScreen(StructureMultiblockControllerBlockEntity controller) {
         super(Component.translatable(MIBlock.STRUCTURE_MULTIBLOCK_CONTROLLER.asBlock().getDescriptionId()));
@@ -118,6 +119,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         sizeYBox.visible = false;
         sizeZBox.visible = false;
         showBoundsBox.visible = false;
+        includeBlockEntitiesBox.visible = false;
 
         switch (mode) {
         case SAVE -> {
@@ -130,6 +132,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
             sizeYBox.visible = true;
             sizeZBox.visible = true;
             showBoundsBox.visible = true;
+            includeBlockEntitiesBox.visible = true;
         }
         case LOAD -> {
             loadButton.visible = true;
@@ -174,7 +177,8 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 idBox.getValue(),
                 casingBox.getValue(),
                 this.getBounds().orElse(new StructureControllerBounds(0, 0, 0, 1, 1, 1)),
-                showBoundsBox.getValue()).sendToServer();
+                showBoundsBox.getValue(),
+                includeBlockEntitiesBox.getValue()).sendToServer();
     }
 
     private void cancel() {
@@ -213,7 +217,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 .withInitialValue(controller.getMode())
                 .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
 
-        idBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockStructureName.text()) {
+        idBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return StructureMultiblockInputFormatters.isValidIdCharacter(codePoint) && super.charTyped(codePoint, modifiers);
@@ -224,7 +228,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         idBox.setResponder(text -> this.updateId());
         this.addRenderableWidget(idBox);
 
-        casingBox = new EditBox(font, width / 2 - 152, 90, 304, 20, MIText.StructureMultiblockCasing.text()) {
+        casingBox = new EditBox(font, width / 2 - 152, 60, 304, 20, MIText.StructureMultiblockCasing.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
@@ -237,33 +241,33 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         StructureControllerBounds bounds = controller.getBounds();
 
-        posXBox = new EditBox(font, width / 2 - 152, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionX.text());
+        posXBox = new EditBox(font, width / 2 - 152, 100, 35, 20, MIText.StructureMultiblockGuiRelativePositionX.text());
         posXBox.setMaxLength(15);
         posXBox.setValue(Integer.toString(bounds.x()));
         posXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posXBox);
-        posYBox = new EditBox(font, width / 2 - 117, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionY.text());
+        posYBox = new EditBox(font, width / 2 - 117, 100, 35, 20, MIText.StructureMultiblockGuiRelativePositionY.text());
         posYBox.setMaxLength(15);
         posYBox.setValue(Integer.toString(bounds.y()));
         posYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posYBox);
-        posZBox = new EditBox(font, width / 2 - 82, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionZ.text());
+        posZBox = new EditBox(font, width / 2 - 82, 100, 35, 20, MIText.StructureMultiblockGuiRelativePositionZ.text());
         posZBox.setMaxLength(15);
         posZBox.setValue(Integer.toString(bounds.z()));
         posZBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posZBox);
 
-        sizeXBox = new EditBox(font, width / 2 - 47 + 8, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeX.text());
+        sizeXBox = new EditBox(font, width / 2 - 47 + 8, 100, 35, 20, MIText.StructureMultiblockGuiStructureSizeX.text());
         sizeXBox.setMaxLength(15);
         sizeXBox.setValue(Integer.toString(bounds.sizeX()));
         sizeXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeXBox);
-        sizeYBox = new EditBox(font, width / 2 - 4, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeY.text());
+        sizeYBox = new EditBox(font, width / 2 - 4, 100, 35, 20, MIText.StructureMultiblockGuiStructureSizeY.text());
         sizeYBox.setMaxLength(15);
         sizeYBox.setValue(Integer.toString(bounds.sizeY()));
         sizeYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeYBox);
-        sizeZBox = new EditBox(font, width / 2 + 31, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeZ.text());
+        sizeZBox = new EditBox(font, width / 2 + 31, 100, 35, 20, MIText.StructureMultiblockGuiStructureSizeZ.text());
         sizeZBox.setMaxLength(15);
         sizeZBox.setValue(Integer.toString(bounds.sizeZ()));
         sizeZBox.setResponder(text -> this.updateBounds());
@@ -271,7 +275,11 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         this.addRenderableWidget(showBoundsBox = CycleButton.onOffBuilder(controller.shouldShowBounds())
                 .displayOnlyValue()
-                .create(width / 2 + 4 + 100, 130, 50, 20, MIText.StructureMultiblockGuiShowBoundingBox.text()));
+                .create(width / 2 + 4 + 100, 100, 50, 20, MIText.StructureMultiblockGuiShowBoundingBox.text()));
+
+        this.addRenderableWidget(includeBlockEntitiesBox = CycleButton.onOffBuilder(controller.includeBlockEntities())
+                .displayOnlyValue()
+                .create(width / 2 + 4 + 100, 140, 50, 20, MIText.StructureMultiblockGuiIncludeBlockEntities.text()));
 
         this.updateAll();
     }
@@ -280,22 +288,24 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
 
-        graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
-
-        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 40, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 10, 0xA0A0A0);
 
         if (casingBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 80, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 50, 0xA0A0A0);
 
         if (posXBox.visible || posYBox.visible || posZBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockGuiRelativePosition.text(), width / 2 - 152, 120, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockGuiRelativePosition.text(), width / 2 - 152, 90, 0xA0A0A0);
 
         if (sizeXBox.visible || sizeYBox.visible || sizeZBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockGuiStructureSize.text(), width / 2 - 47 + 8, 120, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockGuiStructureSize.text(), width / 2 - 47 + 8, 90, 0xA0A0A0);
 
         if (showBoundsBox.visible)
             graphics.drawString(font, MIText.StructureMultiblockGuiShowBoundingBox.text(),
-                    width / 2 + 154 - font.width(MIText.StructureMultiblockGuiShowBoundingBox.text()), 120, 0xA0A0A0);
+                    width / 2 + 154 - font.width(MIText.StructureMultiblockGuiShowBoundingBox.text()), 90, 0xA0A0A0);
+
+        if (includeBlockEntitiesBox.visible)
+            graphics.drawString(font, MIText.StructureMultiblockGuiIncludeBlockEntities.text(),
+                    width / 2 + 154 - font.width(MIText.StructureMultiblockGuiIncludeBlockEntities.text()), 130, 0xA0A0A0);
 
         graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }
@@ -322,6 +332,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         String sizeYBoxValue = sizeYBox.getValue();
         String sizeZBoxValue = sizeZBox.getValue();
         boolean showBoundsBoxValue = showBoundsBox.getValue();
+        boolean includeBlockEntitiesBoxValue = includeBlockEntitiesBox.getValue();
 
         this.init(minecraft, width, height);
 
@@ -335,6 +346,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         sizeYBox.setValue(sizeYBoxValue);
         sizeZBox.setValue(sizeZBoxValue);
         showBoundsBox.setValue(showBoundsBoxValue);
+        includeBlockEntitiesBox.setValue(includeBlockEntitiesBoxValue);
     }
 
     @Override

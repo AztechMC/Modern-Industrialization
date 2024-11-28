@@ -29,7 +29,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
+import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBER;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
 import aztech.modern_industrialization.client.screen.structure.StructureMultiblockControllerEditScreen;
@@ -177,9 +177,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void receiveStructureMisconfiguredBlocksPacket(StructureMisconfiguredBlocksPacket packet, BasePacket.Context ctx) {
         if (packet.forget()) {
-            StructureMultiblockBER.forgetMisconfigured(packet.positions());
+            StructureMultiblockControllerBER.forgetMisconfigured(packet.positions());
         } else {
-            StructureMultiblockBER.setMisconfigured(packet.positions());
+            StructureMultiblockControllerBER.setMisconfigured(packet.positions());
         }
     }
 }

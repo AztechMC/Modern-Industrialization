@@ -26,28 +26,31 @@ package aztech.modern_industrialization.machines.multiblocks;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.datafixers.util.Pair;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
-    private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
+    private static final Map<BlockPos, @Nullable Pair<BlockState, @Nullable BlockEntity>> highlightQueue = new HashMap<>();
     private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MultiblockErrorHighlight::end);
     }
 
-    public static void enqueueHighlight(BlockPos pos, @Nullable BlockState state) {
-        highlightQueue.put(pos.immutable(), state);
+    public static void enqueueHighlight(BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
+        highlightQueue.put(pos.immutable(), state != null ? Pair.of(state, blockEntity) : null);
     }
 
     private static void end(RenderLevelStageEvent event) {
@@ -59,7 +62,7 @@ public class MultiblockErrorHighlight {
             var poseStack = event.getPoseStack();
             poseStack.pushPose();
             poseStack.mulPose(event.getModelViewMatrix());
-            for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable Pair<BlockState, @Nullable BlockEntity>> entry : highlightQueue.entrySet()) {
                 poseStack.pushPose();
                 Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
                 BlockPos pos = entry.getKey();
@@ -69,12 +72,20 @@ public class MultiblockErrorHighlight {
                 poseStack.translate(x + 0.25, y + 0.25, z + 0.25);
                 poseStack.scale(0.5f, 0.5f, 0.5f);
 
-                BlockState state = entry.getValue();
-                if (state == null) {
+                var value = entry.getValue();
+                if (value == null) {
                     RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.NO_OVERLAY);
                 } else {
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, 15728880,
-                            OverlayTexture.NO_OVERLAY);
+                    BlockState state = value.getFirst();
+                    BlockEntity blockEntity = value.getSecond();
+                    var berDispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
+                    if (blockEntity != null && berDispatcher.getRenderer(blockEntity) != null) {
+                        berDispatcher.render(blockEntity, 0, poseStack, immediate);
+                    } else {
+                        ModelData modelData = blockEntity == null ? ModelData.EMPTY : blockEntity.getModelData();
+                        var renderer = Minecraft.getInstance().getBlockRenderer();
+                        renderer.renderSingleBlock(state, poseStack, immediate, 15728880, OverlayTexture.NO_OVERLAY, modelData, null);
+                    }
                 }
 
                 poseStack.popPose();

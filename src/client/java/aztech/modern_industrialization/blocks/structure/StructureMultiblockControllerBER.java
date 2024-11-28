@@ -25,31 +25,68 @@ package aztech.modern_industrialization.blocks.structure;
 
 import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 
-public class StructureMultiblockControllerBER extends StructureMultiblockBER<StructureMultiblockControllerBlockEntity> {
+public final class StructureMultiblockControllerBER implements BlockEntityRenderer<StructureMultiblockControllerBlockEntity> {
+    private static List<BlockPos> MISCONFIGURED_BLOCKS = new ArrayList<>();
+
+    public static void setMisconfigured(List<BlockPos> positions) {
+        MISCONFIGURED_BLOCKS = new ArrayList<>(positions);
+    }
+
+    public static void forgetMisconfigured(List<BlockPos> positions) {
+        MISCONFIGURED_BLOCKS.removeAll(positions);
+    }
+
     @Override
     public void render(StructureMultiblockControllerBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light,
             int overlay) {
-        super.render(be, tickDelta, matrices, vcp, light, overlay);
-
-        if (!be.shouldShowBounds()) {
-            return;
-        }
         BlockPos pos = be.getBlockPos();
         StructureControllerBounds bounds = be.getBounds();
+
         AABB box = bounds.aabb();
         if (box != null) {
-            matrices.pushPose();
-            VertexConsumer buffer = vcp.getBuffer(RenderType.lines());
-            LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
-            matrices.popPose();
+            if ((System.currentTimeMillis() / 500L) % 2 == 0) {
+                AABB worldBox = box.move(pos);
+                for (BlockPos misconfiguredPos : MISCONFIGURED_BLOCKS) {
+                    if (worldBox.contains(misconfiguredPos.getX(), misconfiguredPos.getY(), misconfiguredPos.getZ())) {
+                        matrices.pushPose();
+                        matrices.translate(misconfiguredPos.getX() - pos.getX(), misconfiguredPos.getY() - pos.getY(),
+                                misconfiguredPos.getZ() - pos.getZ());
+                        matrices.translate(-0.005f, -0.005f, -0.005f);
+                        matrices.scale(1.01f, 1.01f, 1.01f);
+                        RenderHelper.drawOverlay(matrices, vcp, 1.0f, 111f / 256f, 111f / 256f, RenderHelper.FULL_LIGHT, overlay, false);
+                        matrices.popPose();
+                    }
+                }
+            }
+
+            if (be.shouldShowBounds()) {
+                matrices.pushPose();
+                VertexConsumer buffer = vcp.getBuffer(RenderType.lines());
+                LevelRenderer.renderLineBox(matrices, buffer, box, 1, 1, 1, 1);
+                matrices.popPose();
+            }
         }
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(StructureMultiblockControllerBlockEntity be) {
+        return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(StructureMultiblockControllerBlockEntity be) {
+        return AABB.INFINITE;
     }
 }

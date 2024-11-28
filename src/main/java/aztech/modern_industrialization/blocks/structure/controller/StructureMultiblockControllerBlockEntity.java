@@ -54,6 +54,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     private MachineCasing casing;
     private StructureControllerBounds bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
     private boolean showBounds;
+    private boolean includeBlockEntities;
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
@@ -116,6 +117,14 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         this.showBounds = showBounds;
     }
 
+    public boolean includeBlockEntities() {
+        return includeBlockEntities;
+    }
+
+    public void setIncludeBlockEntities(boolean includeBlockEntities) {
+        this.includeBlockEntities = includeBlockEntities;
+    }
+
     @Override
     public boolean isController() {
         return true;
@@ -158,6 +167,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         boundsTag.put("size", NbtUtils.writeBlockPos(new BlockPos(bounds.sizeX(), bounds.sizeY(), bounds.sizeZ())));
         tag.put("bounds", boundsTag);
         tag.putBoolean("show_bounds", showBounds);
+        tag.putBoolean("include_block_entities", includeBlockEntities);
     }
 
     @Override
@@ -177,6 +187,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
             bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
         }
         showBounds = tag.getBoolean("show_bounds");
+        includeBlockEntities = tag.getBoolean("include_block_entities");
         this.updateBlockState();
     }
 

@@ -29,7 +29,6 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
-import aztech.modern_industrialization.blocks.structure.StructureMultiblockBER;
 import aztech.modern_industrialization.blocks.structure.StructureMultiblockControllerBER;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
@@ -157,7 +156,7 @@ public class MIClient {
         });
         NeoForge.EVENT_BUS.addListener(LevelEvent.Unload.class, event -> {
             if (event.getLevel().isClientSide()) {
-                StructureMultiblockBER.setMisconfigured(List.of());
+                StructureMultiblockControllerBER.setMisconfigured(List.of());
             }
         });
 
@@ -246,7 +245,6 @@ public class MIClient {
         BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.CREATIVE_TANK_BE.get(), context -> new TankRenderer(0x000000));
         BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), context -> new StructureMultiblockControllerBER());
-        BlockEntityRenderers.register(MIRegistries.STRUCTURE_MULTIBLOCK_MEMBER_BE.get(), context -> new StructureMultiblockBER<>());
 
         blockEntityRendererRegistrations.forEach(Runnable::run);
     }

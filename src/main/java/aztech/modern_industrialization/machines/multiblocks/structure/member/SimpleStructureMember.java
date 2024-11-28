@@ -38,8 +38,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
+import org.jetbrains.annotations.Nullable;
 
 public sealed class SimpleStructureMember extends StructureMember permits HatchStructureMember, LiteralStructureMember {
     public static final MapCodec<SimpleStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
@@ -82,7 +84,7 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
     }
 
     @Override
-    public boolean matchesState(BlockState state) {
+    public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
         for (StructureMemberTest test : tests) {
             if (test.matchesState(state)) {
                 return true;

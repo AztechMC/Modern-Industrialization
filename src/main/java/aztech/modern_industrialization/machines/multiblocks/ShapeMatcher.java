@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
@@ -37,8 +38,10 @@ import java.util.Objects;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -177,7 +180,8 @@ public class ShapeMatcher implements ChunkEventListener {
             return false;
 
         BlockState state = toTemplateState(world, pos, world.getBlockState(pos), controllerDirection);
-        if (simpleMember.matchesState(state))
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (simpleMember.matchesState(state, blockEntity))
             return true;
 
         BlockEntity be = world.getBlockEntity(pos);
@@ -250,7 +254,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
         for (var entry : simpleMembers.entrySet()) {
             BlockPos pos = entry.getKey();
-            var current = level.getBlockState(pos);
+            CompoundTag nbt = null;
             if (entry.getValue() instanceof StructureMember member) {
                 var optionalStructureBlock = member.asStructureBlock(pos, structureBlocks);
                 if (optionalStructureBlock.isPresent()) {
@@ -262,11 +266,26 @@ public class ShapeMatcher implements ChunkEventListener {
                     be.sync();
                     setBlocks++;
                     continue;
+                } else if (member instanceof LiteralStructureMember literalMember) {
+                    nbt = literalMember.nbt();
                 }
             }
-            if (!entry.getValue().matchesState(current)) {
+            var currentState = level.getBlockState(pos);
+            var currentBlockEntity = level.getBlockEntity(pos);
+            if (!entry.getValue().matchesState(currentState, currentBlockEntity)) {
                 BlockState state = toWorldState(level, pos, entry.getValue().getPreviewState(), controllerDirection);
+                BlockEntity blockEntity = null;
+                if (state.getBlock() instanceof EntityBlock entityBlock) {
+                    blockEntity = entityBlock.newBlockEntity(pos, state);
+                    if (blockEntity != null && nbt != null) {
+                        blockEntity.loadCustomOnly(nbt, level.registryAccess());
+                    }
+                }
                 level.setBlockAndUpdate(pos, state);
+                if (blockEntity != null) {
+                    level.setBlockEntity(blockEntity);
+                    blockEntity.setChanged();
+                }
                 ++setBlocks;
             }
         }

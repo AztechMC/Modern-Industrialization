@@ -35,12 +35,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public record StructureUpdateControllerPacket(BlockPos pos, StructureControllerMode mode, String inputId, String inputCasing,
-        StructureControllerBounds bounds, boolean showBounds)
+        StructureControllerBounds bounds, boolean showBounds, boolean includeBlockEntities)
         implements BasePacket {
 
-    public static final StreamCodec<ByteBuf, StructureUpdateControllerPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<ByteBuf, StructureUpdateControllerPacket> STREAM_CODEC = NeoForgeStreamCodecs.composite(
             BlockPos.STREAM_CODEC,
             StructureUpdateControllerPacket::pos,
             ByteBufCodecs.idMapper((i) -> StructureControllerMode.values()[i], Enum::ordinal),
@@ -53,6 +54,8 @@ public record StructureUpdateControllerPacket(BlockPos pos, StructureControllerM
             StructureUpdateControllerPacket::bounds,
             ByteBufCodecs.BOOL,
             StructureUpdateControllerPacket::showBounds,
+            ByteBufCodecs.BOOL,
+            StructureUpdateControllerPacket::includeBlockEntities,
             StructureUpdateControllerPacket::new);
 
     @Override
@@ -73,6 +76,7 @@ public record StructureUpdateControllerPacket(BlockPos pos, StructureControllerM
             controller.setInputCasing(inputCasing);
             controller.setBounds(bounds);
             controller.setShowBounds(showBounds);
+            controller.setIncludeBlockEntities(includeBlockEntities);
 
             controller.sync();
             controller.setChanged();

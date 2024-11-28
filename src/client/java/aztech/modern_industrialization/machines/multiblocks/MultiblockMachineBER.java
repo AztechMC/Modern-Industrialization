@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -37,7 +38,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,6 +53,8 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
     @Override
     public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
         super.render(be, tickDelta, matrices, vcp, light, overlay);
+
+        Level level = be.getLevel();
 
         // Only render if holding a wrench AND if the shape is not valid.
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
@@ -70,13 +76,23 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, be.getLevel(), null)) {
-                        if (be.getLevel().getBlockState(pos).isAir()) {
+                    if (!matcher.matches(pos, level, null)) {
+                        if (level.getBlockState(pos).isAir()) {
                             // Enqueue state preview
-                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
+                            SimpleMember member = matcher.getSimpleMember(pos);
+                            BlockState state = ShapeMatcher.toWorldState(level, pos, member.getPreviewState(), matcher.controllerDirection);
+                            BlockEntity blockEntity = null;
+                            if (member instanceof LiteralStructureMember literalMember && state.getBlock() instanceof EntityBlock entityBlock) {
+                                blockEntity = entityBlock.newBlockEntity(pos, state);
+                                blockEntity.setLevel(level);
+                                if (literalMember.nbt() != null) {
+                                    blockEntity.loadCustomOnly(literalMember.nbt(), level.registryAccess());
+                                }
+                            }
+                            MultiblockErrorHighlight.enqueueHighlight(pos, state, blockEntity);
                         } else {
                             // Enqueue red cube
-                            MultiblockErrorHighlight.enqueueHighlight(pos, null);
+                            MultiblockErrorHighlight.enqueueHighlight(pos, null, null);
                         }
                     }
                 }

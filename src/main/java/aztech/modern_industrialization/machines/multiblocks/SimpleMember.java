@@ -31,14 +31,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The representation of a simple logic-less member that is part of a shape,
  * e.g. a casing.
  */
 public interface SimpleMember {
-    boolean matchesState(BlockState state);
+    boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity);
 
     BlockState getPreviewState();
 
@@ -47,7 +49,7 @@ public interface SimpleMember {
 
         return new SimpleMember() {
             @Override
-            public boolean matchesState(BlockState state) {
+            public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
                 return state.is(block.get());
             }
 
@@ -67,7 +69,7 @@ public interface SimpleMember {
 
         return new SimpleMember() {
             @Override
-            public boolean matchesState(BlockState state2) {
+            public boolean matchesState(BlockState state2, @Nullable BlockEntity blockEntity) {
                 return state == state2;
             }
 
@@ -81,7 +83,7 @@ public interface SimpleMember {
     static SimpleMember verticalChain() {
         return new SimpleMember() {
             @Override
-            public boolean matchesState(BlockState state) {
+            public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
                 return state.is(Blocks.CHAIN) && state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y;
             }
 

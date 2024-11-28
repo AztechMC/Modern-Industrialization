@@ -1717,6 +1717,7 @@
   "text.modern_industrialization.SteamDrillToggle": "- Toggle Silk Touch with %s + %s.",
   "text.modern_industrialization.SteamDrillWaterHelp": "- Press %s on still or flowing water to fill.",
   "text.modern_industrialization.StructureMultiblockCasing": "Machine Casing",
+  "text.modern_industrialization.StructureMultiblockGuiIncludeBlockEntities": "Include NBT",
   "text.modern_industrialization.StructureMultiblockGuiLoad": "LOAD",
   "text.modern_industrialization.StructureMultiblockGuiLoadTooltip": "Hold SHIFT to place actual blocks instead of structure blocks.",
   "text.modern_industrialization.StructureMultiblockGuiMode": "MODE",

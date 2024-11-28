@@ -33,7 +33,9 @@ import com.mojang.serialization.MapCodec;
 import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public final class VariableStructureMember extends StructureMember {
     public static final MapCodec<VariableStructureMember> CODEC = Codec.STRING.xmap(VariableStructureMember::new, VariableStructureMember::name)
@@ -66,7 +68,7 @@ public final class VariableStructureMember extends StructureMember {
     }
 
     @Override
-    public boolean matchesState(BlockState state) {
+    public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
         throw new UnsupportedOperationException("Tried to use a variable structure member without replacing it in the template.");
     }
 

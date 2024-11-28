@@ -200,18 +200,18 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         this.addRenderableWidget(
                 cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
         this.addRenderableWidget(
-                saveButton = Button.builder(Component.translatable("structure_block.button.save"), button -> this.save())
+                saveButton = Button.builder(MIText.StructureMultiblockGuiSave.text(), button -> this.save())
                         .bounds(width / 2 + 4 + 100, 185, 50, 20).build());
         this.addRenderableWidget(
-                loadButton = Button.builder(Component.translatable("structure_block.button.load"), button -> this.load())
+                loadButton = Button.builder(MIText.StructureMultiblockGuiLoad.text(), button -> this.load())
                         .bounds(width / 2 + 4 + 100, 185, 50, 20)
-                        .tooltip(Tooltip.create(MIText.StructureMultiblockLoadTooltip.text()))
+                        .tooltip(Tooltip.create(MIText.StructureMultiblockGuiLoadTooltip.text()))
                         .build());
         this.addRenderableWidget(modeButton = CycleButton.builder(StructureControllerMode::text)
                 .withValues(ALL_MODES, ALL_MODES)
                 .displayOnlyValue()
                 .withInitialValue(controller.getMode())
-                .create(width / 2 - 4 - 150, 185, 50, 20, Component.literal("MODE"), (button, mode) -> this.updateMode(mode)));
+                .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
 
         idBox = new EditBox(font, width / 2 - 152, 50, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override
@@ -237,33 +237,33 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         StructureControllerBounds bounds = controller.getBounds();
 
-        posXBox = new EditBox(font, width / 2 - 152, 130, 35, 20, Component.translatable("structure_block.position.x"));
+        posXBox = new EditBox(font, width / 2 - 152, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionX.text());
         posXBox.setMaxLength(15);
         posXBox.setValue(Integer.toString(bounds.x()));
         posXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posXBox);
-        posYBox = new EditBox(font, width / 2 - 117, 130, 35, 20, Component.translatable("structure_block.position.y"));
+        posYBox = new EditBox(font, width / 2 - 117, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionY.text());
         posYBox.setMaxLength(15);
         posYBox.setValue(Integer.toString(bounds.y()));
         posYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posYBox);
-        posZBox = new EditBox(font, width / 2 - 82, 130, 35, 20, Component.translatable("structure_block.position.z"));
+        posZBox = new EditBox(font, width / 2 - 82, 130, 35, 20, MIText.StructureMultiblockGuiRelativePositionZ.text());
         posZBox.setMaxLength(15);
         posZBox.setValue(Integer.toString(bounds.z()));
         posZBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(posZBox);
 
-        sizeXBox = new EditBox(font, width / 2 - 47 + 8, 130, 35, 20, Component.translatable("structure_block.size.x"));
+        sizeXBox = new EditBox(font, width / 2 - 47 + 8, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeX.text());
         sizeXBox.setMaxLength(15);
         sizeXBox.setValue(Integer.toString(bounds.sizeX()));
         sizeXBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeXBox);
-        sizeYBox = new EditBox(font, width / 2 - 4, 130, 35, 20, Component.translatable("structure_block.size.y"));
+        sizeYBox = new EditBox(font, width / 2 - 4, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeY.text());
         sizeYBox.setMaxLength(15);
         sizeYBox.setValue(Integer.toString(bounds.sizeY()));
         sizeYBox.setResponder(text -> this.updateBounds());
         this.addRenderableWidget(sizeYBox);
-        sizeZBox = new EditBox(font, width / 2 + 31, 130, 35, 20, Component.translatable("structure_block.size.z"));
+        sizeZBox = new EditBox(font, width / 2 + 31, 130, 35, 20, MIText.StructureMultiblockGuiStructureSizeZ.text());
         sizeZBox.setMaxLength(15);
         sizeZBox.setValue(Integer.toString(bounds.sizeZ()));
         sizeZBox.setResponder(text -> this.updateBounds());
@@ -271,7 +271,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         this.addRenderableWidget(showBoundsBox = CycleButton.onOffBuilder(controller.shouldShowBounds())
                 .displayOnlyValue()
-                .create(width / 2 + 4 + 100, 130, 50, 20, Component.translatable("structure_block.show_boundingbox")));
+                .create(width / 2 + 4 + 100, 130, 50, 20, MIText.StructureMultiblockGuiShowBoundingBox.text()));
 
         this.updateAll();
     }
@@ -288,14 +288,14 @@ public class StructureMultiblockControllerEditScreen extends Screen {
             graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 80, 0xA0A0A0);
 
         if (posXBox.visible || posYBox.visible || posZBox.visible)
-            graphics.drawString(font, Component.translatable("structure_block.position"), width / 2 - 152, 120, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockGuiRelativePosition.text(), width / 2 - 152, 120, 0xA0A0A0);
 
         if (sizeXBox.visible || sizeYBox.visible || sizeZBox.visible)
-            graphics.drawString(font, Component.translatable("structure_block.size"), width / 2 - 47 + 8, 120, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockGuiStructureSize.text(), width / 2 - 47 + 8, 120, 0xA0A0A0);
 
         if (showBoundsBox.visible)
-            graphics.drawString(font, Component.translatable("structure_block.show_boundingbox"),
-                    width / 2 + 154 - font.width(Component.translatable("structure_block.show_boundingbox")), 120, 0xA0A0A0);
+            graphics.drawString(font, MIText.StructureMultiblockGuiShowBoundingBox.text(),
+                    width / 2 + 154 - font.width(MIText.StructureMultiblockGuiShowBoundingBox.text()), 120, 0xA0A0A0);
 
         graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }

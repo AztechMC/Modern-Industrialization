@@ -178,7 +178,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
                 .withValues(ALL_MODES, ALL_MODES)
                 .displayOnlyValue()
                 .withInitialValue(member.getMode())
-                .create(width / 2 - 4 - 150, 185, 50, 20, Component.literal("MODE"), (button, mode) -> this.updateMode(mode)));
+                .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
 
         nameBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockMemberName.text());
         nameBox.setMaxLength(Short.MAX_VALUE);

@@ -24,8 +24,14 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 
 /**
  * Syncing whether the multiblock shape is currently valid with the clients, to
@@ -34,13 +40,34 @@ import net.minecraft.nbt.CompoundTag;
 public class ShapeValidComponent implements IComponent.ClientOnly {
     private boolean lastShapeValid = false;
     public boolean shapeValid = false;
+    private boolean mismatchingBlockEntitiesChanged = false;
+
+    private final List<BlockPos> mismatchingBlockEntities = new ArrayList<>();
+
+    public boolean isBlockEntityMatchingAt(BlockPos pos) {
+        return !mismatchingBlockEntities.contains(pos);
+    }
+
+    // TODO SWEDZ: this causes update() to always return true
+    public void clearMisMatchingBlockEntities() {
+        mismatchingBlockEntities.clear();
+        mismatchingBlockEntitiesChanged = true;
+    }
+
+    public void addMisMatchingBlockEntity(BlockPos pos) {
+        if (!mismatchingBlockEntities.contains(pos)) {
+            mismatchingBlockEntities.add(pos);
+            mismatchingBlockEntitiesChanged = true;
+        }
+    }
 
     /**
      * Return true if this component should be synced with the client.
      */
     public boolean update() {
-        if (lastShapeValid != shapeValid) {
+        if (lastShapeValid != shapeValid || mismatchingBlockEntitiesChanged) {
             lastShapeValid = shapeValid;
+            mismatchingBlockEntitiesChanged = false;
             return true;
         }
         return false;
@@ -49,10 +76,24 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     @Override
     public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putBoolean("shapeValid", shapeValid);
+        ListTag mismatchingBlockEntitiesTag = new ListTag();
+        for (BlockPos pos : mismatchingBlockEntities) {
+            CompoundTag blockTag = new CompoundTag();
+            blockTag.put("pos", NbtUtils.writeBlockPos(pos));
+            mismatchingBlockEntitiesTag.add(blockTag);
+        }
+        tag.put("mismatchingBlockEntities", mismatchingBlockEntitiesTag);
     }
 
     @Override
     public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
         shapeValid = tag.getBoolean("shapeValid");
+        mismatchingBlockEntities.clear();
+        ListTag mismatchingBlockEntitiesTag = tag.getList("mismatchingBlockEntities", Tag.TAG_COMPOUND);
+        for (Tag blockTag : mismatchingBlockEntitiesTag) {
+            if (blockTag instanceof CompoundTag blockCompoundTag) {
+                NbtUtils.readBlockPos(blockCompoundTag, "pos").ifPresent(mismatchingBlockEntities::add);
+            }
+        }
     }
 }

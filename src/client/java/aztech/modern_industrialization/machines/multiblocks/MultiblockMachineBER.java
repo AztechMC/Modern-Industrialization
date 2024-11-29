@@ -76,7 +76,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, level, null)) {
+                    if (!matcher.matches(pos, level)) {
                         if (level.getBlockState(pos).isAir()) {
                             // Enqueue state preview
                             SimpleMember member = matcher.getSimpleMember(pos);

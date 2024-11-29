@@ -25,16 +25,15 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
@@ -154,5 +153,67 @@ public class NbtHelper {
         } else {
             tag.putInt(key, i);
         }
+    }
+
+    /**
+     * A more reasonable version of NbtUtils#compareNbt that compares numeric tags without requiring they be of the same type.
+     */
+    public static boolean equals(@Nullable Tag a, @Nullable Tag b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return switch (a) {
+        case CompoundTag tagA -> {
+            if (b instanceof CompoundTag tagB) {
+                if (tagA.size() != tagB.size()) {
+                    yield false;
+                }
+                Set<String> allKeys = new HashSet<>();
+                allKeys.addAll(tagA.getAllKeys());
+                allKeys.addAll(tagB.getAllKeys());
+                for (String key : allKeys) {
+                    Tag valueA = tagA.get(key);
+                    Tag valueB = tagB.get(key);
+                    if (!equals(valueA, valueB)) {
+                        yield false;
+                    }
+                }
+                yield true;
+            }
+            yield false;
+        }
+        case ListTag tagA -> {
+            if (b instanceof ListTag tagB) {
+                if (tagA.size() != tagB.size()) {
+                    yield false;
+                }
+                for (int i = 0; i < tagA.size(); i++) {
+                    Tag valueA = tagA.get(i);
+                    Tag valueB = tagB.get(i);
+                    if (!equals(valueA, valueB)) {
+                        yield false;
+                    }
+                }
+                yield true;
+            }
+            yield false;
+        }
+        case NumericTag tagA -> {
+            if (b instanceof NumericTag tagB) {
+                if (a instanceof DoubleTag || a instanceof FloatTag || b instanceof DoubleTag || b instanceof FloatTag) {
+                    yield tagA.getAsDouble() == tagB.getAsDouble();
+                } else if (a instanceof LongTag || b instanceof LongTag) {
+                    yield tagA.getAsLong() == tagB.getAsLong();
+                } else {
+                    yield tagA.getAsInt() == tagB.getAsInt();
+                }
+            }
+            yield false;
+        }
+        default -> a.equals(b);
+        };
     }
 }

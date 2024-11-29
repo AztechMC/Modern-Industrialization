@@ -74,7 +74,7 @@ public record StructureLoadControllerPacket(BlockPos pos, boolean structureBlock
                 return;
             }
             ShapeTemplate template = MIStructureTemplateManager.get(id);
-            ShapeMatcher shapeMatcher = new ShapeMatcher(level, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), template);
+            ShapeMatcher shapeMatcher = new ShapeMatcher(level, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), template, null);
             shapeMatcher.buildMultiblock(level, structureBlocks);
             player.sendSystemMessage(MIText.StructureMultiblockLoadSuccess.text(id.toString()));
         }

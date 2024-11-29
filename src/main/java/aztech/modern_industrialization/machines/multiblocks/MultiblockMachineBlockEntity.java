@@ -52,7 +52,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public ShapeMatcher createShapeMatcher() {
-        return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
+        return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape(), shapeValid);
     }
 
     protected void onLink() {

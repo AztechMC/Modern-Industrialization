@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.multiblocks.structure.MIStructur
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import aztech.modern_industrialization.util.MIExtraCodecs;
+import aztech.modern_industrialization.util.NbtHelper;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -69,7 +69,7 @@ public final class LiteralStructureMember extends SimpleStructureMember {
     public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
         CompoundTag beTag = MIStructureTemplateManager.maybeTag(blockEntity);
         for (StructureMemberTest test : tests) {
-            if (test.matchesState(state) && NbtUtils.compareNbt(nbt, beTag, true)) {
+            if (test.matchesState(state) && NbtHelper.equals(nbt, beTag)) {
                 return true;
             }
         }
@@ -86,7 +86,7 @@ public final class LiteralStructureMember extends SimpleStructureMember {
         if (o instanceof LiteralStructureMember other && this.getClass() == other.getClass()) {
             return this.getPreviewState() == other.getPreviewState() &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
-                    NbtUtils.compareNbt(nbt, other.nbt, true);
+                    NbtHelper.equals(nbt, other.nbt);
         }
         return false;
     }

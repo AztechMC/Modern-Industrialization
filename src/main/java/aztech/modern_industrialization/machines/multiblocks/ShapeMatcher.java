@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.blocks.FastBlockEntity;
+import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
@@ -51,10 +52,12 @@ import org.jetbrains.annotations.Nullable;
  * Status of a multiblock shape bound to some position and direction.
  */
 public class ShapeMatcher implements ChunkEventListener {
-    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
+    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template,
+            @Nullable ShapeValidComponent shapeValid) {
         this.controllerPos = controllerPos;
         this.controllerDirection = controllerDirection;
         this.template = template;
+        this.shapeValid = shapeValid;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
     }
@@ -62,6 +65,8 @@ public class ShapeMatcher implements ChunkEventListener {
     protected final BlockPos controllerPos;
     protected final Direction controllerDirection;
     protected final ShapeTemplate template;
+    @Nullable
+    protected final ShapeValidComponent shapeValid;
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
 
@@ -166,36 +171,40 @@ public class ShapeMatcher implements ChunkEventListener {
         }
 
         matchedHatches.clear();
+        shapeValid.clearMisMatchingBlockEntities();
         matchSuccessful = false;
         needsRematch = true;
     }
 
     /**
-     * Return true if there was a match, and append matched hatches to the list if
-     * it's not null.
+     * Return true if there was a match, and append matched hatches and mismatching block entities to the internal lists.
      */
-    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> hatches) {
+    public boolean matches(BlockPos pos, Level world) {
         SimpleMember simpleMember = simpleMembers.get(pos);
         if (simpleMember == null)
             return false;
 
         BlockState state = toTemplateState(world, pos, world.getBlockState(pos), controllerDirection);
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (simpleMember.matchesState(state, blockEntity))
-            return true;
-
         BlockEntity be = world.getBlockEntity(pos);
+
         if (be instanceof HatchBlockEntity hatch) {
             HatchFlags flags = hatchFlags.get(pos);
             if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
-                if (matchedHatches != null) {
-                    matchedHatches.add(hatch);
-                }
+                matchedHatches.add(hatch);
                 return true;
             }
         }
 
-        return false;
+        boolean matches = simpleMember.matchesState(state, be);
+        if (be != null && shapeValid != null) {
+            boolean client = world.isClientSide();
+            if (client) {
+                return shapeValid.isBlockEntityMatchingAt(pos);
+            } else if (!matches) {
+                shapeValid.addMisMatchingBlockEntity(pos);
+            }
+        }
+        return matches;
     }
 
     public boolean needsRematch() {
@@ -213,7 +222,7 @@ public class ShapeMatcher implements ChunkEventListener {
         for (BlockPos pos : simpleMembers.keySet()) {
             // TODO: check if the chunk is loaded
 
-            if (!matches(pos, world, matchedHatches)) {
+            if (!matches(pos, world)) {
                 matchSuccessful = false;
             }
         }

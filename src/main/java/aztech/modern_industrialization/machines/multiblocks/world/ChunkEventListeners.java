@@ -23,12 +23,14 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.world;
 
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
@@ -69,12 +71,12 @@ public class ChunkEventListeners {
         });
         NeoForge.EVENT_BUS.addListener(BlockEvent.NeighborNotifyEvent.class, event -> {
             if (event.getLevel() instanceof Level level) {
-                onBlockStateChange(level, new ChunkPos(event.getPos()), event.getPos());
+                onBlockUpdate(level, new ChunkPos(event.getPos()), event.getPos());
             }
         });
     }
 
-    public static void onBlockStateChange(Level world, ChunkPos chunkPos, BlockPos pos) {
+    public static void onBlockUpdate(Level world, ChunkPos chunkPos, BlockPos pos) {
         // We skip block state changes that happen outside of the server thread.
         // Hopefully that won't cause problems.
         if (world instanceof ServerLevel serverLevel && serverLevel.getServer().isSameThread()) {
@@ -84,6 +86,13 @@ public class ChunkEventListeners {
                     cel.onBlockUpdate(pos);
                 }
             }
+        }
+    }
+
+    public static void onBlockEntityUpdate(Level world, BlockPos pos) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof MachineBlockEntity)) {
+            onBlockUpdate(world, new ChunkPos(pos), pos);
         }
     }
 

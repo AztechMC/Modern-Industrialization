@@ -171,7 +171,7 @@ public class ShapeMatcher implements ChunkEventListener {
         }
 
         matchedHatches.clear();
-        shapeValid.clearMisMatchingBlockEntities();
+        shapeValid.clearMismatchingBlockEntities();
         matchSuccessful = false;
         needsRematch = true;
     }
@@ -201,7 +201,7 @@ public class ShapeMatcher implements ChunkEventListener {
             if (client) {
                 return shapeValid.isBlockEntityMatchingAt(pos);
             } else if (!matches) {
-                shapeValid.addMisMatchingBlockEntity(pos);
+                shapeValid.addMismatchingBlockEntity(pos);
             }
         }
         return matches;

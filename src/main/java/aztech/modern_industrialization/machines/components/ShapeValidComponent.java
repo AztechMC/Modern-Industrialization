@@ -49,12 +49,12 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     }
 
     // TODO SWEDZ: this causes update() to always return true
-    public void clearMisMatchingBlockEntities() {
+    public void clearMismatchingBlockEntities() {
         mismatchingBlockEntities.clear();
         mismatchingBlockEntitiesChanged = true;
     }
 
-    public void addMisMatchingBlockEntity(BlockPos pos) {
+    public void addMismatchingBlockEntity(BlockPos pos) {
         if (!mismatchingBlockEntities.contains(pos)) {
             mismatchingBlockEntities.add(pos);
             mismatchingBlockEntitiesChanged = true;

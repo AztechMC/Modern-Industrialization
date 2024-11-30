@@ -23,21 +23,29 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.SimpleStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.VariableStructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * An immutable description of a multiblock shape.
  */
+@EventBusSubscriber(modid = MI.ID, bus = EventBusSubscriber.Bus.MOD)
 public class ShapeTemplate {
     public static final Codec<ShapeTemplate> STRUCTURE_CODEC = InternalStructureTemplate.CODEC
             .xmap(structure -> {
@@ -85,12 +93,35 @@ public class ShapeTemplate {
                 .apply(instance, InternalStructureTemplate::new));
     }
 
+    private static final List<ShapeTemplate> TEMPLATES = new ArrayList<>();
+
     public final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
     public final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
     public final MachineCasing hatchCasing;
 
     private ShapeTemplate(MachineCasing hatchCasing) {
         this.hatchCasing = hatchCasing;
+        TEMPLATES.add(this);
+    }
+
+    /**
+     * Forces all lazy block states in structures to get loaded during startup as soon as blocks are in the registry. This prevents any delay later
+     * where we otherwise would need to be parsing json elements during play.
+     */
+    @SubscribeEvent
+    private static void onSetup(FMLCommonSetupEvent event) {
+        for (ShapeTemplate template : TEMPLATES) {
+            for (SimpleMember member : template.simpleMembers.values()) {
+                if (member instanceof SimpleStructureMember simpleMember) {
+                    simpleMember.getPreviewState();
+                    for (StructureMemberTest test : simpleMember.tests()) {
+                        if (test instanceof StateStructureMemberTest stateTest) {
+                            stateTest.blockState();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static class Builder {

@@ -264,6 +264,9 @@ public class ShapeMatcher implements ChunkEventListener {
 
         for (var entry : simpleMembers.entrySet()) {
             BlockPos pos = entry.getKey();
+            if (!level.isInWorldBounds(pos)) {
+                continue;
+            }
             CompoundTag nbt = null;
             if (entry.getValue() instanceof StructureMember member) {
                 var optionalStructureBlock = member.asStructureBlock(pos, structureBlocks);

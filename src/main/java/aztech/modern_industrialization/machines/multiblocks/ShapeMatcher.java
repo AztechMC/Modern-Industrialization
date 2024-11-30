@@ -60,6 +60,10 @@ public class ShapeMatcher implements ChunkEventListener {
         this.shapeValid = shapeValid;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
+
+        if (shapeValid != null && !world.isClientSide()) {
+            shapeValid.clearMismatchingBlockEntities();
+        }
     }
 
     protected final BlockPos controllerPos;
@@ -171,7 +175,9 @@ public class ShapeMatcher implements ChunkEventListener {
         }
 
         matchedHatches.clear();
-        shapeValid.clearMismatchingBlockEntities();
+        if (shapeValid != null) {
+            shapeValid.clearMismatchingBlockEntities();
+        }
         matchSuccessful = false;
         needsRematch = true;
     }
@@ -197,8 +203,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
         boolean matches = simpleMember.matchesState(state, be);
         if (be != null && shapeValid != null) {
-            boolean client = world.isClientSide();
-            if (client) {
+            if (world.isClientSide()) {
                 return shapeValid.isBlockEntityMatchingAt(pos);
             } else if (!matches) {
                 shapeValid.addMismatchingBlockEntity(pos);

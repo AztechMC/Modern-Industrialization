@@ -40,24 +40,21 @@ import net.minecraft.nbt.Tag;
 public class ShapeValidComponent implements IComponent.ClientOnly {
     private boolean lastShapeValid = false;
     public boolean shapeValid = false;
-    private boolean mismatchingBlockEntitiesChanged = false;
 
-    private final List<BlockPos> mismatchingBlockEntities = new ArrayList<>();
+    private List<BlockPos> lastMismatchingBlockEntities = new ArrayList<>();
+    private List<BlockPos> mismatchingBlockEntities = new ArrayList<>();
 
     public boolean isBlockEntityMatchingAt(BlockPos pos) {
         return !mismatchingBlockEntities.contains(pos);
     }
 
-    // TODO SWEDZ: this causes update() to always return true
     public void clearMismatchingBlockEntities() {
         mismatchingBlockEntities.clear();
-        mismatchingBlockEntitiesChanged = true;
     }
 
     public void addMismatchingBlockEntity(BlockPos pos) {
         if (!mismatchingBlockEntities.contains(pos)) {
             mismatchingBlockEntities.add(pos);
-            mismatchingBlockEntitiesChanged = true;
         }
     }
 
@@ -65,9 +62,11 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
      * Return true if this component should be synced with the client.
      */
     public boolean update() {
-        if (lastShapeValid != shapeValid || mismatchingBlockEntitiesChanged) {
+        if (lastShapeValid != shapeValid
+                || !lastMismatchingBlockEntities.containsAll(mismatchingBlockEntities)
+                || !mismatchingBlockEntities.containsAll(lastMismatchingBlockEntities)) {
             lastShapeValid = shapeValid;
-            mismatchingBlockEntitiesChanged = false;
+            lastMismatchingBlockEntities = List.copyOf(mismatchingBlockEntities);
             return true;
         }
         return false;

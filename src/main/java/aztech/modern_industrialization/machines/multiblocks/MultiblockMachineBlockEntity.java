@@ -108,6 +108,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         if (super.useWrench(player, hand, hitResult)) {
             if (!level.isClientSide) {
                 unlink();
+                link();
             }
             return true;
         }

@@ -60,10 +60,6 @@ public class ShapeMatcher implements ChunkEventListener {
         this.shapeValid = shapeValid;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
-
-        if (shapeValid != null && !world.isClientSide()) {
-            shapeValid.clearMismatchingBlockEntities();
-        }
     }
 
     protected final BlockPos controllerPos;

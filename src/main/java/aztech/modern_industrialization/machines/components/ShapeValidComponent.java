@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -41,8 +41,8 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     private boolean lastShapeValid = false;
     public boolean shapeValid = false;
 
-    private List<BlockPos> lastMismatchingBlockEntities = new ArrayList<>();
-    private List<BlockPos> mismatchingBlockEntities = new ArrayList<>();
+    private Set<BlockPos> lastMismatchingBlockEntities = new HashSet<>();
+    private Set<BlockPos> mismatchingBlockEntities = new HashSet<>();
 
     public boolean isBlockEntityMatchingAt(BlockPos pos) {
         return !mismatchingBlockEntities.contains(pos);
@@ -53,20 +53,16 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     }
 
     public void addMismatchingBlockEntity(BlockPos pos) {
-        if (!mismatchingBlockEntities.contains(pos)) {
-            mismatchingBlockEntities.add(pos);
-        }
+        mismatchingBlockEntities.add(pos);
     }
 
     /**
      * Return true if this component should be synced with the client.
      */
     public boolean update() {
-        if (lastShapeValid != shapeValid
-                || !lastMismatchingBlockEntities.containsAll(mismatchingBlockEntities)
-                || !mismatchingBlockEntities.containsAll(lastMismatchingBlockEntities)) {
+        if (lastShapeValid != shapeValid || !lastMismatchingBlockEntities.equals(mismatchingBlockEntities)) {
             lastShapeValid = shapeValid;
-            lastMismatchingBlockEntities = List.copyOf(mismatchingBlockEntities);
+            lastMismatchingBlockEntities = Set.copyOf(mismatchingBlockEntities);
             return true;
         }
         return false;

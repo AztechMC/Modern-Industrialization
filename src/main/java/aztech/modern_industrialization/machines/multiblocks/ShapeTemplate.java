@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 public class ShapeTemplate {
     public static final Codec<ShapeTemplate> STRUCTURE_CODEC = InternalStructureTemplate.CODEC
             .xmap(structure -> {
-                Builder template = new Builder(structure.casing());
+                Builder template = new Builder(null);
                 for (InternalStructureBlockPos block : structure.blocks()) {
                     BlockPos pos = block.pos();
                     int memberIndex = block.memberIndex();
@@ -73,7 +73,7 @@ public class ShapeTemplate {
                                 "Cannot convert ShapeTemplate to a structure ShapeTemplate if all members aren't StructureMembers");
                     }
                 }
-                return new InternalStructureTemplate(template.hatchCasing, blocks, members);
+                return new InternalStructureTemplate(blocks, members);
             });
 
     private record InternalStructureBlockPos(int memberIndex, BlockPos pos) {
@@ -84,10 +84,9 @@ public class ShapeTemplate {
                 .apply(instance, InternalStructureBlockPos::new));
     }
 
-    private record InternalStructureTemplate(MachineCasing casing, List<InternalStructureBlockPos> blocks, List<StructureMember> members) {
+    private record InternalStructureTemplate(List<InternalStructureBlockPos> blocks, List<StructureMember> members) {
         private static final Codec<InternalStructureTemplate> CODEC = RecordCodecBuilder.create(instance -> instance
                 .group(
-                        MachineCasing.CODEC.fieldOf("hatch_casing").forGetter(InternalStructureTemplate::casing),
                         InternalStructureBlockPos.CODEC.listOf().fieldOf("blocks").forGetter(InternalStructureTemplate::blocks),
                         StructureMember.CODEC.listOf().fieldOf("members").forGetter(InternalStructureTemplate::members))
                 .apply(instance, InternalStructureTemplate::new));
@@ -97,9 +96,13 @@ public class ShapeTemplate {
 
     public final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
     public final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
+    @Nullable
     public final MachineCasing hatchCasing;
 
-    private ShapeTemplate(MachineCasing hatchCasing) {
+    /**
+     * A null hatchCasing for a shape is only permitted if the shape is a structure as the hatch casing is determined by the hatch members.
+     */
+    private ShapeTemplate(@Nullable MachineCasing hatchCasing) {
         this.hatchCasing = hatchCasing;
         TEMPLATES.add(this);
     }
@@ -287,7 +290,7 @@ public class ShapeTemplate {
 
         public Structure(ResourceLocation id) {
             ShapeTemplate referenceTemplate = MIStructureTemplateManager.get(id);
-            template = new ShapeTemplate(referenceTemplate.hatchCasing);
+            template = new ShapeTemplate(null);
             template.simpleMembers.putAll(referenceTemplate.simpleMembers);
             template.hatchFlags.putAll(referenceTemplate.hatchFlags);
         }

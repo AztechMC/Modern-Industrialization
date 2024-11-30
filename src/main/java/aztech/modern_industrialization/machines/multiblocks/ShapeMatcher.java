@@ -25,6 +25,8 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
@@ -232,7 +234,15 @@ public class ShapeMatcher implements ChunkEventListener {
             matchedHatches.clear();
         } else {
             for (HatchBlockEntity hatch : matchedHatches) {
-                hatch.link(template.hatchCasing);
+                MachineCasing hatchCasing = template.hatchCasing;
+                SimpleMember member = simpleMembers.get(hatch.getBlockPos());
+                if (member instanceof HatchStructureMember hatchMember) {
+                    hatchCasing = hatchMember.casing();
+                }
+                if (hatchCasing == null) {
+                    throw new IllegalStateException("hatchCasing for a multiblock shape cannot be null without using hatch structure members");
+                }
+                hatch.link(hatchCasing);
             }
         }
 

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
 import aztech.modern_industrialization.blocks.structure.controller.StructureControllerMode;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
-import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.network.structure.StructureLoadControllerPacket;
@@ -63,7 +62,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private Button loadButton;
 
     private EditBox idBox;
-    private EditBox casingBox;
 
     private EditBox posXBox;
     private EditBox posYBox;
@@ -88,10 +86,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         };
     }
 
-    private Optional<MachineCasing> getCasing() {
-        return Optional.ofNullable(StructureMultiblockInputFormatters.casing(casingBox.getValue()));
-    }
-
     private Optional<StructureControllerBounds> getBounds() {
         try {
             int x = Integer.parseInt(posXBox.getValue());
@@ -111,7 +105,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         saveButton.visible = false;
         loadButton.visible = false;
-        casingBox.visible = false;
         posXBox.visible = false;
         posYBox.visible = false;
         posZBox.visible = false;
@@ -124,7 +117,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         switch (mode) {
         case SAVE -> {
             saveButton.visible = true;
-            casingBox.visible = true;
             posXBox.visible = true;
             posYBox.visible = true;
             posZBox.visible = true;
@@ -148,11 +140,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         loadButton.active = validId;
     }
 
-    private void updateCasing() {
-        boolean validCasing = casingBox.getValue().isEmpty() || this.getCasing().isPresent();
-        casingBox.setTextColor(validCasing ? VALID_TEXT_COLOR : INVALID_TEXT_COLOR);
-    }
-
     private void updateBounds() {
         boolean validBounds = this.getBounds().filter((b) -> !b.isEmpty()).isPresent();
         saveButton.active = validBounds;
@@ -161,7 +148,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     private void updateAll() {
         this.updateMode(controller.getMode());
         this.updateId();
-        this.updateCasing();
         this.updateBounds();
     }
 
@@ -175,7 +161,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 controller.getBlockPos(),
                 modeButton.getValue(),
                 idBox.getValue(),
-                casingBox.getValue(),
                 this.getBounds().orElse(new StructureControllerBounds(0, 0, 0, 1, 1, 1)),
                 showBoundsBox.getValue(),
                 includeBlockEntitiesBox.getValue()).sendToServer();
@@ -217,7 +202,7 @@ public class StructureMultiblockControllerEditScreen extends Screen {
                 .withInitialValue(controller.getMode())
                 .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
 
-        idBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockStructureName.text()) {
+        idBox = new EditBox(font, width / 2 - 152, 60, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override
             public boolean charTyped(char codePoint, int modifiers) {
                 return StructureMultiblockInputFormatters.isValidIdCharacter(codePoint) && super.charTyped(codePoint, modifiers);
@@ -227,17 +212,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
         idBox.setValue(controller.getInputId());
         idBox.setResponder(text -> this.updateId());
         this.addRenderableWidget(idBox);
-
-        casingBox = new EditBox(font, width / 2 - 152, 60, 304, 20, MIText.StructureMultiblockCasing.text()) {
-            @Override
-            public boolean charTyped(char codePoint, int modifiers) {
-                return ResourceLocation.isAllowedInResourceLocation(codePoint) && super.charTyped(codePoint, modifiers);
-            }
-        };
-        casingBox.setMaxLength(Short.MAX_VALUE);
-        casingBox.setValue(controller.getInputCasing());
-        casingBox.setResponder(text -> this.updateCasing());
-        this.addRenderableWidget(casingBox);
 
         StructureControllerBounds bounds = controller.getBounds();
 
@@ -288,10 +262,9 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
 
-        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 10, 0xA0A0A0);
+        graphics.drawCenteredString(font, title, width / 2, 20, 0xFFFFFF);
 
-        if (casingBox.visible)
-            graphics.drawString(font, MIText.StructureMultiblockCasing.text(), width / 2 - 152, 50, 0xA0A0A0);
+        graphics.drawString(font, MIText.StructureMultiblockStructureName.text(), width / 2 - 152, 50, 0xA0A0A0);
 
         if (posXBox.visible || posYBox.visible || posZBox.visible)
             graphics.drawString(font, MIText.StructureMultiblockGuiRelativePosition.text(), width / 2 - 152, 90, 0xA0A0A0);
@@ -324,7 +297,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
     public void resize(Minecraft minecraft, int width, int height) {
         StructureControllerMode modeButtonValue = modeButton.getValue();
         String idBoxValue = idBox.getValue();
-        String casingBoxValue = casingBox.getValue();
         String posXBoxValue = posXBox.getValue();
         String posYBoxValue = posYBox.getValue();
         String posZBoxValue = posZBox.getValue();
@@ -338,7 +310,6 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
         modeButton.setValue(modeButtonValue);
         idBox.setValue(idBoxValue);
-        casingBox.setValue(casingBoxValue);
         posXBox.setValue(posXBoxValue);
         posYBox.setValue(posYBoxValue);
         posZBox.setValue(posZBoxValue);

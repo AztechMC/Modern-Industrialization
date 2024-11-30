@@ -29,7 +29,6 @@ import static aztech.modern_industrialization.machines.multiblocks.ShapeMatcher.
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.blocks.structure.controller.StructureControllerBounds;
-import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
@@ -103,8 +102,7 @@ public final class MIStructureTemplateManager {
 
     public static StructureResult fromWorld(ResourceLocation id, Level level,
             BlockPos controllerPos, Direction controllerDirection,
-            MachineCasing hatchCasing, StructureControllerBounds bounds,
-            boolean includeBlockEntities) {
+            StructureControllerBounds bounds, boolean includeBlockEntities) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(level);
         Objects.requireNonNull(controllerPos);
@@ -118,11 +116,7 @@ public final class MIStructureTemplateManager {
         List<BlockPos> controllerBlocks = new ArrayList<>();
         List<BlockPos> hatchBlocks = new ArrayList<>();
 
-        if (hatchCasing == null) {
-            misconfiguredBlocks.add(controllerPos);
-        }
-
-        ShapeTemplate.Builder template = new ShapeTemplate.Builder(hatchCasing);
+        ShapeTemplate.Builder template = new ShapeTemplate.Builder(null);
 
         BoundingBox boundsBox = bounds.boundingBox();
         BlockPos minPos = controllerPos.offset(boundsBox.minX(), boundsBox.minY(), boundsBox.minZ());

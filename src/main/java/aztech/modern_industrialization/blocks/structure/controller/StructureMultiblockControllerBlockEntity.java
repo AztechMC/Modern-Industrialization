@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
-import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import java.util.Locale;
@@ -48,10 +47,8 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     private StructureControllerMode mode;
 
     private String inputId;
-    private String inputCasing;
 
     private ResourceLocation id;
-    private MachineCasing casing;
     private StructureControllerBounds bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
     private boolean showBounds;
     private boolean includeBlockEntities;
@@ -82,23 +79,8 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     }
 
     @Nullable
-    public String getInputCasing() {
-        return inputCasing;
-    }
-
-    public void setInputCasing(String inputCasing) {
-        this.inputCasing = inputCasing;
-        casing = StructureMultiblockInputFormatters.casing(inputCasing);
-    }
-
-    @Nullable
     public ResourceLocation getId() {
         return id;
-    }
-
-    @Nullable
-    public MachineCasing getCasing() {
-        return casing;
     }
 
     public StructureControllerBounds getBounds() {
@@ -137,7 +119,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     @Override
     public boolean isConfigurationValid() {
-        return casing != null && !bounds.isEmpty();
+        return !bounds.isEmpty();
     }
 
     @Override
@@ -159,9 +141,6 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         if (inputId != null) {
             tag.putString("structure_id", inputId);
         }
-        if (inputCasing != null) {
-            tag.putString("casing", inputCasing);
-        }
         CompoundTag boundsTag = new CompoundTag();
         boundsTag.put("origin", NbtUtils.writeBlockPos(new BlockPos(bounds.x(), bounds.y(), bounds.z())));
         boundsTag.put("size", NbtUtils.writeBlockPos(new BlockPos(bounds.sizeX(), bounds.sizeY(), bounds.sizeZ())));
@@ -175,7 +154,6 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         super.loadAdditional(tag, registries);
         mode = StructureControllerMode.valueOf(tag.getString("mode").toUpperCase(Locale.ROOT));
         this.setInputId(tag.getString("structure_id"));
-        this.setInputCasing(tag.getString("casing"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {
             CompoundTag boundsTag = tag.getCompound("bounds");
             BlockPos origin = NbtUtils.readBlockPos(boundsTag, "origin").orElseThrow();

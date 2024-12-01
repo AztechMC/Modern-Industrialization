@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
@@ -101,8 +102,8 @@ public class MI {
     public MI(FMLModContainer container, IEventBus modBus, Dist dist) {
         KubeJSProxy.checkThatKubeJsIsLoaded();
 
+        CableTier.init();
         MIStructureTemplateManager.init();
-
         MIAdvancementTriggers.init(modBus);
         MIComponents.init(modBus);
         MIFluids.init(modBus);

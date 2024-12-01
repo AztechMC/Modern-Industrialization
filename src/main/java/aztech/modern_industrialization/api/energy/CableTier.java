@@ -187,4 +187,7 @@ public final class CableTier implements Comparable<CableTier> {
 
         KubeJSProxy.instance.fireCableTiersEvent();
     }
+
+    public static void init() {
+    }
 }

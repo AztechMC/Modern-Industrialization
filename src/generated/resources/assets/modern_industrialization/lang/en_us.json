@@ -1493,6 +1493,7 @@
   "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "Show valid positions in multiblocks when holding a hatch",
   "text.autoconfig.modern_industrialization.option.enableInterMachineConnectedTextures": "Enable inter-machine connected textures. (Requires a suitable resource pack)",
   "text.autoconfig.modern_industrialization.option.enableNoEmiMessage": "Enable login message when EMI, JEI and REI are missing",
+  "text.autoconfig.modern_industrialization.option.exportStructureFiles": "Export all structure files to modern_industrialization/structures",
   "text.autoconfig.modern_industrialization.option.loadRuntimeGeneratedResources": "Additionally load resources in modern_industrialization/generated_resources",
   "text.autoconfig.modern_industrialization.option.maxDistillationTowerHeight": "Maximum height of the Distillation Tower multiblock (Restart needed)",
   "text.autoconfig.modern_industrialization.option.newVersionMessage": "Display when a new version is available",

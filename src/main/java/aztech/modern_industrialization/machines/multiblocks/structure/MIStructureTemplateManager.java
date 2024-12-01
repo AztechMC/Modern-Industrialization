@@ -185,21 +185,73 @@ public final class MIStructureTemplateManager {
         return FileUtil.createPathToResource(structuresFolder, id.getPath(), ".json");
     }
 
-    public static boolean save(ResourceLocation id, ShapeTemplate template) {
-        Objects.requireNonNull(id);
+    private static JsonElement serialize(ShapeTemplate template) {
         Objects.requireNonNull(template);
+        return ShapeTemplate.STRUCTURE_CODEC.encodeStart(JsonOps.INSTANCE, template).getOrThrow();
+    }
+
+    private static boolean save(Path path, JsonElement json) {
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(json);
         try {
-            var json = ShapeTemplate.STRUCTURE_CODEC.encodeStart(JsonOps.INSTANCE, template).getOrThrow();
-            try (OutputStream output = Files.newOutputStream(path(id))) {
+            try (OutputStream output = Files.newOutputStream(path)) {
                 output.write(new GsonBuilder().setPrettyPrinting().create().toJson(json).getBytes(StandardCharsets.UTF_8));
                 return true;
             } catch (Exception ex) {
-                MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
+                MI.LOGGER.error("Failed to save structure at \"{}\"", path, ex);
             }
         } catch (Exception ex) {
+            MI.LOGGER.error("Failed to save structure at \"{}\"", path, ex);
+        }
+        return false;
+    }
+
+    private static boolean save(Path path, ShapeTemplate template) {
+        Objects.requireNonNull(path);
+        Objects.requireNonNull(template);
+        try {
+            JsonElement json = serialize(template);
+            return save(path, json);
+        } catch (Exception ex) {
+            MI.LOGGER.error("Failed to save structure at \"{}\"", path, ex);
+        }
+        return false;
+    }
+
+    public static boolean save(ResourceLocation id, ShapeTemplate template) {
+        Objects.requireNonNull(id);
+        try {
+            return save(path(id), template);
+        } catch (IOException ex) {
             MI.LOGGER.error("Failed to save structure \"{}\"", id, ex);
         }
         return false;
+    }
+
+    public static void exportAll() {
+        try {
+            for (IModFileInfo modFile : ModList.get().getModFiles()) {
+                Path modStructuresPath = modFile.getFile().findResource("mi_structures");
+                iterateStructureFiles(modStructuresPath, (id, pathIn) -> {
+                    try {
+                        JsonElement json = load(pathIn);
+                        Path pathOut = path(id);
+                        if (Files.exists(pathOut)) {
+                            JsonElement fileJson = load(pathOut);
+                            if (!json.equals(fileJson)) {
+                                save(pathOut, json);
+                            }
+                        } else {
+                            save(pathOut, json);
+                        }
+                    } catch (IOException ex) {
+                        MI.LOGGER.error("Failed to export structure \"{}\"", id, ex);
+                    }
+                });
+            }
+        } catch (IOException ex) {
+            MI.LOGGER.error("Failed to export structures", ex);
+        }
     }
 
     @Nullable

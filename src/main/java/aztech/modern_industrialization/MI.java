@@ -186,6 +186,10 @@ public class MI {
             MIItem.ITEM_DEFINITIONS.values().forEach(ItemDefinition::onRegister);
 
             FluidNuclearComponent.init();
+
+            if (MIConfig.getConfig().exportStructureFiles) {
+                MIStructureTemplateManager.exportAll();
+            }
         });
 
         modBus.addListener(GatherDataEvent.class, event -> {

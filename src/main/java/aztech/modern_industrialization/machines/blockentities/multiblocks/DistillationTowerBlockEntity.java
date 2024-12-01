@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
@@ -35,7 +34,6 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.stream.IntStream;
@@ -106,21 +104,9 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
 
     static {
         shapeTemplates = new ShapeTemplate[MAX_HEIGHT];
-
-        SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("clean_stainless_steel_machine_casing")));
-        SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("stainless_steel_machine_casing_pipe")));
-        HatchFlags bottom = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT).build();
-        HatchFlags layer = new HatchFlags.Builder().with(HatchType.FLUID_OUTPUT).build();
         for (int i = 0; i < MAX_HEIGHT; ++i) {
-            ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);
-            for (int y = 0; y <= i + 1; ++y) {
-                builder.add3by3(y, casing, y != 0, y == 0 ? bottom : layer);
-                if (y != 0) {
-                    builder.add(0, y, 1, pipe, null);
-
-                }
-            }
-            shapeTemplates[i] = builder.build();
+            ShapeTemplate towerShape = new ShapeTemplate.Structure(MI.id("distillation_tower_%d".formatted(i + 1))).build();
+            shapeTemplates[i] = towerShape;
         }
     }
 }

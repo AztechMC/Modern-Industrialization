@@ -1,0 +1,456 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        0,
+        4
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 5,
+      "pos": [
+        0,
+        0,
+        4
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        4
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 6,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 6,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        1,
+        4
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 5,
+      "pos": [
+        0,
+        1,
+        4
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 7,
+      "pos": [
+        0,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        4
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        4
+      ]
+    },
+    {
+      "member_index": 4,
+      "pos": [
+        1,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 5,
+      "pos": [
+        0,
+        -1,
+        4
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        -1,
+        4
+      ]
+    }
+  ],
+  "members": [
+    {
+      "preview": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:stainless_steel_machine_casing_pipe",
+      "hatch_flags": 4,
+      "type": "hatch"
+    },
+    {
+      "state": {
+        "Name": "modern_industrialization:frostproof_machine_casing"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:stainless_steel_machine_casing_pipe",
+      "hatch_flags": 8,
+      "type": "hatch"
+    },
+    {
+      "state": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "type": "literal"
+    },
+    {
+      "state": {
+        "Name": "modern_industrialization:heatproof_machine_casing"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:stainless_steel_machine_casing_pipe",
+      "hatch_flags": 18,
+      "type": "hatch"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:stainless_steel_machine_casing_pipe",
+      "hatch_flags": 17,
+      "type": "hatch"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:stainless_steel_machine_casing_pipe",
+      "hatch_flags": 16,
+      "type": "hatch"
+    }
+  ]
+}

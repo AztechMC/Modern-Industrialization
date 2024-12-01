@@ -1,0 +1,220 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "minecraft:bricks"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "minecraft:bricks"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "minecraft:bricks"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:bricks",
+      "hatch_flags": 15,
+      "type": "hatch"
+    }
+  ]
+}

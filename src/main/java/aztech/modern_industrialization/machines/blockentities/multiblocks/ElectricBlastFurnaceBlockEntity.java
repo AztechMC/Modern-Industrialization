@@ -23,10 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
-
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -36,7 +33,6 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -94,15 +90,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
 
         for (int i = 0; i < tiers.size(); ++i) {
             var tier = tiers.get(i);
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("heatproof_machine_casing")));
             SimpleMember coilsBlocks = SimpleMember.forBlockId(tier.coilBlockId());
-            HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
-            ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
-                    .add3by3(0, invarCasings, false, ebfHatches)
-                    .add3by3(1, coilsBlocks, true, null)
-                    .add3by3(2, coilsBlocks, true, null)
-                    .add3by3(3, invarCasings, false, ebfHatches)
-                    .build();
+            ShapeTemplate ebfShape = new ShapeTemplate.Structure(MI.id("electric_blast_furnace")).replace("coil", coilsBlocks).build();
             shapeTemplates[i] = ebfShape;
         }
     }

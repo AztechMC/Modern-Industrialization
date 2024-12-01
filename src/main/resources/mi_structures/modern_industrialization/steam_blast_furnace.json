@@ -1,0 +1,284 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        2
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "modern_industrialization:fire_clay_bricks"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:fire_clay_bricks"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:fire_clay_bricks"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:firebricks",
+      "hatch_flags": 15,
+      "type": "hatch"
+    }
+  ]
+}

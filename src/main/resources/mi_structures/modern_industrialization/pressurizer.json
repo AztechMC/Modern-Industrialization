@@ -1,0 +1,196 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        1
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "modern_industrialization:titanium_machine_casing_pipe"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:solid_titanium_machine_casing",
+      "hatch_flags": 5,
+      "type": "hatch"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:solid_titanium_machine_casing",
+      "hatch_flags": 24,
+      "type": "hatch"
+    }
+  ]
+}

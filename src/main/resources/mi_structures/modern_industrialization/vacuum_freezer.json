@@ -1,0 +1,292 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        2,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        2,
+        2
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "modern_industrialization:frostproof_machine_casing"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:frostproof_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:frostproof_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:frostproof_machine_casing",
+      "hatch_flags": 31,
+      "type": "hatch"
+    }
+  ]
+}

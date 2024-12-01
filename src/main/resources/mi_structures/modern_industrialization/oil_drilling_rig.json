@@ -1,0 +1,540 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -2,
+        -1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -2,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -2,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -2,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -2,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -3,
+        -1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        3,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        3,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -3,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        3,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -4,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        4,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        4,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -4,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        4,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -4,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -4,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -4,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -4,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        5,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        5,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        5,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -1,
+        -1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        5,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        5,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        -1,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -1,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -3,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -2,
+        -3,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -3,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -3,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        2,
+        -2,
+        -1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        2,
+        1
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        2,
+        1
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "modern_industrialization:steel_machine_casing"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:steel_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:steel_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:steel",
+      "hatch_flags": 25,
+      "type": "hatch"
+    },
+    {
+      "state": {
+        "Properties": {
+          "waterlogged": "false",
+          "axis": "y"
+        },
+        "Name": "minecraft:chain"
+      },
+      "type": "literal"
+    },
+    {
+      "state": {
+        "Name": "modern_industrialization:steel_machine_casing_pipe"
+      },
+      "type": "literal"
+    }
+  ]
+}

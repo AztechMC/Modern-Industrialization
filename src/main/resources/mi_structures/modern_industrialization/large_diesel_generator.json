@@ -1,0 +1,330 @@
+{
+  "blocks": [
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        -1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 1,
+      "pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "member_index": 3,
+      "pos": [
+        0,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        0,
+        3
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        -1,
+        -1,
+        0
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 0,
+      "pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        1
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        -1,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        2
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        0,
+        -1,
+        3
+      ]
+    },
+    {
+      "member_index": 2,
+      "pos": [
+        1,
+        -1,
+        3
+      ]
+    }
+  ],
+  "members": [
+    {
+      "state": {
+        "Name": "modern_industrialization:titanium_machine_casing_pipe"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:solid_titanium_machine_casing",
+      "hatch_flags": 4,
+      "type": "hatch"
+    },
+    {
+      "state": {
+        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      },
+      "type": "literal"
+    },
+    {
+      "preview": {
+        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      },
+      "tests": [
+        {
+          "state": {
+            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          },
+          "type": "state"
+        }
+      ],
+      "casing": "modern_industrialization:solid_titanium_machine_casing",
+      "hatch_flags": 32,
+      "type": "hatch"
+    }
+  ]
+}

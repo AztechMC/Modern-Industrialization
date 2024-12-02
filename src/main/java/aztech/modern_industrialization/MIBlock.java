@@ -36,6 +36,7 @@ import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
 import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlock;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockItem;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockItem;
@@ -139,7 +140,7 @@ public class MIBlock {
     public static final BlockDefinition<StructureMultiblockControllerBlock> STRUCTURE_MULTIBLOCK_CONTROLLER = block("Structure Multiblock Controller",
             "structure_multiblock_controller", BlockDefinitionParams.defaultCreativeOnly()
                     .withBlockConstructor(StructureMultiblockControllerBlock::new)
-                    .withBlockItemConstructor((block, p) -> new BlockItem(block, p.rarity(Rarity.EPIC)))
+                    .withBlockItemConstructor((block, p) -> new StructureMultiblockControllerBlockItem(block, p.rarity(Rarity.EPIC)))
                     .withModel((block, gen) -> {
                         String name = gen.name(block);
                         var model = gen.models().orientable(name,

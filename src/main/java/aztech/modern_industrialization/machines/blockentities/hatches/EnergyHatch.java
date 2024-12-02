@@ -57,12 +57,12 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
         this.registerComponents(energy);
     }
 
-    protected final boolean input;
-    protected final CableTier tier;
+    private final boolean input;
+    private final CableTier tier;
 
-    protected final EnergyComponent energy;
-    protected final MIEnergyStorage insertable;
-    protected final MIEnergyStorage extractable;
+    private final EnergyComponent energy;
+    private final MIEnergyStorage insertable;
+    private final MIEnergyStorage extractable;
 
     @Override
     public HatchType getHatchType() {

@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.items.SteamDrillFuel;
+import aztech.modern_industrialization.items.structure.StructureWrenchSelection;
 import aztech.modern_industrialization.pipes.item.SavedItemPipeConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -58,6 +59,9 @@ public final class MIComponents {
             builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
     public static final Supplier<DataComponentType<SteamDrillFuel>> STEAM_DRILL_FUEL = COMPONENTS.registerComponentType("steam_drill_fuel",
             builder -> builder.persistent(SteamDrillFuel.CODEC));
+    public static final Supplier<DataComponentType<StructureWrenchSelection>> STRUCTURE_WRENCH_SELECTION = COMPONENTS.registerComponentType(
+            "structure_wrench_selection",
+            builder -> builder.persistent(StructureWrenchSelection.CODEC).networkSynchronized(StructureWrenchSelection.STREAM_CODEC));
     public static final Supplier<DataComponentType<Integer>> WATER = COMPONENTS.registerComponentType("water",
             builder -> builder.persistent(ExtraCodecs.POSITIVE_INT));
 

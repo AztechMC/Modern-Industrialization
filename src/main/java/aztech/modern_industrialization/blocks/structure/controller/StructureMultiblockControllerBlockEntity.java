@@ -29,13 +29,14 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.util.NbtHelper;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -52,6 +53,8 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     private StructureControllerBounds bounds = new StructureControllerBounds(0, 0, 0, 1, 1, 1);
     private boolean showBounds;
     private boolean includeBlockEntities;
+
+    private List<BlockPos> ignoreNBTPositions = List.of();
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
@@ -88,6 +91,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     }
 
     public void setBounds(StructureControllerBounds bounds) {
+        Objects.requireNonNull(bounds);
         this.bounds = bounds;
     }
 
@@ -105,6 +109,15 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public void setIncludeBlockEntities(boolean includeBlockEntities) {
         this.includeBlockEntities = includeBlockEntities;
+    }
+
+    public List<BlockPos> getIgnoreNBTPositions() {
+        return ignoreNBTPositions;
+    }
+
+    public void setIgnoreNBTPositions(List<BlockPos> ignoreNBTPositions) {
+        Objects.requireNonNull(ignoreNBTPositions);
+        this.ignoreNBTPositions = ignoreNBTPositions;
     }
 
     @Override
@@ -147,6 +160,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         tag.put("bounds", boundsTag);
         tag.putBoolean("show_bounds", showBounds);
         tag.putBoolean("include_block_entities", includeBlockEntities);
+        NbtHelper.putBlockPosList(tag, "ignore_nbt_positions", ignoreNBTPositions);
     }
 
     @Override
@@ -166,6 +180,9 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         }
         showBounds = tag.getBoolean("show_bounds");
         includeBlockEntities = tag.getBoolean("include_block_entities");
+        List<BlockPos> ignoreNBTPositions = new ArrayList<>();
+        NbtHelper.getBlockPosList(tag, "ignore_nbt_positions", ignoreNBTPositions);
+        this.ignoreNBTPositions = ignoreNBTPositions;
         this.updateBlockState();
     }
 

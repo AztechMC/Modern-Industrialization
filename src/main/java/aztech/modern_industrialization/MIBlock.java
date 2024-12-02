@@ -254,7 +254,7 @@ public class MIBlock {
                     BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(-1.0f).explosionResistance(3600000.0f), Block::new,
                     BlockItem::new,
                     (block, modelGenerator) -> modelGenerator.simpleBlockWithItem(block, modelGenerator.cubeAll(block)),
-                    null, List.of());
+                    null, List.of()).sortOrder(SortOrder.CREATIVE_ITEMS);
         }
 
         public static BlockDefinitionParams<Block> defaultStone() {

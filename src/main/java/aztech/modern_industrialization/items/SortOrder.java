@@ -39,6 +39,7 @@ public final class SortOrder implements Comparable<SortOrder> {
     public static final SortOrder CASINGS = new SortOrder();
     public static final SortOrder COILS = new SortOrder();
     public static final SortOrder BLOCKS_OTHERS = new SortOrder();
+    public static final SortOrder CREATIVE_ITEMS = new SortOrder();
     public static final SortOrder ORES = new SortOrder();
     public static final SortOrder RAW_ORE_BLOCKS = new SortOrder();
     public static final SortOrder STORAGE_BLOCKS = new SortOrder();

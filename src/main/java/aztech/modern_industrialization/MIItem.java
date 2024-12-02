@@ -33,6 +33,7 @@ import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.structure.StructureMultiblockWrenchItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
@@ -207,6 +208,8 @@ public final class MIItem {
             1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
 
     public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
+
+    public static final ItemDefinition<StructureMultiblockWrenchItem> STRUCTURE_MULTIBLOCK_WRENCH = itemNoModel("Structure Multiblock Wrench", "structure_multiblock_wrench", StructureMultiblockWrenchItem::new, CREATIVE_ITEMS);
 
     // @formatter:on
 

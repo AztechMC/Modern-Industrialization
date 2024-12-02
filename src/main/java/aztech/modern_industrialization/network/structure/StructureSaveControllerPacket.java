@@ -61,7 +61,7 @@ public record StructureSaveControllerPacket(BlockPos pos) implements BasePacket 
             ResourceLocation id = controller.getId();
             var result = MIStructureTemplateManager.fromWorld(id,
                     level, pos, state.getValue(StructureMultiblockControllerBlock.FACING),
-                    controller.getBounds(), controller.includeBlockEntities());
+                    controller.getBounds(), controller.includeBlockEntities(), controller.getIgnoreNBTPositions());
             if (result instanceof StructureResult.Success success) {
                 if (MIStructureTemplateManager.save(id, success.template())) {
                     MIStructureTemplateManager.register(id, success.template());

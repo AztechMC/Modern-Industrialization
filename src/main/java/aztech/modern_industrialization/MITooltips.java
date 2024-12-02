@@ -420,6 +420,13 @@ public class MITooltips {
                         line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
             });
 
+    public static final TooltipAttachment STRUCTURE_MULTIBLOCK_WRENCH_HELP = TooltipAttachment.ofMultilines(MIItem.STRUCTURE_MULTIBLOCK_WRENCH,
+            List.of(
+                    line(MIText.StructureMultiblockWrenchHelp1).build(),
+                    line(MIText.StructureMultiblockWrenchHelp2).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.StructureMultiblockWrenchHelp3).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                    line(MIText.StructureMultiblockWrenchHelp4).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build()));
+
     // Long Tooltip with only text, no need of MIText
 
     public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();

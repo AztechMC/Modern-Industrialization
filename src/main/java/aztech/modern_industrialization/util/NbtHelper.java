@@ -108,18 +108,37 @@ public class NbtHelper {
         }
     }
 
+    public static int[] encodeBlockPos(BlockPos pos) {
+        return new int[] { pos.getX(), pos.getY(), pos.getZ() };
+    }
+
+    public static BlockPos decodeBlockPos(int[] pos) {
+        return new BlockPos(pos[0], pos[1], pos[2]);
+    }
+
     public static void putBlockPos(CompoundTag tag, String key, @Nullable BlockPos pos) {
         if (pos != null) {
-            tag.putIntArray(key, new int[] { pos.getX(), pos.getY(), pos.getZ() });
+            tag.putIntArray(key, encodeBlockPos(pos));
         }
     }
 
     public static BlockPos getBlockPos(CompoundTag tag, String key) {
-        if (tag.contains(key)) {
-            int[] pos = tag.getIntArray(key);
-            return new BlockPos(pos[0], pos[1], pos[2]);
-        } else {
-            return null;
+        return tag.contains(key) ? decodeBlockPos(tag.getIntArray(key)) : null;
+    }
+
+    public static void putBlockPosList(CompoundTag tag, String key, List<BlockPos> list) {
+        ListTag listTag = new ListTag();
+        for (BlockPos pos : list) {
+            listTag.add(new IntArrayTag(encodeBlockPos(pos)));
+        }
+        tag.put(key, listTag);
+    }
+
+    public static void getBlockPosList(CompoundTag tag, String key, List<BlockPos> list) {
+        list.clear();
+        ListTag listTag = tag.getList(key, Tag.TAG_INT_ARRAY);
+        for (Tag entry : listTag) {
+            list.add(decodeBlockPos(((IntArrayTag) entry).getAsIntArray()));
         }
     }
 

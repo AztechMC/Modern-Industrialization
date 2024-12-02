@@ -67,9 +67,10 @@ public final class LiteralStructureMember extends SimpleStructureMember {
 
     @Override
     public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
-        CompoundTag beTag = MIStructureTemplateManager.maybeTag(blockEntity);
+        boolean noNBT = nbt == null;
+        CompoundTag beTag = noNBT ? null : MIStructureTemplateManager.maybeTag(blockEntity);
         for (StructureMemberTest test : tests) {
-            if (test.matchesState(state) && NbtHelper.equals(nbt, beTag)) {
+            if (test.matchesState(state) && (noNBT || NbtHelper.equals(nbt, beTag))) {
                 return true;
             }
         }

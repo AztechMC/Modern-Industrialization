@@ -55,11 +55,11 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
     private final StructureMultiblockControllerBlockEntity controller;
 
-    private Button doneButton;
-    private Button cancelButton;
     private CycleButton<StructureControllerMode> modeButton;
     private Button saveButton;
     private Button loadButton;
+    private Button doneButton;
+    private Button cancelButton;
 
     private EditBox idBox;
 
@@ -184,23 +184,22 @@ public class StructureMultiblockControllerEditScreen extends Screen {
 
     @Override
     protected void init() {
-        this.addRenderableWidget(
-                doneButton = Button.builder(CommonComponents.GUI_DONE, button -> this.done()).bounds(width / 2 - 4 - 150, 210, 150, 20).build());
-        this.addRenderableWidget(
-                cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
-        this.addRenderableWidget(
-                saveButton = Button.builder(MIText.StructureMultiblockGuiSave.text(), button -> this.save())
-                        .bounds(width / 2 + 4 + 100, 185, 50, 20).build());
-        this.addRenderableWidget(
-                loadButton = Button.builder(MIText.StructureMultiblockGuiLoad.text(), button -> this.load())
-                        .bounds(width / 2 + 4 + 100, 185, 50, 20)
-                        .tooltip(Tooltip.create(MIText.StructureMultiblockGuiLoadTooltip.text()))
-                        .build());
         this.addRenderableWidget(modeButton = CycleButton.builder(StructureControllerMode::text)
                 .withValues(ALL_MODES, ALL_MODES)
                 .displayOnlyValue()
                 .withInitialValue(controller.getMode())
                 .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
+        this.addRenderableWidget(saveButton = Button.builder(MIText.StructureMultiblockGuiSave.text(), button -> this.save())
+                .bounds(width / 2 + 4 + 100, 185, 50, 20)
+                .build());
+        this.addRenderableWidget(loadButton = Button.builder(MIText.StructureMultiblockGuiLoad.text(), button -> this.load())
+                .bounds(width / 2 + 4 + 100, 185, 50, 20)
+                .tooltip(Tooltip.create(MIText.StructureMultiblockGuiLoadTooltip.text()))
+                .build());
+        this.addRenderableWidget(
+                doneButton = Button.builder(CommonComponents.GUI_DONE, button -> this.done()).bounds(width / 2 - 4 - 150, 210, 150, 20).build());
+        this.addRenderableWidget(
+                cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
 
         idBox = new EditBox(font, width / 2 - 152, 60, 304, 20, MIText.StructureMultiblockStructureName.text()) {
             @Override

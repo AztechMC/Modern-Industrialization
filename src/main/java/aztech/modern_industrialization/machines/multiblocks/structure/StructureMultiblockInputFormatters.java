@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberEntry;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.TagStructureMemberTest;
@@ -37,11 +38,11 @@ import java.util.List;
 import java.util.Locale;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public final class StructureMultiblockInputFormatters {
@@ -88,26 +89,37 @@ public final class StructureMultiblockInputFormatters {
     }
 
     @Nullable
-    public static BlockState preview(String input) {
+    public static StructureMemberEntry preview(String input) {
         if (input == null || input.isEmpty()) {
-            return Blocks.AIR.defaultBlockState();
+            return new StructureMemberEntry(Blocks.AIR.defaultBlockState());
         }
         var registry = BuiltInRegistries.BLOCK.asLookup();
 
         try {
             var blockResult = BlockStateParser.parseForBlock(registry, input, true);
-            return blockResult.blockState();
+            return new StructureMemberEntry(blockResult);
         } catch (CommandSyntaxException ignored) {
             return null;
         }
     }
 
-    @Nullable
-    public static String preview(BlockState preview) {
-        if (preview == null) {
+    private static String toString(StructureMemberEntry entry) {
+        if (entry == null) {
             return null;
         }
-        return BlockStateParser.serialize(preview);
+        BlockState state = entry.state().get();
+        String stateString = BlockStateParser.serialize(state);
+        CompoundTag nbt = entry.nbt();
+        String nbtString = nbt == null ? "" : nbt.toString();
+        if (state == state.getBlock().defaultBlockState()) {
+            stateString = state.getBlockHolder().unwrapKey().map(key -> key.location().toString()).orElse("air");
+        }
+        return stateString + nbtString;
+    }
+
+    @Nullable
+    public static String preview(StructureMemberEntry preview) {
+        return toString(preview);
     }
 
     @Nullable
@@ -129,7 +141,7 @@ public final class StructureMultiblockInputFormatters {
             } else {
                 try {
                     var blockResult = BlockStateParser.parseForBlock(registry, part, true);
-                    members.add(new StateStructureMemberTest(Lazy.of(blockResult::blockState)));
+                    members.add(new StateStructureMemberTest(new StructureMemberEntry(blockResult)));
                 } catch (CommandSyntaxException ignored) {
                     return null;
                 }
@@ -155,10 +167,25 @@ public final class StructureMultiblockInputFormatters {
                 if (!string.isEmpty()) {
                     string.append(";");
                 }
-                string.append(BlockStateParser.serialize(stateTest.blockState()));
+                string.append(toString(stateTest.entry()));
             }
         }
         return string.toString();
+    }
+
+    public static StructureNBTMode nbtMode(String input, StructureNBTMode fallback) {
+        if (input == null || input.isEmpty()) {
+            return fallback;
+        }
+        try {
+            return StructureNBTMode.valueOf(input.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            return fallback;
+        }
+    }
+
+    public static String nbtMode(StructureNBTMode nbtMode) {
+        return nbtMode.getSerializedName();
     }
 
     @Nullable

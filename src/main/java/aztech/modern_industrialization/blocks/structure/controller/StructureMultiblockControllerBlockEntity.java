@@ -55,6 +55,7 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
     private boolean includeBlockEntities;
 
     private List<BlockPos> ignoreNBTPositions = List.of();
+    private List<BlockPos> weakNBTPositions = List.of();
 
     public StructureMultiblockControllerBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.STRUCTURE_MULTIBLOCK_CONTROLLER_BE.get(), pos, state);
@@ -117,7 +118,16 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
 
     public void setIgnoreNBTPositions(List<BlockPos> ignoreNBTPositions) {
         Objects.requireNonNull(ignoreNBTPositions);
-        this.ignoreNBTPositions = ignoreNBTPositions;
+        this.ignoreNBTPositions = new ArrayList<>(ignoreNBTPositions);
+    }
+
+    public List<BlockPos> getWeakNBTPositions() {
+        return weakNBTPositions;
+    }
+
+    public void setWeakNBTPositions(List<BlockPos> weakNBTPositions) {
+        Objects.requireNonNull(weakNBTPositions);
+        this.weakNBTPositions = new ArrayList<>(weakNBTPositions);
     }
 
     @Override
@@ -161,11 +171,13 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         tag.putBoolean("show_bounds", showBounds);
         tag.putBoolean("include_block_entities", includeBlockEntities);
         NbtHelper.putBlockPosList(tag, "ignore_nbt_positions", ignoreNBTPositions);
+        NbtHelper.putBlockPosList(tag, "weak_nbt_positions", weakNBTPositions);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+
         mode = StructureControllerMode.valueOf(tag.getString("mode").toUpperCase(Locale.ROOT));
         this.setInputId(tag.getString("structure_id"));
         if (tag.contains("bounds", Tag.TAG_COMPOUND)) {
@@ -180,9 +192,15 @@ public class StructureMultiblockControllerBlockEntity extends FastBlockEntity im
         }
         showBounds = tag.getBoolean("show_bounds");
         includeBlockEntities = tag.getBoolean("include_block_entities");
+
         List<BlockPos> ignoreNBTPositions = new ArrayList<>();
         NbtHelper.getBlockPosList(tag, "ignore_nbt_positions", ignoreNBTPositions);
         this.ignoreNBTPositions = ignoreNBTPositions;
+
+        List<BlockPos> weakNBTPositions = new ArrayList<>();
+        NbtHelper.getBlockPosList(tag, "weak_nbt_positions", weakNBTPositions);
+        this.weakNBTPositions = weakNBTPositions;
+
         this.updateBlockState();
     }
 

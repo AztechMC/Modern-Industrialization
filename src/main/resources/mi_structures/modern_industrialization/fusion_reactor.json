@@ -1947,25 +1947,33 @@
   ],
   "members": [
     {
-      "state": {
-        "Name": "modern_industrialization:highly_advanced_machine_hull"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:highly_advanced_machine_hull"
+        }
       },
       "type": "literal"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:fusion_chamber"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:fusion_chamber"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:highly_advanced_machine_hull"
+        "state": {
+          "Name": "modern_industrialization:highly_advanced_machine_hull"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:highly_advanced_machine_hull"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:highly_advanced_machine_hull"
+            }
           },
           "type": "state"
         }

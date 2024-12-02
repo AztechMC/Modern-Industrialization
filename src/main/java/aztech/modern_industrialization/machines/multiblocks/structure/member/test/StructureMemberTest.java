@@ -23,9 +23,12 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public sealed abstract class StructureMemberTest permits StateStructureMemberTest, TagStructureMemberTest {
     public static final Codec<StructureMemberTest> CODEC = Codec.STRING.flatComapMap(
@@ -34,5 +37,5 @@ public sealed abstract class StructureMemberTest permits StateStructureMemberTes
 
     public abstract StructureMemberTestType<?> type();
 
-    public abstract boolean matchesState(BlockState state);
+    public abstract boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity, StructureNBTMode mode);
 }

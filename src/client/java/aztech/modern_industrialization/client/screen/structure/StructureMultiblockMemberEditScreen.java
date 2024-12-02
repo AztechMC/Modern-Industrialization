@@ -30,6 +30,8 @@ import aztech.modern_industrialization.blocks.structure.member.StructureMultiblo
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberEntry;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import aztech.modern_industrialization.network.structure.StructureUpdateMemberPacket;
 import com.google.common.collect.ImmutableList;
@@ -45,19 +47,20 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class StructureMultiblockMemberEditScreen extends Screen {
     private static final int VALID_TEXT_COLOR = 0xE0E0E0;
     private static final int INVALID_TEXT_COLOR = 0xE07272;
 
     private static final ImmutableList<StructureMemberMode> ALL_MODES = ImmutableList.copyOf(StructureMemberMode.values());
+    private static final ImmutableList<StructureNBTMode> ALL_NBT_MODES = ImmutableList.of(StructureNBTMode.STRONG, StructureNBTMode.WEAK);
 
     private final StructureMultiblockMemberBlockEntity member;
 
+    private CycleButton<StructureMemberMode> modeButton;
+    private CycleButton<StructureNBTMode> nbtModeButton;
     private Button doneButton;
     private Button cancelButton;
-    private CycleButton<StructureMemberMode> modeButton;
 
     private EditBox nameBox;
 
@@ -72,7 +75,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         this.member = member;
     }
 
-    private Optional<BlockState> getPreview() {
+    private Optional<StructureMemberEntry> getPreview() {
         return Optional.ofNullable(StructureMultiblockInputFormatters.preview(previewBox.getValue()));
     }
 
@@ -96,6 +99,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         membersBox.visible = false;
         casingBox.visible = false;
         flagsBox.visible = false;
+        nbtModeButton.visible = false;
 
         switch (mode) {
         case HATCH -> {
@@ -103,10 +107,12 @@ public class StructureMultiblockMemberEditScreen extends Screen {
             membersBox.visible = true;
             casingBox.visible = true;
             flagsBox.visible = true;
+            nbtModeButton.visible = true;
         }
         case SIMPLE -> {
             previewBox.visible = true;
             membersBox.visible = true;
+            nbtModeButton.visible = true;
         }
         case VARIABLE -> {
             nameBox.visible = true;
@@ -160,6 +166,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
                 nameBox.getValue(),
                 previewBox.getValue(),
                 membersBox.getValue(),
+                nbtModeButton.getValue(),
                 casingBox.getValue(),
                 flagsBox.getValue()).sendToServer();
     }
@@ -170,15 +177,20 @@ public class StructureMultiblockMemberEditScreen extends Screen {
 
     @Override
     protected void init() {
-        this.addRenderableWidget(
-                doneButton = Button.builder(CommonComponents.GUI_DONE, button -> this.done()).bounds(width / 2 - 4 - 150, 210, 150, 20).build());
-        this.addRenderableWidget(
-                cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
         this.addRenderableWidget(modeButton = CycleButton.builder(StructureMemberMode::text)
                 .withValues(ALL_MODES, ALL_MODES)
                 .displayOnlyValue()
                 .withInitialValue(member.getMode())
                 .create(width / 2 - 4 - 150, 185, 50, 20, MIText.StructureMultiblockGuiMode.text(), (button, mode) -> this.updateMode(mode)));
+        this.addRenderableWidget(nbtModeButton = CycleButton.builder(StructureNBTMode::textGui)
+                .withValues(ALL_NBT_MODES, ALL_NBT_MODES)
+                .displayOnlyValue()
+                .withInitialValue(member.getNBTMode())
+                .create(width / 2 + 4 + 100, 185, 50, 20, MIText.StructureMultiblockGuiNBTMode.text()));
+        this.addRenderableWidget(
+                doneButton = Button.builder(CommonComponents.GUI_DONE, button -> this.done()).bounds(width / 2 - 4 - 150, 210, 150, 20).build());
+        this.addRenderableWidget(
+                cancelButton = Button.builder(CommonComponents.GUI_CANCEL, button -> this.cancel()).bounds(width / 2 + 4, 210, 150, 20).build());
 
         nameBox = new EditBox(font, width / 2 - 152, 20, 304, 20, MIText.StructureMultiblockMemberName.text());
         nameBox.setMaxLength(Short.MAX_VALUE);
@@ -243,6 +255,10 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         if (flagsBox.visible)
             graphics.drawString(font, MIText.StructureMultiblockMemberHatchFlags.text(), width / 2 - 152, 130, 0xA0A0A0);
 
+        if (nbtModeButton.visible)
+            graphics.drawString(font, MIText.StructureMultiblockMemberNBTMode.text(),
+                    width / 2 + 154 - font.width(MIText.StructureMultiblockMemberNBTMode.text()), 175, 0xA0A0A0);
+
         graphics.drawString(font, modeButton.getValue().textInfo(), width / 2 - 4 - 150, 175, 0xA0A0A0);
     }
 
@@ -262,6 +278,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         String nameBoxValue = nameBox.getValue();
         String previewBoxValue = previewBox.getValue();
         String membersBoxValue = membersBox.getValue();
+        StructureNBTMode nbtModeButtonValue = nbtModeButton.getValue();
         String casingBoxValue = casingBox.getValue();
         String flagsBoxValue = flagsBox.getValue();
 
@@ -271,6 +288,7 @@ public class StructureMultiblockMemberEditScreen extends Screen {
         nameBox.setValue(nameBoxValue);
         previewBox.setValue(previewBoxValue);
         membersBox.setValue(membersBoxValue);
+        nbtModeButton.setValue(nbtModeButtonValue);
         casingBox.setValue(casingBoxValue);
         flagsBox.setValue(flagsBoxValue);
     }

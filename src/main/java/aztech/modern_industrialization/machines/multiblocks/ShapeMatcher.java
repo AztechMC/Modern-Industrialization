@@ -27,7 +27,7 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.SimpleStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
@@ -289,8 +289,8 @@ public class ShapeMatcher implements ChunkEventListener {
                     be.sync();
                     setBlocks++;
                     continue;
-                } else if (member instanceof LiteralStructureMember literalMember) {
-                    nbt = literalMember.nbt();
+                } else if (member instanceof SimpleStructureMember simpleMember) {
+                    nbt = simpleMember.preview().nbt();
                 }
             }
             var currentState = level.getBlockState(pos);

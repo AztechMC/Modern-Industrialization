@@ -23,28 +23,38 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
-import aztech.modern_industrialization.util.MIExtraCodecs;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberEntry;
+import aztech.modern_industrialization.util.NbtHelper;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
+import org.jetbrains.annotations.Nullable;
 
 public final class StateStructureMemberTest extends StructureMemberTest {
-    public static final MapCodec<StateStructureMemberTest> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("state").forGetter(test -> test.blockState))
-            .apply(instance, StateStructureMemberTest::new));
+    public static final MapCodec<StateStructureMemberTest> CODEC = StructureMemberEntry.CODEC
+            .xmap(StateStructureMemberTest::new, StateStructureMemberTest::entry).fieldOf("value");
 
-    private final Lazy<BlockState> blockState;
+    private final StructureMemberEntry entry;
 
-    public StateStructureMemberTest(Lazy<BlockState> blockState) {
-        Objects.requireNonNull(blockState);
-        this.blockState = blockState;
+    public StateStructureMemberTest(StructureMemberEntry entry) {
+        Objects.requireNonNull(entry);
+        this.entry = entry;
+    }
+
+    public StructureMemberEntry entry() {
+        return entry;
     }
 
     public BlockState blockState() {
-        return blockState.get();
+        return entry.state().get();
+    }
+
+    public CompoundTag nbt() {
+        return entry.nbt() != null ? entry.nbt().copy() : null;
     }
 
     @Override
@@ -53,14 +63,17 @@ public final class StateStructureMemberTest extends StructureMemberTest {
     }
 
     @Override
-    public boolean matchesState(BlockState state) {
-        return this.blockState() == state;
+    public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity, StructureNBTMode mode) {
+        CompoundTag nbt = entry.nbt();
+        CompoundTag beNbt = MIStructureTemplateManager.maybeTag(blockEntity);
+        return this.blockState() == state
+                && (nbt == null || mode.isIgnore() || (mode.isStrong() ? NbtHelper.equals(nbt, beNbt) : NbtHelper.compare(nbt, beNbt)));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof StateStructureMemberTest other) {
-            return this.blockState() == other.blockState();
+            return entry.equals(other.entry);
         }
         return false;
     }

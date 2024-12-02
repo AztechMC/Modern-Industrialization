@@ -103,13 +103,14 @@ public final class MIStructureTemplateManager {
     public static StructureResult fromWorld(ResourceLocation id, Level level,
             BlockPos controllerPos, Direction controllerDirection,
             StructureControllerBounds bounds, boolean includeBlockEntities,
-            List<BlockPos> ignoreNBTPositions) {
+            List<BlockPos> ignoreNBTPositions, List<BlockPos> weakNBTPositions) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(level);
         Objects.requireNonNull(controllerPos);
         Objects.requireNonNull(controllerDirection);
         Objects.requireNonNull(bounds);
         Objects.requireNonNull(ignoreNBTPositions);
+        Objects.requireNonNull(weakNBTPositions);
         if (bounds.isEmpty()) {
             return new StructureResult.InvalidBounds();
         }
@@ -131,8 +132,12 @@ public final class MIStructureTemplateManager {
             }
             BlockEntity blockEntity = level.getBlockEntity(pos);
 
-            StructureMember member = StructureMember.literal(() -> state,
-                    includeBlockEntities && !ignoreNBTPositions.contains(pos) ? blockEntity : null);
+            boolean isIgnoreNBT = ignoreNBTPositions.contains(pos);
+            boolean isWeakNBT = weakNBTPositions.contains(pos);
+            StructureNBTMode nbtMode = !includeBlockEntities || isIgnoreNBT ? StructureNBTMode.IGNORE
+                    : isWeakNBT ? StructureNBTMode.WEAK : StructureNBTMode.STRONG;
+
+            StructureMember member = StructureMember.literal(state, includeBlockEntities && !isIgnoreNBT ? blockEntity : null, nbtMode);
 
             if (blockEntity instanceof StructureMemberOverride override) {
                 if (!override.isConfigurationValid()) {

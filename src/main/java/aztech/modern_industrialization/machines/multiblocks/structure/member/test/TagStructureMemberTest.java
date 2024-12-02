@@ -23,19 +23,19 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.structure.member.test;
 
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public final class TagStructureMemberTest extends StructureMemberTest {
-    public static final MapCodec<TagStructureMemberTest> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(
-                    TagKey.codec(Registries.BLOCK).fieldOf("tag").forGetter(TagStructureMemberTest::blockTag))
-            .apply(instance, TagStructureMemberTest::new));
+    public static final MapCodec<TagStructureMemberTest> CODEC = TagKey.codec(Registries.BLOCK)
+            .xmap(TagStructureMemberTest::new, TagStructureMemberTest::blockTag).fieldOf("tag");
 
     private final TagKey<Block> blockTag;
 
@@ -54,7 +54,7 @@ public final class TagStructureMemberTest extends StructureMemberTest {
     }
 
     @Override
-    public boolean matchesState(BlockState state) {
+    public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity, StructureNBTMode mode) {
         return state.is(blockTag);
     }
 

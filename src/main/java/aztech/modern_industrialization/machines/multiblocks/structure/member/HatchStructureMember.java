@@ -30,8 +30,8 @@ import aztech.modern_industrialization.blocks.structure.member.StructureMultiblo
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
-import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -40,22 +40,25 @@ import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 
 public final class HatchStructureMember extends SimpleStructureMember {
     public static final MapCodec<HatchStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.preview),
+                    StructureMemberEntry.CODEC.fieldOf("preview").forGetter(member -> member.preview),
                     StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(HatchStructureMember::tests),
+                    StructureNBTMode.CODEC.optionalFieldOf("nbt_mode")
+                            .forGetter(member -> member.nbtMode() != StructureNBTMode.WEAK ? Optional.of(member.nbtMode()) : Optional.empty()),
                     MachineCasing.CODEC.fieldOf("casing").forGetter(HatchStructureMember::casing),
                     HatchFlags.CODEC.fieldOf("hatch_flags").forGetter(HatchStructureMember::hatchFlags))
-            .apply(instance, HatchStructureMember::new));
+            .apply(instance, (preview, tests, nbtMode, casing, hatchFlags) -> new HatchStructureMember(preview, tests,
+                    nbtMode.orElse(StructureNBTMode.WEAK), casing, hatchFlags)));
 
     private final MachineCasing casing;
     private final HatchFlags hatchFlags;
 
-    public HatchStructureMember(Lazy<BlockState> previewSupplier, List<StructureMemberTest> tests, MachineCasing casing, HatchFlags hatchFlags) {
-        super(previewSupplier, tests);
+    public HatchStructureMember(StructureMemberEntry preview, List<StructureMemberTest> tests, StructureNBTMode nbtMode, MachineCasing casing,
+            HatchFlags hatchFlags) {
+        super(preview, tests, nbtMode);
         Objects.requireNonNull(casing);
         Objects.requireNonNull(hatchFlags);
         this.casing = casing;
@@ -81,7 +84,7 @@ public final class HatchStructureMember extends SimpleStructureMember {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.HATCH);
             var be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
-            be.setInputPreview(StructureMultiblockInputFormatters.preview(getPreviewState()));
+            be.setInputPreview(StructureMultiblockInputFormatters.preview(preview));
             be.setInputMembers(StructureMultiblockInputFormatters.members(tests));
             be.setInputCasing(StructureMultiblockInputFormatters.casing(casing));
             be.setInputHatchFlags(StructureMultiblockInputFormatters.hatchFlags(hatchFlags));
@@ -94,7 +97,7 @@ public final class HatchStructureMember extends SimpleStructureMember {
     @Override
     public boolean equals(Object o) {
         if (o instanceof HatchStructureMember other && this.getClass() == other.getClass()) {
-            return this.getPreviewState() == other.getPreviewState() &&
+            return preview.equals(other.preview) &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
                     casing.equals(other.casing) &&
                     hatchFlags.equals(other.hatchFlags);

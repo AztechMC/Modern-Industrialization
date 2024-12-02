@@ -52,7 +52,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -80,11 +79,17 @@ public final class ClientStructureMemberBlockTooltip implements ClientTooltipCom
         }
 
         if (mode == StructureMemberMode.SIMPLE || mode == StructureMemberMode.HATCH) {
-            BlockState preview = data.preview();
-            if (preview != null && !preview.isAir()) {
-                ItemStack previewStack = preview.getBlock().asItem().getDefaultInstance();
-                lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" ").withStyle(MITooltips.DEFAULT_STYLE),
-                        List.of(new IconsLine.StackEntry(previewStack)), 6, previewStack.getHoverName().copy()));
+            lines.add(new ComponentLine(MIText.StructureMultiblockNBTMode.text(data.nbtMode().textTooltip().withStyle(MITooltips.HIGHLIGHT_STYLE))
+                    .withStyle(MITooltips.DEFAULT_STYLE)));
+
+            var preview = data.preview();
+            if (preview != null) {
+                var previewState = preview.state().get();
+                if (!previewState.isAir()) {
+                    ItemStack previewStack = previewState.getBlock().asItem().getDefaultInstance();
+                    lines.add(new IconsLine(MIText.StructureMultiblockMemberTooltipPreview.text().append(" ").withStyle(MITooltips.DEFAULT_STYLE),
+                            List.of(new IconsLine.StackEntry(previewStack)), 6, previewStack.getHoverName().copy()));
+                }
             }
 
             List<IconsLine.Entry> members = new ArrayList<>();

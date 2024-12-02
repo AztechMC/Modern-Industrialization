@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items.structure;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +35,8 @@ import net.minecraft.network.codec.StreamCodec;
 public record StructureWrenchSelection(List<BlockPos> positions) {
     public static final StructureWrenchSelection EMPTY = new StructureWrenchSelection(List.of());
 
-    public static final Codec<StructureWrenchSelection> CODEC = RecordCodecBuilder.create(instance -> instance
-            .group(Codec.list(BlockPos.CODEC).fieldOf("positions").forGetter(StructureWrenchSelection::positions))
-            .apply(instance, StructureWrenchSelection::new));
+    public static final Codec<StructureWrenchSelection> CODEC = Codec.list(BlockPos.CODEC).xmap(StructureWrenchSelection::new,
+            StructureWrenchSelection::positions);
 
     public static final StreamCodec<ByteBuf, StructureWrenchSelection> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()),
@@ -47,10 +45,6 @@ public record StructureWrenchSelection(List<BlockPos> positions) {
 
     public StructureWrenchSelection {
         positions = Collections.unmodifiableList(positions);
-    }
-
-    public static StructureWrenchSelection of(List<BlockPos> positions) {
-        return positions.isEmpty() ? EMPTY : new StructureWrenchSelection(positions);
     }
 
     public boolean contains(BlockPos pos) {

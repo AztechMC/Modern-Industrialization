@@ -268,12 +268,16 @@
   "members": [
     {
       "preview": {
-        "Name": "modern_industrialization:solid_titanium_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:solid_titanium_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:solid_titanium_machine_casing"
+            }
           },
           "type": "state"
         }
@@ -283,14 +287,18 @@
       "type": "hatch"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:blastproof_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:blastproof_casing"
+        }
       },
       "type": "literal"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:solid_titanium_machine_casing"
+        }
       },
       "type": "literal"
     }

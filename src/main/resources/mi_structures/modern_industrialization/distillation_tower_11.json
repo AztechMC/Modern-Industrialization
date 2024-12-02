@@ -860,12 +860,16 @@
   "members": [
     {
       "preview": {
-        "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+            }
           },
           "type": "state"
         }
@@ -876,12 +880,16 @@
     },
     {
       "preview": {
-        "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:clean_stainless_steel_machine_casing"
+            }
           },
           "type": "state"
         }
@@ -891,8 +899,10 @@
       "type": "hatch"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "type": "literal"
     }

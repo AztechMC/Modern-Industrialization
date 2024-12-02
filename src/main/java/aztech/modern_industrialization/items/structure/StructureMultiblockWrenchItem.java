@@ -25,8 +25,10 @@ package aztech.modern_industrialization.items.structure;
 
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -47,6 +49,7 @@ public class StructureMultiblockWrenchItem extends Item {
         super(properties
                 .stacksTo(1)
                 .rarity(Rarity.EPIC)
+                .component(MIComponents.STRUCTURE_WRENCH_MODE, StructureNBTMode.IGNORE)
                 .component(MIComponents.STRUCTURE_WRENCH_SELECTION, StructureWrenchSelection.EMPTY));
     }
 
@@ -64,19 +67,33 @@ public class StructureMultiblockWrenchItem extends Item {
             boolean isStructureBlock = blockEntity instanceof StructureMultiblockControllerBlockEntity
                     || blockEntity instanceof StructureMultiblockMemberBlockEntity;
             if (isStructureBlock) {
-                if (isShiftKeyDown && blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
-                    if (!isClientSide) {
-                        var selection = stack.get(MIComponents.STRUCTURE_WRENCH_SELECTION);
-                        controller.setIgnoreNBTPositions(selection.positions());
-                        controller.sync();
-                        controller.setChanged();
-                        player.displayClientMessage(MIText.StructureMultiblockWrenchApplied.text(), true);
+                if (blockEntity instanceof StructureMultiblockControllerBlockEntity controller) {
+                    if (isShiftKeyDown) {
+                        if (!isClientSide) {
+                            var mode = stack.getOrDefault(MIComponents.STRUCTURE_WRENCH_MODE, StructureNBTMode.IGNORE);
+                            var selection = stack.getOrDefault(MIComponents.STRUCTURE_WRENCH_SELECTION, StructureWrenchSelection.EMPTY);
+                            var positions = selection.positions();
+                            if (mode == StructureNBTMode.IGNORE) {
+                                controller.getWeakNBTPositions().removeAll(positions);
+                                controller.setIgnoreNBTPositions(positions);
+                            } else if (mode == StructureNBTMode.WEAK) {
+                                controller.getIgnoreNBTPositions().removeAll(positions);
+                                controller.setWeakNBTPositions(selection.positions());
+                            } else {
+                                return InteractionResult.sidedSuccess(isClientSide);
+                            }
+                            controller.sync();
+                            controller.setChanged();
+                            player.displayClientMessage(MIText.StructureMultiblockWrenchApplied.text(), true);
+                        }
+                    } else {
+                        // TODO SWEDZ: load the controller settings for this wrench's mode into the wrench
                     }
                     return InteractionResult.sidedSuccess(isClientSide);
                 }
             } else if (!isShiftKeyDown) {
                 if (!isClientSide) {
-                    var selection = stack.get(MIComponents.STRUCTURE_WRENCH_SELECTION);
+                    var selection = stack.getOrDefault(MIComponents.STRUCTURE_WRENCH_SELECTION, StructureWrenchSelection.EMPTY);
                     BlockPos pos = blockEntity.getBlockPos();
                     if (selection.contains(pos)) {
                         selection = selection.remove(pos);
@@ -95,16 +112,25 @@ public class StructureMultiblockWrenchItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        ItemStack stack = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown()) {
-            player.getItemInHand(usedHand).set(MIComponents.STRUCTURE_WRENCH_SELECTION, StructureWrenchSelection.EMPTY);
+            stack.set(MIComponents.STRUCTURE_WRENCH_SELECTION, StructureWrenchSelection.EMPTY);
             player.displayClientMessage(MIText.StructureMultiblockWrenchCleared.text(), true);
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
+        } else {
+            StructureNBTMode currentMode = stack.getOrDefault(MIComponents.STRUCTURE_WRENCH_MODE, StructureNBTMode.IGNORE);
+            StructureNBTMode newMode = currentMode == StructureNBTMode.IGNORE ? StructureNBTMode.WEAK : StructureNBTMode.IGNORE;
+            stack.set(MIComponents.STRUCTURE_WRENCH_MODE, newMode);
+            player.displayClientMessage(MIText.StructureMultiblockWrenchChangedMode.text(newMode.textTooltip()), true);
         }
-        return super.use(level, player, usedHand);
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        var nbtMode = stack.getOrDefault(MIComponents.STRUCTURE_WRENCH_MODE, StructureNBTMode.IGNORE);
+        tooltipComponents.add(MIText.StructureMultiblockNBTMode.text(nbtMode.textTooltip().withStyle(MITooltips.HIGHLIGHT_STYLE))
+                .withStyle(MITooltips.DEFAULT_STYLE));
+
         var selection = stack.get(MIComponents.STRUCTURE_WRENCH_SELECTION);
         if (selection != null && !selection.positions().isEmpty()) {
             tooltipComponents.add(MIText.StructureMultiblockWrenchTooltip.text(selection.positions().size()));

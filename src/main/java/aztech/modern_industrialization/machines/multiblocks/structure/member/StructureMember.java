@@ -28,13 +28,13 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,17 +50,18 @@ public sealed abstract class StructureMember implements SimpleMember permits Sim
 
     public abstract Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required);
 
-    public static SimpleStructureMember simple(Supplier<BlockState> preview, List<StructureMemberTest> tests) {
-        return new SimpleStructureMember(Lazy.of(preview), tests);
+    public static SimpleStructureMember simple(StructureMemberEntry preview, List<StructureMemberTest> tests, StructureNBTMode nbtMode) {
+        return new SimpleStructureMember(preview, tests, nbtMode);
     }
 
-    public static LiteralStructureMember literal(Supplier<BlockState> blockState, @Nullable BlockEntity blockEntity) {
-        return new LiteralStructureMember(Lazy.of(blockState), MIStructureTemplateManager.maybeTag(blockEntity));
+    public static LiteralStructureMember literal(BlockState blockState, @Nullable BlockEntity blockEntity, StructureNBTMode nbtMode) {
+        return new LiteralStructureMember(new StructureMemberEntry(Lazy.of(() -> blockState), MIStructureTemplateManager.maybeTag(blockEntity)),
+                nbtMode);
     }
 
-    public static HatchStructureMember hatch(Supplier<BlockState> preview, List<StructureMemberTest> tests, MachineCasing casing,
-            HatchFlags hatchFlags) {
-        return new HatchStructureMember(Lazy.of(preview), tests, casing, hatchFlags);
+    public static HatchStructureMember hatch(StructureMemberEntry preview, List<StructureMemberTest> tests, StructureNBTMode nbtMode,
+            MachineCasing casing, HatchFlags hatchFlags) {
+        return new HatchStructureMember(preview, tests, nbtMode, casing, hatchFlags);
     }
 
     public static VariableStructureMember variable(String name) {

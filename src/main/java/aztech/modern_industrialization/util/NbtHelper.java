@@ -174,6 +174,16 @@ public class NbtHelper {
         }
     }
 
+    public static boolean numericEquals(NumericTag a, NumericTag b) {
+        if (a instanceof DoubleTag || a instanceof FloatTag || b instanceof DoubleTag || b instanceof FloatTag) {
+            return a.getAsDouble() == b.getAsDouble();
+        } else if (a instanceof LongTag || b instanceof LongTag) {
+            return a.getAsLong() == b.getAsLong();
+        } else {
+            return a.getAsInt() == b.getAsInt();
+        }
+    }
+
     /**
      * A more reasonable version of NbtUtils#compareNbt that compares numeric tags without requiring they be of the same type.
      */
@@ -222,13 +232,59 @@ public class NbtHelper {
         }
         case NumericTag tagA -> {
             if (b instanceof NumericTag tagB) {
-                if (a instanceof DoubleTag || a instanceof FloatTag || b instanceof DoubleTag || b instanceof FloatTag) {
-                    yield tagA.getAsDouble() == tagB.getAsDouble();
-                } else if (a instanceof LongTag || b instanceof LongTag) {
-                    yield tagA.getAsLong() == tagB.getAsLong();
-                } else {
-                    yield tagA.getAsInt() == tagB.getAsInt();
+                yield numericEquals(tagA, tagB);
+            }
+            yield false;
+        }
+        default -> a.equals(b);
+        };
+    }
+
+    /**
+     * Similar to NbtHelper#equals, but only checks that b has all of the values of a, rather than they are equal.
+     */
+    public static boolean compare(@Nullable Tag a, @Nullable Tag b) {
+        if (a == b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return switch (a) {
+        case CompoundTag tagA -> {
+            if (b instanceof CompoundTag tagB) {
+                for (String key : tagA.getAllKeys()) {
+                    Tag valueA = tagA.get(key);
+                    Tag valueB = tagB.get(key);
+                    if (!compare(valueA, valueB)) {
+                        yield false;
+                    }
                 }
+                yield true;
+            }
+            yield false;
+        }
+        case ListTag tagA -> {
+            if (b instanceof ListTag tagB) {
+                for (Tag valueA : tagA) {
+                    boolean contains = false;
+                    for (Tag valueB : tagB) {
+                        if (compare(valueA, valueB)) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (!contains) {
+                        yield false;
+                    }
+                }
+                yield true;
+            }
+            yield false;
+        }
+        case NumericTag tagA -> {
+            if (b instanceof NumericTag tagB) {
+                yield numericEquals(tagA, tagB);
             }
             yield false;
         }

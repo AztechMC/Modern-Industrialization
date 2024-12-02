@@ -283,19 +283,25 @@
   ],
   "members": [
     {
-      "state": {
-        "Name": "modern_industrialization:titanium_machine_casing_pipe"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:titanium_machine_casing_pipe"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:solid_titanium_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:solid_titanium_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:solid_titanium_machine_casing"
+            }
           },
           "type": "state"
         }
@@ -305,19 +311,25 @@
       "type": "hatch"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:solid_titanium_machine_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:solid_titanium_machine_casing"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:solid_titanium_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:solid_titanium_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:solid_titanium_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:solid_titanium_machine_casing"
+            }
           },
           "type": "state"
         }

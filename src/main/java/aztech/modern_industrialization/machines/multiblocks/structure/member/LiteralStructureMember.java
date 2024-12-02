@@ -24,40 +24,28 @@
 package aztech.modern_industrialization.machines.multiblocks.structure.member;
 
 import aztech.modern_industrialization.blocks.FastBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StateStructureMemberTest;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
-import aztech.modern_industrialization.util.MIExtraCodecs;
-import aztech.modern_industrialization.util.NbtHelper;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public final class LiteralStructureMember extends SimpleStructureMember {
     public static final MapCodec<LiteralStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("state").forGetter(member -> member.preview),
-                    CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(member -> Optional.ofNullable(member.nbt())))
-            .apply(instance, (preview, nbt) -> new LiteralStructureMember(preview, nbt.orElse(null))));
+                    StructureMemberEntry.CODEC.fieldOf("value").forGetter(LiteralStructureMember::preview),
+                    StructureNBTMode.CODEC.optionalFieldOf("nbt_mode")
+                            .forGetter(member -> member.nbtMode() == StructureNBTMode.WEAK ? Optional.of(member.nbtMode()) : Optional.empty()))
+            .apply(instance, (value, mode) -> new LiteralStructureMember(value, mode.orElse(StructureNBTMode.STRONG))));
 
-    private final CompoundTag nbt;
-
-    public LiteralStructureMember(Lazy<BlockState> previewSupplier, @Nullable CompoundTag nbt) {
-        super(previewSupplier, List.of(new StateStructureMemberTest(previewSupplier)));
-        this.nbt = nbt;
-    }
-
-    @Nullable
-    public CompoundTag nbt() {
-        return nbt != null ? nbt.copy() : null;
+    public LiteralStructureMember(StructureMemberEntry preview, StructureNBTMode nbtMode) {
+        super(preview, List.of(new StateStructureMemberTest(preview)), nbtMode);
     }
 
     @Override
@@ -67,14 +55,7 @@ public final class LiteralStructureMember extends SimpleStructureMember {
 
     @Override
     public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
-        boolean noNBT = nbt == null;
-        CompoundTag beTag = noNBT ? null : MIStructureTemplateManager.maybeTag(blockEntity);
-        for (StructureMemberTest test : tests) {
-            if (test.matchesState(state) && (noNBT || NbtHelper.equals(nbt, beTag))) {
-                return true;
-            }
-        }
-        return false;
+        return tests.getFirst().matchesState(state, blockEntity, nbtMode);
     }
 
     @Override
@@ -85,9 +66,7 @@ public final class LiteralStructureMember extends SimpleStructureMember {
     @Override
     public boolean equals(Object o) {
         if (o instanceof LiteralStructureMember other && this.getClass() == other.getClass()) {
-            return this.getPreviewState() == other.getPreviewState() &&
-                    tests.containsAll(other.tests) && other.tests.containsAll(tests) &&
-                    NbtHelper.equals(nbt, other.nbt);
+            return preview.equals(other.preview);
         }
         return false;
     }

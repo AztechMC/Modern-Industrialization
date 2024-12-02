@@ -195,19 +195,25 @@
   ],
   "members": [
     {
-      "state": {
-        "Name": "minecraft:bricks"
+      "value": {
+        "state": {
+          "Name": "minecraft:bricks"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "minecraft:bricks"
+        "state": {
+          "Name": "minecraft:bricks"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "minecraft:bricks"
+          "value": {
+            "state": {
+              "Name": "minecraft:bricks"
+            }
           },
           "type": "state"
         }

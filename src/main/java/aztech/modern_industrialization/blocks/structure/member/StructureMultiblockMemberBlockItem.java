@@ -27,6 +27,8 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberEntry;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +39,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 public class StructureMultiblockMemberBlockItem extends BlockItem {
     public StructureMultiblockMemberBlockItem(Block block, Properties properties) {
@@ -72,16 +73,17 @@ public class StructureMultiblockMemberBlockItem extends BlockItem {
             var name = beTag.getString("name");
             var preview = StructureMultiblockInputFormatters.preview(beTag.getString("preview"));
             var members = StructureMultiblockInputFormatters.members(beTag.getString("members"));
+            var nbtMode = StructureMultiblockInputFormatters.nbtMode(beTag.getString("nbt_mode"), StructureNBTMode.WEAK);
             var casing = StructureMultiblockInputFormatters.casing(beTag.getString("casing"));
             var hatchFlags = StructureMultiblockInputFormatters.hatchFlags(beTag.getString("hatch_flags"));
 
-            return Optional.of(new TooltipData(mode, name, preview, members, casing, hatchFlags));
+            return Optional.of(new TooltipData(mode, name, preview, members, nbtMode, casing, hatchFlags));
         }
 
         return Optional.empty();
     }
 
-    public record TooltipData(StructureMemberMode mode, String name, BlockState preview, List<StructureMemberTest> members, MachineCasing casing,
-            HatchFlags hatchFlags) implements TooltipComponent {
+    public record TooltipData(StructureMemberMode mode, String name, StructureMemberEntry preview, List<StructureMemberTest> members,
+            StructureNBTMode nbtMode, MachineCasing casing, HatchFlags hatchFlags) implements TooltipComponent {
     }
 }

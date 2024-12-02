@@ -356,12 +356,16 @@
   "members": [
     {
       "preview": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+            }
           },
           "type": "state"
         }
@@ -371,19 +375,25 @@
       "type": "hatch"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:frostproof_machine_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:frostproof_machine_casing"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+            }
           },
           "type": "state"
         }
@@ -393,25 +403,33 @@
       "type": "hatch"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "type": "literal"
     },
     {
-      "state": {
-        "Name": "modern_industrialization:heatproof_machine_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:heatproof_machine_casing"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+            }
           },
           "type": "state"
         }
@@ -422,12 +440,16 @@
     },
     {
       "preview": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+            }
           },
           "type": "state"
         }
@@ -438,12 +460,16 @@
     },
     {
       "preview": {
-        "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        "state": {
+          "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:stainless_steel_machine_casing_pipe"
+            }
           },
           "type": "state"
         }

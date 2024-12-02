@@ -259,19 +259,25 @@
   ],
   "members": [
     {
-      "state": {
-        "Name": "modern_industrialization:fire_clay_bricks"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:fire_clay_bricks"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:fire_clay_bricks"
+        "state": {
+          "Name": "modern_industrialization:fire_clay_bricks"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:fire_clay_bricks"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:fire_clay_bricks"
+            }
           },
           "type": "state"
         }

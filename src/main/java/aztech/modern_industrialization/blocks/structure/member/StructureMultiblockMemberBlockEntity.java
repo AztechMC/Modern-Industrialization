@@ -30,7 +30,9 @@ import aztech.modern_industrialization.blocks.structure.StructureMemberOverride;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMemberEntry;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
 import java.util.List;
 import java.util.Locale;
@@ -53,8 +55,9 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     private String inputCasing;
     private String inputHatchFlags;
 
-    private BlockState preview;
+    private StructureMemberEntry preview;
     private List<StructureMemberTest> members;
+    private StructureNBTMode nbtMode = StructureNBTMode.WEAK;
     private MachineCasing casing;
     private HatchFlags hatchFlags = HatchFlags.NO_HATCH;
 
@@ -92,7 +95,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     }
 
     @Nullable
-    public BlockState getPreview() {
+    public StructureMemberEntry getPreview() {
         return preview;
     }
 
@@ -109,6 +112,15 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     @Nullable
     public List<StructureMemberTest> getMembers() {
         return members;
+    }
+
+    public StructureNBTMode getNBTMode() {
+        return nbtMode;
+    }
+
+    public void setNBTMode(StructureNBTMode nbtMode) {
+        Objects.requireNonNull(nbtMode);
+        this.nbtMode = nbtMode;
     }
 
     @Nullable
@@ -144,8 +156,8 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
     @Override
     public StructureMember getMemberOverride() {
         return switch (getMode()) {
-        case HATCH -> StructureMember.hatch(() -> preview, members, casing, hatchFlags);
-        case SIMPLE -> StructureMember.simple(() -> preview, members);
+        case HATCH -> StructureMember.hatch(preview, members, nbtMode, casing, hatchFlags);
+        case SIMPLE -> StructureMember.simple(preview, members, nbtMode);
         case VARIABLE -> StructureMember.variable(inputName);
         };
     }
@@ -185,6 +197,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         if (inputPreview != null) {
             tag.putString("preview", inputPreview);
         }
+        tag.putString("nbt_mode", StructureMultiblockInputFormatters.nbtMode(nbtMode));
         if (inputMembers != null) {
             tag.putString("members", inputMembers);
         }
@@ -203,6 +216,7 @@ public class StructureMultiblockMemberBlockEntity extends FastBlockEntity implem
         this.setInputName(tag.getString("name"));
         this.setInputPreview(tag.getString("preview"));
         this.setInputMembers(tag.getString("members"));
+        nbtMode = StructureMultiblockInputFormatters.nbtMode(tag.getString("nbt_mode"), StructureNBTMode.WEAK);
         this.setInputCasing(tag.getString("casing"));
         this.setInputHatchFlags(tag.getString("hatch_flags"));
         this.updateBlockState();

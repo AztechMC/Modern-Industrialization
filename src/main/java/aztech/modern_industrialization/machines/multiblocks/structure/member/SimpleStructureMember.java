@@ -28,8 +28,8 @@ import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlock;
 import aztech.modern_industrialization.machines.multiblocks.structure.StructureMultiblockInputFormatters;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.test.StructureMemberTest;
-import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -40,28 +40,40 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public sealed class SimpleStructureMember extends StructureMember permits HatchStructureMember, LiteralStructureMember {
     public static final MapCodec<SimpleStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
-                    MIExtraCodecs.LAZY_BLOCK_STATE.fieldOf("preview").forGetter(member -> member.preview),
-                    StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(SimpleStructureMember::tests))
-            .apply(instance, SimpleStructureMember::new));
+                    StructureMemberEntry.CODEC.fieldOf("preview").forGetter(member -> member.preview),
+                    StructureMemberTest.CODEC.listOf().fieldOf("tests").forGetter(SimpleStructureMember::tests),
+                    StructureNBTMode.CODEC.optionalFieldOf("nbt_mode")
+                            .forGetter(member -> member.nbtMode() != StructureNBTMode.WEAK ? Optional.of(member.nbtMode()) : Optional.empty()))
+            .apply(instance, (preview, tests, nbtMode) -> new SimpleStructureMember(preview, tests, nbtMode.orElse(StructureNBTMode.WEAK))));
 
-    protected final Lazy<BlockState> preview;
+    protected final StructureMemberEntry preview;
     protected final List<StructureMemberTest> tests;
+    protected final StructureNBTMode nbtMode;
 
-    public SimpleStructureMember(Lazy<BlockState> preview, List<StructureMemberTest> tests) {
+    public SimpleStructureMember(StructureMemberEntry preview, List<StructureMemberTest> tests, StructureNBTMode nbtMode) {
         Objects.requireNonNull(preview);
         Objects.requireNonNull(tests);
+        Objects.requireNonNull(nbtMode);
         this.preview = preview;
         this.tests = tests;
+        this.nbtMode = nbtMode;
+    }
+
+    public StructureMemberEntry preview() {
+        return preview;
     }
 
     public List<StructureMemberTest> tests() {
         return Collections.unmodifiableList(tests);
+    }
+
+    public StructureNBTMode nbtMode() {
+        return nbtMode;
     }
 
     @Override
@@ -75,7 +87,7 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.SIMPLE);
             var be = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.get().newBlockEntity(pos, state);
-            be.setInputPreview(StructureMultiblockInputFormatters.preview(getPreviewState()));
+            be.setInputPreview(StructureMultiblockInputFormatters.preview(preview));
             be.setInputMembers(StructureMultiblockInputFormatters.members(tests));
             return Optional.of(Pair.of(state, be));
         }
@@ -86,7 +98,7 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
     @Override
     public boolean matchesState(BlockState state, @Nullable BlockEntity blockEntity) {
         for (StructureMemberTest test : tests) {
-            if (test.matchesState(state)) {
+            if (test.matchesState(state, blockEntity, nbtMode)) {
                 return true;
             }
         }
@@ -95,13 +107,13 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
 
     @Override
     public BlockState getPreviewState() {
-        return preview.get();
+        return preview.state().get();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof SimpleStructureMember other && this.getClass() == other.getClass()) {
-            return this.getPreviewState() == other.getPreviewState() &&
+            return preview.equals(other.preview) &&
                     tests.containsAll(other.tests) && other.tests.containsAll(tests);
         }
         return false;

@@ -267,19 +267,25 @@
   ],
   "members": [
     {
-      "state": {
-        "Name": "modern_industrialization:frostproof_machine_casing"
+      "value": {
+        "state": {
+          "Name": "modern_industrialization:frostproof_machine_casing"
+        }
       },
       "type": "literal"
     },
     {
       "preview": {
-        "Name": "modern_industrialization:frostproof_machine_casing"
+        "state": {
+          "Name": "modern_industrialization:frostproof_machine_casing"
+        }
       },
       "tests": [
         {
-          "state": {
-            "Name": "modern_industrialization:frostproof_machine_casing"
+          "value": {
+            "state": {
+              "Name": "modern_industrialization:frostproof_machine_casing"
+            }
           },
           "type": "state"
         }

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
-import aztech.modern_industrialization.machines.multiblocks.structure.member.LiteralStructureMember;
+import aztech.modern_industrialization.machines.multiblocks.structure.member.SimpleStructureMember;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -82,11 +82,12 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                             SimpleMember member = matcher.getSimpleMember(pos);
                             BlockState state = ShapeMatcher.toWorldState(level, pos, member.getPreviewState(), matcher.controllerDirection);
                             BlockEntity blockEntity = null;
-                            if (member instanceof LiteralStructureMember literalMember && state.getBlock() instanceof EntityBlock entityBlock) {
+                            if (member instanceof SimpleStructureMember simpleMember && state.getBlock() instanceof EntityBlock entityBlock) {
                                 blockEntity = entityBlock.newBlockEntity(pos, state);
                                 blockEntity.setLevel(level);
-                                if (literalMember.nbt() != null) {
-                                    blockEntity.loadCustomOnly(literalMember.nbt(), level.registryAccess());
+                                var nbt = simpleMember.preview().nbt();
+                                if (nbt != null) {
+                                    blockEntity.loadCustomOnly(nbt, level.registryAccess());
                                 }
                             }
                             MultiblockErrorHighlight.enqueueHighlight(pos, state, blockEntity);

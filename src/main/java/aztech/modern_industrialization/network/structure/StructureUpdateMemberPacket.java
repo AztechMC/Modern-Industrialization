@@ -25,7 +25,9 @@ package aztech.modern_industrialization.network.structure;
 
 import aztech.modern_industrialization.blocks.structure.member.StructureMemberMode;
 import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.structure.StructureNBTMode;
 import aztech.modern_industrialization.network.BasePacket;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -34,14 +36,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode, String inputName, String inputPreview, String inputMembers,
-        String inputCasing,
-        String inputFlags)
-        implements BasePacket {
+        StructureNBTMode nbtMode, String inputCasing, String inputFlags) implements BasePacket {
 
-    public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = NeoForgeStreamCodecs.composite(
+    public static final StreamCodec<ByteBuf, StructureUpdateMemberPacket> STREAM_CODEC = MIExtraCodecs.composite(
             BlockPos.STREAM_CODEC,
             StructureUpdateMemberPacket::pos,
             ByteBufCodecs.idMapper((i) -> StructureMemberMode.values()[i], Enum::ordinal),
@@ -52,6 +51,8 @@ public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode
             StructureUpdateMemberPacket::inputPreview,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateMemberPacket::inputMembers,
+            StructureNBTMode.STREAM_CODEC,
+            StructureUpdateMemberPacket::nbtMode,
             ByteBufCodecs.STRING_UTF8,
             StructureUpdateMemberPacket::inputCasing,
             ByteBufCodecs.STRING_UTF8,
@@ -75,6 +76,7 @@ public record StructureUpdateMemberPacket(BlockPos pos, StructureMemberMode mode
             member.setInputName(inputName);
             member.setInputPreview(inputPreview);
             member.setInputMembers(inputMembers);
+            member.setNBTMode(nbtMode);
             member.setInputCasing(inputCasing);
             member.setInputHatchFlags(inputFlags);
 

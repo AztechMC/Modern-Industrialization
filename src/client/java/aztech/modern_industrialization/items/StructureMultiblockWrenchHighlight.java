@@ -89,7 +89,7 @@ public class StructureMultiblockWrenchHighlight {
 
     public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player != null && isHoldingWrench(mc.player) && mc.hitResult instanceof BlockHitResult hitResult) {
+        if (mc.screen == null && mc.player != null && isHoldingWrench(mc.player) && mc.hitResult instanceof BlockHitResult hitResult) {
             Level level = mc.level;
             BlockPos pos = hitResult.getBlockPos();
             BlockState state = level.getBlockState(pos);

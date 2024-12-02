@@ -26,17 +26,30 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.blocks.structure.controller.StructureMultiblockControllerBlockEntity;
+import aztech.modern_industrialization.blocks.structure.member.StructureMultiblockMemberBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.structure.MIStructureTemplateManager;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -47,7 +60,7 @@ public class StructureMultiblockWrenchHighlight {
     private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
 
     @SubscribeEvent
-    private static void onRender(RenderLevelStageEvent event) {
+    private static void onRenderLevel(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
             return;
         }
@@ -74,6 +87,22 @@ public class StructureMultiblockWrenchHighlight {
         }
     }
 
+    public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && isHoldingWrench(mc.player) && mc.hitResult instanceof BlockHitResult hitResult) {
+            Level level = mc.level;
+            BlockPos pos = hitResult.getBlockPos();
+            BlockState state = level.getBlockState(pos);
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof StructureMultiblockControllerBlockEntity || blockEntity instanceof StructureMultiblockMemberBlockEntity) {
+                ItemStack stack = new ItemStack(state.getBlock().asItem());
+                CompoundTag tag = MIStructureTemplateManager.maybeTag(blockEntity);
+                stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
+                guiGraphics.renderTooltip(mc.font, stack, mc.getWindow().getGuiScaledWidth() / 2, mc.getWindow().getGuiScaledHeight() / 2);
+            }
+        }
+    }
+
     private static List<BlockPos> getWrenchSelectedPositions(Player player) {
         List<BlockPos> positions = new ArrayList<>();
         positions.addAll(getWrenchSelectedPositions(player.getMainHandItem()));
@@ -85,5 +114,10 @@ public class StructureMultiblockWrenchHighlight {
         return stack.is(MIItem.STRUCTURE_MULTIBLOCK_WRENCH.asItem()) && stack.has(MIComponents.STRUCTURE_WRENCH_SELECTION)
                 ? stack.get(MIComponents.STRUCTURE_WRENCH_SELECTION).positions()
                 : List.of();
+    }
+
+    private static boolean isHoldingWrench(Player player) {
+        return player.getItemInHand(InteractionHand.MAIN_HAND).is(MIItem.STRUCTURE_MULTIBLOCK_WRENCH.asItem())
+                || player.getItemInHand(InteractionHand.OFF_HAND).is(MIItem.STRUCTURE_MULTIBLOCK_WRENCH.asItem());
     }
 }

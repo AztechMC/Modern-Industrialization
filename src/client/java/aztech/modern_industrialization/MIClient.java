@@ -35,11 +35,7 @@ import aztech.modern_industrialization.blocks.structure.member.StructureMultiblo
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
-import aztech.modern_industrialization.items.ConfigCardItem;
-import aztech.modern_industrialization.items.RedstoneControlModuleItem;
-import aztech.modern_industrialization.items.SteamDrillHighlight;
-import aztech.modern_industrialization.items.SteamDrillItem;
-import aztech.modern_industrialization.items.SteamDrillTooltipComponent;
+import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
@@ -260,6 +256,8 @@ public class MIClient {
     @SubscribeEvent
     private static void registerGuiOverlays(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, MI.id("activation_status"), HudRenderer::onRenderHud);
+        event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, MI.id("structure_multiblock_wrench"),
+                StructureMultiblockWrenchHighlight::onRenderHud);
     }
 
     @SubscribeEvent

@@ -307,7 +307,7 @@ public enum MIText {
     StructureMultiblockWrenchCleared("Cleared the selection"),
     StructureMultiblockWrenchHelp1("Block selection:"),
     StructureMultiblockWrenchHelp2("- Press %s on air to change modes."),
-    StructureMultiblockWrenchHelp3("- Press %s on a block to add it to the selection."),
+    StructureMultiblockWrenchHelp3("- Press %s on a block to add/remove it to/from the selection."),
     StructureMultiblockWrenchHelp4("- Press %s + %s on a structure controller to save the selection to the controller."),
     StructureMultiblockWrenchHelp5("Clear selection using %s + %s on air."),
     StructureMultiblockWrenchNBTModeIgnore("Ignore"),

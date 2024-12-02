@@ -1779,7 +1779,7 @@
   "text.modern_industrialization.StructureMultiblockWrenchCleared": "Cleared the selection",
   "text.modern_industrialization.StructureMultiblockWrenchHelp1": "Block selection:",
   "text.modern_industrialization.StructureMultiblockWrenchHelp2": "- Press %s on air to change modes.",
-  "text.modern_industrialization.StructureMultiblockWrenchHelp3": "- Press %s on a block to add it to the selection.",
+  "text.modern_industrialization.StructureMultiblockWrenchHelp3": "- Press %s on a block to add/remove it to/from the selection.",
   "text.modern_industrialization.StructureMultiblockWrenchHelp4": "- Press %s + %s on a structure controller to save the selection to the controller.",
   "text.modern_industrialization.StructureMultiblockWrenchHelp5": "Clear selection using %s + %s on air.",
   "text.modern_industrialization.StructureMultiblockWrenchNBTModeIgnore": "Ignore",

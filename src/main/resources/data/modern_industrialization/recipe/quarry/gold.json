@@ -10,7 +10,7 @@
   "item_outputs": [
     {
       "item": "minecraft:netherrack",
-      "amount": 64
+      "amount": 16
     },
     {
       "item": "minecraft:blackstone",

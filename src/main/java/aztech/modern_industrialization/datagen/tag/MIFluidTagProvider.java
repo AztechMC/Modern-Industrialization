@@ -30,6 +30,8 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.FluidTagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -46,8 +48,10 @@ public class MIFluidTagProvider extends FluidTagsProvider {
             if (def.isGas) {
                 tag(Tags.Fluids.GASEOUS).add(def.asFluid());
             }
-        }
 
-        tag(MITags.CREOSOTE).add(MIFluids.CREOSOTE.asFluid());
+            // Give a #c: tag to every MI fluid. That should allow other mods to use MI's fluids in many cases.
+            tag(FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", def.path())))
+                    .add(def.asFluid());
+        }
     }
 }

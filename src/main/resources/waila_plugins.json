@@ -1,9 +1,0 @@
-{
-  "mi:server": {
-    "initializer": "aztech.modern_industrialization.compat.waila.server.MIWailaServerPlugin"
-  },
-  "mi:client": {
-    "initializer": "aztech.modern_industrialization.compat.waila.client.MIWailaClientPlugin",
-    "side": "client"
-  }
-}

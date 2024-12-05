@@ -113,18 +113,16 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
             link();
             if (allowNormalOperation) {
                 if (this.redstoneControl.doAllowNormalOperation(this)) {
-                    if (redstoneControl.doAllowNormalOperation(this)) {
-                        long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
-                                inventory.getItemInputs(),
-                                insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
-                        insertEnergy(euProduced, Simulation.ACT);
-                        isActiveComponent.updateActive(euProduced != 0, this);
-                    } else {
-                        isActiveComponent.updateActive(false, this);
-                    }
+                    long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
+                            inventory.getItemInputs(),
+                            insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
+                    insertEnergy(euProduced, Simulation.ACT);
+                    isActiveComponent.updateActive(euProduced != 0, this);
                 } else {
                     isActiveComponent.updateActive(false, this);
                 }
+            } else {
+                isActiveComponent.updateActive(false, this);
             }
             setChanged();
         }

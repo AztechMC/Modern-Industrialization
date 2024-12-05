@@ -38,6 +38,7 @@ The easiest way to add process conditions is via KubeJS, similarly to how inputs
 Here is the list of currently supported conditions:
 - `dimension(dimension key)`: Requires the machine to be in the specified dimension.
 - `biome(biome key)`: Requires the machine to be in the specified biome.
+- `biomeTag(biome tag key)`: Requires the machine to be in a biome of the specified tag.
 - `adjacentBlock(block, position)`: Requires a specific block to be next to the machine.
   - Position indicates where the block should be.
   - For multiblocks, the position is always relative to the controller.

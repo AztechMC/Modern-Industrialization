@@ -25,7 +25,6 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MITags;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

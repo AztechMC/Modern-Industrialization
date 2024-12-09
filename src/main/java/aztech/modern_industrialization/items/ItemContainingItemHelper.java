@@ -54,7 +54,7 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
             Mutable<ItemStack> ref = new MutableObject<>(itemStack);
             boolean result = handleClick(player, stackBarrel, ref);
             cursorStackReference.set(ref.getValue());
-            slot.setChanged();
+            slot.set(stackBarrel);
             return result;
         } else {
             return false;

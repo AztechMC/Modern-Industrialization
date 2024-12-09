@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import com.google.gson.*;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import java.util.*;
@@ -59,17 +58,21 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Never modify or store the result!
      */
-    protected Collection<RecipeHolder<MachineRecipe>> getManagerRecipes(Level world) {
-        return world.getRecipeManager().getAllRecipesFor(this);
+    protected Collection<RecipeHolder<MachineRecipe>> getManagerRecipes(Level level) {
+        return level.getRecipeManager().getAllRecipesFor(this);
     }
 
-    public Collection<RecipeHolder<MachineRecipe>> getRecipes(Level world) {
-        return getManagerRecipes(world);
+    public Collection<RecipeHolder<MachineRecipe>> getRecipesWithoutCache(Level level) {
+        return getManagerRecipes(level);
+    }
+
+    public Collection<RecipeHolder<MachineRecipe>> getRecipesWithCache(ServerLevel level) {
+        return getManagerRecipes(level);
     }
 
     @Nullable
-    public RecipeHolder<MachineRecipe> getRecipe(Level world, ResourceLocation id) {
-        return getRecipes(world).stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
+    public RecipeHolder<MachineRecipe> getRecipe(ServerLevel world, ResourceLocation id) {
+        return getRecipesWithCache(world).stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
     }
 
     /*
@@ -97,7 +100,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         lastUpdate = time;
         recipeCache.clear();
         fluidOnlyRecipes.clear();
-        for (RecipeHolder<MachineRecipe> recipe : getRecipes(world)) {
+        for (RecipeHolder<MachineRecipe> recipe : getRecipesWithCache(world)) {
             if (recipe.value().itemInputs.size() == 0) {
                 if (recipe.value().fluidInputs.size() > 0) {
                     fluidOnlyRecipes.add(recipe);

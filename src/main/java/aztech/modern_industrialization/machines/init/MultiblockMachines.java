@@ -790,7 +790,7 @@ public class MultiblockMachines {
 
             ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category,
                     itemInputs.build(), itemOutputs.build(), fluidInputs.build(), fluidOutputs.build(),
-                    progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
+                    progressBarParams, recipeType, extraTest, true, steamMode));
             for (ResourceLocation workstation : workstations) {
                 ReiMachineRecipes.registerWorkstation(category, workstation);
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, ReiMachineRecipes.MachineScreenPredicate.MULTIBLOCK);

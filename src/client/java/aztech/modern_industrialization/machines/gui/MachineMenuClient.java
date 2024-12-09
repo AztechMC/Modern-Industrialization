@@ -27,6 +27,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.ComponentStorage;
 import aztech.modern_industrialization.machines.GuiComponentsClient;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
@@ -52,11 +53,11 @@ public class MachineMenuClient extends MachineMenuCommon {
         SlotPositions fluidPositions = SlotPositions.read(buf);
         MIInventory inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
         // Components
-        List<GuiComponentClient> components = new ArrayList<>();
+        ComponentStorage<GuiComponentClient> components = new ComponentStorage<>();
         int componentCount = buf.readInt();
         for (int i = 0; i < componentCount; ++i) {
             ResourceLocation id = buf.readResourceLocation();
-            components.add(GuiComponentsClient.get(id).createFromInitialData(buf));
+            components.register(GuiComponentsClient.get(id).createFromInitialData(buf));
         }
         // GUI params
         MachineGuiParameters guiParams = MachineGuiParameters.read(buf);
@@ -64,9 +65,9 @@ public class MachineMenuClient extends MachineMenuCommon {
         return new MachineMenuClient(syncId, playerInventory, inventory, components, guiParams);
     }
 
-    public final List<GuiComponentClient> components;
+    public final ComponentStorage<GuiComponentClient> components;
 
-    private MachineMenuClient(int syncId, Inventory playerInventory, MIInventory inventory, List<GuiComponentClient> components,
+    private MachineMenuClient(int syncId, Inventory playerInventory, MIInventory inventory, ComponentStorage<GuiComponentClient> components,
             MachineGuiParameters guiParams) {
         super(syncId, playerInventory, inventory, guiParams, components);
         this.components = components;
@@ -74,12 +75,7 @@ public class MachineMenuClient extends MachineMenuCommon {
 
     @Nullable
     public <T extends GuiComponentClient> T getComponent(Class<T> klass) {
-        for (GuiComponentClient component : components) {
-            if (klass.isInstance(component)) {
-                return (T) component;
-            }
-        }
-        return null;
+        return components.get(klass);
     }
 
     @Override

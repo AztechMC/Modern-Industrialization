@@ -50,8 +50,7 @@ public class MachineMenuServer extends MachineMenuCommon {
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        for (int i = 0; i < blockEntity.guiComponents.size(); ++i) {
-            GuiComponent.Server component = blockEntity.guiComponents.get(i);
+        blockEntity.guiComponents.forEachIndexed((i, component) -> {
             if (component.needsSync(trackedData.get(i))) {
                 var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), blockEntity.getLevel().registryAccess());
                 component.writeCurrentData(buf);
@@ -61,7 +60,7 @@ public class MachineMenuServer extends MachineMenuCommon {
                 trackedData.set(i, component.copyData());
                 buf.release();
             }
-        }
+        });
     }
 
     @Override

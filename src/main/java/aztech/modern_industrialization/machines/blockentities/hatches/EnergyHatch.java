@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
@@ -39,12 +40,13 @@ import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import java.util.List;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHolder {
+public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHolder, CableTierHolder {
 
     public EnergyHatch(BEP bep, String name, boolean input, CableTier tier) {
         super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(!input, false, false));
 
         this.input = input;
+        this.tier = tier;
 
         this.energy = new EnergyComponent(this, 30 * 20 * tier.getEu());
         insertable = energy.buildInsertable((CableTier tier2) -> tier2 == tier);
@@ -56,10 +58,11 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
     }
 
     private final boolean input;
+    private final CableTier tier;
 
-    protected final EnergyComponent energy;
-    protected final MIEnergyStorage insertable;
-    protected final MIEnergyStorage extractable;
+    private final EnergyComponent energy;
+    private final MIEnergyStorage insertable;
+    private final MIEnergyStorage extractable;
 
     @Override
     public HatchType getHatchType() {
@@ -69,6 +72,11 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
     @Override
     public boolean upgradesToSteel() {
         return false;
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return tier;
     }
 
     @Override

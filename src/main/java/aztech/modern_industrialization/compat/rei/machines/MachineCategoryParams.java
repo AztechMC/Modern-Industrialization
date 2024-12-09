@@ -26,6 +26,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,14 +40,15 @@ public class MachineCategoryParams {
     public final SlotPositions fluidInputs;
     public final SlotPositions fluidOutputs;
     public final ProgressBar.Parameters progressBarParams;
+    public final MachineRecipeType recipeType;
     public final Predicate<MachineRecipe> recipePredicate;
     public final boolean isMultiblock;
     public final SteamMode steamMode;
     public final List<ResourceLocation> workstations = new ArrayList<>();
 
     public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs,
-            SlotPositions fluidInputs, SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate,
-            boolean isMultiblock, SteamMode steamMode) {
+            SlotPositions fluidInputs, SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, MachineRecipeType recipeType,
+            Predicate<MachineRecipe> recipePredicate, boolean isMultiblock, SteamMode steamMode) {
         this.englishName = englishName;
         this.category = category;
         this.itemInputs = itemInputs;
@@ -54,6 +56,7 @@ public class MachineCategoryParams {
         this.fluidInputs = fluidInputs;
         this.fluidOutputs = fluidOutputs;
         this.progressBarParams = progressBarParams;
+        this.recipeType = recipeType;
         this.recipePredicate = recipePredicate;
         this.isMultiblock = isMultiblock;
         this.steamMode = steamMode;

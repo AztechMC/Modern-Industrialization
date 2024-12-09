@@ -57,7 +57,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,7 +103,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
 
         // can't use getWorld() or the remapping will fail
-        Level getCrafterWorld();
+        ServerLevel getCrafterWorld();
 
         default int getMaxFluidOutputs() {
             return Integer.MAX_VALUE;
@@ -627,7 +626,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
-        Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipes(behavior.getCrafterWorld()).stream()
+        Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipesWithCache(behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.id().equals(recipeId)).findFirst();
         if (optionalMachineRecipe.isEmpty())
             return;

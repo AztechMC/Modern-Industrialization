@@ -50,7 +50,7 @@ public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftBu
 
         AbstractContainerMenu menu = ctx.getPlayer().containerMenu;
         if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
-            ShapeSelection.Server shapeSelection = machineMenu.blockEntity.getComponent(GuiComponents.SHAPE_SELECTION);
+            ShapeSelection.Server shapeSelection = machineMenu.blockEntity.guiComponents.get(GuiComponents.SHAPE_SELECTION);
             shapeSelection.behavior.handleClick(shapeLine, clickedLeftButton ? -1 : +1);
         }
     }

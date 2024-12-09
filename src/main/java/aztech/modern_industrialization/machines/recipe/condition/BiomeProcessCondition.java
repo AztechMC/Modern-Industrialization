@@ -25,35 +25,61 @@ package aztech.modern_industrialization.machines.recipe.condition;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.proxy.CommonProxy;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
+import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
-public record BiomeProcessCondition(ResourceKey<Biome> biome) implements MachineProcessCondition {
-    static final MapCodec<BiomeProcessCondition> CODEC = ResourceKey.codec(Registries.BIOME)
-            .fieldOf("biome")
+public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> biome) implements MachineProcessCondition {
+    static final MapCodec<BiomeProcessCondition> CODEC = NeoForgeExtraCodecs
+            .xor(
+                    ResourceKey.codec(Registries.BIOME).fieldOf("biome"),
+                    TagKey.codec(Registries.BIOME).fieldOf("tag"))
             .xmap(BiomeProcessCondition::new, BiomeProcessCondition::biome);
     static final StreamCodec<RegistryFriendlyByteBuf, BiomeProcessCondition> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(Registries.BIOME),
+            ByteBufCodecs.either(
+                    ResourceKey.streamCodec(Registries.BIOME),
+                    ResourceLocation.STREAM_CODEC.map(rl -> TagKey.create(Registries.BIOME, rl), TagKey::location)),
             BiomeProcessCondition::biome,
             BiomeProcessCondition::new);
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
         var entityBiome = context.getLevel().getBiome(context.getBlockEntity().getBlockPos());
-        return entityBiome.is(biome);
+        return biome.map(entityBiome::is, entityBiome::is);
+    }
+
+    private static MutableComponent biomeId(ResourceLocation biomeLocation) {
+        return Component.translatable(Util.makeDescriptionId("biome", biomeLocation));
     }
 
     @Override
     public void appendDescription(List<Component> list) {
-        var loc = biome.location();
-        var biomeComponent = Component.translatable("biome.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
-        list.add(MIText.RequiresBiome.text(biomeComponent));
+        biome.ifLeft(rk -> {
+            list.add(MIText.RequiresBiome.text(biomeId(rk.location())));
+        }).ifRight(tag -> {
+            var holderLookup = CommonProxy.INSTANCE.getClientPlayer().registryAccess();
+            var biomeNames = holderLookup.lookupOrThrow(tag.registry()).get(tag).map(named -> {
+                return named.stream()
+                        .map(holder -> biomeId(holder.unwrapKey().orElseThrow().location()))
+                        .reduce((a, b) -> a.append(", ").append(b))
+                        .orElseThrow();
+            }).orElse(Component.literal("???"));
+
+            list.add(MIText.RequiresBiome.text(biomeNames));
+        });
     }
 
     @Override

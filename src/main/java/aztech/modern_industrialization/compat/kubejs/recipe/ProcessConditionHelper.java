@@ -28,9 +28,11 @@ import aztech.modern_industrialization.machines.recipe.condition.BiomeProcessCon
 import aztech.modern_industrialization.machines.recipe.condition.CustomProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.DimensionProcessCondition;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public interface ProcessConditionHelper {
@@ -45,7 +47,11 @@ public interface ProcessConditionHelper {
     }
 
     default ProcessConditionHelper biome(ResourceLocation biome) {
-        return processCondition(new BiomeProcessCondition(ResourceKey.create(Registries.BIOME, biome)));
+        return processCondition(new BiomeProcessCondition(Either.left(ResourceKey.create(Registries.BIOME, biome))));
+    }
+
+    default ProcessConditionHelper biomeTag(ResourceLocation tag) {
+        return processCondition(new BiomeProcessCondition(Either.right(TagKey.create(Registries.BIOME, tag))));
     }
 
     default ProcessConditionHelper customCondition(String id) {

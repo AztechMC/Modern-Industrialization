@@ -35,18 +35,16 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -54,9 +52,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.ComposterBlock;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {
@@ -96,41 +92,10 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<MachineRecipe>> consumer) {
-        var machineRecipes = recipeManager.getRecipes().stream()
-                .filter(r -> r.value() instanceof MachineRecipe)
-                .map(r -> (RecipeHolder<MachineRecipe>) r)
-                .toList();
-
-        // regular recipes
-        machineRecipes.stream()
-                .filter(r -> params.recipePredicate.test(r.value()))
+        params.recipeType.getRecipesWithoutCache(Minecraft.getInstance().level).stream()
+                .filter(recipe -> params.recipePredicate.test(recipe.value()))
                 .sorted(Comparator.comparing(RecipeHolder::id))
                 .forEach(consumer);
-
-        // converted recipes
-        if (params.category.getNamespace().equals(MI.ID)) {
-            switch (params.category.getPath()) {
-            case "bronze_furnace" -> {
-                recipeManager.getAllRecipesFor(RecipeType.SMELTING)
-                        .stream()
-                        .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
-                        .forEach(consumer);
-            }
-            case "bronze_cutting_machine" -> {
-                recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
-                        .stream()
-                        .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
-                        .forEach(consumer);
-            }
-            case "centrifuge" -> {
-                ComposterBlock.COMPOSTABLES.keySet()
-                        .stream()
-                        .map(RecipeConversions::ofCompostable)
-                        .filter(Objects::nonNull)
-                        .forEach(consumer);
-            }
-            }
-        }
     }
 
     @Override

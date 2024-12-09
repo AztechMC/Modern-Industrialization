@@ -99,9 +99,9 @@ public class MIDataMapProvider extends DataMapProvider {
 
     private void gatherItemPipeUpgrades() {
         addItemPipeUpgrade(MIItem.MOTOR, 2);
-        addItemPipeUpgrade(MIItem.LARGE_MOTOR, 8);
-        addItemPipeUpgrade(MIItem.ADVANCED_MOTOR, 32);
-        addItemPipeUpgrade(MIItem.LARGE_ADVANCED_MOTOR, 64);
+        addItemPipeUpgrade(MIItem.LARGE_MOTOR, 16);
+        addItemPipeUpgrade(MIItem.ADVANCED_MOTOR, 64);
+        addItemPipeUpgrade(MIItem.LARGE_ADVANCED_MOTOR, 512);
     }
 
     private void addItemPipeUpgrade(ItemDefinition<?> itemDefinition, int maxExtractedItems) {

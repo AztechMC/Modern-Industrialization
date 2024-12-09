@@ -329,10 +329,10 @@ For example:
 MIMachineEvents.registerCasings(event => {
     // Register a casing.
     // This doesn't register any model! Either add models or add the top/side/bottom textures.
-    event.register("fancy_casing", "Fancy");
+    event.registerNamed("fancy_casing", "Fancy");
 
     // This registers a new casing with the same model as a diamond block!
-    event.registerBlockImitation("diamond_casing", "Diamond", "minecraft:diamond_block");
+    event.registerNamedBlockImitation("diamond_casing", "Diamond", "minecraft:diamond_block");
 })
 ```
 

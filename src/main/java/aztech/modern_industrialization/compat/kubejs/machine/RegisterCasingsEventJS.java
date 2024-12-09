@@ -23,17 +23,20 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.datagen.model.MachineCasingImitations;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegisterCasingsEventJS implements KubeEvent {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterCasingsEventJS.class);
+
     @Deprecated
     public void register(String... names) {
-        MI.LOGGER.warn("register is deprecated, use registerNamed instead");
+        LOGGER.warn("register is deprecated, use registerNamed instead");
         for (var name : names) {
             registerNamed(name, null);
         }
@@ -48,7 +51,7 @@ public class RegisterCasingsEventJS implements KubeEvent {
 
     @Deprecated
     public void registerBlockImitation(String name, ResourceLocation block) {
-        MI.LOGGER.warn("registerBlockImitation is deprecated, use registerNamedBlockImitation instead");
+        LOGGER.warn("registerBlockImitation is deprecated, use registerNamedBlockImitation instead");
         registerNamedBlockImitation(name, null, block);
     }
 

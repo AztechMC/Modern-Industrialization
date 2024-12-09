@@ -31,9 +31,11 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
-    protected ShapeMatcher shapeMatcher;
+    @Nullable
+    private ShapeMatcher shapeMatcher;
 
     public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep, guiParams, orientationParams);
@@ -47,45 +49,25 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return shapeValid.shapeValid;
     }
 
-    public ShapeMatcher getShapeMatcher() {
-        return shapeMatcher;
-    }
-
     public ShapeMatcher createShapeMatcher() {
         return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
     }
 
-    protected void onLink() {
+    protected void onRematch(ShapeMatcher shapeMatcher) {
     }
 
-    protected void onUnlink() {
-    }
-
-    protected void onRematch() {
-    }
-
-    protected void onMatchSuccessful() {
-    }
-
-    protected void onMatchFailure() {
-    }
-
-    protected void link() {
+    protected final void link() {
         if (shapeMatcher == null) {
             shapeMatcher = createShapeMatcher();
             shapeMatcher.registerListeners(level);
-            onLink();
         }
         if (shapeMatcher.needsRematch()) {
             shapeValid.shapeValid = false;
             shapeMatcher.rematch(level);
-            onRematch();
+            onRematch(shapeMatcher);
 
             if (shapeMatcher.isMatchSuccessful()) {
-                onMatchSuccessful();
                 shapeValid.shapeValid = true;
-            } else {
-                onMatchFailure();
             }
 
             if (shapeValid.update()) {
@@ -94,11 +76,10 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         }
     }
 
-    public void unlink() {
+    public final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);
-            onUnlink();
             shapeMatcher = null;
         }
     }

@@ -32,6 +32,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 
@@ -116,14 +117,12 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     }
 
     @Override
-    protected void onRematch() {
+    protected void onRematch(ShapeMatcher shapeMatcher) {
         operatingState = OperatingState.NOT_MATCHED;
-    }
-
-    @Override
-    protected void onMatchSuccessful() {
-        inventory.rebuild(shapeMatcher);
-        operatingState = OperatingState.TRYING_TO_RESUME;
+        if (shapeMatcher.isMatchSuccessful()) {
+            inventory.rebuild(shapeMatcher);
+            operatingState = OperatingState.TRYING_TO_RESUME;
+        }
     }
 
     private enum OperatingState {

@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
@@ -133,18 +134,16 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected void onRematch() {
+    protected void onRematch(ShapeMatcher shapeMatcher) {
         allowNormalOperation = false;
-    }
+        if (shapeMatcher.isMatchSuccessful()) {
+            inventory.rebuild(shapeMatcher);
+            allowNormalOperation = true;
 
-    @Override
-    protected void onMatchSuccessful() {
-        inventory.rebuild(shapeMatcher);
-        allowNormalOperation = true;
-
-        energyOutputs.clear();
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            hatch.appendEnergyOutputs(energyOutputs);
+            energyOutputs.clear();
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                hatch.appendEnergyOutputs(energyOutputs);
+            }
         }
     }
 

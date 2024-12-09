@@ -52,9 +52,9 @@ public class ShapeMatcher implements ChunkEventListener {
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
 
-    protected boolean needsRematch = true;
-    protected boolean matchSuccessful = false;
-    protected final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
+    private boolean needsRematch = true;
+    private boolean matchSuccessful = false;
+    private final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
     /**
      * Convert a relative position in the shape template to the real position in the
@@ -143,6 +143,10 @@ public class ShapeMatcher implements ChunkEventListener {
         return matchSuccessful && !needsRematch;
     }
 
+    protected boolean checkRematch(Level world) {
+        return true;
+    }
+
     public void rematch(Level world) {
         unlinkHatches();
         matchSuccessful = true;
@@ -153,6 +157,9 @@ public class ShapeMatcher implements ChunkEventListener {
             if (!matches(pos, world, matchedHatches)) {
                 matchSuccessful = false;
             }
+        }
+        if (!checkRematch(world)) {
+            matchSuccessful = false;
         }
 
         if (!matchSuccessful) {

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
@@ -67,14 +68,15 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
     private boolean steelTier;
 
     @Override
-    protected void onMatchSuccessful() {
-        super.onMatchSuccessful();
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        super.onRematch(shapeMatcher);
+        if (shapeMatcher.isMatchSuccessful()) {
+            steelTier = false;
 
-        steelTier = false;
-
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            if (hatch.upgradesToSteel()) {
-                steelTier = true;
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                if (hatch.upgradesToSteel()) {
+                    steelTier = true;
+                }
             }
         }
     }

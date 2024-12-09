@@ -35,6 +35,7 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
@@ -80,8 +81,10 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     }
 
     @Override
-    protected void onMatchSuccessful() {
-        inventory.rebuild(shapeMatcher);
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        if (shapeMatcher.isMatchSuccessful()) {
+            inventory.rebuild(shapeMatcher);
+        }
     }
 
     @Override

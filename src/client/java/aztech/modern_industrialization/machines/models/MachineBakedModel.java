@@ -38,7 +38,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,12 +65,12 @@ public class MachineBakedModel implements IDynamicBakedModel {
 
     private final MachineCasing baseCasing;
     private final TextureAtlasSprite[] defaultOverlays;
-    private final Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays;
+    private final Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays;
     private final MachineModelClientData defaultData;
 
     MachineBakedModel(MachineCasing baseCasing,
             TextureAtlasSprite[] defaultOverlays,
-            Map<ResourceLocation, TextureAtlasSprite[]> tieredOverlays) {
+            Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays) {
         this.baseCasing = baseCasing;
         this.defaultOverlays = defaultOverlays;
         this.tieredOverlays = tieredOverlays;
@@ -86,7 +85,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
         if (casing == null) {
             return defaultOverlays;
         }
-        return tieredOverlays.getOrDefault(casing.key, defaultOverlays);
+        return tieredOverlays.getOrDefault(casing, defaultOverlays);
     }
 
     /**

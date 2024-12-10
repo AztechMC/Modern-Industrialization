@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlockKeys;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -83,7 +84,7 @@ public final class CableTier implements Comparable<CableTier> {
         this.longEnglishName = longEnglishName;
         this.eu = eu;
         this.itemKey = itemKey;
-        this.casing = MachineCasings.create(name, shortEnglishName);
+        this.casing = MachineCasings.create(MI.id(name), shortEnglishName);
         this.builtin = builtin;
     }
 

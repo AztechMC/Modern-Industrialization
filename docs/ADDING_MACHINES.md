@@ -332,7 +332,7 @@ MIMachineEvents.registerCasings(event => {
     event.registerNamed("fancy_casing", "Fancy");
 
     // This registers a new casing with the same model as a diamond block!
-    event.registerNamedBlockImitation("diamond_casing", "Diamond", "minecraft:diamond_block");
+    event.registerBlockImitation("diamond_casing", "minecraft:diamond_block");
 })
 ```
 

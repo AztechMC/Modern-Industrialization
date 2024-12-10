@@ -23,10 +23,11 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import aztech.modern_industrialization.datagen.model.MachineCasingImitations;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import java.util.Objects;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,21 +47,15 @@ public class RegisterCasingsEventJS implements KubeEvent {
         if (name.contains(":")) {
             throw new IllegalArgumentException("Casing name cannot contain ':'.");
         }
-        MachineCasings.create(name, englishName);
+        MachineCasings.create(MI.id(name), englishName);
     }
 
-    @Deprecated
     public void registerBlockImitation(String name, ResourceLocation block) {
-        LOGGER.warn("registerBlockImitation is deprecated, use registerNamedBlockImitation instead");
-        registerNamedBlockImitation(name, null, block);
-    }
-
-    public void registerNamedBlockImitation(String name, String englishName, ResourceLocation block) {
         Objects.requireNonNull(block, "block may not be null");
         if (name.contains(":")) {
             throw new IllegalArgumentException("Casing name cannot contain ':'.");
         }
 
-        MachineCasingImitations.imitationsToGenerate.put(MachineCasings.create(name, englishName), block);
+        MachineCasings.createBlockImitation(MI.id(name), () -> BuiltInRegistries.BLOCK.get(block));
     }
 }

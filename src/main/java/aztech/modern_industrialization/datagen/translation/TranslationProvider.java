@@ -134,9 +134,8 @@ public final class TranslationProvider implements DataProvider {
             addTranslation(cableTier.longEnglishKey(), cableTier.longEnglishName);
         }
 
-        for (var casing : MachineCasings.registeredCasings.values()) {
-            var englishName = MachineCasings.casingNames.get(casing.key);
-            addTranslation(casing.getTranslationKey(), englishName);
+        for (var casingName : MachineCasings.translations) {
+            addTranslation(casingName.casing().getTranslationKey(), casingName.englishName());
         }
     }
 

@@ -114,9 +114,7 @@ public class CasingComponent implements IComponent, DropableComponent {
                     dropCasing(be.getLevel(), be.getBlockPos());
                 }
                 setCasingStack(stackInHand.copyWithCount(1));
-                if (!player.isCreative()) {
-                    stackInHand.shrink(1);
-                }
+                stackInHand.consume(1, player);
                 be.setChanged();
                 if (!be.getLevel().isClientSide()) {
                     be.sync();

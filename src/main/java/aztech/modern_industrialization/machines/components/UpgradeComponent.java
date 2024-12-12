@@ -76,9 +76,7 @@ public class UpgradeComponent implements IComponent.ServerOnly, DropableComponen
                 int maxAdded = Math.min(stackInHand.getCount(), itemStack.getMaxStackSize() - itemStack.getCount());
                 changed = maxAdded > 0;
                 itemStack.grow(maxAdded);
-                if (!player.isCreative()) {
-                    stackInHand.shrink(maxAdded);
-                }
+                stackInHand.consume(maxAdded, player);
             }
             if (changed) {
                 be.setChanged();

@@ -336,7 +336,8 @@ public class MITooltips {
                 }
             });
 
-    public static final TooltipAttachment OVERDRIVE_MODULE = TooltipAttachment.of(MIItem.OVERDRIVE_MODULE, MIText.OverdriveModuleDescription);
+    public static final TooltipAttachment OVERDRIVE_MODULE = TooltipAttachment.ofMultilines(MIItem.OVERDRIVE_MODULE,
+            MIText.OverdriveModuleDescription1, MIText.OverdriveModuleDescription2);
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {

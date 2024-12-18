@@ -52,7 +52,7 @@ public final class CableTier implements Comparable<CableTier> {
     public static CableTier MV = new CableTier("mv", "MV", "Medium Voltage", 32 * 4, MIBlockKeys.ADVANCED_MACHINE_HULL);
     public static CableTier HV = new CableTier("hv", "HV", "High Voltage", 32 * 4 * 8, MIBlockKeys.TURBO_MACHINE_HULL);
     public static CableTier EV = new CableTier("ev", "EV", "Extreme Voltage", 32 * 4 * 8 * 8, MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL);
-    public static CableTier SUPERCONDUCTOR = new CableTier("superconductor", "Superconductor", "Superconductor", 128000000,
+    public static CableTier SUPERCONDUCTOR = new CableTier("superconductor", "SV", "Superconductor", 128000000,
             MIBlockKeys.QUANTUM_MACHINE_HULL);
 
     public final String name;

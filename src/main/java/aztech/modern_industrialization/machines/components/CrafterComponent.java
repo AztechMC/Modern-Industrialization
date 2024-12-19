@@ -534,8 +534,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                             } else {
                                 stack.increment(ins);
                             }
-                            remainingAmount -= ins;
-
+                        }
+                        remainingAmount -= ins;
+                        // ins changed inside of previous if, need to check again!
+                        if (ins > 0) {
                             locksToToggle.add(stackId - 1);
                             lockItems.add(output.variant().getItem());
                             if (!simulate) {

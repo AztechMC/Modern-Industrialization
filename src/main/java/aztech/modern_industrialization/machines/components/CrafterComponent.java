@@ -523,18 +523,19 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                                 ? (int) stack.getRemainingCapacityFor(output.variant())
                                 : output.variant().getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
-                        if (key.isBlank()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
-                                stack.setAmount(ins);
-                                stack.setKey(output.variant());
-                            } else {
-                                ins = 0;
-                            }
-                        } else {
-                            stack.increment(ins);
-                        }
-                        remainingAmount -= ins;
                         if (ins > 0) {
+                            if (key.isBlank()) {
+                                if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
+                                    stack.setAmount(ins);
+                                    stack.setKey(output.variant());
+                                } else {
+                                    ins = 0;
+                                }
+                            } else {
+                                stack.increment(ins);
+                            }
+                            remainingAmount -= ins;
+
                             locksToToggle.add(stackId - 1);
                             lockItems.add(output.variant().getItem());
                             if (!simulate) {

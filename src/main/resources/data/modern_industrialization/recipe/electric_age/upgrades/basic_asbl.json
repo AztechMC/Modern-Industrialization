@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "mcm",
+    "rar",
+    "mcm"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:motor"
+    },
+    "r" : {
+      "item" : "modern_industrialization:robot_arm"
+    },
+    "c" : {
+      "item" : "modern_industrialization:conveyor"
+    },
+    "a" :{
+      "item" : "modern_industrialization:analog_circuit_board"
+    }
+  },
+
+  "result": {
+    "id": "modern_industrialization:basic_upgrade",
+    "count": 4
+  }
+}

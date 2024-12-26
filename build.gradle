@@ -280,7 +280,7 @@ dependencies {
 
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")

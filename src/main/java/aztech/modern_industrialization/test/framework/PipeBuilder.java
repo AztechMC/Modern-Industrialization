@@ -39,7 +39,18 @@ public class PipeBuilder {
         this.type = type;
     }
 
-    public void addConnection(Direction direction) {
+    public void addInOutConnection(Direction direction) {
+        addInConnection(direction);
+        removeConnection(direction);
+    }
+
+    public void addOutConnection(Direction direction) {
+        addInConnection(direction);
+        removeConnection(direction);
+        removeConnection(direction);
+    }
+
+    public void addInConnection(Direction direction) {
         pipe.addConnection(helper.makeMockPlayer(GameType.SURVIVAL), type, direction);
     }
 

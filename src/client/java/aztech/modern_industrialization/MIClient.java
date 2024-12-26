@@ -210,7 +210,7 @@ public class MIClient {
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
-    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<BlockEntityType<U>> bet,
+    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<? extends BlockEntityType<? extends U>> bet,
             BlockEntityRendererProvider<T> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }

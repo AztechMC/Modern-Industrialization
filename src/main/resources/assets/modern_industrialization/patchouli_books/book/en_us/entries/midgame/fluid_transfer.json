@@ -9,7 +9,15 @@
     },
     {
       "type": "text",
-      "text": "How much fluid is transferred every tick is then bounded by the total capacity of the network. For example, 25 fluid pipes linked together can transfer up to 25000 mb/t of fluid - assuming you can produce that much fluid of course!$(br2)Note that you might be limited by the transfer rates of the tanks/machines the pipes are connected to."
+      "text": "Regular and large tanks from Modern Industrialization will also link with the pipe network if they are connected to it using a bidirectional connection. This means I/O in the menu, or the double arrows on the pipe itself.$(br2)Tanks have a much larger internal buffer than pipes, so they can store a lot more fluid."
+    },
+    {
+      "type": "text",
+      "text": "How much fluid is transferred every tick is then bounded by the total capacity of the network. For example, 25 fluid pipes linked together can transfer up to 25000 mb/t of fluid - assuming you can produce that much fluid of course!$(br2)Adding a single steel tank (16 buckets of storage) with an I/O connection will bring the total network rate to 41000 mb/t."
+    },
+    {
+      "type": "text",
+      "text": "Note that you might be limited by the transfer rates of the tanks/machines the pipes are connected to."
     }
   ],
   "sortnum": 203

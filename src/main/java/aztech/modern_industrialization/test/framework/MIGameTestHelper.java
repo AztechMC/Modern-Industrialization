@@ -26,8 +26,10 @@ package aztech.modern_industrialization.test.framework;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
+import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -52,7 +54,11 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void emptyTank(BlockPos pos) {
-        setBlock(pos, MIMaterials.IRIDIUM.getPart(MIParts.TANK).asBlock());
+        emptyTank(pos, MIMaterials.IRIDIUM);
+    }
+
+    public void emptyTank(BlockPos pos, Material material) {
+        setBlock(pos, material.getPart(MIParts.TANK).asBlock());
     }
 
     public void assertAir(BlockPos pos) {
@@ -68,6 +74,17 @@ public class MIGameTestHelper extends GameTestHelper {
         pipeBe.addPipe(type, item.defaultData);
         getLevel().blockUpdated(absolutePos(pos), Blocks.AIR);
         setup.accept(new PipeBuilder(this, pipeBe, type));
+    }
+
+    public PipeNetworkNode getPipeNode(BlockPos pos, PipeNetworkType type) {
+        var pipeBe = (PipeBlockEntity) getBlockEntity(pos);
+        for (var node : pipeBe.getNodes()) {
+            if (node.getType() == type) {
+                return node;
+            }
+        }
+        fail("Could not find pipe node " + type.getIdentifier(), pos);
+        throw new RuntimeException("Unreachable!");
     }
 
     public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
@@ -90,6 +107,19 @@ public class MIGameTestHelper extends GameTestHelper {
         }
         if (!foundAny) {
             fail("Expected fluid %s and amount %d, got nothing".formatted(fluidName, amount), pos);
+        }
+    }
+
+    public void assertNoFluid(BlockPos pos) {
+        var fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, absolutePos(pos), null);
+        if (fluidHandler == null) {
+            fail("Could not find fluid handler", pos);
+        }
+        for (int i = 0; i < fluidHandler.getTanks(); ++i) {
+            var stack = fluidHandler.getFluidInTank(i);
+            if (!stack.isEmpty()) {
+                fail("Expected no fluid, got %s".formatted(stack), pos);
+            }
         }
     }
 }

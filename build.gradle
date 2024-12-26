@@ -237,9 +237,9 @@ neoForge {
             programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        autotestServer {
-            server()
-            systemProperty 'modern_industrialization.autoTest', 'true'
+        gameTestServer {
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
         }
     }
 }

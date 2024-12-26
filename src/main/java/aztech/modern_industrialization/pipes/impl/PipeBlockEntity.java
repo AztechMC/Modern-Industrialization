@@ -166,7 +166,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
      * 
      * @param type The type to add.
      */
-    void addPipe(PipeNetworkType type, PipeNetworkData data) {
+    public void addPipe(PipeNetworkType type, PipeNetworkData data) {
         if (!canAddPipe(type))
             return;
 

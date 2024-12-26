@@ -21,26 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.misc.autotest;
+package aztech.modern_industrialization.test.framework;
 
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.spongepowered.asm.mixin.MixinEnvironment;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-/**
- * MI auto-testing. Can be enabled with "modern_industrialization.autoTest".
- */
-public class MIAutoTesting {
-    private static int ticks = 0;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MIGameTest {
+    int timeoutTicks() default 100;
 
-    public static void init() {
-        NeoForge.EVENT_BUS.addListener(ServerTickEvent.Pre.class, event -> {
-            ticks++;
+    String batch() default "defaultBatch";
 
-            if (ticks == 40) {
-                MixinEnvironment.getCurrentEnvironment().audit();
-                event.getServer().halt(false);
-            }
-        });
-    }
+    boolean skyAccess() default false;
+
+    int rotationSteps() default 0;
+
+    boolean required() default true;
+
+    boolean manualOnly() default false;
+
+    long setupTicks() default 0L;
+
+    int attempts() default 1;
+
+    int requiredSuccesses() default 1;
 }

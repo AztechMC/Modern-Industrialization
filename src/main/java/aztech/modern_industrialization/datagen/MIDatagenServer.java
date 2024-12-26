@@ -39,6 +39,7 @@ import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
+import aztech.modern_industrialization.datagen.structure.EmptyTestStructureGenerator;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
@@ -77,6 +78,8 @@ public class MIDatagenServer {
         }
         aggregate.addProvider(UpgradeProvider::new);
         aggregate.addProvider(VanillaCompatRecipesProvider::new);
+
+        aggregate.addProvider(EmptyTestStructureGenerator::new);
 
         gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
                 new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK)),

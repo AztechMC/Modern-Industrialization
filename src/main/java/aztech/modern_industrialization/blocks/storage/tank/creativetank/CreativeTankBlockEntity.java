@@ -45,8 +45,7 @@ public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
         if (isResourceBlank()) {
             var fluid = FluidUtil.getFluidContained(player.getItemInHand(InteractionHand.MAIN_HAND));
             if (fluid.isPresent()) {
-                resource = FluidVariant.of(fluid.get());
-                onChanged();
+                setFluid(FluidVariant.of(fluid.get()));
                 return true;
             }
             return !isResourceBlank();
@@ -64,4 +63,8 @@ public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
         return false;
     }
 
+    public void setFluid(FluidVariant variant) {
+        resource = variant;
+        onChanged();
+    }
 }

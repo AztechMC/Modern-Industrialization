@@ -105,8 +105,6 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
         return lastClaimTick != NOT_CLAIMED;
     }
 
-    // TODO: lock and unlock insertion?
-
     @Override
     public String toString() {
         return "FluidNetworkExtensionTank{" + storage + '}';

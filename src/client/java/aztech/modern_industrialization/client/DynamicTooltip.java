@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.client;
 
-import java.util.ArrayList;
+import aztech.modern_industrialization.util.RenderHelper;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
@@ -41,10 +41,6 @@ public class DynamicTooltip extends Tooltip {
 
     @Override
     public List<FormattedCharSequence> toCharSequence(Minecraft minecraft) {
-        List<FormattedCharSequence> charSequences = new ArrayList<>();
-        for (var component : tooltipSupplier.get()) {
-            charSequences.addAll(Tooltip.splitTooltip(minecraft, component));
-        }
-        return charSequences;
+        return RenderHelper.splitTooltip(tooltipSupplier.get());
     }
 }

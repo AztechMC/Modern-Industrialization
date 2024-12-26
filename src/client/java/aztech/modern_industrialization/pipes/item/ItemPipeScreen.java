@@ -30,6 +30,7 @@ import aztech.modern_industrialization.client.DynamicTooltip;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
+import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
@@ -122,7 +123,15 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         super.renderTooltip(guiGraphics, x, y);
 
         if (this.hoveredSlot != null && this.hoveredSlot instanceof ItemPipeScreenHandler.UpgradeSlot && !this.hoveredSlot.hasItem()) {
-            guiGraphics.renderTooltip(font, new MITooltips.Line(MIText.PutMotorToUpgrade).build(), x, y);
+            List<Component> lines = new ArrayList<>();
+            lines.add(MIText.PutMotorToUpgrade.text());
+            if (menu.pipeInterface.getConnectionType() == 0) {
+                lines.add(MIText.PriorityNotApplicable.text(
+                        MIText.PipeConnectionTooltipInsertOnly.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
+                        MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
+                        .setStyle(TextHelper.GRAY_TEXT));
+            }
+            guiGraphics.renderTooltip(font, RenderHelper.splitTooltip(lines), x, y);
         }
 
     }

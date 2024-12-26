@@ -26,10 +26,12 @@ package aztech.modern_industrialization.datagen.datamap;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.api.datamaps.ItemPipeUpgrade;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.api.datamaps.MachineUpgrade;
+import aztech.modern_industrialization.datagen.loot.MILootTables;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import java.util.concurrent.CompletableFuture;
@@ -40,6 +42,7 @@ import net.minecraft.tags.ItemTags;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
+import net.neoforged.neoforge.registries.datamaps.builtin.RaidHeroGift;
 
 public class MIDataMapProvider extends DataMapProvider {
     public MIDataMapProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -53,6 +56,9 @@ public class MIDataMapProvider extends DataMapProvider {
         gatherFluidFuels();
         gatherItemPipeUpgrades();
         gatherMachineUpgrades();
+
+        builder(NeoForgeDataMaps.RAID_HERO_GIFTS)
+                .add(MIRegistries.INDUSTRIALIST, new RaidHeroGift(MILootTables.INDUSTRIALIST_GIFT), false);
     }
 
     private void gatherFurnaceFuels() {

@@ -36,6 +36,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -124,7 +125,7 @@ public class MIRegistries {
     // Villager professions
     public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(Registries.VILLAGER_PROFESSION, MI.ID);
 
-    public static final Supplier<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
+    public static final Holder<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
         return new VillagerProfession(
                 INDUSTRIALIST_POI.getId().toString(),
                 e -> e.is(INDUSTRIALIST_POI.getId()),

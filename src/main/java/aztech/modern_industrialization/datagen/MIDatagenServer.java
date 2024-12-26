@@ -28,6 +28,7 @@ import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvide
 import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
+import aztech.modern_industrialization.datagen.loot.MIGiftLoot;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
@@ -82,7 +83,8 @@ public class MIDatagenServer {
         aggregate.addProvider(EmptyTestStructureGenerator::new);
 
         gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
-                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK)),
+                new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK),
+                new LootTableProvider.SubProviderEntry(MIGiftLoot::new, LootContextParamSets.GIFT)),
                 lookupProvider));
 
         gen.addProvider(run,

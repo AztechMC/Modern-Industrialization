@@ -1,0 +1,7 @@
+{
+  "values": {
+    "modern_industrialization:industrialist": {
+      "loot_table": "modern_industrialization:gameplay/hero_of_the_village/industrialist_gift"
+    }
+  }
+}

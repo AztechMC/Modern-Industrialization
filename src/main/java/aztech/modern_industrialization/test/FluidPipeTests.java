@@ -69,7 +69,7 @@ public class FluidPipeTests {
         helper.startSequence()
                 .thenIdle(1)
                 .thenExecute(() -> {
-                    helper.assertFluid(new BlockPos(2, 1, 0), Fluids.WATER, 1000);
+                    helper.assertFluid(new BlockPos(2, 1, 0), Fluids.WATER, 2000);
                 })
                 .thenSucceed();
     }

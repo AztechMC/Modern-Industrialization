@@ -42,7 +42,7 @@ public class QuantumArmorItem extends ArmorItem {
     public static final List<QuantumArmorItem> ITEMS = new ArrayList<>();
 
     public QuantumArmorItem(ArmorItem.Type type, Properties settings) {
-        super(MIArmorMaterials.QUANTUM, type, settings);
+        super(MIArmorMaterials.QUANTUM, type, settings.stacksTo(1));
         ITEMS.add(this);
     }
 

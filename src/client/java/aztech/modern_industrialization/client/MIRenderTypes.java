@@ -64,7 +64,8 @@ public class MIRenderTypes {
         }
 
         private static RenderType makeSolidHighlight() {
-            return create("solid_highlight", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS, 65536, false, false,
+            // Use block vertex format to use the fast path in BufferBuilder, even if the shader doesn't use the extra vertex attributes.
+            return create("solid_highlight", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 65536, false, false,
                     CompositeState.builder()
                             .setTransparencyState(NO_TRANSPARENCY)
                             .setTextureState(NO_TEXTURE)

@@ -58,7 +58,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     private final RedstoneControlComponent redstoneControl;
     private final IsActiveComponent isActive;
     private final NuclearEfficiencyHistoryComponent efficiencyHistory;
-    private ShapeMatcher shapeMatcher;
 
     private NuclearGrid nuclearGrid;
     private Supplier<NuclearReactorGui.Data> dataSupplier;
@@ -125,87 +124,61 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         }
     }
 
-    protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
-        shapeValid.shapeValid = true;
-        int size = gridLayout[activeShape.getActiveShapeIndex()].length;
-        NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
-
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            int x0 = hatch.getBlockPos().getX() - getBlockPos().getX();
-            int z0 = hatch.getBlockPos().getZ() - getBlockPos().getZ();
-
-            int x, y;
-
-            if (orientation.facingDirection == Direction.NORTH) {
-                x = size / 2 + x0;
-                y = z0;
-            } else if (orientation.facingDirection == Direction.SOUTH) {
-                x = size / 2 - x0;
-                y = -z0;
-            } else if (orientation.facingDirection == Direction.EAST) {
-                x = size / 2 + z0;
-                y = -x0;
-
-            } else {
-                x = size / 2 - z0;
-                y = x0;
-            }
-
-            hatchesGrid[x][y] = (NuclearHatch) hatch;
-        }
-
-        nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
-
-        dataSupplier = () -> {
-            Optional<INuclearTileData>[] tilesData = new Optional[size * size];
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-
-                    final int x = size - 1 - i;
-                    final int y = size - 1 - j;
-
-                    int index = NuclearReactorGui.Data.toIndex(i, j, size);
-                    tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
-                }
-            }
-            return new NuclearReactorGui.Data(true, size, size, tilesData,
-                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
-                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
-        };
-    }
-
     @Override
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            nuclearGrid = null;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                shapeValid.shapeValid = true;
-                onSuccessfulMatch(shapeMatcher);
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
     @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        nuclearGrid = null;
+        if (shapeMatcher.isMatchSuccessful()) {
+            shapeValid.shapeValid = true;
+            int size = gridLayout[activeShape.getActiveShapeIndex()].length;
+            NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
+
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                int x0 = hatch.getBlockPos().getX() - getBlockPos().getX();
+                int z0 = hatch.getBlockPos().getZ() - getBlockPos().getZ();
+
+                int x, y;
+
+                if (orientation.facingDirection == Direction.NORTH) {
+                    x = size / 2 + x0;
+                    y = z0;
+                } else if (orientation.facingDirection == Direction.SOUTH) {
+                    x = size / 2 - x0;
+                    y = -z0;
+                } else if (orientation.facingDirection == Direction.EAST) {
+                    x = size / 2 + z0;
+                    y = -x0;
+
+                } else {
+                    x = size / 2 - z0;
+                    y = x0;
+                }
+
+                hatchesGrid[x][y] = (NuclearHatch) hatch;
+            }
+
+            nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
+
+            dataSupplier = () -> {
+                Optional<INuclearTileData>[] tilesData = new Optional[size * size];
+                for (int i = 0; i < size; i++) {
+                    for (int j = 0; j < size; j++) {
+
+                        final int x = size - 1 - i;
+                        final int y = size - 1 - j;
+
+                        int index = NuclearReactorGui.Data.toIndex(i, j, size);
+                        tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
+                    }
+                }
+                return new NuclearReactorGui.Data(true, size, size, tilesData,
+                        efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
+                        efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
+            };
         }
     }
 

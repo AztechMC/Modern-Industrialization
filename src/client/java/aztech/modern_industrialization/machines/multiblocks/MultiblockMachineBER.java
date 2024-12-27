@@ -54,7 +54,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {
-            ShapeMatcher matcher = new ShapeMatcher(be.getLevel(), be.getBlockPos(), be.getOrientation().facingDirection, be.getActiveShape());
+            ShapeMatcher matcher = be.createShapeMatcher();
 
             for (BlockPos pos : matcher.getPositions()) {
                 matrices.pushPose();
@@ -71,7 +71,8 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                 }
                 if (drawHighlights) {
                     if (!matcher.matches(pos, be.getLevel(), null)) {
-                        if (be.getLevel().getBlockState(pos).isAir()) {
+                        var existingState = be.getLevel().getBlockState(pos);
+                        if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
                             // Enqueue state preview
                             MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
                         } else {

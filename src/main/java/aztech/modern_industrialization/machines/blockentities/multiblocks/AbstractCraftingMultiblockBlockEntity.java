@@ -35,7 +35,6 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
@@ -56,16 +55,12 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
      */
     protected abstract CrafterComponent.Behavior getBehavior();
 
-    @Nullable
-    private ShapeMatcher shapeMatcher = null;
     private OperatingState operatingState = OperatingState.NOT_MATCHED;
 
     protected final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
     protected final CrafterComponent crafter;
     private final IsActiveComponent isActive;
-
-    protected abstract void onSuccessfulMatch(ShapeMatcher shapeMatcher);
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
@@ -121,36 +116,12 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            operatingState = OperatingState.NOT_MATCHED;
-            shapeValid.shapeValid = false;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                inventory.rebuild(shapeMatcher);
-
-                onSuccessfulMatch(shapeMatcher);
-                shapeValid.shapeValid = true;
-                operatingState = OperatingState.TRYING_TO_RESUME;
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
     @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        operatingState = OperatingState.NOT_MATCHED;
+        if (shapeMatcher.isMatchSuccessful()) {
+            inventory.rebuild(shapeMatcher);
+            operatingState = OperatingState.TRYING_TO_RESUME;
         }
     }
 

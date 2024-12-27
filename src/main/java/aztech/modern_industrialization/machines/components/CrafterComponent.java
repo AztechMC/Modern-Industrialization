@@ -57,7 +57,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,7 +103,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
 
         // can't use getWorld() or the remapping will fail
-        Level getCrafterWorld();
+        ServerLevel getCrafterWorld();
 
         default int getMaxFluidOutputs() {
             return Integer.MAX_VALUE;
@@ -524,17 +523,20 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                                 ? (int) stack.getRemainingCapacityFor(output.variant())
                                 : output.variant().getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
-                        if (key.isBlank()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
-                                stack.setAmount(ins);
-                                stack.setKey(output.variant());
+                        if (ins > 0) {
+                            if (key.isBlank()) {
+                                if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
+                                    stack.setAmount(ins);
+                                    stack.setKey(output.variant());
+                                } else {
+                                    ins = 0;
+                                }
                             } else {
-                                ins = 0;
+                                stack.increment(ins);
                             }
-                        } else {
-                            stack.increment(ins);
                         }
                         remainingAmount -= ins;
+                        // ins changed inside of previous if, need to check again!
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
                             lockItems.add(output.variant().getItem());
@@ -627,7 +629,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
-        Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipes(behavior.getCrafterWorld()).stream()
+        Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipesWithCache(behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.id().equals(recipeId)).findFirst();
         if (optionalMachineRecipe.isEmpty())
             return;

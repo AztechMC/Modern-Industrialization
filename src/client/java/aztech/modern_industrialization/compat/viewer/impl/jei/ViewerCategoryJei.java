@@ -38,14 +38,12 @@ import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
-import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -56,58 +54,26 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
-class ViewerCategoryJei<D> implements IRecipeCategory<D> {
+class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     private final IJeiHelpers helpers;
     public final ViewerCategory<D> wrapped;
     public final RecipeType<D> recipeType;
-    private final IDrawable background, icon, itemSlot, fluidSlot;
+    private final IDrawable fluidSlot;
 
     public ViewerCategoryJei(IJeiHelpers helpers, ViewerCategory<D> wrapped) {
+        super(
+                RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass),
+                wrapped.title,
+                DrawableIcon.create(helpers.getGuiHelper(), wrapped.icon),
+                wrapped.width - 8,
+                wrapped.height - 8);
+
         this.helpers = helpers;
         this.wrapped = wrapped;
         this.recipeType = RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass);
 
-        this.background = helpers.getGuiHelper().createBlankDrawable(wrapped.width - 8, wrapped.height - 8);
-        this.icon = wrapped.icon instanceof ViewerCategory.Icon.Stack stack ? helpers.getGuiHelper().createDrawableItemStack(stack.stack())
-                : new IDrawable() {
-                    @Override
-                    public int getWidth() {
-                        return 18;
-                    }
-
-                    @Override
-                    public int getHeight() {
-                        return 18;
-                    }
-
-                    @Override
-                    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
-                        var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
-                        guiGraphics.blit(texture.loc(), xOffset - 1, yOffset - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
-                    }
-                };
-        this.itemSlot = helpers.getGuiHelper().getSlotDrawable();
-        this.fluidSlot = helpers.getGuiHelper().createDrawable(MachineScreen.SLOT_ATLAS, 18, 0, 18, 18);
-    }
-
-    @Override
-    public RecipeType<D> getRecipeType() {
-        return recipeType;
-    }
-
-    @Override
-    public Component getTitle() {
-        return wrapped.title;
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
-
-    @Override
-    public IDrawable getIcon() {
-        return icon;
+        var guiHelper = helpers.getGuiHelper();
+        this.fluidSlot = guiHelper.createDrawable(MachineScreen.SLOT_ATLAS, 18, 0, 18, 18);
     }
 
     @Override
@@ -130,8 +96,9 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             }
 
             private ViewerCategory.SlotBuilder slot(RecipeIngredientRole role, int x, int y) {
-                var slotBuilder = builder.addSlot(role, x - 4, y - 4);
-                slotBuilder.setBackground(itemSlot, -1, -1);
+                var slotBuilder = builder.addSlot(role, x - 4, y - 4)
+                        .setStandardSlotBackground();
+
                 return new ViewerCategory.SlotBuilder() {
                     @Override
                     public ViewerCategory.SlotBuilder variant(TransferVariant<?> variant) {
@@ -150,23 +117,11 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
                     }
 
                     private static void addProbability(IRecipeSlotBuilder slot, float probability) {
-                        slot.addTooltipCallback(new IRecipeSlotTooltipCallback() {
-                            @Override
-                            public void onTooltip(IRecipeSlotView recipeSlotView, List<Component> tooltip) {
-                                var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
-                                var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
-                                if (probabilityLine != null) {
-                                    tooltip.add(probabilityLine);
-                                }
-                            }
-
-                            @Override
-                            public void onRichTooltip(IRecipeSlotView recipeSlotView, ITooltipBuilder tooltip) {
-                                var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
-                                var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
-                                if (probabilityLine != null) {
-                                    tooltip.add(probabilityLine);
-                                }
+                        slot.addRichTooltipCallback((recipeSlotView, tooltip) -> {
+                            var input = recipeSlotView.getRole() == RecipeIngredientRole.INPUT;
+                            var probabilityLine = ViewerUtil.getProbabilityTooltip(probability, input);
+                            if (probabilityLine != null) {
+                                tooltip.add(probabilityLine);
                             }
                         });
                     }
@@ -218,6 +173,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
 
     @Override
     public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(-4, -4, 0);
 
         wrapped.buildWidgets(recipe, new ViewerCategory.WidgetList() {
@@ -254,7 +210,7 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             @Override
             public void item(double x, double y, double w, double h, ItemLike item) {
                 guiGraphics.pose().pushPose();
-                var drawable = helpers.getGuiHelper().createDrawableItemStack(item.asItem().getDefaultInstance());
+                var drawable = helpers.getGuiHelper().createDrawableItemLike(item);
                 guiGraphics.pose().translate(x, y, 0);
                 guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
                 drawable.draw(guiGraphics);
@@ -265,6 +221,8 @@ class ViewerCategoryJei<D> implements IRecipeCategory<D> {
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
             }
         });
+
+        guiGraphics.pose().popPose();
     }
 
     @Override

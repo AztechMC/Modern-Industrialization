@@ -48,7 +48,7 @@ public record ReiLockSlotsPacket(int containedId, ResourceLocation recipeId) imp
         AbstractContainerMenu sh = ctx.getPlayer().containerMenu;
         if (sh.containerId == containedId && sh instanceof MachineMenuServer screenHandler) {
             // Check that locking the slots is allowed in the first place
-            ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(GuiComponents.REI_SLOT_LOCKING);
+            ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.guiComponents.get(GuiComponents.REI_SLOT_LOCKING);
             if (!slotLocking.allowLocking.get())
                 return;
 

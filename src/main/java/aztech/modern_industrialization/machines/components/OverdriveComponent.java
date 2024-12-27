@@ -61,9 +61,8 @@ public class OverdriveComponent implements IComponent.ServerOnly, DropableCompon
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (MIItem.OVERDRIVE_MODULE.is(stackInHand) && overdriveModule.isEmpty()) {
-            overdriveModule = stackInHand.copy();
-            overdriveModule.setCount(1);
-            stackInHand.shrink(1);
+            overdriveModule = stackInHand.copyWithCount(1);
+            stackInHand.consume(1, player);
 
             be.setChanged();
             return ItemInteractionResult.sidedSuccess(player.level().isClientSide);

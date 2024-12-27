@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:gift",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:steel_upgrade"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:piston"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:robot_arm"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:basic_machine_hull"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:bronze_drill"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modern_industrialization:steel_drill"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "modern_industrialization:gameplay/hero_of_the_village/industrialist_gift"
+}

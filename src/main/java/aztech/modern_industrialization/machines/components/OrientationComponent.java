@@ -89,7 +89,7 @@ public class OrientationComponent implements IComponent {
                 return true;
             }
         } else {
-            if (face.getAxis().isHorizontal()) {
+            if (params.canBeVertical || face.getAxis().isHorizontal()) {
                 facingDirection = face;
             }
             // We consume the event to prevent the GUI from opening.
@@ -100,7 +100,7 @@ public class OrientationComponent implements IComponent {
 
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
         // The placer can be null using some mods' automatic placement: pick NORTH arbitrarily.
-        Direction dir = placer != null ? placer.getDirection() : Direction.NORTH;
+        Direction dir = placer != null ? (params.canBeVertical ? placer.getNearestViewDirection() : placer.getDirection()) : Direction.NORTH;
         facingDirection = dir.getOpposite();
         if (params.hasOutput) {
             outputDirection = dir;
@@ -111,11 +111,21 @@ public class OrientationComponent implements IComponent {
         public final boolean hasOutput;
         public final boolean hasExtractItems;
         public final boolean hasExtractFluids;
+        /**
+         * MI itself does not make use of this field, and it purely exists for addons. If you want to use this field, you will need to make your own
+         * model loader.
+         */
+        public final boolean canBeVertical;
 
-        public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids) {
+        public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids, boolean canBeVertical) {
             this.hasOutput = hasOutput;
             this.hasExtractItems = hasExtractItems;
             this.hasExtractFluids = hasExtractFluids;
+            this.canBeVertical = canBeVertical;
+        }
+
+        public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids) {
+            this(hasOutput, hasExtractItems, hasExtractFluids, false);
         }
     }
 

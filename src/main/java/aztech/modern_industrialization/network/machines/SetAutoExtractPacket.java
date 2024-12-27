@@ -50,7 +50,7 @@ public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract
 
         if (ctx.getPlayer().containerMenu.containerId == syncId) {
             var screenHandler = (MachineMenuServer) ctx.getPlayer().containerMenu;
-            AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(GuiComponents.AUTO_EXTRACT);
+            AutoExtract.Server autoExtract = screenHandler.blockEntity.guiComponents.get(GuiComponents.AUTO_EXTRACT);
             OrientationComponent orientation = autoExtract.getOrientation();
             if (isItem) {
                 orientation.extractItems = isExtract;

@@ -66,9 +66,8 @@ public class RedstoneControlComponent implements IComponent.ServerOnly, Dropable
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (MIItem.REDSTONE_CONTROL_MODULE.is(stackInHand) && controlModule.isEmpty()) {
-            controlModule = stackInHand.copy();
-            controlModule.setCount(1);
-            stackInHand.shrink(1);
+            controlModule = stackInHand.copyWithCount(1);
+            stackInHand.consume(1, player);
 
             be.setChanged();
             return ItemInteractionResult.sidedSuccess(player.level().isClientSide);

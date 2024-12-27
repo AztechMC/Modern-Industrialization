@@ -215,7 +215,16 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
+            if (pipeInterface.getConnectionType() == 0) {
+                // Prevent placing motors in `IN` pipes.
+                return false;
+            }
             return stack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES) != null;
+        }
+
+        @Override
+        public boolean isHighlightable() {
+            return pipeInterface.getConnectionType() != 0;
         }
 
         @Override

@@ -31,7 +31,13 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implements IFluidHandler {
+public class SlotFluidHandler implements IFluidHandler {
+    protected final SingleSlotStorage<FluidVariant> storage;
+
+    public SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) {
+        this.storage = storage;
+    }
+
     @Override
     public int getTanks() {
         return 1;
@@ -44,7 +50,7 @@ public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implemen
 
     @Override
     public int fill(FluidStack stack, FluidAction action) {
-        if (stack.isEmpty()) {
+        if (disallowIo() || stack.isEmpty()) {
             return 0;
         }
         try (var tx = Transaction.hackyOpen()) {
@@ -58,7 +64,7 @@ public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implemen
 
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
-        if (resource.isEmpty() || storage.isResourceBlank() || !storage.getResource().matches(resource)) {
+        if (disallowIo() || resource.isEmpty() || storage.isResourceBlank() || !storage.getResource().matches(resource)) {
             return FluidStack.EMPTY;
         }
         return drain(resource.getAmount(), action);
@@ -66,7 +72,7 @@ public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implemen
 
     @Override
     public FluidStack drain(int amount, FluidAction action) {
-        if (amount <= 0) {
+        if (disallowIo() || amount <= 0) {
             return FluidStack.EMPTY;
         }
         try (var tx = Transaction.hackyOpen()) {
@@ -90,5 +96,13 @@ public record SlotFluidHandler(SingleSlotStorage<FluidVariant> storage) implemen
     @Override
     public boolean isFluidValid(int slot, @NotNull FluidStack stack) {
         return true;
+    }
+
+    public SingleSlotStorage<FluidVariant> storage() {
+        return storage;
+    }
+
+    protected boolean disallowIo() {
+        return false;
     }
 }

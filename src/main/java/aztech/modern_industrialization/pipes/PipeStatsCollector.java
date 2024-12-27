@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.pipes;
 
 public class PipeStatsCollector {
-    private static int REFRESH_RATE = 20;
+    private static final int REFRESH_RATE = 20;
 
     private long lastStat = 0;
     private long currentTot = 0;

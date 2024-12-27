@@ -31,8 +31,12 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
+    @Nullable
+    private ShapeMatcher shapeMatcher;
+
     public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep, guiParams, orientationParams);
         this.shapeValid = new ShapeValidComponent();
@@ -45,7 +49,40 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return shapeValid.shapeValid;
     }
 
-    public abstract void unlink();
+    public ShapeMatcher createShapeMatcher() {
+        return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
+    }
+
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+    }
+
+    protected final void link() {
+        if (shapeMatcher == null) {
+            shapeMatcher = createShapeMatcher();
+            shapeMatcher.registerListeners(level);
+        }
+        if (shapeMatcher.needsRematch()) {
+            shapeValid.shapeValid = false;
+            shapeMatcher.rematch(level);
+            onRematch(shapeMatcher);
+
+            if (shapeMatcher.isMatchSuccessful()) {
+                shapeValid.shapeValid = true;
+            }
+
+            if (shapeValid.update()) {
+                sync(false);
+            }
+        }
+    }
+
+    public final void unlink() {
+        if (shapeMatcher != null) {
+            shapeMatcher.unlinkHatches();
+            shapeMatcher.unregisterListeners(level);
+            shapeMatcher = null;
+        }
+    }
 
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
@@ -59,7 +96,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public final void setRemoved() {
+    public void setRemoved() {
         super.setRemoved();
         if (!level.isClientSide) {
             unlink();

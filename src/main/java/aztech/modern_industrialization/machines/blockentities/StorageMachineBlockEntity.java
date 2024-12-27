@@ -24,10 +24,11 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.machines.BEP;
 import net.minecraft.util.Mth;
 
-public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity {
+public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity implements CableTierHolder {
 
     public StorageMachineBlockEntity(BEP bep, CableTier tier, String name, long eu_capacity) {
         super(bep, tier, tier, name, eu_capacity);
@@ -42,5 +43,10 @@ public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity
     protected int getComparatorOutput() {
         double fillPercentage = (double) energy.getEu() / energy.getCapacity();
         return Mth.floor(fillPercentage * 14) + (energy.getEu() > 0 ? 1 : 0);
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return to;
     }
 }

@@ -29,16 +29,21 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.primitives.Ints;
+import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.slf4j.Logger;
 
 public class FluidNetwork extends PipeNetwork {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     final int nodeCapacity;
     final PipeStatsCollector stats = new PipeStatsCollector();
+    final PipeStatsCollector capacityStats = new PipeStatsCollector();
 
     public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
         super(id, data == null ? new FluidNetworkData(FluidVariant.blank()) : data);
@@ -49,11 +54,12 @@ public class FluidNetwork extends PipeNetwork {
     public void tick(ServerLevel world) {
         // Gather targets and hopefully set fluid
         List<FluidTarget> targets = new ArrayList<>();
+        List<FluidNetworkExtensionTank> extensions = new ArrayList<>();
         long networkAmount = 0;
         int loadedNodeCount = 0;
         for (var entry : iterateTickingNodes()) {
             FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
-            fluidNode.gatherTargetsAndPickFluid(world, entry.getPos(), targets);
+            fluidNode.gatherTargetsAndPickFluid(world, entry.getPos(), targets, extensions);
             // Amount goes after the gather...() call because the gather...() call cleans
             // invalid amounts.
             networkAmount += fluidNode.amount;
@@ -65,6 +71,18 @@ public class FluidNetwork extends PipeNetwork {
         long extracted = 0, inserted = 0;
 
         if (!fluid.isBlank()) {
+            var it = extensions.iterator();
+            while (it.hasNext()) {
+                var extension = it.next();
+                if (extension.tryClaimForNetwork(world, fluid)) {
+                    networkAmount += extension.storage().getAmount();
+                    networkCapacity += extension.getCapacity();
+                    extension.clear();
+                } else {
+                    it.remove();
+                }
+            }
+
             // Extract from targets into the network
             extracted = transferByPriority(TransferOperation.EXTRACT, targets, fluid, networkCapacity - networkAmount);
             networkAmount += extracted;
@@ -72,8 +90,19 @@ public class FluidNetwork extends PipeNetwork {
             inserted = transferByPriority(TransferOperation.INSERT, targets, fluid, networkAmount);
             networkAmount -= inserted;
 
-            // Split fluid evenly across the nodes
-            // Rebalance fluid inside the nodes
+            // Rebalance fluid inside the extensions and nodes
+            var sortedExtensions = new ArrayList<>(extensions);
+            sortedExtensions.sort((ext1, ext2) -> -Long.compare(ext1.getCapacity(), ext2.getCapacity()));
+
+            long removedCapacity = 0;
+            for (var extension : sortedExtensions) {
+                var capacity = extension.getCapacity();
+                long toInsert = (long) Math.ceil((double) networkAmount * capacity / (networkCapacity - removedCapacity));
+                extension.releaseFromNetwork(fluid, toInsert);
+                networkAmount -= toInsert;
+                removedCapacity += capacity;
+            }
+
             for (var entry : iterateTickingNodes()) {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
                 fluidNode.amount = networkAmount / loadedNodeCount;
@@ -83,6 +112,7 @@ public class FluidNetwork extends PipeNetwork {
         }
 
         stats.addValue(Math.max(extracted, inserted));
+        capacityStats.addValue(networkCapacity);
 
         for (var entry : iterateTickingNodes()) {
             ((FluidNetworkNode) entry.getNode()).afterTick(world, entry.getPos());

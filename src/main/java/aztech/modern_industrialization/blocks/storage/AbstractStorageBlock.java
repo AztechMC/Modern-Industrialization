@@ -56,7 +56,7 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
     protected ItemStack getStack(BlockEntity entity) {
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
-        if (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked()) {
+        if (storageBlockEntity != null && (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked())) {
             storageBlockEntity.saveToItem(stack, storageBlockEntity.getLevel().registryAccess());
         }
         return stack;

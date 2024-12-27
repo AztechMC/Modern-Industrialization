@@ -111,7 +111,7 @@ public class CommonProxy {
     public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
     }
 
-    public void registerPartTankClient(Supplier<BlockEntityType<AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
+    public void registerPartTankClient(Supplier<? extends BlockEntityType<? extends AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
     }
 
     public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {

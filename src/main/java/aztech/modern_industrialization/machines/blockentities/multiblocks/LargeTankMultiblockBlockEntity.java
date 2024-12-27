@@ -54,7 +54,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
-import org.jetbrains.annotations.Nullable;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, FluidStorageComponentHolder {
@@ -97,12 +96,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     public static void registerFluidAPI(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> {
-                LargeTankMultiblockBlockEntity tank = ((LargeTankMultiblockBlockEntity) be);
-                if (tank.isShapeValid()) {
-                    return tank.fluidStorage.getFluidHandler();
-                } else {
-                    return EmptyFluidHandler.INSTANCE;
-                }
+                return ((LargeTankMultiblockBlockEntity) be).getExposedFluidHandler();
             });
         });
     }
@@ -147,9 +141,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         return templateBuilder.build();
     }
-
-    @Nullable
-    private ShapeMatcher shapeMatcher = null;
 
     private final ActiveShapeComponent activeShape;
     private final FluidStorageComponent fluidStorage;
@@ -226,35 +217,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                shapeValid.shapeValid = true;
-                onMatchSuccessful();
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
-    @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
-        }
-    }
-
     @Override
     public void tick() {
         if (!level.isClientSide) {
@@ -275,14 +237,17 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return volume * BUCKET_PER_STRUCTURE_BLOCK * FluidType.BUCKET_VOLUME;
     }
 
-    private void onMatchSuccessful() {
-        int index = activeShape.getActiveShapeIndex();
-        long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
-        fluidStorage.setCapacity(capacity);
+    @Override
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        if (shapeMatcher.isMatchSuccessful()) {
+            int index = activeShape.getActiveShapeIndex();
+            long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
+            fluidStorage.setCapacity(capacity);
 
-        for (var hatch : shapeMatcher.getMatchedHatches()) {
-            if (hatch instanceof LargeTankHatch tankHatch) {
-                tankHatch.setController(this);
+            for (var hatch : shapeMatcher.getMatchedHatches()) {
+                if (hatch instanceof LargeTankHatch tankHatch) {
+                    tankHatch.setController(this);
+                }
             }
         }
     }

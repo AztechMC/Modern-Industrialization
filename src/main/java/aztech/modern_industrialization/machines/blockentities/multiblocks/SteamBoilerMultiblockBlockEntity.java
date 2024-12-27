@@ -44,7 +44,6 @@ import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
-    private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
     private final IsActiveComponent isActiveComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -81,32 +80,10 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     }
 
-    protected final void link() {
-        if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, shapeTemplate);
-            shapeMatcher.registerListeners(level);
-        }
-        if (shapeMatcher.needsRematch()) {
-            shapeValid.shapeValid = false;
-            shapeMatcher.rematch(level);
-
-            if (shapeMatcher.isMatchSuccessful()) {
-                inventory.rebuild(shapeMatcher);
-                shapeValid.shapeValid = true;
-            }
-
-            if (shapeValid.update()) {
-                sync(false);
-            }
-        }
-    }
-
     @Override
-    public final void unlink() {
-        if (shapeMatcher != null) {
-            shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(level);
-            shapeMatcher = null;
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        if (shapeMatcher.isMatchSuccessful()) {
+            inventory.rebuild(shapeMatcher);
         }
     }
 

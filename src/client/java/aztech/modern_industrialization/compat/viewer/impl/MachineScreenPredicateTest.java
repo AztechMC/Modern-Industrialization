@@ -34,10 +34,8 @@ public class MachineScreenPredicateTest {
         case ANY -> true;
         case MULTIBLOCK -> {
             for (GuiComponentClient client : screen.getMenu().components) {
-                if (client instanceof CraftingMultiblockGuiClient cmGui) {
-                    if (cmGui.isShapeValid) {
-                        yield true;
-                    }
+                if (client instanceof CraftingMultiblockGuiClient cmGui && cmGui.isShapeValid) {
+                    yield true;
                 }
             }
             yield false;

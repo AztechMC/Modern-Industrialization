@@ -29,6 +29,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextRenderer;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
@@ -96,6 +97,7 @@ import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactori
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -163,6 +165,10 @@ public class MIClient {
                 IConfigScreenFactory.class,
                 (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get());
 
+        modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
+            event.registerRenderBuffer(MIRenderTypes.solidHighlight());
+        });
+
         // Warn if neither JEI nor REI is present!
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
                 && !ModList.get().isLoaded("roughlyenoughitems")) {
@@ -210,7 +216,7 @@ public class MIClient {
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
-    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<BlockEntityType<U>> bet,
+    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<? extends BlockEntityType<? extends U>> bet,
             BlockEntityRendererProvider<T> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }

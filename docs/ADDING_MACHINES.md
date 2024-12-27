@@ -327,12 +327,12 @@ remember that the top, side and bottom textures of a casing must be `modern_indu
 For example:
 ```js
 MIMachineEvents.registerCasings(event => {
-    // Register two casings.
+    // Register a casing.
     // This doesn't register any model! Either add models or add the top/side/bottom textures.
-    event.register("my_fancy_casing", "my_other_casing");
+    event.registerNamed("fancy_casing", "Fancy");
 
     // This registers a new casing with the same model as a diamond block!
-    event.registerBlockImitation("my_diamond_casing", "minecraft:diamond_block");
+    event.registerBlockImitation("diamond_casing", "minecraft:diamond_block");
 })
 ```
 

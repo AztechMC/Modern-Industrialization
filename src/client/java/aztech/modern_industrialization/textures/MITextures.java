@@ -241,7 +241,7 @@ public final class MITextures {
                         copy.setPixelRGBA(i, j, brickTexture.getPixelRGBA(i, j));
                     }
                 }
-                String s = String.format("modern_industrialization:textures/block/casings/%s.png", casing.name);
+                String s = String.format("%s:textures/block/casings/%s.png", casing.key.getNamespace(), casing.key.getPath());
                 tm.addTexture(s, copy);
             }
         } catch (IOException e) {

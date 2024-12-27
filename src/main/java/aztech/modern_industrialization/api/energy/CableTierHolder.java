@@ -21,13 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen.model;
+package aztech.modern_industrialization.api.energy;
 
-import aztech.modern_industrialization.machines.models.MachineCasing;
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
-
-public class MachineCasingImitations {
-    public static final Map<MachineCasing, ResourceLocation> imitationsToGenerate = new HashMap<>();
+public interface CableTierHolder {
+    CableTier getCableTier();
 }

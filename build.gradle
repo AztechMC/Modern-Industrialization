@@ -237,9 +237,9 @@ neoForge {
             programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        autotestServer {
-            server()
-            systemProperty 'modern_industrialization.autoTest', 'true'
+        gameTestServer {
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
         }
     }
 }
@@ -252,7 +252,7 @@ configurations {
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
 
-    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+    compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
         localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
     }
@@ -280,7 +280,7 @@ dependencies {
 
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")

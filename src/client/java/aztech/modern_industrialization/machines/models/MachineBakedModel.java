@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.util.ModelHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
     public static final String CASING_FOLDER = "machine_casing";
 
     public static ModelResourceLocation getCasingModelId(MachineCasing casing) {
-        return ModelResourceLocation.standalone(MI.id(CASING_FOLDER + "/" + casing.name));
+        return ModelResourceLocation.standalone(casing.key.withPath(p -> CASING_FOLDER + "/" + p));
     }
 
     public static BakedModel getCasingModel(MachineCasing casing) {
@@ -66,12 +65,12 @@ public class MachineBakedModel implements IDynamicBakedModel {
 
     private final MachineCasing baseCasing;
     private final TextureAtlasSprite[] defaultOverlays;
-    private final Map<String, TextureAtlasSprite[]> tieredOverlays;
+    private final Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays;
     private final MachineModelClientData defaultData;
 
     MachineBakedModel(MachineCasing baseCasing,
             TextureAtlasSprite[] defaultOverlays,
-            Map<String, TextureAtlasSprite[]> tieredOverlays) {
+            Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays) {
         this.baseCasing = baseCasing;
         this.defaultOverlays = defaultOverlays;
         this.tieredOverlays = tieredOverlays;
@@ -86,7 +85,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
         if (casing == null) {
             return defaultOverlays;
         }
-        return tieredOverlays.getOrDefault(casing.name, defaultOverlays);
+        return tieredOverlays.getOrDefault(casing, defaultOverlays);
     }
 
     /**

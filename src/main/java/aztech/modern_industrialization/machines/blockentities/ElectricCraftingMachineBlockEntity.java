@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MICapabilities;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
@@ -44,7 +46,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity implements EnergyComponentHolder {
+public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity implements EnergyComponentHolder, CableTierHolder {
 
     public ElectricCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
@@ -131,5 +133,10 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     @Override
     public EnergyComponent getEnergyComponent() {
         return energy;
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return casing.getCableTier();
     }
 }

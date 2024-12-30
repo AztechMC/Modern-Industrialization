@@ -30,6 +30,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
@@ -206,9 +207,11 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             guiGraphics.pose().popPose();
         });
-        widgets.text(
-                TextHelper.getEuTextTick(recipe.eu),
-                15 + (params.steamMode.steam ? 2 : 0), 5, TextAlign.LEFT, false, true, null);
+        if (params.steamMode != SteamMode.NEITHER) {
+            widgets.text(
+                    TextHelper.getEuTextTick(recipe.eu),
+                    15 + (params.steamMode.steam ? 2 : 0), 5, TextAlign.LEFT, false, true, null);
+        }
         widgets.text(
                 MIText.BaseDurationSeconds.text(getSeconds(recipe)),
                 width - 5, 5, TextAlign.RIGHT, false, true, null);
@@ -235,7 +238,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         }
         // Tooltips
         List<Component> tooltips = new ArrayList<>();
-        tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipe.duration * recipe.eu)));
+        if (params.steamMode != SteamMode.NEITHER) {
+            tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipe.duration * recipe.eu)));
+        }
         if (params.steamMode.steam) {
             tooltips.add((params.steamMode.electric ? MIText.AcceptsSteamToo : MIText.AcceptsSteam).text().withStyle(ChatFormatting.GRAY));
             if (steelHatchRequired) {
@@ -251,7 +256,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 condition.appendDescription(tooltips);
             }
         }
-        widgets.tooltip(2, 5, width - 10, 11, tooltips);
+        if (!tooltips.isEmpty()) {
+            widgets.tooltip(2, 5, width - 10, 11, tooltips);
+        }
     }
 
     private double getSeconds(MachineRecipe recipe) {

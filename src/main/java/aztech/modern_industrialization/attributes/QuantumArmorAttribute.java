@@ -40,7 +40,7 @@ public class QuantumArmorAttribute extends DisplayNamedAttribute {
     }
 
     @Override
-    public String getDisplayDescriptionId() {
+    public String getTooltipDescriptionId() {
         return "attribute.name.generic.armor";
     }
 }

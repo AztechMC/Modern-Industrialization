@@ -38,9 +38,8 @@ public class MIArmorEffects {
     }
 
     public static boolean quantumArmorPreventsDamage(LivingEntity entity) {
-        var attribute = entity.getAttribute(MIRegistries.QUANTUM_ARMOR);
-        int parts = attribute != null ? (int) attribute.getValue() : 0;
-        return parts >= 4 || ThreadLocalRandom.current().nextDouble() < parts / 4d;
+        double parts = entity.getAttributeValue(MIRegistries.QUANTUM_ARMOR);
+        return ThreadLocalRandom.current().nextDouble() < parts / 4d;
     }
 
     public static boolean canTankFlyIntoWall(ItemStack helmet) {

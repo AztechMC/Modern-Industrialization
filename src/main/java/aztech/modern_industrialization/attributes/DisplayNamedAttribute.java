@@ -35,10 +35,14 @@ public abstract class DisplayNamedAttribute extends Attribute {
         super(descriptionId, defaultValue);
     }
 
-    public abstract String getDisplayDescriptionId();
+    /**
+     * Translation key to use in tooltips, thanks to our override of {@link #toComponent(AttributeModifier, TooltipFlag)}.
+     * {@link #getDescriptionId()} is still used in /attribute commands and other contexts.
+     */
+    public abstract String getTooltipDescriptionId();
 
     /*
-     * The below two methods are copied from IAttributeExtension and use DisplayAttribute#getDisplayDescriptionId so that Attribute#getDescriptionId
+     * The below methods is copied from IAttributeExtension and uses DisplayAttribute#getDisplayDescriptionId so that Attribute#getDescriptionId
      * can return the MIText.AttributeQuantumArmor description id. This is desirable because when using the /attribute command it will display the
      * attribute name as "Quantum Armor" instead of just "Armor" like it does when using "attribute.name.generic.armor" as the description id (or
      * "Infinite Damage" instead of just "Damage" for the InfiniteDamageAttribute).
@@ -50,23 +54,10 @@ public abstract class DisplayNamedAttribute extends Attribute {
         String key = value > 0 ? "neoforge.modifier.plus" : "neoforge.modifier.take";
         ChatFormatting color = this.getStyle(value > 0);
 
-        Component attrDesc = Component.translatable(this.getDisplayDescriptionId());
+        Component attrDesc = Component.translatable(this.getTooltipDescriptionId());
         Component valueComp = this.toValueComponent(modif.operation(), value, flag);
         MutableComponent comp = Component.translatable(key, valueComp, attrDesc).withStyle(color);
 
         return comp.append(this.getDebugInfo(modif, flag));
-    }
-
-    @Override
-    public MutableComponent toBaseComponent(double value, double entityBase, boolean merged, TooltipFlag flag) {
-        MutableComponent comp = Component.translatable("attribute.modifier.equals.0", FORMAT.format(value),
-                Component.translatable(this.getDisplayDescriptionId()));
-        if (flag.isAdvanced() && !merged) {
-            Component debugInfo = Component.literal(" ")
-                    .append(Component.translatable("neoforge.attribute.debug.base", FORMAT.format(entityBase), FORMAT.format(value - entityBase))
-                            .withStyle(ChatFormatting.GRAY));
-            comp.append(debugInfo);
-        }
-        return comp;
     }
 }

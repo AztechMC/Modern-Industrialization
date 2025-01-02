@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items.tools;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIRegistries;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -37,18 +38,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QuantumSword extends Item {
-    public QuantumSword(Properties settings) {
-        super(settings);
-    }
+    public static final ResourceLocation BASE_INFINITE_DAMAGE = MI.id("base_infinite_damage");
 
-    @Override
-    public ItemAttributeModifiers getDefaultAttributeModifiers() {
-        return ItemAttributeModifiers.builder()
+    public QuantumSword(Properties settings) {
+        super(settings.attributes(ItemAttributeModifiers.builder()
                 .add(
                         MIRegistries.INFINITE_DAMAGE,
-                        new AttributeModifier(MI.id("infinite_damage"), 1, AttributeModifier.Operation.ADD_VALUE),
+                        new AttributeModifier(BASE_INFINITE_DAMAGE, 1, AttributeModifier.Operation.ADD_VALUE),
                         EquipmentSlotGroup.MAINHAND)
-                .build();
+                .build()));
     }
 
     @Override
@@ -56,7 +54,7 @@ public class QuantumSword extends Item {
         // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
         // advancement
         // TODO: same for phantoms
-        return false;
+        return true;
     }
 
     @Override

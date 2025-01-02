@@ -65,6 +65,7 @@ import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -186,7 +187,7 @@ public class MI {
         });
         NeoForge.EVENT_BUS.addListener(LivingIncomingDamageEvent.class, event -> {
             if (event.getSource().getDirectEntity() instanceof LivingEntity damager
-                    && damager.getAttributeValue(MIRegistries.INFINITE_DAMAGE) > 0) {
+                    && damager.getAttributeValue(MIRegistries.INFINITE_DAMAGE) > Mth.EPSILON) {
                 event.setAmount((float) Integer.MAX_VALUE);
             }
         });

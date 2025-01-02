@@ -26,10 +26,11 @@ package aztech.modern_industrialization.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 
 public class MIRenderTypes {
     private static RenderType MACHINE_WRENCH_OVERLAY;
-    private static RenderType SOLID_HIGHLIGHT; // used by hatch preview and wrong block highlight
+    private static RenderType CUTOUT_HIGHLIGHT; // used by hatch preview and wrong block highlight
 
     public static RenderType machineOverlay() {
         if (MACHINE_WRENCH_OVERLAY == null) {
@@ -38,11 +39,11 @@ public class MIRenderTypes {
         return MACHINE_WRENCH_OVERLAY;
     }
 
-    public static RenderType solidHighlight() {
-        if (SOLID_HIGHLIGHT == null) {
-            SOLID_HIGHLIGHT = Factory.makeSolidHighlight();
+    public static RenderType cutoutHighlight() {
+        if (CUTOUT_HIGHLIGHT == null) {
+            CUTOUT_HIGHLIGHT = Factory.makeCutoutHighlight();
         }
-        return SOLID_HIGHLIGHT;
+        return CUTOUT_HIGHLIGHT;
     }
 
     // This is a subclass to get access to a bunch of fields and classes.
@@ -63,14 +64,14 @@ public class MIRenderTypes {
                             .createCompositeState(false));
         }
 
-        private static RenderType makeSolidHighlight() {
+        private static RenderType makeCutoutHighlight() {
             // Use block vertex format to use the fast path in BufferBuilder, even if the shader doesn't use the extra vertex attributes.
-            return create("solid_highlight", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 65536, false, false,
+            return create("cutout_highlight", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 65536, false, false,
                     CompositeState.builder()
                             .setTransparencyState(NO_TRANSPARENCY)
-                            .setTextureState(NO_TEXTURE)
-                            .setLightmapState(NO_LIGHTMAP)
-                            .setShaderState(POSITION_COLOR_SHADER)
+                            .setTextureState(new TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, false))
+                            .setLightmapState(LIGHTMAP)
+                            .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                             .createCompositeState(false));
         }
     }

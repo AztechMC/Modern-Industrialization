@@ -66,7 +66,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);
-                        RenderHelper.drawOverlay(matrices, vcp, 111f / 256, 1, 111f / 256, 15728880, overlay);
+                        RenderHelper.drawOverlay(matrices, vcp, overlay);
                     }
                 }
                 if (drawHighlights) {

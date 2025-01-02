@@ -166,7 +166,7 @@ public class MIClient {
                 (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get());
 
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
-            event.registerRenderBuffer(MIRenderTypes.solidHighlight());
+            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
         });
 
         // Warn if neither JEI nor REI is present!

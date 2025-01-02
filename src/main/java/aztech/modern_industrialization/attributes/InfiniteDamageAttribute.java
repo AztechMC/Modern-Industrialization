@@ -32,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.Nullable;
 
 public class InfiniteDamageAttribute extends DisplayNamedAttribute {
     private static final String INFINITY = "\u221e";
@@ -44,7 +43,7 @@ public class InfiniteDamageAttribute extends DisplayNamedAttribute {
     // Allows a modifier with the base id to render green with the effective value.
     // Other modifiers still render blue with the additional value.
     @Override
-    public @Nullable ResourceLocation getBaseId() {
+    public ResourceLocation getBaseId() {
         return QuantumSword.BASE_INFINITE_DAMAGE;
     }
 

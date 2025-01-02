@@ -50,7 +50,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
@@ -208,16 +207,6 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
-                guiGraphics.pose().pushPose();
-                var drawable = helpers.getGuiHelper().createDrawableItemLike(item);
-                guiGraphics.pose().translate(x, y, 0);
-                guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
-                drawable.draw(guiGraphics);
-                guiGraphics.pose().popPose();
-            }
-
-            @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
             }
         });
@@ -253,10 +242,6 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
             @Override
             public void drawable(Consumer<GuiGraphics> widget) {
-            }
-
-            @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
             }
 
             @Override

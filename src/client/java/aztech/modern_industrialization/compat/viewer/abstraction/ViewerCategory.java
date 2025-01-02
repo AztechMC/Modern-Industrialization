@@ -143,8 +143,6 @@ public abstract class ViewerCategory<D> {
 
         void drawable(Consumer<GuiGraphics> widget);
 
-        void item(double x, double y, double w, double h, ItemLike item);
-
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
     }
 

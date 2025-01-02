@@ -27,12 +27,10 @@ import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -69,18 +67,6 @@ public class CustomProcessCondition implements MachineProcessCondition {
     private record Definition(
             BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate,
             ItemStack icon, List<Component> description) {
-    }
-
-    private static MapCodec<CustomProcessCondition> makeCodec(boolean syncToClient) {
-        return RecordCodecBuilder.mapCodec(
-                g -> g
-                        .group(
-                                Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
-                                ItemStack.OPTIONAL_CODEC.fieldOf("icon").forGetter(c -> c.icon),
-                                ComponentSerialization.CODEC.listOf().optionalFieldOf("description")
-                                        .forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
-                        .apply(g, (id, icon, desc) -> desc.map(d -> new CustomProcessCondition(id, icon, d))
-                                .orElseGet(() -> new CustomProcessCondition(id))));
     }
 
     static final MapCodec<CustomProcessCondition> CODEC = Codec.STRING.fieldOf("custom_id").xmap(CustomProcessCondition::new, c -> c.id);

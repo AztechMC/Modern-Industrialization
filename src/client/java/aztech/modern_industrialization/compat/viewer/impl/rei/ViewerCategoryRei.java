@@ -52,7 +52,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.ViewerDisplay> {
@@ -295,15 +294,6 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                     widget.accept(guiGraphics);
                     guiGraphics.pose().popPose();
                 }));
-            }
-
-            @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
-                widgets.add(Widgets.createSlot(new Rectangle(bounds.x + x, bounds.y + y, w, h))
-                        .entry(EntryStacks.of(item))
-                        .disableTooltips()
-                        .disableHighlight()
-                        .disableBackground());
             }
 
             @Override

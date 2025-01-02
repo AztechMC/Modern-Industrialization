@@ -46,7 +46,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryEmi<D> extends EmiRecipeCategory {
@@ -285,20 +284,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 public void drawable(Consumer<GuiGraphics> widget) {
                     widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
                         widget.accept(matrices);
-                    });
-                }
-
-                @Override
-                public void item(double x, double y, double w, double h, ItemLike item) {
-                    var stack = EmiStack.of(item);
-                    widgets.addDrawable(-4, -4, 0, 0, (guiGraphics, mouseX, mouseY, delta) -> {
-                        guiGraphics.pose().pushPose();
-                        guiGraphics.pose().translate(x, y, 0);
-                        guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
-
-                        stack.render(guiGraphics, 0, 0, delta);
-
-                        guiGraphics.pose().popPose();
                     });
                 }
 

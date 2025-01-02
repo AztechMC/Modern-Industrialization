@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIRegistries;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,12 +38,7 @@ public class MIArmorEffects {
     }
 
     public static boolean quantumArmorPreventsDamage(LivingEntity entity) {
-        int parts = 0;
-        for (QuantumArmorItem item : QuantumArmorItem.ITEMS) {
-            if (entity.getItemBySlot(item.getType().getSlot()).getItem() == item) {
-                parts++;
-            }
-        }
+        double parts = entity.getAttributeValue(MIRegistries.QUANTUM_ARMOR);
         return ThreadLocalRandom.current().nextDouble() < parts / 4d;
     }
 

@@ -23,51 +23,42 @@
  */
 package aztech.modern_industrialization.items.tools;
 
-import java.util.List;
-import net.minecraft.ChatFormatting;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIRegistries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QuantumSword extends Item {
+    public static final ResourceLocation BASE_INFINITE_DAMAGE = MI.id("base_infinite_damage");
+
     public QuantumSword(Properties settings) {
-        super(settings);
-    }
-
-    private void onHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        var damageSources = attacker.level().damageSources();
-        // Note: Don't use Float.MAX_VALUE, calculations using it might produce infinite or NaN values.
-        target.hurt(new DamageSource(damageSources.genericKill().typeHolder(), attacker), (float) Integer.MAX_VALUE);
-
-        // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
-        // advancement
-        // TODO: same for phantoms
+        super(settings.attributes(ItemAttributeModifiers.builder()
+                .add(
+                        MIRegistries.INFINITE_DAMAGE,
+                        new AttributeModifier(BASE_INFINITE_DAMAGE, 1, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND)
+                .build()));
     }
 
     @Override
     public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
-        onHurtEnemy(pStack, pTarget, pAttacker);
+        // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
+        // advancement
+        // TODO: same for phantoms
         return true;
     }
 
     @Override
     public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
         return !player.isCreative();
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(Component.empty());
-        list.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
-        String infinity = "\u221e";
-        list.add(Component.translatable("attribute.modifier.plus.0", infinity, Component.translatable("attribute.name.generic.attack_damage"))
-                .withStyle(ChatFormatting.BLUE));
     }
 }

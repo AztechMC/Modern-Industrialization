@@ -65,7 +65,10 @@ import net.minecraft.server.packs.repository.BuiltInPackSource;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
@@ -80,6 +83,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -171,6 +176,19 @@ public class MI {
                     anvilMenu.getSlot(2).set(ItemStack.EMPTY);
                     anvilMenu.setMaximumCost(0);
                 }
+            }
+        });
+
+        modBus.addListener(EntityAttributeModificationEvent.class, event -> {
+            for (EntityType<? extends LivingEntity> entityType : event.getTypes()) {
+                event.add(entityType, MIRegistries.QUANTUM_ARMOR);
+                event.add(entityType, MIRegistries.INFINITE_DAMAGE);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(LivingIncomingDamageEvent.class, event -> {
+            if (event.getSource().getDirectEntity() instanceof LivingEntity damager
+                    && damager.getAttributeValue(MIRegistries.INFINITE_DAMAGE) > Mth.EPSILON) {
+                event.setAmount((float) Integer.MAX_VALUE);
             }
         });
 

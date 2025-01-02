@@ -21,19 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.rei.machines;
+package aztech.modern_industrialization.attributes;
 
-public enum SteamMode {
-    STEAM_ONLY(true, false),
-    ELECTRIC_ONLY(false, true),
-    BOTH(true, true),
-    NEITHER(false, false);
+import aztech.modern_industrialization.MIText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.TooltipFlag;
 
-    public final boolean steam;
-    public final boolean electric;
+public class QuantumArmorAttribute extends DisplayNamedAttribute {
+    public QuantumArmorAttribute() {
+        super(MIText.AttributeQuantumArmor.getTranslationKey(), 0);
+    }
 
-    SteamMode(boolean steam, boolean electric) {
-        this.steam = steam;
-        this.electric = electric;
+    @Override
+    public MutableComponent toValueComponent(AttributeModifier.Operation operation, double value, TooltipFlag flag) {
+        return Component.literal("\u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>");
+    }
+
+    @Override
+    public String getTooltipDescriptionId() {
+        return "attribute.name.generic.armor";
     }
 }

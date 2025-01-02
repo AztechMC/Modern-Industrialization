@@ -4,8 +4,7 @@
     "package": "aztech.modern_industrialization.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "BlockStateBaseMixin",
-        "ItemStackMixin"
+        "BlockStateBaseMixin"
     ],
     "injectors": {
         "defaultRequire": 1

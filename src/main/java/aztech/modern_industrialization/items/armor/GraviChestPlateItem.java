@@ -25,23 +25,17 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.ActivatableItem;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
-import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -60,8 +54,7 @@ public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, I
                             NeoForgeMod.CREATIVE_FLIGHT,
                             new AttributeModifier(MI.id("gravichestplate_flight"), 1, AttributeModifier.Operation.ADD_VALUE),
                             EquipmentSlotGroup.CHEST)
-                    .build()
-                    .withTooltip(false);
+                    .build();
         }
         return ItemAttributeModifiers.EMPTY;
     }
@@ -116,12 +109,5 @@ public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, I
     @Override
     public long getEnergyMaxOutput(ItemStack stack) {
         return 0;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(Component.empty());
-        list.add(Component.translatable("item.modifiers." + getType().getSlot().getName()).withStyle(ChatFormatting.GRAY));
-        list.add(MIText.AllowCreativeFlight.text().withStyle(ChatFormatting.BLUE));
     }
 }

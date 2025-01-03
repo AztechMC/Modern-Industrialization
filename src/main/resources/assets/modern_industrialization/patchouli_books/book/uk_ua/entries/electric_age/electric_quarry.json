@@ -1,0 +1,18 @@
+{
+  "name": "Кращі багатоблоки",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:electric_quarry",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/electric_quarry_asbl",
+      "text": "Електричний кар'єр є електричним еквівалентом парового кар'єру. Забезпечте його предметами та енергією та дивіться, як ваші ресурси ЇДУТЬ БРРР!$(br2)Його структура точно така ж, як у парового кар'єра"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/advanced_large_steam_boiler_asbl",
+      "text": "Кращий і більший великий паровий котел! Ця вдосконалена версія може виробляти до 1024 mb/т пари!"
+    }
+  ],
+  "sortnum": 108
+}

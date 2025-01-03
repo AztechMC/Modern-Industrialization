@@ -165,7 +165,6 @@
   "text.modern_industrialization.AcceptsSteamToo": "Accepte aussi la vapeur (1 mB = 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "Ajouter des Améliorations pour augmenter le courant maximal du procédé (EU/t).",
   "text.modern_industrialization.Activated": "Activé",
-  "text.modern_industrialization.AllowCreativeFlight": "Permet l'envol créatif",
   "text.modern_industrialization.BarrelStack": "Peut emmagasiner jusqu'à %d stacks",
   "text.modern_industrialization.BarrelStorageComponent": "%s/%s (%s)",
   "text.modern_industrialization.BaseDurationSeconds": "%s sec",

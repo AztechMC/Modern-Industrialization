@@ -1151,7 +1151,6 @@
   "text.modern_industrialization.AcceptsSteam": "接受蒸汽（1 mB = 1 EU）",
   "text.modern_industrialization.AcceptsSteamToo": "也接受蒸汽（1 mB = 1 EU）",
   "text.modern_industrialization.AcceptsUpgrades": "添加升级以增加处理的最大EU/t。",
-  "text.modern_industrialization.AllowCreativeFlight": "允许创造飞行",
   "text.modern_industrialization.BarrelStack": "可以存放高达 %d 组物品",
   "text.modern_industrialization.BarrelStorageComponent": "%s / %s （%s）",
   "text.modern_industrialization.BaseDurationSeconds": "%s 秒",

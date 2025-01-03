@@ -1472,7 +1472,6 @@
   "text.modern_industrialization.AcceptsSteamToo": "Bu da Buhar Kabul Eder (1 mb = 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "Maksimum işleme EU/t değerini artırmak için yükseltmeler ekleyin.",
   "text.modern_industrialization.Activated": "Etkinleştirilmiş",
-  "text.modern_industrialization.AllowCreativeFlight": "Yaratıcı Uçuşa İzin Ver",
   "text.modern_industrialization.BarrelStack": "En fazla %d istif depolayabilir",
   "text.modern_industrialization.BaseDurationSeconds": "%s san",
   "text.modern_industrialization.BaseEuRecipe": "Tarif Tabanı: %s",

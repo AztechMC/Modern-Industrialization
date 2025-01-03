@@ -1492,7 +1492,6 @@
   "text.modern_industrialization.AcceptsSteamToo": "蒸気も受け付ける(1 mb = 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "最大処理EU/tを増加させるアップグレードを追加",
   "text.modern_industrialization.Activated": "有効化",
-  "text.modern_industrialization.AllowCreativeFlight": "クリエイティブ飛行を許可",
   "text.modern_industrialization.BarrelStack": "最大%dスタックまで格納可能",
   "text.modern_industrialization.BarrelStorageComponent": "%s/%s (%s)",
   "text.modern_industrialization.BaseDurationSeconds": "%s秒",

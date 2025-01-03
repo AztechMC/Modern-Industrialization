@@ -1081,7 +1081,6 @@
   "text.modern_industrialization.AcceptsSteam": "Aceita Vapor (1 mb = 1 EU)",
   "text.modern_industrialization.AcceptsSteamToo": "Também aceita Vapor (1 mb = 1 EU)",
   "text.modern_industrialization.AcceptsUpgrades": "Adicione melhorias para aumentar o processamento máximo EU/t.",
-  "text.modern_industrialization.AllowCreativeFlight": "Permite Voo Criativo",
   "text.modern_industrialization.BarrelStack": "Pode armazenar até %d stacks",
   "text.modern_industrialization.BaseDurationSeconds": "%s seg",
   "text.modern_industrialization.Blacklist": "Modo Lista Negra ativado",

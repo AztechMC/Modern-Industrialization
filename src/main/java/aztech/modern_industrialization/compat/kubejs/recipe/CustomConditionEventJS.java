@@ -32,11 +32,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class CustomConditionEventJS implements KubeEvent {
-    public void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, ItemStack icon, Component... description) {
+    public void registerWithIcon(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, ItemStack icon,
+            Component... description) {
         CustomProcessCondition.register(id, predicate, icon, description);
     }
 
     public void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, Component... description) {
-        register(id, predicate, ItemStack.EMPTY, description);
+        registerWithIcon(id, predicate, ItemStack.EMPTY, description);
     }
 }

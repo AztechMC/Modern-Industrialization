@@ -54,6 +54,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public class MachineRecipe implements Recipe<RecipeInput> {
@@ -227,22 +229,31 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
     }
 
-    public record FluidInput(Fluid fluid, long amount, float probability) {
+    public record FluidInput(FluidIngredient fluid, long amount, float probability) {
+        @Deprecated(forRemoval = true)
+        public FluidInput(Fluid fluid, long amount, float probability) {
+            this(FluidIngredient.of(fluid), amount, probability);
+        }
+
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(FluidInput::fluid),
+                        FluidIngredient.MAP_CODEC_NONEMPTY.forGetter(FluidInput::fluid),
                         NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidInput> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.registry(Registries.FLUID),
+                FluidIngredient.STREAM_CODEC,
                 FluidInput::fluid,
                 ByteBufCodecs.VAR_LONG,
                 FluidInput::amount,
                 ByteBufCodecs.FLOAT,
                 FluidInput::probability,
                 FluidInput::new);
+
+        public List<Fluid> getInputFluids() {
+            return Arrays.stream(fluid.getStacks()).map(FluidStack::getFluid).distinct().collect(Collectors.toList());
+        }
     }
 
     public record ItemOutput(ItemVariant variant, int amount, float probability) {

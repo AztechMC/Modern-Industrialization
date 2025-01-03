@@ -150,7 +150,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
-                slot.fluid(FluidVariant.of(input.fluid()), input.amount(), input.probability());
+                slot.fluid(input.fluid(), input.amount(), input.probability());
             } else {
                 slot.variant(FluidVariant.blank());
             }

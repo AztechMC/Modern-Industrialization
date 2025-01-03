@@ -28,8 +28,8 @@ ServerEvents.recipes(event => {
         // add all the inputs and outputs:
         .itemIn("64x #minecraft:logs_that_burn")
         .itemOut("64x minecraft:charcoal")
-        .fluidIn("modern_industrialization:oxygen", 1000)
-        .fluidOut("modern_industrialization:creosote", 5000)
+        .fluidIn("1000x modern_industrialization:oxygen")
+        .fluidOut("5000x modern_industrialization:creosote")
 })
 ```
 

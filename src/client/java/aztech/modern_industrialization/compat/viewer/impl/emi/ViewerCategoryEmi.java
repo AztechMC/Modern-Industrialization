@@ -39,6 +39,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -46,6 +47,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryEmi<D> extends EmiRecipeCategory {
@@ -161,6 +163,19 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             isFluid = true;
             hasBackground = false;
             ing = EmiStack.of(fluid.getFluid(), fluid.getComponentsPatch(), amount);
+            processProbability(probability);
+            return this;
+        }
+
+        @Override
+        public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+            isFluid = true;
+            hasBackground = false;
+            ing = EmiIngredient.of(
+                    Stream.of(ingredient.getStacks())
+                            .map(fs -> EmiStack.of(fs.getFluid(), fs.getComponentsPatch()))
+                            .toList(),
+                    amount);
             processProbability(probability);
             return this;
         }

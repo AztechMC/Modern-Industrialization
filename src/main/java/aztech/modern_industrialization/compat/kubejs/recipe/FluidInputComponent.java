@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.kubejs.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.fluid.FluidWrapper;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.component.SimpleRecipeComponent;
@@ -33,8 +34,6 @@ import dev.latvian.mods.kubejs.recipe.match.FluidMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.FluidInput> {
     public static final FluidInputComponent FLUID_INPUT = new FluidInputComponent();
@@ -45,21 +44,21 @@ public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.Flu
 
     @Override
     public MachineRecipe.FluidInput wrap(Context cx, KubeRecipe recipe, Object from) {
-        var fs = FluidWrapper.wrap(RegistryAccessContainer.of(cx), from);
-        return new MachineRecipe.FluidInput(fs.getFluid(), fs.getAmount(), 1);
+        var fs = FluidWrapper.wrapSizedIngredient(RegistryAccessContainer.of(cx), from);
+        return new MachineRecipe.FluidInput(fs.ingredient(), fs.amount(), 1);
     }
 
     @Override
     public boolean matches(Context cx, KubeRecipe recipe, MachineRecipe.FluidInput value, ReplacementMatchInfo match) {
-        return match.match() instanceof FluidMatch m && m.matches(cx, new FluidStack(value.fluid(), 1), match.exact());
+        return match.match() instanceof FluidMatch m && m.matches(cx, value.fluid(), match.exact());
     }
 
     @Override
     public MachineRecipe.FluidInput replace(Context cx, KubeRecipe recipe, MachineRecipe.FluidInput original, ReplacementMatchInfo match,
             Object with) {
         if (matches(cx, recipe, original, match)) {
-            var fs = FluidWrapper.wrap(RegistryAccessContainer.of(cx), with);
-            return new MachineRecipe.FluidInput(fs.getFluid(), original.amount(), original.probability());
+            var fi = FluidWrapper.wrapIngredient(RegistryAccessContainer.of(cx), with);
+            return new MachineRecipe.FluidInput(fi, original.amount(), original.probability());
         } else {
             return original;
         }
@@ -67,13 +66,13 @@ public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.Flu
 
     @Override
     public boolean isEmpty(MachineRecipe.FluidInput value) {
-        return value.amount() <= 0 || value.fluid().isSame(Fluids.EMPTY);
+        return value.amount() <= 0 || value.fluid().isEmpty();
     }
 
     @Override
     public void buildUniqueId(UniqueIdBuilder builder, MachineRecipe.FluidInput value) {
         if (!isEmpty(value)) {
-            builder.append(value.fluid().builtInRegistryHolder().getKey().location());
+            builder.append(((RegistryObjectKJS) value.fluid().getStacks()[0].getFluid()).kjs$getIdLocation());
         }
     }
 }

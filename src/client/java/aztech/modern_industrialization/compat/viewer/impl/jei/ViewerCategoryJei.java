@@ -51,6 +51,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
@@ -128,6 +129,18 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                     @Override
                     public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
                         slotBuilder.addFluidStack(fluid.getFluid(), amount, fluid.getComponentsPatch());
+                        // This call displays the full sprite (instead of JEI's partial rendering)
+                        slotBuilder.setFluidRenderer(1, false, 16, 16);
+                        addProbability(slotBuilder, probability);
+                        slotBuilder.setBackground(fluidSlot, -1, -1);
+                        return this;
+                    }
+
+                    @Override
+                    public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+                        for (var fs : ingredient.getStacks()) {
+                            slotBuilder.addFluidStack(fs.getFluid(), amount, fs.getComponentsPatch());
+                        }
                         // This call displays the full sprite (instead of JEI's partial rendering)
                         slotBuilder.setFluidRenderer(1, false, 16, 16);
                         addProbability(slotBuilder, probability);

@@ -58,6 +58,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
@@ -474,7 +477,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             }
             long remainingAmount = input.amount();
             for (ConfigurableFluidStack stack : stacks) {
-                if (stack.getResource().equals(FluidVariant.of(input.fluid()))) {
+                if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
                     if (taken > 0 && !simulate) {
                         behavior.getStatsOrDummy().addUsedFluids(stack.getResource().getFluid(), taken);
@@ -489,6 +492,17 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                 ok = false;
         }
         return ok;
+    }
+
+    private boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
+        if (ingredient.isSimple()) {
+            for (var stack : ingredient.getStacks()) {
+                return resource.equals(FluidVariant.of(stack.getFluid()));
+            }
+            return false;
+        } else {
+            return ingredient.test(resource.toStack(1));
+        }
     }
 
     protected boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
@@ -682,10 +696,38 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         // FLUID INPUTS
         outer: for (MachineRecipe.FluidInput input : recipe.value().fluidInputs) {
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.isLockedTo(input.fluid()))
+                if (stack.getLockedInstance() != null && input.fluid().test(new FluidStack(stack.getLockedInstance(), 1)))
                     continue outer;
             }
-            AbstractConfigurableStack.playerLockNoOverride(input.fluid(), this.inventory.getFluidInputs());
+            Fluid targetFluid = null;
+            // Find the first match in the player inventory
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                var playerStack = FluidUtil.getFluidContained(inventory.getItem(i)).orElse(FluidStack.EMPTY);
+                if (!playerStack.isEmpty() && input.fluid().test(new FluidStack(playerStack.getFluid(), 1))) {
+                    targetFluid = playerStack.getFluid();
+                    break;
+                }
+            }
+            if (targetFluid == null) {
+                // Find the first match that is an item from MI
+                for (Fluid fluid : input.getInputFluids()) {
+                    ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+                    if (id.getNamespace().equals(MI.ID)) {
+                        targetFluid = fluid;
+                        break;
+                    }
+                }
+            }
+            if (targetFluid == null) {
+                // If there is only one value in the tag, pick that one
+                if (input.getInputFluids().size() == 1) {
+                    targetFluid = input.getInputFluids().get(0);
+                }
+            }
+
+            if (targetFluid != null) {
+                AbstractConfigurableStack.playerLockNoOverride(targetFluid, this.inventory.getFluidInputs());
+            }
         }
         // FLUID OUTPUTS
         outer: for (MachineRecipe.FluidOutput output : recipe.value().fluidOutputs) {

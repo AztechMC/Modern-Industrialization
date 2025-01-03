@@ -39,6 +39,7 @@ import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeConversions {
@@ -67,7 +68,7 @@ public class RecipeConversions {
         recipe.eu = 2;
         recipe.duration = 200;
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
-        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT.asFluid(), 1, 1));
+        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(FluidIngredient.of(MIFluids.LUBRICANT.asFluid()), 1, 1));
         recipe.itemOutputs = Collections
                 .singletonList(
                         new MachineRecipe.ItemOutput(ItemVariant.of(stonecuttingRecipe.getResultItem(null)),

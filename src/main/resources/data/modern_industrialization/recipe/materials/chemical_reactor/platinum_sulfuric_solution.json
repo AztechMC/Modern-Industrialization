@@ -2,10 +2,10 @@
   "type": "modern_industrialization:chemical_reactor",
   "eu": 8,
   "duration": 200,
-  "item_inputs" : [
-    {"item" :  "modern_industrialization:raw_platinum",
-      "amount": 1}
-  ],
+  "item_inputs": {
+    "tag" :  "c:raw_materials/platinum",
+    "amount": 1
+  },
   "fluid_inputs" : {
     "fluid" : "modern_industrialization:sulfuric_acid",
     "amount": 9000

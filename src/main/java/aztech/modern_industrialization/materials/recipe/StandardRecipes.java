@@ -166,8 +166,8 @@ public final class StandardRecipes {
 
         // HEAT EXCHANGER
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.HEAT_EXCHANGER, "hot_ingot", 8, 10).addPartInput(HOT_INGOT, 1)
-                .addFluidInput(MIFluids.CRYOFLUID, 100)
-                .addPartOutput(INGOT, 1).addFluidOutput(MIFluids.ARGON, 65).addFluidOutput(MIFluids.HELIUM, 25);
+                .addFluidInput(MIFluids.CRYOFLUID, 20)
+                .addPartOutput(INGOT, 1).addFluidOutput(MIFluids.ARGON, 13).addFluidOutput(MIFluids.HELIUM, 5);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.POLARIZER, "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);

@@ -4,17 +4,17 @@
   "eu": 8,
   "fluid_inputs": [
     {
-      "amount": 100,
+      "amount": 20,
       "fluid": "modern_industrialization:cryofluid"
     }
   ],
   "fluid_outputs": [
     {
-      "amount": 65,
+      "amount": 13,
       "fluid": "modern_industrialization:argon"
     },
     {
-      "amount": 25,
+      "amount": 5,
       "fluid": "modern_industrialization:helium"
     }
   ],

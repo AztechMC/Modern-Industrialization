@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
 public class RecipeConversions {
 
     public static RecipeHolder<MachineRecipe> ofSmelting(RecipeHolder<SmeltingRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), holder.id().getPath() + "_exported_mi_furnace");
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
         var smeltingRecipe = holder.value();
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         MachineRecipe recipe = new MachineRecipe(type);
@@ -62,7 +62,7 @@ public class RecipeConversions {
     public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type,
             RegistryAccess registryAccess) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
-                holder.id().getPath() + "_exported_mi_cutting_machine");
+                "/" + holder.id().getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();
         MachineRecipe recipe = new MachineRecipe(type);
         recipe.eu = 2;
@@ -85,7 +85,7 @@ public class RecipeConversions {
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = MI.id(BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            ResourceLocation id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;

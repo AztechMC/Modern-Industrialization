@@ -105,6 +105,8 @@ public class MIItemTagProvider extends ItemTagsProvider {
         tag(ItemTags.SHOVELS).add(MIItem.STEAM_MINING_DRILL.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
         tag(ItemTags.SWORDS).add(MIItem.DIESEL_CHAINSAW.asItem(), MIItem.QUANTUM_SWORD.asItem());
         tag(Tags.Items.MELEE_WEAPON_TOOLS).add(MIItem.DIESEL_CHAINSAW.asItem(), MIItem.QUANTUM_SWORD.asItem());
+        tag(ItemTags.DURABILITY_ENCHANTABLE).add(MIItem.IRON_HAMMER.asItem(), MIItem.STEEL_HAMMER.asItem(), MIItem.DIAMOND_HAMMER.asItem(),
+                MIItem.NETHERITE_HAMMER.asItem());
 
         tag(ItemTags.HEAD_ARMOR).add(MIItem.RUBBER_HELMET.asItem(), MIItem.QUANTUM_HELMET.asItem());
         tag(ItemTags.CHEST_ARMOR).add(MIItem.QUANTUM_CHESTPLATE.asItem());

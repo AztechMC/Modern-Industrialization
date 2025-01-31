@@ -53,6 +53,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -73,6 +74,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -136,7 +138,7 @@ public class RenderHelper {
     }
 
     public static void drawFluidInTank(@Nullable Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-        VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
+        VertexConsumer vc = vcp.getBuffer(RenderTypeHelper.getEntityRenderType(RenderType.translucent(), false));
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid, world, pos);
         float r = ((color >> 16) & 255) / 256f;

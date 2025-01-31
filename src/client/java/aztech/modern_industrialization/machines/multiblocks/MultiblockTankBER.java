@@ -32,13 +32,14 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 
 public class MultiblockTankBER extends MultiblockMachineBER {
     public MultiblockTankBER(BlockEntityRendererProvider.Context context) {
@@ -52,7 +53,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
         FluidVariant fluid = tankBlockEntity.getFluid();
         if (tankBlockEntity.shapeValid.shapeValid && !fluid.isBlank() && tankBlockEntity.getFullnessFraction() > 0) {
 
-            VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
+            VertexConsumer vc = vcp.getBuffer(RenderTypeHelper.getEntityRenderType(RenderType.translucent(), false));
 
             TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
 

@@ -41,7 +41,9 @@ public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
         // Add all stone cutter recipes
         for (var stonecuttingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.STONECUTTING)) {
             var recipe = RecipeConversions.ofStonecutting(stonecuttingRecipe, this, world.registryAccess());
-            recipeList.add(recipe);
+            if (recipe != null) {
+                recipeList.add(recipe);
+            }
         }
     }
 }

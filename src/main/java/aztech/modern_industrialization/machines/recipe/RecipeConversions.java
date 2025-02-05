@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -59,8 +60,13 @@ public class RecipeConversions {
         return new RecipeHolder<>(id, recipe);
     }
 
+    @Nullable
     public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type,
             RegistryAccess registryAccess) {
+        if (!MIConfig.getConfig().stonecutterToCuttingMachine) {
+            return null;
+        }
+
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
                 "/" + holder.id().getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();
@@ -79,6 +85,10 @@ public class RecipeConversions {
 
     @Nullable
     public static RecipeHolder<MachineRecipe> ofCompostable(ItemLike compostable) {
+        if (!MIConfig.getConfig().compostableToPlantOil) {
+            return null;
+        }
+
         if (compostable == null || compostable.asItem() == null) {
             return null; // apparently bad mods do this
         }

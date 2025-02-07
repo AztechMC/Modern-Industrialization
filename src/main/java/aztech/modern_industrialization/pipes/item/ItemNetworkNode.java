@@ -319,6 +319,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
             return new SavedItemPipeConfig(
                     type,
+                    allowSelfInsert,
                     whitelist,
                     insertPriority,
                     extractPriority,
@@ -332,6 +333,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
             boolean remesh = config.connectionType() != type;
             type = config.connectionType();
+            allowSelfInsert = config.allowSelfInsert();
             whitelist = config.whitelist();
             insertPriority = config.insertPriority();
             extractPriority = config.extractPriority();

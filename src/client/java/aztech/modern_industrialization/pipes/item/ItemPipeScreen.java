@@ -174,7 +174,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         private final BooleanSupplier isEnabled;
 
         public SelfInsertButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier, BooleanSupplier isEnabled) {
-            super(i + 148, j + 38, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            super(i + 148, j + 59, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
             this.tooltipSupplier = tooltipSupplier;
             this.isEnabled = isEnabled;
             setTooltip(new DynamicTooltip(tooltipSupplier));
@@ -201,7 +201,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         private final Supplier<List<Component>> tooltipSupplier;
 
         public WhitelistButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
-            super(i + 148, j + 59, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            super(i + 148, j + 38, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
             this.tooltipSupplier = tooltipSupplier;
             setTooltip(new DynamicTooltip(tooltipSupplier));
         }

@@ -96,7 +96,7 @@ public class ItemNetwork extends PipeNetwork {
 
             try {
                 lastMovedItems += moveAll(world, target, insertTargets, target.connection()::canStackMoveThrough,
-                        target.connection().getMoves());
+                        target.connection().getMoves(), !target.connection().allowSelfInsert);
             } catch (Exception exception) {
                 var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
                 crashReport.addCategory("Block being extracted from:")
@@ -109,7 +109,7 @@ public class ItemNetwork extends PipeNetwork {
     }
 
     private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends IItemSink> sinks, Predicate<ItemStack> filter,
-            int maxToMove) {
+            int maxToMove, boolean excludeSource) {
         IItemHandler source = target.storage();
         int moved = 0;
 
@@ -121,7 +121,7 @@ public class ItemNetwork extends PipeNetwork {
                 continue;
             }
 
-            moved += IItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
+            moved += IItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved, excludeSource);
             if (moved >= maxToMove) {
                 break;
             }
@@ -234,16 +234,16 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
+        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount, boolean excludeSource) {
             var stack = source.storage().getStackInSlot(sourceSlot);
 
             if (!stack.isComponentsPatchEmpty()) {
-                return insertTargets(targets, world, source, sourceSlot, maxAmount);
+                return insertTargets(targets, world, source, sourceSlot, maxAmount, excludeSource);
             }
 
             List<IItemSink> targets = map.get(stack.getItem());
             if (targets != null) {
-                return IItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
+                return IItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount, excludeSource);
             }
             return 0;
         }
@@ -264,8 +264,8 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
-            return insertTargets(targets, world, source, sourceSlot, maxAmount);
+        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount, boolean excludeSource) {
+            return insertTargets(targets, world, source, sourceSlot, maxAmount, excludeSource);
         }
 
         @Override
@@ -274,17 +274,21 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static int insertTargets(List<InsertTarget> targets, ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
+    private static int insertTargets(List<InsertTarget> targets, ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount,
+            boolean excludeSource) {
         int moved = 0;
 
         for (InsertTarget target : targets) {
+            if (excludeSource && source.connection() == target.connection()) {
+                continue;
+            }
             var stack = source.storage().getStackInSlot(sourceSlot);
             if (stack.isEmpty()) {
                 break;
             }
 
             if (target.connection.canStackMoveThrough(stack)) {
-                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved);
+                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved, excludeSource);
                 if (moved >= maxAmount) {
                     break;
                 }

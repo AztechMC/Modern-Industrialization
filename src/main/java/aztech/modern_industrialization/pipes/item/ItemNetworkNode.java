@@ -247,6 +247,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     class ItemConnection {
         final Direction direction;
         private PipeEndpointType type;
+        boolean allowSelfInsert = false;
         boolean whitelist = true;
         int insertPriority, extractPriority;
         final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
@@ -380,6 +381,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
             private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new ItemPipeInterface() {
+                    @Override
+                    public boolean allowSelfInsert() {
+                        return allowSelfInsert;
+                    }
+
+                    @Override
+                    public void setAllowSelfInsert(boolean selfInsert) {
+                        ItemConnection.this.allowSelfInsert = selfInsert;
+                        helper.callMarkDirty();
+                    }
+
                     @Override
                     public boolean isWhitelist() {
                         return whitelist;

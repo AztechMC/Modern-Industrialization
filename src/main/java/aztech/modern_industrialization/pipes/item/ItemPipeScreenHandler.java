@@ -52,7 +52,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     private int trackedPriority1;
     private int trackedType;
 
-    public static final int UPGRADE_SLOT_X = 150, UPGRADE_SLOT_Y = 70;
+    public static final int UPGRADE_SLOT_X = 150, UPGRADE_SLOT_Y = 81;
 
     public ItemPipeScreenHandler(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         this(syncId, playerInventory, ItemPipeInterface.ofBuf(buf));

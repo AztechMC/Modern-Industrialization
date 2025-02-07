@@ -38,6 +38,10 @@ import net.minecraft.world.item.ItemStack;
 public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInterface {
     int SLOTS = 21;
 
+    boolean allowSelfInsert();
+
+    void setAllowSelfInsert(boolean selfInsert);
+
     boolean isWhitelist();
 
     void setWhitelist(boolean whitelist);
@@ -62,6 +66,7 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
     boolean canUse(Player player);
 
     static ItemPipeInterface ofBuf(RegistryFriendlyByteBuf buf) {
+        boolean[] allowSelfInsert = new boolean[] { buf.readBoolean() };
         boolean[] whitelist = new boolean[] { buf.readBoolean() };
         int[] type = new int[] { buf.readInt() };
         int[] priority = new int[] { buf.readInt(), buf.readInt() };
@@ -71,6 +76,16 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
         ItemStack[] upgradeStack = new ItemStack[] { ItemStack.OPTIONAL_STREAM_CODEC.decode(buf) };
 
         return new ItemPipeInterface() {
+            @Override
+            public boolean allowSelfInsert() {
+                return allowSelfInsert[0];
+            }
+
+            @Override
+            public void setAllowSelfInsert(boolean selfInsert) {
+                allowSelfInsert[0] = selfInsert;
+            }
+
             @Override
             public boolean isWhitelist() {
                 return whitelist[0];
@@ -129,6 +144,7 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
     }
 
     default void toBuf(RegistryFriendlyByteBuf buf) {
+        buf.writeBoolean(allowSelfInsert());
         buf.writeBoolean(isWhitelist());
         buf.writeInt(getConnectionType());
         buf.writeInt(getPriority(0));

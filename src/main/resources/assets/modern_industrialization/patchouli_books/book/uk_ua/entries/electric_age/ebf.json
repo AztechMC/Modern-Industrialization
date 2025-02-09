@@ -1,0 +1,28 @@
+{
+  "name": "Електрична доменна піч",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:electric_blast_furnace",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/electric_blast_furnace_asbl",
+      "text": "Електрична доменна піч — це електрична версія парової доменної печі. Вона розблоковує нові рецепти, і, як і інші багатоблочні електричні машини, її розгін обмежено 128 EU/т за замовчуванням"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:materials/cupronickel/craft/coil",
+      "text": "ЕДП складається з одного шару термостійких машинних обшивок, двох шарів мідно-нікелевих котушок і ще одного шару термостійких машинних обшивок. Контролер повинен йти на нижньому шарі, а люки на верхньому або нижньому шарі"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:hatches/basic/energy_input_hatch",
+      "text": "Не забудьте додати вхідні шлюзи енергії, інакше ЕДП не матиме енергії! НВ вхідний шлюз енергії підключатиметься лише до НВ кабелів"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:hatches/advanced/energy_input_hatch",
+      "text": "СВ вхідні шлюза підключаються лише до кабелів СВ, що може бути корисним, якщо вам потрібна тонна енергії для ЕДП! Ви ще не можете створити їх, але майте на увазі, що вони існують..."
+    }
+  ],
+  "sortnum": 106
+}

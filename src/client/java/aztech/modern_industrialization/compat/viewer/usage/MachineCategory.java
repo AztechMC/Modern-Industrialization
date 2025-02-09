@@ -30,33 +30,30 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.ComposterBlock;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {
@@ -96,41 +93,10 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<MachineRecipe>> consumer) {
-        var machineRecipes = recipeManager.getRecipes().stream()
-                .filter(r -> r.value() instanceof MachineRecipe)
-                .map(r -> (RecipeHolder<MachineRecipe>) r)
-                .toList();
-
-        // regular recipes
-        machineRecipes.stream()
-                .filter(r -> params.recipePredicate.test(r.value()))
+        params.recipeType.getRecipesWithoutCache(Minecraft.getInstance().level).stream()
+                .filter(recipe -> params.recipePredicate.test(recipe.value()))
                 .sorted(Comparator.comparing(RecipeHolder::id))
                 .forEach(consumer);
-
-        // converted recipes
-        if (params.category.getNamespace().equals(MI.ID)) {
-            switch (params.category.getPath()) {
-            case "bronze_furnace" -> {
-                recipeManager.getAllRecipesFor(RecipeType.SMELTING)
-                        .stream()
-                        .map(r -> RecipeConversions.ofSmelting(r, MIMachineRecipeTypes.FURNACE, registryAccess))
-                        .forEach(consumer);
-            }
-            case "bronze_cutting_machine" -> {
-                recipeManager.getAllRecipesFor(RecipeType.STONECUTTING)
-                        .stream()
-                        .map(r -> RecipeConversions.ofStonecutting(r, MIMachineRecipeTypes.CUTTING_MACHINE, registryAccess))
-                        .forEach(consumer);
-            }
-            case "centrifuge" -> {
-                ComposterBlock.COMPOSTABLES.keySet()
-                        .stream()
-                        .map(RecipeConversions::ofCompostable)
-                        .filter(Objects::nonNull)
-                        .forEach(consumer);
-            }
-            }
-        }
     }
 
     @Override
@@ -184,7 +150,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
-                slot.fluid(FluidVariant.of(input.fluid()), input.amount(), input.probability());
+                slot.fluid(input.fluid(), input.amount(), input.probability());
             } else {
                 slot.variant(FluidVariant.blank());
             }
@@ -241,9 +207,11 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             guiGraphics.pose().popPose();
         });
-        widgets.text(
-                TextHelper.getEuTextTick(recipe.eu),
-                15 + (params.steamMode.steam ? 2 : 0), 5, TextAlign.LEFT, false, true, null);
+        if (params.steamMode != SteamMode.NEITHER) {
+            widgets.text(
+                    TextHelper.getEuTextTick(recipe.eu),
+                    15 + (params.steamMode.steam ? 2 : 0), 5, TextAlign.LEFT, false, true, null);
+        }
         widgets.text(
                 MIText.BaseDurationSeconds.text(getSeconds(recipe)),
                 width - 5, 5, TextAlign.RIGHT, false, true, null);
@@ -258,19 +226,42 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         // Conditions
         boolean conditionsRequired = recipe.conditions.size() > 0;
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
-            ItemLike displayedItem;
+            List<ItemStack> displayedItems = new ArrayList<>();
             if (steelHatchRequired) {
-                displayedItem = BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch"));
-            } else if (conditionsRequired) {
-                displayedItem = MIItem.WRENCH;
-            } else {
-                displayedItem = MIItem.BASIC_UPGRADE;
+                displayedItems.add(BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch")).getDefaultInstance());
             }
-            widgets.item(width / 2f - 3, 3.75, 10.8, 10.8, displayedItem);
+            if (upgradeEuRequired > 0) {
+                displayedItems.add(MIItem.BASIC_UPGRADE.stack());
+            }
+            for (var condition : recipe.conditions) {
+                ItemStack displayedItem = condition.icon();
+                if (!displayedItem.isEmpty()) {
+                    displayedItems.add(displayedItem);
+                }
+            }
+            if (displayedItems.isEmpty()) {
+                displayedItems.add(MIItem.WRENCH.stack());
+            }
+
+            double x = width / 2f - 3;
+            double y = 3.75;
+            double wh = 10.8;
+            widgets.drawable(graphics -> {
+                int itemIndex = (int) ((System.currentTimeMillis() / 1500L) % displayedItems.size());
+                ItemStack displayedItem = displayedItems.get(itemIndex).copyWithCount(1);
+
+                graphics.pose().pushPose();
+                graphics.pose().translate(x, y, 0);
+                graphics.pose().scale((float) wh / 16, (float) wh / 16, 1);
+                graphics.renderFakeItem(displayedItem, 0, 0);
+                graphics.pose().popPose();
+            });
         }
         // Tooltips
         List<Component> tooltips = new ArrayList<>();
-        tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipe.duration * recipe.eu)));
+        if (params.steamMode != SteamMode.NEITHER) {
+            tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipe.duration * recipe.eu)));
+        }
         if (params.steamMode.steam) {
             tooltips.add((params.steamMode.electric ? MIText.AcceptsSteamToo : MIText.AcceptsSteam).text().withStyle(ChatFormatting.GRAY));
             if (steelHatchRequired) {
@@ -286,7 +277,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 condition.appendDescription(tooltips);
             }
         }
-        widgets.tooltip(2, 5, width - 10, 11, tooltips);
+        if (!tooltips.isEmpty()) {
+            widgets.tooltip(2, 5, width - 10, 11, tooltips);
+        }
     }
 
     private double getSeconds(MachineRecipe recipe) {

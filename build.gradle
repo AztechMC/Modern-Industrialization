@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '1.0.1'
+    id 'net.neoforged.moddev' version '2.0.72'
     id 'com.diffplug.spotless' version '6.25.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
@@ -189,7 +189,7 @@ neoForge {
     runs {
         // applies to all the run configs below
         configureEach {
-            mods = [neoForge.mods.modern_industrialization]
+            loadedMods = [mods.modern_industrialization]
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -207,7 +207,7 @@ neoForge {
         client {
             client()
             sourceSet = sourceSets.client
-            mods = [neoForge.mods.modern_industrialization_with_client]
+            loadedMods = [mods.modern_industrialization_with_client]
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
@@ -229,7 +229,7 @@ neoForge {
         data {
             data()
             sourceSet = sourceSets.client
-            mods = [neoForge.mods.modern_industrialization_with_client]
+            loadedMods = [mods.modern_industrialization_with_client]
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // workingDirectory project.file('run-data')
 
@@ -237,9 +237,9 @@ neoForge {
             programArguments.addAll '--mod', "modern_industrialization", '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
 
-        autotestServer {
-            server()
-            systemProperty 'modern_industrialization.autoTest', 'true'
+        gameTestServer {
+            type = "gameTestServer"
+            gameDirectory = project.file("build/gametest")
         }
     }
 }
@@ -280,7 +280,7 @@ dependencies {
 
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
-    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")

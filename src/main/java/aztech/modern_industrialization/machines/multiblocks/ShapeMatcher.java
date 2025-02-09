@@ -29,16 +29,10 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.SimpleStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
+import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -72,20 +66,20 @@ public class ShapeMatcher implements ChunkEventListener {
     protected final Map<BlockPos, SimpleMember> simpleMembers;
     protected final Map<BlockPos, HatchFlags> hatchFlags;
 
-    protected boolean needsRematch = true;
-    protected boolean matchSuccessful = false;
-    protected final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
+    private boolean needsRematch = true;
+    private boolean matchSuccessful = false;
+    private final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
     /**
      * Convert a real position in the world to a relative position in the shape template.
      */
     public static BlockPos toTemplatePos(BlockPos controllerPos, Direction controllerDirection, BlockPos worldPos) {
         BlockPos relativePos = worldPos.subtract(controllerPos);
-        if (controllerDirection == Direction.NORTH)
+        if (controllerDirection == NORTH)
             return new BlockPos(-relativePos.getX(), relativePos.getY(), relativePos.getZ());
-        else if (controllerDirection == Direction.SOUTH)
+        else if (controllerDirection == SOUTH)
             return new BlockPos(relativePos.getX(), relativePos.getY(), -relativePos.getZ());
-        else if (controllerDirection == Direction.EAST)
+        else if (controllerDirection == EAST)
             return new BlockPos(-relativePos.getZ(), relativePos.getY(), -relativePos.getX());
         else
             return new BlockPos(relativePos.getZ(), relativePos.getY(), relativePos.getX());
@@ -97,11 +91,11 @@ public class ShapeMatcher implements ChunkEventListener {
      */
     public static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
         BlockPos rotatedPos;
-        if (controllerDirection == Direction.NORTH)
+        if (controllerDirection == NORTH)
             rotatedPos = new BlockPos(-templatePos.getX(), templatePos.getY(), templatePos.getZ());
-        else if (controllerDirection == Direction.SOUTH)
+        else if (controllerDirection == SOUTH)
             rotatedPos = new BlockPos(templatePos.getX(), templatePos.getY(), -templatePos.getZ());
-        else if (controllerDirection == Direction.EAST)
+        else if (controllerDirection == EAST)
             rotatedPos = new BlockPos(-templatePos.getZ(), templatePos.getY(), -templatePos.getX());
         else
             rotatedPos = new BlockPos(templatePos.getZ(), templatePos.getY(), templatePos.getX());
@@ -218,6 +212,10 @@ public class ShapeMatcher implements ChunkEventListener {
         return matchSuccessful && !needsRematch;
     }
 
+    protected boolean checkRematch(Level world) {
+        return true;
+    }
+
     public void rematch(Level world) {
         unlinkHatches();
         matchSuccessful = true;
@@ -228,6 +226,9 @@ public class ShapeMatcher implements ChunkEventListener {
             if (!matches(pos, world)) {
                 matchSuccessful = false;
             }
+        }
+        if (!checkRematch(world)) {
+            matchSuccessful = false;
         }
 
         if (!matchSuccessful) {

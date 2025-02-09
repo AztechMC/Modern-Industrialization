@@ -50,8 +50,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
@@ -136,6 +136,18 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                         return this;
                     }
 
+                    @Override
+                    public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+                        for (var fs : ingredient.getStacks()) {
+                            slotBuilder.addFluidStack(fs.getFluid(), amount, fs.getComponentsPatch());
+                        }
+                        // This call displays the full sprite (instead of JEI's partial rendering)
+                        slotBuilder.setFluidRenderer(1, false, 16, 16);
+                        addProbability(slotBuilder, probability);
+                        slotBuilder.setBackground(fluidSlot, -1, -1);
+                        return this;
+                    }
+
                     private ViewerCategory.SlotBuilder items(List<ItemStack> stacks, float probability) {
                         slotBuilder.addItemStacks(stacks);
                         addProbability(slotBuilder, probability);
@@ -208,16 +220,6 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
-                guiGraphics.pose().pushPose();
-                var drawable = helpers.getGuiHelper().createDrawableItemLike(item);
-                guiGraphics.pose().translate(x, y, 0);
-                guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
-                drawable.draw(guiGraphics);
-                guiGraphics.pose().popPose();
-            }
-
-            @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
             }
         });
@@ -253,10 +255,6 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
             @Override
             public void drawable(Consumer<GuiGraphics> widget) {
-            }
-
-            @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
             }
 
             @Override

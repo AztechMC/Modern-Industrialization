@@ -65,7 +65,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
      * Add all valid targets to the target list, and pick the fluid for the network
      * if no fluid is set.
      */
-    void gatherTargetsAndPickFluid(ServerLevel world, BlockPos pos, List<FluidTarget> targets) {
+    void gatherTargetsAndPickFluid(ServerLevel world, BlockPos pos, List<FluidTarget> targets, List<FluidNetworkExtensionTank> extensions) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
 
@@ -84,7 +84,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 // Try to set fluid, will return null if none could be found.
                 data.fluid = FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE));
             }
-            targets.add(new FluidTarget(connection.priority, new IOFluidHandler(storage, connection.canInsert(), connection.canExtract())));
+            if (connection.canInsert() && connection.canExtract() && storage instanceof FluidNetworkExtensionTank extension) {
+                extensions.add(extension);
+            } else {
+                targets.add(new FluidTarget(connection.priority, new IOFluidHandler(storage, connection.canInsert(), connection.canExtract())));
+            }
         }
     }
 
@@ -324,6 +328,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
+    public long getAmount() {
+        return amount;
+    }
+
     // Used in the Waila plugin
     private FluidVariant getFluid() {
         return ((FluidNetworkData) network.data).fluid;
@@ -337,7 +345,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
             stored += node.amount;
             capacity += fluidNetwork.nodeCapacity;
         }
-        return new InGameInfo(getFluid(), stored, capacity, fluidNetwork.stats.getValue(), capacity);
+        return new InGameInfo(getFluid(), stored, capacity, fluidNetwork.stats.getValue(), fluidNetwork.capacityStats.getValue());
     }
 
     public record InGameInfo(FluidVariant fluid, long stored, long capacity, long transfer, long maxTransfer) {

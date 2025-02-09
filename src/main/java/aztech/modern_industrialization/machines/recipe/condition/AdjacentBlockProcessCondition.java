@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 public record AdjacentBlockProcessCondition(Block block, RelativePosition relativePosition) implements MachineProcessCondition {
@@ -74,6 +75,11 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
         case BEHIND -> MIText.RequiresBlockBehind;
         };
         list.add(text.text(block.getName()));
+    }
+
+    @Override
+    public ItemStack icon() {
+        return block.asItem().getDefaultInstance();
     }
 
     @Override

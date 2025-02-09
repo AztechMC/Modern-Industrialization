@@ -130,58 +130,56 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
-    protected void onRematch() {
+    protected void onRematch(ShapeMatcher shapeMatcher) {
         nuclearGrid = null;
-    }
+        if (shapeMatcher.isMatchSuccessful()) {
+            shapeValid.shapeValid = true;
+            int size = gridLayout[activeShape.getActiveShapeIndex()].length;
+            NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
 
-    @Override
-    protected void onMatchSuccessful() {
-        shapeValid.shapeValid = true;
-        int size = gridLayout[activeShape.getActiveShapeIndex()].length;
-        NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                int x0 = hatch.getBlockPos().getX() - getBlockPos().getX();
+                int z0 = hatch.getBlockPos().getZ() - getBlockPos().getZ();
 
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            int x0 = hatch.getBlockPos().getX() - getBlockPos().getX();
-            int z0 = hatch.getBlockPos().getZ() - getBlockPos().getZ();
+                int x, y;
 
-            int x, y;
+                if (orientation.facingDirection == Direction.NORTH) {
+                    x = size / 2 + x0;
+                    y = z0;
+                } else if (orientation.facingDirection == Direction.SOUTH) {
+                    x = size / 2 - x0;
+                    y = -z0;
+                } else if (orientation.facingDirection == Direction.EAST) {
+                    x = size / 2 + z0;
+                    y = -x0;
 
-            if (orientation.facingDirection == Direction.NORTH) {
-                x = size / 2 + x0;
-                y = z0;
-            } else if (orientation.facingDirection == Direction.SOUTH) {
-                x = size / 2 - x0;
-                y = -z0;
-            } else if (orientation.facingDirection == Direction.EAST) {
-                x = size / 2 + z0;
-                y = -x0;
-
-            } else {
-                x = size / 2 - z0;
-                y = x0;
-            }
-
-            hatchesGrid[x][y] = (NuclearHatch) hatch;
-        }
-
-        nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
-
-        dataSupplier = () -> {
-            Optional<INuclearTileData>[] tilesData = new Optional[size * size];
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-
-                    final int x = size - 1 - i;
-                    final int y = size - 1 - j;
-
-                    int index = NuclearReactorGui.Data.toIndex(i, j, size);
-                    tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
+                } else {
+                    x = size / 2 - z0;
+                    y = x0;
                 }
+
+                hatchesGrid[x][y] = (NuclearHatch) hatch;
             }
-            return new NuclearReactorGui.Data(true, size, size, tilesData,
-                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
-                    efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
-        };
+
+            nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
+
+            dataSupplier = () -> {
+                Optional<INuclearTileData>[] tilesData = new Optional[size * size];
+                for (int i = 0; i < size; i++) {
+                    for (int j = 0; j < size; j++) {
+
+                        final int x = size - 1 - i;
+                        final int y = size - 1 - j;
+
+                        int index = NuclearReactorGui.Data.toIndex(i, j, size);
+                        tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
+                    }
+                }
+                return new NuclearReactorGui.Data(true, size, size, tilesData,
+                        efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euProduction),
+                        efficiencyHistory.getAverage(NuclearEfficiencyHistoryComponent.Type.euFuelConsumption));
+            };
+        }
     }
 
     public static void registerReiShapes() {

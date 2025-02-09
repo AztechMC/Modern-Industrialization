@@ -52,7 +52,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.ViewerDisplay> {
@@ -171,6 +171,16 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             isFluid = true;
             hasBackground = false;
             ing.add(ReiSlotUtil.createFluidEntryStack(fluid, amount, probability, input));
+            return this;
+        }
+
+        @Override
+        public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+            isFluid = true;
+            hasBackground = false;
+            for (var fs : ingredient.getStacks()) {
+                ing.add(ReiSlotUtil.createFluidEntryStack(FluidVariant.of(fs), amount, probability, input));
+            }
             return this;
         }
 
@@ -295,15 +305,6 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                     widget.accept(guiGraphics);
                     guiGraphics.pose().popPose();
                 }));
-            }
-
-            @Override
-            public void item(double x, double y, double w, double h, ItemLike item) {
-                widgets.add(Widgets.createSlot(new Rectangle(bounds.x + x, bounds.y + y, w, h))
-                        .entry(EntryStacks.of(item))
-                        .disableTooltips()
-                        .disableHighlight()
-                        .disableBackground());
             }
 
             @Override

@@ -96,12 +96,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     public static void registerFluidAPI(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> {
-                LargeTankMultiblockBlockEntity tank = ((LargeTankMultiblockBlockEntity) be);
-                if (tank.isShapeValid()) {
-                    return tank.fluidStorage.getFluidHandler();
-                } else {
-                    return EmptyFluidHandler.INSTANCE;
-                }
+                return ((LargeTankMultiblockBlockEntity) be).getExposedFluidHandler();
             });
         });
     }
@@ -219,6 +214,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     @Override
     protected MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection);
+
     }
 
     @Override
@@ -242,14 +238,16 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected void onMatchSuccessful() {
-        int index = activeShape.getActiveShapeIndex();
-        long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
-        fluidStorage.setCapacity(capacity);
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        if (shapeMatcher.isMatchSuccessful()) {
+            int index = activeShape.getActiveShapeIndex();
+            long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
+            fluidStorage.setCapacity(capacity);
 
-        for (var hatch : shapeMatcher.getMatchedHatches()) {
-            if (hatch instanceof LargeTankHatch tankHatch) {
-                tankHatch.setController(this);
+            for (var hatch : shapeMatcher.getMatchedHatches()) {
+                if (hatch instanceof LargeTankHatch tankHatch) {
+                    tankHatch.setController(this);
+                }
             }
         }
     }

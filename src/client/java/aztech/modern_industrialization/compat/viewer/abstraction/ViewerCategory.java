@@ -38,6 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -111,6 +112,8 @@ public abstract class ViewerCategory<D> {
 
         SlotBuilder fluid(FluidVariant fluid, long amount, float probability);
 
+        SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability);
+
         default SlotBuilder item(ItemStack stack) {
             return item(stack, 1);
         }
@@ -142,8 +145,6 @@ public abstract class ViewerCategory<D> {
         }
 
         void drawable(Consumer<GuiGraphics> widget);
-
-        void item(double x, double y, double w, double h, ItemLike item);
 
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
     }

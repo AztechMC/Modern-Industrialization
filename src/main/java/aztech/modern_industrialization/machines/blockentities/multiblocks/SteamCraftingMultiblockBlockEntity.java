@@ -30,6 +30,7 @@ import aztech.modern_industrialization.machines.components.OverclockComponent;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
@@ -37,10 +38,10 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
@@ -67,14 +68,15 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
     private boolean steelTier;
 
     @Override
-    protected void onMatchSuccessful() {
-        super.onMatchSuccessful();
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        super.onRematch(shapeMatcher);
+        if (shapeMatcher.isMatchSuccessful()) {
+            steelTier = false;
 
-        steelTier = false;
-
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            if (hatch.upgradesToSteel()) {
-                steelTier = true;
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                if (hatch.upgradesToSteel()) {
+                    steelTier = true;
+                }
             }
         }
     }
@@ -106,8 +108,8 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         }
 
         @Override
-        public Level getCrafterWorld() {
-            return level;
+        public ServerLevel getCrafterWorld() {
+            return (ServerLevel) level;
         }
 
         @Override

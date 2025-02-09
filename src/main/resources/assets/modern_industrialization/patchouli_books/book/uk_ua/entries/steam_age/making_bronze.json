@@ -1,0 +1,22 @@
+{
+  "name": "Ваша перша бронза!",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:bronze_dust",
+  "pages": [
+    {
+      "type": "text",
+      "text": "По-перше, вам потрібно зробити мідну і олов’яну крупиці, розбиваючи мідні та олов’яні самородки у ковальському молоті. Потім ви можете поєднати мідну і олов’яну крупиці, щоб отримати бронзові крупиці. Цей процес ефективніший у $(l:modern_industrialization:steam_age/steam_machines)змішувачі$()$(br2)Завжди пам’ятайте, що 9 крупиць — це один пил"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:materials/bronze_dust",
+      "recipe2": "modern_industrialization:materials/bronze_tiny_dust"
+    },
+    {
+      "type": "smelting",
+      "recipe": "modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting",
+      "text": "Виплавляючи бронзовий пил, ви отримаєте бронзовий злиток"
+    }
+  ],
+  "sortnum": 1
+}

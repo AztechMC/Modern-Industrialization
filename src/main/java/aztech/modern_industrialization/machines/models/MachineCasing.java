@@ -23,30 +23,39 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import com.mojang.serialization.Codec;
+import java.util.function.Supplier;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 public class MachineCasing {
-    public static final Codec<MachineCasing> CODEC = ResourceLocation.CODEC.xmap(MachineCasings::get, casing -> casing.key);
-
     public final ResourceLocation key;
+    /**
+     * Not null when registered as an imitation. The actual model might not be an imitation since it is resource pack driven.
+     * Mostly used to pull the name of the casing from the block it imitates. Will also generate a corresponding casing model.
+     */
+    @Nullable
+    public final Supplier<? extends Block> imitatedBlock;
 
-    MachineCasing(ResourceLocation key) {
+    MachineCasing(ResourceLocation key, @Nullable Supplier<? extends Block> imitatedBlock) {
         this.key = key;
+        this.imitatedBlock = imitatedBlock;
     }
 
     public String getTranslationKey() {
-        return "machine_casing.%s.%s".formatted(key.getNamespace(), key.getPath());
+        if (imitatedBlock != null) {
+            throw new IllegalArgumentException("Cannot get translation key for casing imitating a block.");
+        }
+        return Util.makeDescriptionId("machine_casing", key);
     }
 
-    public MutableComponent getDisplayName() {
+    public MutableComponent getName() {
+        if (imitatedBlock != null) {
+            return imitatedBlock.get().getName();
+        }
         return Component.translatable(getTranslationKey());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof MachineCasing other && key.equals(other.key);
     }
 }

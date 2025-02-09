@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkExtensionTank;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class TankBlockEntity extends AbstractTankBlockEntity {
+    public final FluidNetworkExtensionTank fluidHandler = new FluidNetworkExtensionTank(this);
 
     public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state) {
         super(bet, pos, state);

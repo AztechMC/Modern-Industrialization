@@ -37,7 +37,6 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.Block;
@@ -71,7 +70,7 @@ public class TankPart implements PartKeyProvider {
     }
 
     public PartTemplate of(PartEnglishNameFormatter englishNameFormatter, long bucketCapacity, @Nullable String maybePathOverridden) {
-        MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
+        MutableObject<BlockEntityType<TankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidType.BUCKET_VOLUME * bucketCapacity;
 
         PartTemplate tank = new PartTemplate(englishNameFormatter, key())
@@ -103,7 +102,7 @@ public class TankPart implements PartKeyProvider {
                     });
 
                     MICapabilities.onEvent(event -> {
-                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> new SlotFluidHandler(be));
+                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
 
                         var item = (TankItem) blockDefinition.asItem();
                         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);

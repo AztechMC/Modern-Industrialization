@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
@@ -43,7 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity implements EnergyComponentHolder {
+public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity implements EnergyComponentHolder, CableTierHolder {
     public ElectricWaterPumpBlockEntity(BEP bep) {
         super(bep, "electric_water_pump");
 
@@ -104,5 +105,10 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
         MICapabilities.onEvent(event -> {
             event.registerBlockEntity(EnergyApi.SIDED, bet, (be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable);
         });
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return CableTier.LV;
     }
 }

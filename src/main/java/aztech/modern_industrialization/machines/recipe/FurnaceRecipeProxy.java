@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.recipe;
 import aztech.modern_industrialization.MI;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -34,7 +35,7 @@ public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
         super(id);
     }
 
-    protected void fillRecipeList(Level world) {
+    protected void fillRecipeList(Level world, List<RecipeHolder<MachineRecipe>> recipeList) {
         for (var smeltingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING)) {
             var recipe = RecipeConversions.ofSmelting(smeltingRecipe, this, world.registryAccess());
             recipeList.add(recipe);

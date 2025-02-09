@@ -23,9 +23,12 @@
  */
 package aztech.modern_industrialization.debug;
 
-import static net.minecraft.commands.Commands.*;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.*;
-import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.*;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.getId;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.id;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -170,8 +173,9 @@ public class DebugCommands {
     private static int buildMultiblock(CommandSourceStack src, BlockPos controllerPos) {
         var be = src.getLevel().getBlockEntity(controllerPos);
         if (be instanceof MultiblockMachineBlockEntity multiblock) {
+            var shape = multiblock.getActiveShape();
             var shapeMatcher = multiblock.createShapeMatcher();
-            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel(), false);
+            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
 
             src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(
                     controllerPos, updatedBlocks)), true);

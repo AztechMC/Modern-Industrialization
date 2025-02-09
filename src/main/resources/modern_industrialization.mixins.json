@@ -1,14 +1,13 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "aztech.modern_industrialization.mixin",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "BlockStateBaseMixin",
-    "ItemStackMixin",
-    "LevelMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "minVersion": "0.8",
+    "package": "aztech.modern_industrialization.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+        "BlockStateBaseMixin",
+        "LevelMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
   }
 }

@@ -111,6 +111,10 @@ public class OrientationComponent implements IComponent {
         public final boolean hasOutput;
         public final boolean hasExtractItems;
         public final boolean hasExtractFluids;
+        /**
+         * MI itself does not make use of this field, and it purely exists for addons. If you want to use this field, you will need to make your own
+         * model loader.
+         */
         public final boolean canBeVertical;
 
         public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids, boolean canBeVertical) {

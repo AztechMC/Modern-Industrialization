@@ -56,9 +56,9 @@ public interface INuclearComponent<T extends TransferVariant> {
     static ResourceLocation getEmiRecipeId(INuclearComponent<?> component, String category, String type) {
         return switch (component.getVariant()) {
         case ItemVariant itemVariant ->
-            BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix(category + "/item/").withSuffix("/" + type);
+            BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
         case FluidVariant fluidVariant ->
-            BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix(category + "/fluid/").withSuffix("/" + type);
+            BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);
         case Object object -> throw new IllegalArgumentException("Unknown component variant " + object);
         };
     }

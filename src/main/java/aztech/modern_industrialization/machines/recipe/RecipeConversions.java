@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -39,12 +40,13 @@ import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeConversions {
 
     public static RecipeHolder<MachineRecipe> ofSmelting(RecipeHolder<SmeltingRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), holder.id().getPath() + "_exported_mi_furnace");
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
         var smeltingRecipe = holder.value();
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         MachineRecipe recipe = new MachineRecipe(type);
@@ -58,16 +60,21 @@ public class RecipeConversions {
         return new RecipeHolder<>(id, recipe);
     }
 
+    @Nullable
     public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type,
             RegistryAccess registryAccess) {
+        if (!MIConfig.getConfig().stonecutterToCuttingMachine) {
+            return null;
+        }
+
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
-                holder.id().getPath() + "_exported_mi_cutting_machine");
+                "/" + holder.id().getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();
         MachineRecipe recipe = new MachineRecipe(type);
         recipe.eu = 2;
         recipe.duration = 200;
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
-        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT.asFluid(), 1, 1));
+        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(FluidIngredient.of(MIFluids.LUBRICANT.asFluid()), 1, 1));
         recipe.itemOutputs = Collections
                 .singletonList(
                         new MachineRecipe.ItemOutput(ItemVariant.of(stonecuttingRecipe.getResultItem(null)),
@@ -78,13 +85,17 @@ public class RecipeConversions {
 
     @Nullable
     public static RecipeHolder<MachineRecipe> ofCompostable(ItemLike compostable) {
+        if (!MIConfig.getConfig().compostableToPlantOil) {
+            return null;
+        }
+
         if (compostable == null || compostable.asItem() == null) {
             return null; // apparently bad mods do this
         }
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = MI.id(BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            ResourceLocation id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;

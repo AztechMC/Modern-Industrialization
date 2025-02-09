@@ -28,16 +28,17 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity
@@ -61,12 +62,13 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
     }
 
     @Override
-    protected void onMatchSuccessful() {
-        super.onMatchSuccessful();
-
-        energyInputs.clear();
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            hatch.appendEnergyInputs(energyInputs);
+    protected void onRematch(ShapeMatcher shapeMatcher) {
+        super.onRematch(shapeMatcher);
+        if (shapeMatcher.isMatchSuccessful()) {
+            energyInputs.clear();
+            for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+                hatch.appendEnergyInputs(energyInputs);
+            }
         }
     }
 
@@ -77,13 +79,13 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         if (!result.consumesAction()) {
-            result = icomponents.mapOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
+            result = components.mapOrDefault(UpgradeComponent.class, upgrade -> upgrade.onUse(this, player, hand), result);
         }
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);
         }
         if (!result.consumesAction()) {
-            result = icomponents.mapOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
+            result = components.mapOrDefault(OverdriveComponent.class, overdrive -> overdrive.onUse(this, player, hand), result);
         }
         return result;
     }
@@ -110,8 +112,8 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
     }
 
     @Override
-    public final Level getCrafterWorld() {
-        return level;
+    public final ServerLevel getCrafterWorld() {
+        return (ServerLevel) level;
     }
 
     @Override

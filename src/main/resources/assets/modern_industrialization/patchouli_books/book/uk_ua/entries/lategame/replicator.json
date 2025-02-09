@@ -1,0 +1,18 @@
+{
+  "name": "E = mc²",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:uu_matter_bucket",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:uu_matter_bucket",
+      "text": "За допомогою відповідної установки електролізера та сингулярності велика кількість енергії може бути перетворена за допомогою квантового випромінювання Гокінга в універсально придатну матерію, також відому як UU матерія, саму тканину всесвіту"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:replicator",
+      "text": "Маючи 100 mb UU матерії, реплікатор може дублювати (майже) будь-який предмет у грі!$(br2)Вітаємо, тепер це Yourcraft. Дякуємо за гру в Modern Industrialization!"
+    }
+  ],
+  "sortnum": 303
+}

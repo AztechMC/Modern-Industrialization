@@ -28,8 +28,8 @@ ServerEvents.recipes(event => {
         // add all the inputs and outputs:
         .itemIn("64x #minecraft:logs_that_burn")
         .itemOut("64x minecraft:charcoal")
-        .fluidIn("modern_industrialization:oxygen", 1000)
-        .fluidOut("modern_industrialization:creosote", 5000)
+        .fluidIn("1000x modern_industrialization:oxygen")
+        .fluidOut("5000x modern_industrialization:creosote")
 })
 ```
 
@@ -38,6 +38,7 @@ The easiest way to add process conditions is via KubeJS, similarly to how inputs
 Here is the list of currently supported conditions:
 - `dimension(dimension key)`: Requires the machine to be in the specified dimension.
 - `biome(biome key)`: Requires the machine to be in the specified biome.
+- `biomeTag(biome tag key)`: Requires the machine to be in a biome of the specified tag.
 - `adjacentBlock(block, position)`: Requires a specific block to be next to the machine.
   - Position indicates where the block should be.
   - For multiblocks, the position is always relative to the controller.

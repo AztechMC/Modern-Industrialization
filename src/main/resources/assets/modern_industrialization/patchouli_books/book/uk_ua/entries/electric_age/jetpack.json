@@ -1,0 +1,28 @@
+{
+  "name": "Дизельні інструменти і ранець",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:diesel_jetpack",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:armor/diesel_jetpack",
+      "text": "Ранець робить брррррррр... Чим потужніше паливо, тим швидше ранець! Ми рекомендуємо гумові чоботи та гумовий шолом...$(br2)Не забудьте активувати його за допомогою сполучення клавіш $(o)«перемикач польоту»$()!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:armor/rubber_helmet",
+      "recipe2": "modern_industrialization:armor/rubber_boots"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/diesel_mining_drill",
+      "text": "Шахтарська бур нарешті може замінити ваші кайла та лопати. Заповніть його потужним паливом для найкращої швидкості!$(br2)Перемикайтеся між шовковим дотиком і удачею ІІІ за допомогою Shift + ПКМ"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/diesel_chainsaw",
+      "text": "Зпилюйте дерева зі стилем!"
+    }
+  ],
+  "sortnum": 110
+}

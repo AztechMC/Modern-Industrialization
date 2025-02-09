@@ -64,7 +64,9 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     public MachineScreen(MachineMenuClient handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
 
-        handler.components.forEach(component -> renderers.add(component.createRenderer(this)));
+        for (GuiComponentClient component : handler.components) {
+            renderers.add(component.createRenderer(this));
+        }
 
         this.imageHeight = handler.guiParams.backgroundHeight;
         this.imageWidth = handler.guiParams.backgroundWidth;
@@ -209,15 +211,14 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     private void renderConfigurableSlotBackgrounds(GuiGraphics guiGraphics) {
         for (Slot slot : this.menu.slots) {
-            if (slot.isActive() && slot instanceof BackgroundRenderedSlot brs) {
+            if (slot instanceof BackgroundRenderedSlot brs) {
+                var atlas = brs.getBackgroundAtlasLocation();
+                if (atlas == null) {
+                    continue;
+                }
                 int px = leftPos + slot.x - 1;
                 int py = topPos + slot.y - 1;
-                if (slot.getItem().isEmpty()) {
-                    var atlas = brs.getBackgroundAtlasLocation();
-                    guiGraphics.blit(atlas == null ? SLOT_ATLAS : atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
-                } else {
-                    guiGraphics.blit(SLOT_ATLAS, px, py, 0, 0, 18, 18);
-                }
+                guiGraphics.blit(atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
             }
         }
     }

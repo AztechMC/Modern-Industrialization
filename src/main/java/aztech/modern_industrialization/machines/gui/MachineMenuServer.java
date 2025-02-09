@@ -39,16 +39,18 @@ public class MachineMenuServer extends MachineMenuCommon {
     protected final List trackedData;
 
     public MachineMenuServer(int syncId, Inventory playerInventory, MachineBlockEntity blockEntity, MachineGuiParameters guiParams) {
-        super(syncId, playerInventory, blockEntity.getInventory(), guiParams, blockEntity.getGuiComponents());
+        super(syncId, playerInventory, blockEntity.getInventory(), guiParams, blockEntity.guiComponents);
         this.blockEntity = blockEntity;
         trackedData = new ArrayList<>();
-        blockEntity.getGuiComponents().forEach(component -> trackedData.add(component.copyData()));
+        for (GuiComponent.Server component : blockEntity.guiComponents) {
+            trackedData.add(component.copyData());
+        }
     }
 
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        blockEntity.getGuiComponents().forEachIndexed((i, component) -> {
+        blockEntity.guiComponents.forEachIndexed((i, component) -> {
             if (component.needsSync(trackedData.get(i))) {
                 var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), blockEntity.getLevel().registryAccess());
                 component.writeCurrentData(buf);

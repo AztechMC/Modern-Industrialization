@@ -27,18 +27,17 @@ import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 
 public class CustomProcessCondition implements MachineProcessCondition {
     static final Map<String, Definition> definitions = new HashMap<>();
@@ -49,8 +48,10 @@ public class CustomProcessCondition implements MachineProcessCondition {
         KubeJSProxy.instance.fireCustomConditionEvent();
     }
 
-    public static void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, Component... description) {
+    public static void register(String id, BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate, ItemStack icon,
+            Component... description) {
         Objects.requireNonNull(predicate);
+        Objects.requireNonNull(icon);
 
         if (definitions.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate custom process condition definition: " + id);
@@ -60,28 +61,20 @@ public class CustomProcessCondition implements MachineProcessCondition {
             throw new IllegalArgumentException("Custom process condition must have a description");
         }
 
-        definitions.put(id, new Definition(predicate, List.of(description)));
+        definitions.put(id, new Definition(predicate, icon, List.of(description)));
     }
 
     private record Definition(
             BiPredicate<MachineProcessCondition.Context, MachineRecipe> predicate,
-            List<Component> description) {
-    }
-
-    private static MapCodec<CustomProcessCondition> makeCodec(boolean syncToClient) {
-        return RecordCodecBuilder.mapCodec(
-                g -> g
-                        .group(
-                                Codec.STRING.fieldOf("custom_id").forGetter(c -> c.id),
-                                ComponentSerialization.CODEC.listOf().optionalFieldOf("description")
-                                        .forGetter(c -> syncToClient ? Optional.of(c.description) : Optional.empty()))
-                        .apply(g, (id, desc) -> desc.map(d -> new CustomProcessCondition(id, d)).orElseGet(() -> new CustomProcessCondition(id))));
+            ItemStack icon, List<Component> description) {
     }
 
     static final MapCodec<CustomProcessCondition> CODEC = Codec.STRING.fieldOf("custom_id").xmap(CustomProcessCondition::new, c -> c.id);
     static final StreamCodec<RegistryFriendlyByteBuf, CustomProcessCondition> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8,
             c -> c.id,
+            ItemStack.OPTIONAL_STREAM_CODEC,
+            c -> c.icon,
             ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list()),
             c -> c.description,
             CustomProcessCondition::new);
@@ -92,15 +85,18 @@ public class CustomProcessCondition implements MachineProcessCondition {
             throw new IllegalArgumentException("Unknown custom process condition definition: " + id);
         }
         this.id = id;
+        this.icon = definition.icon;
         this.description = definition.description;
     }
 
-    public CustomProcessCondition(String id, List<Component> description) {
+    public CustomProcessCondition(String id, ItemStack icon, List<Component> description) {
         this.id = id;
+        this.icon = icon;
         this.description = description;
     }
 
     private final String id;
+    private final ItemStack icon;
     private final List<Component> description;
 
     @Override
@@ -111,6 +107,11 @@ public class CustomProcessCondition implements MachineProcessCondition {
     @Override
     public void appendDescription(List<Component> list) {
         list.addAll(description);
+    }
+
+    @Override
+    public ItemStack icon() {
+        return icon;
     }
 
     @Override

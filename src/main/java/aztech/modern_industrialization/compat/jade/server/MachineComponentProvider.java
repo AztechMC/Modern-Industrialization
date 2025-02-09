@@ -161,7 +161,10 @@ public abstract sealed class MachineComponentProvider<S, C>
 
         private void addItems(ViewGroup<ItemStack> data, List<? extends ItemAccess> stacks) {
             for (var stack : stacks) {
-                data.views.add(stack.toStack());
+                var vanillaStack = stack.toStack();
+                if (!vanillaStack.isEmpty()) {
+                    data.views.add(vanillaStack);
+                }
             }
         }
 

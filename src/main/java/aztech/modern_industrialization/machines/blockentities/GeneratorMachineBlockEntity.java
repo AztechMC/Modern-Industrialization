@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.machines.components.FluidItemConsu
 
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.api.machine.holder.EnergyComponentHolder;
@@ -50,7 +51,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
+public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, CableTierHolder {
 
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
@@ -211,5 +212,10 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
     @Override
     public List<Component> getTooltips() {
         return fluidItemConsumer.getTooltips();
+    }
+
+    @Override
+    public CableTier getCableTier() {
+        return outputTier;
     }
 }

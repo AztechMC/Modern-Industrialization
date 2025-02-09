@@ -77,6 +77,6 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
 
     @Override
     public ResourceLocation getRecipeId(Fluid recipe) {
-        return MI.id("fluid_fuels/" + BuiltInRegistries.FLUID.getKey(recipe).toString().replace(':', '_'));
+        return MI.id("/fluid_fuels/" + BuiltInRegistries.FLUID.getKey(recipe).toString().replace(':', '_'));
     }
 }

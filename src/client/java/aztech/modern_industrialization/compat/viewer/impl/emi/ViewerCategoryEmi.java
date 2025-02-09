@@ -39,6 +39,7 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -46,7 +47,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 class ViewerCategoryEmi<D> extends EmiRecipeCategory {
@@ -162,6 +163,19 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             isFluid = true;
             hasBackground = false;
             ing = EmiStack.of(fluid.getFluid(), fluid.getComponentsPatch(), amount);
+            processProbability(probability);
+            return this;
+        }
+
+        @Override
+        public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+            isFluid = true;
+            hasBackground = false;
+            ing = EmiIngredient.of(
+                    Stream.of(ingredient.getStacks())
+                            .map(fs -> EmiStack.of(fs.getFluid(), fs.getComponentsPatch()))
+                            .toList(),
+                    amount);
             processProbability(probability);
             return this;
         }
@@ -285,20 +299,6 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 public void drawable(Consumer<GuiGraphics> widget) {
                     widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
                         widget.accept(matrices);
-                    });
-                }
-
-                @Override
-                public void item(double x, double y, double w, double h, ItemLike item) {
-                    var stack = EmiStack.of(item);
-                    widgets.addDrawable(-4, -4, 0, 0, (guiGraphics, mouseX, mouseY, delta) -> {
-                        guiGraphics.pose().pushPose();
-                        guiGraphics.pose().translate(x, y, 0);
-                        guiGraphics.pose().scale((float) w / 16, (float) h / 16, 0);
-
-                        stack.render(guiGraphics, 0, 0, delta);
-
-                        guiGraphics.pose().popPose();
                     });
                 }
 

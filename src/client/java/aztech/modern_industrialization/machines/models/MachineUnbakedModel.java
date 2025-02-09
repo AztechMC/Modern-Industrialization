@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,36 +38,34 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.Nullable;
 
-public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnbakedGeometry<MachineUnbakedModel<O>> {
+public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
     public static final ResourceLocation LOADER_ID = MI.id("machine");
-    public static final IGeometryLoader<MachineUnbakedModel<MachineOverlaysJson>> LOADER = (jsonObject, deserializationContext) -> {
-        return new MachineUnbakedModel(OverlaysJson.class, MachineBakedModel::new, jsonObject);
+    public static final IGeometryLoader<MachineUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
+        return new MachineUnbakedModel(jsonObject);
     };
 
-    private final MachineModelBaker modelBaker;
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
+
     private final MachineCasing baseCasing;
-    private final int[] outputOverlayIndexes;
     private final Material[] defaultOverlays;
-    private final Map<ResourceLocation, Material[]> tieredOverlays = new HashMap<>();
+    private final Map<MachineCasing, Material[]> tieredOverlays = new HashMap<>();
 
-    public MachineUnbakedModel(Class<O> overlayClass, MachineModelBaker modelBaker, JsonObject obj) {
-        this.modelBaker = modelBaker;
-
+    private MachineUnbakedModel(JsonObject obj) {
         this.baseCasing = MachineCasings.get(GsonHelper.getAsString(obj, "casing"));
 
-        var defaultOverlaysJson = MachineOverlaysJson.parse(overlayClass, GsonHelper.getAsJsonObject(obj, "default_overlays"), null);
-        this.outputOverlayIndexes = defaultOverlaysJson.getOutputSpriteIndexes();
+        var defaultOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(obj, "default_overlays"), null);
         this.defaultOverlays = defaultOverlaysJson.toSpriteIds();
 
         var tieredOverlays = GsonHelper.getAsJsonObject(obj, "tiered_overlays", new JsonObject());
         for (var casingTier : tieredOverlays.keySet()) {
-            var casingOverlaysJson = MachineOverlaysJson.parse(overlayClass, GsonHelper.getAsJsonObject(tieredOverlays, casingTier),
-                    defaultOverlaysJson);
-            this.tieredOverlays.put(ResourceLocation.parse(casingTier), casingOverlaysJson.toSpriteIds());
+            var casingOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(tieredOverlays, casingTier), defaultOverlaysJson);
+            this.tieredOverlays.put(MachineCasings.get(casingTier), casingOverlaysJson.toSpriteIds());
         }
     }
 
@@ -73,11 +73,11 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelState, ItemOverrides overrides) {
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
-        var tieredOverlays = new HashMap<ResourceLocation, TextureAtlasSprite[]>();
+        var tieredOverlays = new HashMap<MachineCasing, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }
-        return modelBaker.bake(baseCasing, outputOverlayIndexes, defaultOverlays, tieredOverlays);
+        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays);
     }
 
     private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, Material[] ids) {
@@ -90,7 +90,7 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
         return sprites;
     }
 
-    private static class OverlaysJson implements MachineOverlaysJson {
+    private static class OverlaysJson {
         // All fields are nullable.
         private ResourceLocation top;
         private ResourceLocation top_active;
@@ -126,13 +126,31 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
         private ResourceLocation item_auto;
         private ResourceLocation fluid_auto;
 
+        private static OverlaysJson parse(JsonObject json, @Nullable OverlaysJson defaultOverlay) {
+            var overlays = GSON.fromJson(json, OverlaysJson.class);
+
+            if (defaultOverlay != null) {
+                // Copy null fields from the default.
+                try {
+                    for (var field : OverlaysJson.class.getDeclaredFields()) {
+                        if (field.get(overlays) == null) {
+                            field.set(overlays, field.get(defaultOverlay));
+                        }
+                    }
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException("Failed to copy fields from default overlay", ex);
+                }
+            }
+
+            return overlays;
+        }
+
         /**
          * Order is as follows:
          * Active and inactive: front, left, back, right, top S/W/N/E, bottom S/W/N/E,
          * output, item auto, fluid auto
          */
-        @Override
-        public Material[] toSpriteIds() {
+        private Material[] toSpriteIds() {
             return new Material[] {
                     select(front, side),
                     select(front_active, front, side_active, side),
@@ -164,9 +182,17 @@ public class MachineUnbakedModel<O extends MachineOverlaysJson> implements IUnba
             };
         }
 
-        @Override
-        public int[] getOutputSpriteIndexes() {
-            return new int[] { 24, 25, 26 };
+        /**
+         * Select first non-null id, and convert it to a sprite id.
+         */
+        @Nullable
+        private static Material select(@Nullable ResourceLocation... candidates) {
+            for (var id : candidates) {
+                if (id != null) {
+                    return new Material(InventoryMenu.BLOCK_ATLAS, id);
+                }
+            }
+            return null;
         }
     }
 }

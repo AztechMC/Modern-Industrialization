@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
 public class MIVillager {
     public static void init(VillagerTradesEvent event) {
-        if (event.getType() != MIRegistries.INDUSTRIALIST.get()) {
+        if (event.getType() != MIRegistries.INDUSTRIALIST.value()) {
             return;
         }
 

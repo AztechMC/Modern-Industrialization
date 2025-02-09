@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.attributes.InfiniteDamageAttribute;
+import aztech.modern_industrialization.attributes.QuantumArmorAttribute;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
@@ -38,8 +40,10 @@ import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlags;
@@ -136,7 +140,7 @@ public class MIRegistries {
     // Villager professions
     public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(Registries.VILLAGER_PROFESSION, MI.ID);
 
-    public static final Supplier<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
+    public static final Holder<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
         return new VillagerProfession(
                 INDUSTRIALIST_POI.getId().toString(),
                 e -> e.is(INDUSTRIALIST_POI.getId()),
@@ -145,6 +149,13 @@ public class MIRegistries {
                 ImmutableSet.of(),
                 SoundEvents.VILLAGER_WORK_TOOLSMITH);
     });
+
+    // Attributes
+    public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, MI.ID);
+
+    public static final Holder<Attribute> QUANTUM_ARMOR = ATTRIBUTES.register("quantum_armor", () -> new QuantumArmorAttribute().setSyncable(true));
+    public static final Holder<Attribute> INFINITE_DAMAGE = ATTRIBUTES.register("infinite_damage",
+            () -> new InfiniteDamageAttribute().setSyncable(true));
 
     static void init(IEventBus modBus) {
         BLOCK_ENTITIES.register(modBus);
@@ -155,5 +166,6 @@ public class MIRegistries {
         RECIPE_TYPES.register(modBus);
         TABS.register(modBus);
         VILLAGER_PROFESSIONS.register(modBus);
+        ATTRIBUTES.register(modBus);
     }
 }

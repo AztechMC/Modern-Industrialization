@@ -27,16 +27,23 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import com.mojang.logging.LogUtils;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import org.slf4j.Logger;
 
 public class MachineKubeRecipe extends KubeRecipe implements ProcessConditionHelper {
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final KubeRecipeFactory FACTORY = new KubeRecipeFactory(MI.id("machine"), MachineKubeRecipe.class, MachineKubeRecipe::new);
 
     private <T> MachineKubeRecipe addToList(RecipeKey<List<T>> key, T element) {
@@ -64,19 +71,73 @@ public class MachineKubeRecipe extends KubeRecipe implements ProcessConditionHel
         return addToList(MachineRecipeSchema.ITEM_OUTPUTS, new MachineRecipe.ItemOutput(ItemVariant.of(output), output.getCount(), chance));
     }
 
-    public MachineKubeRecipe fluidIn(Fluid fluid, long mbs) {
-        return fluidIn(fluid, mbs, 1F);
+    public MachineKubeRecipe fluidIn(SizedFluidIngredient ingredient) {
+        return fluidInInternal(ingredient, 1F); // skip chance == 1 check
     }
 
-    public MachineKubeRecipe fluidIn(Fluid fluid, long mbs, float probability) {
-        return addToList(MachineRecipeSchema.FLUID_INPUTS, new MachineRecipe.FluidInput(fluid, mbs, probability));
+    public MachineKubeRecipe fluidIn(SizedFluidIngredient ingredient, float chance) {
+        // TODO: remove this mess once we don't need to worry about backwards compat anymore.
+        if ((ingredient.amount() == 1 || ingredient.amount() == 1000) && chance > 1) {
+            LOGGER.warn("fluidIn with separate fluid and amount is deprecated. Use fluidIn(\"%dx %s\") notation instead.".formatted(
+                    (int) chance,
+                    BuiltInRegistries.FLUID.getKey(ingredient.ingredient().getStacks()[0].getFluid())));
+            return fluidIn(new SizedFluidIngredient(ingredient.ingredient(), (int) chance));
+        } else if (ingredient.amount() == 1000 && chance == 1) {
+            throw new IllegalArgumentException(
+                    "fluidIn(\"some_fluid\", 1) is ambiguous. Use either fluidIn(\"1x some_fluid\") or fluidIn(\"some_fluid\") depending on what you meant.");
+        }
+
+        return fluidInInternal(ingredient, chance);
     }
 
-    public MachineKubeRecipe fluidOut(Fluid fluid, long mbs) {
-        return fluidOut(fluid, mbs, 1F);
+    private MachineKubeRecipe fluidInInternal(SizedFluidIngredient ingredient, float chance) {
+        if (chance > 1) {
+            throw new IllegalArgumentException("Fluid input chance must be between 0 and 1. It is " + chance);
+        }
+        return addToList(MachineRecipeSchema.FLUID_INPUTS, new MachineRecipe.FluidInput(ingredient.ingredient(), ingredient.amount(), chance));
     }
 
+    public MachineKubeRecipe fluidOut(FluidStack output) {
+        return fluidOutInternal(output, 1F); // skip chance == 1 check
+    }
+
+    public MachineKubeRecipe fluidOut(FluidStack output, float chance) {
+        // TODO: remove this mess once we don't need to worry about backwards compat anymore.
+        if ((output.getAmount() == 1 || output.getAmount() == 1000) && chance > 1) {
+            LOGGER.warn("fluidOut with separate fluid and amount is deprecated. Use fluidOut(\"%dx %s\") notation instead.".formatted(
+                    (int) chance,
+                    BuiltInRegistries.FLUID.getKey(output.getFluid())));
+            return fluidOut(output.copyWithAmount((int) chance));
+        } else if (output.getAmount() == 1000 && chance == 1) {
+            throw new IllegalArgumentException(
+                    "fluidOut(\"some_fluid\", 1) is ambiguous. Use either fluidOut(\"1x some_fluid\") or fluidOut(\"some_fluid\") depending on what you meant.");
+        }
+
+        return fluidOutInternal(output, chance);
+    }
+
+    private MachineKubeRecipe fluidOutInternal(FluidStack output, float chance) {
+        if (!output.isComponentsPatchEmpty()) {
+            throw new IllegalArgumentException("FluidStack components are not supported in machine recipe outputs.");
+        }
+        return addToList(MachineRecipeSchema.FLUID_OUTPUTS, new MachineRecipe.FluidOutput(output.getFluid(), output.getAmount(), chance));
+    }
+
+    @Deprecated(forRemoval = true)
+    public MachineKubeRecipe fluidIn(FluidIngredient fluid, long mbs, float probability) {
+        LOGGER.warn("fluidIn with separate fluid and amount is deprecated. Use fluidIn(\"%dx %s\", %f) notation instead.".formatted(
+                mbs,
+                BuiltInRegistries.FLUID.getKey(fluid.getStacks()[0].getFluid()),
+                probability));
+        return fluidIn(new SizedFluidIngredient(fluid, (int) mbs), probability);
+    }
+
+    @Deprecated(forRemoval = true)
     public MachineKubeRecipe fluidOut(Fluid fluid, long mbs, float probability) {
+        LOGGER.warn("fluidOut with separate fluid and amount is deprecated. Use fluidOut(\"%dx %s\", %f) notation instead.".formatted(
+                mbs,
+                BuiltInRegistries.FLUID.getKey(fluid),
+                probability));
         return addToList(MachineRecipeSchema.FLUID_OUTPUTS, new MachineRecipe.FluidOutput(fluid, mbs, probability));
     }
 

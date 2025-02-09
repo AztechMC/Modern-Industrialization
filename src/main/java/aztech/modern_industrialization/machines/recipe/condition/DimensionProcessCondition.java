@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.recipe.condition;
 
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.serialization.MapCodec;
@@ -32,6 +33,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public record DimensionProcessCondition(ResourceKey<Level> dimension) implements MachineProcessCondition {
@@ -54,6 +56,11 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
         var loc = dimension.location();
         var dimComponent = Component.translatable("dimension.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
         list.add(MIText.RequiresDimension.text(dimComponent));
+    }
+
+    @Override
+    public ItemStack icon() {
+        return MIItem.SINGULARITY.asItem().getDefaultInstance();
     }
 
     @Override

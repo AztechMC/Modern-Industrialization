@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.CableTierHolder;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -43,15 +42,31 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-public class CasingComponent implements IComponent, DropableComponent, CableTierHolder {
+public class CasingComponent implements IComponent, DropableComponent {
 
-    protected ItemStack casingStack = ItemStack.EMPTY;
-    protected CableTier currentTier = CableTier.LV;
+    @FunctionalInterface
+    public interface UpdatedCallback {
+        void onUpdated(CableTier from, CableTier to);
+    }
+
+    @Nullable
+    private final UpdatedCallback callback;
+
+    private ItemStack casingStack = ItemStack.EMPTY;
+    private CableTier currentTier = CableTier.LV;
+
+    public CasingComponent(@Nullable UpdatedCallback callback) {
+        this.callback = callback;
+    }
+
+    public CasingComponent() {
+        this(null);
+    }
 
     /**
      * Sets the current casing stack and update {@link #currentTier} accordingly.
      */
-    protected void setCasingStack(ItemStack stack) {
+    private void setCasingStack(ItemStack stack) {
         casingStack = stack;
 
         // Compute tier
@@ -81,6 +96,10 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
         currentTier = CableTier.getTier(tag.getString("casing"));
     }
 
+    public CableTier getCableTier() {
+        return currentTier;
+    }
+
     public void dropCasing(Level world, BlockPos pos) {
         Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), casingStack);
     }
@@ -88,15 +107,14 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
     public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.getCount() >= 1) {
+            var previousTier = currentTier;
             var newTier = getCasingTier(stackInHand.getItem());
             if (newTier != null && newTier != currentTier) {
                 if (currentTier != CableTier.LV) {
                     dropCasing(be.getLevel(), be.getBlockPos());
                 }
                 setCasingStack(stackInHand.copyWithCount(1));
-                if (!player.isCreative()) {
-                    stackInHand.shrink(1);
-                }
+                stackInHand.consume(1, player);
                 be.setChanged();
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
@@ -104,13 +122,16 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
                 be.getLevel().updateNeighborsAt(be.getBlockPos(), Blocks.AIR);
                 // Play a nice sound :)
                 playCasingPlaceSound(be);
+                if (callback != null) {
+                    callback.onUpdated(previousTier, currentTier);
+                }
                 return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    protected void playCasingPlaceSound(MachineBlockEntity be) {
+    private void playCasingPlaceSound(MachineBlockEntity be) {
         var blockKey = currentTier.itemKey;
         if (blockKey == null) {
             return; // no sound for LV
@@ -142,17 +163,16 @@ public class CasingComponent implements IComponent, DropableComponent, CableTier
         return casingStack;
     }
 
-    @Override
-    public CableTier getCableTier() {
-        return currentTier;
-    }
-
     public void setCasingServer(MachineBlockEntity be, ItemStack casing) {
+        var previousTier = currentTier;
         setCasingStack(casing);
         be.setChanged();
         be.sync();
         be.getLevel().updateNeighborsAt(be.getBlockPos(), Blocks.AIR);
         playCasingPlaceSound(be);
+        if (callback != null && previousTier != currentTier) {
+            callback.onUpdated(previousTier, currentTier);
+        }
     }
 
     public MachineCasing getCasing() {

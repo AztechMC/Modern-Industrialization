@@ -26,15 +26,21 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
-public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
+public sealed class ComponentStorage<C> implements Iterable<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
     protected final List<C> components = new ArrayList<>();
+
+    @Override
+    public Iterator<C> iterator() {
+        return components.iterator();
+    }
 
     @SafeVarargs
     public final void register(C... components) {
@@ -56,26 +62,23 @@ public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, Comp
         return components.get(index);
     }
 
-    public final void forEach(Consumer<C> action) {
-        components.forEach(action);
-    }
-
     public final void forEachIndexed(BiConsumer<Integer, C> action) {
         for (int i = 0; i < components.size(); i++) {
             action.accept(i, components.get(i));
         }
     }
 
-    public final <T> Optional<T> get(Class<T> clazz) {
+    @Nullable
+    public final <T> T get(Class<T> clazz) {
         for (C component : components) {
             if (clazz.isInstance(component)) {
-                return Optional.of((T) component);
+                return (T) component;
             }
         }
-        return Optional.empty();
+        return null;
     }
 
-    public final <T> List<T> tryGet(Class<T> clazz) {
+    public final <T> List<T> getAll(Class<T> clazz) {
         List<T> components = new ArrayList<>();
         for (C component : this.components) {
             if (clazz.isInstance(component)) {
@@ -86,14 +89,14 @@ public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, Comp
     }
 
     public final <T> void forType(Class<T> clazz, Consumer<? super T> action) {
-        List<T> component = tryGet(clazz);
+        List<T> component = getAll(clazz);
         for (T c : component) {
             action.accept(c);
         }
     }
 
     public final <T, R> R mapOrDefault(Class<T> clazz, Function<? super T, ? extends R> action, R defaultValue) {
-        List<T> components = tryGet(clazz);
+        List<T> components = getAll(clazz);
         if (components.isEmpty()) {
             return defaultValue;
         } else if (components.size() == 1) {
@@ -101,20 +104,6 @@ public sealed class ComponentStorage<C> permits ComponentStorage.GuiServer, Comp
         } else {
             throw new RuntimeException("Multiple components of type " + clazz.getName() + " found");
         }
-    }
-
-    public final <R> R findOrDefault(Function<C, Optional<? extends R>> action, R defaultValue) {
-        for (C component : components) {
-            Optional<? extends R> result = action.apply(component);
-            if (result.isPresent()) {
-                return result.get();
-            }
-        }
-        return defaultValue;
-    }
-
-    public final <T, R> R findOrDefault(Class<T> clazz, Function<? super T, Optional<? extends R>> action, R defaultValue) {
-        return findOrDefault(component -> clazz.isInstance(component) ? action.apply((T) component) : Optional.empty(), defaultValue);
     }
 
     public static final class GuiServer extends ComponentStorage<GuiComponent.Server> {

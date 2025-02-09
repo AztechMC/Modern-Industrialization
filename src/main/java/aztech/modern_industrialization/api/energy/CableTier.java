@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlockKeys;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -51,7 +52,7 @@ public final class CableTier implements Comparable<CableTier> {
     public static CableTier MV = new CableTier("mv", "MV", "Medium Voltage", 32 * 4, MIBlockKeys.ADVANCED_MACHINE_HULL);
     public static CableTier HV = new CableTier("hv", "HV", "High Voltage", 32 * 4 * 8, MIBlockKeys.TURBO_MACHINE_HULL);
     public static CableTier EV = new CableTier("ev", "EV", "Extreme Voltage", 32 * 4 * 8 * 8, MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL);
-    public static CableTier SUPERCONDUCTOR = new CableTier("superconductor", "Superconductor", "Superconductor", 128000000,
+    public static CableTier SUPERCONDUCTOR = new CableTier("superconductor", "SV", "Superconductor", 128000000,
             MIBlockKeys.QUANTUM_MACHINE_HULL);
 
     public final String name;
@@ -83,7 +84,7 @@ public final class CableTier implements Comparable<CableTier> {
         this.longEnglishName = longEnglishName;
         this.eu = eu;
         this.itemKey = itemKey;
-        this.casing = MachineCasings.create(name, shortEnglishName);
+        this.casing = MachineCasings.create(MI.id(name), shortEnglishName);
         this.builtin = builtin;
     }
 
@@ -186,8 +187,5 @@ public final class CableTier implements Comparable<CableTier> {
         addTier(SUPERCONDUCTOR);
 
         KubeJSProxy.instance.fireCableTiersEvent();
-    }
-
-    public static void init() {
     }
 }

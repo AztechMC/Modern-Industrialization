@@ -37,6 +37,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
 public class MIRecipeJson<T extends MIRecipeJson<?>> {
@@ -149,7 +150,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
-        recipe.fluidInputs.add(new MachineRecipe.FluidInput(fluid, amount, probability));
+        recipe.fluidInputs.add(new MachineRecipe.FluidInput(FluidIngredient.of(fluid), amount, probability));
         return (T) this;
     }
 

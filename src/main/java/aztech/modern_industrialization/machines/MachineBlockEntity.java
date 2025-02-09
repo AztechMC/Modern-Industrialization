@@ -71,8 +71,8 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("rawtypes")
 public abstract class MachineBlockEntity extends FastBlockEntity
         implements MenuProvider, WrenchableBlockEntity {
-    protected final ComponentStorage.GuiServer guiComponents = new ComponentStorage.GuiServer();
-    protected final ComponentStorage.Server icomponents = new ComponentStorage.Server();
+    public final ComponentStorage.GuiServer guiComponents = new ComponentStorage.GuiServer();
+    public final ComponentStorage.Server components = new ComponentStorage.Server();
     public final MachineGuiParameters guiParams;
     /**
      * Server-side only: true if the next call to sync() will trigger a remesh.
@@ -101,21 +101,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     protected final void registerComponents(IComponent... components) {
-        icomponents.register(components);
+        this.components.register(components);
     }
 
     /**
      * @return The inventory that will be synced with the client.
      */
     public abstract MIInventory getInventory();
-
-    public final ComponentStorage.GuiServer getGuiComponents() {
-        return guiComponents;
-    }
-
-    public final ComponentStorage.Server getComponents() {
-        return icomponents;
-    }
 
     @Override
     public final Component getDisplayName() {
@@ -139,10 +131,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         inv.fluidPositions.write(buf);
         buf.writeInt(guiComponents.size());
         // Write components
-        guiComponents.forEach(component -> {
+        for (GuiComponent.Server component : guiComponents) {
             buf.writeResourceLocation(component.getId());
             component.writeInitialData(buf);
-        });
+        }
         // Write GUI params
         guiParams.write(buf);
     }
@@ -201,13 +193,17 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
-        icomponents.forEach(component -> component.writeClientNbt(tag, registries));
+        for (IComponent component : components) {
+            component.writeClientNbt(tag, registries);
+        }
         return tag;
     }
 
     @Override
     public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        icomponents.forEach(component -> component.writeNbt(tag, registries));
+        for (IComponent component : components) {
+            component.writeNbt(tag, registries);
+        }
     }
 
     @Override
@@ -217,10 +213,14 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
-            icomponents.forEach(component -> component.readNbt(tag, registries, isUpgradingMachine));
+            for (IComponent component : components) {
+                component.readNbt(tag, registries, isUpgradingMachine);
+            }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");
-            icomponents.forEach(component -> component.readClientNbt(tag, registries));
+            for (IComponent component : components) {
+                component.readClientNbt(tag, registries);
+            }
             if (forceChunkRemesh) {
                 WorldHelper.forceChunkRemesh(level, worldPosition);
                 requestModelDataUpdate();
@@ -255,7 +255,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public List<ItemStack> dropExtra() {
         List<ItemStack> drops = new ArrayList<>();
-        icomponents.forType(DropableComponent.class, u -> drops.add(u.getDrop()));
+        components.forType(DropableComponent.class, u -> drops.add(u.getDrop()));
         return drops;
     }
 

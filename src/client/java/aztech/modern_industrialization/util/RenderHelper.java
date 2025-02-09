@@ -42,15 +42,20 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -58,7 +63,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -71,55 +78,48 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public class RenderHelper {
-    private static final Supplier<BakedQuad[]> OVERLAY_QUADS;
-    private static final float W = 0.05f;
-    private static final ResourceLocation LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
+    private static final ResourceLocation HATCH_PLACEMENT_OVERLAY_LOCATION = MI.id("block/hatch_placement_overlay");
+    @Nullable
+    private static OverlayQuads overlayQuads;
 
-    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay, boolean depth) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight(depth));
-        for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
-            vc.putBulkData(ms.last(), overlayQuad, r, g, b, 1.0f, light, overlay);
+    private record OverlayQuads(BakedQuad[] quads, TextureAtlasSprite sprite) {
+    }
+
+    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, int overlay) {
+        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(HATCH_PLACEMENT_OVERLAY_LOCATION);
+        if (overlayQuads == null || overlayQuads.sprite() != sprite) {
+            overlayQuads = new OverlayQuads(buildOverlayQuads(sprite), sprite);
+        }
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
+        for (BakedQuad overlayQuad : overlayQuads.quads) {
+            vc.putBulkData(ms.last(), overlayQuad, 1.0f, 1.0f, 1.0f, 1.0f, LightTexture.FULL_BRIGHT, /* not used by shader */ overlay);
         }
     }
 
-    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        drawOverlay(ms, vcp, r, g, b, light, overlay, true);
-    }
-
-    static {
-        OVERLAY_QUADS = Suppliers.memoize(() -> {
-            var overlayQuads = new BakedQuad[24];
-            QuadEmitter emitter = new QuadBuffer();
-            for (Direction direction : Direction.values()) {
-                emitter.emit();
-                emitter.square(direction, 0, 0, 1, W, 0);
-                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(null);
-                emitter.square(direction, 0, 1 - W, 1, 1, 0);
-                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(null);
-                emitter.square(direction, 0, W, W, 1 - W, 0);
-                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(null);
-                emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
-                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(null);
-            }
-            return overlayQuads;
-        });
+    private static BakedQuad[] buildOverlayQuads(TextureAtlasSprite sprite) {
+        var overlayQuads = new BakedQuad[6];
+        QuadEmitter emitter = new QuadBuffer();
+        for (Direction direction : Direction.values()) {
+            emitter.emit();
+            emitter.square(direction, 0, 0, 1, 1, 0);
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+            overlayQuads[direction.get3DDataValue()] = emitter.toBakedQuad(sprite);
+        }
+        return overlayQuads;
     }
 
     private static final Supplier<BakedQuad[]> CUBE_QUADS;
 
-    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay, boolean depth) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight(depth));
+    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
         for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
             vc.putBulkData(ms.last(), cubeQuad, r, g, b, 1.0f, light, overlay);
         }
-    }
-
-    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        drawCube(ms, vcp, r, g, b, light, overlay, true);
     }
 
     static {
@@ -142,7 +142,7 @@ public class RenderHelper {
     }
 
     public static void drawFluidInTank(@Nullable Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-        VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
+        VertexConsumer vc = vcp.getBuffer(RenderTypeHelper.getEntityRenderType(RenderType.translucent(), false));
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid, world, pos);
         float r = ((color >> 16) & 255) / 256f;
@@ -233,6 +233,8 @@ public class RenderHelper {
         consumer.putBulkData(matrixEntry, quad, red, green, blue, alpha, light, overlay);
     }
 
+    private static final ResourceLocation LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
+
     public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
         VertexConsumer vc = vertexConsumers.getBuffer(Sheets.cutoutBlockSheet());
         var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
@@ -305,6 +307,14 @@ public class RenderHelper {
     public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, @Nullable String text) {
         guiGraphics.renderItem(stack, x, y);
         guiGraphics.renderItemDecorations(font, stack, x, y, text);
+    }
+
+    public static List<FormattedCharSequence> splitTooltip(List<Component> components) {
+        List<FormattedCharSequence> charSequences = new ArrayList<>();
+        for (var component : components) {
+            charSequences.addAll(Tooltip.splitTooltip(Minecraft.getInstance(), component));
+        }
+        return charSequences;
     }
 
     public static void renderMachineCasingItem(GuiGraphics guiGraphics, MachineCasing casing, int x, int y) {

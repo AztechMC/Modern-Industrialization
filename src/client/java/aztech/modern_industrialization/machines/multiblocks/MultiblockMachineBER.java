@@ -72,12 +72,13 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);
-                        RenderHelper.drawOverlay(matrices, vcp, 111f / 256, 1, 111f / 256, 15728880, overlay);
+                        RenderHelper.drawOverlay(matrices, vcp, overlay);
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, level)) {
-                        if (level.getBlockState(pos).isAir()) {
+                    if (!matcher.matches(pos, level, null)) {
+                        var existingState = level.getBlockState(pos);
+                        if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
                             // Enqueue state preview
                             SimpleMember member = matcher.getSimpleMember(pos);
                             BlockState state = ShapeMatcher.toWorldState(level, pos, member.getPreviewState(), matcher.controllerDirection);

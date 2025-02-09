@@ -32,6 +32,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -59,7 +60,10 @@ public final class LiteralStructureMember extends SimpleStructureMember {
     }
 
     @Override
-    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
+    public Optional<Pair<BlockState, @Nullable FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
+        if (preview.state().get().isAir()) {
+            return Optional.of(new Pair<>(Blocks.STRUCTURE_VOID.defaultBlockState(), null));
+        }
         return Optional.empty();
     }
 

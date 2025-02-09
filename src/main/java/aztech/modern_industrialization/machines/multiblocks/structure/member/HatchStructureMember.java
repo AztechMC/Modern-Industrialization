@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public final class HatchStructureMember extends SimpleStructureMember {
     public static final MapCodec<HatchStructureMember> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
@@ -79,7 +80,7 @@ public final class HatchStructureMember extends SimpleStructureMember {
     }
 
     @Override
-    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
+    public Optional<Pair<BlockState, @Nullable FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
         if (required) {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.HATCH);

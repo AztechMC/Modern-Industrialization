@@ -127,8 +127,11 @@ public final class MIStructureTemplateManager {
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState state = toTemplateState(level, pos, level.getBlockState(pos), controllerDirection);
-            if (state.isAir() || state.is(Blocks.STRUCTURE_VOID)) {
+            if (state.isAir()) {
                 continue;
+            }
+            if (state.is(Blocks.STRUCTURE_VOID)) {
+                state = Blocks.AIR.defaultBlockState();
             }
             BlockEntity blockEntity = level.getBlockEntity(pos);
 

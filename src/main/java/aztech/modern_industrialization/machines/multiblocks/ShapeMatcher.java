@@ -284,11 +284,13 @@ public class ShapeMatcher implements ChunkEventListener {
                 var optionalStructureBlock = member.asStructureBlock(pos, structureBlocks);
                 if (optionalStructureBlock.isPresent()) {
                     BlockState state = optionalStructureBlock.get().getFirst();
-                    FastBlockEntity be = optionalStructureBlock.get().getSecond();
                     level.setBlockAndUpdate(pos, state);
-                    level.setBlockEntity(be);
-                    be.setChanged();
-                    be.sync();
+                    FastBlockEntity be = optionalStructureBlock.get().getSecond();
+                    if (be != null) {
+                        level.setBlockEntity(be);
+                        be.setChanged();
+                        be.sync();
+                    }
                     setBlocks++;
                     continue;
                 } else if (member instanceof SimpleStructureMember simpleMember) {

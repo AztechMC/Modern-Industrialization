@@ -82,7 +82,7 @@ public sealed class SimpleStructureMember extends StructureMember permits HatchS
     }
 
     @Override
-    public Optional<Pair<BlockState, FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
+    public Optional<Pair<BlockState, @Nullable FastBlockEntity>> asStructureBlock(BlockPos pos, boolean required) {
         if (required) {
             var state = MIBlock.STRUCTURE_MULTIBLOCK_MEMBER.asBlock().defaultBlockState();
             state = state.setValue(StructureMultiblockMemberBlock.MODE, StructureMemberMode.SIMPLE);

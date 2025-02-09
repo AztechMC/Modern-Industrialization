@@ -67,7 +67,8 @@ public final class StructureMultiblockControllerBER implements BlockEntityRender
                                     misconfiguredPos.getZ() - pos.getZ());
                             matrices.translate(-0.005f, -0.005f, -0.005f);
                             matrices.scale(1.01f, 1.01f, 1.01f);
-                            RenderHelper.drawOverlay(matrices, vcp, 1.0f, 111f / 256f, 111f / 256f, RenderHelper.FULL_LIGHT, overlay, false);
+                            // TODO SWEDZ: render red overlay (255, 111, 111)
+                            RenderHelper.drawOverlay(matrices, vcp, overlay);
                             matrices.popPose();
                         }
                     }

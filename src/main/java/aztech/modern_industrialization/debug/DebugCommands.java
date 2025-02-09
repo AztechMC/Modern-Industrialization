@@ -175,7 +175,7 @@ public class DebugCommands {
         if (be instanceof MultiblockMachineBlockEntity multiblock) {
             var shape = multiblock.getActiveShape();
             var shapeMatcher = multiblock.createShapeMatcher();
-            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
+            int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel(), false);
 
             src.sendSuccess(() -> Component.literal("Successfully built multiblock at position %s. %d blocks updated.".formatted(
                     controllerPos, updatedBlocks)), true);

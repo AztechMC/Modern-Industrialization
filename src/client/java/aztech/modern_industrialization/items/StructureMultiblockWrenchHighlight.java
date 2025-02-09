@@ -38,7 +38,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +78,8 @@ public class StructureMultiblockWrenchHighlight {
                 double z = pos.getZ() - cameraPos.z;
                 poseStack.translate(x - 0.005, y - 0.005, z - 0.005);
                 poseStack.scale(1.01f, 1.01f, 1.01f);
-                RenderHelper.drawOverlay(poseStack, immediate, 1, 111f / 256, 1, 15728880, OverlayTexture.NO_OVERLAY);
+                // TODO SWEDZ: render magenta overlay (255, 111, 255)
+                RenderHelper.drawOverlay(poseStack, immediate, RenderHelper.FULL_LIGHT);
                 poseStack.popPose();
             }
             poseStack.popPose();

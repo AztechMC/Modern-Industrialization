@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -32,6 +33,8 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineCasing {
+    public static final Codec<MachineCasing> CODEC = ResourceLocation.CODEC.xmap(MachineCasings::get, casing -> casing.key);
+
     public final ResourceLocation key;
     /**
      * Not null when registered as an imitation. The actual model might not be an imitation since it is resource pack driven.

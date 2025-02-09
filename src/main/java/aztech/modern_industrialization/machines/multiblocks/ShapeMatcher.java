@@ -23,13 +23,14 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import static net.minecraft.core.Direction.*;
+
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.HatchStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.SimpleStructureMember;
 import aztech.modern_industrialization.machines.multiblocks.structure.member.StructureMember;
-import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.*;

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.MI;
 import java.util.function.Predicate;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -67,7 +68,7 @@ public class TransferHelper {
         }
     }
 
-    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount) {
+    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount, boolean recursive) {
         int srcSlots = src.getSlots();
 
         // Find first stack
@@ -77,19 +78,32 @@ public class TransferHelper {
             var stack = src.getStackInSlot(slot);
             if (predicate.test(stack)) {
                 ret = src.extractItem(slot, maxAmount, false);
+            } else if (recursive) {
+                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
+                if (capability != null) {
+                    ret = extractMatching(capability, predicate, maxAmount, false);
+                }
             }
         }
         if (ret.isEmpty()) {
             return ItemStack.EMPTY;
         }
+        final ItemStack finalRet = ret;
 
         // Try to extract more
         ++slot;
         for (; slot < srcSlots && maxAmount < ret.getCount(); ++slot) {
             var stack = src.getStackInSlot(slot);
-            if (ItemStack.matches(stack, ret)) {
+            if (ItemStack.isSameItemSameComponents(stack, ret)) {
                 var extracted = src.extractItem(slot, maxAmount - ret.getCount(), true);
                 ret.grow(extracted.getCount());
+            } else if (recursive) {
+                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
+                if (capability != null) {
+                    var extracted = extractMatching(capability, s -> ItemStack.isSameItemSameComponents(s, finalRet), maxAmount - ret.getCount(),
+                            false);
+                    ret.grow(extracted.getCount());
+                }
             }
         }
 

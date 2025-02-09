@@ -371,7 +371,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
-            return TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), what::matches, maxAmount).getCount();
+            return TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), what::matches, maxAmount, false).getCount();
         }
 
         private class ScreenHandlerFactory implements IPipeMenuProvider {

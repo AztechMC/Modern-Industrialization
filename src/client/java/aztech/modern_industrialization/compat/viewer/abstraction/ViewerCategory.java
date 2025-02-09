@@ -104,7 +104,11 @@ public abstract class ViewerCategory<D> {
 
         SlotBuilder outputSlot(int x, int y);
 
+        void invisibleInput(ItemStack item);
+
         void invisibleOutput(ItemStack item);
+
+        void scrollableSlots(int cols, int rows, List<ItemStack> stacks);
     }
 
     public interface SlotBuilder {
@@ -125,6 +129,43 @@ public abstract class ViewerCategory<D> {
         SlotBuilder removeBackground();
 
         SlotBuilder markCatalyst();
+
+        class NoOp implements SlotBuilder {
+            @Override
+            public SlotBuilder variant(TransferVariant<?> variant) {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder item(ItemStack stack, float probability) {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder ingredient(Ingredient ingredient, long amount, float probability) {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder removeBackground() {
+                return this;
+            }
+
+            @Override
+            public SlotBuilder markCatalyst() {
+                return this;
+            }
+        }
     }
 
     public interface WidgetList {
@@ -147,6 +188,8 @@ public abstract class ViewerCategory<D> {
         void drawable(Consumer<GuiGraphics> widget);
 
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
+
+        void scrollableSlots(int cols, int rows, List<ItemStack> stacks);
     }
 
     public enum TextAlign {

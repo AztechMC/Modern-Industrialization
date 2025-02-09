@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.viewer.impl.emi;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
+import aztech.modern_industrialization.compat.viewer.abstraction.ViewerPageManager;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -35,6 +36,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,11 +89,24 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             }
 
             @Override
+            public void invisibleInput(ItemStack item) {
+                var ing = new IngredientBuilder(0, 0);
+                ing.item(item);
+                ing.isVisible = false;
+                inputs.add(ing);
+            }
+
+            @Override
             public void invisibleOutput(ItemStack item) {
                 var ing = new IngredientBuilder(0, 0);
                 ing.item(item);
                 ing.isVisible = false;
                 outputs.add(ing);
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                stacks.forEach(this::invisibleInput);
             }
         });
     }
@@ -307,6 +322,36 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                     var mapped = tooltip.stream().map(c -> ClientTooltipComponent.create(c.getVisualOrderText())).toList();
                     widgets.addDrawable(x - 4, y - 4, w, h, (matrices, mouseX, mouseY, delta) -> {
                     }).tooltip((mouseX, mouseY) -> mapped);
+                }
+
+                @Override
+                public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                    int offsetX = (widgets.getWidth() / 2) - ((cols * 18) / 2);
+                    int offsetY = 20;
+                    int pageHeight = (widgets.getHeight() - 21) / 18;
+                    int pageSize = cols * rows;
+                    ViewerPageManager pages = new ViewerPageManager(stacks, pageSize);
+                    if (pageSize < stacks.size()) {
+                        widgets.addButton(2, 2, 12, 12, 0, 0, () -> true, (mx, my, button) -> {
+                            pages.scroll(-1);
+                        });
+                        widgets.addButton(widgets.getWidth() - 14, 2, 12, 12, 12, 0, () -> true, (mx, my, button) -> {
+                            pages.scroll(1);
+                        });
+                    }
+                    int index = 0;
+                    for (; index < stacks.size() && index / cols <= pageHeight; index++) {
+                        final int finalIndex = index;
+                        widgets.add(new SlotWidget(EmiStack.EMPTY, index % cols * 18 + offsetX, index / cols * 18 + offsetY) {
+                            @Override
+                            public EmiIngredient getStack() {
+                                return EmiStack.of(pages.getStack(finalIndex));
+                            }
+                        });
+                    }
+                    for (; index < pageSize; index++) {
+                        widgets.addSlot(EmiStack.EMPTY, index % cols * 18 + offsetX, index / cols * 18 + offsetY);
+                    }
                 }
             });
 

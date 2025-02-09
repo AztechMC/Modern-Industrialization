@@ -117,11 +117,37 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
+            public void invisibleInput(ItemStack item) {
+                var ing = new IngredientBuilder(0, 0, true);
+                ing.item(item);
+                ing.isVisible = false;
+                inputs.add(ing);
+            }
+
+            @Override
             public void invisibleOutput(ItemStack item) {
                 var ing = new IngredientBuilder(0, 0, false);
                 ing.item(item);
                 ing.isVisible = false;
                 outputs.add(ing);
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                int x = (wrapped.width / 2) - (18 * cols) / 2 + 1;
+                int y = wrapped.height - (rows * 18) - 3;
+                int index = 0;
+                for (int row = 0; row < rows; row++) {
+                    for (int col = 0; col < cols; col++) {
+                        int ix = x + (col * 18);
+                        int iy = y + (row * 18);
+                        var slot = this.inputSlot(ix, iy);
+                        if (index < stacks.size()) {
+                            slot.item(stacks.get(index));
+                        }
+                        index++;
+                    }
+                }
             }
         });
     }
@@ -316,6 +342,10 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                         Tooltip.create(tooltip).queue();
                     }
                 }));
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
             }
         });
 

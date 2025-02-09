@@ -39,6 +39,9 @@ import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.placement.HorizontalAlignment;
+import mezz.jei.api.gui.placement.VerticalAlignment;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -90,9 +93,22 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
+            public void invisibleInput(ItemStack stack) {
+                builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
+                        .addItemStack(stack);
+            }
+
+            @Override
             public void invisibleOutput(ItemStack stack) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                         .addItemStack(stack);
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                for (var stack : stacks) {
+                    builder.addInputSlot().addItemStack(stack);
+                }
             }
 
             private ViewerCategory.SlotBuilder slot(RecipeIngredientRole role, int x, int y) {
@@ -184,6 +200,36 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     }
 
     @Override
+    public void createRecipeExtras(IRecipeExtrasBuilder builder, D recipe, IFocusGroup focuses) {
+        wrapped.buildLayout(recipe, new ViewerCategory.LayoutBuilder() {
+            @Override
+            public ViewerCategory.SlotBuilder inputSlot(int x, int y) {
+                return new ViewerCategory.SlotBuilder.NoOp();
+            }
+
+            @Override
+            public ViewerCategory.SlotBuilder outputSlot(int x, int y) {
+                return new ViewerCategory.SlotBuilder.NoOp();
+            }
+
+            @Override
+            public void invisibleInput(ItemStack stack) {
+            }
+
+            @Override
+            public void invisibleOutput(ItemStack stack) {
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
+                var slots = builder.getRecipeSlots().getSlots(RecipeIngredientRole.INPUT);
+                var scrollWidget = builder.addScrollGridWidget(slots, cols, rows);
+                scrollWidget.setPosition(0, 0, getWidth(), getHeight(), HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
+            }
+        });
+    }
+
+    @Override
     public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(-4, -4, 0);
@@ -221,6 +267,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
             @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
             }
         });
 
@@ -262,6 +312,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                 if (x <= mouseX && y <= mouseY && mouseX <= x + w && mouseY <= y + h) {
                     tooltips.addAll(tooltip);
                 }
+            }
+
+            @Override
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
             }
         });
     }

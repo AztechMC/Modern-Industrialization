@@ -46,13 +46,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe> {
-    private static final int SLOTS = 6;
-    private static final int MARGIN = 10;
-    private static final int H = 18 + 2 * MARGIN;
-    private static final int W = SLOTS * 20 - 2 + 2 * MARGIN;
+    private static final int COLUMNS = 6;
+    private static final int ROWS = 2;
 
     protected MultiblockCategory() {
-        super(Recipe.class, MI.id("multiblock_shapes"), MIText.MultiblockMaterials.text(), MIItem.WRENCH.stack(), W, H);
+        super(Recipe.class, MI.id("multiblock_shapes"), MIText.MultiblockMaterials.text(), MIItem.WRENCH.stack(), 34 + (COLUMNS * 18),
+                28 + (ROWS * 18));
     }
 
     @Override
@@ -68,18 +67,15 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
     @Override
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
-        for (int i = 0; i < SLOTS; ++i) {
-            var slot = builder.inputSlot(MARGIN + i * 20, MARGIN);
-            if (i < recipe.materials.size()) {
-                slot.item(recipe.materials.get(i));
-            }
-        }
+        builder.invisibleInput(recipe.controller);
+        builder.outputSlot((width / 2) - 8, 5).item(recipe.controller);
 
-        builder.invisibleOutput(recipe.materials.get(0));
+        builder.scrollableSlots(COLUMNS, ROWS, recipe.materials);
     }
 
     @Override
     public void buildWidgets(Recipe recipe, WidgetList widgets) {
+        widgets.scrollableSlots(COLUMNS, ROWS, recipe.materials);
     }
 
     @Override
@@ -94,7 +90,6 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
 
         public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
-            this.materials.add(this.controller);
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {

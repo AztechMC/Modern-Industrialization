@@ -33,9 +33,8 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.util.IOEnergyStorage;
 import com.google.common.collect.Lists;
-import java.util.List;
-
 import com.google.common.primitives.Ints;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;

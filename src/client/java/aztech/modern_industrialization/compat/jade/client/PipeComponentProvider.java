@@ -207,6 +207,35 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                                 helper.text(Component.literal("" + items).withStyle(MITooltips.NUMBER_TEXT))
                                         .align(IElement.Align.CENTER)));
             }
+
+            if (tag.contains("energy")) {
+                long energy = tag.getLong("energy");
+                long maxEnergy = tag.getLong("maxEnergy");
+                long transfer = tag.getLong("transfer");
+                long maxTransfer = tag.getLong("maxTransfer");
+
+                tooltip.add(helper.progress(
+                        MIJadeClientPlugin.ratio(energy, maxEnergy),
+                        Component.literal("")
+                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(energy, " EU", false))
+                                        .withStyle(ChatFormatting.WHITE))
+                                .append(" / ")
+                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(maxEnergy, " EU", false)))
+                                .withStyle(ChatFormatting.GRAY),
+                        helper.progressStyle().color(-5636096, -10092544).textColor(-1),
+                        BoxStyle.getNestedBox(),
+                        true));
+
+                tooltip.add(helper.progress(
+                        MIJadeClientPlugin.ratio(transfer, maxTransfer),
+                        MIJadeClientPlugin.textAndRatio(
+                                MIText.NetworkTransfer.text(),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(transfer, "", false)),
+                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxTransfer, " FE/t", false))),
+                        helper.progressStyle().color(-5636096, -10092544).textColor(-1),
+                        BoxStyle.getNestedBox(),
+                        true));
+            }
         }
     }
 

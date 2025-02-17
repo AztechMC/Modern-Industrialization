@@ -32,6 +32,7 @@ public final class SortOrder implements Comparable<SortOrder> {
     public static final SortOrder STEAM_TIER = new SortOrder();
     public static final SortOrder ITEMS_OTHER = new SortOrder();
     public static final SortOrder CABLES = new SortOrder();
+    public static final SortOrder FE_WIRES = new SortOrder();
     public static final SortOrder PIPES = new SortOrder();
     public static final SortOrder TANKS = new SortOrder();
     public static final SortOrder BARRELS = new SortOrder();

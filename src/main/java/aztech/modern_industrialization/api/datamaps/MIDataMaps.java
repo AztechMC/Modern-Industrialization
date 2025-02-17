@@ -54,6 +54,15 @@ public final class MIDataMaps {
             .synced(MachineUpgrade.CODEC, true)
             .build();
 
+    /**
+     * Items that can be added to FE wires, to increase the maximum energy transfer rate.
+     */
+    public static final DataMapType<Item, FEWireUpgrade> FE_WIRE_UPGRADES = DataMapType
+            .builder(
+                    MI.id("fe_wire_upgrades"), Registries.ITEM, FEWireUpgrade.CODEC)
+            .synced(FEWireUpgrade.CODEC, true)
+            .build();
+
     private MIDataMaps() {
     }
 }

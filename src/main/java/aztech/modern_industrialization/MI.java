@@ -215,6 +215,7 @@ public class MI {
             event.register(MIDataMaps.FLUID_FUELS);
             event.register(MIDataMaps.ITEM_PIPE_UPGRADES);
             event.register(MIDataMaps.MACHINE_UPGRADES);
+            event.register(MIDataMaps.FE_WIRE_UPGRADES);
         });
 
         if (MIConfig.loadAe2Compat()) {

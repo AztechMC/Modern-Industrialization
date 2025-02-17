@@ -27,10 +27,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
-import aztech.modern_industrialization.api.datamaps.FluidFuel;
-import aztech.modern_industrialization.api.datamaps.ItemPipeUpgrade;
-import aztech.modern_industrialization.api.datamaps.MIDataMaps;
-import aztech.modern_industrialization.api.datamaps.MachineUpgrade;
+import aztech.modern_industrialization.api.datamaps.*;
 import aztech.modern_industrialization.datagen.loot.MILootTables;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
@@ -56,6 +53,7 @@ public class MIDataMapProvider extends DataMapProvider {
         gatherFluidFuels();
         gatherItemPipeUpgrades();
         gatherMachineUpgrades();
+        gatherFEWireUpgrades();
 
         builder(NeoForgeDataMaps.RAID_HERO_GIFTS)
                 .add(MIRegistries.INDUSTRIALIST, new RaidHeroGift(MILootTables.INDUSTRIALIST_GIFT), false);
@@ -124,5 +122,20 @@ public class MIDataMapProvider extends DataMapProvider {
 
     private void addMachineUpgrade(ItemDefinition<?> itemDefinition, int extraMaxEu) {
         builder(MIDataMaps.MACHINE_UPGRADES).add(itemDefinition.getId(), new MachineUpgrade(extraMaxEu), false);
+    }
+
+    private void gatherFEWireUpgrades() {
+        int base = 128;
+        addFEWireUpgrade("redstone_battery", base);
+        addFEWireUpgrade("silicon_battery", base * 4);
+        addFEWireUpgrade("sodium_battery", base * 4 * 4);
+        addFEWireUpgrade("cadmium_battery", base * 4 * 4 * 16);
+        addFEWireUpgrade("plutonium_battery", base * 4 * 4 * 16 * 4);
+
+        addFEWireUpgrade("quantum_upgrade", Integer.MAX_VALUE);
+    }
+
+    private void addFEWireUpgrade(String path, int energyTransferBoost) {
+        builder(MIDataMaps.FE_WIRE_UPGRADES).add(MI.id(path), new FEWireUpgrade(energyTransferBoost), false);
     }
 }

@@ -37,6 +37,10 @@ import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
+import aztech.modern_industrialization.pipes.fe.FENetwork;
+import aztech.modern_industrialization.pipes.fe.FENetworkData;
+import aztech.modern_industrialization.pipes.fe.FENetworkNode;
+import aztech.modern_industrialization.pipes.fe.FEWireScreenHandler;
 import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
@@ -77,6 +81,9 @@ public class MIPipes {
     public static final Supplier<MenuType<FluidPipeScreenHandler>> SCREEN_HANDLER_TYPE_FLUID_PIPE = MIRegistries.MENUS.register(
             "fluid_pipe",
             () -> IMenuTypeExtension.create(FluidPipeScreenHandler::new));
+    public static final Supplier<MenuType<FEWireScreenHandler>> SCREEN_HANDLER_TYPE_FE_WIRE = MIRegistries.MENUS.register(
+            "fe_wire",
+            () -> IMenuTypeExtension.create(FEWireScreenHandler::new));
 
     public void setup() {
         BLOCK_ENTITY_TYPE_PIPE = MIRegistries.BLOCK_ENTITIES.register("pipe",
@@ -87,6 +94,11 @@ public class MIPipes {
         }
         for (PipeColor color : PipeColor.values()) {
             registerItemPipeType(color);
+        }
+        if (MIConfig.getConfig().enableFeWires) {
+            for (PipeColor color : PipeColor.values()) {
+                registerFEWireType(color);
+            }
         }
 
         if (MIConfig.loadAe2Compat()) {
@@ -147,6 +159,19 @@ public class MIPipes {
                 SortOrder.CABLES.and(tier));
         register(type, itemDef::asItem);
         ELECTRICITY_PIPE_TIER.put(type, tier);
+    }
+
+    public void registerFEWireType(PipeColor color) {
+        String wireId = color.prefix + "fe_wire";
+        PipeNetworkType type = PipeNetworkType.register(MI.id(wireId), FENetwork::new, FENetworkNode::new, color.color, true);
+        var itemDef = MIItem.item(
+                color.englishNamePrefix + "FE Wire",
+                wireId,
+                prop -> new PipeItem(prop, type, new FENetworkData()),
+                ITEM_MODEL_GENERATOR,
+                SortOrder.FE_WIRES);
+        register(type, itemDef::asItem);
+        TagsToGenerate.generateTag(MITags.FE_WIRES, itemDef, "FE Wires");
     }
 
     public void register(PipeNetworkType type, Supplier<PipeItem> item) {

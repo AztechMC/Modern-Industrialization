@@ -61,6 +61,7 @@ import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.pipes.fe.FEWireScreen;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.pipes.impl.DelegatingUnbakedModel;
 import aztech.modern_industrialization.pipes.impl.PipeUnbakedModel;
@@ -197,6 +198,7 @@ public class MIClient {
 
         event.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE.get(), ItemPipeScreen::new);
         event.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE.get(), FluidPipeScreen::new);
+        event.register(MIPipes.SCREEN_HANDLER_TYPE_FE_WIRE.get(), FEWireScreen::new);
     }
 
     @SubscribeEvent

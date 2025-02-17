@@ -119,6 +119,7 @@ public class MIPipesClient {
     private static final PipeRenderer.Factory FLUID_RENDERER = makeRenderer(
             Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
     private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
+    private static final PipeRenderer.Factory FE_RENDERER = makeRenderer(Arrays.asList("fe", "fe_item", "fe_in", "fe_in_out", "fe_out"), false);
 
     // Use a set to avoid loading the same renderer multiple times
     public static final Collection<PipeRenderer.Factory> RENDERERS = new LinkedHashSet<>();
@@ -131,6 +132,8 @@ public class MIPipesClient {
                 PipeRenderer.register(type, FLUID_RENDERER);
             } else if (type.getIdentifier().getPath().endsWith("cable")) {
                 PipeRenderer.register(type, ELECTRICITY_RENDERER);
+            } else if (type.getIdentifier().getPath().endsWith("fe_wire")) {
+                PipeRenderer.register(type, FE_RENDERER);
             }
         }
 

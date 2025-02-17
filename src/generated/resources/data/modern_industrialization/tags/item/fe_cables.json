@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "mekanism:basic_universal_cable",
+      "required": false
+    },
+    {
+      "id": "powah:energy_cable_basic",
+      "required": false
+    }
+  ]
+}

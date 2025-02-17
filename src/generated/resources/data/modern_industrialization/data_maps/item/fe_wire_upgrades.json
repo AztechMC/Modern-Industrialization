@@ -1,0 +1,22 @@
+{
+  "values": {
+    "modern_industrialization:cadmium_battery": {
+      "energyTransferBoost": 32768
+    },
+    "modern_industrialization:plutonium_battery": {
+      "energyTransferBoost": 131072
+    },
+    "modern_industrialization:quantum_upgrade": {
+      "energyTransferBoost": 2147483647
+    },
+    "modern_industrialization:redstone_battery": {
+      "energyTransferBoost": 128
+    },
+    "modern_industrialization:silicon_battery": {
+      "energyTransferBoost": 512
+    },
+    "modern_industrialization:sodium_battery": {
+      "energyTransferBoost": 2048
+    }
+  }
+}

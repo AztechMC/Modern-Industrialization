@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "mekanism:alloy_infused",
+      "required": false
+    },
+    {
+      "id": "powah:capacitor_basic_tiny",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "modern_industrialization:fe_wire"
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables"
+          }
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables_part"
+          }
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:dyes/black"
+    },
+    "p": {
+      "tag": "modern_industrialization:fe_wires"
+    }
+  },
+  "pattern": [
+    "pd"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:black_fe_wire"
+  }
+}

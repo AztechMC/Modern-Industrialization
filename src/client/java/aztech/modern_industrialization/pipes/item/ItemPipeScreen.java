@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.DynamicTooltip;
-import aztech.modern_industrialization.network.pipes.SetAllowSelfInsertPacket;
 import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
@@ -36,7 +35,6 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -72,33 +70,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             }
             return lines;
         }));
-        addConnectionTypeButton(148, 17, menu.pipeInterface);
-        addRenderableWidget(new SelfInsertButton(this.leftPos, this.topPos, widget -> {
-            boolean newAllowSelfInsert = !menu.pipeInterface.allowSelfInsert();
-            menu.pipeInterface.setAllowSelfInsert(newAllowSelfInsert);
-            new SetAllowSelfInsertPacket(menu.containerId, newAllowSelfInsert).sendToServer();
-        }, () -> {
-            List<Component> lines = new ArrayList<>();
-            if (menu.pipeInterface.allowSelfInsert()) {
-                lines.add(MIText.SelfInsertEnabled.text());
-                if (menu.pipeInterface.getConnectionType() == 1) {
-                    lines.add(MIText.ClickToDisallowSelfInsert.text().setStyle(SECONDARY_INFO));
-                }
-            } else {
-                lines.add(MIText.SelfInsertDisabled.text());
-                if (menu.pipeInterface.getConnectionType() == 1) {
-                    lines.add(MIText.ClickToAllowSelfInsert.text().setStyle(SECONDARY_INFO));
-                }
-            }
-            if (menu.pipeInterface.getConnectionType() == 2) {
-                lines.add(MIText.PriorityNotApplicable.text(MIText.PipeConnectionTooltipExtractOnly.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
-                        MIText.PipeConnectionOut.text().setStyle(MITooltips.HIGHLIGHT_STYLE)).setStyle(TextHelper.GRAY_TEXT));
-            } else if (menu.pipeInterface.getConnectionType() == 0) {
-                lines.add(MIText.PriorityNotApplicable.text(MIText.PipeConnectionTooltipInsertOnly.text().setStyle(MITooltips.HIGHLIGHT_STYLE),
-                        MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE)).setStyle(TextHelper.GRAY_TEXT));
-            }
-            return lines;
-        }, () -> menu.pipeInterface.getConnectionType() == 1));
+        addConnectionTypeButton(148, 22, menu.pipeInterface);
 
         addPriorityWidgets(35, 72, menu.pipeInterface, 0, makePriorityWidgetTooltip(0, true), () -> menu.pipeInterface.getConnectionType() != 2);
         addPriorityWidgets(35, 86, menu.pipeInterface, 1, makePriorityWidgetTooltip(1, false), () -> menu.pipeInterface.getConnectionType() != 0);
@@ -169,39 +141,11 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         return TEXTURE;
     }
 
-    private class SelfInsertButton extends Button {
-        private final Supplier<List<Component>> tooltipSupplier;
-        private final BooleanSupplier isEnabled;
-
-        public SelfInsertButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier, BooleanSupplier isEnabled) {
-            super(i + 148, j + 59, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
-            this.tooltipSupplier = tooltipSupplier;
-            this.isEnabled = isEnabled;
-            setTooltip(new DynamicTooltip(tooltipSupplier));
-        }
-
-        @Override
-        public Component getMessage() {
-            return tooltipSupplier.get().getFirst();
-        }
-
-        @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-            active = isEnabled.getAsBoolean();
-
-            int u = active ? (menu.pipeInterface.allowSelfInsert() ? 40 : 60) : 80;
-            int v = this.isHoveredOrFocused() ? 20 : 0;
-
-            RenderSystem.enableDepthTest();
-            guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
-        }
-    }
-
     private class WhitelistButton extends Button {
         private final Supplier<List<Component>> tooltipSupplier;
 
         public WhitelistButton(int i, int j, OnPress onPress, Supplier<List<Component>> tooltipSupplier) {
-            super(i + 148, j + 38, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+            super(i + 148, j + 44, 20, 20, Component.empty(), onPress, Button.DEFAULT_NARRATION);
             this.tooltipSupplier = tooltipSupplier;
             setTooltip(new DynamicTooltip(tooltipSupplier));
         }

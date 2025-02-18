@@ -30,12 +30,11 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 interface IItemSink {
-    static int listMoveAll(List<? extends IItemSink> sinks, ServerLevel world, ExtractionSource target, int sourceSlot, int maxAmount,
-            boolean excludeSource) {
+    static int listMoveAll(List<? extends IItemSink> sinks, ServerLevel world, ExtractionSource target, int sourceSlot, int maxAmount) {
         int moved = 0;
 
         for (var sink : sinks) {
-            moved += sink.moveAll(world, target, sourceSlot, maxAmount - moved, excludeSource);
+            moved += sink.moveAll(world, target, sourceSlot, maxAmount - moved);
             if (moved >= maxAmount) {
                 break;
             }
@@ -53,11 +52,11 @@ interface IItemSink {
      * @param maxAmount  maximum amount of items to move
      * @return the amount of items moved
      */
-    int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount, boolean excludeSource);
+    int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount);
 
     record HandlerWrapper(IItemHandler handler) implements IItemSink {
         @Override
-        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxToMove, boolean excludeSource) {
+        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxToMove) {
             IItemHandler sourceHandler = source.storage();
             int moved = 0;
 

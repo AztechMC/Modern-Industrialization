@@ -82,7 +82,6 @@ public class MIPackets {
         register("set_auto_extract", SetAutoExtractPacket.class, SetAutoExtractPacket.STREAM_CODEC);
         // Pipes
         register("increment_priority", IncrementPriorityPacket.class, IncrementPriorityPacket.STREAM_CODEC);
-        register("set_allow_self_insert", SetAllowSelfInsertPacket.class, SetAllowSelfInsertPacket.STREAM_CODEC);
         register("set_connection_type", SetConnectionTypePacket.class, SetConnectionTypePacket.STREAM_CODEC);
         register("set_item_whitelist", SetItemWhitelistPacket.class, SetItemWhitelistPacket.STREAM_CODEC);
         register("set_network_fluid", SetNetworkFluidPacket.class, SetNetworkFluidPacket.STREAM_CODEC);

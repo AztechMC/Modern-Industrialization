@@ -31,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 
 public record SavedItemPipeConfig(
         PipeEndpointType connectionType,
-        boolean allowSelfInsert,
         boolean whitelist,
         int insertPriority,
         int extractPriority,
@@ -39,7 +38,6 @@ public record SavedItemPipeConfig(
         ItemStack upgrade) {
     public static final Codec<SavedItemPipeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ItemNetworkNode.CONNECTION_TYPE_CODEC.fieldOf("connectionType").forGetter(SavedItemPipeConfig::connectionType),
-            Codec.BOOL.fieldOf("allowSelfInsert").forGetter(SavedItemPipeConfig::allowSelfInsert),
             Codec.BOOL.fieldOf("whitelist").forGetter(SavedItemPipeConfig::whitelist),
             Codec.INT.fieldOf("insertPriority").forGetter(SavedItemPipeConfig::insertPriority),
             Codec.INT.fieldOf("extractPriority").forGetter(SavedItemPipeConfig::extractPriority),

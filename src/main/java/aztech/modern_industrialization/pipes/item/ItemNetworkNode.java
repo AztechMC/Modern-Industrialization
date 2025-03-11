@@ -61,7 +61,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -371,7 +370,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
-            return TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), what::matches, maxAmount, false).getCount();
+            return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }
 
         private class ScreenHandlerFactory implements IPipeMenuProvider {

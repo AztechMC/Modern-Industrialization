@@ -25,6 +25,7 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MI;
 import java.util.function.Predicate;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -68,45 +69,69 @@ public class TransferHelper {
         }
     }
 
-    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount, boolean recursive) {
-        int srcSlots = src.getSlots();
+    private interface ItemExtractor {
+        ItemStack get(int slot);
 
+        ItemStack extract(int slot, int amount);
+    }
+
+    private static ItemStack extractMatching(int srcSlots, ItemExtractor extractor, Predicate<ItemStack> predicate, int maxAmount,
+            boolean containers) {
         // Find first stack
         ItemStack ret = ItemStack.EMPTY;
         int slot;
         for (slot = 0; slot < srcSlots && ret.isEmpty(); ++slot) {
-            var stack = src.getStackInSlot(slot);
+            var stack = extractor.get(slot);
             if (predicate.test(stack)) {
-                ret = src.extractItem(slot, maxAmount, false);
-            } else if (recursive) {
+                ret = extractor.extract(slot, maxAmount);
+            } else if (containers) {
                 var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
                 if (capability != null) {
-                    ret = extractMatching(capability, predicate, maxAmount, false);
+                    ret = extractMatching(capability, predicate, maxAmount);
                 }
             }
         }
         if (ret.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        final ItemStack finalRet = ret;
 
         // Try to extract more
-        ++slot;
-        for (; slot < srcSlots && maxAmount < ret.getCount(); ++slot) {
-            var stack = src.getStackInSlot(slot);
+        for (; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
+            var stack = extractor.get(slot);
             if (ItemStack.isSameItemSameComponents(stack, ret)) {
-                var extracted = src.extractItem(slot, maxAmount - ret.getCount(), true);
+                var extracted = extractor.extract(slot, maxAmount - ret.getCount());
                 ret.grow(extracted.getCount());
-            } else if (recursive) {
-                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
-                if (capability != null) {
-                    var extracted = extractMatching(capability, s -> ItemStack.isSameItemSameComponents(s, finalRet), maxAmount - ret.getCount(),
-                            false);
-                    ret.grow(extracted.getCount());
-                }
             }
         }
 
         return ret;
+    }
+
+    public static ItemStack extractMatching(Inventory inventory, Predicate<ItemStack> predicate, int maxAmount, boolean containers) {
+        return extractMatching(inventory.getContainerSize(), new ItemExtractor() {
+            @Override
+            public ItemStack get(int slot) {
+                return inventory.getItem(slot);
+            }
+
+            @Override
+            public ItemStack extract(int slot, int amount) {
+                return inventory.removeItem(slot, amount);
+            }
+        }, predicate, maxAmount, containers);
+    }
+
+    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount) {
+        return extractMatching(src.getSlots(), new ItemExtractor() {
+            @Override
+            public ItemStack get(int slot) {
+                return src.getStackInSlot(slot);
+            }
+
+            @Override
+            public ItemStack extract(int slot, int amount) {
+                return src.extractItem(slot, amount, false);
+            }
+        }, predicate, maxAmount, false);
     }
 }

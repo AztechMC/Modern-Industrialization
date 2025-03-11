@@ -66,7 +66,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -351,7 +350,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
         if (!player.getAbilities().instabuild && itemChanged) {
             var itemToUse = newCamouflage.getBlock().asItem();
-            var extracted = TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), s -> s.is(itemToUse), 1, true);
+            var extracted = TransferHelper.extractMatching(player.getInventory(), s -> s.is(itemToUse), 1, true);
 
             if (extracted.isEmpty()) {
                 player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)

@@ -91,7 +91,7 @@ public class MIConfig implements ConfigData {
     public int armorHudYPosition = 4;
     @EnglishTranslation(value = "Base amount of items transferred by item pipes every 3 seconds.")
     public int baseItemPipeTransfer = 16;
-    @EnglishTranslation(value = "Base amount of FE transferred by fe wires every tick.")
+    @EnglishTranslation(value = "Base amount of FE transferred by FE wires every tick.")
     public int baseFEWireTransfer = 1024;
     @EnglishTranslation(value = "Generate Cutting Machine recipes for all Stonecutter recipes.")
     public boolean stonecutterToCuttingMachine = true;

@@ -30,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class TransferHelper {
     public static void moveAll(IItemHandler src, IItemHandler target, boolean stackInTarget) {
@@ -69,26 +70,44 @@ public class TransferHelper {
         }
     }
 
-    private interface ItemExtractor {
-        ItemStack get(int slot);
+    public static ItemStack extractMatching(Inventory inventory, Predicate<ItemStack> predicate, int maxAmount, boolean containers) {
+        int srcSlots = inventory.getContainerSize();
 
-        ItemStack extract(int slot, int amount);
+        var ret = extractMatching(new PlayerInvWrapper(inventory), predicate, maxAmount);
+
+        // Try to extract from item containing items
+        if (containers) {
+            if (!ret.isEmpty()) {
+                final var finalRet = ret;
+                predicate = other -> ItemStack.isSameItemSameComponents(finalRet, other);
+            }
+            for (int slot = 0; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
+                var stack = inventory.getItem(slot);
+                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
+                if (capability != null) {
+                    var extracted = extractMatching(capability, predicate, maxAmount);
+                    if (ret.isEmpty()) {
+                        ret = extracted;
+                    } else {
+                        ret.grow(extracted.getCount());
+                    }
+                }
+            }
+        }
+
+        return ret;
     }
 
-    private static ItemStack extractMatching(int srcSlots, ItemExtractor extractor, Predicate<ItemStack> predicate, int maxAmount,
-            boolean containers) {
+    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount) {
+        int srcSlots = src.getSlots();
+
         // Find first stack
         ItemStack ret = ItemStack.EMPTY;
         int slot;
         for (slot = 0; slot < srcSlots && ret.isEmpty(); ++slot) {
-            var stack = extractor.get(slot);
+            var stack = src.getStackInSlot(slot);
             if (predicate.test(stack)) {
-                ret = extractor.extract(slot, maxAmount);
-            } else if (containers) {
-                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
-                if (capability != null) {
-                    ret = extractMatching(capability, predicate, maxAmount);
-                }
+                ret = src.extractItem(slot, maxAmount, false);
             }
         }
         if (ret.isEmpty()) {
@@ -97,41 +116,13 @@ public class TransferHelper {
 
         // Try to extract more
         for (; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
-            var stack = extractor.get(slot);
+            var stack = src.getStackInSlot(slot);
             if (ItemStack.isSameItemSameComponents(stack, ret)) {
-                var extracted = extractor.extract(slot, maxAmount - ret.getCount());
+                var extracted = src.extractItem(slot, maxAmount - ret.getCount(), false);
                 ret.grow(extracted.getCount());
             }
         }
 
         return ret;
-    }
-
-    public static ItemStack extractMatching(Inventory inventory, Predicate<ItemStack> predicate, int maxAmount, boolean containers) {
-        return extractMatching(inventory.getContainerSize(), new ItemExtractor() {
-            @Override
-            public ItemStack get(int slot) {
-                return inventory.getItem(slot);
-            }
-
-            @Override
-            public ItemStack extract(int slot, int amount) {
-                return inventory.removeItem(slot, amount);
-            }
-        }, predicate, maxAmount, containers);
-    }
-
-    public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount) {
-        return extractMatching(src.getSlots(), new ItemExtractor() {
-            @Override
-            public ItemStack get(int slot) {
-                return src.getStackInSlot(slot);
-            }
-
-            @Override
-            public ItemStack extract(int slot, int amount) {
-                return src.extractItem(slot, amount, false);
-            }
-        }, predicate, maxAmount, false);
     }
 }

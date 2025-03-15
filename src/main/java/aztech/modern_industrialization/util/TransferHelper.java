@@ -83,6 +83,9 @@ public class TransferHelper {
             }
             for (int slot = 0; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
                 var stack = inventory.getItem(slot);
+                if (stack.getCount() != 1) {
+                    continue;
+                }
                 var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
                 if (capability != null) {
                     var extracted = extractMatching(capability, predicate, maxAmount);

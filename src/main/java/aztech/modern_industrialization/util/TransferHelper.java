@@ -88,7 +88,7 @@ public class TransferHelper {
                 }
                 var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
                 if (capability != null) {
-                    var extracted = extractMatching(capability, predicate, maxAmount);
+                    var extracted = extractMatching(capability, predicate, maxAmount - ret.getCount());
                     if (ret.isEmpty()) {
                         ret = extracted;
                     } else {

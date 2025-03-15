@@ -37,6 +37,13 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
+modId="guideme"
+type="required"
+versionRange="${guideme_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.modern_industrialization]]
 modId="ae2"
 type="optional"
 versionRange="${ae2_version_range}"

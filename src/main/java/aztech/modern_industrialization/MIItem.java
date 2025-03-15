@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.guidebook.GuideBookItem;
 import aztech.modern_industrialization.items.*;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;

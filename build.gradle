@@ -38,10 +38,6 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    // for Patchouli
-    maven {
-        url 'https://maven.blamejared.com'
-    }
     // for AE2 and JEI
     maven {
         name "Modmaven"
@@ -202,6 +198,10 @@ neoForge {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             systemProperty 'forge.logging.console.level', 'debug'
+
+            // Allows updates to the guide book to be watched for by GuideME.
+            systemProperty 'guideme.modern_industrialization.book.sources',
+                    file("src/main/resources/assets/modern_industrialization/mi_guidebook/").absolutePath
         }
 
         client {
@@ -251,6 +251,7 @@ configurations {
 
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
+    implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
@@ -274,10 +275,6 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
 
     localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
@@ -300,6 +297,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_version: version,
             cloth_config_version_range: cloth_config_version_range,
             grandpower_version_range: grandpower_version_range,
+            guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
             jei_version_range: jei_version_range,
     ]
@@ -395,12 +393,12 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
 
             relations {
                 requiredDependency "cloth-config"
+                requiredDependency "guideme"
                 optionalDependency "wthit"
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
                 embeddedLibrary "grandpower"
-                embeddedLibrary "patchouli"
             }
             mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
                 displayName = "Modern Industrialization v${version}"
@@ -427,11 +425,11 @@ modrinth {
     loaders = ["neoforge"]
     dependencies {
         required.project "cloth-config"
+        required.project "guideme"
         optional.project "wthit"
         optional.project "emi"
         optional.project "jei"
         optional.project "rei"
-        embedded.project "patchouli"
     }
 }
 tasks.modrinth.onlyIf {

@@ -72,11 +72,6 @@ public final class TranslationProvider implements DataProvider {
 
     private void addManualEntries() {
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
-        addTranslation("book.modern_industrialization.landing_text",
-                "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
-
-        addTranslation("book.modern_industrialization.subtitle",
-                "Modern Industrialization");
 
         addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
 

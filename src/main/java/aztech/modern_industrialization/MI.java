@@ -32,6 +32,8 @@ import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.guidebook.GuidebookEvents;
+import aztech.modern_industrialization.guidebook.MIGuide;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
@@ -44,7 +46,6 @@ import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
-import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
@@ -127,6 +128,7 @@ public class MI {
         ChunkEventListeners.init();
         DebugCommands.init();
         GuidebookEvents.init();
+        MIGuide.init();
         MIArmorEffects.init();
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));

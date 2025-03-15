@@ -387,7 +387,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     private long getRecipeMaxEu(long recipeEu, long totalEu, int efficiencyTicks) {
         long baseEu = Math.max(behavior.getBaseRecipeEu(), recipeEu);
-        long overclockedEu = baseEu + efficiencyTicks * totalEu / (20*30);
+        long overclockedEu = baseEu + efficiencyTicks * totalEu / (20 * 30);
         return Math.min(totalEu, Math.min(overclockedEu, behavior.getMaxRecipeEu()));
     }
 

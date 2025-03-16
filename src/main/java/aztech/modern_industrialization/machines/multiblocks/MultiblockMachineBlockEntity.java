@@ -105,6 +105,13 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
 
     public abstract ShapeTemplate getActiveShape();
 
+    /**
+     * Can be used in the guide book to show an example of a big shape.
+     */
+    public ShapeTemplate getBigShape() {
+        return getActiveShape();
+    }
+
     public OrientationComponent getOrientation() {
         return orientation;
     }

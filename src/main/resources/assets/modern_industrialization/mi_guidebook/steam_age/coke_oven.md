@@ -14,6 +14,10 @@ item_ids:
 
 # Do You Like Coke?
 
+<GameScene zoom="3" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="coke_oven" />
+</GameScene>
+
 Once you have had enough of the bronze machines, you can start working toward making steel. The ultimate goal is to be able to build the quarry, a multiblock that will dig ores for you!
 
 The first step is to make coke, by heating coal without oxygen. For that, you will need to build a Coke Oven multiblock.

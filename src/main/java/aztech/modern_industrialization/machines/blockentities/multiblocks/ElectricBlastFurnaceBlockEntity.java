@@ -160,6 +160,11 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
         return overdrive.shouldOverdrive();
     }
 
+    @Override
+    public ShapeTemplate getBigShape() {
+        return shapeTemplates[shapeTemplates.length - 1];
+    }
+
     public static void registerReiShapes() {
         for (int i = 0; i < shapeTemplates.length; ++i) {
             ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", shapeTemplates[i], tiers.get(i).coilBlockId.getPath());

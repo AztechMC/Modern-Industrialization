@@ -25,6 +25,7 @@ package aztech.modern_industrialization.guidebook;
 
 import aztech.modern_industrialization.MI;
 import guideme.Guide;
+import guideme.scene.element.SceneElementTagCompiler;
 import net.minecraft.resources.ResourceLocation;
 
 public class MIGuide {
@@ -34,6 +35,7 @@ public class MIGuide {
     public static void init() {
         guide = Guide.builder(ID)
                 .folder("mi_guidebook")
+                .extension(SceneElementTagCompiler.EXTENSION_POINT, new MultiblockShapeCompiler())
                 .build();
     }
 

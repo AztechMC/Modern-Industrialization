@@ -11,6 +11,11 @@ item_ids:
 
 # Large Tank
 
+<GameScene zoom="1" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="large_tank" />
+    <MultiblockShape controller="large_tank" useBigShape={true} x="-8" z="-2" />
+</GameScene>
+
 The Large Tank is a multiblock that allows you to store large amounts of some fluid, for example steam. It can store 64 buckets worth of fluid for every block in the structure (including sides).
 
 <Recipe id="modern_industrialization:electric_age/machine/large_tank_asbl" />

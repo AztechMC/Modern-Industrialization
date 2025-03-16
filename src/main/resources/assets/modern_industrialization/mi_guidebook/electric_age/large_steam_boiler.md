@@ -13,6 +13,10 @@ item_ids:
 
 # Large Steam Boiler
 
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="large_steam_boiler" />
+</GameScene>
+
 The Large Steam Boiler is an upgraded version of the smaller Bronze and Steel Boilers. It uses fuels 8 times faster than the Furnace, but it produces 256 mb/t of Steam when fully heated
 
 <Recipe id="modern_industrialization:electric_age/machine/large_steam_boiler_asbl" />

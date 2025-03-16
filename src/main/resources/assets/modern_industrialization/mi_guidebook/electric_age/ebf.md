@@ -13,6 +13,10 @@ item_ids:
 
 # Electric Blast Furnace
 
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="electric_blast_furnace" />
+</GameScene>
+
 The Electric Blast Furnace is the electric version of the Steam Blast Furnace. It unlocks new recipes and like other multiblock electric machines, its overclock is bounded to 128 EU/t by default.
 
 <Recipe id="modern_industrialization:electric_age/machine/electric_blast_furnace_asbl" />

@@ -11,6 +11,10 @@ item_ids:
 
 # Oil Processing
 
+<GameScene zoom="1.5" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="oil_drilling_rig" />
+</GameScene>
+
 The Oil Drilling Rig is a huge multiblock that can dig for Crude Oil under the bedrock using drills. Yes, it's an oil quarry basically. Oil processing will give you a ton of byproducts and energy!
 
 <Recipe id="modern_industrialization:oil/oil_drilling_rig_asbl" />

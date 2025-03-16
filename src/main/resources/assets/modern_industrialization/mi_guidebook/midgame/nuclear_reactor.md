@@ -13,6 +13,11 @@ item_ids:
 
 # The Nuclear Reactor
 
+<GameScene zoom="1" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="nuclear_reactor" />
+    <MultiblockShape controller="nuclear_reactor" useBigShape={true} x="-11" z="-3" />
+</GameScene>
+
 The Nuclear Reactor is a large multiblock whose purpose is to generate massive amounts of energy by consuming nuclear fuel. It can produce 100s of times more EU/t than diesel. It comes in several sizes from small to large.
 
 <Recipe id="modern_industrialization:electric_age/machine/nuclear_reactor_asbl" />

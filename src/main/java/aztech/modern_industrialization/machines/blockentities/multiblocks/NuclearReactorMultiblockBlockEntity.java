@@ -130,6 +130,11 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
+    public ShapeTemplate getBigShape() {
+        return shapeTemplates[shapeTemplates.length - 1];
+    }
+
+    @Override
     protected void onRematch(ShapeMatcher shapeMatcher) {
         nuclearGrid = null;
         if (shapeMatcher.isMatchSuccessful()) {

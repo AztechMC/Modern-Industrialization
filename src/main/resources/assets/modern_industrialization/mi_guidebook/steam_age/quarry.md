@@ -6,13 +6,16 @@ navigation:
   parent: modern_industrialization:steam_age.md
 item_ids:
   - modern_industrialization:bronze_drill
+  - modern_industrialization:steam_quarry
 ---
 
 # Infinite Resources?
 
 ## The Steam Quarry
 
-<ItemImage id="modern_industrialization:steam_quarry" />
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="steam_quarry" />
+</GameScene>
 
 The Steam Quarry is a steam multiblock machine that consumes bronze drills, uses them to dig deeper than the bedrock and gives you back some ores, as you can see in REI.
 

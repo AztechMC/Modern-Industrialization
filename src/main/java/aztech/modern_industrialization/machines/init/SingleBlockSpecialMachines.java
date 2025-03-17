@@ -157,7 +157,7 @@ public class SingleBlockSpecialMachines {
         for (CableTier tier : CableTier.allTiers()) {
             String id = tier.name + "_storage_unit";
             String englishName = tier.shortEnglishName + " Storage Unit";
-            MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
+            MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 100000 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
             MachineRegistrationHelper.addMachineModel(id, "electric_storage", tier.casing, true, false, true, false);

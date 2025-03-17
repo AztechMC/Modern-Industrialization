@@ -40,6 +40,8 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
+    private static final ThreadLocal<Integer> barrelNesting = ThreadLocal.withInitial(() -> 0);
+
     private final int itemNameColor;
 
     public BarrelRenderer(int itemNameColor) {
@@ -57,44 +59,54 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
         if (!MIConfig.getConfig().enableBarrelContentRendering) {
             return;
         }
+        int nesting = barrelNesting.get();
+        if (nesting >= 4) {
+            return;
+        }
 
-        var state = entity.getBlockState();
-        var pos = entity.getBlockPos();
+        barrelNesting.set(nesting + 1);
 
-        ItemVariant item = entity.getResource();
+        try {
+            var state = entity.getBlockState();
+            var pos = entity.getBlockPos();
 
-        if (!item.isBlank()) {
-            ItemStack toRender = item.toStack();
+            ItemVariant item = entity.getResource();
 
-            int sideMask = 0;
+            if (!item.isBlank()) {
+                ItemStack toRender = item.toStack();
 
-            for (int i = 0; i < 4; i++) {
-                var direction = Direction.from2DDataValue(i);
-                // Note: level can be null from builtin item renderer
-                if (entity.getLevel() != null
-                        && !Block.shouldRenderFace(state, entity.getLevel(), pos, direction, pos.relative(direction))) {
-                    continue;
+                int sideMask = 0;
+
+                for (int i = 0; i < 4; i++) {
+                    var direction = Direction.from2DDataValue(i);
+                    // Note: level can be null from builtin item renderer
+                    if (entity.getLevel() != null
+                            && !Block.shouldRenderFace(state, entity.getLevel(), pos, direction, pos.relative(direction))) {
+                        continue;
+                    }
+
+                    sideMask |= 1 << i;
+                    // Thanks TechReborn for rendering code
+
+                    matrices.pushPose();
+                    matrices.translate(0.5, 0, 0.5);
+                    matrices.mulPose(Axis.YP.rotationDegrees(-i * 90F));
+                    matrices.scale(0.5F, 0.5F, 0.5F);
+                    matrices.translate(0, 1.125, 1.01);
+
+                    matrices.last().pose().scale(1, 1, 0.01f);
+                    matrices.last().normal().rotate(Mth.HALF_PI / 2, -1, 0, 0);
+
+                    Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemDisplayContext.GUI, RenderHelper.FULL_LIGHT,
+                            OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, entity.getLevel(), 0);
+
+                    matrices.popPose();
                 }
 
-                sideMask |= 1 << i;
-                // Thanks TechReborn for rendering code
-
-                matrices.pushPose();
-                matrices.translate(0.5, 0, 0.5);
-                matrices.mulPose(Axis.YP.rotationDegrees(-i * 90F));
-                matrices.scale(0.5F, 0.5F, 0.5F);
-                matrices.translate(0, 1.125, 1.01);
-
-                matrices.last().pose().scale(1, 1, 0.01f);
-                matrices.last().normal().rotate(Mth.HALF_PI / 2, -1, 0, 0);
-
-                Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemDisplayContext.GUI, RenderHelper.FULL_LIGHT,
-                        OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, entity.getLevel(), 0);
-
-                matrices.popPose();
+                DeferredBarrelTextRenderer.enqueueBarrelForRendering(pos, sideMask, itemNameColor);
             }
-
-            DeferredBarrelTextRenderer.enqueueBarrelForRendering(pos, sideMask, itemNameColor);
+        } finally {
+            barrelNesting.set(nesting);
         }
     }
 }

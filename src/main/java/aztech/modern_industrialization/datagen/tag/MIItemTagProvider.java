@@ -119,6 +119,13 @@ public class MIItemTagProvider extends ItemTagsProvider {
             tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
                     .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
         }
+
+        tag(MITags.FE_CABLES)
+                .addOptional(ResourceLocation.parse("mekanism:basic_universal_cable"))
+                .addOptional(ResourceLocation.parse("powah:energy_cable_basic"));
+        tag(MITags.FE_CABLES_PART)
+                .addOptional(ResourceLocation.parse("mekanism:alloy_infused"))
+                .addOptional(ResourceLocation.parse("powah:capacitor_basic_tiny"));
     }
 
     private static TagKey<Item> key(ResourceLocation id) {

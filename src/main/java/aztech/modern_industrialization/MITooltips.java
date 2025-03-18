@@ -164,6 +164,14 @@ public class MITooltips {
         }
     };
 
+    public static final Parser<Number> FE_PER_TICK_PARSER = new Parser<>() {
+        @Override
+        public Component parse(Number number) {
+            TextHelper.Amount amount = TextHelper.getAmountGeneric(number);
+            return MIText.FeT.text(amount.digit(), amount.unit()).withStyle(NUMBER_TEXT);
+        }
+    };
+
     public record NumberWithMax(Number number, Number max) {
     }
 
@@ -371,6 +379,25 @@ public class MITooltips {
                 }
             });
 
+    public static final TooltipAttachment FE_WIRE_SPEED_UPGRADES = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                if (!MIConfig.getConfig().enableFeWires) {
+                    return Optional.empty();
+                }
+                var upgrade = itemStack.getItemHolder().getData(MIDataMaps.FE_WIRE_UPGRADES);
+                if (upgrade != null) {
+                    List<Component> lines = new LinkedList<>();
+                    lines.add(new Line(MIText.TooltipFESpeedUpgrade).arg(upgrade.energyTransferBoost(), FE_PER_TICK_PARSER).build());
+                    if (itemStack.getCount() > 1) {
+                        lines.add(new Line(MIText.TooltipFESpeedUpgradeStack)
+                                .arg(itemStack.getCount() * upgrade.energyTransferBoost(), FE_PER_TICK_PARSER).build());
+                    }
+                    return Optional.of(lines);
+                } else {
+                    return Optional.empty();
+                }
+            });
+
     public static final TooltipAttachment STEAM_DRILL = TooltipAttachment.ofMultilines(MIItem.STEAM_MINING_DRILL,
             List.of(
                     line(MIText.ToolConfiguration).build(),
@@ -419,6 +446,15 @@ public class MITooltips {
                 return (item instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe())) ? Optional.of(List.of(
                         line(MIText.PipeHelp1).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
                         line(MIText.PipeHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
+            });
+
+    public static final TooltipAttachment FE_WIRE_HELP = TooltipAttachment.ofMultilines(
+            (itemStack, item) -> {
+                return (item instanceof PipeItem pipe && pipe.isFEWire()) ? Optional.of(List.of(
+                        line(MIText.FeWireHelp1).arg(MIConfig.getConfig().baseFEWireTransfer, FE_PER_TICK_PARSER).build(),
+                        Component.empty(),
+                        line(MIText.FeWireHelp2).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build(),
+                        line(MIText.FeWireHelp3).arg("sneak", KEYBIND_PARSER).arg("use", KEYBIND_PARSER).build())) : Optional.empty();
             });
 
     // Long Tooltip with only text, no need of MIText

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -32,13 +33,13 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.recipe.json.IMIRecipeBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.*;
 
 public class CompatRecipesProvider extends MIRecipesProvider {
 
@@ -54,11 +55,14 @@ public class CompatRecipesProvider extends MIRecipesProvider {
     public void buildRecipes(RecipeOutput consumer) {
         this.consumer = consumer;
 
-        startCompat("ae2");
+        startModCompat("ae2");
         generateAe2Compat();
+
+        startFECompat();
+        generateFeCompat();
     }
 
-    private void startCompat(String modid) {
+    private void startModCompat(String modid) {
         currentCompatModid = modid;
         conditions = new ICondition[] { new ModLoadedCondition(modid) };
     }
@@ -148,6 +152,83 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addInput('q', "ae2:quartz_fiber");
         addCompatRecipe("craft/me_wire_direct", meWiresDirect);
         addCompatRecipe("assembler/me_wire_direct", meWiresDirect.exportToAssembler());
+    }
+
+    private void startFECompat() {
+        currentCompatModid = "fe";
+        conditions = new ICondition[] { new AndCondition(List.of(
+                new ItemExistsCondition("modern_industrialization:fe_wire"),
+                new NotCondition(new TagEmptyCondition(MI.id("fe_cables"))),
+                new NotCondition(new TagEmptyCondition(MI.id("fe_cables_part"))))) };
+    }
+
+    private void generateFeCompat() {
+        for (DyeColor color : DyeColor.values()) {
+            // 16 fe wires with dye in the center
+            addCompatRecipe("dyes/" + color.getName() + "/craft/fe_wire_direct",
+                    new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fe_wire", 16, "aRa", "cdc", "aRa")
+                            .addInput('R', "modern_industrialization:rubber_sheet")
+                            .addInput('c', "#modern_industrialization:fe_cables")
+                            .addInput('a', "#modern_industrialization:fe_cables_part")
+                            .addInput('d', "#c:dyes/" + color.getName()));
+            // 16 fe wires in the assembler
+            // synthetic rubber
+            addCompatRecipe("dyes/" + color.getName() + "/assembler/fe_wire_direct_synthetic_rubber",
+                    new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 100)
+                            .addFluidInput(MIFluids.SYNTHETIC_RUBBER, 10)
+                            .addItemInput("#modern_industrialization:fe_cables", 2)
+                            .addItemInput("#modern_industrialization:fe_cables_part", 4)
+                            .addItemInput("#c:dyes/" + color.getName(), 1)
+                            .addItemOutput("modern_industrialization:" + color.getName() + "_fe_wire", 16));
+            // styrene-butadiene
+            addCompatRecipe("dyes/" + color.getName() + "/assembler/fe_wire_direct_styrene_rubber",
+                    new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 100)
+                            .addFluidInput(MIFluids.STYRENE_BUTADIENE_RUBBER, 2)
+                            .addItemInput("#modern_industrialization:fe_cables", 2)
+                            .addItemInput("#modern_industrialization:fe_cables_part", 4)
+                            .addItemInput("#c:dyes/" + color.getName(), 1)
+                            .addItemOutput("modern_industrialization:" + color.getName() + "_fe_wire", 16));
+            // 8 fe wires
+            var eightFeWires = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fe_wire", 8, "ppp", "pdp",
+                    "ppp").addInput('d', "#c:dyes/" + color.getName()).addInput('p', "#modern_industrialization:fe_wires");
+            addCompatRecipe("dyes/" + color.getName() + "/craft/fe_wire_8", eightFeWires);
+            addCompatRecipe("dyes/" + color.getName() + "/mixer/fe_wire_8",
+                    eightFeWires.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1));
+            // 1 fe wire
+            addCompatRecipe("dyes/" + color.getName() + "/craft/fe_wire_1",
+                    new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fe_wire", 1, "pd")
+                            .addInput('d', "#c:dyes/" + color.getName()).addInput('p', "#modern_industrialization:fe_wires"));
+        }
+
+        // decolor 8 fe wires
+        addCompatRecipe("dyes/decolor/craft/fe_wire_8", new ShapedRecipeJson("modern_industrialization:fe_wire", 8, "ppp", "pbp",
+                "ppp").addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:fe_wires"));
+        // decolor 1 fe wire
+        addCompatRecipe("dyes/decolor/craft/fe_wire_1", new ShapedRecipeJson("modern_industrialization:fe_wire", 1, "pb")
+                .addInput('b', "minecraft:water_bucket").addInput('p', "#modern_industrialization:fe_wires"));
+        // decolor 1 fe wire with mixer
+        addCompatRecipe("dyes/decolor/mixer/fe_wire", new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
+                .addItemInput("#modern_industrialization:fe_wires", 1)
+                .addFluidInput(Fluids.WATER, 125)
+                .addItemOutput("modern_industrialization:fe_wire", 1));
+        // 16 fe wires direct
+        addCompatRecipe("craft/fe_wire_direct", new ShapedRecipeJson("modern_industrialization:fe_wire", 16, "aRa", "c c", "aRa")
+                .addInput('R', "modern_industrialization:rubber_sheet")
+                .addInput('c', "#modern_industrialization:fe_cables")
+                .addInput('a', "#modern_industrialization:fe_cables_part"));
+        // 16 fe wires in the assembler
+        // synthetic rubber
+        addCompatRecipe("assembler/fe_wire_direct_synthetic_rubber", new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 100)
+                .addFluidInput(MIFluids.SYNTHETIC_RUBBER, 10)
+                .addItemInput("#modern_industrialization:fe_cables", 2)
+                .addItemInput("#modern_industrialization:fe_cables_part", 4)
+                .addItemOutput("modern_industrialization:fe_wire", 16));
+        // styrene-butadiene
+        addCompatRecipe("assembler/fe_wire_direct_styrene_rubber", new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 100)
+                .addFluidInput(MIFluids.STYRENE_BUTADIENE_RUBBER, 2)
+                .addItemInput("#modern_industrialization:fe_cables", 2)
+                .addItemInput("#modern_industrialization:fe_cables_part", 4)
+                .addItemOutput("modern_industrialization:fe_wire", 16));
     }
 
     private void addMiRecipe(MachineRecipeType machine, String input, String output, int outputAmount) {

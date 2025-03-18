@@ -1,0 +1,56 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "modern_industrialization:fe_wire"
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables"
+          }
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables_part"
+          }
+        }
+      ]
+    }
+  ],
+  "type": "modern_industrialization:assembler",
+  "duration": 100,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 10,
+      "fluid": "modern_industrialization:synthetic_rubber"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 2,
+      "tag": "modern_industrialization:fe_cables"
+    },
+    {
+      "amount": 4,
+      "tag": "modern_industrialization:fe_cables_part"
+    },
+    {
+      "amount": 1,
+      "tag": "c:dyes/brown"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "item": "modern_industrialization:brown_fe_wire"
+    }
+  ]
+}

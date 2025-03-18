@@ -26,6 +26,7 @@ package aztech.modern_industrialization.compat.jade.server;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
+import aztech.modern_industrialization.pipes.fe.FENetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
@@ -68,6 +69,14 @@ public class PipeDataProvider implements IServerDataProvider<BlockAccessor> {
                 var info = itemNode.collectNetworkInfo();
                 pipeData.putLong("items", info.movedItems());
                 pipeData.putInt("pulse", info.pulse());
+            }
+
+            if (node instanceof FENetworkNode feNode) {
+                var info = feNode.collectNetworkInfo();
+                pipeData.putLong("energy", info.energy());
+                pipeData.putLong("maxEnergy", info.maxEnergy());
+                pipeData.putLong("transfer", info.transfer());
+                pipeData.putLong("maxTransfer", info.maxTransfer());
             }
 
             data.put(node.getType().getIdentifier().toString(), pipeData);

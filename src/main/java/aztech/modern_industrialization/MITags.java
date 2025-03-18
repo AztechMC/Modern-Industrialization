@@ -35,7 +35,12 @@ public class MITags {
     public static final TagKey<Item> TANKS = miItem("tanks");
     public static final TagKey<Item> FLUID_PIPES = miItem("fluid_pipes");
     public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
+    public static final TagKey<Item> FE_WIRES = miItem("fe_wires");
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
+
+    // Used in fe cable compat recipes
+    public static final TagKey<Item> FE_CABLES = miItem("fe_cables");
+    public static final TagKey<Item> FE_CABLES_PART = miItem("fe_cables_part");
 
     public static TagKey<Item> item(String path) {
         return TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", path));

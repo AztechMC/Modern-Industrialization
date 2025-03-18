@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:and",
+      "values": [
+        {
+          "type": "neoforge:item_exists",
+          "item": "modern_industrialization:fe_wire"
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables"
+          }
+        },
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "modern_industrialization:fe_cables_part"
+          }
+        }
+      ]
+    }
+  ],
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "modern_industrialization:fe_wires"
+    },
+    {
+      "amount": 1,
+      "tag": "c:dyes/lime"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:lime_fe_wire"
+    }
+  ]
+}

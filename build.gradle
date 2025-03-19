@@ -74,6 +74,8 @@ repositories {
             includeGroup "com.github.Draylar.omega-config"
             /* For KubeJS */
             includeGroup "com.github.llamalad7.mixinextras"
+            // For KubeJS
+            includeGroup "com.github.rtyley"
         }
     }
     // to build indrev
@@ -100,6 +102,7 @@ repositories {
     maven {
         url "https://maven.saps.dev/minecraft"
         content {
+            includeGroup "dev.latvian.apps"
             includeGroup "dev.latvian.mods"
             includeGroup "dev.ftb.mods"
         }
@@ -149,7 +152,6 @@ repositories {
             includeGroup "earth.terrarium.athena"
         }
     }
-    mavenLocal()
 }
 
 sourceSets {

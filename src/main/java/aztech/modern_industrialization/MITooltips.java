@@ -97,20 +97,16 @@ public class MITooltips {
     }
 
     public static void attachTooltip(ItemStack stack, List<Component> lines) {
-        Item item = stack.getItem();
-        if (item != null) {
-            boolean hasPrintRequiredShift = false;
-            for (var tooltip : TOOLTIPS) {
-                Optional<List<? extends Component>> maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
-                if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
-                    maybeComponents.ifPresent(lines::addAll);
-                } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
-                    if (maybeComponents.isPresent()) {
-                        lines.add(MIText.TooltipsShiftRequired.text().setStyle(DEFAULT_STYLE));
-                        hasPrintRequiredShift = true;
-                    }
+        boolean hasPrintRequiredShift = false;
+        for (var tooltip : TOOLTIPS) {
+            Optional<List<? extends Component>> maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
+            if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
+                maybeComponents.ifPresent(lines::addAll);
+            } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
+                if (maybeComponents.isPresent()) {
+                    lines.add(MIText.TooltipsShiftRequired.text().setStyle(DEFAULT_STYLE));
+                    hasPrintRequiredShift = true;
                 }
-
             }
         }
     }
@@ -211,6 +207,16 @@ public class MITooltips {
     };
 
     public static final Parser<Component> COMPONENT = state -> state;
+
+    // Data-driven tooltips
+    public static final TooltipAttachment DATA_DRIVEN = TooltipAttachment.ofMultilines((stack, item) -> {
+        var dataMap = stack.getItemHolder().getData(MIDataMaps.ITEM_TOOLTIPS);
+        if (dataMap != null) {
+            return Optional.of(dataMap.components());
+        } else {
+            return Optional.empty();
+        }
+    }).setPriority(-100);
 
     // Tooltips
 

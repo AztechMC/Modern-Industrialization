@@ -27,13 +27,17 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.api.datamaps.ItemPipeUpgrade;
+import aztech.modern_industrialization.api.datamaps.ItemTooltip;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.api.datamaps.MachineUpgrade;
 import aztech.modern_industrialization.datagen.loot.MILootTables;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -56,6 +60,7 @@ public class MIDataMapProvider extends DataMapProvider {
         gatherFluidFuels();
         gatherItemPipeUpgrades();
         gatherMachineUpgrades();
+        gatherItemTooltips();
 
         builder(NeoForgeDataMaps.RAID_HERO_GIFTS)
                 .add(MIRegistries.INDUSTRIALIST, new RaidHeroGift(MILootTables.INDUSTRIALIST_GIFT), false);
@@ -124,5 +129,16 @@ public class MIDataMapProvider extends DataMapProvider {
 
     private void addMachineUpgrade(ItemDefinition<?> itemDefinition, int extraMaxEu) {
         builder(MIDataMaps.MACHINE_UPGRADES).add(itemDefinition.getId(), new MachineUpgrade(extraMaxEu), false);
+    }
+
+    private void gatherItemTooltips() {
+        addItemTooltip("capacitor", MIText.HasBetterYieldAssemblerRecipe);
+        addItemTooltip("inductor", MIText.HasBetterYieldAssemblerRecipe);
+        addItemTooltip("resistor", MIText.HasBetterYieldAssemblerRecipe);
+    }
+
+    private void addItemTooltip(String path, MIText text) {
+        var component = text.text().setStyle(MITooltips.DEFAULT_STYLE);
+        builder(MIDataMaps.ITEM_TOOLTIPS).add(MI.id(path), new ItemTooltip(List.of(component)), false);
     }
 }

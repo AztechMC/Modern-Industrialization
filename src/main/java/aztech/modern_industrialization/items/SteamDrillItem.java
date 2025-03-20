@@ -69,7 +69,6 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -79,7 +78,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -310,11 +308,18 @@ public class SteamDrillItem
     private record ClickedBlock(BlockPos pos, Direction face) {
     }
 
+    private static final ThreadLocal<Boolean> recursiveMineBlock = ThreadLocal.withInitial(() -> false);
+
     @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         useFuel(stack, miner);
 
         if (!(miner instanceof ServerPlayer p)) {
+            return false;
+        }
+
+        if (recursiveMineBlock.get()) {
+            // Avoid endless recursion
             return false;
         }
 
@@ -325,17 +330,14 @@ public class SteamDrillItem
         lastClickedBlock.remove(p);
 
         totalDrops = new ArrayList<>();
-        forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
-            Block block = tempState.getBlock();
-            var blockEntity = world.getBlockEntity(blockPos);
-            var breakEvent = CommonHooks.fireBlockBreak(world, p.gameMode.getGameModeForPlayer(), p,
-                    blockPos, tempState);
-            if (!breakEvent.isCanceled() && block.onDestroyedByPlayer(tempState, world, blockPos, (Player) miner, true, tempState.getFluidState())) {
-                block.destroy(world, blockPos, tempState);
-                // Thanks to our event above, the drops won't make it into the level, and will be added to `totalDrops` instead.
-                Block.dropResources(tempState, world, blockPos, blockEntity, miner, stack);
-            }
-        });
+        recursiveMineBlock.set(true);
+        try {
+            forEachMineableBlock(world, area, miner, (blockPos, tempState) -> {
+                p.gameMode.destroyBlock(blockPos);
+            });
+        } finally {
+            recursiveMineBlock.set(false);
+        }
         totalDrops.forEach(itemStack -> {
             ItemHandlerHelper.giveItemToPlayer(p, itemStack);
         });

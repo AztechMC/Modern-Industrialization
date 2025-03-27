@@ -303,7 +303,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
                 ctor);
     }
 
-    static class FluidItemConsumerBuilder {
+    public static class FluidItemConsumerBuilder {
 
         long maxEnergyProduction;
 

@@ -125,6 +125,14 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         return (T) this;
     }
 
+    public T addFluidInput(String fluid, int amount) {
+        return addFluidInput(fluid, amount, 1);
+    }
+
+    public T addFluidInput(String fluid, int amount, float probability) {
+        return addFluidInput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability);
+    }
+
     public T addFluidInput(FluidLike fluid, int amount, float probability) {
         return addFluidInput(fluid.asFluid(), amount, probability);
     }

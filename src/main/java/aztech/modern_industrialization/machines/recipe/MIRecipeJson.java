@@ -29,7 +29,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -124,23 +123,6 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     public T addItemOutput(ItemVariant variant, int amount, float probability) {
         recipe.itemOutputs.add(new MachineRecipe.ItemOutput(variant, amount, probability));
         return (T) this;
-    }
-
-    public T addFluidInput(String maybeTag, int amount) {
-        return addFluidInput(maybeTag, amount, 1);
-    }
-
-    public T addFluidInput(String maybeTag, int amount, float probability) {
-        FluidIngredient ing;
-        if (maybeTag.startsWith("#")) {
-            ing = FluidIngredient.tag(FluidTags.create(ResourceLocation.parse(maybeTag.substring(1))));
-        } else {
-            if (!BuiltInRegistries.FLUID.containsKey(ResourceLocation.parse(maybeTag))) {
-                throw new RuntimeException("Could not find fluid " + maybeTag);
-            }
-            ing = FluidIngredient.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse(maybeTag)));
-        }
-        return addFluidInput(ing, amount, probability);
     }
 
     public T addFluidInput(FluidLike fluid, int amount, float probability) {

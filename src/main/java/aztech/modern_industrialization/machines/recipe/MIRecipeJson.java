@@ -29,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -125,12 +126,21 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         return (T) this;
     }
 
-    public T addFluidInput(String fluid, int amount) {
-        return addFluidInput(fluid, amount, 1);
+    public T addFluidInput(String maybeTag, int amount) {
+        return addFluidInput(maybeTag, amount, 1);
     }
 
-    public T addFluidInput(String fluid, int amount, float probability) {
-        return addFluidInput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability);
+    public T addFluidInput(String maybeTag, int amount, float probability) {
+        FluidIngredient ing;
+        if (maybeTag.startsWith("#")) {
+            ing = FluidIngredient.tag(FluidTags.create(ResourceLocation.parse(maybeTag.substring(1))));
+        } else {
+            if (!BuiltInRegistries.FLUID.containsKey(ResourceLocation.parse(maybeTag))) {
+                throw new RuntimeException("Could not find fluid " + maybeTag);
+            }
+            ing = FluidIngredient.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse(maybeTag)));
+        }
+        return addFluidInput(ing, amount, probability);
     }
 
     public T addFluidInput(FluidLike fluid, int amount, float probability) {
@@ -150,7 +160,19 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
-        recipe.fluidInputs.add(new MachineRecipe.FluidInput(FluidIngredient.of(fluid), amount, probability));
+        return addFluidInput(FluidIngredient.of(fluid), amount, probability);
+    }
+
+    public T addFluidInput(TagKey<Fluid> tag, int amount) {
+        return addFluidInput(tag, amount, 1);
+    }
+
+    public T addFluidInput(TagKey<Fluid> tag, int amount, float probability) {
+        return addFluidInput(FluidIngredient.tag(tag), amount, probability);
+    }
+
+    public T addFluidInput(FluidIngredient ingredient, int amount, float probability) {
+        recipe.fluidInputs.add(new MachineRecipe.FluidInput(ingredient, amount, probability));
         return (T) this;
     }
 

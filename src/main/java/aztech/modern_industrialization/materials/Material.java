@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A read-only material. Build with {@link MaterialBuilder}.
@@ -52,6 +53,11 @@ public class Material {
 
     public Map<PartKey, MaterialItemPart> getParts() {
         return Collections.unmodifiableMap(parts);
+    }
+
+    @Nullable
+    public MaterialItemPart getNullablePart(PartKeyProvider part) {
+        return parts.get(part.key());
     }
 
     public MaterialItemPart getPart(PartKeyProvider part) {

@@ -37,6 +37,8 @@ import aztech.modern_industrialization.api.datamaps.MachineUpgrade;
 import aztech.modern_industrialization.datagen.loot.MILootTables;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.materials.MaterialRegistry;
+import aztech.modern_industrialization.materials.part.MIParts;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -135,6 +137,13 @@ public class MIDataMapProvider extends DataMapProvider {
         addItemTooltip("capacitor", MIText.HasBetterYieldAssemblerRecipe);
         addItemTooltip("inductor", MIText.HasBetterYieldAssemblerRecipe);
         addItemTooltip("resistor", MIText.HasBetterYieldAssemblerRecipe);
+        // Gears get 2x the yield using the assembler.
+        for (var material : MaterialRegistry.getMaterials().values()) {
+            var part = material.getNullablePart(MIParts.GEAR);
+            if (part != null) {
+                addItemTooltip(part.getItemId().split(":")[1], MIText.HasBetterYieldAssemblerRecipe);
+            }
+        }
     }
 
     private void addItemTooltip(String path, MIText text) {

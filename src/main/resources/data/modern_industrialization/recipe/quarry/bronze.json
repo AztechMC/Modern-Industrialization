@@ -45,6 +45,14 @@
     },
     {
       "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "create" }
+      ],
+      "item": "create:zinc_ore",
+      "amount": 1,
+      "probability": 0.08
+    },
+    {
+      "neoforge:conditions": [
         { "type": "neoforge:mod_loaded", "modid": "mekanism" }
       ],
       "item": "mekanism:osmium_ore",

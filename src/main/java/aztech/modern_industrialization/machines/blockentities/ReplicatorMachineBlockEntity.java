@@ -48,6 +48,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -113,23 +114,41 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         return data;
     }
 
-    public boolean replicationStep(boolean simulate) {
+    private static boolean canReplicate(ItemStack stack) {
+        if (stack.is(BLACKLISTED)) {
+            return false;
+        }
 
+        // Containers are only allowed if they are empty.
+        var itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (itemHandler != null) {
+            int slots = itemHandler.getSlots();
+            for (int i = 0; i < slots; ++i) {
+                if (!itemHandler.getStackInSlot(i).isEmpty()) {
+                    return false;
+                }
+            }
+        }
+
+        // Disallow anything that contains UU Matter
+        var fluidItem = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        if (fluidItem != null) {
+            for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
+                if (fluidItem.getFluidInTank(tank).getFluid() == MIFluids.UU_MATER.asFluid()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean replicationStep(boolean simulate) {
         ItemVariant itemVariant = inventoryComponent.getItemInputs().get(0).getResource();
 
         if (!itemVariant.isBlank()) {
-            // check blacklist
-            if (itemVariant.toStack().is(BLACKLISTED)) {
+            if (!canReplicate(itemVariant.toStack())) {
                 return false;
-            }
-            // check that the item doesn't contain uu matter
-            var fluidItem = itemVariant.toStack().getCapability(Capabilities.FluidHandler.ITEM);
-            if (fluidItem != null) {
-                for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
-                    if (fluidItem.getFluidInTank(tank).getFluid() == MIFluids.UU_MATER.asFluid()) {
-                        return false;
-                    }
-                }
             }
 
             try (Transaction tx = Transaction.openOuter()) {

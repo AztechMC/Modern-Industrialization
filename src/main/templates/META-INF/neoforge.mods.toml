@@ -23,13 +23,6 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
-modId="cloth_config"
-type="required"
-versionRange="${cloth_config_version_range}"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.modern_industrialization]]
 modId="grandpower"
 type="required"
 versionRange="${grandpower_version_range}"

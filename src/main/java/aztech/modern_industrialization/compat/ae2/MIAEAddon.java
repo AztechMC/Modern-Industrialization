@@ -35,6 +35,7 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetwork;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkData;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkNode;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
@@ -50,7 +51,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class MIAEAddon {
     static {
-        if (!MIConfig.loadAe2Compat()) {
+        if (!MIStartupConfig.INSTANCE.loadAe2Compat()) {
             throw new RuntimeException("AE2 compat is disabled. How did this get loaded?");
         }
     }

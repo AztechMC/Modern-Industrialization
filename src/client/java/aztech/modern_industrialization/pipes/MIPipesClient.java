@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
@@ -134,7 +134,7 @@ public class MIPipesClient {
             }
         }
 
-        if (MIConfig.loadAe2Compat()) {
+        if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
             try {
                 Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddonClient")
                         .getMethod("registerPipeRenderers")

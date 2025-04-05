@@ -25,11 +25,11 @@ package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
@@ -89,7 +89,7 @@ public class MIPipes {
             registerItemPipeType(color);
         }
 
-        if (MIConfig.loadAe2Compat()) {
+        if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
             try {
                 Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
                         .getMethod("onInitializePipes")

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
-import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -56,7 +56,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
             RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);
         }
 
-        if (!MIConfig.getConfig().enableBarrelContentRendering) {
+        if (!MIClientConfig.INSTANCE.enableBarrelContentRendering.getAsBoolean()) {
             return;
         }
         int nesting = barrelNesting.get();

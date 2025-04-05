@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
@@ -41,7 +41,7 @@ public class HudRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, MIConfig.getConfig().armorHudYPosition, 0);
+            guiGraphics.pose().translate(0, MIClientConfig.INSTANCE.armorHudYPosition.getAsInt(), 0);
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
             if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);

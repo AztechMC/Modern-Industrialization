@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import dev.technici4n.grandpower.api.DelegatingEnergyStorage;
 import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import dev.technici4n.grandpower.api.LimitingEnergyStorage;
@@ -93,7 +93,7 @@ public class EnergyApi {
     @ApiStatus.Internal
     public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks, Item[] allItems) {
         // Compat wrapper for TR energy
-        if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {
+        if (MIStartupConfig.INSTANCE.enableBidirectionalEnergyCompat.getAsBoolean()) {
             event.registerBlock(ILongEnergyStorage.BLOCK, (world, pos, state, blockEntity, context) -> {
                 if (IN_COMPAT.get()) {
                     return null;

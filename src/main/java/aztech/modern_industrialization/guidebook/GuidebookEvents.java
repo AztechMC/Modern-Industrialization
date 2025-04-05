@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.guidebook;
 
 import aztech.modern_industrialization.MIAdvancementTriggers;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.config.MIServerConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
@@ -35,7 +35,7 @@ public class GuidebookEvents {
     public static void init() {
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
             var player = event.getEntity();
-            if (MIConfig.getConfig().spawnWithGuideBook) {
+            if (MIServerConfig.INSTANCE.spawnWithGuideBook.getAsBoolean()) {
                 GuidebookPersistentState state = GuidebookPersistentState.get(player.getServer());
                 if (!state.hasPlayerReceivedGuidebook(player)) {
                     if (player.getInventory().add(new ItemStack(MIItem.GUIDE_BOOK))) {
@@ -48,7 +48,7 @@ public class GuidebookEvents {
         });
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, event -> {
-            if (!event.isEndConquered() && MIConfig.getConfig().respawnWithGuideBook) {
+            if (!event.isEndConquered() && MIServerConfig.INSTANCE.respawnWithGuideBook.getAsBoolean()) {
                 event.getEntity().getInventory().add(new ItemStack(MIItem.GUIDE_BOOK));
             }
         });

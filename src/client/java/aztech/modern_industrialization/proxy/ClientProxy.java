@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.MIClient;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
@@ -119,7 +119,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public BlockState getMachineCasingBlockState(BlockState state, BlockAndTintGetter renderView, BlockPos pos) {
         var be = renderView.getBlockEntity(pos); // Note: not safe to access fields!
-        if (!MIConfig.getConfig().enableInterMachineConnectedTextures) {
+        if (!MIClientConfig.INSTANCE.enableInterMachineConnectedTextures.getAsBoolean()) {
             // Use the machine's own state, unless we are a hatch or a multiblock controller of course.
             if (!(be instanceof HatchBlockEntity) && !(be instanceof MultiblockMachineBlockEntity)) {
                 return state;

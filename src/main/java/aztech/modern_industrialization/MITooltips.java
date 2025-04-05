@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.OreBlock;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.items.PortableStorageUnit;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
@@ -306,9 +307,8 @@ public class MITooltips {
                 if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof OreBlock) {
                     OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
                     List<Component> lines = new LinkedList<>();
-                    MIConfig config = MIConfig.getConfig();
 
-                    if (config.enableDefaultOreGenTooltips) {
+                    if (MIClientConfig.INSTANCE.enableDefaultOreGenTooltips.getAsBoolean()) {
                         if (oreBlock.params.generate) {
                             lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
                             lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());

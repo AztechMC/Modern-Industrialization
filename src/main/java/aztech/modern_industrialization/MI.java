@@ -28,6 +28,8 @@ import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import aztech.modern_industrialization.config.MIServerConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -75,7 +77,9 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -103,7 +107,10 @@ public class MI {
         return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
-    public MI(IEventBus modBus, Dist dist) {
+    public MI(ModContainer modContainer, IEventBus modBus, Dist dist) {
+        modContainer.registerConfig(ModConfig.Type.SERVER, MIServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.STARTUP, MIStartupConfig.SPEC);
+
         KubeJSProxy.checkThatKubeJsIsLoaded();
 
         MIAdvancementTriggers.init(modBus);
@@ -220,16 +227,17 @@ public class MI {
             event.register(MIDataMaps.ITEM_TOOLTIPS);
         });
 
-        if (MIConfig.loadAe2Compat()) {
+        if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
             MIAEAddon.init(modBus);
         }
 
         modBus.addListener(AddPackFindersEvent.class, event -> {
-            if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA && MIConfig.getConfig().datagenOnStartup) {
+            if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA
+                    && MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
                 RuntimeDataGen.run(MIDatagenServer::configure);
             }
 
-            if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
+            if (MIStartupConfig.INSTANCE.loadRuntimeGeneratedResources.getAsBoolean()) {
                 event.addRepositorySource(consumer -> {
                     consumer.accept(new Pack(
                             new PackLocationInfo(

@@ -21,14 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.datagen.translation;
+package aztech.modern_industrialization.config;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EnglishTranslation {
+public final class MIConfigs {
+    private MIConfigs() {
+    }
 
-    String value();
+    public static final Map<String, String> configTranslations = new ConcurrentHashMap<>();
 
+    public static String configTranslationKey(String key) {
+        // TODO: we should probably change to a different key!
+        return "text.autoconfig.modern_industrialization.option." + key;
+    }
 }

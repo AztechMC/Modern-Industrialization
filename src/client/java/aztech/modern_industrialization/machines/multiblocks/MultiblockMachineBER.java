@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -70,7 +70,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
 
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
-                    if (MIConfig.getConfig().enableHatchPlacementOverlay && hatchFlag != null && hatchFlag.allows(hatchType)) {
+                    if (MIClientConfig.INSTANCE.enableHatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);

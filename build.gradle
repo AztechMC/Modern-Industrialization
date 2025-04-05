@@ -277,8 +277,6 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
-
     localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
@@ -297,7 +295,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
-            cloth_config_version_range: cloth_config_version_range,
             grandpower_version_range: grandpower_version_range,
             guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
@@ -394,7 +391,6 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             addGameVersion "Java 21"
 
             relations {
-                requiredDependency "cloth-config"
                 requiredDependency "guideme"
                 optionalDependency "wthit"
                 optionalDependency "emi"
@@ -426,7 +422,6 @@ modrinth {
     gameVersions = [project.minecraft_version]
     loaders = ["neoforge"]
     dependencies {
-        required.project "cloth-config"
         required.project "guideme"
         optional.project "wthit"
         optional.project "emi"

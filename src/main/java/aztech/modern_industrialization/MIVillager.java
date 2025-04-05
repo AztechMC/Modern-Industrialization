@@ -38,7 +38,7 @@ public class MIVillager {
             return;
         }
 
-        if (MIStartupConfig.INSTANCE.removeIndustrialistTrades.getAsBoolean())
+        if (!MIStartupConfig.INSTANCE.defaultIndustrialistTrades.getAsBoolean())
             return;
 
         var level1 = event.getTrades().get(1);

@@ -308,7 +308,7 @@ public class MITooltips {
                     OreBlock oreBlock = (OreBlock) ((BlockItem) itemStack.getItem()).getBlock();
                     List<Component> lines = new LinkedList<>();
 
-                    if (MIClientConfig.INSTANCE.enableDefaultOreGenTooltips.getAsBoolean()) {
+                    if (MIClientConfig.INSTANCE.defaultOreGenTooltips.getAsBoolean()) {
                         if (oreBlock.params.generate) {
                             lines.add(new Line(MIText.OreGenerationTooltipY).arg(-64).arg(oreBlock.params.maxYLevel).build());
                             lines.add(new Line(MIText.OreGenerationTooltipVeinFrequency).arg(oreBlock.params.veinsPerChunk).build());

@@ -60,12 +60,12 @@ public final class MIServerConfig {
 
         builder.pushSection("recipes", "Recipes");
         this.compostableToPlantOil = builder.start("compostableToPlantOil",
-                "Compostable Plant Oil recipes",
-                "Generate Plant Oil recipes in the Centrifuge for all compostable items.")
+                "Compostable plant oil recipes",
+                "Generate plant oil recipes in the centrifuge for all compostable items.")
                 .define("compostableToPlantOil", true);
         this.stonecutterToCuttingMachine = builder.start("stonecutterToCuttingMachine",
-                "Stonecutter Cutting Machine recipes",
-                "Generate Cutting Machine recipes for all Stonecutter recipes.")
+                "Stonecutter cutting machine recipes",
+                "Generate cutting machine recipes for all stonecutter recipes.")
                 .define("stonecutterToCuttingMachine", true);
         builder.popSection();
     }

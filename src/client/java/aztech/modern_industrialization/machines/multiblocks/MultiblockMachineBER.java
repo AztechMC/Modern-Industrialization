@@ -70,7 +70,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
 
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
-                    if (MIClientConfig.INSTANCE.enableHatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
+                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);

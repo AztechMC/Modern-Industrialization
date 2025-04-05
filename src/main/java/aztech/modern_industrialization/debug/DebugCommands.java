@@ -60,7 +60,7 @@ public class DebugCommands {
     // @formatter:off
     public static void init() {
         NeoForge.EVENT_BUS.addListener(RegisterCommandsEvent.class, event -> {
-            if (!MIStartupConfig.INSTANCE.enableDebugCommands.getAsBoolean()) {
+            if (!MIStartupConfig.INSTANCE.debugCommands.getAsBoolean()) {
                 return;
             }
 

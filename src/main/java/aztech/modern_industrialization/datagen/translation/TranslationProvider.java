@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
-import aztech.modern_industrialization.config.MIConfigs;
+import aztech.modern_industrialization.config.MIConfigBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
@@ -94,7 +94,7 @@ public final class TranslationProvider implements DataProvider {
             }
         }
 
-        for (var entry : MIConfigs.configTranslations.entrySet()) {
+        for (var entry : MIConfigBuilder.configTranslations.entrySet()) {
             addTranslation(entry.getKey(), entry.getValue());
         }
 

@@ -36,24 +36,24 @@ public final class MIClientConfig {
         SPEC = builder.build();
     }
 
-    public final ModConfigSpec.BooleanValue enableNoEmiMessage;
+    public final ModConfigSpec.BooleanValue missingRecipeViewerMessage;
     public final ModConfigSpec.BooleanValue newVersionMessage;
 
     public final ModConfigSpec.IntValue armorHudYPosition;
-    public final ModConfigSpec.BooleanValue enableBarrelContentRendering;
-    public final ModConfigSpec.BooleanValue enableHatchPlacementOverlay;
-    public final ModConfigSpec.BooleanValue enableInterMachineConnectedTextures;
+    public final ModConfigSpec.BooleanValue barrelContentRendering;
+    public final ModConfigSpec.BooleanValue hatchPlacementOverlay;
+    public final ModConfigSpec.BooleanValue interMachineConnectedTextures;
 
-    public final ModConfigSpec.BooleanValue disableFuelTooltips;
-    public final ModConfigSpec.BooleanValue disableItemTagTooltips;
-    public final ModConfigSpec.BooleanValue enableDefaultOreGenTooltips;
+    public final ModConfigSpec.BooleanValue fuelTooltips;
+    public final ModConfigSpec.BooleanValue itemTagTooltips;
+    public final ModConfigSpec.BooleanValue defaultOreGenTooltips;
 
     private MIClientConfig(MIConfigBuilder builder) {
         builder.pushSection("messages", "Messages");
-        this.enableNoEmiMessage = builder.start("enableNoEmiMessage",
-                "Enable \"No EMI\" message",
-                "Enable login message when EMI, JEI and REI are missing")
-                .define("enableNoEmiMessage", true);
+        this.missingRecipeViewerMessage = builder.start("missingRecipeViewerMessage",
+                "Missing recipe viewer message",
+                "Enable login message when EMI, JEI and REI are all missing.")
+                .define("missingRecipeViewerMessage", true);
         this.newVersionMessage = builder.start("newVersionMessage",
                 "New version message",
                 "Display when a new version is available")
@@ -63,35 +63,37 @@ public final class MIClientConfig {
         builder.pushSection("rendering", "Rendering");
         this.armorHudYPosition = builder.start("armorHudYPosition",
                 "Armor HUD vertical position",
-                "Space between the top of the screen and the Jetpack/GraviChestPlate overlay text.")
+                "Space between the top of the screen and the jetpack/GraviChestPlate overlay text.")
                 .defineInRange("armorHudYPosition", 4, 0, 10000);
-        this.enableBarrelContentRendering = builder.start("enableBarrelContentRendering",
-                "Enable barrel content rendering",
-                "Enable rendering of barrel content (item icon, item amount, and item name)")
-                .define("enableBarrelContentRendering", true);
-        this.enableHatchPlacementOverlay = builder.start("enableHatchPlacementOverlay",
-                "Enable hatch placement overlay",
-                "Show valid positions in multiblocks when holding a hatch")
-                .define("enableHatchPlacementOverlay", true);
-        this.enableInterMachineConnectedTextures = builder.start("enableInterMachineConnectedTextures",
-                "Enable inter-machine connected textures",
-                "Enable inter-machine connected textures. (Requires a suitable resource pack)")
-                .define("enableInterMachineConnectedTextures", false);
+        this.barrelContentRendering = builder.start("barrelContentRendering",
+                "Barrel content rendering",
+                "Enable rendering of barrel content: item icon, item amount, and item name.")
+                .define("barrelContentRendering", true);
+        this.hatchPlacementOverlay = builder.start("hatchPlacementOverlay",
+                "Hatch placement overlay",
+                "Show valid positions in multiblocks when holding a hatch.")
+                .define("hatchPlacementOverlay", true);
+        this.interMachineConnectedTextures = builder.start("interMachineConnectedTextures",
+                "Inter-machine connected textures",
+                "Enable connected textures between machines that have the same casing. (Requires a suitable resource pack)")
+                .define("interMachineConnectedTextures", false);
         builder.popSection();
 
         builder.pushSection("tooltips", "Tooltips");
-        this.disableFuelTooltips = builder.start("disableFuelTooltips",
-                "Disable fuel tooltips",
-                "Disable display of Fuel EU in tooltips")
-                .define("disableFuelTooltips", false);
-        this.disableItemTagTooltips = builder.start("disableItemTagTooltips",
-                "Disable item tag tooltips",
-                "Disable display of Item Tag in tooltips")
-                .define("disableItemTagTooltips", FMLEnvironment.production);
-        this.enableDefaultOreGenTooltips = builder.start("enableDefaultOreGenTooltips",
-                "Enable default ore generation tooltips",
-                "Enable the default ore generation tooltips. Set this to false if you change the ore features in a datapack.")
-                .define("enableDefaultOreGenTooltips", true);
+        this.fuelTooltips = builder.start("fuelTooltips",
+                "Fuel tooltips",
+                "Add the total EU value of fuel items to their tooltips.")
+                .define("fuelTooltips", true);
+        this.itemTagTooltips = builder.start("itemTagTooltips",
+                "Item tag tooltips",
+                "Add item tags to item tooltips.")
+                .define("itemTagTooltips", !FMLEnvironment.production);
+        this.defaultOreGenTooltips = builder.start("defaultOreGenTooltips",
+                "Ore generation tooltips",
+                "Enable the default ore generation tooltips.",
+                "These tooltips show how each MI ore generates, based on the default ore generation settings in MI.",
+                "Set this to false if you change the ore features in a datapack.")
+                .define("defaultOreGenTooltips", true);
         builder.popSection();
     }
 }

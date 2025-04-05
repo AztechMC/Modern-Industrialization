@@ -119,7 +119,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public BlockState getMachineCasingBlockState(BlockState state, BlockAndTintGetter renderView, BlockPos pos) {
         var be = renderView.getBlockEntity(pos); // Note: not safe to access fields!
-        if (!MIClientConfig.INSTANCE.enableInterMachineConnectedTextures.getAsBoolean()) {
+        if (!MIClientConfig.INSTANCE.interMachineConnectedTextures.getAsBoolean()) {
             // Use the machine's own state, unless we are a hatch or a multiblock controller of course.
             if (!(be instanceof HatchBlockEntity) && !(be instanceof MultiblockMachineBlockEntity)) {
                 return state;

@@ -38,66 +38,67 @@ public final class MIStartupConfig {
     }
 
     public boolean loadAe2Compat() {
-        return enableAe2Integration.getAsBoolean() && ModList.get().isLoaded("ae2");
+        return ae2Integration.getAsBoolean() && ModList.get().isLoaded("ae2");
     }
 
-    public final ModConfigSpec.BooleanValue enableBidirectionalEnergyCompat;
-    public final ModConfigSpec.BooleanValue enableAe2Integration;
-    public final ModConfigSpec.BooleanValue enableFtbQuestsIntegration;
+    public final ModConfigSpec.BooleanValue bidirectionalEnergyCompat;
+    public final ModConfigSpec.BooleanValue ae2Integration;
+    public final ModConfigSpec.BooleanValue ftbQuestsIntegration;
 
     public final ModConfigSpec.BooleanValue datagenOnStartup;
     public final ModConfigSpec.BooleanValue loadRuntimeGeneratedResources;
 
     // These should ideally be moved to the server config one day.
-    public final ModConfigSpec.BooleanValue enableDebugCommands;
+    public final ModConfigSpec.BooleanValue debugCommands;
     public final ModConfigSpec.IntValue maxDistillationTowerHeight;
-    public final ModConfigSpec.BooleanValue removeIndustrialistTrades;
+    public final ModConfigSpec.BooleanValue defaultIndustrialistTrades;
 
     private MIStartupConfig(MIConfigBuilder builder) {
         builder.pushSection("compat", "Mod Compatibility");
-        this.enableBidirectionalEnergyCompat = builder.start("enableBidirectionalEnergyCompat",
-                "Enable bidirectional energy compatibility",
-                "Enable bi-directional energy compatibility with Forge Energy.",
+        this.bidirectionalEnergyCompat = builder.start("bidirectionalEnergyCompat",
+                "Bidirectional energy compatibility",
+                "Enable bidirectional energy compatibility with NeoForge's energy system.",
                 "We recommend leaving this to false unless the other mods have been balanced accordingly.")
                 .gameRestart()
-                .define("enableBidirectionalEnergyCompat", false);
-        this.enableAe2Integration = builder.start("enableAe2Integration",
-                "Enable AE2 integration",
+                .define("bidirectionalEnergyCompat", false);
+        this.ae2Integration = builder.start("ae2Integration",
+                "AE2 integration",
                 "Enable the Applied Energistics 2 integration, if present.")
                 .gameRestart()
-                .define("enableAe2Integration", true);
-        this.enableFtbQuestsIntegration = builder.start("enableFtbQuestsIntegration",
-                "Enable FTB Quests integration",
+                .define("ae2Integration", true);
+        this.ftbQuestsIntegration = builder.start("ftbQuestsIntegration",
+                "FTB Quests integration",
                 "Enable the FTB Quests integration, if present.")
                 .gameRestart()
-                .define("enableFtbQuestsIntegration", true);
+                .define("ftbQuestsIntegration", true);
         builder.popSection();
 
         builder.pushSection("datagen", "Runtime Datagen");
         this.datagenOnStartup = builder.start("datagenOnStartup",
                 "Datagen on startup",
-                "Run MI runtime datagen on startup")
+                "Run MI runtime datagen on startup.")
                 .gameRestart()
                 .define("datagenOnStartup", false);
         this.loadRuntimeGeneratedResources = builder.start("loadRuntimeGeneratedResources",
                 "Load generated resources",
-                "Additionally load resources in modern_industrialization/generated_resources")
+                "Additionally load resources in modern_industrialization/generated_resources.")
                 .gameRestart()
                 .define("loadRuntimeGeneratedResources", false);
         builder.popSection();
 
-        this.enableDebugCommands = builder.start("enableDebugCommands",
-                "Enable debug commands",
-                "Enable UNSUPPORTED and DANGEROUS debug commands")
-                .define("enableDebugCommands", !FMLEnvironment.production);
+        this.debugCommands = builder.start("debugCommands",
+                "Debug commands",
+                "Enable UNSUPPORTED and DANGEROUS debug commands.")
+                .define("debugCommands", !FMLEnvironment.production);
         this.maxDistillationTowerHeight = builder.start("maxDistillationTowerHeight",
                 "Max distillation tower height",
-                "Maximum height of the Distillation Tower multiblock")
+                "Maximum height of the distillation tower multiblock.")
                 .gameRestart()
                 .defineInRange("maxDistillationTowerHeight", 9, 1, 32);
-        this.removeIndustrialistTrades = builder.start("removeIndustrialistTrades",
-                "Remove Industrialist trades",
-                "Removes trades from the Industrialist villager.")
-                .define("removeIndustrialistTrades", false);
+        this.defaultIndustrialistTrades = builder.start("defaultIndustrialistTrades",
+                "Default Industrialist trades",
+                "Enable the default trades from the Industrialist villager provided by MI.",
+                "Disable this to provide your own set of trades.")
+                .define("defaultIndustrialistTrades", true);
     }
 }

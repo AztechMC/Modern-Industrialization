@@ -93,7 +93,7 @@ public class EnergyApi {
     @ApiStatus.Internal
     public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks, Item[] allItems) {
         // Compat wrapper for TR energy
-        if (MIStartupConfig.INSTANCE.enableBidirectionalEnergyCompat.getAsBoolean()) {
+        if (MIStartupConfig.INSTANCE.bidirectionalEnergyCompat.getAsBoolean()) {
             event.registerBlock(ILongEnergyStorage.BLOCK, (world, pos, state, blockEntity, context) -> {
                 if (IN_COMPAT.get()) {
                     return null;

@@ -56,7 +56,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
             RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);
         }
 
-        if (!MIClientConfig.INSTANCE.enableBarrelContentRendering.getAsBoolean()) {
+        if (!MIClientConfig.INSTANCE.barrelContentRendering.getAsBoolean()) {
             return;
         }
         int nesting = barrelNesting.get();

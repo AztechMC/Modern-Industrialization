@@ -24,10 +24,18 @@
 package aztech.modern_industrialization.config;
 
 import aztech.modern_industrialization.MI;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.jetbrains.annotations.CheckReturnValue;
 
 public class MIConfigBuilder {
+    public static final Map<String, String> configTranslations = new ConcurrentHashMap<>();
+
+    private static String configTranslationKey(String key) {
+        return MI.ID + ".configuration." + key;
+    }
+
     private final ModConfigSpec.Builder builder;
 
     public MIConfigBuilder() {
@@ -35,8 +43,8 @@ public class MIConfigBuilder {
     }
 
     public void pushSection(String key, String title) {
-        String sectionTranslation = MI.ID + ".configuration." + key;
-        MIConfigs.configTranslations.put(sectionTranslation, title);
+        String sectionTranslation = configTranslationKey(key);
+        configTranslations.put(sectionTranslation, title);
         builder.push(key);
     }
 
@@ -50,12 +58,11 @@ public class MIConfigBuilder {
             throw new IllegalArgumentException("Comment cannot be empty");
         }
 
-        var translationKey = MIConfigs.configTranslationKey(key);
-        MIConfigs.configTranslations.put(translationKey, title);
-        MIConfigs.configTranslations.put(translationKey + ".tooltip", String.join(" ", comment));
+        var translationKey = configTranslationKey(key);
+        configTranslations.put(translationKey, title);
+        configTranslations.put(translationKey + ".tooltip", String.join(" ", comment));
 
         return builder.translation(translationKey)
-                .comment(title)
                 .comment(comment);
     }
 

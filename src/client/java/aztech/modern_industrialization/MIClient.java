@@ -138,7 +138,7 @@ public class MIClient {
 
             // Apparently tooltips are accessed from the main menu, or something, hence the
             // != null check
-            if (Minecraft.getInstance().level != null && !MIClientConfig.INSTANCE.disableFuelTooltips.getAsBoolean()) {
+            if (Minecraft.getInstance().level != null && MIClientConfig.INSTANCE.fuelTooltips.getAsBoolean()) {
                 try {
                     int fuelTime = event.getItemStack().getBurnTime(null);
                     if (fuelTime > 0) {
@@ -150,7 +150,7 @@ public class MIClient {
                 }
             }
 
-            if (event.getFlags().isAdvanced() && !MIClientConfig.INSTANCE.disableItemTagTooltips.getAsBoolean()) {
+            if (event.getFlags().isAdvanced() && MIClientConfig.INSTANCE.itemTagTooltips.getAsBoolean()) {
                 var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
                 for (ResourceLocation id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
@@ -179,7 +179,7 @@ public class MIClient {
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
                 && !ModList.get().isLoaded("roughlyenoughitems")) {
             NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> {
-                if (MIClientConfig.INSTANCE.enableNoEmiMessage.getAsBoolean()) {
+                if (MIClientConfig.INSTANCE.missingRecipeViewerMessage.getAsBoolean()) {
                     event.getPlayer().displayClientMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD), false);
                 }
             });

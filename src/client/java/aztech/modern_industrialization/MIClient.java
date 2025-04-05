@@ -167,10 +167,6 @@ public class MIClient {
                     false);
         });
 
-//        modContainer.registerExtensionPoint(
-//                IConfigScreenFactory.class,
-//                (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get());
-
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
             event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
         });

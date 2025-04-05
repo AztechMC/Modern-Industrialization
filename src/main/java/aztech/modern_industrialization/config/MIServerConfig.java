@@ -35,6 +35,7 @@ public final class MIServerConfig {
         SPEC = builder.build();
     }
 
+    public final ModConfigSpec.IntValue forgeEnergyPerEu;
     public final ModConfigSpec.IntValue baseItemPipeTransfer;
     public final ModConfigSpec.BooleanValue spawnWithGuideBook;
     public final ModConfigSpec.BooleanValue respawnWithGuideBook;
@@ -43,7 +44,10 @@ public final class MIServerConfig {
     public final ModConfigSpec.BooleanValue stonecutterToCuttingMachine;
 
     private MIServerConfig(MIConfigBuilder builder) {
-        builder.pushSection("misc", "Miscellaneous");
+        this.forgeEnergyPerEu = builder.start("forgeEnergyPerEu",
+                "FE per EU",
+                "How many Forge Energy units a single EU from MI is worth.")
+                .defineInRange("forgeEnergyPerEu", 10, 1, 1000);
         this.baseItemPipeTransfer = builder.start("baseItemPipeTransfer",
                 "Base item pipe transfer",
                 "Base amount of items transferred by item pipes every 3 seconds.")
@@ -56,7 +60,6 @@ public final class MIServerConfig {
                 "Respawn with guidebook",
                 "Grant guidebook when a player respawns after death.")
                 .define("respawnWithGuideBook", true);
-        builder.popSection();
 
         builder.pushSection("recipes", "Recipes");
         this.compostableToPlantOil = builder.start("compostableToPlantOil",

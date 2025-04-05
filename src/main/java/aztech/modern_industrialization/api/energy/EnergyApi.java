@@ -24,10 +24,9 @@
 package aztech.modern_industrialization.api.energy;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
-import dev.technici4n.grandpower.api.DelegatingEnergyStorage;
 import dev.technici4n.grandpower.api.ILongEnergyStorage;
-import dev.technici4n.grandpower.api.LimitingEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -35,7 +34,13 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * MI's energy API. It uses the same types as GrandPower (i.e. {@link ILongEnergyStorage},
+ * however the conversion ratio between EU and GrandPower energy is configurable.
+ * So don't mix them up!
+ */
 public class EnergyApi {
     public static final BlockCapability<MIEnergyStorage, Direction> SIDED = BlockCapability
             .createSided(MI.id("sided_mi_energy_storage"), MIEnergyStorage.class);
@@ -101,7 +106,7 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    return world.getCapability(SIDED, pos, state, blockEntity, context);
+                    return WrappedMIStorage.of(world.getCapability(SIDED, pos, state, blockEntity, context));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -113,8 +118,7 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    var trStorage = world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context);
-                    return trStorage == null ? null : new WrappedTrStorage(trStorage);
+                    return WrappedExternalStorage.of(world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -127,7 +131,7 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    return stack.getCapability(ITEM);
+                    return WrappedMIStorage.of(stack.getCapability(ITEM));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -139,15 +143,14 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    return stack.getCapability(ILongEnergyStorage.ITEM);
+                    return WrappedExternalStorage.of(stack.getCapability(ILongEnergyStorage.ITEM));
                 } finally {
                     IN_COMPAT.set(false);
                 }
             }, allItems);
         } else {
             event.registerBlock(SIDED, (world, pos, state, blockEntity, context) -> {
-                var trStorage = world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context);
-                return trStorage == null || !trStorage.canReceive() ? null : new InsertOnlyTrStorage(trStorage);
+                return InsertOnlyExternalStorage.of(world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context));
             }, allBlocks);
             event.registerItem(ITEM, (stack, ctx) -> {
                 if (IN_COMPAT.get()) {
@@ -156,8 +159,7 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    var trStorage = stack.getCapability(ILongEnergyStorage.ITEM);
-                    return trStorage == null || !trStorage.canReceive() ? null : new LimitingEnergyStorage(trStorage, Long.MAX_VALUE, 0);
+                    return InsertOnlyExternalStorage.of(stack.getCapability(ILongEnergyStorage.ITEM));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -169,8 +171,7 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    var miStorage = stack.getCapability(ITEM);
-                    return miStorage == null || !miStorage.canExtract() ? null : new LimitingEnergyStorage(miStorage, 0, Long.MAX_VALUE);
+                    return ExtractOnlyMIStorage.of(stack.getCapability(ITEM));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -178,41 +179,160 @@ public class EnergyApi {
         }
     }
 
-    private record InsertOnlyTrStorage(ILongEnergyStorage trStorage) implements MIEnergyStorage.NoExtract {
+    private static long ratio() {
+        return MIServerConfig.INSTANCE.forgeEnergyPerEu.getAsInt();
+    }
+
+    /**
+     * An MI energy storage that wraps an external storage to apply the energy conversion ratio to it.
+     */
+    private static class WrappedExternalStorage implements MIEnergyStorage {
+        @Nullable
+        private static WrappedExternalStorage of(@Nullable ILongEnergyStorage externalStorage) {
+            return externalStorage == null ? null : new WrappedExternalStorage(externalStorage);
+        }
+
+        private final ILongEnergyStorage externalStorage;
+
+        private WrappedExternalStorage(ILongEnergyStorage externalStorage) {
+            this.externalStorage = externalStorage;
+        }
+
         @Override
         public boolean canConnect(CableTier cableTier) {
             return true;
         }
 
         @Override
-        public long receive(long maxAmount, boolean simulate) {
-            return trStorage.receive(maxAmount, simulate);
+        public long receive(long maxReceive, boolean simulate) {
+            long ratio = ratio();
+            maxReceive *= ratio;
+            if (ratio > 1) {
+                // Do a simulate insertion to round down to a multiple of ratio that should be accepted.
+                maxReceive = externalStorage.receive(maxReceive, true) / ratio * ratio;
+            }
+            return externalStorage.receive(maxReceive, simulate) / ratio;
         }
 
         @Override
-        public boolean canReceive() {
-            return trStorage.canReceive();
+        public long extract(long maxExtract, boolean simulate) {
+            long ratio = ratio();
+            maxExtract *= ratio;
+            if (ratio > 1) {
+                // Do a simulate extraction to round down to a multiple of ratio that should be accepted.
+                maxExtract = externalStorage.extract(maxExtract, true) / ratio * ratio;
+            }
+            return externalStorage.extract(maxExtract, simulate) / ratio;
         }
 
         @Override
         public long getAmount() {
-            return trStorage.getAmount();
+            return externalStorage.getAmount() / ratio();
         }
 
         @Override
         public long getCapacity() {
-            return trStorage.getCapacity();
-        }
-    }
-
-    private static class WrappedTrStorage extends DelegatingEnergyStorage implements MIEnergyStorage {
-        public WrappedTrStorage(ILongEnergyStorage backingStorage) {
-            super(backingStorage);
+            return externalStorage.getCapacity() / ratio();
         }
 
         @Override
-        public boolean canConnect(CableTier cableTier) {
-            return true;
+        public boolean canExtract() {
+            return externalStorage.canExtract();
+        }
+
+        @Override
+        public boolean canReceive() {
+            return externalStorage.canReceive();
+        }
+    }
+
+    private static class InsertOnlyExternalStorage extends WrappedExternalStorage {
+        @Nullable
+        private static InsertOnlyExternalStorage of(@Nullable ILongEnergyStorage externalStorage) {
+            return externalStorage == null || !externalStorage.canReceive() ? null : new InsertOnlyExternalStorage(externalStorage);
+        }
+
+        private InsertOnlyExternalStorage(ILongEnergyStorage externalStorage) {
+            super(externalStorage);
+        }
+
+        @Override
+        public long extract(long maxExtract, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false;
+        }
+    }
+
+    /**
+     * An external storage that wraps an MI storage to apply the energy conversion ratio to it.
+     */
+    private static class WrappedMIStorage implements ILongEnergyStorage {
+        @Nullable
+        private static WrappedMIStorage of(@Nullable ILongEnergyStorage miStorage) {
+            return miStorage == null ? null : new WrappedMIStorage(miStorage);
+        }
+
+        private final ILongEnergyStorage miStorage;
+
+        private WrappedMIStorage(ILongEnergyStorage miStorage) {
+            this.miStorage = miStorage;
+        }
+
+        @Override
+        public long receive(long maxReceive, boolean simulate) {
+            long ratio = ratio();
+            return miStorage.receive(maxReceive / ratio, simulate) * ratio;
+        }
+
+        @Override
+        public long extract(long maxExtract, boolean simulate) {
+            long ratio = ratio();
+            return miStorage.extract(maxExtract / ratio, simulate) * ratio;
+        }
+
+        @Override
+        public long getAmount() {
+            return miStorage.getAmount() * ratio();
+        }
+
+        @Override
+        public long getCapacity() {
+            return miStorage.getCapacity() * ratio();
+        }
+
+        @Override
+        public boolean canExtract() {
+            return miStorage.canExtract();
+        }
+
+        @Override
+        public boolean canReceive() {
+            return miStorage.canReceive();
+        }
+    }
+
+    private static class ExtractOnlyMIStorage extends WrappedMIStorage {
+        @Nullable
+        private static EnergyApi.ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
+            return miStorage == null || !miStorage.canExtract() ? null : new ExtractOnlyMIStorage(miStorage);
+        }
+
+        private ExtractOnlyMIStorage(ILongEnergyStorage miStorage) {
+            super(miStorage);
+        }
+
+        @Override
+        public long receive(long maxReceive, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return false;
         }
     }
 }

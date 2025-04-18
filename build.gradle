@@ -108,7 +108,7 @@ repositories {
         }
     }
     maven {
-        url "https://maven.ftb.dev/snapshots"
+        url "https://maven.ftb.dev/releases"
         content {
             includeGroup "dev.ftb.mods"
         }

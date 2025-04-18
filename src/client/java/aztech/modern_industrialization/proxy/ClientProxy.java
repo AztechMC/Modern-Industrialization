@@ -87,6 +87,14 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
+    public void delayNextBlockAttack(Player player) {
+        if (player == Minecraft.getInstance().player) {
+            // Add a 5 tick delay like vanilla.
+            Minecraft.getInstance().gameMode.destroyDelay = 5;
+        }
+    }
+
+    @Override
     public boolean hasShiftDown() {
         return Screen.hasShiftDown();
     }

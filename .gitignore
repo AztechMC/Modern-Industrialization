@@ -30,7 +30,5 @@ bin/
 run/
 runs/
 
-src/generated/resources/.cache
-
 # nix os
 shell.nix

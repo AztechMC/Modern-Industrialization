@@ -107,6 +107,10 @@ public class SteamHeaterComponent extends TemperatureComponent {
         return totalEuProduced;
     }
 
+    public void tickDisabled() {
+        this.decreaseTemperature(INPUT_ENERGY_RATIO_FOR_STARTUP * this.maxEuProduction / this.euPerDegree);
+    }
+
     private double tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam, int euPerSteamMb) {
         return tryMakeSteam(new MIFluidStorage(input), new MIFluidStorage(output), water, steam, euPerSteamMb);
 

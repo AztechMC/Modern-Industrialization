@@ -100,7 +100,8 @@ public class FuelBurningComponent implements IComponent {
         // Turn buffer into heat
         long maxEuInsertion = Math.min(burningEuBuffer, maxEuProduction);
 
-        maxEuInsertion = Math.min(maxEuInsertion, (long) Math.floor(euPerDegree * (temperature.temperatureMax - temperature.getTemperature())));
+        // Use ceil here to be able to reach the max temperature exactly, even if it wastes a fraction of an EU.
+        maxEuInsertion = Math.min(maxEuInsertion, (long) Math.ceil(euPerDegree * (temperature.temperatureMax - temperature.getTemperature())));
         if (maxEuInsertion > 0) {
             burningEuBuffer -= maxEuInsertion;
             temperature.increaseTemperature((double) maxEuInsertion / euPerDegree);

@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-19T01:30:23.9116352	Tags for minecraft:fluid mod id modern_industrialization
+// 1.21.1	2025-04-18T14:28:59.8250922	Tags for minecraft:fluid mod id modern_industrialization
 2e54f5684b3cedb03e10e44437abee3e54590e96 data/c/tags/fluid/acetylene.json
 c28c9db0ff6eb51c1abebea40752b47e4eef41ec data/c/tags/fluid/acrylic_acid.json
 6e39bbfa65dad27d80c546299b5de3f96215a19d data/c/tags/fluid/acrylic_glue.json
@@ -72,3 +72,4 @@ dd47371f0ce7c13df9608ed1c6ba60f2b40d1db9 data/c/tags/fluid/toluene.json
 f18c60fea511cdf78bf733eb86baab43ad1ffbe4 data/c/tags/fluid/tritium.json
 e2f235ae147f53e3f5b0f0f43d4d9e24e9eb2e6c data/c/tags/fluid/uu_matter.json
 3c442976a65abe3c4dc72a84e30f785a3b76bf7e data/c/tags/fluid/vinyl_chloride.json
+e2f235ae147f53e3f5b0f0f43d4d9e24e9eb2e6c data/modern_industrialization/tags/fluid/replicator_blacklist.json

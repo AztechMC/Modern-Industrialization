@@ -120,7 +120,7 @@ public class MIFluids {
     public static final FluidDefinition SYNTHETIC_RUBBER = fluid("Synthetic Rubber", "synthetic_rubber", 0xff1a1a1a, FULL_OPACITY);
     public static final FluidDefinition TOLUENE = fluid("Toluene", "toluene", 0xff9ce6ed, NEAR_OPACITY);
     public static final FluidDefinition TRITIUM = fluid("Tritium", "tritium", 0xffcc1b50, true);
-    public static final FluidDefinition UU_MATER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
+    public static final FluidDefinition UU_MATTER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
     public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY);
 
     static {

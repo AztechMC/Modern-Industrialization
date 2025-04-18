@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -52,5 +53,8 @@ public class MIFluidTagProvider extends FluidTagsProvider {
             tag(FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", def.path())))
                     .add(def.asFluid());
         }
+
+        tag(ReplicatorMachineBlockEntity.BLACKLISTED_FLUIDS)
+                .add(MIFluids.UU_MATTER.asFluid());
     }
 }

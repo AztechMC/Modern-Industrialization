@@ -44,11 +44,13 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -60,7 +62,8 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    public static final TagKey<Item> BLACKLISTED = TagKey.create(BuiltInRegistries.ITEM.key(), MI.id("replicator_blacklist"));
+    public static final TagKey<Item> BLACKLISTED = ItemTags.create(MI.id("replicator_blacklist"));
+    public static final TagKey<Fluid> BLACKLISTED_FLUIDS = FluidTags.create(MI.id("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 
@@ -73,7 +76,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         long capacity = FluidType.BUCKET_VOLUME * 256;
 
         List<ConfigurableFluidStack> fluidInput = Collections
-                .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER.asFluid()));
+                .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATTER.asFluid()));
         List<ConfigurableItemStack> itemInputs = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         List<ConfigurableItemStack> itemOutputs = Collections.singletonList(ConfigurableItemStack.standardOutputSlot());
 
@@ -130,11 +133,11 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
         }
 
-        // Disallow anything that contains UU Matter
+        // Disallow anything that contains disallowed fluids
         var fluidItem = stack.getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidItem != null) {
             for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
-                if (fluidItem.getFluidInTank(tank).getFluid() == MIFluids.UU_MATER.asFluid()) {
+                if (fluidItem.getFluidInTank(tank).is(BLACKLISTED_FLUIDS)) {
                     return false;
                 }
             }
@@ -156,7 +159,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
                 long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
-                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATTER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
 
                 if (inserted == 1 && uuMatterExtraced == FluidType.BUCKET_VOLUME / 10) {
                     if (!simulate) {

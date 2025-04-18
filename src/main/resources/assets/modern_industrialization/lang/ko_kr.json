@@ -962,13 +962,5 @@
   "rei_categories.modern_industrialization.steel_packer": "포장기",
   "rei_categories.modern_industrialization.steel_wiremill": "선재압연기",
   "rei_categories.modern_industrialization.vacuum_freezer": "진공 냉강기",
-  "text.autoconfig.modern_industrialization.option.colorWaterLava": "Color water and lava",
-  "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "연료 EU 툴팁 비활성화",
-  "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "아이템 태그 툴팁 비활성화",
-  "text.autoconfig.modern_industrialization.option.enableDebugCommands": "디버그 명령 활성화(매우 위험함)",
-  "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "해치를 들고 있을 때, 멀티블록의 유효 위치 보이기",
-  "text.autoconfig.modern_industrialization.option.newVersionMessage": "새로운 버전 알림 받기",
-  "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "리스폰 시 가이드북 지급",
-  "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "첫 스폰 시 가이드북 지급",
   "text.autoconfig.modern_industrialization.title": "Modern Industrialization 메뉴"
 }

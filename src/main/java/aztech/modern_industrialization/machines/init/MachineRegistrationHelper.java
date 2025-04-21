@@ -41,6 +41,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -68,7 +69,8 @@ public class MachineRegistrationHelper {
                         .withModel((block, gen) -> {
                             // Model generation is handled in the model provider already.
                         })
-                        .isValidSpawn(MobSpawning.NO_SPAWN));
+                        .isValidSpawn(MobSpawning.NO_SPAWN)
+                        .isRedstoneConductor(Blocks::never));
 
         return MIRegistries.BLOCK_ENTITIES.register(id, () -> {
             Block block = blockDefinition.asBlock();

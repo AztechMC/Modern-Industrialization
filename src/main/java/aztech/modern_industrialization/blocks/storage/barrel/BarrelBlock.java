@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -47,7 +48,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
 
     public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN), factory, behaviour);
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
+                .isRedstoneConductor(Blocks::never), factory, behaviour);
     }
 
     private static boolean useBlock(BlockHitResult hitResult, InteractionHand hand, Player player, Level world) {

@@ -244,6 +244,8 @@ neoForge {
             gameDirectory = project.file("build/gametest")
         }
     }
+
+    validateAccessTransformers = true
 }
 
 configurations {

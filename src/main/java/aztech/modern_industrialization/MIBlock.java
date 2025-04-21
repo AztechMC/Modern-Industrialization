@@ -55,6 +55,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -82,17 +83,17 @@ public class MIBlock {
 
     // Bronze stuff
     public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
-            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200))
+            BlockDefinitionParams.defaultStone().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200).dontConductRedstone())
             .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
     // Other
-    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = block("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = block("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.location().getPath(), BlockDefinitionParams.defaultStone().explosionResistance(6000f));
+    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = nonConductorBlock("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = nonConductorBlock("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = nonConductorBlock("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = nonConductorBlock("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.location().getPath());
+    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.location().getPath(), BlockDefinitionParams.defaultStone().explosionResistance(6000f).dontConductRedstone());
 
-    public static final BlockDefinition<Block> FUSION_CHAMBER = block("Fusion Chamber", "fusion_chamber");
+    public static final BlockDefinition<Block> FUSION_CHAMBER = nonConductorBlock("Fusion Chamber", "fusion_chamber");
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
@@ -128,7 +129,7 @@ public class MIBlock {
 
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
-            "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new));
+            "creative_storage_unit", BlockDefinitionParams.defaultStone().withBlockConstructor(CreativeStorageUnitBlock::new).dontConductRedstone());
 
     // Materials
     public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
@@ -155,6 +156,10 @@ public class MIBlock {
 
     public static BlockDefinition<Block> block(String englishName, String id) {
         return MIBlock.block(englishName, id, BlockDefinitionParams.defaultStone());
+    }
+
+    public static BlockDefinition<Block> nonConductorBlock(String englishName, String id) {
+        return MIBlock.block(englishName, id, BlockDefinitionParams.defaultStone().dontConductRedstone());
     }
 
     public static BlockDefinition<Block> blockExplosive(String englishName, String id) {
@@ -309,6 +314,16 @@ public class MIBlock {
         // Bouncers to inner properties
         public BlockDefinitionParams<T> isValidSpawn(BlockBehaviour.StateArgumentPredicate<EntityType<?>> isValidSpawn) {
             this.props.isValidSpawn(isValidSpawn);
+            return this;
+        }
+
+        public BlockDefinitionParams<T> dontConductRedstone() {
+            this.props.isRedstoneConductor(Blocks::never);
+            return this;
+        }
+
+        public BlockDefinitionParams<T> isRedstoneConductor(BlockBehaviour.StatePredicate isRedstoneConductor) {
+            this.props.isRedstoneConductor(isRedstoneConductor);
             return this;
         }
 

@@ -53,6 +53,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -79,6 +80,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -339,7 +341,20 @@ public class SteamDrillItem
             recursiveMineBlock.set(false);
         }
         totalDrops.forEach(itemStack -> {
-            ItemHandlerHelper.giveItemToPlayer(p, itemStack);
+            // Create an ItemEntity for the stack, and fire the pickup event.
+            // This lets Sophisticated Backpacks (SB) and similar mods try to intercept the stack.
+            // The stacks can have more than the max stack size, let's hope it won't cause issues.
+            var itemEntity = new ItemEntity(world, p.getX(), p.getY(), p.getZ(), itemStack);
+            // Set delay to 0 since we will pick up the item immediately. Otherwise, SB won't process the entity.
+            itemEntity.setNoPickUpDelay();
+            var pickupEvent = new ItemEntityPickupEvent.Pre(p, itemEntity);
+            NeoForge.EVENT_BUS.post(pickupEvent);
+
+            // Ignore canPickup and assume that mods correctly updated the item entity.
+            // Let's at least check isRemoved() just in case, but I am not sure if it's needed.
+            if (!itemEntity.isRemoved()) {
+                ItemHandlerHelper.giveItemToPlayer(p, itemEntity.getItem());
+            }
         });
         totalDrops = null;
         world.getEntitiesOfClass(ExperienceOrb.class,

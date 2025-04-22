@@ -217,15 +217,6 @@ neoForge {
         server {
             server()
             systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-            programArgument '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            type = "gameTestServer"
-            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
 
         data {
@@ -242,6 +233,7 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             gameDirectory = project.file("build/gametest")
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
     }
 

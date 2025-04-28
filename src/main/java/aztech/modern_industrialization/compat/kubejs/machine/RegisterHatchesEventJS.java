@@ -23,19 +23,21 @@
  */
 package aztech.modern_industrialization.compat.kubejs.machine;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
-import dev.latvian.mods.kubejs.event.EventTargetType;
-import dev.latvian.mods.kubejs.event.TargetedEventHandler;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.machines.init.MultiblockHatches;
+import aztech.modern_industrialization.machines.models.MachineCasings;
+import dev.latvian.mods.kubejs.event.KubeEvent;
 
-public interface MIMachineKubeJSEvents {
-    EventGroup EVENT_GROUP = EventGroup.of("MIMachineEvents");
+public class RegisterHatchesEventJS implements KubeEvent {
+    public void energy(String cableTier) {
+        MultiblockHatches.registerEnergyHatches(CableTier.getTier(cableTier));
+    }
 
-    EventHandler REGISTER_RECIPE_TYPES = EVENT_GROUP.startup("registerRecipeTypes", () -> RegisterRecipeTypesEventJS.class);
-    EventHandler REGISTER_CASINGS = EVENT_GROUP.startup("registerCasings", () -> RegisterCasingsEventJS.class);
-    EventHandler REGISTER_MACHINES = EVENT_GROUP.startup("registerMachines", () -> RegisterMachinesEventJS.class);
-    EventHandler REGISTER_HATCHES = EVENT_GROUP.startup("registerHatches", () -> RegisterHatchesEventJS.class);
-    TargetedEventHandler<String> ADD_MULTIBLOCK_SLOTS = EVENT_GROUP.startup("addMultiblockSlots", () -> AddMultiblockSlotsEventJS.class)
-            .requiredTarget(EventTargetType.STRING);
-    EventHandler ADD_EBF_TIERS = EVENT_GROUP.startup("addEbfTiers", () -> AddEbfTiersEventJS.class);
+    public void fluid(String englishPrefix, String prefix, String casing, int bucketCapacity) {
+        MultiblockHatches.registerFluidHatches(englishPrefix, prefix, MachineCasings.get(casing), bucketCapacity);
+    }
+
+    public void item(String englishPrefix, String prefix, String casing, int rows, int columns, int xStart, int yStart) {
+        MultiblockHatches.registerItemHatches(englishPrefix, prefix, MachineCasings.get(casing), rows, columns, xStart, yStart);
+    }
 }

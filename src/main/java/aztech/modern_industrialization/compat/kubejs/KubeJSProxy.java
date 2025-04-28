@@ -56,6 +56,9 @@ public class KubeJSProxy {
     public void fireRegisterMachinesEvent() {
     }
 
+    public void fireRegisterHatchesEvent() {
+    }
+
     public void fireRegisterUpgradesEvent() {
     }
 

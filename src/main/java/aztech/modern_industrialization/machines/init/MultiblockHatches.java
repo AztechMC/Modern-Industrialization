@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -72,9 +73,11 @@ public class MultiblockHatches {
 
         MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
         MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
+
+        KubeJSProxy.instance.fireRegisterHatchesEvent();
     }
 
-    private static void registerItemHatches(
+    public static void registerItemHatches(
             String englishPrefix, String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
@@ -97,10 +100,10 @@ public class MultiblockHatches {
         }
     }
 
-    public static final int FLUID_HATCH_SLOT_X = 80;
-    public static final int FLUID_HATCH_SLOT_Y = 40;
+    private static final int FLUID_HATCH_SLOT_X = 80;
+    private static final int FLUID_HATCH_SLOT_Y = 40;
 
-    private static void registerFluidHatches(String englishPrefix, String prefix, MachineCasing casing, int bucketCapacity) {
+    public static void registerFluidHatches(String englishPrefix, String prefix, MachineCasing casing, int bucketCapacity) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
@@ -117,7 +120,7 @@ public class MultiblockHatches {
         }
     }
 
-    private static void registerEnergyHatches(CableTier tier) {
+    public static void registerEnergyHatches(CableTier tier) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";

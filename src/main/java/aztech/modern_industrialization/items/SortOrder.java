@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.nuclear.NuclearOrder;
 import org.jetbrains.annotations.NotNull;
 
 public final class SortOrder implements Comparable<SortOrder> {
     public static final SortOrder GUIDE_BOOK = new SortOrder();
     public static final SortOrder FORGE_HAMMER = new SortOrder();
-    public static final SortOrder HAMMER = new SortOrder();
-    public static final SortOrder STEAM_TIER = new SortOrder();
-    public static final SortOrder ITEMS_OTHER = new SortOrder();
+    public static final SortOrderGroup.Counted ITEMS_ORDERED = new SortOrderGroup.Counted(new SortOrder());
+    public static final SortOrderGroup.Parametrized<NuclearOrder> NUCLEAR = new SortOrderGroup.Parametrized<>(new SortOrder());
     public static final SortOrder CABLES = new SortOrder();
     public static final SortOrder PIPES = new SortOrder();
     public static final SortOrder TANKS = new SortOrder();

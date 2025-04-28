@@ -84,10 +84,10 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     public static ItemDefinition<NuclearFuel> of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
-            String depletedVersionId) {
+            String depletedVersionId, SortOrder sortOrder) {
         return MIItem
                 .item(englishName, id, (settings) -> new NuclearFuel(settings.stacksTo(1), params, neutronBehaviour, MI.id(depletedVersionId)),
-                        SortOrder.ITEMS_OTHER);
+                        sortOrder);
     }
 
     @Override

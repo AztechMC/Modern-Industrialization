@@ -51,11 +51,10 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
-            INeutronBehaviour neutronBehaviour,
-            int desintegrationMax) {
+            INeutronBehaviour neutronBehaviour, int desintegrationMax, SortOrder sortOrder) {
         return MIItem.item(englishName, id,
                 (settings) -> new NuclearAbsorbable(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
-                SortOrder.ITEMS_OTHER);
+                sortOrder);
     }
 
     public double getDurabilityBarProgress(ItemStack stack) {

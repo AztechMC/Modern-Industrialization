@@ -31,15 +31,16 @@ import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
+import aztech.modern_industrialization.nuclear.NuclearOrder;
 import java.util.List;
 
 public class NuclearFuelPart implements PartKeyProvider {
 
     public enum Type {
-        DEPLETED(0, "fuel_rod_depleted"),
         SIMPLE(1, "fuel_rod"),
         DOUBLE(2, "fuel_rod_double"),
-        QUAD(4, "fuel_rod_quad");
+        QUAD(4, "fuel_rod_quad"),
+        DEPLETED(0, "fuel_rod_depleted");
 
         public final int size;
         public final String key;
@@ -73,8 +74,9 @@ public class NuclearFuelPart implements PartKeyProvider {
 
         var out = new PartTemplate(englishNameFormatter, key)
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
+                    var sortOrder = SortOrder.NUCLEAR.create(NuclearOrder.FUEL_ROD).and(partContext.getMaterialName()).and(type);
                     if (Type.DEPLETED == type) {
-                        MIItem.item(englishName, itemPath, SortOrder.ITEMS_OTHER);
+                        MIItem.item(englishName, itemPath, sortOrder);
                     } else {
                         IsotopeFuelParams params = partContext.get(MaterialProperty.ISOTOPE);
                         if (params == null) {
@@ -88,7 +90,7 @@ public class NuclearFuelPart implements PartKeyProvider {
                         INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
 
                         NuclearFuel.of(englishName, itemPath, fuelParams,
-                                neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
+                                neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted", sortOrder);
                     }
                 });
         if (type == Type.DEPLETED) {

@@ -65,104 +65,104 @@ public final class MIItem {
     public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
 
     // Forge hammer, then the various hammers!
-    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p), HAMMER);
-    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p), HAMMER);
-    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p), HAMMER);
-    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p), HAMMER);
+    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p), ITEMS_ORDERED.next());
 
     // Steam tier stuff
-    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", SteelUpgradeItem::new, STEAM_TIER);
-    public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", STEAM_TIER);
-    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
-    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), STEAM_TIER);
+    public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", SteelUpgradeItem::new, ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> RUBBER_SHEET = item("Rubber Sheet", "rubber_sheet", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).stacksTo(1)), ITEMS_ORDERED.next());
 
     // Mechanical components: motors
-    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> MOTOR = item("Motor", "motor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> LARGE_MOTOR = item("Large Motor", "large_motor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor", ITEMS_ORDERED.next());
     // Mechanical components: pumps
-    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_OTHER);
-    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_OTHER);
+    public static final ItemDefinition<Item> PUMP = item("Pump", "pump", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> LARGE_PUMP = item("Large Pump", "large_pump", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump", ITEMS_ORDERED.next());
     // Mechanical components: others
-    public static final ItemDefinition<Item> PISTON = item("Piston", "piston", ITEMS_OTHER);
-    public static final ItemDefinition<Item> CONVEYOR = item("Conveyor", "conveyor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ROBOT_ARM = item("Robot Arm", "robot_arm", ITEMS_OTHER);
+    public static final ItemDefinition<Item> PISTON = item("Piston", "piston", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> CONVEYOR = item("Conveyor", "conveyor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ROBOT_ARM = item("Robot Arm", "robot_arm", ITEMS_ORDERED.next());
 
     // Circuits
-    public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> PROCESSING_UNIT_BOARD = item("Processing Unit Board", "processing_unit_board", ITEMS_OTHER);
-    public static final ItemDefinition<Item> PROCESSING_UNIT = item("Processing Unit", "processing_unit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> DIGITAL_CIRCUIT_BOARD = item("Digital Circuit Board", "digital_circuit_board", ITEMS_OTHER);
-    public static final ItemDefinition<Item> DIGITAL_CIRCUIT = item("Digital Circuit", "digital_circuit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> PROCESSING_UNIT_BOARD = item("Processing Unit Board", "processing_unit_board", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> PROCESSING_UNIT = item("Processing Unit", "processing_unit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> DIGITAL_CIRCUIT_BOARD = item("Digital Circuit Board", "digital_circuit_board", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> DIGITAL_CIRCUIT = item("Digital Circuit", "digital_circuit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_ORDERED.next());
 
     // LV circuits
-    public static final ItemDefinition<Item> RESISTOR = item("Resistor", "resistor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_OTHER);
-    public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_OTHER);
-    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_OTHER);
+    public static final ItemDefinition<Item> RESISTOR = item("Resistor", "resistor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> CAPACITOR = item("Capacitor", "capacitor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> INDUCTOR = item("Inductor", "inductor", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> WOOD_PULP = item("Wood Pulp", "wood_pulp", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> INVAR_ROTARY_BLADE = item("Invar Rotary Blade", "invar_rotary_blade", ITEMS_ORDERED.next());
 
     // MV circuits
-    public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_OTHER);
-    public static final ItemDefinition<Item> TRANSISTOR = item("Transistor", "transistor", ITEMS_OTHER);
+    public static final ItemDefinition<Item> DIODE = item("Diode", "diode", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> TRANSISTOR = item("Transistor", "transistor", ITEMS_ORDERED.next());
 
     // HV circuits
-    public static final ItemDefinition<Item> OP_AMP = item("Op Amp", "op_amp", ITEMS_OTHER);
-    public static final ItemDefinition<Item> AND_GATE = item("AND Gate", "and_gate", ITEMS_OTHER);
-    public static final ItemDefinition<Item> OR_GATE = item("OR Gate", "or_gate", ITEMS_OTHER);
-    public static final ItemDefinition<Item> NOT_GATE = item("NOT Gate", "not_gate", ITEMS_OTHER);
+    public static final ItemDefinition<Item> OP_AMP = item("Op Amp", "op_amp", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> AND_GATE = item("AND Gate", "and_gate", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> OR_GATE = item("OR Gate", "or_gate", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> NOT_GATE = item("NOT Gate", "not_gate", ITEMS_ORDERED.next());
 
     // EV circuits
-    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.stacksTo(1)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon", ITEMS_OTHER);
-    public static final ItemDefinition<Item> SILICON_WAFER = item("Silicon Wafer", "silicon_wafer", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ARITHMETIC_LOGIC_UNIT = item("Arithmetic Logic Unit", "arithmetic_logic_unit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> MEMORY_MANAGEMENT_UNIT = item("Memory Management Unit", "memory_management_unit", ITEMS_OTHER);
-    public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_OTHER);
+    public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.stacksTo(1)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> SILICON_WAFER = item("Silicon Wafer", "silicon_wafer", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ARITHMETIC_LOGIC_UNIT = item("Arithmetic Logic Unit", "arithmetic_logic_unit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> MEMORY_MANAGEMENT_UNIT = item("Memory Management Unit", "memory_management_unit", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory", ITEMS_ORDERED.next());
 
     // Quantum circuits
-    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qubit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_OTHER);
-    public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> QUBIT = item("Qubit", "qubit", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_ORDERED.next());
 
     // Upgrades
-    public static final ItemDefinition<Item> BASIC_UPGRADE = item("Basic Upgrade", "basic_upgrade", ITEMS_OTHER);
-    public static final ItemDefinition<Item> ADVANCED_UPGRADE = item("Advanced Upgrade", "advanced_upgrade", ITEMS_OTHER);
-    public static final ItemDefinition<Item> TURBO_UPGRADE = item("Turbo Upgrade", "turbo_upgrade", (p) -> new Item(p.rarity(Rarity.UNCOMMON)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_OTHER);
-    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.stacksTo(1).rarity(Rarity.RARE)), ITEMS_OTHER);
+    public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> OVERDRIVE_MODULE = item("Overdrive Module", "overdrive_module", ITEMS_ORDERED.next());
 
-    public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_OTHER);
-    public static final ItemDefinition<Item> OVERDRIVE_MODULE = item("Overdrive Module", "overdrive_module", ITEMS_OTHER);
+    public static final ItemDefinition<Item> BASIC_UPGRADE = item("Basic Upgrade", "basic_upgrade", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ADVANCED_UPGRADE = item("Advanced Upgrade", "advanced_upgrade", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> TURBO_UPGRADE = item("Turbo Upgrade", "turbo_upgrade", (p) -> new Item(p.rarity(Rarity.UNCOMMON)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade", (p) -> new Item(p.rarity(Rarity.RARE)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.stacksTo(1).rarity(Rarity.RARE)), ITEMS_ORDERED.next());
 
     // Tools
-    public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
+    public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_ORDERED.next());
 
-    public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
+    public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill", SteamDrillItem::new, ITEMS_ORDERED.next());
 
-    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7))
+    public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7), ITEMS_ORDERED.next())
             .withItemRegistrationEvent((item) -> {
                 MICapabilities.onEvent(event -> {
                     event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
                 });
             });
-    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12))
+    public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12), ITEMS_ORDERED.next())
             .withItemRegistrationEvent((item) -> {
                 MICapabilities.onEvent(event -> {
                     event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
                 });
             });
 
-    public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new)
+    public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
                     event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
@@ -170,27 +170,27 @@ public final class MIItem {
             });
 
     // Armor
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.HELMET, s.stacksTo(1).durability(400)), ITEMS_OTHER);
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.BOOTS, s.stacksTo(1).durability(400)), ITEMS_OTHER);
-    public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_OTHER)
+    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.HELMET, s.stacksTo(1).durability(400)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.BOOTS, s.stacksTo(1).durability(400)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
                     event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, JetpackItem.CAPACITY), item);
                 });
             });
 
-    public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_OTHER)
+    public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
                     event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
-    public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new);
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(ArmorItem.Type.HELMET, s), ITEMS_OTHER);
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(ArmorItem.Type.CHESTPLATE, s), ITEMS_OTHER);
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(ArmorItem.Type.LEGGINGS, s), ITEMS_OTHER);
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(ArmorItem.Type.BOOTS, s), ITEMS_OTHER);
+    public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new, ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(ArmorItem.Type.HELMET, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(ArmorItem.Type.CHESTPLATE, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(ArmorItem.Type.LEGGINGS, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(ArmorItem.Type.BOOTS, s), ITEMS_ORDERED.next());
 
     // Material-like items
     public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));
@@ -199,7 +199,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
 
     // Others
-    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_OTHER);
+    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_ORDERED.next());
     public static final ItemDefinition<NuclearComponentItem> SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Small Heat Exchanger", "small_heat_exchanger",
             2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
@@ -233,10 +233,6 @@ public final class MIItem {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
     }
 
-    public static ItemDefinition<Item> itemHandheld(String englishName, String path) {
-        return MIItem.itemHandheld(englishName, path, Item::new);
-    }
-
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
         return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {
         }, sortOrder);
@@ -246,10 +242,6 @@ public final class MIItem {
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
         }, sortOrder);
-    }
-
-    public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor) {
-        return itemHandheld(englishName, path, ctor, ITEMS_OTHER);
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,

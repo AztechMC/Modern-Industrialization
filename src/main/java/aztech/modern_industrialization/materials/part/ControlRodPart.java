@@ -25,10 +25,12 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.MIParts.FUEL_ROD;
 
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.IsotopeParams;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import aztech.modern_industrialization.nuclear.NuclearOrder;
 
 public class ControlRodPart implements PartKeyProvider {
 
@@ -47,7 +49,8 @@ public class ControlRodPart implements PartKeyProvider {
                                         new IsotopeParams(thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
                                                 fastScatteringProba),
                                         size),
-                                NuclearConstant.DESINTEGRATION_BY_ROD))
+                                NuclearConstant.DESINTEGRATION_BY_ROD,
+                                SortOrder.NUCLEAR.create(NuclearOrder.CONTROL_ROD)))
                 .withCustomPath("%s_control_rod");
     }
 
@@ -58,7 +61,8 @@ public class ControlRodPart implements PartKeyProvider {
                         .of(partContext.getMaterialEnglishName() + " Control Rod", itemPath1, maxTemperature,
                                 heatConduction * NuclearConstant.BASE_HEAT_CONDUCTION,
                                 INeutronBehaviour.of(scatteringType, params, size),
-                                NuclearConstant.DESINTEGRATION_BY_ROD))
+                                NuclearConstant.DESINTEGRATION_BY_ROD,
+                                SortOrder.NUCLEAR.create(NuclearOrder.CONTROL_ROD)))
                 .withCustomPath("%s_control_rod");
     }
 

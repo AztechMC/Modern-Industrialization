@@ -494,7 +494,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     private boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
         if (ingredient.isSimple()) {
             for (var stack : ingredient.getStacks()) {
-                return resource.equals(FluidVariant.of(stack.getFluid()));
+                if (resource.equals(FluidVariant.of(stack.getFluid()))) {
+                    return true;
+                }
             }
             return false;
         } else {

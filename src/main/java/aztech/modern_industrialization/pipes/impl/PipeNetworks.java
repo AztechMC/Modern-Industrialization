@@ -25,7 +25,6 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.util.MISavedData;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
@@ -39,7 +38,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class PipeNetworks extends MISavedData {
+public class PipeNetworks extends SavedData {
     private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()),
             PipeNetworks::readNbt);
     private static final String NAME = "modern_industrialization_pipe_networks";

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.guidebook;
 
-import aztech.modern_industrialization.util.MISavedData;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -33,8 +32,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class GuidebookPersistentState extends MISavedData {
+public class GuidebookPersistentState extends SavedData {
     private static final Factory<GuidebookPersistentState> FACTORY = new Factory<>(GuidebookPersistentState::new, GuidebookPersistentState::fromNbt);
     private static final String NAME = "modern_industrialization_guidebook";
     private final Set<String> receivedPlayers;

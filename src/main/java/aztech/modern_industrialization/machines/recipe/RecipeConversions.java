@@ -54,8 +54,9 @@ public class RecipeConversions {
         recipe.duration = smeltingRecipe.getCookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
+        var result = smeltingRecipe.getResultItem(registryAccess);
         recipe.itemOutputs = Collections
-                .singletonList(new MachineRecipe.ItemOutput(ItemVariant.of(smeltingRecipe.getResultItem(registryAccess)), 1, 1));
+                .singletonList(new MachineRecipe.ItemOutput(ItemVariant.of(result), result.getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return new RecipeHolder<>(id, recipe);
     }

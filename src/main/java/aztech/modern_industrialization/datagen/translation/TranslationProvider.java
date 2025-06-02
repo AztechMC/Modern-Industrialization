@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.config.MIConfigBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
@@ -38,7 +38,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
@@ -72,11 +71,6 @@ public final class TranslationProvider implements DataProvider {
 
     private void addManualEntries() {
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
-        addTranslation("book.modern_industrialization.landing_text",
-                "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
-
-        addTranslation("book.modern_industrialization.subtitle",
-                "Modern Industrialization");
 
         addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
 
@@ -100,11 +94,8 @@ public final class TranslationProvider implements DataProvider {
             }
         }
 
-        for (Field f : MIConfig.class.getFields()) {
-            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
-            if (englishTranslation != null) {
-                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
-            }
+        for (var entry : MIConfigBuilder.configTranslations.entrySet()) {
+            addTranslation(entry.getKey(), entry.getValue());
         }
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {

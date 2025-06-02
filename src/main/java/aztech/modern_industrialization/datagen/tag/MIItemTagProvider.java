@@ -93,8 +93,6 @@ public class MIItemTagProvider extends ItemTagsProvider {
 
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
                 .add(Items.BUNDLE, MIItem.PORTABLE_STORAGE_UNIT.asItem())
-                .addTag(Tags.Items.SHULKER_BOXES)
-                .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
 
         tag(Tags.Items.TOOLS_SHEAR).add(MIItem.DIESEL_CHAINSAW.asItem());

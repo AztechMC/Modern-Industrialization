@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -42,6 +42,8 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockMachineBlockEntity> {
+    private static final double MAX_HIGHLIGHT_DISTANCE = 32.0;
+
     public MultiblockMachineBER(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
     }
@@ -55,14 +57,20 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {
             ShapeMatcher matcher = be.createShapeMatcher();
+            var player = Minecraft.getInstance().player;
 
             for (BlockPos pos : matcher.getPositions()) {
+                if (player != null && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > MAX_HIGHLIGHT_DISTANCE * MAX_HIGHLIGHT_DISTANCE) {
+                    // Skip blocks that are far from the player to mitigate FPS drops.
+                    continue;
+                }
+
                 matrices.pushPose();
                 matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
 
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
-                    if (MIConfig.getConfig().enableHatchPlacementOverlay && hatchFlag != null && hatchFlag.allows(hatchType)) {
+                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);

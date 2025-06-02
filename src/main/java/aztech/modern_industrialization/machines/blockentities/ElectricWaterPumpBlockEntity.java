@@ -33,6 +33,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.components.CasingComponent;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
@@ -40,6 +41,10 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -52,21 +57,25 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
         this.inventory = new MIInventory(Collections.emptyList(),
                 Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
-        this.energy = new EnergyComponent(this, 3200);
-        this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
         this.redstoneControl = new RedstoneControlComponent();
+        this.casing = new CasingComponent();
+        this.energy = new EnergyComponent(this, casing::getEuCapacity);
+        this.insertable = energy.buildInsertable(casing::canInsertEu);
 
-        this.registerComponents(energy, inventory, redstoneControl);
+        this.registerComponents(inventory, redstoneControl, casing, energy);
 
-        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity),
-                new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
+        registerGuiComponent(new SlotPanel.Server(this)
+                .withRedstoneControl(redstoneControl)
+                .withCasing(casing));
 
     }
 
     private final MIInventory inventory;
+    private final RedstoneControlComponent redstoneControl;
+    private final CasingComponent casing;
     private final EnergyComponent energy;
     private final MIEnergyStorage insertable;
-    private final RedstoneControlComponent redstoneControl;
 
     @Override
     protected long consumeEu(long max) {
@@ -90,7 +99,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
 
     @Override
     protected MachineModelClientData getMachineModelData() {
-        MachineModelClientData data = new MachineModelClientData();
+        MachineModelClientData data = new MachineModelClientData(casing.getCasing());
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
@@ -108,7 +117,19 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     @Override
+    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        var result = super.useItemOn(player, hand, face);
+        if (!result.consumesAction()) {
+            result = redstoneControl.onUse(this, player, hand);
+        }
+        if (!result.consumesAction()) {
+            result = casing.onUse(this, player, hand);
+        }
+        return result;
+    }
+
+    @Override
     public CableTier getCableTier() {
-        return CableTier.LV;
+        return casing.getCableTier();
     }
 }

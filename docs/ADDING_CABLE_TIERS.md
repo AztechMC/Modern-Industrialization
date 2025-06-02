@@ -33,3 +33,6 @@ MIRegistrationEvents.registerCableTiers(event => {
 
 To register a corresponding cable with the [material system](ADDING_MATERIALS.md),
 use `.cable("iv")` on a material builder.
+
+To register corresponding energy input and output hatches,
+see the page on [adding hatches](ADDING_HATCHES.md).

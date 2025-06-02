@@ -44,6 +44,7 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
         genPlanks(consumer, "acacia", true);
         genPlanks(consumer, "dark_oak", true);
         genPlanks(consumer, "mangrove", true);
+        genPlanks(consumer, "cherry", true);
         genPlanks(consumer, "crimson", false);
         genPlanks(consumer, "warped", false);
     }

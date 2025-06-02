@@ -34,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,7 +44,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
 
     public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN), factory,
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
+                .isRedstoneConductor(Blocks::never), factory,
                 behaviour);
     }
 

@@ -38,7 +38,7 @@ import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
 
-class MaterialBuilderJSWrapper {
+public class MaterialBuilderJSWrapper {
 
     protected MaterialBuilder materialBuilder;
     final private PartJsonCreator creator = new PartJsonCreator();

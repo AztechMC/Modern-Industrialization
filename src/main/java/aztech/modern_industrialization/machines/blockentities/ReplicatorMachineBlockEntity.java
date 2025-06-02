@@ -44,10 +44,13 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -59,7 +62,8 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    public static final TagKey<Item> BLACKLISTED = TagKey.create(BuiltInRegistries.ITEM.key(), MI.id("replicator_blacklist"));
+    public static final TagKey<Item> BLACKLISTED = ItemTags.create(MI.id("replicator_blacklist"));
+    public static final TagKey<Fluid> BLACKLISTED_FLUIDS = FluidTags.create(MI.id("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 
@@ -72,7 +76,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         long capacity = FluidType.BUCKET_VOLUME * 256;
 
         List<ConfigurableFluidStack> fluidInput = Collections
-                .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER.asFluid()));
+                .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATTER.asFluid()));
         List<ConfigurableItemStack> itemInputs = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         List<ConfigurableItemStack> itemOutputs = Collections.singletonList(ConfigurableItemStack.standardOutputSlot());
 
@@ -113,23 +117,41 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         return data;
     }
 
-    public boolean replicationStep(boolean simulate) {
+    private static boolean canReplicate(ItemStack stack) {
+        if (stack.is(BLACKLISTED)) {
+            return false;
+        }
 
+        // Containers are only allowed if they are empty.
+        var itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (itemHandler != null) {
+            int slots = itemHandler.getSlots();
+            for (int i = 0; i < slots; ++i) {
+                if (!itemHandler.getStackInSlot(i).isEmpty()) {
+                    return false;
+                }
+            }
+        }
+
+        // Disallow anything that contains disallowed fluids
+        var fluidItem = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        if (fluidItem != null) {
+            for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
+                if (fluidItem.getFluidInTank(tank).is(BLACKLISTED_FLUIDS)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean replicationStep(boolean simulate) {
         ItemVariant itemVariant = inventoryComponent.getItemInputs().get(0).getResource();
 
         if (!itemVariant.isBlank()) {
-            // check blacklist
-            if (itemVariant.toStack().is(BLACKLISTED)) {
+            if (!canReplicate(itemVariant.toStack())) {
                 return false;
-            }
-            // check that the item doesn't contain uu matter
-            var fluidItem = itemVariant.toStack().getCapability(Capabilities.FluidHandler.ITEM);
-            if (fluidItem != null) {
-                for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
-                    if (fluidItem.getFluidInTank(tank).getFluid() == MIFluids.UU_MATER.asFluid()) {
-                        return false;
-                    }
-                }
             }
 
             try (Transaction tx = Transaction.openOuter()) {
@@ -137,7 +159,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
                 long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
-                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATTER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
 
                 if (inserted == 1 && uuMatterExtraced == FluidType.BUCKET_VOLUME / 10) {
                     if (!simulate) {

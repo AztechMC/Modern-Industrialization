@@ -26,10 +26,10 @@ package aztech.modern_industrialization.pipes.item;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MIComponents;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
+import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -61,7 +61,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -301,7 +300,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         int getMoves() {
             var upgradeData = upgradeStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
             int extraExtractedItems = upgradeData == null ? 0 : upgradeData.maxExtractedItems();
-            return MIConfig.getConfig().baseItemPipeTransfer + (extraExtractedItems * upgradeStack.getCount());
+            return MIServerConfig.INSTANCE.baseItemPipeTransfer.getAsInt() + (extraExtractedItems * upgradeStack.getCount());
         }
 
         private void dropUpgrades(Level world, BlockPos pos) {
@@ -371,7 +370,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private int fetchItems(Player player, ItemVariant what, int maxAmount) {
-            return TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), what::matches, maxAmount).getCount();
+            return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }
 
         private class ScreenHandlerFactory implements IPipeMenuProvider {

@@ -103,7 +103,7 @@ public class OrientationComponent implements IComponent {
         Direction dir = placer != null ? (params.canBeVertical ? placer.getNearestViewDirection() : placer.getDirection()) : Direction.NORTH;
         facingDirection = dir.getOpposite();
         if (params.hasOutput) {
-            outputDirection = dir;
+            outputDirection = placer != null ? placer.getNearestViewDirection() : Direction.NORTH;
         }
     }
 

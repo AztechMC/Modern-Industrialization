@@ -110,14 +110,16 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
             if (shapeValid.shapeValid) {
                 if (redstoneControl.doAllowNormalOperation(this)) {
                     steamHeater.tick(inventory.getFluidInputs(), inventory.getFluidOutputs());
-                    fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs());
+                    fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs(), true);
                     this.isActiveComponent.updateActive(fuelBurning.isBurning(), this);
                 } else {
+                    steamHeater.tickDisabled();
+                    fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs(), false);
                     this.isActiveComponent.updateActive(false, this);
                 }
             } else {
-                fuelBurning.disable();
-                steamHeater.decreaseTemperature(1);
+                steamHeater.tickDisabled();
+                fuelBurning.clearActiveFuel();
                 this.isActiveComponent.updateActive(false, this);
             }
             setChanged();

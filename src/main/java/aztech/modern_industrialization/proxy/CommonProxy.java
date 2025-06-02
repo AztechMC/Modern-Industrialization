@@ -97,6 +97,9 @@ public class CommonProxy {
         return false;
     }
 
+    public void delayNextBlockAttack(Player player) {
+    }
+
     public boolean hasShiftDown() {
         return false;
     }

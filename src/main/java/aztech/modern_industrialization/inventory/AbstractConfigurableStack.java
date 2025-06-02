@@ -181,7 +181,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     public void enableMachineLock(T lockedInstance) {
         if (this.lockedInstance != null && lockedInstance != this.lockedInstance)
-            throw new RuntimeException("Trying to override locked instance");
+            throw new RuntimeException("Trying to override locked instance from %s to %s".formatted(this.lockedInstance, lockedInstance));
         machineLocked = true;
         this.lockedInstance = lockedInstance;
         notifyListeners();

@@ -1,0 +1,121 @@
+{
+  "values": {
+    "modern_industrialization:aluminum_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:bronze_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:capacitor": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:copper_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:gold_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:inductor": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:invar_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:iron_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:resistor": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:stainless_steel_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:steel_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:tin_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    },
+    "modern_industrialization:titanium_gear": {
+      "components": [
+        {
+          "color": "#A9A9A9",
+          "italic": false,
+          "translate": "text.modern_industrialization.HasBetterYieldAssemblerRecipe"
+        }
+      ]
+    }
+  }
+}

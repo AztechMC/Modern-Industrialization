@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.compat.ae2;
 
-import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class AECompatCondition implements ICondition {
-    private static final boolean LOAD_COMPAT = MIConfig.loadAe2Compat();
+    private static final boolean LOAD_COMPAT = MIStartupConfig.INSTANCE.loadAe2Compat();
 
     public static final AECompatCondition INSTANCE = new AECompatCondition();
     public static final MapCodec<AECompatCondition> CODEC = MapCodec.unit(INSTANCE).stable();

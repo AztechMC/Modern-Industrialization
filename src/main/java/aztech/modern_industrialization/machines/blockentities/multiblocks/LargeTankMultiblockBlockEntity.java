@@ -207,6 +207,12 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
+    public ShapeTemplate getBigShape() {
+        // Largest tank
+        return shapeTemplates[shapeTemplates.length - 1];
+    }
+
+    @Override
     public FluidStorageComponent getFluidStorageComponent() {
         return fluidStorage;
     }

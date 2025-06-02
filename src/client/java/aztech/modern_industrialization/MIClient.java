@@ -30,6 +30,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.DeferredBarrelTextR
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.client.MIRenderTypes;
+import aztech.modern_industrialization.config.MIClientConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenClient;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
@@ -70,7 +72,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -88,6 +89,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -99,6 +101,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -113,6 +116,9 @@ public class MIClient {
         var modBus = ModLoadingContext.get().getActiveContainer().getEventBus();
         Objects.requireNonNull(modBus);
         var modContainer = ModLoadingContext.get().getActiveContainer();
+
+        modContainer.registerConfig(ModConfig.Type.CLIENT, MIClientConfig.SPEC);
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
         NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
         NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
@@ -132,7 +138,7 @@ public class MIClient {
 
             // Apparently tooltips are accessed from the main menu, or something, hence the
             // != null check
-            if (Minecraft.getInstance().level != null && !MIConfig.getConfig().disableFuelTooltips) {
+            if (Minecraft.getInstance().level != null && MIClientConfig.INSTANCE.fuelTooltips.getAsBoolean()) {
                 try {
                     int fuelTime = event.getItemStack().getBurnTime(null);
                     if (fuelTime > 0) {
@@ -144,7 +150,7 @@ public class MIClient {
                 }
             }
 
-            if (event.getFlags().isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
+            if (event.getFlags().isAdvanced() && MIClientConfig.INSTANCE.itemTagTooltips.getAsBoolean()) {
                 var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
                 for (ResourceLocation id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
@@ -161,10 +167,6 @@ public class MIClient {
                     false);
         });
 
-        modContainer.registerExtensionPoint(
-                IConfigScreenFactory.class,
-                (mc, parentScreen) -> AutoConfig.getConfigScreen(MIConfig.class, parentScreen).get());
-
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
             event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
         });
@@ -173,13 +175,13 @@ public class MIClient {
         if (!ModList.get().isLoaded("emi") && !ModList.get().isLoaded("jei")
                 && !ModList.get().isLoaded("roughlyenoughitems")) {
             NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> {
-                if (MIConfig.getConfig().enableNoEmiMessage) {
+                if (MIClientConfig.INSTANCE.missingRecipeViewerMessage.getAsBoolean()) {
                     event.getPlayer().displayClientMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD), false);
                 }
             });
         }
 
-        if (MIConfig.getConfig().datagenOnStartup) {
+        if (MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
             modBus.addListener(AddPackFindersEvent.class, event -> {
                 if (event.getPackType() == PackType.CLIENT_RESOURCES) {
                     RuntimeDataGen.run(MIDatagenClient::configure, MIDatagenServer::configure);

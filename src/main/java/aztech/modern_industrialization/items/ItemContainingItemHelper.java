@@ -82,9 +82,11 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
         if (!heldStack.isEmpty()) {
             if (otherStack.getValue().isEmpty() || ItemStack.isSameItemSameComponents(heldStack, otherStack.getValue())) {
                 var extracted = barrelHandler.extractItem(0, heldStack.getMaxStackSize() - otherStack.getValue().getCount(), false);
-                extracted.grow(otherStack.getValue().getCount()); // Grow by existing items
-                otherStack.setValue(extracted);
-                return true;
+                if (extracted.getCount() > 0) {
+                    extracted.grow(otherStack.getValue().getCount()); // Grow by existing items
+                    otherStack.setValue(extracted);
+                    return true;
+                }
             }
         }
 

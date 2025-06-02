@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.ftbquests;
 
-import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import java.util.UUID;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
@@ -32,7 +32,7 @@ public interface FTBQuestsFacade {
     FTBQuestsFacade INSTANCE = getInstance();
 
     private static FTBQuestsFacade getInstance() {
-        if (ModList.get().isLoaded("ftbquests") && MIConfig.getConfig().enableFtbQuestsIntegration) {
+        if (ModList.get().isLoaded("ftbquests") && MIStartupConfig.INSTANCE.ftbQuestsIntegration.getAsBoolean()) {
             try {
                 return Class.forName("aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacadeImpl")
                         .asSubclass(FTBQuestsFacade.class).getConstructor().newInstance();

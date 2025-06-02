@@ -25,6 +25,8 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.MI;
 import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -54,7 +56,7 @@ interface IItemSink {
      */
     int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount);
 
-    record HandlerWrapper(IItemHandler handler) implements IItemSink {
+    record HandlerWrapper(IItemHandler handler, BlockPos pipePos, Direction direction) implements IItemSink {
         @Override
         public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxToMove) {
             IItemHandler sourceHandler = source.storage();
@@ -89,8 +91,16 @@ interface IItemSink {
 
                     // rest in pieces, little stacks
                     if (!leftover.isEmpty()) {
-                        MI.LOGGER.error("Discarding overflowing item {}, extracted from block at position {} in {}, accessed from {} side",
-                                leftover, source.queryPos(), world.dimension(), source.querySide());
+                        var targetPos = pipePos.relative(direction);
+                        var targetSide = direction.getOpposite();
+                        var targetBlock = world.getBlockState(targetPos).getBlock();
+                        MI.LOGGER.error("""
+                                Discarding overflowing item {}, extracted from block at position {} in {}, accessed from {} side.
+                                Trying to insert into block at position {}, accessed from {},
+                                of type {}.\
+                                It previously reported that it would accept {} items, but it only did accept {}.""",
+                                leftover, source.queryPos(), world.dimension(), source.querySide(),
+                                targetPos, targetSide, targetBlock, canFit, movedThisTime);
                     }
 
                     break;

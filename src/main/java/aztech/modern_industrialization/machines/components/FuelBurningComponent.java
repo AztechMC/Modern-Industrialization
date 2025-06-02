@@ -64,6 +64,10 @@ public class FuelBurningComponent implements IComponent {
      * Buffer of EU that was burnt already, and is awaiting to be turned into heat.
      */
     private long burningEuBuffer;
+    /**
+     * Total EU of the currently burning item. If 0 it means that we are burning fluid instead.
+     */
+    private long burningItemTotalEu;
 
     public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, long burningEuMultiplier) {
         this.temperature = temperature;
@@ -88,24 +92,34 @@ public class FuelBurningComponent implements IComponent {
         return burningEuBuffer > 0;
     }
 
-    public void disable() {
+    public void clearActiveFuel() {
         burningEuBuffer = 0;
+        burningItemTotalEu = 0;
     }
 
     public double getBurningProgress() {
-        return Math.min(1.0, (double) burningEuBuffer / (5 * 20 * maxEuProduction));
+        if (burningItemTotalEu == 0) {
+            return Math.min(1.0, (double) burningEuBuffer / (5 * 20 * maxEuProduction));
+        } else {
+            return Math.min(1.0, (double) burningEuBuffer / burningItemTotalEu);
+        }
     }
 
-    public void tick(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs) {
+    public void tick(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, boolean canConsumeNewFuel) {
         // Turn buffer into heat
         long maxEuInsertion = Math.min(burningEuBuffer, maxEuProduction);
 
-        maxEuInsertion = Math.min(maxEuInsertion, (long) Math.floor(euPerDegree * (temperature.temperatureMax - temperature.getTemperature())));
+        // Use ceil here to be able to reach the max temperature exactly, even if it wastes a fraction of an EU.
+        maxEuInsertion = Math.min(maxEuInsertion, (long) Math.ceil(euPerDegree * (temperature.temperatureMax - temperature.getTemperature())));
         if (maxEuInsertion > 0) {
             burningEuBuffer -= maxEuInsertion;
             temperature.increaseTemperature((double) maxEuInsertion / euPerDegree);
         } else if (burningEuBuffer == 0) {
             temperature.decreaseTemperature(1);
+        }
+
+        if (!canConsumeNewFuel) {
+            return;
         }
 
         // Refill buffer with item fuel
@@ -116,7 +130,9 @@ public class FuelBurningComponent implements IComponent {
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     int fuelTime = fuel.getBurnTime(null);
                     if (fuelTime > 0) {
-                        burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
+                        long fuelTotalEu = fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
+                        burningEuBuffer += fuelTotalEu;
+                        burningItemTotalEu = fuelTotalEu;
                         ItemStackHelper.consumeFuel(stack, false);
                         continue outer;
                     }
@@ -136,6 +152,7 @@ public class FuelBurningComponent implements IComponent {
                         if (mbConsumed > 0) {
                             stack.decrement(mbConsumed);
                             burningEuBuffer += mbConsumed * euPerMb;
+                            burningItemTotalEu = 0;
                             continue outer;
                         }
                     }
@@ -148,12 +165,15 @@ public class FuelBurningComponent implements IComponent {
     @Override
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putLong("burningEuBuffer", burningEuBuffer);
-
+        if (burningItemTotalEu != 0) {
+            tag.putLong("burningItemTotalEu", burningItemTotalEu);
+        }
     }
 
     @Override
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
+        burningItemTotalEu = tag.getLong("burningItemTotalEu");
     }
 
     public List<Component> getTooltips() {

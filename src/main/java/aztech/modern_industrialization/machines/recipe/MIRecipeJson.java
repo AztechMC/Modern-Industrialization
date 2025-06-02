@@ -150,7 +150,19 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
-        recipe.fluidInputs.add(new MachineRecipe.FluidInput(FluidIngredient.of(fluid), amount, probability));
+        return addFluidInput(FluidIngredient.of(fluid), amount, probability);
+    }
+
+    public T addFluidInput(TagKey<Fluid> tag, int amount) {
+        return addFluidInput(tag, amount, 1);
+    }
+
+    public T addFluidInput(TagKey<Fluid> tag, int amount, float probability) {
+        return addFluidInput(FluidIngredient.tag(tag), amount, probability);
+    }
+
+    public T addFluidInput(FluidIngredient ingredient, int amount, float probability) {
+        recipe.fluidInputs.add(new MachineRecipe.FluidInput(ingredient, amount, probability));
         return (T) this;
     }
 

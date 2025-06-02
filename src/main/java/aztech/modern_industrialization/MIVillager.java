@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,7 +38,7 @@ public class MIVillager {
             return;
         }
 
-        if (MIConfig.getConfig().removeIndustrialistTrades)
+        if (!MIStartupConfig.INSTANCE.defaultIndustrialistTrades.getAsBoolean())
             return;
 
         var level1 = event.getTrades().get(1);

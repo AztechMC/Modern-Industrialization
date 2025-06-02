@@ -117,7 +117,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
             return;
 
         steamHeater.tick(Collections.singletonList(inventory.getFluidStacks().get(0)), Collections.singletonList(inventory.getFluidStacks().get(1)));
-        fuelBurning.tick(Collections.singletonList(inventory.getItemStacks().get(0)), Collections.emptyList());
+        fuelBurning.tick(Collections.singletonList(inventory.getItemStacks().get(0)), Collections.emptyList(), true);
 
         for (Direction direction : Direction.values()) {
             getInventory().autoExtractFluids(level, worldPosition, direction);

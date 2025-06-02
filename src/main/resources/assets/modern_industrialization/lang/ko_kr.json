@@ -414,8 +414,6 @@
   "block.modern_industrialization.vacuum_freezer": "진공 냉각기",
   "block.modern_industrialization.vinyl_chloride": "염화 비닐",
   "block.modern_industrialization.yttrium_block": "이트륨 블록",
-  "book.modern_industrialization.landing_text": "Modern Industrialization에 오신것을 환영합니다! 시작하기 위해, 대량의 구리 광석과 주석 광석을 모으세요.",
-  "book.modern_industrialization.subtitle": "뉴비를 위한 기술",
   "item.modern_industrialization.advanced_motor": "발전된 모터",
   "item.modern_industrialization.advanced_pump": "발전된 펌프",
   "item.modern_industrialization.advanced_upgrade": "발전된 업그레이드",
@@ -964,13 +962,5 @@
   "rei_categories.modern_industrialization.steel_packer": "포장기",
   "rei_categories.modern_industrialization.steel_wiremill": "선재압연기",
   "rei_categories.modern_industrialization.vacuum_freezer": "진공 냉강기",
-  "text.autoconfig.modern_industrialization.option.colorWaterLava": "Color water and lava",
-  "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "연료 EU 툴팁 비활성화",
-  "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "아이템 태그 툴팁 비활성화",
-  "text.autoconfig.modern_industrialization.option.enableDebugCommands": "디버그 명령 활성화(매우 위험함)",
-  "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "해치를 들고 있을 때, 멀티블록의 유효 위치 보이기",
-  "text.autoconfig.modern_industrialization.option.newVersionMessage": "새로운 버전 알림 받기",
-  "text.autoconfig.modern_industrialization.option.respawnWithGuideBook": "리스폰 시 가이드북 지급",
-  "text.autoconfig.modern_industrialization.option.spawnWithGuideBook": "첫 스폰 시 가이드북 지급",
   "text.autoconfig.modern_industrialization.title": "Modern Industrialization 메뉴"
 }

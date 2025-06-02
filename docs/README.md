@@ -52,6 +52,7 @@ Here are some examples to get you started:
 Refer to the page that interests you:
 - [Cable tiers](ADDING_CABLE_TIERS.md)
 - [Fluids](ADDING_FLUIDS.md)
+- [Hatches](ADDING_HATCHES.md)
 - [Machines](ADDING_MACHINES.md)
 - [Materials](ADDING_MATERIALS.md)
 - [Nuclear reactor components](ADDING_NUCLEAR_COMPONENTS.md)

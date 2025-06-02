@@ -28,10 +28,14 @@ import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import aztech.modern_industrialization.config.MIServerConfig;
+import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.guidebook.GuidebookEvents;
+import aztech.modern_industrialization.guidebook.MIGuide;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
@@ -44,7 +48,6 @@ import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines
 import aztech.modern_industrialization.machines.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
-import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
@@ -74,7 +77,9 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -102,7 +107,10 @@ public class MI {
         return ResourceLocation.fromNamespaceAndPath(ID, path);
     }
 
-    public MI(IEventBus modBus, Dist dist) {
+    public MI(ModContainer modContainer, IEventBus modBus, Dist dist) {
+        modContainer.registerConfig(ModConfig.Type.SERVER, MIServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.STARTUP, MIStartupConfig.SPEC);
+
         KubeJSProxy.checkThatKubeJsIsLoaded();
 
         MIAdvancementTriggers.init(modBus);
@@ -127,6 +135,7 @@ public class MI {
         ChunkEventListeners.init();
         DebugCommands.init();
         GuidebookEvents.init();
+        MIGuide.init();
         MIArmorEffects.init();
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerChangedDimensionEvent.class, event -> MIKeyMap.clear(event.getEntity()));
@@ -215,18 +224,20 @@ public class MI {
             event.register(MIDataMaps.FLUID_FUELS);
             event.register(MIDataMaps.ITEM_PIPE_UPGRADES);
             event.register(MIDataMaps.MACHINE_UPGRADES);
+            event.register(MIDataMaps.ITEM_TOOLTIPS);
         });
 
-        if (MIConfig.loadAe2Compat()) {
+        if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
             MIAEAddon.init(modBus);
         }
 
         modBus.addListener(AddPackFindersEvent.class, event -> {
-            if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA && MIConfig.getConfig().datagenOnStartup) {
+            if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA
+                    && MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
                 RuntimeDataGen.run(MIDatagenServer::configure);
             }
 
-            if (MIConfig.getConfig().loadRuntimeGeneratedResources) {
+            if (MIStartupConfig.INSTANCE.loadRuntimeGeneratedResources.getAsBoolean()) {
                 event.addRepositorySource(consumer -> {
                     consumer.accept(new Pack(
                             new PackLocationInfo(

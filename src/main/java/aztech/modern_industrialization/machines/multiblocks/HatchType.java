@@ -23,24 +23,42 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MIText;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+
 public enum HatchType {
-    ITEM_INPUT(0),
-    ITEM_OUTPUT(1),
-    FLUID_INPUT(2),
-    FLUID_OUTPUT(3),
-    ENERGY_INPUT(4),
-    ENERGY_OUTPUT(5),
-    NUCLEAR_ITEM(6),
-    NUCLEAR_FLUID(7),
-    LARGE_TANK(8);
+    ITEM_INPUT(0, MIText.ItemInputHatch),
+    ITEM_OUTPUT(1, MIText.ItemOutputHatch),
+    FLUID_INPUT(2, MIText.FluidInputHatch),
+    FLUID_OUTPUT(3, MIText.FluidOutputHatch),
+    ENERGY_INPUT(4, MIText.EnergyInputHatch),
+    ENERGY_OUTPUT(5, MIText.EnergyOutputHatch),
+    NUCLEAR_ITEM(6, "nuclear_item_hatch"),
+    NUCLEAR_FLUID(7, "nuclear_fluid_hatch"),
+    LARGE_TANK(8, "large_tank_hatch");
 
     private final int id;
+    private final Either<MIText, ResourceLocation> descriptionOrBlockId;
 
-    HatchType(int id) {
+    HatchType(int id, MIText description) {
         this.id = id;
+        this.descriptionOrBlockId = Either.left(description);
+    }
+
+    HatchType(int id, String blockId) {
+        this.id = id;
+        this.descriptionOrBlockId = Either.right(MI.id(blockId));
     }
 
     public int getId() {
         return id;
+    }
+
+    public MutableComponent description() {
+        return descriptionOrBlockId.map(MIText::text, id -> BuiltInRegistries.BLOCK.get(id).getName());
     }
 }

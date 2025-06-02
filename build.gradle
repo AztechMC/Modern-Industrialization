@@ -38,10 +38,6 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    // for Patchouli
-    maven {
-        url 'https://maven.blamejared.com'
-    }
     // for AE2 and JEI
     maven {
         name "Modmaven"
@@ -78,6 +74,8 @@ repositories {
             includeGroup "com.github.Draylar.omega-config"
             /* For KubeJS */
             includeGroup "com.github.llamalad7.mixinextras"
+            // For KubeJS
+            includeGroup "com.github.rtyley"
         }
     }
     // to build indrev
@@ -102,14 +100,7 @@ repositories {
         }
     }
     maven {
-        url "https://maven.saps.dev/minecraft"
-        content {
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    maven {
-        url "https://maven.ftb.dev/snapshots"
+        url "https://maven.ftb.dev/releases"
         content {
             includeGroup "dev.ftb.mods"
         }
@@ -136,9 +127,9 @@ repositories {
             includeGroup "me.luligabi"
         }
     }
-    // For FTBTeams/FTBQuests
+    // For KubeJS & FTBTeams/FTBQuests
     maven {
-        url "https://maven.saps.dev/minecraft"
+        url "https://maven.latvian.dev/releases"
         content {
             includeGroup "dev.latvian.mods"
             includeGroup "dev.ftb.mods"
@@ -153,7 +144,6 @@ repositories {
             includeGroup "earth.terrarium.athena"
         }
     }
-    mavenLocal()
 }
 
 sourceSets {
@@ -202,6 +192,10 @@ neoForge {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             systemProperty 'forge.logging.console.level', 'debug'
+
+            // Allows updates to the guide book to be watched for by GuideME.
+            systemProperty 'guideme.modern_industrialization.book.sources',
+                    file("src/main/resources/assets/modern_industrialization/mi_guidebook/").absolutePath
         }
 
         client {
@@ -214,15 +208,6 @@ neoForge {
 
         server {
             server()
-            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
-            programArgument '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            type = "gameTestServer"
             systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
 
@@ -240,8 +225,11 @@ neoForge {
         gameTestServer {
             type = "gameTestServer"
             gameDirectory = project.file("build/gametest")
+            systemProperty 'forge.enabledGameTestNamespaces', "modern_industrialization"
         }
     }
+
+    validateAccessTransformers = true
 }
 
 configurations {
@@ -251,6 +239,7 @@ configurations {
 
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
+    implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
     if (project.runtime_itemlist_mod == "jei") {
@@ -274,12 +263,6 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    compileOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}:api"
-    localRuntimeOnly "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    jarJar "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
-
     localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
@@ -298,8 +281,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
-            cloth_config_version_range: cloth_config_version_range,
             grandpower_version_range: grandpower_version_range,
+            guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
             jei_version_range: jei_version_range,
     ]
@@ -394,13 +377,12 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             addGameVersion "Java 21"
 
             relations {
-                requiredDependency "cloth-config"
+                requiredDependency "guideme"
                 optionalDependency "wthit"
                 optionalDependency "emi"
                 optionalDependency "jei"
                 optionalDependency "roughly-enough-items"
                 embeddedLibrary "grandpower"
-                embeddedLibrary "patchouli"
             }
             mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
                 displayName = "Modern Industrialization v${version}"
@@ -426,12 +408,11 @@ modrinth {
     gameVersions = [project.minecraft_version]
     loaders = ["neoforge"]
     dependencies {
-        required.project "cloth-config"
+        required.project "guideme"
         optional.project "wthit"
         optional.project "emi"
         optional.project "jei"
         optional.project "rei"
-        embedded.project "patchouli"
     }
 }
 tasks.modrinth.onlyIf {

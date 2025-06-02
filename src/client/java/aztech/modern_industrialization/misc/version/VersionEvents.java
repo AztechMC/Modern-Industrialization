@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.misc.version;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.config.MIClientConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -103,7 +103,7 @@ public class VersionEvents {
     public static void startVersionCheck(ModContainer miContainer, LocalPlayer player) {
         new Thread(() -> {
             try {
-                if (MIConfig.getConfig().newVersionMessage) {
+                if (MIClientConfig.INSTANCE.newVersionMessage.getAsBoolean()) {
                     String currentVersion = miContainer.getModInfo().getVersion().toString();
                     Version lastVersion = fetchVersion(currentVersion.contains(alphaPostfix));
 

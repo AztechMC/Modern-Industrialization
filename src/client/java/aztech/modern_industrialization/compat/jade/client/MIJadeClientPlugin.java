@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.jade.client;
 
 import aztech.modern_industrialization.compat.jade.server.MachineComponentProvider;
+import aztech.modern_industrialization.compat.jade.server.TankComponentProvider;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
@@ -47,6 +48,8 @@ public class MIJadeClientPlugin implements IWailaPlugin {
         registration.registerFluidStorageClient(new MachineComponentProvider.Fluids());
         registration.registerItemStorageClient(new MachineComponentProvider.Items());
         registration.registerProgressClient(new MachineComponentProvider.Progress());
+
+        registration.registerFluidStorageClient(new TankComponentProvider());
     }
 
     static float ratio(double current, double max) {

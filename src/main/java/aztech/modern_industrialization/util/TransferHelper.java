@@ -25,9 +25,12 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MI;
 import java.util.function.Predicate;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class TransferHelper {
     public static void moveAll(IItemHandler src, IItemHandler target, boolean stackInTarget) {
@@ -67,6 +70,37 @@ public class TransferHelper {
         }
     }
 
+    public static ItemStack extractMatching(Inventory inventory, Predicate<ItemStack> predicate, int maxAmount, boolean containers) {
+        int srcSlots = inventory.getContainerSize();
+
+        var ret = extractMatching(new PlayerInvWrapper(inventory), predicate, maxAmount);
+
+        // Try to extract from item containing items
+        if (containers) {
+            if (!ret.isEmpty()) {
+                final var finalRet = ret;
+                predicate = other -> ItemStack.isSameItemSameComponents(finalRet, other);
+            }
+            for (int slot = 0; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
+                var stack = inventory.getItem(slot);
+                if (stack.getCount() != 1) {
+                    continue;
+                }
+                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
+                if (capability != null) {
+                    var extracted = extractMatching(capability, predicate, maxAmount - ret.getCount());
+                    if (ret.isEmpty()) {
+                        ret = extracted;
+                    } else {
+                        ret.grow(extracted.getCount());
+                    }
+                }
+            }
+        }
+
+        return ret;
+    }
+
     public static ItemStack extractMatching(IItemHandler src, Predicate<ItemStack> predicate, int maxAmount) {
         int srcSlots = src.getSlots();
 
@@ -84,11 +118,10 @@ public class TransferHelper {
         }
 
         // Try to extract more
-        ++slot;
-        for (; slot < srcSlots && maxAmount < ret.getCount(); ++slot) {
+        for (; slot < srcSlots && maxAmount > ret.getCount(); ++slot) {
             var stack = src.getStackInSlot(slot);
-            if (ItemStack.matches(stack, ret)) {
-                var extracted = src.extractItem(slot, maxAmount - ret.getCount(), true);
+            if (ItemStack.isSameItemSameComponents(stack, ret)) {
+                var extracted = src.extractItem(slot, maxAmount - ret.getCount(), false);
                 ret.grow(extracted.getCount());
             }
         }

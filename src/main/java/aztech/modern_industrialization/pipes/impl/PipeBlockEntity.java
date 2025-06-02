@@ -66,7 +66,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -253,7 +252,11 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     /**
      * Set the camouflage directly. The camouflage block should be consumed from the player before calling this.
      */
-    private void setCamouflage(Player player, @Nullable BlockState newCamouflage) {
+    private void setCamouflage(@Nullable BlockState newCamouflage) {
+        if (level.isClientSide) {
+            throw new IllegalStateException("Cannot call setCamouflage on the client");
+        }
+
         boolean hadCamouflage = hasCamouflage();
 
         if (camouflage != null) {
@@ -267,16 +270,14 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             if (newCamouflage == null) {
                 var group = camouflage.getSoundType();
                 var sound = group.getBreakSound();
-                level.playSound(player, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+                level.playSound(null, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
             }
 
             // Remove camouflage
             camouflage = null;
             setChanged();
-            if (!level.isClientSide()) {
-                sync();
-                rebuildCollisionShape();
-            }
+            sync();
+            rebuildCollisionShape();
         }
 
         camouflage = newCamouflage;
@@ -285,13 +286,11 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             // Play a cool sound
             var group = newCamouflage.getSoundType();
             var sound = group.getPlaceSound();
-            level.playSound(player, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+            level.playSound(null, worldPosition, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
 
             setChanged();
-            if (!level.isClientSide()) {
-                sync();
-                rebuildCollisionShape();
-            }
+            sync();
+            rebuildCollisionShape();
         }
 
         if (hadCamouflage != hasCamouflage()) {
@@ -310,7 +309,9 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             return false;
         }
 
-        setCamouflage(player, null);
+        if (!player.level().isClientSide) {
+            setCamouflage(null);
+        }
 
         return true;
     }
@@ -340,11 +341,16 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             return true;
         }
 
+        // Item capabilities shouldn't be messed with (and in some cases cannot - leading to inconsistent behavior) on the client side
+        if (player.level().isClientSide) {
+            return true;
+        }
+
         boolean itemChanged = camouflage == null || newCamouflage.getBlock() != camouflage.getBlock();
 
         if (!player.getAbilities().instabuild && itemChanged) {
             var itemToUse = newCamouflage.getBlock().asItem();
-            var extracted = TransferHelper.extractMatching(new PlayerInvWrapper(player.getInventory()), s -> s.is(itemToUse), 1);
+            var extracted = TransferHelper.extractMatching(player.getInventory(), s -> s.is(itemToUse), 1, true);
 
             if (extracted.isEmpty()) {
                 player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
@@ -353,7 +359,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             }
         }
 
-        setCamouflage(player, newCamouflage);
+        setCamouflage(newCamouflage);
         return true;
     }
 

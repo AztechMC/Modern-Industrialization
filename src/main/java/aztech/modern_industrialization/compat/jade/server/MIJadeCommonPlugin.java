@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.jade.server;
 
+import aztech.modern_industrialization.blocks.storage.tank.TankBlockEntity;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -43,6 +44,8 @@ public class MIJadeCommonPlugin implements IWailaPlugin {
         registration.registerFluidStorage(new MachineComponentProvider.Fluids(), MachineBlockEntity.class);
         registration.registerItemStorage(new MachineComponentProvider.Items(), MachineBlockEntity.class);
         registration.registerProgress(new MachineComponentProvider.Progress(), MachineBlockEntity.class);
+
+        registration.registerFluidStorage(new TankComponentProvider(), TankBlockEntity.class);
     }
 
     public static JadeFluidObject fluidStack(FluidVariant variant, long amount) {

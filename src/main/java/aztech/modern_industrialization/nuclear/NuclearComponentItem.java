@@ -46,7 +46,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent<Item
             INeutronBehaviour neutronBehaviour) {
         return MIItem
                 .item(englishName, id, (settings) -> new NuclearComponentItem(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour),
-                        SortOrder.ITEMS_OTHER);
+                        SortOrder.NUCLEAR.create(NuclearOrder.HEAT_EXCHANGER).and(heatConduction));
     }
 
     public int getMaxTemperature() {

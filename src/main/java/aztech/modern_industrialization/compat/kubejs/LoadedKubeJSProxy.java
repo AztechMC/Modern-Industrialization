@@ -70,6 +70,11 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     }
 
     @Override
+    public void fireRegisterHatchesEvent() {
+        MIMachineKubeJSEvents.REGISTER_HATCHES.post(new RegisterHatchesEventJS());
+    }
+
+    @Override
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
             SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
         var event = new AddMultiblockSlotsEventJS(itemInputs, itemOutputs, fluidInputs, fluidOutputs);

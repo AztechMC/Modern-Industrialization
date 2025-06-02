@@ -169,21 +169,40 @@ public class FluidNetwork extends PipeNetwork {
         return transferredAmount;
     }
 
-    @FunctionalInterface
-    private interface TransferOperation {
-        long transfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate);
-
-        TransferOperation INSERT = (handler, fluid, maxAmount, simulate) -> {
-            return handler.fill(
-                    fluid.toStack(Ints.saturatedCast(maxAmount)),
-                    simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+    private enum TransferOperation {
+        INSERT {
+            @Override
+            long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
+                return handler.fill(
+                        fluid.toStack(Ints.saturatedCast(maxAmount)),
+                        simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+            }
+        },
+        EXTRACT {
+            @Override
+            long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
+                return handler.drain(
+                        fluid.toStack(Ints.saturatedCast(maxAmount)),
+                        simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
+            }
         };
 
-        TransferOperation EXTRACT = (handler, fluid, maxAmount, simulate) -> {
-            return handler.drain(
-                    fluid.toStack(Ints.saturatedCast(maxAmount)),
-                    simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
-        };
+        abstract long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate);
+
+        long transfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
+            long ret = internalTransfer(handler, fluid, maxAmount, simulate);
+            if (ret < 0) {
+                LOGGER.error("Transfer operation {}({}, {}, {}) on fluid handler {} returned negative amount: {}", this, fluid, maxAmount, simulate,
+                        handler, ret);
+                return 0;
+            }
+            if (ret > maxAmount) {
+                LOGGER.error("Transfer operation {}({}, {}, {}) on fluid handler {} returned more than requested: {}", this, fluid, maxAmount,
+                        simulate, handler, ret);
+                return maxAmount;
+            }
+            return ret;
+        }
     }
 
     @Override

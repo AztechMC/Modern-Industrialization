@@ -147,7 +147,7 @@ public class ItemNetwork extends PipeNetwork {
                     var target = connection.cache.getCapability();
                     if (target != null && target.getSlots() > 0) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
-                        InsertTarget it = new InsertTarget(connection, new IItemSink.HandlerWrapper(target));
+                        InsertTarget it = new InsertTarget(connection, new IItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
                             bucket.whitelist.add(it);
@@ -278,6 +278,9 @@ public class ItemNetwork extends PipeNetwork {
         int moved = 0;
 
         for (InsertTarget target : targets) {
+            if (source.connection() == target.connection()) {
+                continue;
+            }
             var stack = source.storage().getStackInSlot(sourceSlot);
             if (stack.isEmpty()) {
                 break;

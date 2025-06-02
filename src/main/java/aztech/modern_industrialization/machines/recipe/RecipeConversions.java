@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Collections;
@@ -63,7 +63,7 @@ public class RecipeConversions {
     @Nullable
     public static RecipeHolder<MachineRecipe> ofStonecutting(RecipeHolder<StonecutterRecipe> holder, MachineRecipeType type,
             RegistryAccess registryAccess) {
-        if (!MIConfig.getConfig().stonecutterToCuttingMachine) {
+        if (!MIServerConfig.INSTANCE.stonecutterToCuttingMachine.getAsBoolean()) {
             return null;
         }
 
@@ -85,7 +85,7 @@ public class RecipeConversions {
 
     @Nullable
     public static RecipeHolder<MachineRecipe> ofCompostable(ItemLike compostable) {
-        if (!MIConfig.getConfig().compostableToPlantOil) {
+        if (!MIServerConfig.INSTANCE.compostableToPlantOil.getAsBoolean()) {
             return null;
         }
 

@@ -385,13 +385,10 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
     }
 
-    public static double getEfficiencyOverclock(int efficiencyTicks) {
-        return Math.pow(2.0, efficiencyTicks / 32.0);
-    }
-
     private long getRecipeMaxEu(long recipeEu, long totalEu, int efficiencyTicks) {
         long baseEu = Math.max(behavior.getBaseRecipeEu(), recipeEu);
-        return Math.min(totalEu, Math.min((int) Math.floor(baseEu * getEfficiencyOverclock(efficiencyTicks)), behavior.getMaxRecipeEu()));
+        long overclockedEu = baseEu + efficiencyTicks * totalEu / (20 * 30);
+        return Math.min(totalEu, Math.min(overclockedEu, behavior.getMaxRecipeEu()));
     }
 
     private int getRecipeMaxEfficiencyTicks(MachineRecipe recipe) {
@@ -497,7 +494,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     private boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
         if (ingredient.isSimple()) {
             for (var stack : ingredient.getStacks()) {
-                return resource.equals(FluidVariant.of(stack.getFluid()));
+                if (resource.equals(FluidVariant.of(stack.getFluid()))) {
+                    return true;
+                }
             }
             return false;
         } else {

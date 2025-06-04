@@ -92,7 +92,6 @@ public class PlayerStatistics {
     }
 
     public void addProducedItems(Level level, ItemLike what, long amount) {
-        var server = Objects.requireNonNull(level.getServer());
         var item = what.asItem();
         producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
 
@@ -104,7 +103,7 @@ public class PlayerStatistics {
             // Make sure we only award the stats to other players once even if they have both FTB Teams and Argonauts.
             uuidCache.clear();
             uuidCache.addAll(FTBTeamsFacade.INSTANCE.getOtherPlayersInTeam(uuid));
-            uuidCache.addAll(ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(server, uuid));
+            uuidCache.addAll(ArgonautsFacade.INSTANCE.getOtherPlayersInGuild(level, uuid));
 
             for (var uuid : uuidCache) {
                 data.get(uuid).awardStat(level, what, amount);

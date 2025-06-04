@@ -26,7 +26,7 @@ package aztech.modern_industrialization.compat.argonauts;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 import net.neoforged.fml.ModList;
 
 public interface ArgonautsFacade {
@@ -45,5 +45,5 @@ public interface ArgonautsFacade {
         return (ms, uuid) -> List.of();
     }
 
-    Collection<UUID> getOtherPlayersInGuild(MinecraftServer server, UUID playerUuid);
+    Collection<UUID> getOtherPlayersInGuild(Level level, UUID playerUuid);
 }

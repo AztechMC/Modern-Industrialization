@@ -28,13 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 
 public class ArgonautsFacadeImpl implements ArgonautsFacade {
     @Override
-    public Collection<UUID> getOtherPlayersInGuild(MinecraftServer server, UUID playerUuid) {
-        var player = server.getPlayerList().getPlayer(playerUuid);
-        var guild = GuildApi.API.getPlayerGuild(player);
+    public Collection<UUID> getOtherPlayersInGuild(Level level, UUID playerUuid) {
+        var guild = GuildApi.API.getPlayerGuild(level, playerUuid);
         if (guild.isEmpty()) {
             return List.of();
         }

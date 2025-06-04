@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.compat.argonauts;
 
-import earth.terrarium.argonauts.api.guild.GuildApi;
+
+import earth.terrarium.argonauts.api.teams.guild.GuildApi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,14 +34,17 @@ import net.minecraft.server.MinecraftServer;
 public class ArgonautsFacadeImpl implements ArgonautsFacade {
     @Override
     public Collection<UUID> getOtherPlayersInGuild(MinecraftServer server, UUID playerUuid) {
-        var guild = GuildApi.API.getPlayerGuild(server, playerUuid);
-        if (guild == null) {
+        var player = server.getPlayerList().getPlayer(playerUuid);
+        var guild = GuildApi.API.getPlayerGuild(player);
+        if (guild.isEmpty()) {
             return List.of();
         }
         List<UUID> out = new ArrayList<>();
-        for (var member : guild.members()) {
-            if (!member.profile().getId().equals(playerUuid)) {
-                out.add(member.profile().getId());
+        for (var member : guild.get().members().entrySet()) {
+
+
+            if (!member.getKey().equals(playerUuid)) {
+                out.add(member.getKey());
             }
         }
         return out;

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.argonauts;
 
-
 import earth.terrarium.argonauts.api.teams.guild.GuildApi;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,7 +40,6 @@ public class ArgonautsFacadeImpl implements ArgonautsFacade {
         }
         List<UUID> out = new ArrayList<>();
         for (var member : guild.get().members().entrySet()) {
-
 
             if (!member.getKey().equals(playerUuid)) {
                 out.add(member.getKey());

@@ -28,6 +28,8 @@ import java.util.function.Predicate;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
@@ -127,5 +129,46 @@ public class TransferHelper {
         }
 
         return ret;
+    }
+
+    /**
+     * Fixed version of NeoForge's FluidUtil method. This one correctly handles multi-tank to multi-tank transfer.
+     *
+     * <p>
+     * Fill a destination fluid handler from a source fluid handler with a max amount.
+     * To transfer as much as possible, use {@link Integer#MAX_VALUE} for maxAmount.
+     *
+     * @param fluidDestination The fluid handler to be filled.
+     * @param fluidSource      The fluid handler to be drained.
+     * @param maxAmount        The largest amount of fluid that should be transferred.
+     * @param doTransfer       True if the transfer should actually be done, false if it should be simulated.
+     * @return the fluidStack that was transferred from the source to the destination. null on failure.
+     */
+    public static FluidStack tryFluidTransfer(IFluidHandler fluidDestination, IFluidHandler fluidSource, int maxAmount, boolean doTransfer) {
+        int tanks = fluidSource.getTanks();
+        for (int i = 0; i < tanks; ++i) {
+            FluidStack toTry = fluidSource.getFluidInTank(i).copy();
+            if (toTry.getAmount() > maxAmount) {
+                toTry.setAmount(maxAmount);
+            }
+            FluidStack drainable = fluidSource.drain(toTry, IFluidHandler.FluidAction.SIMULATE);
+            if (drainable.isEmpty()) {
+                continue;
+            }
+            int fillableAmount = fluidDestination.fill(drainable, IFluidHandler.FluidAction.SIMULATE);
+            if (fillableAmount > 0) {
+                drainable.setAmount(fillableAmount);
+                if (doTransfer) {
+                    FluidStack drained = fluidSource.drain(drainable, IFluidHandler.FluidAction.EXECUTE);
+                    if (!drained.isEmpty()) {
+                        drained.setAmount(fluidDestination.fill(drained, IFluidHandler.FluidAction.EXECUTE));
+                        return drained;
+                    }
+                } else {
+                    return drainable;
+                }
+            }
+        }
+        return FluidStack.EMPTY;
     }
 }

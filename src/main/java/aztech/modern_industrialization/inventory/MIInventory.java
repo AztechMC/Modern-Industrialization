@@ -37,7 +37,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +104,7 @@ public final class MIInventory implements IComponent {
         IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
 
         if (target != null) {
-            FluidUtil.tryFluidTransfer(target, fluidStorage.fluidHandler, Integer.MAX_VALUE, true);
+            TransferHelper.tryFluidTransfer(target, fluidStorage.fluidHandler, Integer.MAX_VALUE, true);
         }
     }
 
@@ -121,7 +120,7 @@ public final class MIInventory implements IComponent {
         IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
 
         if (target != null) {
-            FluidUtil.tryFluidTransfer(fluidStorage.fluidHandler, target, Integer.MAX_VALUE, true);
+            TransferHelper.tryFluidTransfer(fluidStorage.fluidHandler, target, Integer.MAX_VALUE, true);
         }
     }
 

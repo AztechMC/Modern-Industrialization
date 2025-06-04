@@ -38,10 +38,9 @@ public class ArgonautsFacadeImpl implements ArgonautsFacade {
             return List.of();
         }
         List<UUID> out = new ArrayList<>();
-        for (var member : guild.get().members().entrySet()) {
-
-            if (!member.getKey().equals(playerUuid)) {
-                out.add(member.getKey());
+        for (var memberUuid : guild.get().members().keySet()) {
+            if (!memberUuid.equals(playerUuid)) {
+                out.add(memberUuid);
             }
         }
         return out;

@@ -75,6 +75,16 @@ public class SlotFluidHandler implements IFluidHandler {
         if (disallowIo() || amount <= 0) {
             return FluidStack.EMPTY;
         }
+        if (action.simulate() && Transaction.getLifecycle() == Transaction.Lifecycle.OUTER_CLOSING) {
+            // Ugly workaround for crash with Supplementaries Faucet
+            // https://github.com/AztechMC/Modern-Industrialization/issues/1110
+            // If we are about to crash just do a guesstimate of how much could potentially be drained
+            var resource = storage.getResource();
+            if (resource.isBlank()) {
+                return FluidStack.EMPTY;
+            }
+            return resource.toStack((int) Math.min(storage.getAmount(), amount));
+        }
         try (var tx = Transaction.hackyOpen()) {
             var resource = storage.getResource();
             if (resource.isBlank()) {

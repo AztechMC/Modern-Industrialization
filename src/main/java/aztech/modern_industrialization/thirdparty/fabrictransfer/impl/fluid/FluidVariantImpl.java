@@ -28,11 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,26 +36,10 @@ import org.slf4j.LoggerFactory;
 public class FluidVariantImpl implements FluidVariant {
     private static final Map<Fluid, FluidVariant> noTagCache = new ConcurrentHashMap<>();
 
-    private static Fluid normalizeFluid(Fluid fluid) {
-        if (!fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
-            // Note: the empty fluid is not still, that's why we check for it specifically.
-
-            if (fluid instanceof FlowingFluid flowable) {
-                // Normalize FlowableFluids to their still variants.
-                return flowable.getSource();
-            } else {
-                // If not a FlowableFluid, we don't know how to convert -> crash.
-                ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
-                throw new IllegalArgumentException("Cannot convert flowing fluid %s (%s) into a still fluid.".formatted(id, fluid));
-            }
-        }
-        return fluid;
-    }
-
     public static FluidVariant of(Fluid fluid) {
         Objects.requireNonNull(fluid, "Fluid may not be null.");
 
-        return noTagCache.computeIfAbsent(normalizeFluid(fluid), f -> new FluidVariantImpl(new FluidStack(f, 1)));
+        return noTagCache.computeIfAbsent(fluid, f -> new FluidVariantImpl(new FluidStack(f, 1)));
     }
 
     public static FluidVariant of(FluidStack stack) {

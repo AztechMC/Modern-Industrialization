@@ -36,6 +36,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.ArrayList;
@@ -346,6 +347,31 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                             @Override
                             public EmiIngredient getStack() {
                                 return EmiStack.of(pages.getStack(finalIndex));
+                            }
+
+                            @Override
+                            public void drawStack(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+                                var stack = pages.getStack(finalIndex);
+
+                                Bounds bounds = getBounds();
+                                int xOff = (bounds.width() - 16) / 2;
+                                int yOff = (bounds.height() - 16) / 2;
+
+                                // Draw count separately to handle amounts >= 100 reasonably
+                                int stackX = bounds.x() + xOff;
+                                int stackY = bounds.y() + yOff;
+                                EmiStack.of(stack, 1).render(draw, stackX, stackY, delta);
+                                var amount = Component.literal(String.valueOf(stack.getCount()));
+                                // Could use 1.0 if the count is < 100, but this looks more uniform
+                                float scale = 0.8f;
+
+                                draw.pose().pushPose();
+                                draw.pose().translate(0, 0, 200);
+                                int tx = stackX + 17 - Math.min(14, Math.round(Minecraft.getInstance().font.width(amount) * scale)) - 1;
+                                draw.pose().translate(tx, stackY + 9, 0);
+                                draw.pose().scale(scale, scale, 1);
+                                draw.drawString(Minecraft.getInstance().font, amount, 0, 0, -1, true);
+                                draw.pose().popPose();
                             }
                         });
                     }

@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.component.CrafterAccess;
 import aztech.modern_industrialization.api.machine.component.InventoryAccess;
+import aztech.modern_industrialization.compat.almostunified.AlmostUnifiedFacade;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -662,9 +663,16 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                     break;
                 }
             }
+            List<Item> inputItems = input.getInputItems();
+            if (targetItem == null) {
+                // Find the preferred item with Almost Unified if possible
+                if (!inputItems.isEmpty()) {
+                    targetItem = AlmostUnifiedFacade.INSTANCE.getTargetItem(inputItems.getFirst());
+                }
+            }
             if (targetItem == null) {
                 // Find the first match that is an item from MI (useful for ingots for example)
-                for (Item item : input.getInputItems()) {
+                for (Item item : inputItems) {
                     ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
                     if (id.getNamespace().equals(MI.ID)) {
                         targetItem = item;
@@ -674,8 +682,8 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             }
             if (targetItem == null) {
                 // If there is only one value in the tag, pick that one
-                if (input.getInputItems().size() == 1) {
-                    targetItem = input.getInputItems().get(0);
+                if (inputItems.size() == 1) {
+                    targetItem = inputItems.get(0);
                 }
             }
 

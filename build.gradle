@@ -38,7 +38,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    // for AE2 and JEI
+    // for AE2, JEI and Almost Unified
     maven {
         name "Modmaven"
         url "https://modmaven.dev"
@@ -46,6 +46,7 @@ repositories {
             includeGroup "appeng"
             includeGroup "dev.technici4n"
             includeGroup "mezz.jei"
+            includeGroup "com.almostreliable.mods"
         }
     }
     maven {
@@ -274,6 +275,8 @@ dependencies {
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
+
+    compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.minecraft_version}-${project.au_version}:api"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

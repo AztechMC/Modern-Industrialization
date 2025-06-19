@@ -112,15 +112,6 @@ repositories {
             includeGroup "org.parchmentmc.data"
         }
     }
-    // for AE2
-    maven {
-        name = "Modmaven"
-        url = uri("https://modmaven.dev/")
-
-        content {
-            includeGroup("appeng")
-        }
-    }
     // For the "No Indium?" mod
     maven {
         url = 'https://maven.cafeteria.dev/releases/'

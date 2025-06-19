@@ -75,8 +75,8 @@ public final class MIStartupConfig {
         this.almostUnifiedIntegration = builder.start("almostUnifiedIntegration",
                 "Almost Unified integration",
                 "Enable the Almost Unified integration, if present.")
-            .gameRestart()
-            .define("almostUnifiedIntegration", true);
+                .gameRestart()
+                .define("almostUnifiedIntegration", true);
         builder.popSection();
 
         builder.pushSection("datagen", "Runtime Datagen");

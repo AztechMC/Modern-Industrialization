@@ -45,5 +45,6 @@ public interface AlmostUnifiedFacade {
         return item -> null;
     }
 
-    @Nullable Item getTargetItem(ItemLike item);
+    @Nullable
+    Item getTargetItem(ItemLike item);
 }

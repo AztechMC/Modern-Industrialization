@@ -35,6 +35,7 @@ import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
+import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import java.util.List;
@@ -100,6 +101,13 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
     public void appendEnergyOutputs(List<EnergyComponent> list) {
         if (!input) {
             list.add(energy);
+        }
+    }
+
+    @Override
+    protected void tickTransfer() {
+        if (!input) {
+            EnergyHelper.autoOutput(this, orientation, tier, extractable);
         }
     }
 

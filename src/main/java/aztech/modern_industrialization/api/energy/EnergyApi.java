@@ -206,6 +206,7 @@ public class EnergyApi {
         @Override
         public long receive(long maxReceive, boolean simulate) {
             long ratio = ratio();
+            maxReceive = Math.min(maxReceive, Long.MAX_VALUE / ratio); // avoid overflow
             maxReceive *= ratio;
             if (ratio > 1) {
                 // Do a simulate insertion to round down to a multiple of ratio that should be accepted.
@@ -217,6 +218,7 @@ public class EnergyApi {
         @Override
         public long extract(long maxExtract, boolean simulate) {
             long ratio = ratio();
+            maxExtract = Math.min(maxExtract, Long.MAX_VALUE / ratio); // avoid overflow
             maxExtract *= ratio;
             if (ratio > 1) {
                 // Do a simulate extraction to round down to a multiple of ratio that should be accepted.

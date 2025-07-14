@@ -184,6 +184,9 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         efficiencyTicks = Math.min(efficiencyTicks + increment, maxEfficiencyTicks);
     }
 
+    protected void onCraft() {
+    }
+
     @Override
     public long getCurrentRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
@@ -240,6 +243,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
                     clearLocks();
                     usedEnergy = 0;
                     finishedRecipe = true;
+                    onCraft();
                 }
             } else if (behavior.isOverdriving()) {
                 eu = activeRecipe.value().conditionsMatch(conditionContext) ? behavior.consumeEu(recipeMaxEu, ACT) : 0;

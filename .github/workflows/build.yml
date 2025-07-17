@@ -20,16 +20,16 @@ jobs:
       with:
         gradle-home-cache-excludes: |
           caches/neoformruntime/assets
-    - name: Cache Minecraft assets
-      uses: actions/cache@v4
+    - name: Restore cached Minecraft assets
+      uses: actions/cache/restore@v4
       with:
         path: |
           ~/.gradle/caches/neoformruntime/assets
-        key: mc-assets
-    - name: Test adding a fake asset
-      run: |
-        mkdir -p ~/.gradle/caches/neoformruntime/assets/modern_industrialization
-        echo "This is a test asset" > ~/.gradle/caches/neoformruntime/assets/modern_industrialization/test.txt
+        restore-keys: mc-assets
+#    - name: Test adding a fake asset
+#      run: |
+#        mkdir -p ~/.gradle/caches/neoformruntime/assets/modern_industrialization
+#        echo "This is a test asset" > ~/.gradle/caches/neoformruntime/assets/modern_industrialization/test.txt
     - name: Build with Gradle
       run: ./gradlew build
       env:
@@ -42,3 +42,15 @@ jobs:
       with:
         name: Modern Industrialization ${{ steps.var.outputs.commit_hash }}
         path: build/libs
+    - name: Hash Minecraft assets
+      id: hash-assets
+      run: |
+        find ~/.gradle/caches/neoformruntime/assets -type f -exec sha256sum {} + | sort | sha256sum | cut -d ' ' -f 1 > assets-hash.txt
+        echo "assets_hash=$(cat assets-hash.txt)" >> $GITHUB_ENV
+        echo "::set-output name=assets_hash::$(cat assets-hash.txt)"
+    - name: Cache Minecraft assets
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          ~/.gradle/caches/neoformruntime/assets
+        key: mc-assets-${{ steps.hash-assets.outputs.assets_hash }}

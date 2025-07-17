@@ -1096,6 +1096,8 @@
   "machine_casing.modern_industrialization.mv": "срН",
   "machine_casing.modern_industrialization.steel_crate": "Стальной Ящик",
   "machine_casing.modern_industrialization.superconductor": "сверхН",
+  "modern_industrialization.configuration.barrelContentRendering.tooltip": "Включить рендер содержимого бочки: иконка, количество и название предмета.",
+  "modern_industrialization.configuration.compat": "Совместимость мода",
   "modern_industrialization.configuration.newVersionMessage": "Сообщение о новой версии",
   "modern_industrialization.configuration.newVersionMessage.tooltip": "Отобразить сообщение, когда доступна новая версия",
   "modern_industrialization.configuration.recipes": "Рецепты",

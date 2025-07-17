@@ -25,7 +25,8 @@ jobs:
       with:
         path: |
           ~/.gradle/caches/neoformruntime/assets
-        restore-keys: mc-assets
+        key: mc-assets-does-not-exist
+        restore-keys: mc-assets-
 #    - name: Test adding a fake asset
 #      run: |
 #        mkdir -p ~/.gradle/caches/neoformruntime/assets/modern_industrialization

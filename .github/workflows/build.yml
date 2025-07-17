@@ -26,6 +26,10 @@ jobs:
         path: |
           ~/.gradle/caches/neoformruntime/assets
         key: mc-assets
+    - name: Test adding a fake asset
+      run: |
+        mkdir -p ~/.gradle/caches/neoformruntime/assets/modern_industrialization
+        echo "This is a test asset" > ~/.gradle/caches/neoformruntime/assets/modern_industrialization/test.txt
     - name: Build with Gradle
       run: ./gradlew build
       env:

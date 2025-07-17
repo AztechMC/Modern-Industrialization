@@ -94,17 +94,17 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
             boolean newActive = false;
 
             if (operatingState == OperatingState.TRYING_TO_RESUME) {
-                if (getCrafterComponent().tryContinueRecipe()) {
+                if (crafter.tryContinueRecipe()) {
                     operatingState = OperatingState.NORMAL_OPERATION;
                 }
             }
 
             if (operatingState == OperatingState.NORMAL_OPERATION) {
-                if (getCrafterComponent().tickRecipe()) {
+                if (crafter.tickRecipe()) {
                     newActive = true;
                 }
             } else {
-                getCrafterComponent().decreaseEfficiencyTicks();
+                crafter.decreaseEfficiencyTicks();
             }
 
             isActive.updateActive(newActive, this);

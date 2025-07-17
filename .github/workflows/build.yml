@@ -25,9 +25,7 @@ jobs:
       with:
         path: |
           ~/.gradle/caches/neoformruntime/assets
-        key: nfrt-assets-${{ hashFiles('~/.gradle/caches/neoformruntime/assets/**/*') }}
-        restore-keys: |
-          nfrt-assets-
+        key: mc-assets
     - name: Build with Gradle
       run: ./gradlew build
       env:

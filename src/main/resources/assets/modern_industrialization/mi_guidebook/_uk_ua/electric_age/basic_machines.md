@@ -28,7 +28,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:electric_age/machine/configurable_chest_asbl" />
 
-Поляризатор намагнічує різні штуки. У ньому ще не так багато рецептів, але він уже корисний для автоматизації двигунів!
+Намагнічувач намагнічує різні штуки. У ньому ще не так багато рецептів, але він уже корисний для автоматизації двигунів!
 
 <Recipe id="modern_industrialization:electric_age/machine/polarizer_asbl" />
 

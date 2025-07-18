@@ -17,7 +17,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:electric_age/machine/electric_quarry_asbl" />
 
-Кращий і більший великий паровий котел! Ця вдосконалена версія може виробляти до 1024 mb/т пари!
+Кращий і більший великий паровий котел! Ця вдосконалена версія може виробляти до 1024 мВ/т пари!
 
 <Recipe id="modern_industrialization:electric_age/machine/advanced_large_steam_boiler_asbl" />
 

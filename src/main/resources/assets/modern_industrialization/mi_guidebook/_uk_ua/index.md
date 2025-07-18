@@ -7,7 +7,7 @@ navigation:
 # Modern Industrialization
 Ласкаво просимо до **Modern Industrialization**!
 
-![Pipes, pipes and more pipes](assets/pipes_pipes_pipes.png)
+![Труби, труби та більше труб](assets/pipes_pipes_pipes.png)
 
 ## Introduction
 Modern Industrializationя — це мод про автоматизацію! Це означає, що в певний момент будь-який ресурс можна (і потрібно) автоматизувати.

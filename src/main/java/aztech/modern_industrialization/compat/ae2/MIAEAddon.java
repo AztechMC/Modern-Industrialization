@@ -111,13 +111,14 @@ public class MIAEAddon {
                 color.color,
                 false);
         PIPES.add(type);
+        var sortOrder = SortOrder.PIPES.and(color.ordinal());
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "ME Wire",
                 pipeId,
                 prop -> new PipeItem(prop, type, new MENetworkData()),
                 MIPipes.ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                sortOrder);
         MIPipes.INSTANCE.register(type, itemDef::asItem);
-        TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires");
+        TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires", sortOrder);
     }
 }

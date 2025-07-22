@@ -112,27 +112,29 @@ public class MIPipes {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
                 FluidNetworkNode::new, color.color, true);
+        var sortOrder = SortOrder.PIPES.and(color.ordinal());
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Fluid Pipe",
                 pipeId,
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                sortOrder);
         register(type, itemDef::asItem);
-        TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
+        TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes", sortOrder);
     }
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
         PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
+        var sortOrder = SortOrder.PIPES.and(color.ordinal());
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Item Pipe",
                 pipeId,
                 prop -> new PipeItem(prop, type, new ItemNetworkData()),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                sortOrder);
         register(type, itemDef::asItem);
-        TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
+        TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes", sortOrder);
     }
 
     public void registerCableType(String englishName, String name, int color, CableTier tier) {

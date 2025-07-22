@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.tag;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.MIPipes;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
@@ -62,8 +63,20 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             var items = entry.getValue().stream()
+                    .sorted((itemLike1, itemLike2) -> {
+                        SortOrder sort1 = TagsToGenerate.itemSortOrderMap.get(itemLike1);
+                        SortOrder sort2 = TagsToGenerate.itemSortOrderMap.get(itemLike2);
+
+                        if (sort1 != null && sort2 != null) {
+                            return sort1.compareTo(sort2);
+                        }
+
+                        if (sort1 != null) return -1;
+                        if (sort2 != null) return 1;
+
+                        return Comparator.comparing(BuiltInRegistries.ITEM::getKey).compare(itemLike1.asItem(), itemLike2.asItem());
+                    })
                     .map(ItemLike::asItem)
-                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
                     .toList();
             for (var item : items) {
                 var itemKey = BuiltInRegistries.ITEM.getKey(item);

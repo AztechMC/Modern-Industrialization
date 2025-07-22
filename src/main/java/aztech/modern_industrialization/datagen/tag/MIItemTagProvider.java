@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
@@ -65,8 +66,20 @@ public class MIItemTagProvider extends ItemTagsProvider {
         for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             var items = entry.getValue().stream()
+                    .sorted((itemLike1, itemLike2) -> {
+                        SortOrder sort1 = TagsToGenerate.itemSortOrderMap.get(itemLike1);
+                        SortOrder sort2 = TagsToGenerate.itemSortOrderMap.get(itemLike2);
+
+                        if (sort1 != null && sort2 != null) {
+                            return sort1.compareTo(sort2);
+                        }
+
+                        if (sort1 != null) return -1;
+                        if (sort2 != null) return 1;
+
+                        return Comparator.comparing(BuiltInRegistries.ITEM::getKey).compare(itemLike1.asItem(), itemLike2.asItem());
+                    })
                     .map(ItemLike::asItem)
-                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
                     .toList();
             for (var item : items) {
                 if (optional) {

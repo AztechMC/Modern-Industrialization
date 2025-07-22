@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.tag;
 
+import aztech.modern_industrialization.items.SortOrder;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.ItemLike;
 public class TagsToGenerate {
 
     static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
+    static final Map<ItemLike, SortOrder> itemSortOrderMap = new HashMap<>();
     static final Set<TagKey<Item>> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
@@ -43,15 +45,26 @@ public class TagsToGenerate {
     }
 
     public static void generateTag(String tag, ItemLike item, String tagEnglishName) {
+        generateTag(tag, item, tagEnglishName, null);
+    }
+
+    public static void generateTag(String tag, ItemLike item, String tagEnglishName, SortOrder sortOrder) {
         if (tag.startsWith("#")) {
             throw new IllegalArgumentException("Tag must not start with #: " + tag);
         }
-        generateTagNoTranslation(ItemTags.create(ResourceLocation.parse(tag)), item);
+        generateTagNoTranslation(ItemTags.create(ResourceLocation.parse(tag)), item, sortOrder);
         addTranslation(tag, tagEnglishName);
     }
 
     public static void generateTagNoTranslation(TagKey<Item> tag, ItemLike item) {
+        generateTagNoTranslation(tag, item, null);
+    }
+
+    public static void generateTagNoTranslation(TagKey<Item> tag, ItemLike item, SortOrder sortOrder) {
         tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
+        if (sortOrder != null) {
+            itemSortOrderMap.put(item, sortOrder);
+        }
     }
 
     public static void addTagToTag(String tagTobeAdded, String tagTarget, String targetEnglishName) {
@@ -68,6 +81,10 @@ public class TagsToGenerate {
 
     public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName) {
         generateTag(tag.location().toString(), item, tagEnglishName);
+    }
+
+    public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName, SortOrder sortOrder) {
+        generateTag(tag.location().toString(), item, tagEnglishName, sortOrder);
     }
 
     public static void markTagOptional(TagKey<Item> tag) {

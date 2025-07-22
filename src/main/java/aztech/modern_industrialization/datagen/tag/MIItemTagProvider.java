@@ -74,8 +74,10 @@ public class MIItemTagProvider extends ItemTagsProvider {
                             return sort1.compareTo(sort2);
                         }
 
-                        if (sort1 != null) return -1;
-                        if (sort2 != null) return 1;
+                        if (sort1 != null)
+                            return -1;
+                        if (sort2 != null)
+                            return 1;
 
                         return Comparator.comparing(BuiltInRegistries.ITEM::getKey).compare(itemLike1.asItem(), itemLike2.asItem());
                     })

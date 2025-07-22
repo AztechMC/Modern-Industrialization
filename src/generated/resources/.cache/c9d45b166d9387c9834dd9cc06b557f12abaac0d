@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-03T23:56:28.0743789	Tags for minecraft:item mod id modern_industrialization
+// 1.21.1	2025-07-22T22:15:23.4727701	Tags for minecraft:item mod id modern_industrialization
 b7ef4462150855d29d57f806fb1387764e6fa77f data/c/tags/item/dusts.json
 9d2318af59c4e4de55974d6da062f468a5a9aafc data/c/tags/item/dusts/aluminum.json
 001769a3fa1d20ea297d8f5fa7b6c26073f43996 data/c/tags/item/dusts/annealed_copper.json
@@ -333,10 +333,10 @@ e97d49d175079da46cd8502728969fb968b332cd data/minecraft/tags/item/foot_armor.jso
 15d2f846cf819d8fa5ec996552cb0381cab8cf28 data/minecraft/tags/item/shovels.json
 2f204826ad75cd484ab07440a7109fd8aeeefccf data/minecraft/tags/item/swords.json
 716915cb6473dfe2016b5dbb5d41aaf75f8b4099 data/modern_industrialization/tags/item/barrels.json
-47c33d73422ba77e4285a3db7c8995419ac72b3e data/modern_industrialization/tags/item/fluid_pipes.json
+0b68cb2c76cb73825e68828347d3e8c6e7f455fd data/modern_industrialization/tags/item/fluid_pipes.json
 59a4f9ee19af64693fed1dc5d7e2df4ace51b291 data/modern_industrialization/tags/item/forge_hammer_tools.json
-dc9d0976f05ddbf5c9deaf99a9683e4ea342d86b data/modern_industrialization/tags/item/item_pipes.json
-6bf45e5add4e70bff08b3ce8bdb8b482f32b474a data/modern_industrialization/tags/item/me_wires.json
+a335e8b04f86283a098ffd9c05c12aba4408693d data/modern_industrialization/tags/item/item_pipes.json
+acf5da4a6bab59d4560eb70220b35209b38343ca data/modern_industrialization/tags/item/me_wires.json
 acbc6850b543565a80db8d5482f401cc7346059b data/modern_industrialization/tags/item/p2p_attunements/energy_p2p_tunnel.json
 426e1f7cccffbc0433e739c56c50a4f7f9df55c1 data/modern_industrialization/tags/item/replicator_blacklist.json
 539cf80a4392a9829b2414215686239c257e9e1c data/modern_industrialization/tags/item/tanks.json

@@ -90,6 +90,24 @@ ServerEvents.recipes(event => {
 });
 ```
 
+## Registered process conditions
+If a process condition doesn't have direct KubeJS support (like from an addon mod), you can manually write its parameters using `registeredCondition(JsonObject)`: 
+
+```js
+// Manually adding a dimension condition - of course, this is just an example and you don't have a reason to actually do it this way.
+ServerEvents.recipes(event => {
+    event.recipes.modern_industrialization.compressor(2, 200)
+        .itemIn("dirt")
+        .itemOut("diamond")
+        // Use custom condition defined above
+        .registeredCondition({
+          "modern_industrialization:dimension": {
+            "dimension": "minecraft:the_nether"
+          }
+        })
+});
+```
+
 ## Adding multiblock slots
 Multiblock machines always have an unlimited number of input and output slots
 (provided the recipe type allows the relevant input/output types).

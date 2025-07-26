@@ -31,13 +31,12 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
+import java.util.Map;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-
-import java.util.Map;
 
 public interface ProcessConditionHelper {
     ProcessConditionHelper processCondition(MachineProcessCondition condition);
@@ -77,7 +76,8 @@ public interface ProcessConditionHelper {
 
         ResourceLocation id = ResourceLocation.tryParse(idString);
         if (id == null) {
-            throw new IllegalArgumentException(String.format("'%s' is not registered at MachineProcessConditions. Perhaps you meant to use a customCondition?", idString));
+            throw new IllegalArgumentException(
+                    String.format("'%s' is not registered at MachineProcessConditions. Perhaps you meant to use a customCondition?", idString));
         }
 
         MapCodec<? extends MachineProcessCondition> codec = MachineProcessConditions.getCodec(id);

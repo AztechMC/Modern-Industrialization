@@ -99,7 +99,6 @@ ServerEvents.recipes(event => {
     event.recipes.modern_industrialization.compressor(2, 200)
         .itemIn("dirt")
         .itemOut("diamond")
-        // Use custom condition defined above
         .registeredCondition({
           "modern_industrialization:dimension": {
             "dimension": "minecraft:the_nether"

@@ -431,11 +431,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
     }
 
-    /**
-     * cachedItemCounts must be correct when this function is called, and are
-     * guaranteed to be correct after this call
-     */
-    private boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
+    protected boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
         List<ConfigurableItemStack> baseList = inventory.getItemInputs();
         List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
 

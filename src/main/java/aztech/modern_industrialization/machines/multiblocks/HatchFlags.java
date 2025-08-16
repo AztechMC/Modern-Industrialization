@@ -40,6 +40,10 @@ public class HatchFlags {
         return allowed.contains(type);
     }
 
+    public Set<HatchType> values() {
+        return allowed;
+    }
+
     public static class Builder {
         private final Set<HatchType> allowed = new HashSet<>();
 

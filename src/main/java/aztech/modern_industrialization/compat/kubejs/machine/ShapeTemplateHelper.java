@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.kubejs.machine;
 
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.minecraft.resources.ResourceLocation;
@@ -50,15 +50,7 @@ public interface ShapeTemplateHelper {
     default HatchFlags hatchOf(String... hatches) {
         var builder = new HatchFlags.Builder();
         for (String hatch : hatches) {
-            switch (hatch) {
-            case "item_input" -> builder.with(HatchType.ITEM_INPUT);
-            case "item_output" -> builder.with(HatchType.ITEM_OUTPUT);
-            case "fluid_input" -> builder.with(HatchType.FLUID_INPUT);
-            case "fluid_output" -> builder.with(HatchType.FLUID_OUTPUT);
-            case "energy_input" -> builder.with(HatchType.ENERGY_INPUT);
-            case "energy_output" -> builder.with(HatchType.ENERGY_OUTPUT);
-            default -> throw new IllegalArgumentException("Unsupported hatch type: " + hatch);
-            }
+            builder.with(HatchTypes.get(hatch));
         }
         return builder.build();
     }

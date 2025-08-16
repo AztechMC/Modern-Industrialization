@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.init;
 
 import static aztech.modern_industrialization.machines.models.MachineCasings.CLEAN_STAINLESS_STEEL;
-import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
+import static aztech.modern_industrialization.machines.multiblocks.HatchTypes.*;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;

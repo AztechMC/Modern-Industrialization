@@ -37,6 +37,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -98,7 +99,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     @Override
     public HatchType getHatchType() {
-        return isFluid ? HatchType.NUCLEAR_FLUID : HatchType.NUCLEAR_ITEM;
+        return isFluid ? HatchTypes.NUCLEAR_FLUID : HatchTypes.NUCLEAR_ITEM;
     }
 
     @Override

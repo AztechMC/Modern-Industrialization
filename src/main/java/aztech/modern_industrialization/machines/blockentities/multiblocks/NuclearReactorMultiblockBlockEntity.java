@@ -200,7 +200,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
         SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_casing")));
         SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_alloy_machine_casing_pipe")));
-        HatchFlags top = new HatchFlags.Builder().with(HatchType.NUCLEAR_FLUID, HatchType.NUCLEAR_ITEM).build();
+        HatchFlags top = new HatchFlags.Builder().with(HatchTypes.NUCLEAR_FLUID, HatchTypes.NUCLEAR_ITEM).build();
         for (int i = 0; i < 4; i++) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.NUCLEAR);
             gridLayout[i] = new boolean[5 + 2 * i][5 + 2 * i];

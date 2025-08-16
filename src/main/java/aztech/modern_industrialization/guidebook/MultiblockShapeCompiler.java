@@ -25,7 +25,7 @@ package aztech.modern_industrialization.guidebook;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineBlock;
-import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import guideme.color.SymbolicColor;
 import guideme.compiler.PageCompiler;
@@ -83,7 +83,7 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
 
             tooltipLines.add(MIText.AcceptsHatches.text());
             var flags = entry.getValue();
-            for (var type : HatchType.values()) {
+            for (var type : HatchTypes.values()) {
                 if (flags.allows(type)) {
                     tooltipLines.add(Component.literal("- ").append(type.description()));
                 }

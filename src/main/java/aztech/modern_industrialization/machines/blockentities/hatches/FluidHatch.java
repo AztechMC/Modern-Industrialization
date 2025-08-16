@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import java.util.List;
 
 public class FluidHatch extends HatchBlockEntity {
@@ -51,7 +52,7 @@ public class FluidHatch extends HatchBlockEntity {
 
     @Override
     public HatchType getHatchType() {
-        return input ? HatchType.FLUID_INPUT : HatchType.FLUID_OUTPUT;
+        return input ? HatchTypes.FLUID_INPUT : HatchTypes.FLUID_OUTPUT;
     }
 
     @Override

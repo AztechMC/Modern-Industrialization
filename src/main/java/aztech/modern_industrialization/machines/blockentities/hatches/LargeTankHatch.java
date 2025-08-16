@@ -35,6 +35,7 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,7 +71,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
 
     @Override
     public HatchType getHatchType() {
-        return HatchType.LARGE_TANK;
+        return HatchTypes.LARGE_TANK;
     }
 
     @Override

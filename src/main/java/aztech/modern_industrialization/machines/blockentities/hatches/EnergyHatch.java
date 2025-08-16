@@ -38,6 +38,7 @@ import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import java.util.List;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -67,7 +68,7 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
 
     @Override
     public HatchType getHatchType() {
-        return input ? HatchType.ENERGY_INPUT : HatchType.ENERGY_OUTPUT;
+        return input ? HatchTypes.ENERGY_INPUT : HatchTypes.ENERGY_OUTPUT;
     }
 
     @Override

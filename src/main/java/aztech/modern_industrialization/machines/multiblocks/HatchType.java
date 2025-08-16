@@ -23,42 +23,40 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MIText;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-public enum HatchType {
-    ITEM_INPUT(0, MIText.ItemInputHatch),
-    ITEM_OUTPUT(1, MIText.ItemOutputHatch),
-    FLUID_INPUT(2, MIText.FluidInputHatch),
-    FLUID_OUTPUT(3, MIText.FluidOutputHatch),
-    ENERGY_INPUT(4, MIText.EnergyInputHatch),
-    ENERGY_OUTPUT(5, MIText.EnergyOutputHatch),
-    NUCLEAR_ITEM(6, "nuclear_item_hatch"),
-    NUCLEAR_FLUID(7, "nuclear_fluid_hatch"),
-    LARGE_TANK(8, "large_tank_hatch");
+public class HatchType {
+    private final ResourceLocation id;
+    private final Either<MutableComponent, ResourceLocation> descriptionOrBlockId;
 
-    private final int id;
-    private final Either<MIText, ResourceLocation> descriptionOrBlockId;
-
-    HatchType(int id, MIText description) {
+    HatchType(ResourceLocation id, MutableComponent description) {
         this.id = id;
         this.descriptionOrBlockId = Either.left(description);
     }
 
-    HatchType(int id, String blockId) {
+    HatchType(ResourceLocation id, ResourceLocation blockId) {
         this.id = id;
-        this.descriptionOrBlockId = Either.right(MI.id(blockId));
+        this.descriptionOrBlockId = Either.right(blockId);
     }
 
-    public int getId() {
+    public ResourceLocation id() {
         return id;
     }
 
     public MutableComponent description() {
-        return descriptionOrBlockId.map(MIText::text, id -> BuiltInRegistries.BLOCK.get(id).getName());
+        return descriptionOrBlockId.map(text -> text, id -> BuiltInRegistries.BLOCK.get(id).getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof HatchType other && id.equals(other.id);
     }
 }

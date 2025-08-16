@@ -109,7 +109,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
         SimpleMember glass = SimpleMember.forBlock(() -> Blocks.GLASS);
-        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.LARGE_TANK).build();
+        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchTypes.LARGE_TANK).build();
 
         for (int x = -sizeX / 2; x <= sizeX / 2; x++) {
             for (int y = -1; y < sizeY - 1; y++) {

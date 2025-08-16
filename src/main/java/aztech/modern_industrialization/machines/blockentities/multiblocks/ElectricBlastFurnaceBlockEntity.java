@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
+import static aztech.modern_industrialization.machines.multiblocks.HatchTypes.*;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;

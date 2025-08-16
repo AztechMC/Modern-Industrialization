@@ -23,24 +23,28 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class HatchFlags {
     public static final HatchFlags NO_HATCH = new Builder().build();
 
-    private final int flags;
+    private final Set<HatchType> allowed;
 
-    public HatchFlags(int flags) {
-        this.flags = flags;
+    public HatchFlags(Set<HatchType> allowed) {
+        this.allowed = Collections.unmodifiableSet(allowed);
     }
 
     public boolean allows(HatchType type) {
-        return (flags & (1 << type.getId())) > 0;
+        return allowed.contains(type);
     }
 
     public static class Builder {
-        private int flags = 0;
+        private final Set<HatchType> allowed = new HashSet<>();
 
         public Builder with(HatchType type) {
-            flags |= 1 << type.getId();
+            allowed.add(type);
             return this;
         }
 
@@ -53,7 +57,7 @@ public class HatchFlags {
         }
 
         public HatchFlags build() {
-            return new HatchFlags(flags);
+            return new HatchFlags(allowed);
         }
     }
 }

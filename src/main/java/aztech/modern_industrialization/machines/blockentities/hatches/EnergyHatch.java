@@ -43,8 +43,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHolder, CableTierHolder {
 
-    public EnergyHatch(BEP bep, String name, boolean input, CableTier tier) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(!input, false, false));
+    public EnergyHatch(BEP bep, MachineGuiParameters guiParams, boolean input, CableTier tier) {
+        super(bep, guiParams, new OrientationComponent.Params(!input, false, false));
 
         this.input = input;
         this.tier = tier;

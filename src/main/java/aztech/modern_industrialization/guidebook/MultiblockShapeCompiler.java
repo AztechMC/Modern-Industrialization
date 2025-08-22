@@ -80,7 +80,7 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
 
                 List<Component> tooltipLines = new ArrayList<>();
                 // Add name of the block because the annotation overrides the usual tooltip
-                tooltipLines.add(member.getPreviewState().blockState().getBlock().getName());
+                tooltipLines.add(member.getPreviewState().state().getBlock().getName());
 
                 tooltipLines.add(MIText.AcceptsHatches.text());
                 var flags = hatchMember.hatchFlags();

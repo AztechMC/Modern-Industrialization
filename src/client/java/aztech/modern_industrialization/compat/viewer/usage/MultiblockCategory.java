@@ -95,7 +95,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
             for (var entry : shapeTemplate.members().entrySet()) {
                 // TODO SWEDZ MULTIBLOCKS: account for nbt
                 MultiblockMemberState state = entry.getValue().getPreviewState();
-                Item item = state.blockState().getBlock().asItem();
+                Item item = state.state().getBlock().asItem();
                 if (item != Items.AIR) {
                     materials.put(item, 1 + materials.getOrDefault(item, 0));
                 }

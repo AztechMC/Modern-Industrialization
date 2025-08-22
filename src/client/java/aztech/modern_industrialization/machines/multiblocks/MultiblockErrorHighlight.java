@@ -74,7 +74,7 @@ public class MultiblockErrorHighlight {
                     RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.NO_OVERLAY);
                 } else {
                     // TODO SWEDZ MULTIBLOCKS: account for nbt + rotation
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state.blockState(), poseStack, immediate, 15728880,
+                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state.state(), poseStack, immediate, 15728880,
                             OverlayTexture.NO_OVERLAY);
                 }
 

@@ -26,6 +26,8 @@ package aztech.modern_industrialization.machines.multiblocks.shape.test;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class MultiblockMemberTest {
+    public abstract void forceLoad();
+
     public abstract boolean matchesState(BlockState state);
 
     /**

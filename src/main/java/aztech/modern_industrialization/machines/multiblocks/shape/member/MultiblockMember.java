@@ -78,6 +78,8 @@ public abstract class MultiblockMember {
         return new HatchMultiblockMember(parent.preview(), parent.tests(), casing, hatchFlags);
     }
 
+    public abstract void forceLoad();
+
     // TODO SWEDZ MULTIBLOCKS: account for nbt
     public abstract boolean matchesState(BlockState state);
 

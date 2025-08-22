@@ -35,6 +35,11 @@ public class BlockMultiblockMemberTest extends MultiblockMemberTest {
     }
 
     @Override
+    public void forceLoad() {
+        block.get();
+    }
+
+    @Override
     public boolean matchesState(BlockState state) {
         return state.is(block.get());
     }

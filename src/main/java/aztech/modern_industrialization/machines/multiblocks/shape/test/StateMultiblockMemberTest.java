@@ -40,9 +40,16 @@ public class StateMultiblockMemberTest extends MultiblockMemberTest {
     }
 
     @Override
+    public void forceLoad() {
+        for (var state : states) {
+            state.state();
+        }
+    }
+
+    @Override
     public boolean matchesState(BlockState state) {
         for (var other : states) {
-            if (state == other.blockState()) {
+            if (state == other.state()) {
                 return true;
             }
         }

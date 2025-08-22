@@ -49,13 +49,13 @@ public record MultiblockMemberState(Lazy<BlockState> lazyState) {
         this(Lazy.of(result::blockState));
     }
 
-    public BlockState blockState() {
+    public BlockState state() {
         return lazyState.get();
     }
 
     // TODO SWEDZ MULTIBLOCKS: account for nbt + rotation
     // TODO SWEDZ MULTIBLOCKS: boolean field for if we want the structure block
     public void setBlock(Level level, BlockPos pos) {
-        level.setBlockAndUpdate(pos, this.blockState());
+        level.setBlockAndUpdate(pos, this.state());
     }
 }

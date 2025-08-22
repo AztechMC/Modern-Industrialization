@@ -23,24 +23,47 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.shape;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.machines.multiblocks.shape.member.SimpleMultiblockMember;
 import java.util.*;
 import net.minecraft.core.BlockPos;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * An immutable description of a multiblock shape.
  */
+@EventBusSubscriber(modid = MI.ID, bus = EventBusSubscriber.Bus.MOD)
 public final class ShapeTemplate {
+    private static final List<ShapeTemplate> templates = new ArrayList<>();
+
     private final Map<BlockPos, MultiblockMember> members = new HashMap<>();
 
     private ShapeTemplate() {
+        templates.add(this);
     }
 
     public Map<BlockPos, MultiblockMember> members() {
         return Collections.unmodifiableMap(members);
+    }
+
+    /**
+     * Forces all lazy block states in structures to get loaded during startup as soon as blocks are in the registry.
+     * This prevents any delay later where we otherwise would need to be parsing json elements during play. It also
+     * ensures that we get consistent results (e.g. if a file changes during play).
+     */
+    @SubscribeEvent
+    private static void onSetup(FMLCommonSetupEvent event) {
+        for (ShapeTemplate template : templates) {
+            for (var member : template.members().values()) {
+                member.forceLoad();
+            }
+        }
+        MI.LOGGER.info("Initialized {} multiblock shapes", templates.size());
     }
 
     public static class Builder {

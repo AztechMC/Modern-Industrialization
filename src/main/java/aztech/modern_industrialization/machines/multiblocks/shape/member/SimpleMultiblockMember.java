@@ -49,6 +49,14 @@ public class SimpleMultiblockMember extends MultiblockMember {
     }
 
     @Override
+    public void forceLoad() {
+        preview.state();
+        for (var test : tests) {
+            test.forceLoad();
+        }
+    }
+
+    @Override
     public boolean matchesState(BlockState state) {
         for (var test : tests) {
             if (test.matchesState(state)) {

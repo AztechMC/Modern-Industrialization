@@ -250,6 +250,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
             long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
             fluidStorage.setCapacity(capacity);
 
+            invalidateCapabilities();
             for (var hatch : shapeMatcher.getMatchedHatches()) {
                 if (hatch instanceof LargeTankHatch tankHatch) {
                     tankHatch.setController(this);

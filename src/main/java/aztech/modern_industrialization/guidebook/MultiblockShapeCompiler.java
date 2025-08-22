@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.HatchMultiblockMember;
 import guideme.color.SymbolicColor;
 import guideme.compiler.PageCompiler;
 import guideme.compiler.tags.MdxAttrs;
@@ -68,28 +69,29 @@ public class MultiblockShapeCompiler implements SceneElementTagCompiler {
         // Controller
         scene.getLevel().setBlockAndUpdate(controllerPos, controller.getRight().defaultBlockState());
         // Shape blocks
-        for (var entry : shape.simpleMembers.entrySet()) {
-            scene.getLevel().setBlockAndUpdate(entry.getKey().offset(controllerPos), entry.getValue().getPreviewState());
-        }
-        // Annotations for allowed hatches
-        for (var entry : shape.hatchFlags.entrySet()) {
-            var minCorner = Vec3.atLowerCornerOf(entry.getKey().offset(controllerPos));
-            var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), SymbolicColor.GREEN);
+        for (var entry : shape.members().entrySet()) {
+            var member = entry.getValue();
+            member.getPreviewState().setBlock(scene.getLevel(), entry.getKey().offset(controllerPos));
 
-            List<Component> tooltipLines = new ArrayList<>();
-            // Add name of the block because the annotation overrides the usual tooltip
-            var member = shape.simpleMembers.get(entry.getKey());
-            tooltipLines.add(member.getPreviewState().getBlock().getName());
+            // Annotations for allowed hatches
+            if (member instanceof HatchMultiblockMember hatchMember) {
+                var minCorner = Vec3.atLowerCornerOf(entry.getKey().offset(controllerPos));
+                var annotation = new InWorldBoxAnnotation(minCorner.toVector3f(), minCorner.add(1, 1, 1).toVector3f(), SymbolicColor.GREEN);
 
-            tooltipLines.add(MIText.AcceptsHatches.text());
-            var flags = entry.getValue();
-            for (var type : HatchType.values()) {
-                if (flags.allows(type)) {
-                    tooltipLines.add(Component.literal("- ").append(type.description()));
+                List<Component> tooltipLines = new ArrayList<>();
+                // Add name of the block because the annotation overrides the usual tooltip
+                tooltipLines.add(member.getPreviewState().blockState().getBlock().getName());
+
+                tooltipLines.add(MIText.AcceptsHatches.text());
+                var flags = hatchMember.hatchFlags();
+                for (var type : HatchType.values()) {
+                    if (flags.allows(type)) {
+                        tooltipLines.add(Component.literal("- ").append(type.description()));
+                    }
                 }
+                annotation.setTooltip(new TextTooltip(tooltipLines));
+                scene.addAnnotation(annotation);
             }
-            annotation.setTooltip(new TextTooltip(tooltipLines));
-            scene.addAnnotation(annotation);
         }
     }
 }

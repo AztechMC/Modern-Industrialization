@@ -38,6 +38,10 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.machines.multiblocks.shape.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
@@ -198,8 +202,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         shapeTemplates = new ShapeTemplate[4];
         gridLayout = new boolean[4][][];
 
-        SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_casing")));
-        SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_alloy_machine_casing_pipe")));
+        var casing = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_casing")));
+        var pipe = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("nuclear_alloy_machine_casing_pipe")));
         HatchFlags top = new HatchFlags.Builder().with(HatchType.NUCLEAR_FLUID, HatchType.NUCLEAR_ITEM).build();
         for (int i = 0; i < 4; i++) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.NUCLEAR);

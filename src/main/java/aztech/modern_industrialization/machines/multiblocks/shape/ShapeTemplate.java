@@ -21,36 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks;
+package aztech.modern_industrialization.machines.multiblocks.shape;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.SimpleMultiblockMember;
+import java.util.*;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * An immutable description of a multiblock shape.
  */
-public class ShapeTemplate {
-    public final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
-    public final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
-    public final MachineCasing hatchCasing;
+public final class ShapeTemplate {
+    private final Map<BlockPos, MultiblockMember> members = new HashMap<>();
 
-    private ShapeTemplate(MachineCasing hatchCasing) {
-        this.hatchCasing = hatchCasing;
+    private ShapeTemplate() {
+    }
+
+    public Map<BlockPos, MultiblockMember> members() {
+        return Collections.unmodifiableMap(members);
     }
 
     public static class Builder {
         private final ShapeTemplate template;
+        private final MachineCasing hatchCasing;
 
         public Builder(MachineCasing hatchCasing) {
-            template = new ShapeTemplate(hatchCasing);
+            template = new ShapeTemplate();
+            this.hatchCasing = hatchCasing;
         }
 
-        public Builder add3by3Levels(int minY, int maxY, SimpleMember member, @Nullable HatchFlags flags) {
+        public ShapeTemplate.Builder add3by3Levels(int minY, int maxY, SimpleMultiblockMember member, @Nullable HatchFlags flags) {
             for (int y = minY; y <= maxY; ++y) {
                 add3by3(y, member, y != minY, (y == minY || y == maxY) ? flags : null);
             }
@@ -58,7 +60,7 @@ public class ShapeTemplate {
             return this;
         }
 
-        public Builder add3by3LevelsRoofed(int minY, int maxY, SimpleMember member, @Nullable HatchFlags flags) {
+        public ShapeTemplate.Builder add3by3LevelsRoofed(int minY, int maxY, SimpleMultiblockMember member, @Nullable HatchFlags flags) {
             for (int y = minY; y <= maxY; ++y) {
                 add3by3(y, member, y != minY && y != maxY, (y == minY || y == maxY) ? flags : null);
             }
@@ -66,20 +68,18 @@ public class ShapeTemplate {
             return this;
         }
 
-        public Builder add(int x, int y, int z, SimpleMember member, @Nullable HatchFlags flags) {
+        public ShapeTemplate.Builder add(int x, int y, int z, SimpleMultiblockMember member, @Nullable HatchFlags flags) {
+            member = flags == null ? member : MultiblockMember.hatch(member, hatchCasing, flags);
             BlockPos pos = new BlockPos(x, y, z);
-            template.simpleMembers.put(pos, member);
-            if (flags != null) {
-                template.hatchFlags.put(pos, flags);
-            }
+            template.members.put(pos, member);
             return this;
         }
 
-        public Builder add(int x, int y, int z, SimpleMember member) {
+        public ShapeTemplate.Builder add(int x, int y, int z, SimpleMultiblockMember member) {
             return add(x, y, z, member, null);
         }
 
-        public Builder add3by3(int y, SimpleMember member, boolean hollow, @Nullable HatchFlags flags) {
+        public ShapeTemplate.Builder add3by3(int y, SimpleMultiblockMember member, boolean hollow, @Nullable HatchFlags flags) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = 0; z <= 2; z++) {
                     if (hollow && x == 0 && z == 1) {
@@ -91,10 +91,9 @@ public class ShapeTemplate {
             return this;
         }
 
-        public Builder remove(int x, int y, int z) {
+        public ShapeTemplate.Builder remove(int x, int y, int z) {
             BlockPos pos = new BlockPos(x, y, z);
-            template.simpleMembers.remove(pos);
-            template.hatchFlags.remove(pos);
+            template.members.remove(pos);
             return this;
         }
 
@@ -108,15 +107,12 @@ public class ShapeTemplate {
         private final ShapeTemplate.Builder innerBuilder;
         private final String[][] layers;
         private final Set<Character> missingKeys = new HashSet<>();
-        private final Map<Character, KeyDefinition> keyDefinitions = new HashMap<>();
+        private final Map<Character, SimpleMultiblockMember> keyDefinitions = new HashMap<>();
 
         private int iController, jController, kController;
 
-        private record KeyDefinition(SimpleMember member, @Nullable HatchFlags flags) {
-        }
-
         public LayeredBuilder(MachineCasing hatchCasing, String[][] layers) {
-            innerBuilder = new Builder(hatchCasing);
+            innerBuilder = new ShapeTemplate.Builder(hatchCasing);
 
             // Find layout size
             if (layers.length == 0) {
@@ -164,15 +160,16 @@ public class ShapeTemplate {
             this.layers = layers;
         }
 
-        public LayeredBuilder key(char key, SimpleMember member, @Nullable HatchFlags flags) {
+        public ShapeTemplate.LayeredBuilder key(char key, SimpleMultiblockMember member, @Nullable HatchFlags flags) {
             if (keyDefinitions.containsKey(key)) {
                 throw new IllegalArgumentException("Key '%c' was already defined".formatted(key));
             }
             if (!missingKeys.contains(key)) {
                 throw new IllegalArgumentException("Key '%c' it not part of the shape layers".formatted(key));
             }
+            member = flags == null ? member : MultiblockMember.hatch(member, innerBuilder.hatchCasing, flags);
             missingKeys.remove(key);
-            keyDefinitions.put(key, new KeyDefinition(member, flags));
+            keyDefinitions.put(key, member);
             return this;
         }
 
@@ -186,12 +183,12 @@ public class ShapeTemplate {
                     for (int k = 0; k < layers[i][j].length(); ++k) {
                         char c = layers[i][j].charAt(k);
                         if (c != ' ' && c != '#') {
-                            KeyDefinition def = keyDefinitions.get(c);
+                            var member = keyDefinitions.get(c);
                             int iAdjusted = i - iController;
                             int jAdjusted = j - jController;
                             int kAdjusted = k - kController;
 
-                            innerBuilder.add(kAdjusted, jAdjusted, -iAdjusted, def.member, def.flags);
+                            innerBuilder.add(kAdjusted, jAdjusted, -iAdjusted, member);
                         }
                     }
                 }

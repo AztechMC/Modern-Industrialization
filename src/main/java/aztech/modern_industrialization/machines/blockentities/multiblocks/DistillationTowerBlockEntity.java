@@ -37,6 +37,9 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.machines.multiblocks.shape.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.stream.IntStream;
 
@@ -112,8 +115,8 @@ public class DistillationTowerBlockEntity extends AbstractElectricCraftingMultib
     static {
         shapeTemplates = new ShapeTemplate[MAX_HEIGHT];
 
-        SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("clean_stainless_steel_machine_casing")));
-        SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("stainless_steel_machine_casing_pipe")));
+        var casing = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("clean_stainless_steel_machine_casing")));
+        var pipe = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("stainless_steel_machine_casing_pipe")));
         HatchFlags bottom = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT).build();
         HatchFlags layer = new HatchFlags.Builder().with(HatchType.FLUID_OUTPUT).build();
         for (int i = 0; i < MAX_HEIGHT; ++i) {

@@ -43,7 +43,7 @@ import aztech.modern_industrialization.machines.init.MachineRegistrationHelper;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import java.util.List;

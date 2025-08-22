@@ -28,7 +28,8 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.viewer.abstraction.ViewerCategory;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMemberState;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -42,7 +43,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe> {
@@ -92,9 +92,10 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
-            for (var entry : shapeTemplate.simpleMembers.entrySet()) {
-                BlockState state = entry.getValue().getPreviewState();
-                Item item = state.getBlock().asItem();
+            for (var entry : shapeTemplate.members().entrySet()) {
+                // TODO SWEDZ MULTIBLOCKS: account for nbt
+                MultiblockMemberState state = entry.getValue().getPreviewState();
+                Item item = state.blockState().getBlock().asItem();
                 if (item != Items.AIR) {
                     materials.put(item, 1 + materials.getOrDefault(item, 0));
                 }

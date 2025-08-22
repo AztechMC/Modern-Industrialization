@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 
 public class FusionReactorBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {

@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
 import net.minecraft.resources.ResourceLocation;

@@ -27,6 +27,8 @@ import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.HatchMultiblockMember;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -68,9 +70,9 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                 matrices.pushPose();
                 matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
 
-                HatchFlags hatchFlag = matcher.getHatchFlags(pos);
-                if (hatchType != null) {
-                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
+                var member = matcher.getMember(pos);
+                if (hatchType != null && member instanceof HatchMultiblockMember hatchMember) {
+                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchMember.hatchFlags().allows(hatchType)) {
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);
@@ -78,11 +80,11 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, be.getLevel(), null)) {
+                    if (!matcher.matches(pos, be.getLevel())) {
                         var existingState = be.getLevel().getBlockState(pos);
                         if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
                             // Enqueue state preview
-                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
+                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getMember(pos).getPreviewState());
                         } else {
                             // Enqueue red cube
                             MultiblockErrorHighlight.enqueueHighlight(pos, null);

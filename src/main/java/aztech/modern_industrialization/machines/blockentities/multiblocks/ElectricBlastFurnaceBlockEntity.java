@@ -37,7 +37,9 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.machines.multiblocks.shape.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.common.base.Preconditions;
@@ -94,8 +96,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
 
         for (int i = 0; i < tiers.size(); ++i) {
             var tier = tiers.get(i);
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("heatproof_machine_casing")));
-            SimpleMember coilsBlocks = SimpleMember.forBlockId(tier.coilBlockId());
+            var invarCasings = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("heatproof_machine_casing")));
+            var coilsBlocks = MultiblockMember.simple(tier.coilBlockId());
             HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
                     .add3by3(0, invarCasings, false, ebfHatches)

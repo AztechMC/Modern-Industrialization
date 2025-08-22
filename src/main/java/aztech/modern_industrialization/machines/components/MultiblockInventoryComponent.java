@@ -29,7 +29,7 @@ import aztech.modern_industrialization.inventory.ChangeListener;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.ArrayList;
 import java.util.Comparator;

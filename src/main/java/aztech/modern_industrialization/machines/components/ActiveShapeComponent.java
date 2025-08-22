@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;

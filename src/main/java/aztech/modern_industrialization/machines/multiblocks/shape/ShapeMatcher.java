@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks;
+package aztech.modern_industrialization.machines.multiblocks.shape;
 
 import static net.minecraft.core.Direction.*;
 
+import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.HatchMultiblockMember;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.*;
@@ -34,7 +37,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -43,14 +45,12 @@ public class ShapeMatcher implements ChunkEventListener {
     public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
         this.controllerPos = controllerPos;
         this.template = template;
-        this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
-        this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
+        this.members = toWorldPos(controllerPos, controllerDirection, template.members());
     }
 
     protected final BlockPos controllerPos;
     protected final ShapeTemplate template;
-    protected final Map<BlockPos, SimpleMember> simpleMembers;
-    protected final Map<BlockPos, HatchFlags> hatchFlags;
+    protected final Map<BlockPos, MultiblockMember> members;
 
     private boolean needsRematch = true;
     private boolean matchSuccessful = false;
@@ -82,16 +82,11 @@ public class ShapeMatcher implements ChunkEventListener {
     }
 
     public Set<BlockPos> getPositions() {
-        return new HashSet<>(simpleMembers.keySet());
+        return new HashSet<>(members.keySet());
     }
 
-    public SimpleMember getSimpleMember(BlockPos pos) {
-        return Objects.requireNonNull(simpleMembers.get(pos));
-    }
-
-    @Nullable
-    public HatchFlags getHatchFlags(BlockPos pos) {
-        return hatchFlags.get(pos);
+    public MultiblockMember getMember(BlockPos pos) {
+        return Objects.requireNonNull(members.get(pos));
     }
 
     public List<HatchBlockEntity> getMatchedHatches() {
@@ -112,18 +107,19 @@ public class ShapeMatcher implements ChunkEventListener {
      * Return true if there was a match, and append matched hatches to the list if
      * it's not null.
      */
-    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> hatches) {
-        SimpleMember simpleMember = simpleMembers.get(pos);
-        if (simpleMember == null)
+    public boolean matches(BlockPos pos, Level world) {
+        var member = members.get(pos);
+        if (member == null)
             return false;
 
+        // TODO SWEDZ MULTIBLOCKS: account for nbt + rotation
         BlockState state = world.getBlockState(pos);
-        if (simpleMember.matchesState(state))
+        if (member.matchesState(state))
             return true;
 
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof HatchBlockEntity hatch) {
-            HatchFlags flags = hatchFlags.get(pos);
+        if (be instanceof HatchBlockEntity hatch && member instanceof HatchMultiblockMember hatchMember) {
+            HatchFlags flags = hatchMember.hatchFlags();
             if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
                 if (matchedHatches != null) {
                     matchedHatches.add(hatch);
@@ -151,10 +147,10 @@ public class ShapeMatcher implements ChunkEventListener {
         unlinkHatches();
         matchSuccessful = true;
 
-        for (BlockPos pos : simpleMembers.keySet()) {
+        for (BlockPos pos : members.keySet()) {
             // TODO: check if the chunk is loaded
 
-            if (!matches(pos, world, matchedHatches)) {
+            if (!matches(pos, world)) {
                 matchSuccessful = false;
             }
         }
@@ -166,7 +162,11 @@ public class ShapeMatcher implements ChunkEventListener {
             matchedHatches.clear();
         } else {
             for (HatchBlockEntity hatch : matchedHatches) {
-                hatch.link(template.hatchCasing);
+                var member = members.get(hatch.getBlockPos());
+                if (!(member instanceof HatchMultiblockMember hatchMember)) {
+                    throw new IllegalStateException("Cannot match hatch to non-hatch multiblock member");
+                }
+                hatch.link(hatchMember.casing());
             }
         }
 
@@ -175,7 +175,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
     public Set<ChunkPos> getSpannedChunks() {
         Set<ChunkPos> spannedChunks = new HashSet<>();
-        for (BlockPos pos : simpleMembers.keySet()) {
+        for (BlockPos pos : members.keySet()) {
             spannedChunks.add(new ChunkPos(pos));
         }
         return spannedChunks;
@@ -196,10 +196,10 @@ public class ShapeMatcher implements ChunkEventListener {
     public int buildMultiblock(Level level) {
         int setBlocks = 0;
 
-        for (var entry : simpleMembers.entrySet()) {
+        for (var entry : members.entrySet()) {
             var current = level.getBlockState(entry.getKey());
             if (!entry.getValue().matchesState(current)) {
-                level.setBlockAndUpdate(entry.getKey(), entry.getValue().getPreviewState());
+                entry.getValue().getPreviewState().setBlock(level, entry.getKey());
                 ++setBlocks;
             }
         }
@@ -209,7 +209,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
     @Override
     public void onBlockUpdate(BlockPos pos) {
-        if (simpleMembers.containsKey(pos)) {
+        if (members.containsKey(pos)) {
             needsRematch = true;
         }
     }

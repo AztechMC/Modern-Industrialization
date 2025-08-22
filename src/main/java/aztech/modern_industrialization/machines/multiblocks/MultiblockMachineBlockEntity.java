@@ -28,6 +28,8 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;

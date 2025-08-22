@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMemberState;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
@@ -32,21 +33,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
-    private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
+    private static final Map<BlockPos, @Nullable MultiblockMemberState> highlightQueue = new HashMap<>();
     private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MultiblockErrorHighlight::end);
     }
 
-    public static void enqueueHighlight(BlockPos pos, @Nullable BlockState state) {
+    public static void enqueueHighlight(BlockPos pos, @Nullable MultiblockMemberState state) {
         highlightQueue.put(pos.immutable(), state);
     }
 
@@ -59,7 +59,7 @@ public class MultiblockErrorHighlight {
             var poseStack = event.getPoseStack();
             poseStack.pushPose();
             poseStack.mulPose(event.getModelViewMatrix());
-            for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable MultiblockMemberState> entry : highlightQueue.entrySet()) {
                 poseStack.pushPose();
                 Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
                 BlockPos pos = entry.getKey();
@@ -69,11 +69,12 @@ public class MultiblockErrorHighlight {
                 poseStack.translate(x + 0.25, y + 0.25, z + 0.25);
                 poseStack.scale(0.5f, 0.5f, 0.5f);
 
-                BlockState state = entry.getValue();
+                MultiblockMemberState state = entry.getValue();
                 if (state == null) {
                     RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.NO_OVERLAY);
                 } else {
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, 15728880,
+                    // TODO SWEDZ MULTIBLOCKS: account for nbt + rotation
+                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state.blockState(), poseStack, immediate, 15728880,
                             OverlayTexture.NO_OVERLAY);
                 }
 

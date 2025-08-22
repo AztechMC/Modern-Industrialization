@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MachineTier;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 
 public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {

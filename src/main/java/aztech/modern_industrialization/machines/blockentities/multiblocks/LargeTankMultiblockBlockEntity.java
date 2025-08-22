@@ -41,6 +41,10 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
+import aztech.modern_industrialization.machines.multiblocks.shape.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
@@ -107,9 +111,10 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeZ = Z_SIZES[getZComponent(index)];
 
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
-        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
-        SimpleMember glass = SimpleMember.forBlock(() -> Blocks.GLASS);
-        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.LARGE_TANK).build();
+        var steelCasing = MultiblockMember.simple(MIBlock.BLOCK_DEFINITIONS.get(MI.id("steel_machine_casing")));
+        var steelHatch = MultiblockMember.hatch(steelCasing, MachineCasings.STEEL, new HatchFlags.Builder().with(HatchType.LARGE_TANK).build());
+        var glass = MultiblockMember.simple(() -> Blocks.GLASS);
+        var glassHatch = MultiblockMember.hatch(glass, MachineCasings.STEEL, new HatchFlags.Builder().with(HatchType.LARGE_TANK).build());
 
         for (int x = -sizeX / 2; x <= sizeX / 2; x++) {
             for (int y = -1; y < sizeY - 1; y++) {
@@ -128,9 +133,9 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
                     }
                     if (x != 0 || y != 0 || z != 0) {
                         if (lim == 1) {
-                            templateBuilder.add(x, y, z, glass, hatchFlags);
+                            templateBuilder.add(x, y, z, glassHatch);
                         } else if (lim >= 2) {
-                            templateBuilder.add(x, y, z, steelCasing, hatchFlags);
+                            templateBuilder.add(x, y, z, steelHatch);
                         }
                     }
                     // TODO ADD AIR EMPTY CONDITION

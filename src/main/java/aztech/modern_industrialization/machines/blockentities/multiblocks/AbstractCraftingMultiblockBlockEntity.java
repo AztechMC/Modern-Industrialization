@@ -32,8 +32,8 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeMatcher;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,

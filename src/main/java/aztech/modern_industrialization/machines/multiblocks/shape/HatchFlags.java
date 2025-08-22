@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.multiblocks;
+package aztech.modern_industrialization.machines.multiblocks.shape;
+
+import aztech.modern_industrialization.machines.multiblocks.HatchType;
 
 public class HatchFlags {
     public static final HatchFlags NO_HATCH = new Builder().build();

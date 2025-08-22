@@ -24,10 +24,11 @@
 package aztech.modern_industrialization.compat.kubejs.machine;
 
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.shape.HatchFlags;
+import aztech.modern_industrialization.machines.multiblocks.shape.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.MultiblockMember;
+import aztech.modern_industrialization.machines.multiblocks.shape.member.SimpleMultiblockMember;
 import net.minecraft.resources.ResourceLocation;
 
 public interface ShapeTemplateHelper {
@@ -39,8 +40,8 @@ public interface ShapeTemplateHelper {
         return new ShapeTemplate.Builder(MachineCasings.get(hatchCasing));
     }
 
-    default SimpleMember memberOfBlock(String blockId) {
-        return SimpleMember.forBlockId(ResourceLocation.parse(blockId));
+    default SimpleMultiblockMember memberOfBlock(String blockId) {
+        return MultiblockMember.simple(ResourceLocation.parse(blockId));
     }
 
     default HatchFlags noHatch() {

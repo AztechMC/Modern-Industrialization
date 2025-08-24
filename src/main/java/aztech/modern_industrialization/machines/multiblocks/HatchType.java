@@ -25,14 +25,15 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class HatchType {
     private final ResourceLocation id;
-    private final Either<MutableComponent, ResourceLocation> descriptionOrBlockId;
+    private final Either<Component, ResourceLocation> descriptionOrBlockId;
 
-    HatchType(ResourceLocation id, MutableComponent description) {
+    HatchType(ResourceLocation id, Component description) {
         this.id = id;
         this.descriptionOrBlockId = Either.left(description);
     }
@@ -47,7 +48,7 @@ public class HatchType {
     }
 
     public MutableComponent description() {
-        return descriptionOrBlockId.map(text -> text, id -> BuiltInRegistries.BLOCK.get(id).getName());
+        return descriptionOrBlockId.map(Component::copy, id -> BuiltInRegistries.BLOCK.get(id).getName());
     }
 
     @Override

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class HatchFlags {
     private final Set<HatchType> allowed;
 
     public HatchFlags(Set<HatchType> allowed) {
-        this.allowed = Collections.unmodifiableSet(allowed);
+        this.allowed = Set.copyOf(allowed);
     }
 
     public boolean allows(HatchType type) {

@@ -34,17 +34,17 @@ import net.minecraft.resources.ResourceLocation;
 public class HatchTypes {
     private static final Map<ResourceLocation, HatchType> registeredHatches = new HashMap<>();
 
-    public static final HatchType ITEM_INPUT = create(MI.id("item_input"), MIText.ItemInputHatch);
-    public static final HatchType ITEM_OUTPUT = create(MI.id("item_output"), MIText.ItemOutputHatch);
-    public static final HatchType FLUID_INPUT = create(MI.id("fluid_input"), MIText.FluidInputHatch);
-    public static final HatchType FLUID_OUTPUT = create(MI.id("fluid_output"), MIText.FluidOutputHatch);
-    public static final HatchType ENERGY_INPUT = create(MI.id("energy_input"), MIText.EnergyInputHatch);
-    public static final HatchType ENERGY_OUTPUT = create(MI.id("energy_output"), MIText.EnergyOutputHatch);
-    public static final HatchType NUCLEAR_ITEM = create(MI.id("nuclear_item"), MI.id("nuclear_item_hatch"));
-    public static final HatchType NUCLEAR_FLUID = create(MI.id("nuclear_fluid"), MI.id("nuclear_fluid_hatch"));
-    public static final HatchType LARGE_TANK = create(MI.id("large_tank"), MI.id("large_tank_hatch"));
+    public static final HatchType ITEM_INPUT = register(MI.id("item_input"), MIText.ItemInputHatch);
+    public static final HatchType ITEM_OUTPUT = register(MI.id("item_output"), MIText.ItemOutputHatch);
+    public static final HatchType FLUID_INPUT = register(MI.id("fluid_input"), MIText.FluidInputHatch);
+    public static final HatchType FLUID_OUTPUT = register(MI.id("fluid_output"), MIText.FluidOutputHatch);
+    public static final HatchType ENERGY_INPUT = register(MI.id("energy_input"), MIText.EnergyInputHatch);
+    public static final HatchType ENERGY_OUTPUT = register(MI.id("energy_output"), MIText.EnergyOutputHatch);
+    public static final HatchType NUCLEAR_ITEM = register(MI.id("nuclear_item"), MI.id("nuclear_item_hatch"));
+    public static final HatchType NUCLEAR_FLUID = register(MI.id("nuclear_fluid"), MI.id("nuclear_fluid_hatch"));
+    public static final HatchType LARGE_TANK = register(MI.id("large_tank"), MI.id("large_tank_hatch"));
 
-    public static HatchType create(ResourceLocation id, MutableComponent description) {
+    public static HatchType register(ResourceLocation id, MutableComponent description) {
         if (registeredHatches.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate hatch type definition: " + id);
         }
@@ -53,11 +53,11 @@ public class HatchTypes {
         return type;
     }
 
-    public static HatchType create(ResourceLocation id, MIText description) {
-        return create(id, description.text());
+    public static HatchType register(ResourceLocation id, MIText description) {
+        return register(id, description.text());
     }
 
-    public static HatchType create(ResourceLocation id, ResourceLocation blockId) {
+    public static HatchType register(ResourceLocation id, ResourceLocation blockId) {
         if (registeredHatches.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate hatch type definition: " + id);
         }

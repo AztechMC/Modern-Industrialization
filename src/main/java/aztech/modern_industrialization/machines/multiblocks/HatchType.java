@@ -29,7 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-public class HatchType {
+public final class HatchType {
     private final ResourceLocation id;
     private final Either<Component, ResourceLocation> descriptionOrBlockId;
 

@@ -57,6 +57,9 @@ public class HatchTypes {
         return register(id, description.text());
     }
 
+    /**
+     * The block id corresponds to the user-facing description of the hatch type.
+     */
     public static HatchType register(ResourceLocation id, ResourceLocation blockId) {
         if (registeredHatches.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate hatch type definition: " + id);

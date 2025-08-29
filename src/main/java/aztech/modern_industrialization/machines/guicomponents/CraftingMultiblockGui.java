@@ -59,7 +59,7 @@ public class CraftingMultiblockGui {
                     return new Data(progressSupplier.get(), crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(),
                             crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu(), remainingOverclockTicks.getAsInt());
                 } else {
-                    return new Data(true, remainingOverclockTicks.getAsInt());
+                    return new Data(true, crafter.matchesMultipleRecipes(), remainingOverclockTicks.getAsInt());
                 }
             } else {
                 return new Data(remainingOverclockTicks.getAsInt());
@@ -74,9 +74,9 @@ public class CraftingMultiblockGui {
                 recipe = crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu;
             }
             return cachedData.isShapeValid != isShapeValid.get() || cachedData.hasActiveRecipe != crafter.hasActiveRecipe()
-                    || cachedData.progress != progressSupplier.get() || crafter.getEfficiencyTicks() != cachedData.efficiencyTicks
-                    || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks || recipe
-                    || cachedData.remainingOverclockTicks != remainingOverclockTicks.getAsInt();
+                    || cachedData.matchesMultipleRecipes != crafter.matchesMultipleRecipes() || cachedData.progress != progressSupplier.get()
+                    || crafter.getEfficiencyTicks() != cachedData.efficiencyTicks || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
+                    || recipe || cachedData.remainingOverclockTicks != remainingOverclockTicks.getAsInt();
 
         }
 
@@ -98,6 +98,7 @@ public class CraftingMultiblockGui {
                     buf.writeLong(crafter.getBaseRecipeEu());
                 } else {
                     buf.writeBoolean(false);
+                    buf.writeBoolean(crafter.matchesMultipleRecipes());
                 }
             } else {
                 buf.writeBoolean(false);
@@ -114,6 +115,7 @@ public class CraftingMultiblockGui {
     private static class Data {
         final boolean isShapeValid;
         final boolean hasActiveRecipe;
+        final boolean matchesMultipleRecipes;
         final float progress;
         final int efficiencyTicks;
         final int maxEfficiencyTicks;
@@ -122,12 +124,13 @@ public class CraftingMultiblockGui {
         final int remainingOverclockTicks;
 
         private Data(int remainingOverclockTicks) {
-            this(false, remainingOverclockTicks);
+            this(false, false, remainingOverclockTicks);
         }
 
-        private Data(boolean isShapeValid, int remainingOverclockTicks) {
+        private Data(boolean isShapeValid, boolean matchesMultipleRecipes, int remainingOverclockTicks) {
             this.isShapeValid = isShapeValid;
             this.hasActiveRecipe = false;
+            this.matchesMultipleRecipes = matchesMultipleRecipes;
             this.efficiencyTicks = 0;
             this.progress = 0;
             this.maxEfficiencyTicks = 0;
@@ -143,6 +146,7 @@ public class CraftingMultiblockGui {
             this.maxEfficiencyTicks = maxEfficiencyTicks;
             this.isShapeValid = true;
             this.hasActiveRecipe = true;
+            this.matchesMultipleRecipes = false;
             this.currentRecipeEu = currentRecipeEu;
             this.baseRecipeEu = baseRecipeEu;
             this.remainingOverclockTicks = remainingOverclockTicks;
@@ -152,5 +156,5 @@ public class CraftingMultiblockGui {
     public static final int X = 5;
     public static final int Y = 16;
     public static final int W = 166;
-    public static final int H = 80;
+    public static final int H = 83;
 }

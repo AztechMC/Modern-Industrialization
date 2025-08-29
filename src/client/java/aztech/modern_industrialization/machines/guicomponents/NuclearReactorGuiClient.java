@@ -231,7 +231,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             int i = (cursorX - (x + centerX - data.gridSizeX() * 9)) / 18;
             int j = (cursorY - (y + centerY - data.gridSizeY() * 9)) / 18;
 
@@ -247,10 +247,12 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                             if (variantAmount > 0 & !variant.isBlank()) {
                                 if (variant instanceof ItemVariant itemVariant) {
                                     guiGraphics.renderTooltip(font, itemVariant.toStack((int) variantAmount), cursorX, cursorY);
+                                    return true;
                                 } else if (variant instanceof FluidVariant fluidVariant) {
                                     guiGraphics.renderTooltip(font,
                                             FluidHelper.getTooltipForFluidStorage(fluidVariant, variantAmount, NuclearHatch.capacity, false),
                                             Optional.empty(), cursorX, cursorY);
+                                    return true;
                                 }
                             }
 
@@ -267,12 +269,12 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                             }
 
                             guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
-                            return;
+                            return true;
 
                         } else if (currentMode == Renderer.Mode.EU_GENERATION) {
                             double euGeneration = tileData.getMeanEuGeneration();
                             guiGraphics.renderTooltip(font, TextHelper.getEuTextTick(euGeneration, true), cursorX, cursorY);
-                            return;
+                            return true;
                         } else {
                             double neutronRateFast;
                             double neutronRateThermal;
@@ -340,7 +342,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                             }
 
                             guiGraphics.renderTooltip(font, tooltips, Optional.empty(), cursorX, cursorY);
-                            return;
+                            return true;
                         }
 
                     }
@@ -358,8 +360,10 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                     Component tooltip = MIText.NuclearFuelEfficiencyTooltip.text(euProduction, euFuelConsumption);
 
                     guiGraphics.renderTooltip(font, tooltip, cursorX, cursorY);
+                    return true;
                 }
             }
+            return false;
         }
 
         public Component getEfficiencyText() {

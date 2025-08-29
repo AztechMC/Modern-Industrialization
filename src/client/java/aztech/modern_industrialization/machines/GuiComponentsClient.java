@@ -24,18 +24,7 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
-import aztech.modern_industrialization.machines.guicomponents.AutoExtractClient;
-import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
-import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
-import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGuiClient;
-import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplayClient;
-import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
-import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
-import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBarClient;
-import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
-import aztech.modern_industrialization.machines.guicomponents.ShapeSelectionClient;
-import aztech.modern_industrialization.machines.guicomponents.SlotPanelClient;
-import aztech.modern_industrialization.machines.guicomponents.TemperatureBarClient;
+import aztech.modern_industrialization.machines.guicomponents.*;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +47,7 @@ public final class GuiComponentsClient {
         register(GuiComponents.CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGuiClient::new);
         register(GuiComponents.ENERGY_BAR, EnergyBarClient::new);
         register(GuiComponents.LARGE_TANK_FLUID_DISPLAY, LargeTankFluidDisplayClient::new);
+        register(GuiComponents.MACHINE_PROBLEMS_DISPLAY, MachineProblemsDisplayClient::new);
         register(GuiComponents.GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGuiClient::new);
         register(GuiComponents.NUCLEAR_REACTOR_GUI, NuclearReactorGuiClient::new);
         register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);

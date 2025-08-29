@@ -31,6 +31,7 @@ public final class GuiComponents {
     public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = MI.id("crafting_multiblock_gui");
     public static final ResourceLocation ENERGY_BAR = MI.id("energy_bar");
     public static final ResourceLocation LARGE_TANK_FLUID_DISPLAY = MI.id("large_tank_fluid_display");
+    public static final ResourceLocation MACHINE_PROBLEMS_DISPLAY = MI.id("machine_problems_display");
     public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = MI.id("gunpowder_overclock_gui");
     public static final ResourceLocation NUCLEAR_REACTOR_GUI = MI.id("nuclear_reactor_gui");
     public static final ResourceLocation PROGRESS_BAR = MI.id("progress_bar");

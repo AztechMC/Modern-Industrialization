@@ -33,11 +33,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGuiClient implements GuiComponentClient {
     public boolean isShapeValid;
     boolean hasActiveRecipe;
+    boolean matchesMultipleRecipes;
     float progress;
     int efficiencyTicks;
     int maxEfficiencyTicks;
@@ -60,6 +62,8 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                 maxEfficiencyTicks = buf.readInt();
                 currentRecipeEu = buf.readLong();
                 baseRecipeEu = buf.readLong();
+            } else {
+                matchesMultipleRecipes = buf.readBoolean();
             }
         }
         remainingOverclockTicks = buf.readVarInt();
@@ -73,6 +77,16 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
     public class Renderer implements ClientComponentRenderer {
         private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
+        private static int drawWordWrap(GuiGraphics guiGraphics, Font font, Component text, int x, int y, int lineWidth, int lineHeight, int color,
+                boolean dropShadow) {
+            int deltaY = 0;
+            for (var line : font.split(text, lineWidth)) {
+                guiGraphics.drawString(font, line, x, y + deltaY, color, dropShadow);
+                deltaY += lineHeight;
+            }
+            return deltaY;
+        }
+
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
 
@@ -81,7 +95,7 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                     CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
             Font font = minecraftClient.font;
 
-            int deltaY = 23;
+            int deltaY = 21;
 
             guiGraphics.drawString(font, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 10, y + deltaY,
                     isShapeValid ? 0xFFFFFF : 0xFF0000, false);
@@ -109,6 +123,14 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                     guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(currentRecipeEu)), x + 10, y + deltaY, 0xFFFFFF,
                             false);
                     deltaY += 11;
+                } else if (matchesMultipleRecipes) {
+                    int lineWidth = CraftingMultiblockGui.W - 10;
+
+                    deltaY += drawWordWrap(guiGraphics, font, MIText.MachineMultipleRecipes1.text(), x + 10, y + deltaY, lineWidth, 11, 0xFF0000,
+                            false);
+
+                    deltaY += drawWordWrap(guiGraphics, font, MIText.MachineMultipleRecipes2.text(), x + 10, y + deltaY, lineWidth, 11, 0xFF0000,
+                            false);
                 }
             }
 

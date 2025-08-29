@@ -44,11 +44,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -137,6 +133,8 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     @Nullable
     private ResourceLocation delayedActiveRecipe;
 
+    private boolean matchesMultipleRecipes;
+
     private long usedEnergy;
     private long recipeEnergy;
     private long recipeMaxEu;
@@ -168,6 +166,11 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
     @Override
     public boolean hasActiveRecipe() {
         return activeRecipe != null;
+    }
+
+    @Override
+    public boolean matchesMultipleRecipes() {
+        return matchesMultipleRecipes;
     }
 
     public Inventory getInventory() {
@@ -325,27 +328,39 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
 
     private boolean updateActiveRecipe() {
         // Only then can we run the iteration over the recipes
-        for (RecipeHolder<MachineRecipe> recipe : getRecipes()) {
+        var recipes = getRecipes();
+        RecipeHolder<MachineRecipe> newActiveRecipe = null;
+        for (RecipeHolder<MachineRecipe> recipe : recipes) {
             if (behavior.banRecipe(recipe.value()))
                 continue;
-            if (tryStartRecipe(recipe.value())) {
+            if (canStartRecipe(recipe.value(), true)) {
+                if (newActiveRecipe != null) {
+                    matchesMultipleRecipes = true;
+                    return false;
+                }
+                newActiveRecipe = recipe;
+            }
+        }
+        if (!recipes.isEmpty()) {
+            matchesMultipleRecipes = false;
+            if (newActiveRecipe != null && tryStartRecipe(newActiveRecipe.value())) {
                 // Make sure we recalculate the max efficiency ticks if the recipe changes or if
                 // the efficiency has reached 0 (the latter is to recalculate the efficiency for
                 // 0.3.6 worlds without having to break and replace the machines)
-                if (activeRecipe != recipe || efficiencyTicks == 0) {
-                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.value());
+                if (activeRecipe != newActiveRecipe || efficiencyTicks == 0) {
+                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(newActiveRecipe.value());
                 }
-                activeRecipe = recipe;
+                activeRecipe = newActiveRecipe;
                 usedEnergy = 0;
-                recipeEnergy = recipe.value().getTotalEu();
-                recipeMaxEu = getRecipeMaxEu(recipe.value().eu, recipeEnergy, efficiencyTicks);
+                recipeEnergy = newActiveRecipe.value().getTotalEu();
+                recipeMaxEu = getRecipeMaxEu(newActiveRecipe.value().eu, recipeEnergy, efficiencyTicks);
                 return true;
             }
         }
         return false;
     }
 
-    private Iterable<RecipeHolder<MachineRecipe>> getRecipes() {
+    private Collection<RecipeHolder<MachineRecipe>> getRecipes() {
         if (efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
@@ -373,13 +388,17 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
     }
 
+    private boolean canStartRecipe(MachineRecipe recipe, boolean ignoreConditions) {
+        return takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false)
+                && putFluidOutputs(recipe, true, false) && (ignoreConditions || recipe.conditionsMatch(conditionContext));
+    }
+
     /**
      * Try to start a recipe. Return true if success, false otherwise. If false,
      * nothing was changed.
      */
     private boolean tryStartRecipe(MachineRecipe recipe) {
-        if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false)
-                && putFluidOutputs(recipe, true, false) && recipe.conditionsMatch(conditionContext)) {
+        if (canStartRecipe(recipe, false)) {
             takeItemInputs(recipe, false);
             takeFluidInputs(recipe, false);
             putItemOutputs(recipe, true, true);

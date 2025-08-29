@@ -70,11 +70,13 @@ public class TemperatureBarClient implements GuiComponentClient {
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
                 guiGraphics.renderTooltip(font, MIText.Temperature.text(temperature), cursorX, cursorY);
+                return true;
             }
+            return false;
         }
     }
 }

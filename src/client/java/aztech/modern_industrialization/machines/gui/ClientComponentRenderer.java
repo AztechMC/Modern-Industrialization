@@ -40,7 +40,11 @@ public interface ClientComponentRenderer {
 
     void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos);
 
-    default void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {
+    /**
+     * @return true if a tooltip was rendered, false otherwise
+     */
+    default boolean renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {
+        return false;
     }
 
     default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {

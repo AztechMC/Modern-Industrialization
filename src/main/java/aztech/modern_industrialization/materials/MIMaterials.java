@@ -639,7 +639,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xe1e6f5)
                         .set(MaterialProperty.HARDNESS, VERY_HARD)
                         .addParts(BLOCK.of(MaterialBlockSet.DIAMOND)).addParts(ITEM_PURE_METAL).addParts(CURVED_PLATE)
-                        .addParts(ORE.ofAll(10, 1, 16, MaterialOreSet.DIAMOND))
+                        .addParts(ORE.of(MaterialOreSet.DIAMOND))
                         .addParts(MACHINE_CASING.of("Quantum Machine Casing", "quantum_machine_casing", 6000f))
 
                         .addParts(TANK.of("Quantum Tank","quantum_tank",  Integer.MAX_VALUE))

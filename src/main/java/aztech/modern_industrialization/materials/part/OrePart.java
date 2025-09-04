@@ -49,7 +49,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -223,7 +222,8 @@ public class OrePart implements PartKeyProvider {
         public final int veinSize;
         public final int maxYLevel;
 
-        private OrePartParams(UniformInt xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel, TagKey<Biome> biomeTag) {
+        private OrePartParams(UniformInt xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel,
+                TagKey<Biome> biomeTag) {
             this.xpDropped = xpDropped;
             this.set = set;
             this.generate = generate;
@@ -241,6 +241,7 @@ public class OrePart implements PartKeyProvider {
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, BiomeTags.IS_OVERWORLD);
         }
+
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel, TagKey<Biome> biomeTag) {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, biomeTag);
         }

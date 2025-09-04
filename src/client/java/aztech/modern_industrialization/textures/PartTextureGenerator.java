@@ -159,7 +159,12 @@ class PartTextureGenerator {
     private void processOre(Block stoneType, MaterialOreSet oreSet) throws IOException {
         String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
         String stoneId = BuiltInRegistries.BLOCK.getKey(stoneType).getPath();
-        String prefix = "";
+        String prefix;
+        if (stoneId.equals("stone")) {
+            prefix = "";
+        } else {
+            prefix = stoneId + "_";
+        }
 
         String from = switch (oreSet) {
         case IRON -> "%siron_ore".formatted(prefix);
@@ -177,7 +182,6 @@ class PartTextureGenerator {
         if (!stoneId.equals("stone") && !stoneId.equals("deepslate")) {
             from = stoneId;
         }
-
         try (NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
                 NativeImage top = mtm.getAssetAsTexture(template)) {
 

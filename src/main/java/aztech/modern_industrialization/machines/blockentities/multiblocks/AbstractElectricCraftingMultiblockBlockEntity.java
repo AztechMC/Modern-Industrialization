@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -44,13 +46,24 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity
         implements EnergyListComponentHolder, CrafterComponent.Behavior {
 
-    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
+    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams,
+            OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
-        super(bep, name, orientationParams, shapeTemplates);
+        super(bep, guiParams, orientationParams, shapeTemplates);
 
         this.redstoneControl = new RedstoneControlComponent();
         registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, () -> 0));
         registerComponents(redstoneControl);
+    }
+
+    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
+            ShapeTemplate[] shapeTemplates) {
+        this(bep, new MachineGuiParameters.Builder(name, false), orientationParams, shapeTemplates);
+    }
+
+    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, OrientationComponent.Params orientationParams,
+            ShapeTemplate[] shapeTemplates) {
+        this(bep, new MachineGuiParameters.Builder(blockId, false), orientationParams, shapeTemplates);
     }
 
     protected final RedstoneControlComponent redstoneControl;

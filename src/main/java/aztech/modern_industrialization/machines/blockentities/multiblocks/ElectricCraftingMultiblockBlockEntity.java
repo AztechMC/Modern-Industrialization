@@ -26,14 +26,17 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.api.machine.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-    public ElectricCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
-        super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
+    public ElectricCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams, ShapeTemplate shapeTemplate,
+            MachineRecipeType recipeType) {
+        super(bep, guiParams, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
         this.upgrades = new UpgradeComponent();
         this.overdrive = new OverdriveComponent();
@@ -42,6 +45,14 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraft
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
                 .withOverdrive(overdrive));
+    }
+
+    public ElectricCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
+        this(bep, new MachineGuiParameters.Builder(name, false), shapeTemplate, recipeType);
+    }
+
+    public ElectricCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
+        this(bep, new MachineGuiParameters.Builder(blockId, false), shapeTemplate, recipeType);
     }
 
     private final MachineRecipeType recipeType;

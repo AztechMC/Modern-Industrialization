@@ -39,7 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
-    private AbstractCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams, OrientationComponent.Params orientationParams,
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
         super(bep, guiParams.backgroundHeight(200).build(), orientationParams);
 

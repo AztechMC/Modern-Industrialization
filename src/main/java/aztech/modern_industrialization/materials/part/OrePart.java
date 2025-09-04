@@ -45,13 +45,18 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
@@ -66,6 +71,10 @@ public class OrePart implements PartKeyProvider {
     @Override
     public PartKey key() {
         return key;
+    }
+
+    public PartTemplate of(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set, TagKey<Biome> biomeTag) {
+        return of(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel, biomeTag));
     }
 
     public PartTemplate of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
@@ -123,9 +132,9 @@ public class OrePart implements PartKeyProvider {
                                     // like netherrack, it should still take at least as long to mine as a stone block.
                                     .destroyTime(Math.max(stoneType.defaultDestroyTime(), 2.25f)));
 
-                    // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
+                    // Sanity check: Ensure that ores don't drop xp, if the main part is an ingot
                     // (i.e. the drop is raw ore).
-                    if (mainPartKey.equals(MIParts.INGOT.key()) != (oreParams.xpDropped.getMaxValue() == 0)) {
+                    if (mainPartKey.equals(MIParts.INGOT.key()) && (oreParams.xpDropped.getMaxValue() != 0)) {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
@@ -152,13 +161,13 @@ public class OrePart implements PartKeyProvider {
                         var modifierKey = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, oreGenId);
 
                         DynamicRegistryDatagen.addAction(() -> {
-                            TagMatchTest ruleTest;
+                            RuleTest ruleTest;
                             if (stoneId.equals("stone")) {
                                 ruleTest = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
                             } else if (stoneId.equals("deepslate")) {
                                 ruleTest = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
                             } else {
-                                return;
+                                ruleTest = new BlockMatchTest(stoneType);
                             }
                             var target = List.of(
                                     OreConfiguration.target(ruleTest, oreBlockBlockDefinition.asBlock().defaultBlockState()));
@@ -176,8 +185,9 @@ public class OrePart implements PartKeyProvider {
                             });
 
                             DynamicRegistryDatagen.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
+
                                 var modifier = new BiomeModifiers.AddFeaturesBiomeModifier(
-                                        context.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD),
+                                        context.lookup(Registries.BIOME).getOrThrow(oreParams.biomeTag),
                                         HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(placedFeatureKey)),
                                         GenerationStep.Decoration.UNDERGROUND_ORES);
                                 context.register(modifierKey, modifier);
@@ -208,27 +218,33 @@ public class OrePart implements PartKeyProvider {
         public final MaterialOreSet set;
         public final boolean generate;
 
+        public final TagKey<Biome> biomeTag;
         public final int veinsPerChunk;
         public final int veinSize;
         public final int maxYLevel;
 
-        private OrePartParams(UniformInt xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel) {
+        private OrePartParams(UniformInt xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel, TagKey<Biome> biomeTag) {
             this.xpDropped = xpDropped;
             this.set = set;
             this.generate = generate;
 
+            this.biomeTag = biomeTag;
             this.veinsPerChunk = veinsPerChunk;
             this.veinSize = veinSize;
             this.maxYLevel = maxYLevel;
         }
 
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set) {
-            this(xpDropped, set, false, 0, 0, 0);
+            this(xpDropped, set, false, 0, 0, 0, BiomeTags.IS_OVERWORLD);
         }
 
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
-            this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel);
+            this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, BiomeTags.IS_OVERWORLD);
         }
+        public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel, TagKey<Biome> biomeTag) {
+            this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, biomeTag);
+        }
+
     }
 
 }

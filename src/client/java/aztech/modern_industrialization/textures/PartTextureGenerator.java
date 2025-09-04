@@ -157,7 +157,12 @@ class PartTextureGenerator {
     private void processOre(ResourceLocation stoneType, MaterialOreSet oreSet) throws IOException {
         String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
         String stoneId = stoneType.getPath();
-        String prefix = "";
+        String prefix;
+        if (stoneId.equals("stone")) {
+            prefix = "";
+        } else {
+            prefix = stoneId + "_";
+        }
 
         String from = switch (oreSet) {
         case IRON -> "%siron_ore".formatted(prefix);

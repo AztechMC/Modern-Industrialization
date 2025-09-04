@@ -33,8 +33,12 @@ import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.biome.Biome;
 
 public class PartJsonCreator {
 
@@ -132,10 +136,14 @@ public class PartJsonCreator {
         }
 
         if (generate) {
+            TagKey<Biome> biomeTag = BiomeTags.IS_OVERWORLD;
+            if (json.has("biome_tag")) {
+                biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(json.get("biome_tag").getAsString()));
+            }
             int veinSize = json.get("vein_size").getAsInt();
             int veinPerChunk = json.get("veins_per_chunk").getAsInt();
             int maxY = json.get("max_y").getAsInt();
-            return act.of(UniformInt.of(minXp, maxXp), veinSize, veinPerChunk, maxY, oreSet);
+            return act.of(UniformInt.of(minXp, maxXp), veinSize, veinPerChunk, maxY, oreSet, biomeTag);
         } else {
             return act.of(UniformInt.of(minXp, maxXp), oreSet);
         }

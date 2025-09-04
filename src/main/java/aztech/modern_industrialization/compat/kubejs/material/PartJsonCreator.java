@@ -33,7 +33,9 @@ import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.block.Block;
 
 public class PartJsonCreator {
 
@@ -110,14 +112,17 @@ public class PartJsonCreator {
         return MIParts.MACHINE_CASING_SPECIAL.of(englishName, path, resistance);
     }
 
-    public PartTemplate orePart(JsonObject json, boolean deepslate) {
+    public PartTemplate orePart(JsonObject json, Block stoneType) {
+        String stoneId = BuiltInRegistries.BLOCK.getKey(stoneType).getPath();
         OrePart act;
-        if (deepslate) {
+        // I'm not positive that these first two branches actually need to exist. I am in need of guidance.
+        if (stoneId.equals("stone")) {
+            act = MIParts.ORE;
+        } else if (stoneId.equals("deepslate")) {
             act = MIParts.ORE_DEEPSLATE;
         } else {
-            act = MIParts.ORE;
+            act = new OrePart(stoneType);
         }
-
         int minXp = json.has("min_xp") ? json.get("min_xp").getAsInt() : 0;
         int maxXp = json.has("max_xp") ? json.get("max_xp").getAsInt() : 0;
         boolean generate = !json.has("generate") || json.get("generate").getAsBoolean();

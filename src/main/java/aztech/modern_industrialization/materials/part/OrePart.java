@@ -36,6 +36,7 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import java.util.List;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.OrePlacements;
@@ -45,7 +46,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -57,8 +58,9 @@ import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class OrePart implements PartKeyProvider {
-
-    public final boolean deepslate;
+    public final Block stoneType;
+    public final String stoneId;
+    public final String stoneName;
     public final PartKey key;
 
     @Override
@@ -82,13 +84,20 @@ public class OrePart implements PartKeyProvider {
         return of(new OrePartParams(UniformInt.of(0, 0), set));
     }
 
-    public OrePart(boolean deepslate) {
-        key = new PartKey(deepslate ? "ore_deepslate" : "ore");
-        this.deepslate = deepslate;
+    public OrePart(Block stoneType) {
+        this.stoneType = stoneType;
+        stoneId = BuiltInRegistries.BLOCK.getKey(stoneType).getPath();
+        stoneName = stoneType.getName().getString();
+        if (stoneId.equals("stone")) {
+            key = new PartKey("ore");
+        } else {
+            key = new PartKey("ore_%s".formatted(stoneId));
+        }
     }
 
     public PartTemplate of(OrePartParams oreParams) {
-        return new PartTemplate(deepslate ? "Deepslate %s Ore" : "Ore", key)
+        String displayName = stoneId.equals("stone") ? "%s Ore" : stoneName + " %s Ore";
+        return new PartTemplate(displayName, key)
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
                     PartKey mainPartKey = partContext.get(MAIN_PART).key();
@@ -102,17 +111,17 @@ public class OrePart implements PartKeyProvider {
                     } else {
                         throw new UnsupportedOperationException("Could not find matching main part.");
                     }
-
                     BlockDefinition<OreBlock> oreBlockBlockDefinition;
                     oreBlockBlockDefinition = MIBlock.block(
                             englishName,
                             itemPath,
-                            MIBlock.BlockDefinitionParams.defaultStone()
+                            MIBlock.BlockDefinitionParams.of(stoneType.properties())
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
                                     .withLoot(new MIBlockLoot.Ore(loot))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
-                                    .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
-                                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE));
+                                    // even if an ore is made of something weak,
+                                    // like netherrack, it should still take at least as long to mine as a stone block.
+                                    .destroyTime(Math.max(stoneType.defaultDestroyTime(), 2.25f)));
 
                     // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
                     // (i.e. the drop is raw ore).
@@ -124,20 +133,33 @@ public class OrePart implements PartKeyProvider {
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
                     TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
-                    TagsToGenerate.generateTagNoTranslation(deepslate ? Tags.Items.ORES_IN_GROUND_DEEPSLATE : Tags.Items.ORES_IN_GROUND_STONE,
-                            oreBlockBlockDefinition);
+                    if (stoneId.equals("deepslate")) {
+                        TagsToGenerate.generateTagNoTranslation(Tags.Items.ORES_IN_GROUND_DEEPSLATE, oreBlockBlockDefinition);
+                    } else if (stoneId.equals("stone")) {
+                        TagsToGenerate.generateTagNoTranslation(Tags.Items.ORES_IN_GROUND_STONE, oreBlockBlockDefinition);
+                    }
 
                     if (oreParams.generate) {
+                        String genIdPrefix = "";
+                        if (!stoneId.equals("stone")) {
+                            genIdPrefix = "%s_".formatted(stoneId);
+                        }
                         ResourceLocation oreGenId = MI.id(
-                                (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+                                genIdPrefix + "ore_generator_" + partContext.getMaterialName());
 
                         var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);
                         var placedFeatureKey = ResourceKey.create(Registries.PLACED_FEATURE, oreGenId);
                         var modifierKey = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, oreGenId);
 
                         DynamicRegistryDatagen.addAction(() -> {
-                            var ruleTest = new TagMatchTest(deepslate ? BlockTags.DEEPSLATE_ORE_REPLACEABLES : BlockTags.STONE_ORE_REPLACEABLES);
-
+                            TagMatchTest ruleTest;
+                            if (stoneId.equals("stone")) {
+                                ruleTest = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+                            } else if (stoneId.equals("deepslate")) {
+                                ruleTest = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+                            } else {
+                                return;
+                            }
                             var target = List.of(
                                     OreConfiguration.target(ruleTest, oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
@@ -164,8 +186,8 @@ public class OrePart implements PartKeyProvider {
                     }
 
                 })
-                .withTexture(new TextureGenParams.Ore(deepslate, oreParams.set))
-                .withCustomPath((deepslate ? "deepslate_" : "") + "%s_ore", "ores/%s");
+                .withTexture(new TextureGenParams.Ore(stoneType, oreParams.set))
+                .withCustomPath((stoneId.equals("stone") ? "" : "%s_".formatted(stoneId)) + "%s_ore", "ores/%s");
     }
 
     public List<PartTemplate> ofAll(OrePartParams params) {

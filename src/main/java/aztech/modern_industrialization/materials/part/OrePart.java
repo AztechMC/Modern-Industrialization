@@ -46,7 +46,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -58,7 +57,7 @@ import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class OrePart implements PartKeyProvider {
-    public final Block stoneType;
+    public final ResourceLocation stoneType;
     public final String stoneId;
     public final String stoneName;
     public final PartKey key;
@@ -84,10 +83,10 @@ public class OrePart implements PartKeyProvider {
         return of(new OrePartParams(UniformInt.of(0, 0), set));
     }
 
-    public OrePart(Block stoneType) {
+    public OrePart(ResourceLocation stoneType) {
         this.stoneType = stoneType;
-        stoneId = BuiltInRegistries.BLOCK.getKey(stoneType).getPath();
-        stoneName = stoneType.getName().getString();
+        stoneId = stoneType.getPath();
+        stoneName = BuiltInRegistries.BLOCK.get(stoneType).getName().getString();
         if (stoneId.equals("stone")) {
             key = new PartKey("ore");
         } else {
@@ -115,13 +114,13 @@ public class OrePart implements PartKeyProvider {
                     oreBlockBlockDefinition = MIBlock.block(
                             englishName,
                             itemPath,
-                            MIBlock.BlockDefinitionParams.of(stoneType.properties())
+                            MIBlock.BlockDefinitionParams.of(BuiltInRegistries.BLOCK.get(stoneType).properties())
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
                                     .withLoot(new MIBlockLoot.Ore(loot))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     // even if an ore is made of something weak,
                                     // like netherrack, it should still take at least as long to mine as a stone block.
-                                    .destroyTime(Math.max(stoneType.defaultDestroyTime(), 2.25f)));
+                                    .destroyTime(Math.max(BuiltInRegistries.BLOCK.get(stoneType).defaultDestroyTime(), 2.25f)));
 
                     // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
                     // (i.e. the drop is raw ore).

@@ -36,9 +36,7 @@ import aztech.modern_industrialization.textures.coloramp.IColoramp;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.Objects;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 /**
  * All the per-part texture processing logic.
@@ -156,9 +154,9 @@ class PartTextureGenerator {
                 material.get(SET).name, itemPath, false, new HotIngotColoramp(coloramp, 0.1, 0.5));
     }
 
-    private void processOre(Block stoneType, MaterialOreSet oreSet) throws IOException {
+    private void processOre(ResourceLocation stoneType, MaterialOreSet oreSet) throws IOException {
         String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
-        String stoneId = BuiltInRegistries.BLOCK.getKey(stoneType).getPath();
+        String stoneId = stoneType.getPath();
         String prefix = "";
 
         String from = switch (oreSet) {

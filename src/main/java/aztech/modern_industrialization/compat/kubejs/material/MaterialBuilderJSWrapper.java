@@ -37,9 +37,7 @@ import aztech.modern_industrialization.materials.set.MaterialSet;
 import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 public class MaterialBuilderJSWrapper {
 
@@ -146,14 +144,14 @@ public class MaterialBuilderJSWrapper {
         return this;
     }
 
-    public MaterialBuilderJSWrapper ore(JsonObject json, Block stoneType) {
+    public MaterialBuilderJSWrapper ore(JsonObject json, ResourceLocation stoneType) {
         materialBuilder.addParts(creator.orePart(json, stoneType));
         return this;
     }
 
     public MaterialBuilderJSWrapper ore(JsonObject json) {
-        Block stone = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("minecraft", "stone"));
-        Block deepslate = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate"));
+        ResourceLocation stone = ResourceLocation.fromNamespaceAndPath("minecraft", "stone");
+        ResourceLocation deepslate = ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate");
         materialBuilder.addParts(creator.orePart(json, deepslate));
         materialBuilder.addParts(creator.orePart(json, stone));
         return this;

@@ -31,11 +31,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 public class MIParts {
@@ -77,8 +75,8 @@ public class MIParts {
     public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
     public static final PartTemplate NUGGET = new PartTemplate("Nugget", "nugget");
 
-    private static final Block STONE = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("minecraft", "stone"));
-    private static final Block DEEPSLATE = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate"));
+    private static final ResourceLocation STONE = ResourceLocation.fromNamespaceAndPath("minecraft", "stone");
+    private static final ResourceLocation DEEPSLATE = ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate");
     public static final OrePart ORE = new OrePart(STONE);
     public static final OrePart ORE_DEEPSLATE = new OrePart(DEEPSLATE);
 

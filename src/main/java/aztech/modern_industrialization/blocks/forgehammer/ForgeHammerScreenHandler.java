@@ -108,7 +108,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         // Note: don't use new SimpleInventory(1), as ResultContainer always returns the full stack in removeItem !
         // This ensures that the whole item is always removed from the slot, even if someone right-clicks the output slot.
         // (Instead of leaving half the result behind, which gets overridden by the next recipe).
-        this.output = new Slot(new ResultContainer(), 0, 143, 32) {
+        this.output = new Slot(new ResultContainer(), 0, 143, 33) {
             // The stack passed to `onTake` is not meaningful.
             // Hence, we need this crappy hack to track the real amount of removed items for stats.
             // Similar to the handling in `ResultSlot`.

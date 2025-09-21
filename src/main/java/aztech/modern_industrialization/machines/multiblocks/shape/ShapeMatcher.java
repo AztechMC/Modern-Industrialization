@@ -37,6 +37,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -107,7 +108,7 @@ public class ShapeMatcher implements ChunkEventListener {
      * Return true if there was a match, and append matched hatches to the list if
      * it's not null.
      */
-    public boolean matches(BlockPos pos, Level world) {
+    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> matchedHatches) {
         var member = members.get(pos);
         if (member == null)
             return false;
@@ -150,7 +151,7 @@ public class ShapeMatcher implements ChunkEventListener {
         for (BlockPos pos : members.keySet()) {
             // TODO: check if the chunk is loaded
 
-            if (!matches(pos, world)) {
+            if (!matches(pos, world, matchedHatches)) {
                 matchSuccessful = false;
             }
         }

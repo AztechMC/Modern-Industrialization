@@ -3,10 +3,9 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.72'
+    id 'net.neoforged.moddev' version '2.0.112'
     id 'com.diffplug.spotless' version '6.25.0'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.+"
+    id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
 }
 
 version = System.getenv("MI_VERSION")
@@ -18,9 +17,6 @@ base {
 }
 
 logger.lifecycle("Modern Industrialization version ${version}")
-
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
 
 java {
     toolchain {
@@ -346,69 +342,47 @@ spotless {
     }
 }
 
-def releaseChannel = "release"
-def changelog = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
+def releaseChannel = "stable"
+def changelogContents = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {
     releaseChannel = "alpha"
-    changelog = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelog
+    changelogContents = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelogContents
 } else if (version.toLowerCase().contains("beta")) {
     releaseChannel = "beta"
-    changelog = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelog
+    changelogContents = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelogContents
 }
 
 // Publishing
-if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
+import me.modmuss50.mpp.ReleaseType
+
+publishMods {
+    file = tasks.named("jar").flatMap { it.archiveFile }
+    version = project.version
+    changelog = changelogContents
+    type = ReleaseType.of(releaseChannel)
+    displayName = "Modern Industrialization v${version}"
+    modLoaders = ["neoforge"]
+
+    def shared = { platform ->
+        platform.minecraftVersions.add project.minecraft_version
+
+        platform.requires "guideme"
+        platform.optional "jade", "emi", "jei"
+    }
+
     curseforge {
-        apiKey = System.getenv().get("CURSEFORGE_API_KEY")
-        project {
-            id = project.curseforge_project
-            releaseType = releaseChannel
-            changelogType = "markdown"
-            delegate.changelog = changelog
-
-            addGameVersion project.minecraft_version
-            addGameVersion "NeoForge"
-            addGameVersion "Java 21"
-
-            relations {
-                requiredDependency "guideme"
-                optionalDependency "wthit"
-                optionalDependency "emi"
-                optionalDependency "jei"
-                optionalDependency "roughly-enough-items"
-                embeddedLibrary "grandpower"
-            }
-            mainArtifact(tasks.named("jar").flatMap { it.archiveFile }) {
-                displayName = "Modern Industrialization v${version}"
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-        }
-        afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn tasks.jar
-        }
+        projectId = project.curseforge_project
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        javaVersions.add JavaVersion.VERSION_21
+        shared it
+        embeds "grandpower"
+        optional "roughly-enough-items"
     }
-}
 
-modrinth {
-    token = System.getenv("MODRINTH_API_KEY")
-    projectId = project.modrinth_project
-    versionNumber = version
-    versionName = "Modern Industrialization v${version}"
-    delegate.changelog = changelog
-    versionType = releaseChannel
-    uploadFile = tasks.jar
-    gameVersions = [project.minecraft_version]
-    loaders = ["neoforge"]
-    dependencies {
-        required.project "guideme"
-        optional.project "wthit"
-        optional.project "emi"
-        optional.project "jei"
-        optional.project "rei"
+    modrinth {
+        projectId = project.modrinth_project
+        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+        shared it
+        optional "rei"
     }
-}
-tasks.modrinth.onlyIf {
-    System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
 }

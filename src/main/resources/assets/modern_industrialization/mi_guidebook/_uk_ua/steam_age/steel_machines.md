@@ -32,7 +32,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:steam_age/steel/packer_asbl" />
 
-Розпакувальник, нова машина, доступна лише у сталевому виконанні... вгадайте, що вона робить o_O
+Розпакувальник, нова машина, доступна лише у сталевому виконанні… вгадайте, що вона робить o_O
 
 <Recipe id="modern_industrialization:steam_age/steel/unpacker_asbl" />
 

@@ -28,18 +28,13 @@ jobs:
           MI_VERSION: ${{ github.event.release.tag_name }}
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
-      - name: Upload to Curseforge
+      - name: Upload to Curseforge and Modrinth
         env:
           MI_VERSION: ${{ github.event.release.tag_name }}
           CHANGELOG: ${{ github.event.release.body }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
-        run: ./gradlew curseforge405388
-      - name: Upload to Modrinth
-        env:
-          MI_VERSION: ${{ github.event.release.tag_name }}
-          CHANGELOG: ${{ github.event.release.body }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
-        run: ./gradlew modrinth
+        run: ./gradlew publishMods
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

@@ -87,6 +87,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }
 
         this.input = new Slot(new SimpleContainer(1) {
+            @Override
             public void setChanged() {
                 super.setChanged();
                 ForgeHammerScreenHandler.this.slotsChanged(this);
@@ -94,12 +95,13 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }, 0, 34, 33);
 
         this.tool = new Slot(new SimpleContainer(1) {
+            @Override
             public void setChanged() {
                 super.setChanged();
                 ForgeHammerScreenHandler.this.slotsChanged(this);
             }
         }, 0, 8, 33) {
-
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ForgeTool.TAG);
             }
@@ -114,6 +116,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             // Similar to the handling in `ResultSlot`.
             private int removeCount = 0;
 
+            @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }
@@ -185,17 +188,16 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         return id >= 0 && id < this.availableRecipes.size();
     }
 
+    @Override
     public void slotsChanged(Container inventory) {
         if (!ItemStack.matches(this.inputStackCache, input.getItem()) || !ItemStack.matches(this.toolStackCache, tool.getItem())) {
             updateStatus();
         }
 
         super.slotsChanged(inventory);
-
     }
 
     public void updateStatus() {
-
         this.inputStackCache = input.getItem().copy();
         this.toolStackCache = tool.getItem().copy();
 
@@ -255,6 +257,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.broadcastChanges();
     }
 
+    @Override
     public boolean clickMenuButton(Player player, int id) {
         if (this.isInBounds(id)) {
             this.selectedRecipe.set(id);
@@ -287,8 +290,13 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) {
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        // Treat double-clicks on the output as two normal clicks instead of trying to "pick all"
+        return slot.container != this.output.container && super.canTakeItemForPickAll(stack, slot);
+    }
 
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
@@ -341,6 +349,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         }, true);
     }
 
+    @Override
     public void removed(Player player) {
         super.removed(player);
         this.context.execute((world, blockPos) -> {

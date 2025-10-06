@@ -31,6 +31,9 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.ModelHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.logging.LogUtils;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.util.IdentityHashMap;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -41,8 +44,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +61,22 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     private MachineBakedModel model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
+
+    private static final MethodHandle UNWRAP_BAKED_MODEL;
+    static {
+        MethodHandle unwrapBakedModel = null;
+        // Support for Continuity's model wrapping
+        if (ModList.get().isLoaded("fabric_renderer_api_v1")) {
+            try {
+                var wrapperBakedModel = Class.forName("net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel");
+                var unwrap = wrapperBakedModel.getMethod("unwrap", BakedModel.class);
+                unwrapBakedModel = MethodHandles.lookup().unreflect(unwrap);
+            } catch (ReflectiveOperationException e) {
+                LogUtils.getLogger().error("Failed to reflect WrapperBakedModel.unwrap method", e);
+            }
+        }
+        UNWRAP_BAKED_MODEL = unwrapBakedModel;
+    }
 
     public MachineBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
         this.blockModels = ctx.getBlockRenderDispatcher().getBlockModelShaper();
@@ -84,10 +105,20 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
     @Nullable
     private MachineBakedModel getMachineModel(BlockState state) {
-        if (blockModels.getBlockModel(state) instanceof MachineBakedModel mbm) {
+        var model = blockModels.getBlockModel(state);
+
+        if (UNWRAP_BAKED_MODEL != null) {
+            try {
+                model = (BakedModel) UNWRAP_BAKED_MODEL.invokeExact((BakedModel) model);
+            } catch (Throwable throwable) {
+                throw new RuntimeException("Failed to unwrap machine model", throwable);
+            }
+        }
+
+        if (model instanceof MachineBakedModel mbm) {
             return mbm;
         } else {
-            MI.LOGGER.warn("Model {} should have been a MachineBakedModel, but was {}", state, blockModels.getBlockModel(state).getClass());
+            MI.LOGGER.warn("Model {} should have been a MachineBakedModel, but was {}", state, model.getClass());
             return null;
         }
     }

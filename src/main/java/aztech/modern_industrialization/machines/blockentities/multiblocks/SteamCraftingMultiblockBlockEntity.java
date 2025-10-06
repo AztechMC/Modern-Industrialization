@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.OverclockComponent;
-import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
@@ -50,10 +50,10 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
 
     private final OverclockComponent overclockComponent;
 
-    public SteamCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams, ShapeTemplate shapeTemplate,
+    public SteamCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, ShapeTemplate shapeTemplate,
             MachineRecipeType recipeType,
             List<OverclockComponent.Catalyst> overclockCatalysts) {
-        super(bep, guiParams, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
+        super(bep, blockId, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
         this.recipeType = recipeType;
@@ -64,12 +64,7 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
 
     public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
             List<OverclockComponent.Catalyst> overclockCatalysts) {
-        this(bep, new MachineGuiParameters.Builder(name, false), shapeTemplate, recipeType, overclockCatalysts);
-    }
-
-    public SteamCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, ShapeTemplate shapeTemplate, MachineRecipeType recipeType,
-            List<OverclockComponent.Catalyst> overclockCatalysts) {
-        this(bep, new MachineGuiParameters.Builder(blockId, false), shapeTemplate, recipeType, overclockCatalysts);
+        this(bep, MI.id(name), shapeTemplate, recipeType, overclockCatalysts);
     }
 
     @Override

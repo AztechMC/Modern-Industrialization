@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.api.machine.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -39,9 +40,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
-    public AbstractCraftingMultiblockBlockEntity(BEP bep, MachineGuiParameters.Builder guiParams, OrientationComponent.Params orientationParams,
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
-        super(bep, guiParams.backgroundHeight(200).build(), orientationParams);
+        super(bep, new MachineGuiParameters.Builder(blockId, false).backgroundHeight(200).build(), orientationParams);
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         this.inventory = new MultiblockInventoryComponent();
@@ -53,12 +54,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
-        this(bep, new MachineGuiParameters.Builder(name, false), orientationParams, shapeTemplates);
-    }
-
-    public AbstractCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, OrientationComponent.Params orientationParams,
-            ShapeTemplate[] shapeTemplates) {
-        this(bep, new MachineGuiParameters.Builder(blockId, false), orientationParams, shapeTemplates);
+        this(bep, MI.id(name), orientationParams, shapeTemplates);
     }
 
     /**

@@ -34,34 +34,14 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> implements WhitelistedItemStorage {
+public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> {
     public final IItemHandler itemHandler = new ItemHandler();
 
     public MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }
 
-    @Override
-    public boolean currentlyWhitelisted() {
-        // Only whitelisted if nothing is locked.
-        for (ConfigurableItemStack stack : stacks) {
-            if (stack.pipesInsert && stack.getLockedInstance() == null) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void getWhitelistedItems(Set<Item> whitelist) {
-        for (ConfigurableItemStack stack : stacks) {
-            if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
-                whitelist.add(stack.getLockedInstance());
-            }
-        }
-    }
-
-    public class ItemHandler implements IItemHandler {
+    public class ItemHandler implements IItemHandler, WhitelistedItemStorage {
         @Override
         public int getSlots() {
             return stacks.size();
@@ -136,6 +116,26 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return stacks.get(slot).isResourceAllowedByLock(stack.getItem());
+        }
+
+        @Override
+        public boolean currentlyWhitelisted() {
+            // Only whitelisted if everything is locked.
+            for (ConfigurableItemStack stack : stacks) {
+                if (stack.pipesInsert && stack.getLockedInstance() == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public void getWhitelistedItems(Set<Item> whitelist) {
+            for (ConfigurableItemStack stack : stacks) {
+                if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
+                    whitelist.add(stack.getLockedInstance());
+                }
+            }
         }
     }
 }

@@ -29,6 +29,8 @@ import aztech.modern_industrialization.config.MIClientConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -43,7 +45,9 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VersionEvents {
 
@@ -58,16 +62,15 @@ public class VersionEvents {
         }
     }
 
-    private static Version fetchVersion(boolean isIncludeAlphaVersion) throws Exception {
+    @Nullable
+    private static Version fetchLatestVersion(boolean isIncludeAlphaVersion) throws Exception {
         String mcVersion = ModList.get().getModContainerById("minecraft").get().getModInfo().getVersion().toString();
 
-        URLConnection connection;
-        connection = new URL(url).openConnection();
-        try (Scanner scanner = new Scanner(connection.getInputStream())) {
-            PriorityQueue<Version> queue = new PriorityQueue<>();
+        URLConnection connection = new URL(url).openConnection();
+        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            JsonObject jo = (JsonObject) JsonParser.parseReader(reader);
 
-            String response = scanner.useDelimiter("\\A").next();
-            JsonObject jo = (JsonObject) JsonParser.parseString(response);
+            List<Version> versions = new ArrayList<>();
 
             for (JsonElement file : jo.getAsJsonArray("files")) {
                 JsonObject fileAsJsonObject = file.getAsJsonObject();
@@ -88,14 +91,13 @@ public class VersionEvents {
                 String date = fileAsJsonObject.get("uploaded_at").getAsString();
 
                 if (isIncludeAlphaVersion || !type.equals(alphaPostfix)) {
-                    queue.add(new Version(name, url, format.parse(date)));
+                    versions.add(new Version(name, url, format.parse(date)));
                 }
             }
 
-            if (!queue.isEmpty()) {
-                return queue.poll();
+            if (!versions.isEmpty()) {
+                return Collections.min(versions);
             }
-
         }
         return null;
     }
@@ -103,30 +105,36 @@ public class VersionEvents {
     public static void startVersionCheck(ModContainer miContainer, LocalPlayer player) {
         new Thread(() -> {
             try {
-                if (MIClientConfig.INSTANCE.newVersionMessage.getAsBoolean()) {
-                    String currentVersion = miContainer.getModInfo().getVersion().toString();
-                    Version lastVersion = fetchVersion(currentVersion.contains(alphaPostfix));
+                if (!MIClientConfig.INSTANCE.newVersionMessage.getAsBoolean()) {
+                    return;
+                }
 
-                    if (lastVersion != null) {
-                        String lastVersionString = lastVersion.name.replaceFirst("Modern Industrialization v", "").strip();
+                String currentVersionString = miContainer.getModInfo().getVersion().toString();
+                var currentVersion = new DefaultArtifactVersion(currentVersionString);
+                var latestVersion = fetchLatestVersion(currentVersionString.contains(alphaPostfix));
 
-                        if (!lastVersionString.equals(currentVersion)) {
-                            String url = lastVersion.url;
+                if (latestVersion == null) {
+                    return;
+                }
 
-                            Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
-                                    .applyFormat(ChatFormatting.UNDERLINE).applyFormat(ChatFormatting.GREEN).withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT, MIText.ClickUrl.text()));
+                String latestVersionString = latestVersion.name.replaceFirst("Modern Industrialization v", "").strip();
+                var latestArtifactVersion = new DefaultArtifactVersion(latestVersionString);
 
-                            Minecraft.getInstance().execute(() -> {
-                                if (Minecraft.getInstance().player == player) {
-                                    player.displayClientMessage(
-                                            MIText.NewVersion.text(lastVersionString,
-                                                    MIText.CurseForge.text().setStyle(styleClick)),
-                                            false);
-                                }
-                            });
+                if (latestArtifactVersion.compareTo(currentVersion) > 0) {
+                    String url = latestVersion.url;
+
+                    Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
+                            .applyFormat(ChatFormatting.UNDERLINE).applyFormat(ChatFormatting.GREEN).withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT, MIText.ClickUrl.text()));
+
+                    Minecraft.getInstance().execute(() -> {
+                        if (Minecraft.getInstance().player == player) {
+                            player.displayClientMessage(
+                                    MIText.NewVersion.text(latestVersionString,
+                                            MIText.CurseForge.text().setStyle(styleClick)),
+                                    false);
                         }
-                    }
+                    });
                 }
             } catch (Exception e) {
                 MI.LOGGER.error("Failed to get release information from Curseforge.", e);

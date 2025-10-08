@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.test.framework;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.Material;
@@ -35,12 +36,14 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import org.jetbrains.annotations.Nullable;
 
 public class MIGameTestHelper extends GameTestHelper {
     public MIGameTestHelper(GameTestInfo testInfo) {
@@ -120,6 +123,17 @@ public class MIGameTestHelper extends GameTestHelper {
             if (!stack.isEmpty()) {
                 fail("Expected no fluid, got %s".formatted(stack), pos);
             }
+        }
+    }
+
+    public void assertEnergy(BlockPos pos, long energy, @Nullable Direction side) {
+        var miEnergyHandler = getLevel().getCapability(EnergyApi.SIDED, absolutePos(pos), side);
+        if (miEnergyHandler == null) {
+            fail("Could not find energy handler", pos);
+        }
+        long storedEnergy = miEnergyHandler.getAmount();
+        if (storedEnergy != energy) {
+            fail("Expected energy to be " + energy + ", was " + storedEnergy, pos);
         }
     }
 }

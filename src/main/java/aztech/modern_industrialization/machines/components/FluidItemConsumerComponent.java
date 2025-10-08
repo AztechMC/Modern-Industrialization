@@ -117,6 +117,10 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
 
         long euProduced = 0;
 
+        // Consume from the buffer first
+        euProduced += euBuffer;
+        euBuffer = 0;
+
         for (ConfigurableFluidStack stack : fluidInputs) {
             Fluid fluid = stack.getResource().getFluid();
             if (fluidEUProductionMap.accept(fluid) && stack.getAmount() > 0) {

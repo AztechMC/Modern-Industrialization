@@ -221,7 +221,7 @@ public class ItemNetwork extends PipeNetwork {
                             map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
                         }
                     }
-                } else if (target.target instanceof WhitelistedItemStorage wis) {
+                } else if (target.target.handler() instanceof WhitelistedItemStorage wis) {
                     WHITELIST_CACHED_SET.clear();
                     wis.getWhitelistedItems(WHITELIST_CACHED_SET);
                     for (Item item : WHITELIST_CACHED_SET) {
@@ -297,6 +297,6 @@ public class ItemNetwork extends PipeNetwork {
         return moved;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink target) {
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink.HandlerWrapper target) {
     }
 }

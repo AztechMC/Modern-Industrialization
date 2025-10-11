@@ -444,7 +444,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             }
             int remainingAmount = input.amount();
             for (ConfigurableItemStack stack : stacks) {
-                if (stack.getAmount() > 0 && input.matches(stack.getResource().toStack())) { // TODO: ItemStack creation slow?
+                if (stack.getAmount() > 0 && stack.getResource().test(input.ingredient())) {
                     int taken = Math.min((int) stack.getAmount(), remainingAmount);
                     if (taken > 0 && !simulate) {
                         behavior.getStatsOrDummy().addUsedItems(stack.getResource().getItem(), taken);

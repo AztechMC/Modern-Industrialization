@@ -27,6 +27,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -76,6 +77,11 @@ public class ItemVariantImpl implements ItemVariant {
     @Override
     public boolean matches(ItemStack stack) {
         return ItemStack.isSameItemSameComponents(this.stack, stack);
+    }
+
+    @Override
+    public boolean test(Predicate<ItemStack> predicate) {
+        return predicate.test(this.stack);
     }
 
     @Override

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.impl;
 
 import static net.minecraft.core.Direction.NORTH;
@@ -141,7 +142,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Check if it's possible to add a pipe.
-     * 
+     *
      * @param type The type to add.
      * @return True if the pipe can be added, false otherwise.
      */
@@ -162,7 +163,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Add a pipe type. Will not do anything if the pipe couldn't be added.
-     * 
+     *
      * @param type The type to add.
      */
     public void addPipe(PipeNetworkType type, PipeNetworkData data) {
@@ -182,7 +183,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     /**
      * Remove a pipe type.
-     * 
+     *
      * @param type The type to remove.
      */
     public void removePipeAndDropContainedItems(PipeNetworkType type) {

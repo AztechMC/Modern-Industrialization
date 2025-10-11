@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.PipeStatsCollector;
@@ -143,7 +144,7 @@ public class FluidNetwork extends PipeNetwork {
     /**
      * Perform a transfer operation for a priority bucket, so {@code bucket} is a
      * sublist of targets with the same priority each.
-     * 
+     *
      * @return The amount that was successfully transferred.
      */
     private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidVariant fluid, long maxAmount) {

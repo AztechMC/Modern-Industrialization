@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.pipes.impl.PipeRenderContext;
@@ -43,7 +44,7 @@ public interface PipeRenderer {
 
     /**
      * Draw the connections for a logical slot.
-     * 
+     *
      * @param ctx         Render context.
      * @param logicalSlot The logical slot, so 0 for center, 1 for lower and 2 for
      *                    upper.

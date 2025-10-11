@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base;
 
 /**
  * An immutable object storing both a resource and an amount, provided for convenience.
- * 
+ *
  * @param <T> The type of the stored resource.
  */
 public record ResourceAmount<T>(T resource, long amount) {

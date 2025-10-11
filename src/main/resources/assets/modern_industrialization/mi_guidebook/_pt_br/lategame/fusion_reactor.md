@@ -21,7 +21,7 @@ O Reator de Fusão é a fonte de energia suprema! Ele pode combinar Deutério, T
 
 <Recipe id="modern_industrialization:electric_age/machine/fusion_reactor_asbl" />
 
-## Turbina de Plasma 
+## Turbina de Plasma
 
 <GameScene zoom="2" interactive={true} fullWidth={true}>
     <MultiblockShape controller="plasma_turbine" />

@@ -4,7 +4,8 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.112'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'dev.lukebemish.immaculate' version '0.1.13'
+    id 'net.neoforged.licenser' version '0.7.5'
     id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
 }
 
@@ -300,7 +301,48 @@ jar {
     from sourceSets.client.output
 }
 
-// configure the maven publication
+immaculate {
+    workflows.register('misc') {
+        files.from fileTree(projectDir).filter {
+            it.name.endsWith('.gradle') || it.name.endsWith('.md') || it.name == '.gitignore'
+        }
+
+        noTrailingSpaces()
+        noTabs()
+        trailingNewline()
+    }
+    workflows.register('java') {
+        java()
+        googleFixImports()
+        eclipse() {
+            version '3.42.0'
+            config = file('eclipse-format.xml')
+        }
+
+        noTrailingSpaces()
+        noTabs()
+        trailingNewline()
+    }
+}
+
+license {
+    include '**/*.java'
+}
+
+// the misc immaculate workflow processes resources, so we need some ordering
+// afterEvaluate because miscImmaculateCheck is only registered later
+afterEvaluate {
+    tasks.named('miscImmaculateCheck') {
+        mustRunAfter tasks.named('processResources')
+    }
+}
+
+tasks.register('applyAllFormatting') {
+    dependsOn tasks.named('licenseFormat')
+    dependsOn tasks.named('immaculateApply')
+}
+
+// Publishing
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -321,27 +363,6 @@ publishing {
     }
 }
 
-spotless {
-    format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-    java {
-        importOrder()
-
-        removeUnusedImports()
-
-        eclipse().configFile('eclipse-format.xml')
-
-        indentWithSpaces()
-        endWithNewline()
-        licenseHeaderFile 'LICENSE.java'
-    }
-}
-
 def releaseChannel = "stable"
 def changelogContents = System.getenv("CHANGELOG") ?: "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {
@@ -352,7 +373,6 @@ if (version.toLowerCase().contains("alpha")) {
     changelogContents = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelogContents
 }
 
-// Publishing
 import me.modmuss50.mpp.ReleaseType
 
 publishMods {

@@ -13,7 +13,7 @@ item_ids:
 
 Before making bronze, we will need to create a Forge Hammer. It is used for basic processing steps.
 
-You can put iron, copper and tin ore in the forge hammer and you will receive 2 raw ores per ore. You can increase this ratio by using a Hammer. Every raw ores can be smelted into an ingot. 
+You can put iron, copper and tin ore in the forge hammer and you will receive 2 raw ores per ore. You can increase this ratio by using a Hammer. Every raw ores can be smelted into an ingot.
 
 The Hammer increases the ratio in the Forge Hammer and unlocks more recipes, at the cost of some durability
 

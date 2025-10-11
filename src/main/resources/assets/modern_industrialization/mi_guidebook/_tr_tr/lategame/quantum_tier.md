@@ -24,7 +24,7 @@ Kuantum Kılıcı, Schrödinger denkleminin ham gücünü kullanarak, onunla vur
 
 <ItemImage id="modern_industrialization:quantum_chestplate" />
 
-Heisenberg belirsizlik ilkesinin yerçekimi etkisi sayesinde, tam Kuantum Zırh seti sizi tüm hasarlara karşı dirençli hale getirir ve size yaratıcı uçuş sağlar. Her yeni zırh parçası, alınan herhangi bir hasarı geçersiz kılma olasılığını %25 artırır. 
+Heisenberg belirsizlik ilkesinin yerçekimi etkisi sayesinde, tam Kuantum Zırh seti sizi tüm hasarlara karşı dirençli hale getirir ve size yaratıcı uçuş sağlar. Her yeni zırh parçası, alınan herhangi bir hasarı geçersiz kılma olasılığını %25 artırır.
 
 <ItemImage id="modern_industrialization:quantum_barrel" />
 

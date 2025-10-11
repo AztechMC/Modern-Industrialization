@@ -13,7 +13,7 @@ item_ids:
 
 Bronz yapmadan önce bir Demirci Örsü oluşturmamız gerekecek. Temel işleme adımları için kullanılır.
 
-Demirci örsüne demir, bakır ve kalay cevheri koyabilirsiniz ve cevher başına 2 ham cevher alırsınız. Çekiç kullanarak bu oranı artırabilirsiniz. Her ham cevher eritilerek külçe haline getirilebilir. 
+Demirci örsüne demir, bakır ve kalay cevheri koyabilirsiniz ve cevher başına 2 ham cevher alırsınız. Çekiç kullanarak bu oranı artırabilirsiniz. Her ham cevher eritilerek külçe haline getirilebilir.
 
 Çekiç, Demirci Örsü'ndeki oranı artırır ve bir miktar dayanıklılık pahasına daha fazla tarifin kilidini açar
 

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.util;
 
 import net.minecraft.core.Direction;
@@ -49,7 +50,7 @@ public final class GeometryHelper {
 
     /**
      * Project onto a face.
-     * 
+     *
      * @return (x coordinate, y coordinate, 0) in the XY plane of the face.
      */
     public static Vec3 toFaceCoords(Vec3 posInBlock, Direction face) {

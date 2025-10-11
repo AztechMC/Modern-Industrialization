@@ -43,8 +43,11 @@ import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -642,6 +645,28 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
         }
     }
 
+    private static <T, K extends TransferVariant<T>, S extends AbstractConfigurableStack<T, K>> void handleLocking(
+            List<S> stacks,
+            Predicate<T> matchesRecipe,
+            long requiredAmount,
+            Supplier<@Nullable T> lockTarget) {
+        for (S stack : stacks) {
+            if (stack.getLockedInstance() != null && matchesRecipe.apply(stack.getLockedInstance())) {
+                requiredAmount -= stack.getTotalCapacityFor(stack.getLockedInstance());
+                if (requiredAmount <= 0) {
+                    // We have all we need already
+                    return;
+                }
+            }
+        }
+        var newLockedInstance = lockTarget.get();
+        if (newLockedInstance == null) {
+            return;
+        }
+
+        AbstractConfigurableStack.playerLockNoOverride(newLockedInstance, requiredAmount, stacks);
+    }
+
     public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
         Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipesWithCache(behavior.getCrafterWorld()).stream()
@@ -650,100 +675,86 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             return;
         var recipe = optionalMachineRecipe.get();
         // ITEM INPUTS
-        outer: for (MachineRecipe.ItemInput input : recipe.value().itemInputs) {
-            for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                if (stack.getLockedInstance() != null && input.matches(new ItemStack(stack.getLockedInstance())))
-                    continue outer;
-            }
-            Item targetItem = null;
-            // Find the first match in the player inventory (useful for logs for example)
-            for (int i = 0; i < inventory.getContainerSize(); i++) {
-                ItemStack playerStack = inventory.getItem(i);
-                if (!playerStack.isEmpty() && input.matches(new ItemStack(playerStack.getItem()))) {
-                    targetItem = playerStack.getItem();
-                    break;
-                }
-            }
-            List<Item> inputItems = input.getInputItems();
-            if (targetItem == null) {
-                // Find the preferred item with Almost Unified if possible
-                if (!inputItems.isEmpty()) {
-                    targetItem = AlmostUnifiedFacade.INSTANCE.getTargetItem(inputItems.getFirst());
-                }
-            }
-            if (targetItem == null) {
-                // Find the first match that is an item from MI (useful for ingots for example)
-                for (Item item : inputItems) {
-                    ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                    if (id.getNamespace().equals(MI.ID)) {
-                        targetItem = item;
-                        break;
-                    }
-                }
-            }
-            if (targetItem == null) {
-                // If there is only one value in the tag, pick that one
-                if (inputItems.size() == 1) {
-                    targetItem = inputItems.get(0);
-                }
-            }
-
-            if (targetItem != null) {
-                AbstractConfigurableStack.playerLockNoOverride(targetItem, this.inventory.getItemInputs());
-            }
+        for (MachineRecipe.ItemInput input : recipe.value().itemInputs) {
+            handleLocking(
+                    this.inventory.getItemInputs(),
+                    item -> input.matches(new ItemStack(item)),
+                    input.amount(),
+                    () -> {
+                        // Find the first match in the player inventory (useful for logs for example)
+                        for (int i = 0; i < inventory.getContainerSize(); i++) {
+                            ItemStack playerStack = inventory.getItem(i);
+                            if (!playerStack.isEmpty() && input.matches(new ItemStack(playerStack.getItem()))) {
+                                return playerStack.getItem();
+                            }
+                        }
+                        List<Item> inputItems = input.getInputItems();
+                        // Find the preferred item with Almost Unified if possible
+                        if (!inputItems.isEmpty()) {
+                            var targetItem = AlmostUnifiedFacade.INSTANCE.getTargetItem(inputItems.getFirst());
+                            if (targetItem != null) {
+                                return targetItem;
+                            }
+                        }
+                        // Find the first match that is an item from MI (useful for ingots for example)
+                        for (Item item : inputItems) {
+                            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+                            if (id.getNamespace().equals(MI.ID)) {
+                                return item;
+                            }
+                        }
+                        // If there is only one value in the tag, pick that one
+                        if (inputItems.size() == 1) {
+                            return inputItems.get(0);
+                        }
+                        return null;
+                    });
         }
         // ITEM OUTPUTS
-        outer: for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
-            for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.getLockedInstance() == output.variant().getItem())
-                    continue outer;
-            }
-            AbstractConfigurableStack.playerLockNoOverride(output.variant().getItem(), this.inventory.getItemOutputs());
+        for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
+            handleLocking(
+                    this.inventory.getItemOutputs(),
+                    item -> output.variant().isOf(item),
+                    output.amount(),
+                    output.variant()::getItem);
         }
 
         // FLUID INPUTS
-        outer: for (MachineRecipe.FluidInput input : recipe.value().fluidInputs) {
-            for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.getLockedInstance() != null && input.fluid().test(new FluidStack(stack.getLockedInstance(), 1)))
-                    continue outer;
-            }
-            Fluid targetFluid = null;
-            // Find the first match in the player inventory
-            for (int i = 0; i < inventory.getContainerSize(); i++) {
-                var playerStack = FluidUtil.getFluidContained(inventory.getItem(i)).orElse(FluidStack.EMPTY);
-                if (!playerStack.isEmpty() && input.fluid().test(new FluidStack(playerStack.getFluid(), 1))) {
-                    targetFluid = playerStack.getFluid();
-                    break;
-                }
-            }
-            if (targetFluid == null) {
-                // Find the first match that is an item from MI
-                for (Fluid fluid : input.getInputFluids()) {
-                    ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
-                    if (id.getNamespace().equals(MI.ID)) {
-                        targetFluid = fluid;
-                        break;
-                    }
-                }
-            }
-            if (targetFluid == null) {
-                // If there is only one value in the tag, pick that one
-                if (input.getInputFluids().size() == 1) {
-                    targetFluid = input.getInputFluids().get(0);
-                }
-            }
-
-            if (targetFluid != null) {
-                AbstractConfigurableStack.playerLockNoOverride(targetFluid, this.inventory.getFluidInputs());
-            }
+        for (MachineRecipe.FluidInput input : recipe.value().fluidInputs) {
+            handleLocking(
+                    this.inventory.getFluidInputs(),
+                    fluid -> input.fluid().test(new FluidStack(fluid, 1)),
+                    input.amount(),
+                    () -> {
+                        // Find the first match in the player inventory
+                        for (int i = 0; i < inventory.getContainerSize(); i++) {
+                            var playerStack = FluidUtil.getFluidContained(inventory.getItem(i)).orElse(FluidStack.EMPTY);
+                            if (!playerStack.isEmpty() && input.fluid().test(new FluidStack(playerStack.getFluid(), 1))) {
+                                return playerStack.getFluid();
+                            }
+                        }
+                        List<Fluid> inputFluids = input.getInputFluids();
+                        // Find the first match that is an item from MI
+                        for (Fluid fluid : inputFluids) {
+                            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+                            if (id.getNamespace().equals(MI.ID)) {
+                                return fluid;
+                            }
+                        }
+                        // If there is only one value in the tag, pick that one
+                        if (inputFluids.size() == 1) {
+                            return inputFluids.get(0);
+                        }
+                        return null;
+                    });
         }
         // FLUID OUTPUTS
-        outer: for (MachineRecipe.FluidOutput output : recipe.value().fluidOutputs) {
-            for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.isLockedTo(output.fluid()))
-                    continue outer;
-            }
-            AbstractConfigurableStack.playerLockNoOverride(output.fluid(), this.inventory.getFluidOutputs());
+        for (MachineRecipe.FluidOutput output : recipe.value().fluidOutputs) {
+            handleLocking(
+                    this.inventory.getFluidOutputs(),
+                    fluid -> output.fluid() == fluid,
+                    output.amount(),
+                    output::fluid);
         }
 
         // LOCK ITEMS

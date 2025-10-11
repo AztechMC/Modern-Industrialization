@@ -107,6 +107,8 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     protected abstract long getRemainingCapacityFor(K key);
 
+    public abstract long getTotalCapacityFor(T instance);
+
     @Override
     public SlotConfig getConfig() {
         return new SlotConfig(playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
@@ -235,17 +237,25 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     /**
      * Lock range of stacks (without overriding existing locks).
      */
-    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, List<? extends AbstractConfigurableStack<T, K>> stacks) {
+    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, long requiredAmount,
+            List<? extends AbstractConfigurableStack<T, K>> stacks) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean allowEmptyStacks = iter == 1;
 
             for (AbstractConfigurableStack<T, K> stack : stacks) {
                 if (stack.lockedInstance == null || stack.lockedInstance == stack.getEmptyInstance()) {
                     if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
+                        var capacity = stack.getTotalCapacityFor(instance);
+                        if (capacity <= 0) {
+                            continue;
+                        }
                         stack.lockedInstance = instance;
                         stack.playerLocked = true;
                         stack.notifyListeners();
-                        return;
+                        requiredAmount -= capacity;
+                        if (requiredAmount <= 0) {
+                            return;
+                        }
                     }
                 }
             }

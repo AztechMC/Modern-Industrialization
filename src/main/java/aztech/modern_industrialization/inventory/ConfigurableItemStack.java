@@ -153,6 +153,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
     }
 
+    @Override
+    public long getTotalCapacityFor(Item instance) {
+        return Math.min(ItemVariant.of(instance).getMaxStackSize(), adjustedCapacity);
+    }
+
     /**
      * Create a copy of a list of configurable fluid stacks.
      */

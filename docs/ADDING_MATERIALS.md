@@ -40,7 +40,7 @@ MIMaterialEvents.addMaterials(event => {
                 "veins_per_chunk": 8, // the number of veins per chunk
                 "max_y": 64, // the maximum y level
                 "biome_tag": "minecraft:is_overworld", // which biome, or biomes, the ore should generate in.
-                
+
                 // the generation parameters are only required if generate is true
                 /*
                 "min_xp" : 0

@@ -30,6 +30,7 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -72,9 +73,9 @@ public class MultiblockErrorHighlight {
 
                 BlockState state = entry.getValue();
                 if (state == null) {
-                    RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.NO_OVERLAY);
+                    RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
                 } else {
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, 15728880,
+                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, LightTexture.FULL_BRIGHT,
                             OverlayTexture.NO_OVERLAY);
                 }
 

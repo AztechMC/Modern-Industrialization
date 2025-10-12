@@ -63,38 +63,11 @@ repositories {
         }
     }
     maven {
-        name 'Jitpack for MI'
+        name 'Jitpack'
         url 'https://jitpack.io'
         content {
-            includeGroup "com.github.KubeJS-Mods"
-            includeGroup "com.github.GabrielOlvH"
-            /* For Magna */
-            includeGroup "com.github.Draylar.omega-config"
-            /* For KubeJS */
-            includeGroup "com.github.llamalad7.mixinextras"
             // For KubeJS
             includeGroup "com.github.rtyley"
-        }
-    }
-    // to build indrev
-    maven {
-        name = "CottonMC"
-        url = "https://server.bbkr.space/artifactory/libs-release"
-        content {
-            includeGroup "io.github.cottonmc"
-        }
-    }
-    maven {
-        name = "dblsaiko"
-        url = "https://maven.dblsaiko.net/"
-    }
-    maven {
-        name = "Technici4n"
-        url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
-        content {
-            includeGroup "net.fabricmc.fabric-api"
-            includeGroup "dev.technici4n"
-            includeGroup "dev.latvian.mods"
         }
     }
     maven {
@@ -103,23 +76,11 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-    maven {
-        url "https://maven.parchmentmc.net/"
-        content {
-            includeGroup "org.parchmentmc.data"
-        }
-    }
-    // For the "No Indium?" mod
-    maven {
-        url = 'https://maven.cafeteria.dev/releases/'
-        content {
-            includeGroup "me.luligabi"
-        }
-    }
     // For KubeJS & FTBTeams/FTBQuests
     maven {
         url "https://maven.latvian.dev/releases"
         content {
+            includeGroup "dev.latvian.apps"
             includeGroup "dev.latvian.mods"
             includeGroup "dev.ftb.mods"
         }

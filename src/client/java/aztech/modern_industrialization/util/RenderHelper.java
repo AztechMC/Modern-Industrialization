@@ -26,13 +26,12 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.MIRenderTypes;
+import aztech.modern_industrialization.client.QuadCube;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import aztech.modern_industrialization.thirdparty.fabricrendering.MutableQuadView;
 import aztech.modern_industrialization.thirdparty.fabricrendering.QuadBuffer;
-import aztech.modern_industrialization.thirdparty.fabricrendering.QuadEmitter;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.client.fluid.FluidVariantRendering;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -44,7 +43,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -80,55 +78,22 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 public class RenderHelper {
-    private static final ResourceLocation HATCH_PLACEMENT_OVERLAY_LOCATION = MI.id("block/hatch_placement_overlay");
-    @Nullable
-    private static OverlayQuads overlayQuads;
-
-    private record OverlayQuads(BakedQuad[] quads, TextureAtlasSprite sprite) {
-    }
+    private static final QuadCube overlayQuads = new QuadCube(MI.id("block/hatch_placement_overlay"));
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, int overlay) {
-        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(HATCH_PLACEMENT_OVERLAY_LOCATION);
-        if (overlayQuads == null || overlayQuads.sprite() != sprite) {
-            overlayQuads = new OverlayQuads(buildOverlayQuads(sprite), sprite);
-        }
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
-        for (BakedQuad overlayQuad : overlayQuads.quads) {
+        for (BakedQuad overlayQuad : overlayQuads.getQuads()) {
             vc.putBulkData(ms.last(), overlayQuad, 1.0f, 1.0f, 1.0f, 1.0f, LightTexture.FULL_BRIGHT, /* not used by shader */ overlay);
         }
     }
 
-    private static BakedQuad[] buildOverlayQuads(TextureAtlasSprite sprite) {
-        var overlayQuads = new BakedQuad[6];
-        QuadEmitter emitter = new QuadBuffer();
-        for (Direction direction : Direction.values()) {
-            emitter.emit();
-            emitter.square(direction, 0, 0, 1, 1, 0);
-            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-            overlayQuads[direction.get3DDataValue()] = emitter.toBakedQuad(sprite);
-        }
-        return overlayQuads;
-    }
-
-    private static final Supplier<BakedQuad[]> CUBE_QUADS;
+    private static final QuadCube whiteQuads = new QuadCube(ResourceLocation.fromNamespaceAndPath("neoforge", "white"));
 
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
-        for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
+        for (BakedQuad cubeQuad : whiteQuads.getQuads()) {
             vc.putBulkData(ms.last(), cubeQuad, r, g, b, 1.0f, light, overlay);
         }
-    }
-
-    static {
-        CUBE_QUADS = Suppliers.memoize(() -> {
-            var cubeQuads = new BakedQuad[6];
-            for (Direction direction : Direction.values()) {
-                QuadEmitter emitter = new QuadBuffer();
-                emitter.square(direction, 0, 0, 1, 1, 0);
-                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(null);
-            }
-            return cubeQuads;
-        });
     }
 
     private static final float TANK_W = 1 / 16f + 0.001f;

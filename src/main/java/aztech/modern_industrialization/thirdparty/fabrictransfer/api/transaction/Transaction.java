@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
@@ -51,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>
  * This is illustrated in the following example.
- * 
+ *
  * <pre>
  * {@code
  * try (Transaction outerTransaction = Transaction.openOuter()) {

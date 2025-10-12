@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIBlock;
@@ -48,7 +49,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class MachineRegistrationHelper {
     /**
      * Register a machine's block, block entity type and wrenchable tag.
-     * 
+     *
      * @param id                Machine block id, for example "electric_macerator"
      * @param factory           The block entity constructor, with a BET parameter.
      * @param extraRegistrators A list of BET consumer used for API registration.

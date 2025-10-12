@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
@@ -66,7 +67,7 @@ public class PipeMeshCache implements PipeRenderer {
 
     /**
      * Create a new `PipeMeshCache`, and populate it.
-     * 
+     *
      * @param innerQuads Whether to add inner quads, e.g. for fluid rendering.
      */
     public PipeMeshCache(Function<Material, TextureAtlasSprite> textureGetter, Material[] spriteIds, boolean innerQuads) {
@@ -125,7 +126,7 @@ public class PipeMeshCache implements PipeRenderer {
 
     /**
      * Draw the connections for a logical slot.
-     * 
+     *
      * @param ctx         Render context.
      * @param logicalSlot The logical slot, so 0 for center, 1 for lower and 2 for
      *                    upper.

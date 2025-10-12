@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.init;
 
 import static aztech.modern_industrialization.machines.models.MachineCasings.CLEAN_STAINLESS_STEEL;
@@ -741,7 +742,7 @@ public class MultiblockMachines {
             this.extraWorkstations = new ArrayList<>();
             workstations.add(category);
         }
-        
+
         public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
             this(englishName, MI.id(category), recipeType, progressBarParams);
         }
@@ -762,13 +763,13 @@ public class MultiblockMachines {
             this.extraTest = extraTest;
             return this;
         }
-        
+
         public Rei workstations(ResourceLocation... workstations) {
             this.workstations.clear();
             this.workstations.addAll(Arrays.asList(workstations));
             return this;
         }
-        
+
         public Rei workstations(String... workstations) {
             return workstations(Arrays.stream(workstations).map(MI::id).toList().toArray(new ResourceLocation[0]));
         }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -29,7 +30,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 public class ItemStackHelper {
     /**
      * Try to consume the fuel in the stack.
-     * 
+     *
      * @param stack    The fuel stack
      * @param simulate If true, the stack will not be modified
      * @return false if the fuel could not be consumed, true otherwise

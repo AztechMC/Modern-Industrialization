@@ -95,7 +95,7 @@ Here's an example script that adds tritium turning into hydrogen-4:
 ```js
 MIRegistrationEvents.registerFluidNeutronInteractions(event => {
     event.register(
-        'modern_industrialization:tritium',    // The fluid being added as a nuclear component 
+        'modern_industrialization:tritium',    // The fluid being added as a nuclear component
         5,                                     // Heat conduction factor (later multiplied by the base heat conduction, 0.01)
         1,                                     // Density
         'ultra_light',                         // Scattering type

@@ -3,7 +3,8 @@
   "eu": 10,
   "duration": 80,
   "item_inputs": {
-    "item": "minecraft:slime_ball"
+    "item": "minecraft:slime_ball",
+    "probability": 0
   },
   "fluid_inputs": [
     {
@@ -12,7 +13,6 @@
     }
   ],
   "item_outputs": {
-    "item": "minecraft:slime_ball",
-    "amount": 2
+    "item": "minecraft:slime_ball"
   }
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.item;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
@@ -28,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferAp
 import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.item.ItemVariantImpl;
 import com.mojang.serialization.Codec;
 import java.util.Optional;
+import java.util.function.Predicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -79,6 +81,14 @@ public interface ItemVariant extends TransferVariant<Item> {
      * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
      */
     boolean matches(ItemStack stack);
+
+    /**
+     * Tests an {@link ItemStack} predicate with the inner stack.
+     *
+     * @param predicate Predicate to perform the test with
+     * @return {@code true} if the test passed
+     */
+    boolean test(Predicate<ItemStack> predicate);
 
     /**
      * Return the item of this variant.

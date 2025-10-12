@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.ItemAccess;
@@ -150,6 +151,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
             return 0; // Make sure we don't get negative counts if this happens!
         }
         return Math.min(key.getMaxStackSize(), adjustedCapacity) - amount;
+    }
+
+    @Override
+    public long getTotalCapacityFor(Item instance) {
+        return Math.min(ItemVariant.of(instance).getMaxStackSize(), adjustedCapacity);
     }
 
     /**

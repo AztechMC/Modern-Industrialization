@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
@@ -116,6 +117,10 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
         }
 
         long euProduced = 0;
+
+        // Consume from the buffer first
+        euProduced += euBuffer;
+        euBuffer = 0;
 
         for (ConfigurableFluidStack stack : fluidInputs) {
             Fluid fluid = stack.getResource().getFluid();

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.inventory.SlotGroup;
@@ -43,7 +44,7 @@ public final class GuiComponent {
 
     /**
      * Server part of a synced component.
-     * 
+     *
      * @param <D> Synced data type.
      */
     public interface Server<D> extends Common {

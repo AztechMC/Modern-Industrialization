@@ -91,7 +91,7 @@ ServerEvents.recipes(event => {
 ```
 
 ## Registered process conditions
-If a process condition doesn't have direct KubeJS support (like from an addon mod), you can manually write its parameters using `registeredCondition(JsonObject)`: 
+If a process condition doesn't have direct KubeJS support (like from an addon mod), you can manually write its parameters using `registeredCondition(JsonObject)`:
 
 ```js
 // Manually adding a dimension condition - of course, this is just an example and you don't have a reason to actually do it this way.

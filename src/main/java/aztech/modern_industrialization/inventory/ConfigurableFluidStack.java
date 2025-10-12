@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
@@ -162,6 +163,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return FluidVariant.fromNbt(compound, registries);
     }
 
+    @Override
     public long getCapacity() {
         return capacity;
     }
@@ -169,6 +171,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     @Override
     protected long getRemainingCapacityFor(FluidVariant key) {
         return getRemainingSpace();
+    }
+
+    @Override
+    public long getTotalCapacityFor(Fluid instance) {
+        return capacity;
     }
 
     public void setAmount(long amount) {

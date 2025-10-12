@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabricrendering;
 /*
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
@@ -53,11 +54,11 @@ public abstract class ColorHelper {
     /*
      * Renderer color format: ARGB (0xAARRGGBB) Vanilla color format (little endian): ABGR (0xAABBGGRR) Vanilla color
      * format (big endian): RGBA (0xRRGGBBAA)
-     * 
+     *
      * Why does the vanilla color format change based on endianness? See VertexConsumer#quad. Quad data is loaded as
      * integers into a native byte order buffer. Color is read directly from bytes 12, 13, 14 of each vertex. A
      * different byte order will yield different results.
-     * 
+     *
      * The renderer always uses ARGB because the API color methods always consume and return ARGB. Vanilla block and
      * item colors also use ARGB.
      */

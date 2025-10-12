@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.test.framework;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.test.FluidPipeTests;
+import aztech.modern_industrialization.test.GeneratorTests;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +39,8 @@ public final class MIGameTests {
     }
 
     private static final List<Class<?>> TEST_CLASSES = List.of(
-            FluidPipeTests.class);
+            FluidPipeTests.class,
+            GeneratorTests.class);
 
     @GameTestGenerator
     public static List<TestFunction> generateTests() {

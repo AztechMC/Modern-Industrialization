@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.compat.viewer.usage;
 
 import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;

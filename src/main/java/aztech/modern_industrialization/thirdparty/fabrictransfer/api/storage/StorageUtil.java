@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
@@ -51,7 +52,7 @@ public final class StorageUtil {
      *
      * <p>
      * Here is a usage example with fluid variant storages:
-     * 
+     *
      * <pre>
      * {
      *     &#64;code
@@ -139,7 +140,7 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an insertion, i.e. get the result of insert without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateInsert(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
@@ -151,7 +152,7 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateExtract(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
@@ -163,7 +164,7 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      */
     public static <T> long simulateExtract(StorageView<T> storageView, T resource, long maxAmount, @Nullable TransactionContext transaction) {
@@ -175,7 +176,7 @@ public final class StorageUtil {
     /**
      * Convenient helper to simulate an extraction, i.e. get the result of extract without modifying any state.
      * The passed transaction may be null if a new transaction should be opened for the simulation.
-     * 
+     *
      * @see Storage#insert
      * @apiNote This function handles the method overload conflict for objects that implement both {@link Storage} and {@link StorageView}.
      */

@@ -24,7 +24,7 @@ The Quantum Sword uses the raw power of the Schrödinger equation to instantly v
 
 <ItemImage id="modern_industrialization:quantum_chestplate" />
 
-Through the gravitational effect of the Heisenberg uncertainty principle, the full Quantum Armor set makes you immune to all damage and grants you creative flight. Each new piece of armour increases by 25% the likelihood of nullifying any damage taken. 
+Through the gravitational effect of the Heisenberg uncertainty principle, the full Quantum Armor set makes you immune to all damage and grants you creative flight. Each new piece of armour increases by 25% the likelihood of nullifying any damage taken.
 
 <ItemImage id="modern_industrialization:quantum_barrel" />
 

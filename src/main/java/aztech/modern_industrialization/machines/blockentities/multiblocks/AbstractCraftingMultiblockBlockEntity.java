@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.api.machine.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -35,12 +37,13 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
-    public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
-        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientationParams);
+        super(bep, new MachineGuiParameters.Builder(blockId, false).backgroundHeight(200).build(), orientationParams);
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         this.inventory = new MultiblockInventoryComponent();
@@ -48,6 +51,11 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.isActive = new IsActiveComponent();
         registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> operatingState != OperatingState.NOT_MATCHED));
         registerComponents(activeShape, crafter, isActive);
+    }
+
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
+            ShapeTemplate[] shapeTemplates) {
+        this(bep, MI.id(name), orientationParams, shapeTemplates);
     }
 
     /**

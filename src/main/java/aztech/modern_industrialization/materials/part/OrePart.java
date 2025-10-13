@@ -100,7 +100,7 @@ public class OrePart implements PartKeyProvider {
     public OrePart(ResourceLocation stoneType) {
         this.stoneType = stoneType;
         if (stoneType.equals(TYPE_STONE)) {
-            key = new PartKey("stone");
+            key = new PartKey("ore");
         } else {
             key = new PartKey("ore_%s".formatted(stoneType.getPath()));
         }
@@ -113,7 +113,7 @@ public class OrePart implements PartKeyProvider {
             displayName = "%s Ore";
         } else {
             // Poor man's English name
-            String stoneName = StringUtils.capitalize(stoneType.getNamespace().replace('-', ' ').replace('_', ' '));
+            String stoneName = StringUtils.capitalize(stoneType.getPath().replace('-', ' ').replace('_', ' '));
             displayName = stoneName + " %s Ore";
         }
         return new PartTemplate(displayName, key)
@@ -252,7 +252,6 @@ public class OrePart implements PartKeyProvider {
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel, TagKey<Biome> biomeTag) {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, biomeTag);
         }
-
     }
 
 }

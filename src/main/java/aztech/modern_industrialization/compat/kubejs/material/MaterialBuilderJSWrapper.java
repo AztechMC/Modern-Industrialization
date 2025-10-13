@@ -28,6 +28,7 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.NuclearFuelPart;
+import aztech.modern_industrialization.materials.part.OrePart;
 import aztech.modern_industrialization.materials.part.PartKey;
 import aztech.modern_industrialization.materials.property.MaterialHardness;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
@@ -151,10 +152,8 @@ public class MaterialBuilderJSWrapper {
     }
 
     public MaterialBuilderJSWrapper ore(JsonObject json) {
-        ResourceLocation stone = ResourceLocation.fromNamespaceAndPath("minecraft", "stone");
-        ResourceLocation deepslate = ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate");
-        materialBuilder.addParts(creator.orePart(json, deepslate));
-        materialBuilder.addParts(creator.orePart(json, stone));
+        materialBuilder.addParts(creator.orePart(json, OrePart.TYPE_DEEPSLATE));
+        materialBuilder.addParts(creator.orePart(json, OrePart.TYPE_STONE));
         return this;
     }
 

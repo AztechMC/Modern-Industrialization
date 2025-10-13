@@ -322,7 +322,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xc0bcd0)
                         .set(MaterialProperty.HARDNESS, SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
-                        .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON))
+                        .addParts(OrePart.ofAll(16, 9, 64, MaterialOreSet.IRON))
                         .addParts(WIRE).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.LV))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply));
@@ -343,7 +343,7 @@ public class MIMaterials {
                 .set(MaterialProperty.MEAN_RGB, 0x644646)
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(ITEM_PURE_NON_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.COAL)).addParts(GEM)
-                .addParts(ORE.ofAll(UniformInt.of(0, 2), 25, 17, 256, MaterialOreSet.COAL))
+                .addParts(OrePart.ofAll(UniformInt.of(0, 2), 25, 17, 256, MaterialOreSet.COAL))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
                 .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "lignite_coal").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
         );
@@ -363,7 +363,7 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, DULL)
                 .set(MaterialProperty.MEAN_RGB, 0xC86400)
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(ITEM_PURE_NON_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addParts(ORE.ofAll(UniformInt.of(1, 4), 24, 7, 32, MaterialOreSet.REDSTONE))
+                .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addParts(OrePart.ofAll(UniformInt.of(1, 4), 24, 7, 32, MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply));
 
         LEAD = MaterialRegistry
@@ -371,7 +371,7 @@ public class MIMaterials {
                         .set(MaterialProperty.SET, DULL)
                         .set(MaterialProperty.MEAN_RGB, 0x6a76bc)
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER))
-                        .addParts(ORE.ofAll(32, 8, 64, MaterialOreSet.IRON)).addParts(RAW_METAL.ofAll(MaterialRawSet.IRON))
+                        .addParts(OrePart.ofAll(32, 8, 64, MaterialOreSet.IRON)).addParts(RAW_METAL.ofAll(MaterialRawSet.IRON))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal"));
 
         BATTERY_ALLOY = MaterialRegistry.addMaterial(new MaterialBuilder("Battery Alloy", "battery_alloy")
@@ -411,7 +411,7 @@ public class MIMaterials {
                 .set(MaterialProperty.MEAN_RGB, 0xDCDCF0)
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(ITEM_PURE_METAL)
                 .addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER)).addParts(BLOCK.of(MaterialBlockSet.IRON))
-                .addParts(ORE.ofAll(20, 5, 64, MaterialOreSet.REDSTONE)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+                .addParts(OrePart.ofAll(20, 5, 64, MaterialOreSet.REDSTONE)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         NICKEL = MaterialRegistry
                 .addMaterial(new MaterialBuilder("Nickel", "nickel")
@@ -419,7 +419,7 @@ public class MIMaterials {
                         .set(MaterialProperty.MEAN_RGB, 0xFAFAC8)
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.IRON)).addParts(BLOCK.of(MaterialBlockSet.IRON))
-                        .addParts(ORE.ofAll(14, 6, 64, MaterialOreSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
+                        .addParts(OrePart.ofAll(14, 6, 64, MaterialOreSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
 
         SILVER = MaterialRegistry.addMaterial(
                 new MaterialBuilder("Silver", "silver")
@@ -443,7 +443,7 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, STONE)
                 .set(MaterialProperty.MEAN_RGB, 0xc7d6c5)
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(ITEM_PURE_NON_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 3), 6, 6, 64, MaterialOreSet.COAL))
+                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(OrePart.ofAll(UniformInt.of(1, 3), 6, 6, 64, MaterialOreSet.COAL))
                 .addRecipes(StandardRecipes::apply));
 
         TITANIUM = MaterialRegistry.addMaterial(
@@ -564,7 +564,7 @@ public class MIMaterials {
                 .set(MaterialProperty.MEAN_RGB, 0x39e600)
                 .set(MaterialProperty.ISOTOPE, IsotopeFuelParams.mix(URANIUM_238, URANIUM_235, 1.0 / 81))
                 .addParts(NuclearFuelPart.ofAll())
-                .addParts(ITEM_PURE_METAL).addParts(ROD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ORE.ofAll(8, 5, 16, MaterialOreSet.COPPER))
+                .addParts(ITEM_PURE_METAL).addParts(ROD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(OrePart.ofAll(8, 5, 16, MaterialOreSet.COPPER))
                 .addParts(RAW_METAL.of(MaterialRawSet.URANIUM))
                 .addParts(RAW_METAL_BLOCK.of(MaterialRawSet.COPPER))
                 .addRecipes(StandardRecipes::apply)
@@ -665,7 +665,7 @@ public class MIMaterials {
                 .set(MaterialProperty.SET, STONE)
                 .set(MaterialProperty.MEAN_RGB, 0x96248e)
                 .set(MaterialProperty.HARDNESS, SOFT).addParts(CRUSHED_DUST, DUST, TINY_DUST)
-                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 4), 2, 3, 24, MaterialOreSet.LAPIS))
+                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(OrePart.ofAll(UniformInt.of(1, 4), 2, 3, 24, MaterialOreSet.LAPIS))
                 .addRecipes(StandardRecipes::apply));
 
         CADMIUM = MaterialRegistry
@@ -709,7 +709,7 @@ public class MIMaterials {
                         .set(MaterialProperty.HARDNESS, VERY_HARD)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER))
                         .addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT)
-                        .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(ORE.ofAll(6, 5, 20, MaterialOreSet.IRON))
+                        .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(OrePart.ofAll(6, 5, 20, MaterialOreSet.IRON))
                         .addRecipes(StandardRecipes::apply));
 
         BLASTPROOF_ALLOY = MaterialRegistry

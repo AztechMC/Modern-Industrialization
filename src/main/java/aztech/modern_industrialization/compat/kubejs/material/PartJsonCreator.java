@@ -117,29 +117,23 @@ public class PartJsonCreator {
     }
 
     public PartTemplate orePart(JsonObject json, ResourceLocation stoneType) {
-        String stoneId = stoneType.getPath();
-        OrePart act;
-        // I'm not positive that these first two branches actually need to exist. I am in need of guidance.
-        if (stoneId.equals("stone")) {
-            act = MIParts.ORE;
-        } else if (stoneId.equals("deepslate")) {
-            act = MIParts.ORE_DEEPSLATE;
-        } else {
-            act = new OrePart(stoneType);
-        }
+        OrePart act = new OrePart(stoneType);
+
         int minXp = json.has("min_xp") ? json.get("min_xp").getAsInt() : 0;
         int maxXp = json.has("max_xp") ? json.get("max_xp").getAsInt() : 0;
-        boolean generate = !json.has("generate") || json.get("generate").getAsBoolean();
         MaterialOreSet oreSet = MaterialOreSet.getByName(json.get("ore_set").getAsString());
 
         if (oreSet == null) {
             throw new IllegalArgumentException("No such Material Ore Set: " + json.get("ore_set").getAsString());
         }
 
+        boolean generate = !json.has("generate") || json.get("generate").getAsBoolean();
         if (generate) {
-            TagKey<Biome> biomeTag = BiomeTags.IS_OVERWORLD;
+            TagKey<Biome> biomeTag;
             if (json.has("biome_tag")) {
                 biomeTag = TagKey.create(Registries.BIOME, ResourceLocation.parse(json.get("biome_tag").getAsString()));
+            } else {
+                biomeTag = BiomeTags.IS_OVERWORLD;
             }
             int veinSize = json.get("vein_size").getAsInt();
             int veinPerChunk = json.get("veins_per_chunk").getAsInt();

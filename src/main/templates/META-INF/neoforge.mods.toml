@@ -46,6 +46,7 @@ side="BOTH"
 [[dependencies.modern_industrialization]]
 modId="kubejs"
 type="optional"
+versionRange="${kubejs_version_range}"
 ordering="AFTER"
 side="BOTH"
 

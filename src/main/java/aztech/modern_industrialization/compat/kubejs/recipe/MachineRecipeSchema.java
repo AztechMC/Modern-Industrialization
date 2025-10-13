@@ -27,12 +27,7 @@ package aztech.modern_industrialization.compat.kubejs.recipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
-import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
-import dev.latvian.mods.kubejs.recipe.component.ItemStackComponent;
-import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
-import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
-import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
+import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import java.util.List;
@@ -41,22 +36,22 @@ public final class MachineRecipeSchema {
     private MachineRecipeSchema() {
     }
 
-    private static <T> RecipeKey<List<T>> optionalList(RecipeComponent<T> component, String name, ComponentRole role) {
-        return component.asConditionalListOrSelf().key(name, role).optional(List.of()).allowEmpty();
+    private static <T> RecipeKey<List<T>> optionalList(RecipeComponentType<T> component, String name, ComponentRole role) {
+        return component.instance().asConditionalListOrSelf().key(name, role).optional(List.of());
     }
 
     public static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).inputKey("eu");
     public static final RecipeKey<TickDuration> DURATION = TimeComponent.TICKS.inputKey("duration");
-    public static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = optionalList(ItemOutputComponent.ITEM_OUTPUT, "item_outputs",
+    public static final RecipeKey<List<MachineRecipe.ItemOutput>> ITEM_OUTPUTS = optionalList(ItemOutputComponent.TYPE, "item_outputs",
             ComponentRole.OUTPUT);
-    public static final RecipeKey<List<MachineRecipe.FluidOutput>> FLUID_OUTPUTS = optionalList(FluidOutputComponent.FLUID_OUTPUT, "fluid_outputs",
+    public static final RecipeKey<List<MachineRecipe.FluidOutput>> FLUID_OUTPUTS = optionalList(FluidOutputComponent.TYPE, "fluid_outputs",
             ComponentRole.OUTPUT);
-    public static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = optionalList(ItemInputComponent.ITEM_INPUT, "item_inputs",
+    public static final RecipeKey<List<MachineRecipe.ItemInput>> ITEM_INPUTS = optionalList(ItemInputComponent.TYPE, "item_inputs",
             ComponentRole.INPUT);
-    public static final RecipeKey<List<MachineRecipe.FluidInput>> FLUID_INPUTS = optionalList(FluidInputComponent.FLUID_INPUT, "fluid_inputs",
+    public static final RecipeKey<List<MachineRecipe.FluidInput>> FLUID_INPUTS = optionalList(FluidInputComponent.TYPE, "fluid_inputs",
             ComponentRole.INPUT);
     public static final RecipeKey<List<MachineProcessCondition>> MACHINE_PROCESS_CONDITIONS = optionalList(
-            MachineProcessConditionComponent.MACHINE_PROCESS_CONDITION, "process_conditions", ComponentRole.OTHER);
+            MachineProcessConditionComponent.TYPE, "process_conditions", ComponentRole.OTHER);
 
     public static final RecipeSchema SCHEMA = new RecipeSchema(
             EU,

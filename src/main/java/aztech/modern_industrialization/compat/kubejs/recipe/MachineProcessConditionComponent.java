@@ -26,13 +26,15 @@ package aztech.modern_industrialization.compat.kubejs.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
 import dev.latvian.mods.kubejs.recipe.component.SimpleRecipeComponent;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
 public class MachineProcessConditionComponent extends SimpleRecipeComponent<MachineProcessCondition> {
-    public static final MachineProcessConditionComponent MACHINE_PROCESS_CONDITION = new MachineProcessConditionComponent();
+    public static final RecipeComponentType<MachineProcessCondition> TYPE = RecipeComponentType.unit(MI.id("machine_process_condition"),
+            MachineProcessConditionComponent::new);
 
-    public MachineProcessConditionComponent() {
-        super(MI.ID + ":machine_process_condition", MachineProcessCondition.CODEC, TypeInfo.of(MachineProcessCondition.class));
+    public MachineProcessConditionComponent(RecipeComponentType<?> type) {
+        super(type, MachineProcessCondition.CODEC, TypeInfo.of(MachineProcessCondition.class));
     }
 }

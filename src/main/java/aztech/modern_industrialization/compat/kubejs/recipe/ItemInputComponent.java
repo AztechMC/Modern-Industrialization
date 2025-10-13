@@ -26,43 +26,41 @@ package aztech.modern_industrialization.compat.kubejs.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import dev.latvian.mods.kubejs.bindings.IngredientWrapper;
-import dev.latvian.mods.kubejs.bindings.SizedIngredientWrapper;
 import dev.latvian.mods.kubejs.core.IngredientKJS;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
-import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
-import dev.latvian.mods.kubejs.recipe.KubeRecipe;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.IngredientWrapper;
+import dev.latvian.mods.kubejs.plugin.builtin.wrapper.SizedIngredientWrapper;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
 import dev.latvian.mods.kubejs.recipe.component.SimpleRecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.UniqueIdBuilder;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.ItemMatch;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
-import dev.latvian.mods.rhino.Context;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public class ItemInputComponent extends SimpleRecipeComponent<MachineRecipe.ItemInput> {
-    public static final ItemInputComponent ITEM_INPUT = new ItemInputComponent();
+    public static final RecipeComponentType<MachineRecipe.ItemInput> TYPE = RecipeComponentType.unit(MI.id("item_input"), ItemInputComponent::new);
 
-    public ItemInputComponent() {
-        super(MI.ID + ":item_input", MachineRecipe.ItemInput.CODEC, SizedIngredientWrapper.TYPE_INFO);
+    public ItemInputComponent(RecipeComponentType<?> type) {
+        super(type, MachineRecipe.ItemInput.CODEC, SizedIngredientWrapper.TYPE_INFO);
     }
 
     @Override
-    public MachineRecipe.ItemInput wrap(Context cx, KubeRecipe recipe, Object from) {
-        var sizedIngredient = (SizedIngredient) cx.jsToJava(from, typeInfo());
+    public MachineRecipe.ItemInput wrap(RecipeScriptContext cx, Object from) {
+        var sizedIngredient = SizedIngredientWrapper.wrap(cx.cx(), from);
         return new MachineRecipe.ItemInput(sizedIngredient.ingredient(), sizedIngredient.count(), 1);
     }
 
     @Override
-    public boolean matches(Context cx, KubeRecipe recipe, MachineRecipe.ItemInput value, ReplacementMatchInfo match) {
+    public boolean matches(RecipeMatchContext cx, MachineRecipe.ItemInput value, ReplacementMatchInfo match) {
         return match.match() instanceof ItemMatch m && m.matches(cx, value.ingredient(), match.exact());
     }
 
     @Override
-    public MachineRecipe.ItemInput replace(Context cx, KubeRecipe recipe, MachineRecipe.ItemInput original, ReplacementMatchInfo match,
+    public MachineRecipe.ItemInput replace(RecipeScriptContext cx, MachineRecipe.ItemInput original, ReplacementMatchInfo match,
             Object with) {
-        if (matches(cx, recipe, original, match)) {
-            var withJava = (Ingredient) cx.jsToJava(with, IngredientJS.TYPE_INFO);
+        if (matches(cx, original, match)) {
+            var withJava = IngredientWrapper.wrap(cx.cx(), with);
             return new MachineRecipe.ItemInput(withJava, original.amount(), original.probability());
         } else {
             return original;

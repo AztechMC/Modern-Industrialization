@@ -29,6 +29,7 @@ import aztech.modern_industrialization.machines.recipe.condition.MachineProcessC
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
+import dev.latvian.mods.kubejs.util.IntBounds;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import java.util.List;
 
@@ -37,7 +38,12 @@ public final class MachineRecipeSchema {
     }
 
     private static <T> RecipeKey<List<T>> optionalList(RecipeComponentType<T> component, String name, ComponentRole role) {
-        return component.instance().asConditionalListOrSelf().key(name, role).optional(List.of());
+        return component.instance()
+                .asConditionalList()
+                .orSelf()
+                .withBounds(IntBounds.OPTIONAL)
+                .key(name, role)
+                .optional(List.of());
     }
 
     public static final RecipeKey<Integer> EU = NumberComponent.intRange(1, Integer.MAX_VALUE).inputKey("eu");

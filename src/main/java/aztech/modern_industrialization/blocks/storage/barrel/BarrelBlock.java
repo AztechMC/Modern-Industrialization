@@ -75,7 +75,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                }
                 var handItem = player.getItemInHand(hand);
                 if (!handItem.isEmpty()) {
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         long inserted = barrel.insert(ItemVariant.of(handItem), handItem.getCount(), tx, true);
                         if (inserted > 0) {
                             tx.commit();
@@ -87,7 +87,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             } else {
                 ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
                 if (!currentInHand.isBlank()) {
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         long inserted = 0;
                         for (int i = 0; i < Inventory.INVENTORY_SIZE; ++i) {
                             ItemStack stack = player.getInventory().getItem(i);
@@ -123,7 +123,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                    }
 //                }
 
-                try (Transaction transaction = Transaction.openOuter()) {
+                try (Transaction transaction = Transaction.openRoot()) {
                     ItemVariant extractedResource = barrel.getResource();
 
                     long extracted = barrel.extract(extractedResource,

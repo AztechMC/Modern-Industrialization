@@ -31,8 +31,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
@@ -203,20 +203,20 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         return behaviour.getCapacityForResource(resource);
     }
 
-    private class ResourceParticipant extends SnapshotParticipant<ResourceAmount<T>> {
+    private class ResourceParticipant extends SnapshotJournal<ResourceAmount<T>> {
         @Override
         protected ResourceAmount<T> createSnapshot() {
             return new ResourceAmount<>(resource, amount);
         }
 
         @Override
-        protected void readSnapshot(ResourceAmount<T> snapshot) {
+        protected void revertToSnapshot(ResourceAmount<T> snapshot) {
             resource = snapshot.resource();
             amount = snapshot.amount();
         }
 
         @Override
-        protected void onFinalCommit() {
+        protected void onRootCommit(ResourceAmount<T> originalState) {
             onChanged();
         }
     }

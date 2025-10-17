@@ -26,8 +26,8 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.ba
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 
 /**
  * A storage that can store a single transfer variant at any given time.
@@ -42,7 +42,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
  * @see aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.base.SingleFluidStorage SingleFluidStorage for fluid variants.
  * @see aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.base.SingleItemStorage SingleItemStorage for item variants.
  */
-public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotParticipant<ResourceAmount<T>>
+public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends SnapshotJournal<ResourceAmount<T>>
         implements SingleSlotStorage<T> {
     public T variant = getBlankVariant();
     public long amount = 0;
@@ -148,7 +148,7 @@ public abstract class SingleVariantStorage<T extends TransferVariant<?>> extends
     }
 
     @Override
-    protected void readSnapshot(ResourceAmount<T> snapshot) {
+    protected void revertToSnapshot(ResourceAmount<T> snapshot) {
         variant = snapshot.resource();
         amount = snapshot.amount();
     }

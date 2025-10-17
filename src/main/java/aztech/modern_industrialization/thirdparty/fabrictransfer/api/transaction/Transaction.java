@@ -24,156 +24,259 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.transaction.TransactionManagerImpl;
-import org.jetbrains.annotations.ApiStatus;
+import java.util.ArrayList;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A global operation where participants guarantee atomicity: either the whole operation succeeds,
- * or it is completely aborted and rolled back.
+ * A global operation that guarantees either the whole operation succeeds,
+ * or it is completely aborted and rolls back.
+ * Generally when passed to a method, a {@link Transaction} should be passed as a {@link TransactionContext} to prevent misuse such as calling
+ * {@link #commit()} or {@link #close()}
  *
  * <p>
  * One can imagine that transactions are like video game checkpoints.
  * <ul>
- * <li>{@linkplain #openOuter Opening a transaction} with a try-with-resources block creates a checkpoint.</li>
+ * <li>{@linkplain Transaction#open Opening a transaction} with a try-with-resources block creates a checkpoint.</li>
  * <li>Modifications to game state can then happen.</li>
  * <li>Calling {@link #commit} validates the modifications that happened during the transaction,
  * essentially discarding the checkpoint.</li>
- * <li>Calling {@link #abort} or doing nothing and letting the transaction be {@linkplain #close closed} at the end
+ * <li>Calling {@link #close()} or doing nothing and letting the transaction be {@linkplain #close() closed} at the end
  * of the try-with-resources block cancels any modification that happened during the transaction,
  * reverting to the checkpoint.</li>
- * <li>Calling {@link #openNested} on a transaction creates a new nested transaction, i.e. a new checkpoint with the current state.
- * Committing a nested transaction will validate the changes that happened, but they may
+ * <li>Calling {@link Transaction#open} with a non-{@code null} parent creates a new inner transaction, i.e. a new checkpoint with the current state.
+ * Committing an inner transaction will validate the changes that happened, but they may
  * still be cancelled later if a parent transaction is cancelled.
- * Aborting a nested transaction immediately reverts the changes - cancelling any modification made after the call
- * to {@link #openNested}.</li>
+ * Aborting an inner transaction immediately reverts the changes within that inner transaction - cancelling any modification made after the call
+ * to {@link Transaction#open}.</li>
  * </ul>
  *
  * <p>
  * This is illustrated in the following example.
  *
- * <pre>
- * {@code
- * try (Transaction outerTransaction = Transaction.openOuter()) {
+ * <pre>{@code
+ * try (Transaction rootTransaction = Transaction.openRoot()) {
  *     // (A) some transaction operations
- *     try (Transaction nestedTransaction = outerTransaction.openNested()) {
+ *     try (Transaction innerTransaction = Transaction.open(rootTransaction)) {
  *         // (B) more operations
- *         nestedTransaction.commit(); // Validate the changes that happened in this transaction.
- *                                     // This is a nested transaction, so changes will only be applied if the outer
- *                                     // transaction is committed too.
+ *         innerTransaction.commit();
+ *         // Commit the changes that happened in this transaction.
+ *         // This is an inner transaction, so changes will only be applied if the root
+ *         // transaction is committed too.
  *     }
  *     // (C) even more operations
- *     outerTransaction.commit(); // This is an outer transaction: changes (A), (B) and (C) are applied.
+ *     rootTransaction.commit();
+ *     // This is a root transaction: changes (A), (B) and (C) are applied.
  * }
- * // If we hadn't committed the outerTransaction, all changes (A), (B) and (C) would have been reverted.
- * }
- * </pre>
+ * // If we hadn't committed the rootTransaction, all changes (A), (B) and (C) would have been reverted.
+ * }</pre>
  *
  * <p>
- * Participants are responsible for upholding this contract themselves, by using {@link #addCloseCallback}
- * to react to transaction close events and properly validate or revert changes.
- * Any action that modifies state outside of the transaction, such as calls to {@code markDirty()} or neighbor updates,
- * should be deferred until {@linkplain #addOuterCloseCallback after the outer transaction is closed}
- * to give every participant a chance to react to transaction close events.
- *
- * <p>
- * This is very low-level for most applications, and most participants should subclass {@link SnapshotParticipant}
- * that will take care of properly maintaining their state.
- *
- * <p>
- * Participants should generally be passed a {@link TransactionContext} parameter instead of the full {@code Transaction},
- * to make sure they don't call {@link #abort}, {@link #commit} or {@link #close} mistakenly.
+ * Transaction-aware objects are responsible for upholding this contract themselves,
+ * by subclassing {@link SnapshotJournal} and using it to manage their state.
+ * See the documentation of {@link SnapshotJournal} for detailed instructions.
  *
  * <p>
  * Every transaction is only valid on the thread it was opened on,
  * and attempts to use it on another thread will throw an exception.
  * Consequently, transactions can be concurrent across multiple threads, as long as they don't share any state.
  */
-@ApiStatus.NonExtendable
-public interface Transaction extends AutoCloseable, TransactionContext {
+public final class Transaction implements AutoCloseable, TransactionContext {
     /**
-     * Open a new outer transaction.
-     *
-     * @throws IllegalStateException If a transaction is already active on the current thread.
+     * Stack walker to provide a name for the opener of the transaction. This is used for debugging purposes such as
+     * {@link TransactionManager#validateCurrentTransaction}.
      */
-    static Transaction openOuter() {
-        return TransactionManagerImpl.MANAGERS.get().openOuter();
-    }
+    private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     /**
-     * @return True if a transaction is open or closing on the current thread, and false otherwise.
-     */
-    static boolean isOpen() {
-        return getLifecycle() != Lifecycle.NONE;
-    }
-
-    /**
-     * @return The current lifecycle of the transaction stack on this thread.
-     */
-    static Lifecycle getLifecycle() {
-        return TransactionManagerImpl.MANAGERS.get().getLifecycle();
-    }
-
-    /**
-     * Open a nested transaction if {@code maybeParent} is non-null, or an outer transaction if {@code maybeParent} is null.
-     */
-    static Transaction openNested(@Nullable TransactionContext maybeParent) {
-        return maybeParent == null ? openOuter() : maybeParent.openNested();
-    }
-
-    static Transaction hackyOpen() {
-        return openNested(getCurrentUnsafe());
-    }
-
-    /**
-     * Retrieve the currently open transaction, or null if there is none.
+     * Opens a new transaction without a parent: a root transaction.
      *
      * <p>
-     * <b>Usage of this function is strongly discouraged</b>, this is why it is deprecated and contains {@code unsafe} in its name.
-     * The transaction may be aborted unbeknownst to you and anything you think that you have committed might be undone.
-     * Only use it if you have no way to pass the transaction down the stack, for example if you are implementing compat with a simulation-based API,
-     * and you know what you are doing, for example because you opened the outer transaction.
+     * For opening a transaction within an already running transaction, see {@link #open(TransactionContext)}.
      *
-     * @throws IllegalStateException If called from a close or outer close callback.
-     * @deprecated Only use if you absolutely need it, there is almost always a better way.
+     * @throws IllegalStateException If a transaction is already open or closing on the current thread.
      */
-    @Deprecated
-    @Nullable
-    static TransactionContext getCurrentUnsafe() {
-        return TransactionManagerImpl.MANAGERS.get().getCurrentUnsafe();
+    public static Transaction openRoot() {
+        // Don't delegate to other method due to getCallerClass()
+        return TransactionManager.getManagerForThread().open(null, STACK_WALKER.getCallerClass());
     }
 
     /**
-     * Close the current transaction, rolling back all the changes that happened during this transaction and
-     * the transactions opened with {@link #openNested} from this transaction.
+     * Opens a new transaction with a specified parent. The example below, we open the outermost layer or the `root`.
      *
-     * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-     * @throws IllegalStateException If this transaction is not the current transaction.
-     * @throws IllegalStateException If this transaction was closed.
+     * <pre>
+     * {@code
+     * try (var transaction = TransactionManager.open(null)) {
+     *     // do exchanges
+     * }
+     * }</pre>
+     *
+     * @param parent the parent transaction, or null if this is the root transaction. Passing {@code null} is equivalent
+     *               to calling {@link #openRoot()}.
+     * @throws IllegalStateException If no parent is passed, but a transaction is already open or closing on the current thread.
+     * @throws IllegalStateException If a parent is passed, but it's not the current transaction.
+     * @throws IllegalStateException If a parent is passed, but it was already closed.
      */
-    void abort();
+    public static Transaction open(@Nullable TransactionContext parent) {
+        // Don't delegate to other method due to getCallerClass()
+        return TransactionManager.getManagerForThread().open(parent, STACK_WALKER.getCallerClass());
+    }
+
+    public static Transaction hackyOpen() {
+        return open(getCurrentOpenedTransaction());
+    }
 
     /**
-     * Close the current transaction, committing all the changes that happened during this transaction and
-     * the <b>committed</b> transactions opened with {@link #openNested} from this transaction.
-     * If this transaction was opened with {@link #openOuter}, all changes are applied.
-     * If this transaction was opened with {@link #openNested}, all changes will be applied when and if the changes of
+     * {@return The current lifecycle of the transaction stack on this thread.}
+     */
+    public static Lifecycle getLifecycle() {
+        TransactionManager manager = TransactionManager.getManagerForThread();
+        int currentDepth = manager.currentDepth;
+        if (currentDepth == -1) {
+            return manager.processingRootCommitQueue ? Lifecycle.ROOT_CLOSING : Lifecycle.NONE;
+        } else {
+            return manager.stack.get(currentDepth).open ? Lifecycle.OPEN : Lifecycle.CLOSING;
+        }
+    }
+
+    /**
+     * Intended to be used when a method will be part of a transaction chain, but the current transaction
+     * is not passed in with no way to change the method signature.
+     *
+     * @return Current {@link Transaction} on the current thread
+     * @deprecated Only intended to be used in the case you don't have the transaction context in the method you are in,
+     *             while expecting a transaction to be open already.
+     *             If you have access to a transaction context already, be sure to use that rather than using this method.
+     * @throws IllegalStateException when called while a transaction is closing.
+     */
+    @SuppressWarnings("DeprecatedIsStillUsed")
+    @Nullable
+    @Deprecated
+    public static TransactionContext getCurrentOpenedTransaction() {
+        TransactionManager manager = TransactionManager.getManagerForThread();
+        // This should also handle the case of LifeCycle is NONE without having to explicitly check
+        // We return null even though onRootCommit callbacks might still be running
+        if (manager.currentDepth == -1)
+            return null;
+
+        Transaction transaction = manager.stack.get(manager.currentDepth);
+        if (transaction.open)
+            return transaction;
+        // The transaction is currently being closed
+        throw new IllegalStateException("`getCurrentOpenedTransaction()` cannot be called while a transaction is closing.");
+    }
+
+    /**
+     * Close the current transaction, committing all the changes that happened during this transaction and its <b>committed</b> child transactions.
+     * If this transaction was opened with a {@code null} parent, all changes are applied.
+     * If this transaction was opened with a non-{@code null} parent, all changes will be applied when and if the changes of
      * the parent transactions are applied.
      *
-     * @throws IllegalStateException If this function is not called on the thread this transaction was opened in.
-     * @throws IllegalStateException If this transaction is not the current transaction.
-     * @throws IllegalStateException If this transaction was closed.
+     * @throws IllegalStateException If this function is not called on the thread this transaction was opened in,
+     *                               this transaction is not the current transaction, or this transaction was closed.
      */
-    void commit();
+    public void commit() {
+        close(false);
+    }
 
     /**
      * Abort the current transaction if it was not closed already.
      */
     @Override
-    void close();
+    public void close() {
+        // check that a transaction is open on this thread and that this transaction is open.
+        if (manager.currentDepth >= depth && open) {
+            close(true);
+        }
+    }
 
-    enum Lifecycle {
+    @Override
+    public int depth() {
+        manager.validateCurrentThread();
+        return depth;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction[depth=%d, open=%s, thread=%s]".formatted(depth, open, manager.thread.getName());
+    }
+
+    // Internals
+    final TransactionManager manager;
+    private final int depth;
+    /**
+     * {@code true} when the transaction is open, {@code false} when it is closing or closed.
+     */
+    boolean open = false;
+    final List<SnapshotJournal<?>> journalsToClose = new ArrayList<>();
+    Class<?> callerClass;
+
+    Transaction(TransactionManager manager, int depth, Class<?> callerClass) {
+        this.manager = manager;
+        this.depth = depth;
+        this.callerClass = callerClass;
+    }
+
+    // Validate that this transaction is open.
+    void validateOpen() {
+        if (!open) {
+            throw new IllegalStateException("Transaction operation cannot be applied to a closed or closing transaction.");
+        }
+    }
+
+    /**
+     * Gets what should be printed during exceptions to represent the caller class. This should include the package name as well.
+     */
+    String getDebugName() {
+        return callerClass.toString();
+    }
+
+    /**
+     * @param wasAborted {@code true} if the transaction was aborted, {@code false} if it was committed
+     */
+    private void close(boolean wasAborted) {
+        manager.validateCurrentTransaction(this);
+        validateOpen();
+        // Block transaction operations
+        open = false;
+
+        // Note: it is important that we don't let exceptions corrupt the global state of the transaction manager.
+        // That is why every callback has to run inside its own try-with-resources block.
+        RuntimeException closeException = null;
+
+        // Invoke callbacks
+        for (SnapshotJournal<?> journal : journalsToClose) {
+            try {
+                journal.onClose(this, wasAborted);
+            } catch (Exception exception) {
+                if (closeException == null) {
+                    closeException = new RuntimeException("Encountered an exception while invoking a transaction close callback.", exception);
+                } else {
+                    closeException.addSuppressed(exception);
+                }
+            }
+        }
+
+        journalsToClose.clear();
+
+        // After this decrement, transactions can again be opened
+        manager.currentDepth--;
+
+        // Root transaction: process all onRootCommit callbacks.
+        if (manager.currentDepth == -1) {
+            closeException = manager.processRootCommitQueue(closeException);
+        }
+
+        // Throw exception if necessary
+        if (closeException != null) {
+            throw closeException;
+        }
+    }
+
+    /**
+     * The different possible states of the transaction stack.
+     */
+    public enum Lifecycle {
         /**
          * No transaction is currently open or closing.
          */
@@ -183,12 +286,12 @@ public interface Transaction extends AutoCloseable, TransactionContext {
          */
         OPEN,
         /**
-         * The current transaction is invoking its close callbacks.
+         * The current transaction is currently being closed.
          */
         CLOSING,
         /**
-         * The current transaction is invoking its outer close callbacks.
+         * {@link SnapshotJournal#onRootCommit} callbacks are being executed, and no transaction is currently open or being closed.
          */
-        OUTER_CLOSING
+        ROOT_CLOSING;
     }
 }

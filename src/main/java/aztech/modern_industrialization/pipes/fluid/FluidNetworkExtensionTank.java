@@ -46,7 +46,7 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
             return false;
         }
 
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Transaction.openRoot()) {
             storage.extract(networkFluid, storage.getAmount(), tx);
             long inserted = storage.insert(networkFluid, storage.getCapacity(), tx);
             if (inserted != storage.getCapacity()) {
@@ -68,7 +68,7 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
         if (storage.getAmount() == 0) {
             return;
         }
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Transaction.openRoot()) {
             storage.extract(storage.getResource(), storage.getAmount(), tx);
             tx.commit();
         }
@@ -87,7 +87,7 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
                 throw new IllegalStateException("Internal MI error: releasing extension %s from network with non-empty tank.".formatted(this));
             }
         }
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Transaction.openRoot()) {
             long inserted = storage.insert(fluid, amount, tx);
             tx.commit();
             if (inserted != amount) {

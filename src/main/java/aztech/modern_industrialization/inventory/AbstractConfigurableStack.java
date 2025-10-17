@@ -28,8 +28,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.base.SnapshotParticipant;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotParticipant<ResourceAmount<K>>
+public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
         implements StorageView<K>, IConfigurableSlot {
     private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
@@ -330,13 +330,13 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     }
 
     @Override
-    public void readSnapshot(ResourceAmount<K> ra) {
+    public void revertToSnapshot(ResourceAmount<K> ra) {
         this.amount = ra.amount();
         this.key = ra.resource();
     }
 
     @Override
-    protected void onFinalCommit() {
+    protected void onRootCommit(ResourceAmount<K> originalState) {
         notifyListeners();
     }
 

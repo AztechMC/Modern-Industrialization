@@ -64,7 +64,7 @@ public final class StorageUtil {
      * // Move up to one bucket in total from source to target, outside of a transaction:
      *     long amountMoved = StorageUtil.move(source, target, variant -> true, FluidConstants.BUCKET, null);
      * // Move exactly one bucket in total, only of water:
-     *     try (Transaction transaction = Transaction.openOuter()) {
+     *     try (Transaction transaction = Transaction.openRoot()) {
      *         Predicate<FluidVariant> filter = variant -> variant.isOf(Fluids.WATER);
      *         long waterMoved = StorageUtil.move(source, target, filter, FluidConstants.BUCKET, transaction);
      *         if (waterMoved == FluidConstants.BUCKET) {
@@ -95,7 +95,7 @@ public final class StorageUtil {
 
         long totalMoved = 0;
 
-        try (Transaction iterationTransaction = Transaction.openNested(transaction)) {
+        try (Transaction iterationTransaction = Transaction.open(transaction)) {
             for (StorageView<T> view : from.nonEmptyViews()) {
                 T resource = view.getResource();
                 if (!filter.test(resource))
@@ -104,7 +104,7 @@ public final class StorageUtil {
                 // check how much can be extracted
                 long maxExtracted = simulateExtract(view, resource, maxAmount - totalMoved, iterationTransaction);
 
-                try (Transaction transferTransaction = iterationTransaction.openNested()) {
+                try (Transaction transferTransaction = Transaction.open(iterationTransaction)) {
                     // check how much can be inserted
                     long accepted = to.insert(resource, maxExtracted, transferTransaction);
 
@@ -144,7 +144,7 @@ public final class StorageUtil {
      * @see Storage#insert
      */
     public static <T> long simulateInsert(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.insert(resource, maxAmount, simulateTransaction);
         }
     }
@@ -156,7 +156,7 @@ public final class StorageUtil {
      * @see Storage#insert
      */
     public static <T> long simulateExtract(Storage<T> storage, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -168,7 +168,7 @@ public final class StorageUtil {
      * @see Storage#insert
      */
     public static <T> long simulateExtract(StorageView<T> storageView, T resource, long maxAmount, @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storageView.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -183,7 +183,7 @@ public final class StorageUtil {
     // Object & is used to have a different erasure than the other overloads.
     public static <T, S extends Object & Storage<T> & StorageView<T>> long simulateExtract(S storage, T resource, long maxAmount,
             @Nullable TransactionContext transaction) {
-        try (Transaction simulateTransaction = Transaction.openNested(transaction)) {
+        try (Transaction simulateTransaction = Transaction.open(transaction)) {
             return storage.extract(resource, maxAmount, simulateTransaction);
         }
     }
@@ -355,7 +355,7 @@ public final class StorageUtil {
         if (storage == null)
             return null;
 
-        try (Transaction nested = Transaction.openNested(transaction)) {
+        try (Transaction nested = Transaction.open(transaction)) {
             for (StorageView<T> view : storage.nonEmptyViews()) {
                 // Extract below could change the resource, so we have to query it before extracting.
                 T resource = view.getResource();

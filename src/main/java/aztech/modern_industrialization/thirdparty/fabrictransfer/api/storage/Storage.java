@@ -216,8 +216,10 @@ public interface Storage<T> extends Iterable<StorageView<T>> {
      * and implementations are encouraged to throw an exception if that happens.
      */
     default long getVersion() {
-        if (Transaction.isOpen()) {
+        switch (Transaction.getLifecycle()) {
+        case OPEN, CLOSING -> {
             throw new IllegalStateException("getVersion() may not be called during a transaction.");
+        }
         }
 
         return TransferApiImpl.version.getAndIncrement();

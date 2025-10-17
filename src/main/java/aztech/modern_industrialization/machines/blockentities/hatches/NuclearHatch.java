@@ -124,10 +124,9 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             ItemVariant itemVariant = (ItemVariant) this.getVariant();
             if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
                 if (abs.getNeutronProduct() != null) {
-                    try (Transaction tx = Transaction.openOuter()) {
+                    try (Transaction tx = Transaction.openRoot()) {
                         this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
                                 AbstractConfigurableStack::canPipesExtract, true);
-                        tx.abort();
                     }
                 }
             }
@@ -229,7 +228,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 }
 
                 if (abs.getRemainingDesintegrations(stack) == 0) {
-                    try (Transaction tx = Transaction.openOuter()) {
+                    try (Transaction tx = Transaction.openRoot()) {
                         ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
                         absStack.updateSnapshots(tx);
                         absStack.setAmount(0);
@@ -241,8 +240,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
                             if (inserted == abs.getNeutronProductAmount()) {
                                 tx.commit();
-                            } else {
-                                tx.abort();
                             }
                         } else {
                             tx.commit();
@@ -284,7 +281,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             }
 
             if (simul || actualRecipe > 0) {
-                try (Transaction tx = Transaction.openOuter()) {
+                try (Transaction tx = Transaction.openRoot()) {
                     long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
                             AbstractConfigurableStack::canPipesInsert);
                     this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,

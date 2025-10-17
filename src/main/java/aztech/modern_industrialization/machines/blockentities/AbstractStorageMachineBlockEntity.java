@@ -143,7 +143,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                 boolean insertedSomething = false;
 
                 for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
-                    try (Transaction transaction = Transaction.openOuter()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
                         long inserted = energyItem.receive(energy.getEu() / stackSize, false);
 
                         if (inserted == 0) {
@@ -159,7 +159,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
                 if (!insertedSomething) {
                     for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
-                        try (Transaction transaction = Transaction.openOuter()) {
+                        try (Transaction transaction = Transaction.openRoot()) {
                             long extracted = energyItem.extract(energy.getRemainingCapacity() / stackSize, false);
 
                             if (extracted == 0) {

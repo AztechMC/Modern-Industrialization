@@ -115,7 +115,7 @@ public class FluidPipeTests {
                     helper.destroyBlock(extensionTank);
                     helper.emptyTank(extensionTank, MIMaterials.BRONZE);
                     var tank = (TankBlockEntity) helper.getBlockEntity(extensionTank);
-                    try (var tx = Transaction.openOuter()) {
+                    try (var tx = Transaction.openRoot()) {
                         // hacky way to toggle lock :P
                         tank.insert(FluidVariant.of(Fluids.LAVA), 1000, tx);
                         tank.toggleLocked();

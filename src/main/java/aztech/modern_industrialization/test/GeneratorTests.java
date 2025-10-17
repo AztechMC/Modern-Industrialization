@@ -47,7 +47,7 @@ public class GeneratorTests {
 
         var dieselGenerator = (GeneratorMachineBlockEntity) helper.getBlockEntity(generatorPos);
 
-        try (var tx = Transaction.openOuter()) {
+        try (var tx = Transaction.openRoot()) {
             long inserted = dieselGenerator.getInventory().fluidStorage.insert(MIFluids.BIODIESEL.variant(), 1, tx);
             helper.assertValueEqual(inserted, 1L, "inserted biodiesel");
             tx.commit();

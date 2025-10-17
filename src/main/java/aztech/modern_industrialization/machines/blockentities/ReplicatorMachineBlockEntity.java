@@ -155,7 +155,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 return false;
             }
 
-            try (Transaction tx = Transaction.openOuter()) {
+            try (Transaction tx = Transaction.openRoot()) {
                 MIItemStorage itemStorage = new MIItemStorage(inventoryComponent.getItemOutputs());
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 

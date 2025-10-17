@@ -126,9 +126,9 @@ public class SteamHeaterComponent extends TemperatureComponent {
         if (getTemperature() > 100d) {
             long steamProduction = (long) ((getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
 
-            try (Transaction tx = Transaction.openOuter()) {
+            try (Transaction tx = Transaction.openRoot()) {
                 long inserted;
-                try (Transaction simul = Transaction.openNested(tx)) { // insertion Simulation
+                try (Transaction simul = Transaction.open(tx)) { // insertion Simulation
                     inserted = output.insertAllSlot(steamKey, steamProduction, simul);
                 }
                 if (inserted > 0) {

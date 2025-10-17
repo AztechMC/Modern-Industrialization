@@ -1098,6 +1098,8 @@
   "machine_casing.modern_industrialization.superconductor": "SV",
   "modern_industrialization.configuration.ae2Integration": "AE2 integration",
   "modern_industrialization.configuration.ae2Integration.tooltip": "Enable the Applied Energistics 2 integration, if present.",
+  "modern_industrialization.configuration.almostUnifiedIntegration": "Almost Unified integration",
+  "modern_industrialization.configuration.almostUnifiedIntegration.tooltip": "Enable the Almost Unified integration, if present.",
   "modern_industrialization.configuration.armorHudYPosition": "Armor HUD vertical position",
   "modern_industrialization.configuration.armorHudYPosition.tooltip": "Space between the top of the screen and the jetpack/GraviChestPlate overlay text.",
   "modern_industrialization.configuration.barrelContentRendering": "Barrel content rendering",

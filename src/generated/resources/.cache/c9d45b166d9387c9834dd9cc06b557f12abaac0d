@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-03T23:56:28.0743789	Tags for minecraft:item mod id modern_industrialization
+// 1.21.1	2025-10-17T22:04:47.2401589	Tags for minecraft:item mod id modern_industrialization
 b7ef4462150855d29d57f806fb1387764e6fa77f data/c/tags/item/dusts.json
 9d2318af59c4e4de55974d6da062f468a5a9aafc data/c/tags/item/dusts/aluminum.json
 001769a3fa1d20ea297d8f5fa7b6c26073f43996 data/c/tags/item/dusts/annealed_copper.json
@@ -137,7 +137,7 @@ f54ee97c15cc6b7359808d3755e37850e90bfcda data/c/tags/item/nuggets/uranium_238.js
 ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/item/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/item/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/item/ores/bauxite.json
-1d62c0f68c4ff08688d86599978096597634379f data/c/tags/item/ores/iridium.json
+93ec56b0d5b6f7a7fd054f38bbfe24e69296efb3 data/c/tags/item/ores/iridium.json
 7d27152a3b746f6efd59aef093831375fdb6c256 data/c/tags/item/ores/lead.json
 1ee88f53ff517b182d645bd62f925de3c04d6385 data/c/tags/item/ores/lignite_coal.json
 61c6894f9934f768b34b023fbd5342e6932a9534 data/c/tags/item/ores/monazite.json
@@ -149,7 +149,7 @@ ddbc5d79273339aced9298587c441be4e6397ef0 data/c/tags/item/ores/tin.json
 9ee5a5a7cf5cd3c6931fa0cb61d4f92961558dde data/c/tags/item/ores/titanium.json
 321b8ae992d4f9f0ff1c9113dc5b9204191bf8d4 data/c/tags/item/ores/tungsten.json
 9c24b7c7006a6cac94f7d2bca413598ea1e76c40 data/c/tags/item/ores/uranium.json
-934bbdecd8dceca4e466bd8d2b3a37c1482e04fe data/c/tags/item/ores_in_ground/deepslate.json
+c9af7fbde3eae6cf88f40e1f20edaf96858da682 data/c/tags/item/ores_in_ground/deepslate.json
 06148afe1907864eb205006233b7b317091027b4 data/c/tags/item/ores_in_ground/stone.json
 4e76afad27bd51cc50f67f8398876580616e68d8 data/c/tags/item/plates.json
 bba4c1399aac618ea03e3a46cbdbdb1afa973e85 data/c/tags/item/plates/aluminum.json

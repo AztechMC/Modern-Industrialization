@@ -110,7 +110,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID)
 public class MIClient {
     @SubscribeEvent
     private static void init(FMLConstructModEvent ignored) {

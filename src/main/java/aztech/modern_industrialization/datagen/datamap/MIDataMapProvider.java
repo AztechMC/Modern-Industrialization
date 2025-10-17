@@ -57,7 +57,7 @@ public class MIDataMapProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.Provider registries) {
         gatherFurnaceFuels();
 
         gatherFluidFuels();

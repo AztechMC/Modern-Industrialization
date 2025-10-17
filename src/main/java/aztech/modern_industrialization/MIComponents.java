@@ -33,6 +33,7 @@ import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +42,7 @@ import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class MIComponents {
-    private static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(MI.ID);
+    private static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MI.ID);
 
     public static final Supplier<DataComponentType<Boolean>> ACTIVATED = COMPONENTS.registerComponentType("activated",
             builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));

@@ -623,7 +623,7 @@ public class MultiblockMachines {
         MachineRegistrationHelper.addMachineModel("high_pressure_advanced_large_steam_boiler", "large_boiler", CLEAN_STAINLESS_STEEL, true, false,
                 false);
 
-        MachineRegistrationHelper.addMachineModel("steam_quarry", "quarry", MachineCasings.STEEL, true, false, false);
+        MachineRegistrationHelper.addMachineModel("steam_quarry", "steam_quarry", MachineCasings.STEEL, true, false, false);
         new Rei("Steam Quarry", "steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
                 .workstations("steam_quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
@@ -634,7 +634,7 @@ public class MultiblockMachines {
                 .workstations("electric_quarry").extraTest(recipe -> recipe.eu > 4)
                 .register();
 
-        MachineRegistrationHelper.addMachineModel("electric_quarry", "quarry", MachineCasings.STEEL, true, false, false);
+        MachineRegistrationHelper.addMachineModel("electric_quarry", "electric_quarry", MachineCasings.STEEL, true, false, false);
 
         MachineRegistrationHelper.addMachineModel("vacuum_freezer", "vacuum_freezer", MachineCasings.FROSTPROOF, true, false, false);
         new Rei("Vacuum Freezer", "vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Parameters(77, 33, "arrow"))

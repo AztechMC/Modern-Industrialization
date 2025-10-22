@@ -47,7 +47,7 @@ public class FluidOutputComponent extends SimpleRecipeComponent<MachineRecipe.Fl
 
     @Override
     public MachineRecipe.FluidOutput wrap(RecipeScriptContext cx, Object from) {
-        var fs = FluidWrapper.wrap(cx.registries(), from);
+        var fs = FluidWrapper.wrap(cx.cx(), from);
         return new MachineRecipe.FluidOutput(fs.getFluid(), fs.getAmount(), 1);
     }
 
@@ -60,7 +60,7 @@ public class FluidOutputComponent extends SimpleRecipeComponent<MachineRecipe.Fl
     public MachineRecipe.FluidOutput replace(RecipeScriptContext cx, MachineRecipe.FluidOutput original, ReplacementMatchInfo match,
             Object with) {
         if (matches(cx, original, match)) {
-            var fs = FluidWrapper.wrap(cx.registries(), with);
+            var fs = FluidWrapper.wrap(cx.cx(), with);
             return new MachineRecipe.FluidOutput(fs.getFluid(), original.amount(), original.probability());
         } else {
             return original;

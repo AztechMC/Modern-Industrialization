@@ -45,7 +45,7 @@ public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.Flu
 
     @Override
     public MachineRecipe.FluidInput wrap(RecipeScriptContext cx, Object from) {
-        var fs = FluidWrapper.wrapSizedIngredient(cx.registries(), from);
+        var fs = FluidWrapper.wrapSizedIngredient(cx.cx(), from);
         return new MachineRecipe.FluidInput(fs.ingredient(), fs.amount(), 1);
     }
 
@@ -58,7 +58,7 @@ public class FluidInputComponent extends SimpleRecipeComponent<MachineRecipe.Flu
     public MachineRecipe.FluidInput replace(RecipeScriptContext cx, MachineRecipe.FluidInput original, ReplacementMatchInfo match,
             Object with) {
         if (matches(cx, original, match)) {
-            var fi = FluidWrapper.wrapIngredient(cx.registries(), with);
+            var fi = FluidWrapper.wrapIngredient(cx.cx(), with);
             return new MachineRecipe.FluidInput(fi, original.amount(), original.probability());
         } else {
             return original;

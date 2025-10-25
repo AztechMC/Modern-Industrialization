@@ -189,6 +189,7 @@ configurations {
 
 dependencies {
     api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
+    api "org.jspecify:jspecify:${project.jspecify_version}"
     implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
     compileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
@@ -263,6 +264,38 @@ jar {
     from sourceSets.client.output
 }
 
+import java.util.regex.Matcher
+
+abstract class GeneratePackageInfos extends DefaultTask {
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract ConfigurableFileCollection getFiles();
+
+    @TaskAction
+    void generatePackageInfos() {
+        getFiles().each { javaFile ->
+            def packageInfoFile = new File(javaFile.parent, 'package-info.java')
+            if (!packageInfoFile.exists()) {
+                def pkgName = javaFile.toString().replaceAll(Matcher.quoteReplacement(File.separator), '/')
+                pkgName = pkgName.substring(pkgName.indexOf('aztech/modern_industrialization/'), pkgName.lastIndexOf('/'))
+                pkgName = pkgName.replaceAll('/', '.')
+
+                def pkgInfoText = """
+                    |@NullMarked
+                    |package $pkgName;
+                    |
+                    |import org.jspecify.annotations.NullMarked;
+                """.stripMargin().trim()
+
+                packageInfoFile.text = pkgInfoText
+            }
+        }
+    }
+}
+final generatePackageInfos = tasks.register('generatePackageInfos', GeneratePackageInfos) {
+    it.files.from fileTree("src/client/java"), fileTree("src/main/java")
+}
+
 immaculate {
     workflows.register('misc') {
         files.from fileTree(projectDir).filter {
@@ -284,6 +317,18 @@ immaculate {
         noTrailingSpaces()
         noTabs()
         trailingNewline()
+
+        custom 'noNotNull', { String fileContents ->
+            if (fileContents.contains('@NotNull') || fileContents.contains('@Nonnull')) {
+                throw new GradleException('@NotNull and @Nonnull are disallowed.')
+            }
+        }
+
+        custom 'jspecifyNullable', { String fileContents ->
+            return fileContents
+                    .replace('javax.annotation.Nullable', 'org.jspecify.annotations.Nullable')
+                    .replace('org.jetbrains.annotations.Nullable', 'org.jspecify.annotations.Nullable')
+        }
     }
 }
 
@@ -299,7 +344,15 @@ afterEvaluate {
     }
 }
 
+tasks.named('licenseFormat').configure {
+    mustRunAfter generatePackageInfos
+}
+tasks.named('immaculateApply').configure {
+    mustRunAfter generatePackageInfos
+}
+
 tasks.register('applyAllFormatting') {
+    dependsOn generatePackageInfos
     dependsOn tasks.named('licenseFormat')
     dependsOn tasks.named('immaculateApply')
 }

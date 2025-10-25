@@ -42,7 +42,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 /**
@@ -135,7 +134,7 @@ public abstract class GeometryHelper {
      *
      * @param lightFace MUST be non-null.
      */
-    public static boolean isQuadCubic(@NotNull Direction lightFace, QuadView quad) {
+    public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
         if (lightFace == null) {
             return false;
         }

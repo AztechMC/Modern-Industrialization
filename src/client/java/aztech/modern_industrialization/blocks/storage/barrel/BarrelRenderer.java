@@ -38,7 +38,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
     private static final ThreadLocal<Integer> barrelNesting = ThreadLocal.withInitial(() -> 0);
@@ -50,7 +49,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
     }
 
     @Override
-    public void render(@NotNull BarrelBlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
+    public void render(BarrelBlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers,
             int light, int overlay) {
         if (entity.isLocked()) {
             RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);

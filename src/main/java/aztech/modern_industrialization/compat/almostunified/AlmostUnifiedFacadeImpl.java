@@ -27,7 +27,7 @@ package aztech.modern_industrialization.compat.almostunified;
 import com.almostreliable.unified.api.AlmostUnified;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class AlmostUnifiedFacadeImpl implements AlmostUnifiedFacade {
     @Nullable

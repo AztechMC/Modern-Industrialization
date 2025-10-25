@@ -46,7 +46,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
     public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {

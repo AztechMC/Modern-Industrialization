@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class NuclearGrid {
     private final int sizeX;

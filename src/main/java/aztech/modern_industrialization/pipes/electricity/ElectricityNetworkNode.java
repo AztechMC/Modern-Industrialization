@@ -42,11 +42,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockCapabilityCache<MIEnergyStorage, @NotNull Direction>> caches = new ArrayList<>();
+    private final List<BlockCapabilityCache<MIEnergyStorage, Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(ServerLevel world, BlockPos pos, CableTier cableTier, List<MIEnergyStorage> storages) {

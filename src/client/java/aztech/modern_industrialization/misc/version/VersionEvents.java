@@ -47,8 +47,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class VersionEvents {
     private static final String url = "https://api.cfwidget.com/minecraft/mc-mods/modern-industrialization";
@@ -57,7 +56,7 @@ public class VersionEvents {
 
     private record Version(String name, String url, Date date) implements Comparable<Version> {
         @Override
-        public int compareTo(@NotNull VersionEvents.Version o) {
+        public int compareTo(VersionEvents.Version o) {
             return o.date.compareTo(date);
         }
     }

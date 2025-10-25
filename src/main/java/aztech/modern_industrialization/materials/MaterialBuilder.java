@@ -30,7 +30,7 @@ import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBu
 import java.util.*;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public final class MaterialBuilder {
     private final Map<PartKey, MaterialItemPart> partsMap = new TreeMap<>();

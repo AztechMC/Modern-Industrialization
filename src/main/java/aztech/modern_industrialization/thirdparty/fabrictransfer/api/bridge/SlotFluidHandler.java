@@ -30,7 +30,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import com.google.common.primitives.Ints;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class SlotFluidHandler implements IFluidHandler {
     protected final SingleSlotStorage<FluidVariant> storage;
@@ -45,7 +44,7 @@ public class SlotFluidHandler implements IFluidHandler {
     }
 
     @Override
-    public @NotNull FluidStack getFluidInTank(int slot) {
+    public FluidStack getFluidInTank(int slot) {
         return storage.getResource().toStack(Ints.saturatedCast(storage.getAmount()));
     }
 
@@ -95,7 +94,7 @@ public class SlotFluidHandler implements IFluidHandler {
     }
 
     @Override
-    public boolean isFluidValid(int slot, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int slot, FluidStack stack) {
         return true;
     }
 

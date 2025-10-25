@@ -54,7 +54,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.ViewerDisplay> {
     public final ViewerCategory<D> wrapped;

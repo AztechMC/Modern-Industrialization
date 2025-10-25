@@ -40,9 +40,9 @@ package aztech.modern_industrialization.thirdparty.fabricrendering;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for {@link QuadEmitter} and for dynamic renders/mesh

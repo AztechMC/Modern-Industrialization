@@ -26,7 +26,7 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Implement this on a slot to render its background automatically.

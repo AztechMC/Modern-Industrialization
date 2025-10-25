@@ -33,7 +33,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> {
     public final IItemHandler itemHandler = new ItemHandler();
@@ -115,7 +114,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         }
 
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             return stacks.get(slot).isResourceAllowedByLock(stack.getItem());
         }
 

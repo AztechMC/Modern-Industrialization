@@ -57,7 +57,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NuclearReactorGuiClient implements GuiComponentClient {
     public static final ResourceLocation TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");

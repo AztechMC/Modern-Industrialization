@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction;
 
 import java.util.ArrayList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A journal that modifies itself during transactions,

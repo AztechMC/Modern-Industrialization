@@ -33,9 +33,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 public class ModelHelper {
     public static final @Nullable Direction[] DIRECTIONS_WITH_NULL = Arrays.copyOf(Direction.values(), 7);

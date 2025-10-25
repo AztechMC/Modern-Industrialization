@@ -32,7 +32,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Nullable

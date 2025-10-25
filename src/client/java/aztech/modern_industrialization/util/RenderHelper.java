@@ -74,8 +74,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.RenderTypeHelper;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
 public class RenderHelper {
     private static final QuadCube overlayQuads = new QuadCube(MI.id("block/hatch_placement_overlay"));

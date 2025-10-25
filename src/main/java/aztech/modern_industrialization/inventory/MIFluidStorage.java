@@ -32,7 +32,6 @@ import java.util.List;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableFluidStack> {
     public final IFluidHandler fluidHandler = new FluidHandler();
@@ -59,7 +58,7 @@ public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableF
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return stacks.get(tank).isResourceAllowedByLock(stack.getFluid());
         }
 
@@ -94,7 +93,7 @@ public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableF
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (maxDrain <= 0) {
                 return FluidStack.EMPTY;
             }

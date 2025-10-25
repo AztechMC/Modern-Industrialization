@@ -62,7 +62,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class MITooltips {
@@ -527,7 +526,7 @@ public class MITooltips {
         }
 
         @Override
-        public int compareTo(@NotNull MITooltips.TooltipAttachment o) {
+        public int compareTo(MITooltips.TooltipAttachment o) {
             return -Integer.compare(priority, o.priority);
         }
     }

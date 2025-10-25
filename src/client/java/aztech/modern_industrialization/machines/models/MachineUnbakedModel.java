@@ -43,7 +43,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
     public static final ResourceLocation LOADER_ID = MI.id("machine");

@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComponentHolder {
     private final MIInventory inventory = new MIInventory(List.of(), List.of(), SlotPositions.empty(), SlotPositions.empty());

@@ -29,7 +29,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.text.DecimalFormat;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ViewerUtil {
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");

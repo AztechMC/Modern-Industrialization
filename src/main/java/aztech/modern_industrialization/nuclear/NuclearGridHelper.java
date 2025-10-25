@@ -29,7 +29,7 @@ import static aztech.modern_industrialization.nuclear.NeutronFate.*;
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import java.util.Optional;
 import java.util.Random;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class NuclearGridHelper {
     private static final int[] dX = { 1, 0, -1, 0 };

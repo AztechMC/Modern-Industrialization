@@ -30,7 +30,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.neoforged.fml.ModList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SodiumCompat {
     @Nullable

@@ -28,7 +28,7 @@ import aztech.modern_industrialization.config.MIStartupConfig;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.ModList;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface AlmostUnifiedFacade {
     AlmostUnifiedFacade INSTANCE = getInstance();

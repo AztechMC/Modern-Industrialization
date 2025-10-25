@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.api.machine.holder;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface FluidStorageComponentHolder {
     @Nullable

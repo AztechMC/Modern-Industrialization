@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.Slot;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 class ForgeHammerRecipeHandler implements StandardRecipeHandler<ForgeHammerScreenHandler> {
     @Override

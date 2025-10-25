@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.nuclear.NuclearOrder;
-import org.jetbrains.annotations.NotNull;
 
 public final class SortOrder implements Comparable<SortOrder> {
     public static final SortOrder GUIDE_BOOK = new SortOrder();
@@ -67,7 +66,7 @@ public final class SortOrder implements Comparable<SortOrder> {
     }
 
     @Override
-    public int compareTo(@NotNull SortOrder o) {
+    public int compareTo(SortOrder o) {
         int i;
         for (i = 0; i < Math.min(o.objects.length, objects.length); ++i) {
             @SuppressWarnings("unchecked")

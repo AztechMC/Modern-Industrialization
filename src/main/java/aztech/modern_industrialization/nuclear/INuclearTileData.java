@@ -29,7 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface INuclearTileData {
     double getTemperature();

@@ -37,7 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class PipeNetworks extends SavedData {
     private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()),

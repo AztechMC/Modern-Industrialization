@@ -27,7 +27,7 @@ package aztech.modern_industrialization.machines.models;
 import java.util.Objects;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MachineModelClientData {
     public static final ModelProperty<MachineModelClientData> KEY = new ModelProperty<>();

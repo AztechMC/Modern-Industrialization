@@ -36,7 +36,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class TrashCanBlock extends Block {
     public TrashCanBlock(Properties properties) {
@@ -69,17 +68,17 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -89,7 +88,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             return true;
         }
     }
@@ -103,7 +102,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return FluidStack.EMPTY;
         }
 
@@ -113,7 +112,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 
@@ -123,12 +122,12 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             return FluidStack.EMPTY;
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             return FluidStack.EMPTY;
         }
     }
@@ -141,7 +140,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public @NotNull ItemStack getContainer() {
+        public ItemStack getContainer() {
             return container;
         }
     }

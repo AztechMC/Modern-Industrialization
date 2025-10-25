@@ -35,7 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class MIFluidTagProvider extends FluidTagsProvider {
     public MIFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,

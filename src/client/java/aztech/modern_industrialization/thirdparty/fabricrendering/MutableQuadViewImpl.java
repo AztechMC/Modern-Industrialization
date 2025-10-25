@@ -41,7 +41,7 @@ import static aztech.modern_industrialization.thirdparty.fabricrendering.Encodin
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emit()}, because that depends on

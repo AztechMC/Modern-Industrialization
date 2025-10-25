@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.RecipeOutput;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A read-only material. Build with {@link MaterialBuilder}.

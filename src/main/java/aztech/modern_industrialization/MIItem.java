@@ -200,7 +200,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear", MATERIALS.and("nuclear"));
 
     // Others
-    public static final ItemDefinition<Item> WAX = item("Wax", "wax", HoneycombItem::new, ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> WAX = item("Wax", "wax", WaxItem::new, ITEMS_ORDERED.next());
     public static final ItemDefinition<NuclearComponentItem> SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Small Heat Exchanger", "small_heat_exchanger",
             2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);

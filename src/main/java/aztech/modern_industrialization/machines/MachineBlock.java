@@ -51,10 +51,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends Block implements TickableBlock {
 
-    private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
+    private final BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor;
     private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
 
-    public MachineBlock(BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor, Properties properties) {
+    public MachineBlock(BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor, Properties properties) {
         super(properties);
         this.blockEntityConstructor = blockEntityConstructor;
     }

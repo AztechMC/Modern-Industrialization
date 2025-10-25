@@ -54,38 +54,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class MultiblockMachines {
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,
             CraftingMultiblockGui.W, CraftingMultiblockGui.H);
     // @formatter:off
-    public static Supplier<BlockEntityType<?>> COKE_OVEN;
-    public static Supplier<BlockEntityType<?>> STEAM_BLAST_FURNACE;
-    public static Supplier<BlockEntityType<?>> STEAM_QUARRY;
-    public static Supplier<BlockEntityType<?>> ELECTRIC_BLAST_FURNACE;
-    public static Supplier<BlockEntityType<?>> LARGE_STEAM_BOILER;
-    public static Supplier<BlockEntityType<?>> ADVANCED_LARGE_STEAM_BOILER;
-    public static Supplier<BlockEntityType<?>> HIGH_PRESSURE_LARGE_STEAM_BOILER;
-    public static Supplier<BlockEntityType<?>> HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER;
-    public static Supplier<BlockEntityType<?>> ELECTRIC_QUARRY;
-    public static Supplier<BlockEntityType<?>> OIL_DRILLING_RIG;
-    public static Supplier<BlockEntityType<?>> VACUUM_FREEZER;
-    public static Supplier<BlockEntityType<?>> DISTILLATION_TOWER;
-    public static Supplier<BlockEntityType<?>> LARGE_DIESEL_GENERATOR;
-    public static Supplier<BlockEntityType<?>> LARGE_STEAM_TURBINE;
-    public static Supplier<BlockEntityType<?>> HEAT_EXCHANGER;
-    public static Supplier<BlockEntityType<?>> PRESSURIZER;
-    public static Supplier<BlockEntityType<?>> IMPLOSION_COMPRESSOR;
-    public static Supplier<BlockEntityType<?>> NUCLEAR_REACTOR;
-    public static Supplier<BlockEntityType<?>> LARGE_TANK;
-    public static Supplier<BlockEntityType<?>> FUSION_REACTOR;
-    public static Supplier<BlockEntityType<?>> PLASMA_TURBINE;
+    public static MachineDefinition<SteamCraftingMultiblockBlockEntity> COKE_OVEN;
+    public static MachineDefinition<SteamCraftingMultiblockBlockEntity> STEAM_BLAST_FURNACE;
+    public static MachineDefinition<SteamCraftingMultiblockBlockEntity> STEAM_QUARRY;
+    public static MachineDefinition<ElectricBlastFurnaceBlockEntity> ELECTRIC_BLAST_FURNACE;
+    public static MachineDefinition<SteamBoilerMultiblockBlockEntity> LARGE_STEAM_BOILER;
+    public static MachineDefinition<SteamBoilerMultiblockBlockEntity> ADVANCED_LARGE_STEAM_BOILER;
+    public static MachineDefinition<SteamBoilerMultiblockBlockEntity> HIGH_PRESSURE_LARGE_STEAM_BOILER;
+    public static MachineDefinition<SteamBoilerMultiblockBlockEntity> HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> ELECTRIC_QUARRY;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> OIL_DRILLING_RIG;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> VACUUM_FREEZER;
+    public static MachineDefinition<DistillationTowerBlockEntity> DISTILLATION_TOWER;
+    public static MachineDefinition<GeneratorMultiblockBlockEntity> LARGE_DIESEL_GENERATOR;
+    public static MachineDefinition<GeneratorMultiblockBlockEntity> LARGE_STEAM_TURBINE;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> HEAT_EXCHANGER;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> PRESSURIZER;
+    public static MachineDefinition<ElectricCraftingMultiblockBlockEntity> IMPLOSION_COMPRESSOR;
+    public static MachineDefinition<NuclearReactorMultiblockBlockEntity> NUCLEAR_REACTOR;
+    public static MachineDefinition<LargeTankMultiblockBlockEntity> LARGE_TANK;
+    public static MachineDefinition<FusionReactorBlockEntity> FUSION_REACTOR;
+    public static MachineDefinition<GeneratorMultiblockBlockEntity> PLASMA_TURBINE;
 
     private static SimpleMember invarCasings;
 

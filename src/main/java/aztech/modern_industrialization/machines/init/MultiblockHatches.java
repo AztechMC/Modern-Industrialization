@@ -39,52 +39,66 @@ import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHat
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
+import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MultiblockHatches {
+    public record HatchPair<T extends HatchBlockEntity>(MachineDefinition<T> input, MachineDefinition<T> output) {
+    }
+
+    public static final HatchPair<ItemHatch> BRONZE_ITEM = registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
+    public static final HatchPair<ItemHatch> STEEL_ITEM = registerItemHatches("Steel", "steel", MachineCasings.STEEL, 2, 1, 80, 30);
+    public static final HatchPair<ItemHatch> ADVANCED_ITEM = registerItemHatches("Advanced", "advanced", CableTier.MV.casing, 2, 2, 71, 30);
+    public static final HatchPair<ItemHatch> TURBO_ITEM = registerItemHatches("Turbo", "turbo", CableTier.HV.casing, 3, 3, 62, 21);
+    public static final HatchPair<ItemHatch> HIGHLY_ADVANCED_ITEM = registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3,
+            5, 44, 18);
+
+    public static final HatchPair<FluidHatch> BRONZE_FLUID = registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
+    public static final HatchPair<FluidHatch> STEEL_FLUID = registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 16);
+    public static final HatchPair<FluidHatch> ADVANCED_FLUID = registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 64);
+    public static final HatchPair<FluidHatch> TURBO_FLUID = registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 256);
+    public static final HatchPair<FluidHatch> HIGHLY_ADVANCED_FLUID = registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing,
+            1024);
+
+    public static final HatchPair<EnergyHatch> LV_ENERGY = registerEnergyHatches(CableTier.LV);
+    public static final HatchPair<EnergyHatch> MV_ENERGY = registerEnergyHatches(CableTier.MV);
+    public static final HatchPair<EnergyHatch> HV_ENERGY = registerEnergyHatches(CableTier.HV);
+    public static final HatchPair<EnergyHatch> EV_ENERGY = registerEnergyHatches(CableTier.EV);
+    public static final HatchPair<EnergyHatch> SUPERCONDUCTOR_ENERGY = registerEnergyHatches(CableTier.SUPERCONDUCTOR);
+
+    public static final MachineDefinition<NuclearHatch> NUCLEAR_ITEM = MachineRegistrationHelper.registerMachine(
+            "Nuclear Item Hatch", "nuclear_item_hatch",
+            bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
+    public static final MachineDefinition<NuclearHatch> NUCLEAR_FLUID = MachineRegistrationHelper.registerMachine(
+            "Nuclear Fluid Hatch", "nuclear_fluid_hatch",
+            bet -> new NuclearHatch(bet, true), NuclearHatch::registerFluidApi);
+
+    public static final MachineDefinition<LargeTankHatch> LARGE_TANK = MachineRegistrationHelper.registerMachine(
+            "Large Tank Hatch", "large_tank_hatch",
+            LargeTankHatch::new, LargeTankHatch::registerFluidApi);
+
     public static void init() {
-        registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
-        registerItemHatches("Steel", "steel", MachineCasings.STEEL, 2, 1, 80, 30);
-        registerItemHatches("Advanced", "advanced", CableTier.MV.casing, 2, 2, 71, 30);
-        registerItemHatches("Turbo", "turbo", CableTier.HV.casing, 3, 3, 62, 21);
-        registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3, 5, 44, 18);
-
-        registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
-        registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 16);
-        registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 64);
-        registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 256);
-        registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 1024);
-
-        registerEnergyHatches(CableTier.LV);
-        registerEnergyHatches(CableTier.MV);
-        registerEnergyHatches(CableTier.HV);
-        registerEnergyHatches(CableTier.EV);
-        registerEnergyHatches(CableTier.SUPERCONDUCTOR);
-
-        MachineRegistrationHelper.registerMachine(
-                "Nuclear Item Hatch",
-                "nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
-        MachineRegistrationHelper.registerMachine("Nuclear Fluid Hatch", "nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true),
-                NuclearHatch::registerFluidApi);
+        // Triggers static init
 
         MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
         MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
 
-        MachineRegistrationHelper.registerMachine("Large Tank Hatch", "large_tank_hatch", LargeTankHatch::new, LargeTankHatch::registerFluidApi);
         MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
 
         KubeJSProxy.instance.fireRegisterHatchesEvent();
     }
 
-    public static void registerItemHatches(
+    public static HatchPair<ItemHatch> registerItemHatches(
             String englishPrefix, String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
+        List<MachineDefinition<ItemHatch>> definitions = new ArrayList<>(2);
+
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_item_" + (input ? "input" : "output") + "_hatch";
             String englishName = englishPrefix + " Item" + (input ? " Input" : " Output") + " Hatch";
-            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
+            var def = MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
                 List<ConfigurableItemStack> itemStacks = new ArrayList<>();
                 for (int i = 0; i < rows * columns; ++i) {
                     if (input) {
@@ -97,19 +111,24 @@ public class MultiblockHatches {
                         new SlotPositions.Builder().addSlots(xStart, yStart, columns, rows).build(), SlotPositions.empty());
                 return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerItemApi);
+            definitions.add(def);
             MachineRegistrationHelper.addMachineModel(machine, "hatch_item", casing, true, false, true, false);
         }
+
+        return new HatchPair<>(definitions.get(0), definitions.get(1));
     }
 
     private static final int FLUID_HATCH_SLOT_X = 80;
     private static final int FLUID_HATCH_SLOT_Y = 40;
 
-    public static void registerFluidHatches(String englishPrefix, String prefix, MachineCasing casing, int bucketCapacity) {
+    public static HatchPair<FluidHatch> registerFluidHatches(String englishPrefix, String prefix, MachineCasing casing, int bucketCapacity) {
+        List<MachineDefinition<FluidHatch>> definitions = new ArrayList<>(2);
+
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
             String englishName = englishPrefix + " Fluid" + (input ? " Input" : " Output") + " Hatch";
-            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
+            var def = MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
                 List<ConfigurableFluidStack> fluidStacks = Collections
                         .singletonList(input ? ConfigurableFluidStack.standardInputSlot(bucketCapacity * 1000L)
                                 : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 1000L));
@@ -117,19 +136,27 @@ public class MultiblockHatches {
                         new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerFluidApi);
+            definitions.add(def);
             MachineRegistrationHelper.addMachineModel(machine, "hatch_fluid", casing, true, false, true, false);
         }
+
+        return new HatchPair<>(definitions.get(0), definitions.get(1));
     }
 
-    public static void registerEnergyHatches(CableTier tier) {
+    public static HatchPair<EnergyHatch> registerEnergyHatches(CableTier tier) {
+        List<MachineDefinition<EnergyHatch>> definitions = new ArrayList<>(2);
+
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
             String englishName = tier.shortEnglishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
-            MachineRegistrationHelper.registerMachine(englishName, machine,
+            var def = MachineRegistrationHelper.registerMachine(englishName, machine,
                     bet -> new EnergyHatch(bet, new MachineGuiParameters.Builder(machine, false).build(), input, tier),
                     EnergyHatch::registerEnergyApi);
+            definitions.add(def);
             MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);
         }
+
+        return new HatchPair<>(definitions.get(0), definitions.get(1));
     }
 }

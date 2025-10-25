@@ -45,7 +45,7 @@ import org.jspecify.annotations.Nullable;
 public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
 
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> outputCache;
+    private @Nullable BlockCapabilityCache<IItemHandler, @Nullable Direction> outputCache;
 
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;

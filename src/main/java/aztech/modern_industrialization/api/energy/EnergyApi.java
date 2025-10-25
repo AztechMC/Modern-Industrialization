@@ -319,8 +319,7 @@ public class EnergyApi {
     }
 
     private static class ExtractOnlyMIStorage extends WrappedMIStorage {
-        @Nullable
-        private static EnergyApi.ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
+        private static EnergyApi.@Nullable ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
             return miStorage == null || !miStorage.canExtract() ? null : new ExtractOnlyMIStorage(miStorage);
         }
 

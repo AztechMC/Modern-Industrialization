@@ -90,7 +90,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PIPE;
@@ -252,6 +252,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         final Map<Item, List<ItemStack>> stacksCache = new IdentityHashMap<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
+        @Nullable
         BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {

@@ -68,6 +68,7 @@ public class CommonProxy {
         }
     }
 
+    @Nullable
     private static MinecraftServer currentServer = null; // note: will be null in multiplayer client
 
     public static void initEvents() {

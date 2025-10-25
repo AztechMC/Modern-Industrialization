@@ -64,7 +64,9 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         });
     }
 
+    @Nullable
     private ResourceLocation lastSyncedMachineCasing = null;
+    @Nullable
     private ResourceLocation matchedCasing = null;
 
     public abstract HatchType getHatchType();

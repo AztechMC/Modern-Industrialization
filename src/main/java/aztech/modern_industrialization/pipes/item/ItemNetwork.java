@@ -42,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jspecify.annotations.Nullable;
 
 public class ItemNetwork extends PipeNetwork {
     public static final int TICK_RATE = 60;
@@ -50,7 +51,7 @@ public class ItemNetwork extends PipeNetwork {
     int inactiveTicks = 0;
     long lastMovedItems = 0;
 
-    public ItemNetwork(int id, PipeNetworkData data) {
+    public ItemNetwork(int id, @Nullable PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
     }
 

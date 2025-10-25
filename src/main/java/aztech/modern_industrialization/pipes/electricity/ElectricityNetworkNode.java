@@ -42,6 +42,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import org.jspecify.annotations.Nullable;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
@@ -88,7 +89,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PIPE;

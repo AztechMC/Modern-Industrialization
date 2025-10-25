@@ -34,10 +34,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import org.jspecify.annotations.Nullable;
 
 public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements Tickable {
     @SuppressWarnings("unchecked")
-    private final BlockCapabilityCache<MIEnergyStorage, Direction>[] caches = new BlockCapabilityCache[6];
+    private final @Nullable BlockCapabilityCache<MIEnergyStorage, Direction>[] caches = new BlockCapabilityCache[6];
 
     public CreativeStorageUnitBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), pos, state);

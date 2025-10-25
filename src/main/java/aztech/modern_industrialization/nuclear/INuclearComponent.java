@@ -29,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.Nullable;
 
 public interface INuclearComponent<T extends TransferVariant> {
     double getHeatConduction();
@@ -37,6 +38,7 @@ public interface INuclearComponent<T extends TransferVariant> {
 
     T getVariant();
 
+    @Nullable
     default T getNeutronProduct() {
         return null;
     }

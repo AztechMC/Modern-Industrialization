@@ -34,6 +34,7 @@ import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import org.jspecify.annotations.Nullable;
 
 public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements MaterialRecipeBuilder {
     public final String recipeId;
@@ -73,7 +74,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
 
     // TODO: remove these two if the part is always a string passed through
     // addPartInput
-    public MIRecipeBuilder addPartInput(MaterialItemPart part, int amount) {
+    public MIRecipeBuilder addPartInput(@Nullable MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -82,7 +83,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return this;
     }
 
-    public MIRecipeBuilder addTaggedPartInput(MaterialItemPart part, int amount) {
+    public MIRecipeBuilder addTaggedPartInput(@Nullable MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -95,7 +96,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return addPartOutput(context.getPart(part), amount);
     }
 
-    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount) {
+    public MIRecipeBuilder addPartOutput(@Nullable MaterialItemPart part, int amount) {
         if (part == null) {
             canceled = true;
         } else {
@@ -108,7 +109,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         return addPartOutput(context.getPart(part), amount, probability);
     }
 
-    public MIRecipeBuilder addPartOutput(MaterialItemPart part, int amount, float probability) {
+    public MIRecipeBuilder addPartOutput(@Nullable MaterialItemPart part, int amount, float probability) {
         if (part == null) {
             canceled = true;
         } else {

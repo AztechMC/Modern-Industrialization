@@ -38,6 +38,7 @@ import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 public abstract class PipeNetworkNode {
+    @Nullable
     protected PipeNetwork network;
 
     public void updateConnections(Level world, BlockPos pos) {}
@@ -48,7 +49,7 @@ public abstract class PipeNetworkNode {
      * Get connections. Must return a size 6 array containing the 6 connections in
      * the Direction order. Null can be used to render no connection.
      */
-    public abstract PipeEndpointType[] getConnections(BlockPos pos);
+    public abstract @Nullable PipeEndpointType[] getConnections(BlockPos pos);
 
     public abstract void removeConnection(Level world, BlockPos pos, Direction direction);
 

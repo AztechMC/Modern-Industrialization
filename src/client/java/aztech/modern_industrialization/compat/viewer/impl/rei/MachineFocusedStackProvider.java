@@ -45,9 +45,7 @@ class MachineFocusedStackProvider implements FocusedStackProvider {
                 ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                 if (stack.getAmount() > 0) {
                     Fluid fluid = stack.getResource().getFluid();
-                    if (fluid != null) {
-                        return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
-                    }
+                    return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
                 } else if (stack.getLockedInstance() != null) {
                     Fluid fluid = stack.getLockedInstance();
                     if (fluid != null) {

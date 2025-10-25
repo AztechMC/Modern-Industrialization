@@ -28,7 +28,6 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -76,7 +75,7 @@ public class NbtHelper {
         return directions;
     }
 
-    public static byte[] encodeConnections(PipeEndpointType[] connections) {
+    public static byte[] encodeConnections(@Nullable PipeEndpointType[] connections) {
         byte[] encoded = new byte[6];
         for (int i = 0; i < 6; ++i) {
             PipeEndpointType type = connections[i];
@@ -85,7 +84,8 @@ public class NbtHelper {
         return encoded;
     }
 
-    public static PipeEndpointType[] decodeConnections(byte[] encoded) {
+    public static @Nullable PipeEndpointType[] decodeConnections(byte[] encoded) {
+        @Nullable
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (int i = 0; i < 6; ++i) {
             connections[i] = PipeEndpointType.byId(encoded[i]);
@@ -110,22 +110,7 @@ public class NbtHelper {
         }
     }
 
-    public static void putBlockPos(CompoundTag tag, String key, @Nullable BlockPos pos) {
-        if (pos != null) {
-            tag.putIntArray(key, new int[] { pos.getX(), pos.getY(), pos.getZ() });
-        }
-    }
-
-    public static BlockPos getBlockPos(CompoundTag tag, String key) {
-        if (tag.contains(key)) {
-            int[] pos = tag.getIntArray(key);
-            return new BlockPos(pos[0], pos[1], pos[2]);
-        } else {
-            return null;
-        }
-    }
-
-    public static FluidVariant getFluidCompatible(CompoundTag tag, String key, HolderLookup.Provider registries) {
+    public static FluidVariant getFluidCompatible(@Nullable CompoundTag tag, String key, HolderLookup.Provider registries) {
         if (tag == null || !tag.contains(key))
             return FluidVariant.blank();
 

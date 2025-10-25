@@ -97,7 +97,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         if (iface.getNetworkFluid().isBlank()) {
             // Want to set the fluid
             FluidVariant fluid = FluidVariant.of(FluidUtil.getFluidContained(menu.getCarried()).orElse(FluidStack.EMPTY));
-            if (fluid != null && !fluid.isBlank()) {
+            if (!fluid.isBlank()) {
                 targetFluid = fluid;
             }
         } else if (hasShiftDown()) {

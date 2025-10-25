@@ -42,6 +42,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Indexes an atlas sprite to allow fast lookup of Sprites from baked vertex coordinates. Implementation is a
@@ -81,9 +82,13 @@ public class SpriteFinderImpl implements SpriteFinder {
         final float midU;
         final float midV;
         final float cellRadius;
+        @Nullable
         Object lowLow = null;
+        @Nullable
         Object lowHigh = null;
+        @Nullable
         Object highLow = null;
+        @Nullable
         Object highHigh = null;
 
         Node(float midU, float midV, float radius) {
@@ -117,7 +122,7 @@ public class SpriteFinderImpl implements SpriteFinder {
             }
         }
 
-        private void addInner(TextureAtlasSprite sprite, Object quadrant, int uStep, int vStep,
+        private void addInner(TextureAtlasSprite sprite, @Nullable Object quadrant, int uStep, int vStep,
                 Consumer<Object> setter) {
             if (quadrant == null) {
                 setter.accept(sprite);
@@ -143,7 +148,7 @@ public class SpriteFinderImpl implements SpriteFinder {
             }
         }
 
-        private TextureAtlasSprite findInner(Object quadrant, float u, float v) {
+        private TextureAtlasSprite findInner(@Nullable Object quadrant, float u, float v) {
             if (quadrant instanceof TextureAtlasSprite) {
                 return (TextureAtlasSprite) quadrant;
             } else if (quadrant instanceof Node) {

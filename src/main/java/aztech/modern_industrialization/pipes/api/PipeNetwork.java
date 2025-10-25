@@ -40,8 +40,8 @@ public abstract class PipeNetwork {
     protected int id;
     public PipeNetworkManager manager;
     public PipeNetworkData data;
-    private final Map<BlockPos, PipeNetworkNode> nodes = new HashMap<>();
-    private final Map<Long, Map<BlockPos, PipeNetworkNode>> nodesByChunk = new HashMap<>();
+    private final Map<BlockPos, @Nullable PipeNetworkNode> nodes = new HashMap<>();
+    private final Map<Long, Map<BlockPos, @Nullable PipeNetworkNode>> nodesByChunk = new HashMap<>();
     private final List<PosNode> tickingNodesCache = new ArrayList<>();
     boolean tickingCacheValid = false;
 
@@ -74,6 +74,7 @@ public abstract class PipeNetwork {
      * @return null if there can be no merge, or the new pipe network data should
      *         there be a merge.
      */
+    @Nullable
     public PipeNetworkData merge(PipeNetwork other) {
         return null;
     }
@@ -106,7 +107,7 @@ public abstract class PipeNetwork {
         }
     }
 
-    public Map<BlockPos, PipeNetworkNode> getRawNodeMap() {
+    public Map<BlockPos, @Nullable PipeNetworkNode> getRawNodeMap() {
         return Collections.unmodifiableMap(this.nodes);
     }
 

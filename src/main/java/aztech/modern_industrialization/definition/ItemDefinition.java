@@ -32,12 +32,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
+import org.jspecify.annotations.Nullable;
 
 public class ItemDefinition<T extends Item> extends Definition implements ItemLike {
     private final DeferredItem<T> item;
     public final SortOrder sortOrder;
 
     public final BiConsumer<Item, ItemModelProvider> modelGenerator;
+    @Nullable
     private Consumer<? super T> onItemRegistrationEvent;
 
     public ItemDefinition(String englishName, DeferredItem<T> item,

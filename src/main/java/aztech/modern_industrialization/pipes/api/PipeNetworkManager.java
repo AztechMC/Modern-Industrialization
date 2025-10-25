@@ -158,7 +158,7 @@ public class PipeNetworkManager {
             if (!network.data.equals(otherNetwork.data)) {
                 network.data = network.merge(otherNetwork);
             }
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.getRawNodeMap().entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable PipeNetworkNode> entry : otherNetwork.getRawNodeMap().entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
                 if (node != null) {
@@ -218,7 +218,7 @@ public class PipeNetworkManager {
         // to it.
         if (unvisitedNodes.size() > 0) {
             PipeNetwork newNetwork = createNetwork(network.data.clone());
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : unvisitedNodes.entrySet()) {
+            for (Map.Entry<BlockPos, @Nullable PipeNetworkNode> entry : unvisitedNodes.entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
                 if (node != null) {

@@ -83,6 +83,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * Caches the current redstone status. Invalidated by {@link MachineBlock}.
      * {@code null} if the current status is not known.
      */
+    @Nullable
     private Boolean hasRedstoneHighSignal = null;
 
     public final OrientationComponent orientation;

@@ -118,7 +118,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeEndpointType[] getConnections(BlockPos pos) {
+    public @Nullable PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.get3DDataValue()] = PipeEndpointType.PIPE;
@@ -215,7 +215,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
-        private BlockCapabilityCache<IFluidHandler, @Nullable Direction> cache;
+        private @Nullable BlockCapabilityCache<IFluidHandler, @Nullable Direction> cache;
 
         private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;

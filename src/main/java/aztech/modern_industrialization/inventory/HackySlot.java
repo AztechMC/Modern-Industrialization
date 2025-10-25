@@ -27,6 +27,7 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Hacky base slot to work around vanilla mutating stacks directly.
@@ -35,6 +36,7 @@ public abstract class HackySlot extends Slot {
     // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
     // calls `markDirty()` when that happens, so we just cache the returned stack,
     // and set it when `markDirty()` is called.
+    @Nullable
     private ItemStack cachedReturnedStack = null;
 
     public HackySlot(int x, int y) {

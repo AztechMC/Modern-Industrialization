@@ -132,7 +132,7 @@ public class PipeMeshCache implements PipeRenderer {
      *                    connection type or null for no connection.
      */
     public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot,
-            PipeEndpointType[][] connections,
+            @Nullable PipeEndpointType[][] connections,
             @Nullable Object customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)

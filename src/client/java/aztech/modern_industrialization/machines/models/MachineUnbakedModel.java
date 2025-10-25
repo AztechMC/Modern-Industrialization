@@ -54,8 +54,8 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 
     private final MachineCasing baseCasing;
-    private final Material[] defaultOverlays;
-    private final Map<MachineCasing, Material[]> tieredOverlays = new HashMap<>();
+    private final @Nullable Material[] defaultOverlays;
+    private final Map<MachineCasing, @Nullable Material[]> tieredOverlays = new HashMap<>();
 
     private MachineUnbakedModel(JsonObject obj) {
         this.baseCasing = MachineCasings.get(GsonHelper.getAsString(obj, "casing"));
@@ -81,7 +81,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
         return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays);
     }
 
-    private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, Material[] ids) {
+    private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {
         var sprites = new TextureAtlasSprite[ids.length];
         for (int i = 0; i < ids.length; ++i) {
             if (ids[i] != null) {
@@ -93,39 +93,39 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
 
     private static class OverlaysJson {
         // All fields are nullable.
-        private ResourceLocation top;
-        private ResourceLocation top_active;
-        private ResourceLocation side;
-        private ResourceLocation side_active;
-        private ResourceLocation bottom;
-        private ResourceLocation bottom_active;
-        private ResourceLocation front;
-        private ResourceLocation front_active;
-        private ResourceLocation left;
-        private ResourceLocation left_active;
-        private ResourceLocation right;
-        private ResourceLocation right_active;
-        private ResourceLocation back;
-        private ResourceLocation back_active;
-        private ResourceLocation top_s;
-        private ResourceLocation top_s_active;
-        private ResourceLocation top_w;
-        private ResourceLocation top_w_active;
-        private ResourceLocation top_n;
-        private ResourceLocation top_n_active;
-        private ResourceLocation top_e;
-        private ResourceLocation top_e_active;
-        private ResourceLocation bottom_s;
-        private ResourceLocation bottom_s_active;
-        private ResourceLocation bottom_w;
-        private ResourceLocation bottom_w_active;
-        private ResourceLocation bottom_n;
-        private ResourceLocation bottom_n_active;
-        private ResourceLocation bottom_e;
-        private ResourceLocation bottom_e_active;
-        private ResourceLocation output;
-        private ResourceLocation item_auto;
-        private ResourceLocation fluid_auto;
+        private @Nullable ResourceLocation top;
+        private @Nullable ResourceLocation top_active;
+        private @Nullable ResourceLocation side;
+        private @Nullable ResourceLocation side_active;
+        private @Nullable ResourceLocation bottom;
+        private @Nullable ResourceLocation bottom_active;
+        private @Nullable ResourceLocation front;
+        private @Nullable ResourceLocation front_active;
+        private @Nullable ResourceLocation left;
+        private @Nullable ResourceLocation left_active;
+        private @Nullable ResourceLocation right;
+        private @Nullable ResourceLocation right_active;
+        private @Nullable ResourceLocation back;
+        private @Nullable ResourceLocation back_active;
+        private @Nullable ResourceLocation top_s;
+        private @Nullable ResourceLocation top_s_active;
+        private @Nullable ResourceLocation top_w;
+        private @Nullable ResourceLocation top_w_active;
+        private @Nullable ResourceLocation top_n;
+        private @Nullable ResourceLocation top_n_active;
+        private @Nullable ResourceLocation top_e;
+        private @Nullable ResourceLocation top_e_active;
+        private @Nullable ResourceLocation bottom_s;
+        private @Nullable ResourceLocation bottom_s_active;
+        private @Nullable ResourceLocation bottom_w;
+        private @Nullable ResourceLocation bottom_w_active;
+        private @Nullable ResourceLocation bottom_n;
+        private @Nullable ResourceLocation bottom_n_active;
+        private @Nullable ResourceLocation bottom_e;
+        private @Nullable ResourceLocation bottom_e_active;
+        private @Nullable ResourceLocation output;
+        private @Nullable ResourceLocation item_auto;
+        private @Nullable ResourceLocation fluid_auto;
 
         private static OverlaysJson parse(JsonObject json, @Nullable OverlaysJson defaultOverlay) {
             var overlays = GSON.fromJson(json, OverlaysJson.class);
@@ -151,8 +151,8 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
          * Active and inactive: front, left, back, right, top S/W/N/E, bottom S/W/N/E,
          * output, item auto, fluid auto
          */
-        private Material[] toSpriteIds() {
-            return new Material[] {
+        private @Nullable Material[] toSpriteIds() {
+            return new @Nullable Material[] {
                     select(front, side),
                     select(front_active, front, side_active, side),
                     select(left, side),

@@ -63,11 +63,10 @@ public class PipeBakedModel implements IDynamicBakedModel {
 
     private final TextureAtlasSprite particleSprite;
     private final Map<PipeRenderer.Factory, PipeRenderer> renderers;
-    private final BakedModel[] meWireConnectors;
+    private final BakedModel @Nullable [] meWireConnectors;
     private final SpriteFinder spriteFinder;
 
-    public PipeBakedModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers,
-            @Nullable BakedModel[] meWireConnectors, SpriteFinder spriteFinder) {
+    public PipeBakedModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, BakedModel @Nullable [] meWireConnectors, SpriteFinder spriteFinder) {
         this.particleSprite = particleSprite;
         this.renderers = renderers;
         this.meWireConnectors = meWireConnectors;
@@ -325,7 +324,7 @@ public class PipeBakedModel implements IDynamicBakedModel {
                     renderContext.pushTransform(getColorTransform(color));
                     renderContext.pushTransform(ITEM_TRANSFORM);
 
-                    PipeEndpointType[][] connections = new PipeEndpointType[][] {
+                    PipeEndpointType[][] connections = new @Nullable PipeEndpointType[][] {
                             { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
                     renderers.get(PipeRenderer.get(type)).draw(null, null, renderContext, 0, connections, new CompoundTag());
 

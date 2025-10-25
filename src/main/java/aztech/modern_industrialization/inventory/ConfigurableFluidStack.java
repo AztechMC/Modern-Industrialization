@@ -49,6 +49,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A fluid stack that can be configured.
@@ -116,7 +117,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())

@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.materials.set;
 
+import org.jspecify.annotations.Nullable;
+
 public enum MaterialOreSet {
     IRON("iron"),
     GOLD("gold"),
@@ -43,6 +45,7 @@ public enum MaterialOreSet {
 
     public final String name;
 
+    @Nullable
     public static MaterialOreSet getByName(String ore_set) {
         for (MaterialOreSet set : values()) {
             if (set.name.equals(ore_set)) {

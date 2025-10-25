@@ -37,11 +37,13 @@ public class MachineModelClientData {
      */
     @Nullable
     public final MachineCasing casing;
+    @Nullable
     public Direction frontDirection;
     public boolean isActive = false;
     /**
      * May be null for no output.
      */
+    @Nullable
     public Direction outputDirection = null;
     public boolean itemAutoExtract = false;
     public boolean fluidAutoExtract = false;

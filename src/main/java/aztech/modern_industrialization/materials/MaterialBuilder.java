@@ -152,10 +152,12 @@ public final class MaterialBuilder {
             return englishName;
         }
 
+        @Nullable
         public MaterialItemPart getMaterialPart(PartKeyProvider part) {
             return partsMap.get(part.key());
         }
 
+        @Nullable
         public <T> T get(MaterialProperty<T> prop) {
             return (T) properties.get(prop);
         }
@@ -200,6 +202,7 @@ public final class MaterialBuilder {
             return materialName;
         }
 
+        @Nullable
         public <T> T get(MaterialProperty<T> prop) {
             return (T) properties.get(prop);
         }

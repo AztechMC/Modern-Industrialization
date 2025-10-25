@@ -45,6 +45,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jspecify.annotations.Nullable;
 
 public class PipeItem extends Item {
     public final PipeNetworkType type;
@@ -106,6 +107,7 @@ public class PipeItem extends Item {
 
     // Try placing the pipe and registering the new pipe to the entity, returns null
     // if it failed
+    @Nullable
     private BlockPos tryPlace(UseOnContext context) {
         BlockPos hitPos = context.getClickedPos();
         BlockPos adjacentPos = hitPos.relative(context.getClickedFace());

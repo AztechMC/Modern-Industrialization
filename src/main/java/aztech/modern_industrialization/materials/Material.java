@@ -69,6 +69,7 @@ public class Material {
         return ret;
     }
 
+    @Nullable
     public <T> T get(MaterialProperty<T> prop) {
         return (T) properties.get(prop);
     }

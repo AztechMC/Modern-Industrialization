@@ -46,9 +46,7 @@ public class MIModelProvider extends BaseModelProvider {
     @Override
     protected void registerStatesAndModels() {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCK_DEFINITIONS.values()) {
-            if (blockDefinition.modelGenerator != null) {
-                blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), this);
-            }
+            blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), this);
         }
 
         for (FluidDefinition fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
@@ -61,9 +59,7 @@ public class MIModelProvider extends BaseModelProvider {
 
         // Item models as well...
         for (ItemDefinition<?> itemDefinition : MIItem.ITEM_DEFINITIONS.values()) {
-            if (itemDefinition.modelGenerator != null) {
-                itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
-            }
+            itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
         }
 
         // Machine models

@@ -100,7 +100,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             if (index < 36) {
                 // Try to insert into the upgrade slot.
                 if (moveItemStackTo(slot.getItem(), 57, 58, false)) {

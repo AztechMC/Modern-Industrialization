@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.pipes.api;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The type of an endpoint.
  */
@@ -63,6 +65,7 @@ public enum PipeEndpointType {
         return id;
     }
 
+    @Nullable
     public static PipeEndpointType byId(int id) {
         if (id == 0)
             return PIPE;

@@ -43,6 +43,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Static routines of general utility for renderer implementations. Renderers are not required to use these helpers, but
@@ -94,7 +95,7 @@ public abstract class GeometryHelper {
      * Returns true if quad is parallel to the given face. Does not validate quad winding order. Expects convex quads
      * with all points co-planar.
      */
-    public static boolean isQuadParallelToFace(Direction face, QuadView quad) {
+    public static boolean isQuadParallelToFace(@Nullable Direction face, QuadView quad) {
         if (face == null) {
             return false;
         }
@@ -113,7 +114,7 @@ public abstract class GeometryHelper {
      * Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)} for that
      * purpose. Expects convex quads with all points co-planar.
      */
-    public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
+    public static boolean isParallelQuadOnFace(@Nullable Direction lightFace, QuadView quad) {
         if (lightFace == null)
             return false;
 
@@ -134,7 +135,7 @@ public abstract class GeometryHelper {
      *
      * @param lightFace MUST be non-null.
      */
-    public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
+    public static boolean isQuadCubic(@Nullable Direction lightFace, QuadView quad) {
         if (lightFace == null) {
             return false;
         }

@@ -57,12 +57,14 @@ import org.jspecify.annotations.Nullable;
  */
 public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T> {
     private final BlockModelShaper blockModels;
+    @Nullable
     private BlockState lastBlockState = null;
     @Nullable
     private MachineBakedModel model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
 
+    @Nullable
     private static final MethodHandle UNWRAP_BAKED_MODEL;
     static {
         MethodHandle unwrapBakedModel = null;

@@ -51,6 +51,7 @@ import org.jspecify.annotations.Nullable;
 
 public class MachineBlock extends Block implements TickableBlock {
     private final BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor;
+    @Nullable
     private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
 
     public MachineBlock(BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor, Properties properties) {

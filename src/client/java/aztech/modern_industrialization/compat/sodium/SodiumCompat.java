@@ -53,7 +53,7 @@ public class SodiumCompat {
         METHOD_HANDLE = handle;
     }
 
-    public static void markSpriteActive(TextureAtlasSprite sprite) {
+    public static void markSpriteActive(@Nullable TextureAtlasSprite sprite) {
         if (sprite != null && METHOD_HANDLE != null) {
             try {
                 METHOD_HANDLE.invokeExact(sprite);

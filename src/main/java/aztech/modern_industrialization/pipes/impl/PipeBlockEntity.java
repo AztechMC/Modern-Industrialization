@@ -89,7 +89,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
      * The rendered connections, both client-side for rendering and server-side for
      * bounds check.
      */
-    SortedMap<PipeNetworkType, PipeEndpointType[]> connections = new TreeMap<>();
+    SortedMap<PipeNetworkType, @Nullable PipeEndpointType[]> connections = new TreeMap<>();
     /**
      * Extra rendering data
      */
@@ -458,7 +458,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     public void onConnectionsChanged() {
         // Update connections on the server side, we need them for the bounding box.
-        Map<PipeNetworkType, PipeEndpointType[]> oldRendererConnections = connections;
+        Map<PipeNetworkType, @Nullable PipeEndpointType[]> oldRendererConnections = connections;
         connections = new TreeMap<>();
         for (PipeNetworkNode pipe : pipes) {
             connections.put(pipe.getType(), pipe.getConnections(worldPosition));

@@ -41,8 +41,8 @@ import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Contract;
 import org.joml.Vector3f;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Collection of utilities for model implementations.
@@ -57,7 +57,7 @@ public abstract class ModelHelper {
      * Convenient way to encode faces that may be null. Null is returned as {@link #NULL_FACE_ID}. Use
      * {@link #faceFromIndex(int)} to retrieve encoded face.
      */
-    public static int toFaceIndex(Direction face) {
+    public static int toFaceIndex(@Nullable Direction face) {
         return face == null ? NULL_FACE_ID : face.get3DDataValue();
     }
 
@@ -66,13 +66,12 @@ public abstract class ModelHelper {
      * Can also be used for no-allocation iteration of {@link Direction#values()}, optionally including the null face.
      * (Use &lt; or &lt;= {@link #NULL_FACE_ID} to exclude or include the null value, respectively.)
      */
-    @Contract("null -> null")
-    public static Direction faceFromIndex(int faceIndex) {
+    public static @Nullable Direction faceFromIndex(int faceIndex) {
         return FACES[faceIndex];
     }
 
     /** @see #faceFromIndex(int) */
-    private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
+    private static final @Nullable Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
     /**
      * The vanilla model transformation logic is closely coupled with model deserialization. That does little good for

@@ -178,7 +178,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         var world = pipe.getLevel();
         Vec3 hitPos = hit.getLocation();
 
-        if (player != null && player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown()) {
             boolean removeBlock = pipe.connections.size() == 1;
             if (!world.isClientSide) {
                 pipe.removePipeAndDropContainedItems(partShape.type);

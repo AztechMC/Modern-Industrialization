@@ -37,8 +37,7 @@ import org.jspecify.annotations.Nullable;
 
 public class QuadCube {
     private final ResourceLocation spriteLocation;
-    @Nullable
-    private BakedQuad[] quads;
+    private BakedQuad @Nullable [] quads;
 
     public QuadCube(ResourceLocation spriteLocation) {
         this.spriteLocation = spriteLocation;

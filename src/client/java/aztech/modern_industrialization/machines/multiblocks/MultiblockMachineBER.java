@@ -79,7 +79,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, be.getLevel(), null)) {
+                    if (!matcher.matches(pos, be.getLevel())) {
                         var existingState = be.getLevel().getBlockState(pos);
                         if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
                             // Enqueue state preview

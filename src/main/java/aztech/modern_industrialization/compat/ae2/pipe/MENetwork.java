@@ -41,7 +41,7 @@ import org.jspecify.annotations.Nullable;
 public class MENetwork extends PipeNetwork {
     final AEColor color;
 
-    public MENetwork(int id, PipeNetworkData data, AEColor color) {
+    public MENetwork(int id, @Nullable PipeNetworkData data, AEColor color) {
         super(id, data == null ? new MENetworkData() : data);
 
         this.color = color;

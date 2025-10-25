@@ -39,12 +39,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
         implements StorageView<K>, IConfigurableSlot {
     private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
     protected long amount = 0;
+    @Nullable
     protected T lockedInstance = null;
     protected boolean playerLocked = false;
     protected boolean machineLocked = false;
@@ -194,6 +196,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         updatedLockedInstance();
     }
 
+    @Nullable
     public T getLockedInstance() {
         return lockedInstance;
     }

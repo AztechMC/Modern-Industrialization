@@ -113,7 +113,7 @@ public class ShapeMatcher implements ChunkEventListener {
      * Return true if there was a match, and append matched hatches to the list if
      * it's not null.
      */
-    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> hatches) {
+    public boolean matches(BlockPos pos, Level world) {
         SimpleMember simpleMember = simpleMembers.get(pos);
         if (simpleMember == null)
             return false;
@@ -126,9 +126,7 @@ public class ShapeMatcher implements ChunkEventListener {
         if (be instanceof HatchBlockEntity hatch) {
             HatchFlags flags = hatchFlags.get(pos);
             if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
-                if (matchedHatches != null) {
-                    matchedHatches.add(hatch);
-                }
+                matchedHatches.add(hatch);
                 return true;
             }
         }
@@ -155,7 +153,7 @@ public class ShapeMatcher implements ChunkEventListener {
         for (BlockPos pos : simpleMembers.keySet()) {
             // TODO: check if the chunk is loaded
 
-            if (!matches(pos, world, matchedHatches)) {
+            if (!matches(pos, world)) {
                 matchSuccessful = false;
             }
         }

@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import org.jspecify.annotations.Nullable;
 
 public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
     public final EntityBlock factory;
@@ -53,7 +54,7 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
         return factory.newBlockEntity(pos, state);
     }
 
-    protected ItemStack getStack(BlockEntity entity) {
+    protected ItemStack getStack(@Nullable BlockEntity entity) {
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
         if (storageBlockEntity != null && (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked())) {
@@ -62,7 +63,6 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
         return stack;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         return List.of(getStack(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY)));

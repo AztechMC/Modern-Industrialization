@@ -31,6 +31,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import java.util.*;
 import net.minecraft.server.level.ServerLevel;
+import org.jspecify.annotations.Nullable;
 
 public class ElectricityNetwork extends PipeNetwork {
     private static final List<MIEnergyStorage> STORAGES_CACHE = new ArrayList<>();
@@ -38,7 +39,7 @@ public class ElectricityNetwork extends PipeNetwork {
     final CableTier tier;
     final PipeStatsCollector stats = new PipeStatsCollector();
 
-    public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
+    public ElectricityNetwork(int id, @Nullable PipeNetworkData data, CableTier tier) {
         super(id, data == null ? new ElectricityNetworkData() : data);
         this.tier = tier;
     }

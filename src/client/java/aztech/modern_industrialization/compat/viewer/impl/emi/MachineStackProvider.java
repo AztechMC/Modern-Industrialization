@@ -41,9 +41,7 @@ class MachineStackProvider implements EmiStackProvider<MachineScreen> {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
             if (stack.getAmount() > 0) {
                 Fluid fluid = stack.getResource().getFluid();
-                if (fluid != null) {
-                    return new EmiStackInteraction(EmiStack.of(fluid), null, false);
-                }
+                return new EmiStackInteraction(EmiStack.of(fluid), null, false);
             } else if (stack.getLockedInstance() != null) {
                 Fluid fluid = stack.getLockedInstance();
                 if (fluid != null) {

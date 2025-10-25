@@ -50,13 +50,14 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     public final MIBlockLoot blockLoot;
     public final List<TagKey<Block>> tags;
 
+    @Nullable
     private BiConsumer<Block, Item> onBlockRegistrationEvent;
 
     public BlockDefinition(String englishName, DeferredBlock<T> block,
             BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
             BiConsumer<Block, BaseModelProvider> modelGenerator,
             BiConsumer<Item, ItemModelProvider> itemModelGenerator,
-            MIBlockLoot blockLoot,
+            @Nullable MIBlockLoot blockLoot,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
         super(englishName, block.getId().getPath(), false);
@@ -79,11 +80,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
 
     @Override
     public Item asItem() {
-        if (blockItem != null) {
-            return blockItem.asItem();
-        } else {
-            return null;
-        }
+        return blockItem.asItem();
     }
 
     public T asBlock() {

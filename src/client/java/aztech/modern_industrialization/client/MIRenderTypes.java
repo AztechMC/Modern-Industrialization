@@ -28,10 +28,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import org.jspecify.annotations.Nullable;
 
 public class MIRenderTypes {
-    private static RenderType MACHINE_WRENCH_OVERLAY;
-    private static RenderType CUTOUT_HIGHLIGHT; // used by hatch preview and wrong block highlight
+    private static @Nullable RenderType MACHINE_WRENCH_OVERLAY;
+    private static @Nullable RenderType CUTOUT_HIGHLIGHT; // used by hatch preview and wrong block highlight
 
     public static RenderType machineOverlay() {
         if (MACHINE_WRENCH_OVERLAY == null) {

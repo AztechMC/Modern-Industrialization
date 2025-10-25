@@ -31,6 +31,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import org.jspecify.annotations.Nullable;
 
 public class MIFluidType extends FluidType {
     private final DeferredBlock<MIFluidBlock> fluidBlock;
@@ -43,7 +44,7 @@ public class MIFluidType extends FluidType {
     @Override
     public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
         consumer.accept(new IClientFluidTypeExtensions() {
-            private ResourceLocation textureLocation;
+            private @Nullable ResourceLocation textureLocation;
 
             @Override
             public ResourceLocation getStillTexture() {

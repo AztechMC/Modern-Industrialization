@@ -269,31 +269,42 @@ import java.util.regex.Matcher
 abstract class GeneratePackageInfos extends DefaultTask {
     @InputFiles
     @PathSensitive(PathSensitivity.RELATIVE)
-    abstract ConfigurableFileCollection getFiles();
+    abstract DirectoryProperty getClientSources();
+
+
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    abstract DirectoryProperty getMainSources();
 
     @TaskAction
     void generatePackageInfos() {
-        getFiles().each { javaFile ->
-            def packageInfoFile = new File(javaFile.parent, 'package-info.java')
-            if (!packageInfoFile.exists()) {
+        def existingPackages = new HashSet<String>()
+        for (def tree in [mainSources.asFileTree, clientSources.asFileTree]) {
+            tree.each { javaFile ->
+                def packageInfoFile = new File(javaFile.parent, 'package-info.java')
+
                 def pkgName = javaFile.toString().replaceAll(Matcher.quoteReplacement(File.separator), '/')
                 pkgName = pkgName.substring(pkgName.indexOf('aztech/modern_industrialization/'), pkgName.lastIndexOf('/'))
                 pkgName = pkgName.replaceAll('/', '.')
 
-                def pkgInfoText = """
-                    |@NullMarked
-                    |package $pkgName;
-                    |
-                    |import org.jspecify.annotations.NullMarked;
-                """.stripMargin().trim()
+                if (!packageInfoFile.exists() && !existingPackages.contains(pkgName)) {
+                    def pkgInfoText = """
+                        |@NullMarked
+                        |package $pkgName;
+                        |
+                        |import org.jspecify.annotations.NullMarked;
+                    """.stripMargin().trim()
 
-                packageInfoFile.text = pkgInfoText
+                    packageInfoFile.text = pkgInfoText
+                }
+                existingPackages.add(pkgName)
             }
         }
     }
 }
 final generatePackageInfos = tasks.register('generatePackageInfos', GeneratePackageInfos) {
-    it.files.from fileTree("src/client/java"), fileTree("src/main/java")
+    it.clientSources = file("src/client/java")
+    it.mainSources = file("src/main/java")
 }
 
 immaculate {

@@ -174,7 +174,6 @@ public class DebugCommands {
     private static int buildMultiblock(CommandSourceStack src, BlockPos controllerPos) {
         var be = src.getLevel().getBlockEntity(controllerPos);
         if (be instanceof MultiblockMachineBlockEntity multiblock) {
-            var shape = multiblock.getActiveShape();
             var shapeMatcher = multiblock.createShapeMatcher();
             int updatedBlocks = shapeMatcher.buildMultiblock(src.getLevel());
 

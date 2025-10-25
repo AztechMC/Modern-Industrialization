@@ -43,6 +43,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,11 +92,16 @@ public class MIGameTestHelper extends GameTestHelper {
         throw new RuntimeException("Unreachable!");
     }
 
-    public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
-        var fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, absolutePos(pos), null);
-        if (fluidHandler == null) {
-            fail("Could not find fluid handler", pos);
+    public <T, C extends @Nullable Object> T requireCapability(BlockCapability<T, C> cap, BlockPos pos, C context) {
+        var ret = getLevel().getCapability(cap, absolutePos(pos), context);
+        if (ret == null) {
+            fail("Could not find capability " + cap.name(), pos);
         }
+        return ret;
+    }
+
+    public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
+        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
         boolean foundAny = false;
         var fluidName = BuiltInRegistries.FLUID.getKey(fluid);
         for (int i = 0; i < fluidHandler.getTanks(); ++i) {
@@ -115,10 +121,7 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void assertNoFluid(BlockPos pos) {
-        var fluidHandler = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, absolutePos(pos), null);
-        if (fluidHandler == null) {
-            fail("Could not find fluid handler", pos);
-        }
+        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
         for (int i = 0; i < fluidHandler.getTanks(); ++i) {
             var stack = fluidHandler.getFluidInTank(i);
             if (!stack.isEmpty()) {
@@ -128,10 +131,7 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void assertEnergy(BlockPos pos, long energy, @Nullable Direction side) {
-        var miEnergyHandler = getLevel().getCapability(EnergyApi.SIDED, absolutePos(pos), side);
-        if (miEnergyHandler == null) {
-            fail("Could not find energy handler", pos);
-        }
+        var miEnergyHandler = requireCapability(EnergyApi.SIDED, pos, side);
         long storedEnergy = miEnergyHandler.getAmount();
         if (storedEnergy != energy) {
             fail("Expected energy to be " + energy + ", was " + storedEnergy, pos);

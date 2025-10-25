@@ -84,6 +84,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     public void unlink() {
         super.unlink();
         controller = null;
+        setChanged();
         invalidateCapabilities();
     }
 
@@ -94,6 +95,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
 
     public void setController(LargeTankMultiblockBlockEntity controller) {
         this.controller = controller;
+        setChanged();
         invalidateCapabilities();
     }
 
@@ -105,5 +107,19 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
         MICapabilities.onEvent(event -> {
             event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> ((LargeTankHatch) be).getStorage());
         });
+    }
+
+    @Override
+    protected boolean hasComparatorOutput() {
+        return true;
+    }
+
+    @Override
+    protected int getComparatorOutput() {
+        if (controller != null) {
+            return controller.getComparatorOutput();
+        } else {
+            return 0;
+        }
     }
 }

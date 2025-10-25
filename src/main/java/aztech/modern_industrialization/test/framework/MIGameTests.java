@@ -27,6 +27,7 @@ package aztech.modern_industrialization.test.framework;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.test.FluidPipeTests;
 import aztech.modern_industrialization.test.GeneratorTests;
+import aztech.modern_industrialization.test.MultiblockTests;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,7 +41,8 @@ public final class MIGameTests {
 
     private static final List<Class<?>> TEST_CLASSES = List.of(
             FluidPipeTests.class,
-            GeneratorTests.class);
+            GeneratorTests.class,
+            MultiblockTests.class);
 
     @GameTestGenerator
     public static List<TestFunction> generateTests() {

@@ -43,6 +43,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -153,7 +154,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         super(bep, new MachineGuiParameters.Builder("large_tank", false).build(), new OrientationComponent.Params(false, false, false));
 
         activeShape = new ActiveShapeComponent(shapeTemplates);
-        fluidStorage = new FluidStorageComponent();
+        fluidStorage = new FluidStorageComponent(this::setChanged);
 
         this.registerComponents(activeShape, fluidStorage);
 
@@ -228,7 +229,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     public void tick() {
         if (!level.isClientSide) {
             link();
-            setChanged();
             if (!this.getFluidData().equals(oldFluidData)) {
                 oldFluidData = this.getFluidData();
                 sync(false);
@@ -251,13 +251,19 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
             long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
             fluidStorage.setCapacity(capacity);
 
-            invalidateCapabilities();
+            // Already set it here such that the setController and setChanged calls below
+            // will see the correct comparator output of the tank
+            shapeValid.shapeValid = true;
+
             for (var hatch : shapeMatcher.getMatchedHatches()) {
                 if (hatch instanceof LargeTankHatch tankHatch) {
                     tankHatch.setController(this);
                 }
             }
         }
+
+        setChanged();
+        invalidateCapabilities();
     }
 
     public IFluidHandler getExposedFluidHandler() {
@@ -277,7 +283,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     public int[] getCornerPosition() {
-
         int index = activeShape.getActiveShapeIndex();
         int sizeX = X_SIZES[getXComponent(index)];
         int sizeY = Y_SIZES[getYComponent(index)];
@@ -311,4 +316,17 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return List.of(new MITooltips.Line(MIText.LargeTankTooltips).arg(BUCKET_PER_STRUCTURE_BLOCK).build());
     }
 
+    @Override
+    protected boolean hasComparatorOutput() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorOutput() {
+        if (isShapeValid()) {
+            return StorageUtil.calculateComparatorOutput(fluidStorage.getFluidStorage());
+        } else {
+            return 0;
+        }
+    }
 }

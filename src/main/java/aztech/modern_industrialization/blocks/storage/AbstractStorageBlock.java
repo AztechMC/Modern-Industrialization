@@ -39,7 +39,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
-
     public final EntityBlock factory;
     public final StorageBehaviour<T> behavior;
 

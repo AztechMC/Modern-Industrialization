@@ -254,8 +254,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
-        public void set(ItemStack stack) {
-        }
+        public void set(ItemStack stack) {}
 
         @Override
         public void setChanged() {

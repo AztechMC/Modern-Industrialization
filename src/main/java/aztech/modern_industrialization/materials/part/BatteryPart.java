@@ -28,7 +28,6 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.items.PortableStorageUnit;
 
 public class BatteryPart implements PartKeyProvider {
-
     @Override
     public PartKey key() {
         return new PartKey("battery");

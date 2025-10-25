@@ -37,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> extends BlockItem implements ContainerItem<T> {
-
     public final StorageBehaviour<T> behaviour;
 
     public AbstractStorageBlockItem(AbstractStorageBlock<T> block, Properties properties) {
@@ -50,7 +49,6 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
         if (!isUnlocked(stack)) {
             tooltip.add(MIText.Locked.text());
         }
-
     }
 
     public StorageBehaviour<T> getBehaviour() {

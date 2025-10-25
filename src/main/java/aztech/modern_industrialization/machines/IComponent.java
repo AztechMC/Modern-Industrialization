@@ -42,12 +42,10 @@ public interface IComponent {
 
     interface ClientOnly extends IComponent {
         @Override
-        default void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        }
+        default void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {}
 
         @Override
-        default void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        }
+        default void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {}
 
         @Override
         void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries);
@@ -58,11 +56,9 @@ public interface IComponent {
 
     interface ServerOnly extends IComponent {
         @Override
-        default void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        }
+        default void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {}
 
         @Override
-        default void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        }
+        default void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {}
     }
 }

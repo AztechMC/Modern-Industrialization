@@ -98,8 +98,7 @@ public class CommonProxy {
         return false;
     }
 
-    public void delayNextBlockAttack(Player player) {
-    }
+    public void delayNextBlockAttack(Player player) {}
 
     public boolean hasShiftDown() {
         return false;
@@ -112,14 +111,11 @@ public class CommonProxy {
         return list;
     }
 
-    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
-    }
+    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {}
 
-    public void registerPartTankClient(Supplier<? extends BlockEntityType<? extends AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
-    }
+    public void registerPartTankClient(Supplier<? extends BlockEntityType<? extends AbstractTankBlockEntity>> blockEntityType, int meanRgb) {}
 
-    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
-    }
+    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {}
 
     public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         throw new UnsupportedOperationException("Only supported on the server");

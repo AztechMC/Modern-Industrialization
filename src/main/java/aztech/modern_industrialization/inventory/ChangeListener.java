@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ChangeListener {
-
     protected abstract void onChange();
 
     protected abstract boolean isValid(Object token); // TODO: do we really need the token? (it's unused for now)

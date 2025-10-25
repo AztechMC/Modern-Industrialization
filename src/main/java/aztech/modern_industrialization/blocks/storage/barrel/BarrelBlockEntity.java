@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
-
     public BarrelBlockEntity(BlockEntityType type,
             BlockPos pos,
             BlockState state) {

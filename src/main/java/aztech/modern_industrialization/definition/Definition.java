@@ -31,7 +31,6 @@ import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class Definition {
-
     public static List<Definition> TRANSLATABLE_DEFINITION = new ArrayList<>();
 
     private final ResourceLocation id;
@@ -76,5 +75,4 @@ public abstract class Definition {
     public String id() {
         return getResourceAsString(true);
     }
-
 }

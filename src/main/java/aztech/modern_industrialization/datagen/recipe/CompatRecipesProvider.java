@@ -42,7 +42,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 public class CompatRecipesProvider extends MIRecipesProvider {
-
     private RecipeOutput consumer;
     private String currentCompatModid;
     private ICondition[] conditions = null;

@@ -55,7 +55,6 @@ public class FluidHelper {
                     (double) capacity / FluidType.BUCKET_VOLUME);
             return Component.literal(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
-
     }
 
     public static MutableComponent getFluidAmount(long amount) {
@@ -92,7 +91,6 @@ public class FluidHelper {
     }
 
     public static List<Component> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
-
         if (fluid.isBlank()) {
             ArrayList<Component> list = new ArrayList();
             list.add(getFluidName(fluid, grayIfEmpty));

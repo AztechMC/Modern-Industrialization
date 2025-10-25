@@ -40,7 +40,6 @@ public record FluidNuclearComponent(
         FluidVariant neutronProduct,
         long neutronProductAmount,
         double neutronProductProbability) implements INuclearComponent<FluidVariant> {
-
     public FluidNuclearComponent(
             Fluid fluid,
             double heatConduction,

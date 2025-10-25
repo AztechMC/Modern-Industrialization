@@ -32,7 +32,6 @@ import java.util.Random;
 import org.jetbrains.annotations.Nullable;
 
 public class NuclearGridHelper {
-
     private static final int[] dX = { 1, 0, -1, 0 };
     private static final int[] dY = { 0, 1, 0, -1 };
 
@@ -41,7 +40,6 @@ public class NuclearGridHelper {
     private static final int MAX_SPLIT = 30;
 
     public static boolean simulate(NuclearGrid grid, NuclearEfficiencyHistoryComponent efficiencyHistory) {
-
         int sizeX = grid.getSizeX();
         int sizeY = grid.getSizeY();
 
@@ -231,7 +229,5 @@ public class NuclearGridHelper {
         }
 
         return hasFuel;
-
     }
-
 }

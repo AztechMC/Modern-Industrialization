@@ -52,7 +52,6 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity> {
     @Override
     public void render(@NotNull BarrelBlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
             int light, int overlay) {
-
         if (entity.isLocked()) {
             RenderHelper.drawLockedTexture(entity, matrices, vertexConsumers, itemNameColor);
         }

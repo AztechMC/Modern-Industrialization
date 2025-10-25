@@ -32,9 +32,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class LargeTankFluidDisplay {
-
     public static class Server implements GuiComponent.Server<Data> {
-
         public final Supplier<Data> fluidDataSupplier;
 
         public Server(Supplier<Data> fluidDataSupplier) {
@@ -71,7 +69,5 @@ public class LargeTankFluidDisplay {
         }
     }
 
-    public static record Data(FluidVariant fluid, long amount, long capacity) {
-    }
-
+    public static record Data(FluidVariant fluid, long amount, long capacity) {}
 }

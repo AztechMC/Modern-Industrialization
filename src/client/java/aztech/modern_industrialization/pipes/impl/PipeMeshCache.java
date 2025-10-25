@@ -52,8 +52,7 @@ public class PipeMeshCache implements PipeRenderer {
     private final ConcurrentMap<ConnectionMeshKey, Mesh> connectionMeshes = new ConcurrentHashMap<>(128, 0.5f);
     private final Function<ConnectionMeshKey, Mesh> connectionMeshBuilder;
 
-    private record ConnectionMeshKey(int endpointType, int logicalSlot, int directionId, int renderType) {
-    }
+    private record ConnectionMeshKey(int endpointType, int logicalSlot, int directionId, int renderType) {}
 
     /**
      * The meshes for the center connector. Indexed by: [logicalSlot][bitmask]. The
@@ -62,8 +61,7 @@ public class PipeMeshCache implements PipeRenderer {
     private final ConcurrentMap<CenterMeshKey, Mesh> centerMeshes = new ConcurrentHashMap<>(128, 0.5f);
     private final Function<CenterMeshKey, Mesh> centerMeshBuilder;
 
-    private record CenterMeshKey(int logicalSlot, int bitmask) {
-    }
+    private record CenterMeshKey(int logicalSlot, int bitmask) {}
 
     /**
      * Create a new `PipeMeshCache`, and populate it.

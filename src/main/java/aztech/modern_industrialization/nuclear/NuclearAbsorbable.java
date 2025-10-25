@@ -33,7 +33,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearAbsorbable extends NuclearComponentItem {
-
     public final int desintegrationMax;
 
     public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
@@ -60,7 +59,6 @@ public class NuclearAbsorbable extends NuclearComponentItem {
 
     public double getDurabilityBarProgress(ItemStack stack) {
         return (double) getRemainingDesintegrations(stack) / desintegrationMax;
-
     }
 
     @Override
@@ -92,6 +90,5 @@ public class NuclearAbsorbable extends NuclearComponentItem {
 
         setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - absorbNeutrons);
         return absorbNeutrons;
-
     }
 }

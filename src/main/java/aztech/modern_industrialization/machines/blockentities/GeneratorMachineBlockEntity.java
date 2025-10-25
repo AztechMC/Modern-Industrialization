@@ -53,7 +53,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class GeneratorMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, CableTierHolder {
-
     private final CableTier outputTier;
     private final MIEnergyStorage extractable;
     private final RedstoneControlComponent redstoneControl;
@@ -70,7 +69,6 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             long energyCapacity,
             long fluidCapacity,
             FluidItemConsumerComponent fluidItemConsumer) {
-
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
                 new OrientationComponent.Params(true, false, false));
 
@@ -141,7 +139,6 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
         this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer, redstoneControl);
         this.registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
     }
 
     public GeneratorMachineBlockEntity(BEP bep,
@@ -152,7 +149,6 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             long maxEnergyOutput,
             FluidDefinition acceptedFluid,
             long fluidEUperMb) {
-
         this(bep, name, outputTier, energyCapacity, fluidCapacity,
                 FluidItemConsumerComponent.ofSingleFluid(
                         maxEnergyOutput,

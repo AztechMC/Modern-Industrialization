@@ -31,9 +31,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class GunpowderOverclockGui {
-
     public static class Server implements GuiComponent.Server<Integer> {
-
         public final Parameters params;
         public final Supplier<Integer> remTickSupplier;
 

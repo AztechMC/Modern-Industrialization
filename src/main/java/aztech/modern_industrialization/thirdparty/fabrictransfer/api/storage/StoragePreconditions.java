@@ -62,6 +62,5 @@ public final class StoragePreconditions {
         notNegative(amount);
     }
 
-    private StoragePreconditions() {
-    }
+    private StoragePreconditions() {}
 }

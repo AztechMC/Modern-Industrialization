@@ -134,7 +134,6 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             }
             guiGraphics.renderTooltip(font, RenderHelper.splitTooltip(lines), x, y);
         }
-
     }
 
     @Override

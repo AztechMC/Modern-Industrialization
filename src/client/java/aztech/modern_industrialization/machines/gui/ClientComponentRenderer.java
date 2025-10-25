@@ -36,16 +36,13 @@ import net.minecraft.network.chat.Component;
  * Renderer for the shared data of a client component on the machine screen.
  */
 public interface ClientComponentRenderer {
-    default void addButtons(ButtonContainer container) {
-    }
+    default void addButtons(ButtonContainer container) {}
 
     void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos);
 
-    default void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {
-    }
+    default void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {}
 
-    default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {
-    }
+    default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {}
 
     interface ButtonContainer {
         /**
@@ -69,7 +66,6 @@ public interface ClientComponentRenderer {
                 Supplier<List<Component>> tooltipSupplier, CustomButtonRenderer renderer) {
             return addButton(posX, posY, width, height, pressAction, tooltipSupplier, renderer, () -> true);
         }
-
     }
 
     @FunctionalInterface
@@ -77,5 +73,4 @@ public interface ClientComponentRenderer {
         void renderButton(MachineScreen screen, MachineScreen.MachineButton button, GuiGraphics guiGraphics, int mouseX, int mouseY,
                 float partialTicks);
     }
-
 }

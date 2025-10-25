@@ -40,11 +40,9 @@ import org.jetbrains.annotations.Nullable;
 public abstract class PipeNetworkNode {
     protected PipeNetwork network;
 
-    public void updateConnections(Level world, BlockPos pos) {
-    }
+    public void updateConnections(Level world, BlockPos pos) {}
 
-    public void buildInitialConnections(Level world, BlockPos pos) {
-    }
+    public void buildInitialConnections(Level world, BlockPos pos) {}
 
     /**
      * Get connections. Must return a size 6 array containing the 6 connections in
@@ -80,8 +78,7 @@ public abstract class PipeNetworkNode {
         return new CompoundTag();
     }
 
-    public void appendDroppedStacks(List<ItemStack> droppedStacks) {
-    }
+    public void appendDroppedStacks(List<ItemStack> droppedStacks) {}
 
     /**
      * Return true if something was done.
@@ -90,6 +87,5 @@ public abstract class PipeNetworkNode {
         return false;
     }
 
-    public void onUnload() {
-    }
+    public void onUnload() {}
 }

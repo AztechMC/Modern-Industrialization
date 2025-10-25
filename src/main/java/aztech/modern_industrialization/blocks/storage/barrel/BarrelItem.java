@@ -45,7 +45,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
-
     private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
 
     public BarrelItem(BarrelBlock block, Properties settings) {
@@ -103,5 +102,4 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
             SlotAccess cursorStackReference) {
         return handleOtherStackedOnMe(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
-
 }

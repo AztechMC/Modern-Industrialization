@@ -29,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public enum MIText {
-
     ModernIndustrialization("Modern Industrialization"),
     AbsorptionProbability("Absorption Probability"),
     AcceptAnyFluidFuels("Consumes any Fluid Fuel (Check REI for EU/mb production)"),
@@ -310,5 +309,4 @@ public enum MIText {
     public MutableComponent text(Object... args) {
         return Component.translatable(getTranslationKey(), args);
     }
-
 }

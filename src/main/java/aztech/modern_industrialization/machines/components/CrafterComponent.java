@@ -110,8 +110,7 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             return false;
         }
 
-        default void onCraft() {
-        }
+        default void onCraft() {}
 
         // can't use getWorld() or the remapping will fail
         ServerLevel getCrafterWorld();
@@ -598,7 +597,8 @@ public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
             }
             // First, try to find a slot that contains the fluid. If we couldn't find one,
             // we insert in any stack
-            outer: for (int tries = 0; tries < 2; ++tries) {
+            outer:
+            for (int tries = 0; tries < 2; ++tries) {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
                     FluidVariant outputKey = FluidVariant.of(output.fluid());

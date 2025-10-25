@@ -38,7 +38,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler> {
-
     public static final ResourceLocation FORGE_HAMMER_GUI = MI.id("textures/gui/container/forge_hammer.png");
 
     private static final int X_OFFSET = 61, Y_OFFSET = 14;
@@ -68,7 +67,6 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
-
     }
 
     @Override
@@ -97,7 +95,6 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
 
             RenderHelper.renderAndDecorateItem(guiGraphics, font, handler.getAvailableRecipes().get(i).value().result(), k, m);
         }
-
     }
 
     private void renderRecipeBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
@@ -116,7 +113,6 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
 
             guiGraphics.blit(FORGE_HAMMER_GUI, k, m - 1, 0, n, 16, 18);
         }
-
     }
 
     protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
@@ -131,6 +127,5 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
                 guiGraphics.renderTooltip(font, handler.getAvailableRecipes().get(l).value().result(), x, y);
             }
         }
-
     }
 }

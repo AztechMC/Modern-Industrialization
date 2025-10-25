@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.materials.set;
 
 public enum MaterialRawSet {
-
     IRON("iron"),
     GOLD("gold"),
     COPPER("copper"),

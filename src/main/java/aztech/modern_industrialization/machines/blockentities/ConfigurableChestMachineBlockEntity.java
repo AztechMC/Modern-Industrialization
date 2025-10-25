@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final MIInventory inventory;
 
     public ConfigurableChestMachineBlockEntity(BEP bep) {

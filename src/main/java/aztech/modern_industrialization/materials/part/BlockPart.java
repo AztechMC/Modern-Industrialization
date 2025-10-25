@@ -28,7 +28,6 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 
 public class BlockPart implements PartKeyProvider {
-
     public PartTemplate of(MaterialBlockSet set) {
         return new PartTemplate("Block of %s", key())
                 .withCustomPath("%s_block", "storage_blocks/%s")

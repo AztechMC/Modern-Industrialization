@@ -51,7 +51,8 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
         boolean containsResourceAlready = false;
         long totalInserted = 0;
 
-        outer: for (int iter = 0; iter < 2; ++iter) {
+        outer:
+        for (int iter = 0; iter < 2; ++iter) {
             for (S stack : stacks) {
                 if (!filter.test(stack))
                     continue;

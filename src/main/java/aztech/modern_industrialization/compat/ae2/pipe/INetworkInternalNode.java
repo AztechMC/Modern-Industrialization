@@ -27,6 +27,5 @@ package aztech.modern_industrialization.compat.ae2.pipe;
 import appeng.api.networking.IGridNodeService;
 
 public interface INetworkInternalNode extends IGridNodeService {
-    INetworkInternalNode INSTANCE = new INetworkInternalNode() {
-    };
+    INetworkInternalNode INSTANCE = new INetworkInternalNode() {};
 }

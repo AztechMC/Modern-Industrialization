@@ -76,7 +76,6 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-
             Minecraft minecraftClient = Minecraft.getInstance();
             guiGraphics.blit(TEXTURE, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
                     CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
@@ -118,6 +117,5 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
                         0xFFFFFF, false);
             }
         }
-
     }
 }

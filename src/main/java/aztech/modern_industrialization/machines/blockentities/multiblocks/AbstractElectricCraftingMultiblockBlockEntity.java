@@ -46,7 +46,6 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity
         implements EnergyListComponentHolder, CrafterComponent.Behavior {
-
     public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId,
             OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {

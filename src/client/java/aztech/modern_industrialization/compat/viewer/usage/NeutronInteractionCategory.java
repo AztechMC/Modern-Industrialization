@@ -108,149 +108,149 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     @Override
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
         switch (recipe.type) {
-        case FISSION -> {
-            builder.inputSlot(52, centerY).variant(recipe.nuclearComponent.getVariant());
-        }
-        case NEUTRON_PRODUCT -> {
-            long amount = recipe.nuclearComponent.getNeutronProductAmount();
-            int baseX = 66;
-
-            if (recipe.nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
-                builder.inputSlot(baseX - 35, centerY).item(itemVariant.toStack());
-                ItemVariant product = (ItemVariant) recipe.nuclearComponent.getNeutronProduct();
-                builder.outputSlot(baseX + 35, centerY).item(product.toStack((int) amount));
-            } else if (recipe.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
-                float probability = (float) recipe.nuclearComponent.getNeutronProductProbability();
-                builder.inputSlot(baseX - 35, centerY).fluid(fluidVariant, 1, probability);
-                FluidVariant product = (FluidVariant) recipe.nuclearComponent.getNeutronProduct();
-                builder.outputSlot(baseX + 35, centerY).fluid(product, amount, probability);
+            case FISSION -> {
+                builder.inputSlot(52, centerY).variant(recipe.nuclearComponent.getVariant());
             }
-        }
-        case FAST_NEUTRON_INTERACTION, THERMAL_NEUTRON_INTERACTION -> {
-            builder.inputSlot(66, centerY).variant(recipe.nuclearComponent.getVariant());
-        }
+            case NEUTRON_PRODUCT -> {
+                long amount = recipe.nuclearComponent.getNeutronProductAmount();
+                int baseX = 66;
+
+                if (recipe.nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
+                    builder.inputSlot(baseX - 35, centerY).item(itemVariant.toStack());
+                    ItemVariant product = (ItemVariant) recipe.nuclearComponent.getNeutronProduct();
+                    builder.outputSlot(baseX + 35, centerY).item(product.toStack((int) amount));
+                } else if (recipe.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
+                    float probability = (float) recipe.nuclearComponent.getNeutronProductProbability();
+                    builder.inputSlot(baseX - 35, centerY).fluid(fluidVariant, 1, probability);
+                    FluidVariant product = (FluidVariant) recipe.nuclearComponent.getNeutronProduct();
+                    builder.outputSlot(baseX + 35, centerY).fluid(product, amount, probability);
+                }
+            }
+            case FAST_NEUTRON_INTERACTION, THERMAL_NEUTRON_INTERACTION -> {
+                builder.inputSlot(66, centerY).variant(recipe.nuclearComponent.getVariant());
+            }
         }
     }
 
     @Override
     public void buildWidgets(Recipe recipe, WidgetList widgets) {
         switch (recipe.type) {
-        case FISSION -> {
-            int centerX = 52;
+            case FISSION -> {
+                int centerX = 52;
 
-            NuclearFuel fuel = (NuclearFuel) recipe.nuclearComponent;
-            widgets.text(MIText.SingleNeutronCapture.text(), this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
-            widgets.texture(TEXTURE_ATLAS, centerX - 28, centerY - 7, 0, 109, 92, 31);
-
-            widgets.text(
-                    MIText.NeutronsMultiplication.text(String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS),
-                    this.centerX, centerY + 35, TextAlign.CENTER, false, true,
-                    MIText.NeutronTemperatureVariation.text());
-
-            widgets.text(
-                    Component.literal(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS),
-                    centerX - 18, centerY + 23, TextAlign.CENTER, false, false,
-                    MIText.FastNeutronEnergy.text());
-
-            widgets.text(
-                    Component.literal(String.format("%d EU", fuel.directEUbyDesintegration)),
-                    centerX + 55, centerY + 23, TextAlign.CENTER, false, true,
-                    MIText.DirectEnergy.text());
-
-            widgets.text(
-                    Component.literal(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)),
-                    centerX + 55, centerY - 12, TextAlign.CENTER, false, true,
-                    MIText.DirectHeatByDesintegration.text());
-        }
-        case NEUTRON_PRODUCT -> {
-            int centerX = 66;
-
-            int neutronNumber = 1;
-
-            if (recipe.nuclearComponent instanceof NuclearFuel nuclearFuel) {
-                neutronNumber = nuclearFuel.desintegrationMax;
-            }
-
-            widgets.text(MIText.NeutronAbsorption.text(), this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
-
-            widgets.drawable(guiGraphics -> {
-                int posX = centerX - 12;
-                int posY = centerY - 2;
-
-                guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
-
-                guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
-            });
-
-            Component neutronNumberText;
-            if (neutronNumber > 1) {
-                neutronNumberText = MIText.Neutrons.text(neutronNumber);
-            } else {
-                neutronNumberText = MIText.Neutron.text(neutronNumber);
-            }
-
-            widgets.text(neutronNumberText, this.centerX, centerY + 20, TextAlign.CENTER, false, true, null);
-        }
-        case FAST_NEUTRON_INTERACTION, THERMAL_NEUTRON_INTERACTION -> {
-            int centerX = 66;
-
-            Component title;
-            NeutronType type;
-
-            if (recipe.type == CategoryType.FAST_NEUTRON_INTERACTION) {
-                type = NeutronType.FAST;
-                title = MIText.FastNeutron.text();
-                widgets.texture(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 0, 88, 54);
-            } else {
-                type = NeutronType.THERMAL;
-                title = MIText.ThermalNeutron.text();
-                widgets.texture(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 54, 88, 54);
-            }
-
-            double interactionProb = recipe.nuclearComponent.getNeutronBehaviour().interactionTotalProbability(type);
-            double scattering = recipe.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.SCATTERING);
-            double absorption = recipe.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.ABSORPTION);
-
-            widgets.text(title, this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
-
-            String scatteringString = String.format("%.1f ", 100 * interactionProb * scattering) + "%";
-            String absorptionString = String.format("%.1f ", 100 * interactionProb * absorption) + "%";
-
-            widgets.text(
-                    Component.literal(scatteringString),
-                    centerX - 20, centerY - 15, TextAlign.CENTER, false, true,
-                    MIText.ScatteringProbability.text());
-
-            widgets.text(
-                    Component.literal(absorptionString).setStyle(TextHelper.NEUTRONS),
-                    centerX + 30, centerY + 35, TextAlign.CENTER, false, false,
-                    MIText.AbsorptionProbability.text());
-
-            if (type == NeutronType.FAST) {
-                double slowingProba = recipe.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
-
-                String thermalFractionString = String.format("%.1f ", 100 * slowingProba) + "%";
-                String fastFractionString = String.format("%.1f ", 100 * (1 - slowingProba)) + "%";
+                NuclearFuel fuel = (NuclearFuel) recipe.nuclearComponent;
+                widgets.text(MIText.SingleNeutronCapture.text(), this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
+                widgets.texture(TEXTURE_ATLAS, centerX - 28, centerY - 7, 0, 109, 92, 31);
 
                 widgets.text(
-                        Component.literal(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)),
-                        centerX + 60, centerY + 20, TextAlign.CENTER, false, false,
-                        MIText.FastNeutronFraction.text());
+                        MIText.NeutronsMultiplication.text(String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS),
+                        this.centerX, centerY + 35, TextAlign.CENTER, false, true,
+                        MIText.NeutronTemperatureVariation.text());
 
                 widgets.text(
-                        Component.literal(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)),
-                        centerX + 60, centerY - 10, TextAlign.CENTER, false, false,
-                        MIText.ThermalNeutronFraction.text());
+                        Component.literal(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS),
+                        centerX - 18, centerY + 23, TextAlign.CENTER, false, false,
+                        MIText.FastNeutronEnergy.text());
 
-                int index = 1 + (int) Math.floor((slowingProba) * 9);
-                if (slowingProba == 0) {
-                    index = 0;
-                } else if (slowingProba == 1) {
-                    index = 10;
+                widgets.text(
+                        Component.literal(String.format("%d EU", fuel.directEUbyDesintegration)),
+                        centerX + 55, centerY + 23, TextAlign.CENTER, false, true,
+                        MIText.DirectEnergy.text());
+
+                widgets.text(
+                        Component.literal(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)),
+                        centerX + 55, centerY - 12, TextAlign.CENTER, false, true,
+                        MIText.DirectHeatByDesintegration.text());
+            }
+            case NEUTRON_PRODUCT -> {
+                int centerX = 66;
+
+                int neutronNumber = 1;
+
+                if (recipe.nuclearComponent instanceof NuclearFuel nuclearFuel) {
+                    neutronNumber = nuclearFuel.desintegrationMax;
                 }
-                widgets.texture(TEXTURE_ATLAS, centerX + 48, centerY, index * 16, 240, 16, 16);
+
+                widgets.text(MIText.NeutronAbsorption.text(), this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
+
+                widgets.drawable(guiGraphics -> {
+                    int posX = centerX - 12;
+                    int posY = centerY - 2;
+
+                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
+
+                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
+                });
+
+                Component neutronNumberText;
+                if (neutronNumber > 1) {
+                    neutronNumberText = MIText.Neutrons.text(neutronNumber);
+                } else {
+                    neutronNumberText = MIText.Neutron.text(neutronNumber);
+                }
+
+                widgets.text(neutronNumberText, this.centerX, centerY + 20, TextAlign.CENTER, false, true, null);
             }
-        }
+            case FAST_NEUTRON_INTERACTION, THERMAL_NEUTRON_INTERACTION -> {
+                int centerX = 66;
+
+                Component title;
+                NeutronType type;
+
+                if (recipe.type == CategoryType.FAST_NEUTRON_INTERACTION) {
+                    type = NeutronType.FAST;
+                    title = MIText.FastNeutron.text();
+                    widgets.texture(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 0, 88, 54);
+                } else {
+                    type = NeutronType.THERMAL;
+                    title = MIText.ThermalNeutron.text();
+                    widgets.texture(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 54, 88, 54);
+                }
+
+                double interactionProb = recipe.nuclearComponent.getNeutronBehaviour().interactionTotalProbability(type);
+                double scattering = recipe.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.SCATTERING);
+                double absorption = recipe.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.ABSORPTION);
+
+                widgets.text(title, this.centerX, centerY - 34, TextAlign.CENTER, false, true, null);
+
+                String scatteringString = String.format("%.1f ", 100 * interactionProb * scattering) + "%";
+                String absorptionString = String.format("%.1f ", 100 * interactionProb * absorption) + "%";
+
+                widgets.text(
+                        Component.literal(scatteringString),
+                        centerX - 20, centerY - 15, TextAlign.CENTER, false, true,
+                        MIText.ScatteringProbability.text());
+
+                widgets.text(
+                        Component.literal(absorptionString).setStyle(TextHelper.NEUTRONS),
+                        centerX + 30, centerY + 35, TextAlign.CENTER, false, false,
+                        MIText.AbsorptionProbability.text());
+
+                if (type == NeutronType.FAST) {
+                    double slowingProba = recipe.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
+
+                    String thermalFractionString = String.format("%.1f ", 100 * slowingProba) + "%";
+                    String fastFractionString = String.format("%.1f ", 100 * (1 - slowingProba)) + "%";
+
+                    widgets.text(
+                            Component.literal(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)),
+                            centerX + 60, centerY + 20, TextAlign.CENTER, false, false,
+                            MIText.FastNeutronFraction.text());
+
+                    widgets.text(
+                            Component.literal(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)),
+                            centerX + 60, centerY - 10, TextAlign.CENTER, false, false,
+                            MIText.ThermalNeutronFraction.text());
+
+                    int index = 1 + (int) Math.floor((slowingProba) * 9);
+                    if (slowingProba == 0) {
+                        index = 0;
+                    } else if (slowingProba == 1) {
+                        index = 10;
+                    }
+                    widgets.texture(TEXTURE_ATLAS, centerX + 48, centerY, index * 16, 240, 16, 16);
+                }
+            }
         }
     }
 
@@ -259,8 +259,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
         return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
-    public record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {
-    }
+    public record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {}
 
     public enum CategoryType {
         FAST_NEUTRON_INTERACTION,

@@ -54,8 +54,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     protected boolean pipesInsert = false;
     protected boolean pipesExtract = false;
 
-    public AbstractConfigurableStack() {
-    }
+    public AbstractConfigurableStack() {}
 
     public AbstractConfigurableStack(AbstractConfigurableStack<T, K> other) {
         this.key = other.key;

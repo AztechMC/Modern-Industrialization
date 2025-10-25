@@ -51,7 +51,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class VersionEvents {
-
     private static final String url = "https://api.cfwidget.com/minecraft/mc-mods/modern-industrialization";
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
     private static final String alphaPostfix = "alpha";

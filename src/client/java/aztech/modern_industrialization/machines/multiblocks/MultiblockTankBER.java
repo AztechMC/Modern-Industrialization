@@ -158,6 +158,5 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             }
 
         }
-
     }
 }

@@ -45,7 +45,6 @@ import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jetbrains.annotations.Nullable;
 
 public class RecipeConversions {
-
     public static RecipeHolder<MachineRecipe> ofSmelting(RecipeHolder<SmeltingRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
         var smeltingRecipe = holder.value();

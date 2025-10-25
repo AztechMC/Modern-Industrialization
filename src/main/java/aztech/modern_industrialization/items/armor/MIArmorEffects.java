@@ -35,8 +35,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 public class MIArmorEffects {
-    private MIArmorEffects() {
-    }
+    private MIArmorEffects() {}
 
     public static boolean quantumArmorPreventsDamage(LivingEntity entity) {
         double parts = entity.getAttributeValue(MIRegistries.QUANTUM_ARMOR);

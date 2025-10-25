@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
-
     public AbstractTankBlockEntity(BlockEntityType<?> bet,
             BlockPos pos,
             BlockState state) {
@@ -72,5 +71,4 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     public abstract boolean onPlayerUse(Player player);
-
 }

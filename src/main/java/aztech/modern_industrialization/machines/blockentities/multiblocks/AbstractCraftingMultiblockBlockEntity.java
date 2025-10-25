@@ -120,9 +120,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         tickExtra();
     }
 
-    public void tickExtra() {
-
-    }
+    public void tickExtra() {}
 
     @Override
     protected void onRematch(ShapeMatcher shapeMatcher) {

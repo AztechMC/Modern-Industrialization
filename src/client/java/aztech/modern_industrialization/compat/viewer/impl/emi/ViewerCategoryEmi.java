@@ -292,9 +292,9 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                     var font = Minecraft.getInstance().font;
                     var width = font.width(text);
                     var alignedX = (int) switch (align) {
-                    case LEFT -> x;
-                    case CENTER -> x - width / 2f;
-                    case RIGHT -> x - width;
+                        case LEFT -> x;
+                        case CENTER -> x - width / 2f;
+                        case RIGHT -> x - width;
                     };
                     widgets.addText(text.getVisualOrderText(), alignedX - 4, (int) y - 4, overrideColor ? 0xFF404040 : -1, shadow);
                     if (tooltip != null) {
@@ -322,8 +322,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 @Override
                 public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
                     var mapped = tooltip.stream().map(c -> ClientTooltipComponent.create(c.getVisualOrderText())).toList();
-                    widgets.addDrawable(x - 4, y - 4, w, h, (matrices, mouseX, mouseY, delta) -> {
-                    }).tooltip((mouseX, mouseY) -> mapped);
+                    widgets.addDrawable(x - 4, y - 4, w, h, (matrices, mouseX, mouseY, delta) -> {}).tooltip((mouseX, mouseY) -> mapped);
                 }
 
                 @Override

@@ -40,6 +40,5 @@ public class MIGuide {
                 .build();
     }
 
-    private MIGuide() {
-    }
+    private MIGuide() {}
 }

@@ -41,7 +41,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class OverclockComponent implements IComponent {
-
     private final List<Catalyst> catalysts;
 
     private final NavigableMap<Double, MutableTickCount> tickMap = new TreeMap<>();
@@ -152,8 +151,7 @@ public class OverclockComponent implements IComponent {
         return List.of(new OverclockComponent.Catalyst(2D, ResourceLocation.parse("minecraft:gunpowder"), 120 * 20));
     }
 
-    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {
-    }
+    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {}
 
     private static class MutableTickCount {
         public int value;
@@ -162,5 +160,4 @@ public class OverclockComponent implements IComponent {
             this.value = value;
         }
     }
-
 }

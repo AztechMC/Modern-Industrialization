@@ -73,41 +73,41 @@ public class ModelHelper {
 
     public static void square(Vector3f[] out, Direction nominalFace, float left, float bottom, float right, float top, float depth) {
         switch (nominalFace) {
-        case UP:
-            depth = 1 - depth;
-            top = 1 - top;
-            bottom = 1 - bottom;
+            case UP:
+                depth = 1 - depth;
+                top = 1 - top;
+                bottom = 1 - bottom;
 
-        case DOWN:
-            out[0].set(left, depth, top);
-            out[1].set(left, depth, bottom);
-            out[2].set(right, depth, bottom);
-            out[3].set(right, depth, top);
-            break;
+            case DOWN:
+                out[0].set(left, depth, top);
+                out[1].set(left, depth, bottom);
+                out[2].set(right, depth, bottom);
+                out[3].set(right, depth, top);
+                break;
 
-        case EAST:
-            depth = 1 - depth;
-            left = 1 - left;
-            right = 1 - right;
+            case EAST:
+                depth = 1 - depth;
+                left = 1 - left;
+                right = 1 - right;
 
-        case WEST:
-            out[0].set(depth, top, left);
-            out[1].set(depth, bottom, left);
-            out[2].set(depth, bottom, right);
-            out[3].set(depth, top, right);
-            break;
+            case WEST:
+                out[0].set(depth, top, left);
+                out[1].set(depth, bottom, left);
+                out[2].set(depth, bottom, right);
+                out[3].set(depth, top, right);
+                break;
 
-        case SOUTH:
-            depth = 1 - depth;
-            left = 1 - left;
-            right = 1 - right;
+            case SOUTH:
+                depth = 1 - depth;
+                left = 1 - left;
+                right = 1 - right;
 
-        case NORTH:
-            out[0].set(1 - left, top, depth);
-            out[1].set(1 - left, bottom, depth);
-            out[2].set(1 - right, bottom, depth);
-            out[3].set(1 - right, top, depth);
-            break;
+            case NORTH:
+                out[0].set(1 - left, top, depth);
+                out[1].set(1 - left, bottom, depth);
+                out[2].set(1 - right, bottom, depth);
+                out[3].set(1 - right, top, depth);
+                break;
         }
     }
 
@@ -122,12 +122,12 @@ public class ModelHelper {
 
     private static Vector2f lockUvs(Vector3f pos, Direction face) {
         return switch (face) {
-        case EAST -> new Vector2f(1 - pos.z(), 1 - pos.y());
-        case WEST -> new Vector2f(pos.z(), 1 - pos.y());
-        case NORTH -> new Vector2f(1 - pos.x(), 1 - pos.y());
-        case SOUTH -> new Vector2f(pos.x(), 1 - pos.y());
-        case DOWN -> new Vector2f(pos.x(), 1 - pos.z());
-        case UP -> new Vector2f(pos.x(), pos.z());
+            case EAST -> new Vector2f(1 - pos.z(), 1 - pos.y());
+            case WEST -> new Vector2f(pos.z(), 1 - pos.y());
+            case NORTH -> new Vector2f(1 - pos.x(), 1 - pos.y());
+            case SOUTH -> new Vector2f(pos.x(), 1 - pos.y());
+            case DOWN -> new Vector2f(pos.x(), 1 - pos.z());
+            case UP -> new Vector2f(pos.x(), pos.z());
         };
     }
 

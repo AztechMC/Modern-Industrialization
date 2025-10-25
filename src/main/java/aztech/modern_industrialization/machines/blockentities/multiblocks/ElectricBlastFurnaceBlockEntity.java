@@ -48,7 +48,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-
     public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
         public String getTranslationKey() {
             return "ebf_tier.modern_industrialization." + coilBlockId.getPath();

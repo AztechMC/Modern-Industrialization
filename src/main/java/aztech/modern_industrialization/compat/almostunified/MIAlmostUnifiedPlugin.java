@@ -32,7 +32,6 @@ import net.minecraft.resources.ResourceLocation;
 
 @AlmostUnifiedNeoPlugin
 public class MIAlmostUnifiedPlugin implements AlmostUnifiedPlugin {
-
     @Override
     public ResourceLocation getPluginId() {
         return MI.id("almost_unified");

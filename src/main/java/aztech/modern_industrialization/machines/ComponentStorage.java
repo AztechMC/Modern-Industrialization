@@ -121,6 +121,5 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
         }
     }
 
-    public static final class Server extends ComponentStorage<IComponent> {
-    }
+    public static final class Server extends ComponentStorage<IComponent> {}
 }

@@ -66,7 +66,6 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class MITooltips {
-
     public static final PriorityQueue<TooltipAttachment> TOOLTIPS = new PriorityQueue<>();
 
     public static final Style DEFAULT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
@@ -162,8 +161,7 @@ public class MITooltips {
         }
     };
 
-    public record NumberWithMax(Number number, Number max) {
-    }
+    public record NumberWithMax(Number number, Number max) {}
 
     public static final Parser<NumberWithMax> EU_MAXED_PARSER = new Parser<>() {
         @Override
@@ -477,7 +475,6 @@ public class MITooltips {
     }
 
     public static class TooltipAttachment implements Comparable<TooltipAttachment> {
-
         public final BiFunction<ItemStack, Item, Optional<List<? extends Component>>> tooltipLines;
         public boolean requiresShift = true;
         public int priority = 0;
@@ -487,13 +484,11 @@ public class MITooltips {
         }
 
         public static TooltipAttachment of(ItemLike itemLike, Line line) {
-
             return new TooltipAttachment(
                     (itemStack, item) -> itemStack.getItem() == itemLike.asItem() ? Optional.of(List.of(line.build())) : Optional.empty());
         }
 
         public static TooltipAttachment of(BiFunction<ItemStack, Item, Optional<? extends Component>> tooltipLines) {
-
             return new TooltipAttachment((itemStack, item) -> tooltipLines.apply(itemStack, item).map(List::of));
         }
 
@@ -546,7 +541,6 @@ public class MITooltips {
     }
 
     public static class Line {
-
         public final MIText baseText;
         public final Style baseStyle;
 
@@ -580,5 +574,4 @@ public class MITooltips {
     public interface Parser<T> {
         Component parse(T t);
     }
-
 }

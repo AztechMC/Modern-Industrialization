@@ -33,7 +33,6 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
 
 public class LubricantHelper {
-
     public static final int mbPerTick = 25;
 
     public static ItemInteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {

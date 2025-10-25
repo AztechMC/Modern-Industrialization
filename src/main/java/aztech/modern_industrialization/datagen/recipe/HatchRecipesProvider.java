@@ -31,7 +31,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 
 public class HatchRecipesProvider extends MIRecipesProvider {
-
     private static final String pathPrefix = "hatches/";
 
     public HatchRecipesProvider(PackOutput packOutput) {
@@ -40,7 +39,6 @@ public class HatchRecipesProvider extends MIRecipesProvider {
 
     @Override
     public void buildRecipes(RecipeOutput consumer) {
-
         String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced", "quantum" };
         String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium", "" };
         String[] cables = { "", "", "tin", "electrum", "aluminum", "annealed_copper", "superconductor" };
@@ -96,6 +94,5 @@ public class HatchRecipesProvider extends MIRecipesProvider {
             }
 
         }
-
     }
 }

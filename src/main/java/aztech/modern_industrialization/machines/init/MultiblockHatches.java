@@ -45,22 +45,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class MultiblockHatches {
-    public record HatchPair<T extends HatchBlockEntity>(MachineDefinition<T> input, MachineDefinition<T> output) {
-    }
+    public record HatchPair<T extends HatchBlockEntity>(MachineDefinition<T> input, MachineDefinition<T> output) {}
 
     public static final HatchPair<ItemHatch> BRONZE_ITEM = registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
     public static final HatchPair<ItemHatch> STEEL_ITEM = registerItemHatches("Steel", "steel", MachineCasings.STEEL, 2, 1, 80, 30);
     public static final HatchPair<ItemHatch> ADVANCED_ITEM = registerItemHatches("Advanced", "advanced", CableTier.MV.casing, 2, 2, 71, 30);
     public static final HatchPair<ItemHatch> TURBO_ITEM = registerItemHatches("Turbo", "turbo", CableTier.HV.casing, 3, 3, 62, 21);
-    public static final HatchPair<ItemHatch> HIGHLY_ADVANCED_ITEM = registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3,
-            5, 44, 18);
+    public static final HatchPair<ItemHatch> HIGHLY_ADVANCED_ITEM = registerItemHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 3, 5, 44, 18);
 
     public static final HatchPair<FluidHatch> BRONZE_FLUID = registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
     public static final HatchPair<FluidHatch> STEEL_FLUID = registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 16);
     public static final HatchPair<FluidHatch> ADVANCED_FLUID = registerFluidHatches("Advanced", "advanced", CableTier.MV.casing, 64);
     public static final HatchPair<FluidHatch> TURBO_FLUID = registerFluidHatches("Turbo", "turbo", CableTier.HV.casing, 256);
-    public static final HatchPair<FluidHatch> HIGHLY_ADVANCED_FLUID = registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing,
-            1024);
+    public static final HatchPair<FluidHatch> HIGHLY_ADVANCED_FLUID = registerFluidHatches("Highly Advanced", "highly_advanced", CableTier.EV.casing, 1024);
 
     public static final HatchPair<EnergyHatch> LV_ENERGY = registerEnergyHatches(CableTier.LV);
     public static final HatchPair<EnergyHatch> MV_ENERGY = registerEnergyHatches(CableTier.MV);

@@ -53,7 +53,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
 
@@ -96,7 +95,6 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) steamHeater.getTemperature()));
 
         this.registerComponents(inventory, isActiveComponent, steamHeater, fuelBurning);
-
     }
 
     @Override

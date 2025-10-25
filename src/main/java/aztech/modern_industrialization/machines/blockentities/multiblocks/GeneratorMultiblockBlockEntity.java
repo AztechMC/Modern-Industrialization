@@ -44,12 +44,10 @@ import net.minecraft.network.chat.Component;
 
 public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         EnergyListComponentHolder, MultiblockInventoryComponentHolder {
-
     public GeneratorMultiblockBlockEntity(BEP bep,
             String name,
             ShapeTemplate shapeTemplate,
             FluidItemConsumerComponent fluidConsumer) {
-
         super(bep, new MachineGuiParameters.Builder(name, false)
                 .backgroundHeight(128).build(),
                 new OrientationComponent.Params(false, false, false));
@@ -99,7 +97,6 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     @Override
     public final void tick() {
-
         if (!level.isClientSide) {
             link();
             if (allowNormalOperation) {
@@ -117,7 +114,6 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
             }
             setChanged();
         }
-
     }
 
     public long insertEnergy(long value, Simulation simulation) {

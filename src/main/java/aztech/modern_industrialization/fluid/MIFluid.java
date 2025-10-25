@@ -42,7 +42,6 @@ import net.neoforged.neoforge.fluids.FluidType;
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
  */
 public class MIFluid extends Fluid {
-
     private final Supplier<MIFluidBlock> block;
     private final ItemLike bucketItem;
     private final Supplier<MIFluidType> fluidType;

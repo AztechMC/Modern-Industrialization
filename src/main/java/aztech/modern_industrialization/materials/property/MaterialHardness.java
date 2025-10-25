@@ -35,5 +35,4 @@ public enum MaterialHardness {
     MaterialHardness(double timeFactor) {
         this.timeFactor = timeFactor;
     }
-
 }

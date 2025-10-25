@@ -36,7 +36,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearFuel extends NuclearAbsorbable {
-
     public final double directEnergyFactor;
     public final double neutronMultiplicationFactor;
 
@@ -51,14 +50,11 @@ public class NuclearFuel extends NuclearAbsorbable {
     public final int tempLimitHigh;
 
     public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
-            double neutronMultiplicationFactor, double directEnergyFactor, int size) {
-    }
+            double neutronMultiplicationFactor, double directEnergyFactor, int size) {}
 
     public NuclearFuel(Properties settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, ResourceLocation depletedVersionId) {
-
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
-
     }
 
     private static int clampTemp(int temperature) {
@@ -68,7 +64,6 @@ public class NuclearFuel extends NuclearAbsorbable {
     private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size,
             ResourceLocation depletedVersionId) {
-
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
 
         this.size = size;
@@ -81,7 +76,6 @@ public class NuclearFuel extends NuclearAbsorbable {
 
         this.directEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * directEnergyFactor * neutronMultiplicationFactor);
         this.totalEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * (1.0 + directEnergyFactor) * neutronMultiplicationFactor);
-
     }
 
     public static ItemDefinition<NuclearFuel> of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
@@ -116,5 +110,4 @@ public class NuclearFuel extends NuclearAbsorbable {
         efficiencyHistory.registerEuFuelConsumption(fuelEuConsumed);
         return randIntFromDouble(efficiencyFactor(temperature) * absorption * neutronMultiplicationFactor, rand);
     }
-
 }

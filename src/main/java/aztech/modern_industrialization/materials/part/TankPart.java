@@ -49,7 +49,6 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
-
     public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
         gen.simpleBlock(block, gen.models()
                 .getBuilder(gen.blockTexture(block).getPath())
@@ -118,5 +117,4 @@ public class TankPart implements PartKeyProvider {
 
         return tank;
     }
-
 }

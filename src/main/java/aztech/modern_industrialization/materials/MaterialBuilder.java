@@ -33,7 +33,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.Nullable;
 
 public final class MaterialBuilder {
-
     private final Map<PartKey, MaterialItemPart> partsMap = new TreeMap<>();
     private final Map<MaterialProperty<?>, Object> properties = new IdentityHashMap<>();
 
@@ -145,7 +144,6 @@ public final class MaterialBuilder {
     }
 
     public class PartContext {
-
         public String getMaterialName() {
             return materialName;
         }
@@ -208,14 +206,11 @@ public final class MaterialBuilder {
     }
 
     public abstract class RecipeAction {
-
         abstract void apply(RecipeContext context);
-
     }
 
     @FunctionalInterface
     public interface RegisteringEvent {
-
         void onRegister(PartContext context);
     }
 }

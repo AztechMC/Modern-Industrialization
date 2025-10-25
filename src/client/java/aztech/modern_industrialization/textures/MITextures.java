@@ -50,7 +50,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public final class MITextures {
-
     public static CompletableFuture<?> offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
             ResourceProvider manager, ExistingFileHelper fileHelper) {
         TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
@@ -188,7 +187,6 @@ public final class MITextures {
     }
 
     public static void appendTexture(TextureManager mtm, NativeImage texture, String path, boolean isBlock) throws IOException {
-
         if (texture != null) {
             String texturePath;
             if (isBlock) {
@@ -251,7 +249,6 @@ public final class MITextures {
     }
 
     private static void registerFluidTextures(TextureManager tm, FluidDefinition fluid) {
-
         String path = "modern_industrialization:textures/fluid/";
         String bucket = path + "bucket.png";
         String bucket_content = path + "bucket_content.png";
@@ -288,6 +285,5 @@ public final class MITextures {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -239,8 +239,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public void setChanged() {
-        }
+        public void setChanged() {}
 
         @Override
         public int getMaxStackSize(ItemStack stack) {

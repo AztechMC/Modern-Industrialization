@@ -36,7 +36,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
-
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
         super(MIRegistries.CREATIVE_TANK_BE.get(), pos, state);
     }

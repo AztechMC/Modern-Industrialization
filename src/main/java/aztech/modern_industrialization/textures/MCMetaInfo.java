@@ -30,5 +30,4 @@ public class MCMetaInfo {
     public MCMetaInfo(Animation animation) {
         this.animation = animation;
     }
-
 }

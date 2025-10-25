@@ -30,12 +30,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class MENetworkData extends PipeNetworkData {
-
     private final IManagedGridNode mainNode;
 
     public MENetworkData() {
-        this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {
-        })
+        this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {})
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0);
         this.mainNode.addService(INetworkInternalNode.class, INetworkInternalNode.INSTANCE);

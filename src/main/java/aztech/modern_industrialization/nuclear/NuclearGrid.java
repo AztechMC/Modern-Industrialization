@@ -51,9 +51,7 @@ public final class NuclearGrid {
         return hatchesGrid[x][y];
     }
 
-    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {
-    }
+    public void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape) {}
 
-    public void registerNeutronCreation(int neutronNumber, NeutronType type) {
-    }
+    public void registerNeutronCreation(int neutronNumber, NeutronType type) {}
 }

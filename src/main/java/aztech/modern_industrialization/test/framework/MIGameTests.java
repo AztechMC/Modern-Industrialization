@@ -36,8 +36,7 @@ import net.minecraft.gametest.framework.StructureUtils;
 import net.minecraft.gametest.framework.TestFunction;
 
 public final class MIGameTests {
-    private MIGameTests() {
-    }
+    private MIGameTests() {}
 
     private static final List<Class<?>> TEST_CLASSES = List.of(
             FluidPipeTests.class,

@@ -298,6 +298,5 @@ public class ItemNetwork extends PipeNetwork {
         return moved;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink.HandlerWrapper target) {
-    }
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink.HandlerWrapper target) {}
 }

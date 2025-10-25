@@ -36,7 +36,6 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.inventory.InventoryMenu;
 
 public class MIAEAddonClient {
-
     private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
         @Override
         public Collection<Material> getSpriteDependencies() {

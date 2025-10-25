@@ -57,7 +57,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
-
     private final MIInventory inventory;
 
     public final NeutronHistoryComponent neutronHistory;
@@ -95,7 +94,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
         TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, NuclearConstant.MAX_TEMPERATURE);
         registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
-
     }
 
     @Override
@@ -131,7 +129,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 }
             }
         }
-
     }
 
     @Override
@@ -330,7 +327,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         } else {
             neutronHistory.addValue(thermalNeutronReceived, neutronNumber);
         }
-
     }
 
     @Override
@@ -369,5 +365,4 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             return Collections.emptyList();
         }
     }
-
 }

@@ -44,8 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class MIKubeJSPlugin implements KubeJSPlugin {
     @Override
-    public void init() {
-    }
+    public void init() {}
 
     @Override
     public void registerEvents(EventGroupRegistry registry) {

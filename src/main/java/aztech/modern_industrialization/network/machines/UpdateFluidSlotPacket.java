@@ -33,7 +33,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidStack newStack) implements BasePacket {
-
     public static final StreamCodec<RegistryFriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
             UpdateFluidSlotPacket::write, UpdateFluidSlotPacket::new);
 

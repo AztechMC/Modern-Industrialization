@@ -141,6 +141,5 @@ public class ConfigCardItem extends Item {
         return Optional.empty();
     }
 
-    public record TooltipData(List<ItemStack> filter) implements TooltipComponent {
-    }
+    public record TooltipData(List<ItemStack> filter) implements TooltipComponent {}
 }

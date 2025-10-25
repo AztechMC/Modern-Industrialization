@@ -34,7 +34,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluids;
 
 public class HeatExchangerRecipesProvider extends MIRecipesProvider {
-
     public HeatExchangerRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
@@ -78,6 +77,5 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
 
             }
         }
-
     }
 }

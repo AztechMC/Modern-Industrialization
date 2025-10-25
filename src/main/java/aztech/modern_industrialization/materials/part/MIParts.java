@@ -37,7 +37,6 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 public class MIParts {
-
     public static final BatteryPart BATTERY = new BatteryPart();
     public static final BarrelPart BARREL = new BarrelPart();
     public static final PartTemplate BLADE = new PartTemplate("Blade", "blade");
@@ -125,5 +124,4 @@ public class MIParts {
 
     public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);
-
 }

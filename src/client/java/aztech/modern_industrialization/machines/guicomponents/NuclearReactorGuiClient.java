@@ -94,7 +94,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-
         final int centerX = 88, centerY = 88;
         Renderer.Mode currentMode = Renderer.Mode.NUCLEAR_FUEL;
         NeutronType neutronMode = BOTH;
@@ -104,7 +103,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
         private final ResourceLocation COLORBAR = MI.id("textures/gui/colorbar.png");
 
         private enum Mode {
-
             NUCLEAR_FUEL(0),
             TEMPERATURE(1),
             NEUTRON_ABSORPTION(2),
@@ -117,7 +115,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
             Mode(int index) {
                 this.index = index;
             }
-
         }
 
         Component[] modeTooltip = new Component[] { MIText.NuclearFuelMode.text(), MIText.TemperatureMode.text(), MIText.NeutronAbsorptionMode.text(),
@@ -127,7 +124,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-
             if (data.valid()) {
                 for (int i = 0; i < data.gridSizeX(); i++) {
                     for (int j = 0; j < data.gridSizeY(); j++) {
@@ -445,7 +441,5 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                         }
                     }, this::drawNeutronButton);
         }
-
     }
-
 }

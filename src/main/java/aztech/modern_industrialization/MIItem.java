@@ -218,7 +218,6 @@ public final class MIItem {
             Function<Item.Properties, T> ctor,
             BiConsumer<Item, ItemModelProvider> modelGenerator,
             SortOrder sortOrder) {
-
         var holder = ITEMS.registerItem(path, ctor);
         var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
         ITEM_DEFINITIONS.put(holder.getId(), def);
@@ -235,14 +234,12 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {
-        }, sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {}, sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {
-        }, sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {}, sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
@@ -252,6 +249,5 @@ public final class MIItem {
         }, sortOrder);
     }
 
-    private MIItem() {
-    }
+    private MIItem() {}
 }

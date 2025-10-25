@@ -37,7 +37,6 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
-
     default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             Mutable<ItemStack> ref = new MutableObject<>(slot.getItem());

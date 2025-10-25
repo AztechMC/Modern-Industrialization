@@ -38,8 +38,7 @@ public final class GuiComponent {
     }
 
     public interface Common {
-        default void setupMenu(MenuFacade menu) {
-        }
+        default void setupMenu(MenuFacade menu) {}
     }
 
     /**
@@ -93,7 +92,6 @@ public final class GuiComponent {
         }
 
         @Override
-        default void writeCurrentData(RegistryFriendlyByteBuf buf) {
-        }
+        default void writeCurrentData(RegistryFriendlyByteBuf buf) {}
     }
 }

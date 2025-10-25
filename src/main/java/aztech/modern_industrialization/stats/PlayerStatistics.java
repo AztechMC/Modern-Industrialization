@@ -150,8 +150,7 @@ public class PlayerStatistics {
                 if (val != Items.AIR && val != Fluids.EMPTY) {
                     map.put(val, new StatisticValue(tag.getCompound(key)));
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 
@@ -170,8 +169,7 @@ public class PlayerStatistics {
                 if (val != Items.AIR) {
                     map.put(val, tag.getLong(key));
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
     }
 

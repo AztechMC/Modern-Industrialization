@@ -42,7 +42,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 
 public class MaterialBuilderJSWrapper {
-
     protected MaterialBuilder materialBuilder;
     final private PartJsonCreator creator = new PartJsonCreator();
 

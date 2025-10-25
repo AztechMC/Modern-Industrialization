@@ -27,7 +27,6 @@ package aztech.modern_industrialization.nuclear;
 import com.google.common.base.Preconditions;
 
 public interface INeutronBehaviour {
-
     double neutronSlowingProbability();
 
     double interactionTotalProbability(NeutronType type);
@@ -36,9 +35,7 @@ public interface INeutronBehaviour {
 
     static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, double thermalNeutronAbsorptionBarn, double fastNeutronAbsorptionBarn,
             double thermalNeutronScatteringBarn, double fastNeutronScatteringBarn, double size) {
-
         return new INeutronBehaviour() {
-
             final double thermalProbability = probaFromCrossSection((thermalNeutronAbsorptionBarn + thermalNeutronScatteringBarn) * Math.sqrt(size));
             final double fastProbability = probaFromCrossSection((fastNeutronAbsorptionBarn + fastNeutronScatteringBarn) * Math.sqrt(size));
 
@@ -88,7 +85,6 @@ public interface INeutronBehaviour {
     }
 
     static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, IsotopeParams params, double size) {
-
         return of(scatteringType, params.thermalAbsorption, params.fastAbsorption, params.thermalScattering, params.fastScattering, size);
     }
 
@@ -97,7 +93,6 @@ public interface INeutronBehaviour {
     }
 
     INeutronBehaviour NO_INTERACTION = new INeutronBehaviour() {
-
         @Override
         public double neutronSlowingProbability() {
             return 0.5;
@@ -113,5 +108,4 @@ public interface INeutronBehaviour {
             return 0.5;
         }
     };
-
 }

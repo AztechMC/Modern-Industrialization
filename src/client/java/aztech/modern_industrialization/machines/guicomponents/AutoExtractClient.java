@@ -123,7 +123,6 @@ public class AutoExtractClient implements GuiComponentClient {
         }
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-        }
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {}
     }
 }

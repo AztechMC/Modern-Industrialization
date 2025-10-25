@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 
 // An MIBlock that converts a book into the guide book when right clicked
 public class OreBlock extends Block {
-
     public final OrePart.OrePartParams params;
     public final String materialName;
 

@@ -58,6 +58,5 @@ public final class DynamicRegistryDatagen {
         return builder;
     }
 
-    private DynamicRegistryDatagen() {
-    }
+    private DynamicRegistryDatagen() {}
 }

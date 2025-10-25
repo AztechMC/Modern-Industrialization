@@ -38,7 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class RedstoneControlComponent implements IComponent.ServerOnly, DropableComponent {
-
     public static final ResourceLocation ID = MI.id("redstone_control");
 
     private ItemStack controlModule = ItemStack.EMPTY;

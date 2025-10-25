@@ -68,8 +68,7 @@ public class MIKeybinds {
             toggleableItemAction(
                     EquipmentSlot.CHEST,
                     i -> i.is(MIItem.DIESEL_JETPACK.asItem()) || i.is(MIItem.GRAVICHESTPLATE.asItem()),
-                    (player, activated) -> {
-                    }));
+                    (player, activated) -> {}));
 
     public static final Keybind TOGGLE_3_BY_3 = create(
             "toggle_3x3",
@@ -105,6 +104,5 @@ public class MIKeybinds {
         };
     }
 
-    public record Keybind(Lazy<KeyMapping> holder, Runnable action) {
-    }
+    public record Keybind(Lazy<KeyMapping> holder, Runnable action) {}
 }

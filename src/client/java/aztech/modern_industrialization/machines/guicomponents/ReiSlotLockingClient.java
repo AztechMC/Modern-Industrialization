@@ -48,7 +48,6 @@ public class ReiSlotLockingClient implements GuiComponentClient {
     @Override
     public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
         // nothing to do;
-        return (guiGraphics, x, y) -> {
-        };
+        return (guiGraphics, x, y) -> {};
     }
 }

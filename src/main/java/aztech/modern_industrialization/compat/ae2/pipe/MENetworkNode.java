@@ -51,8 +51,7 @@ public class MENetworkNode extends PipeNetworkNode {
 
     void updateNode() {
         if (this.mainNode == null && this.connections.size() > 0) {
-            this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {
-            }).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
+            this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {}).setFlags(GridFlags.PREFERRED).setIdlePowerUsage(0.0);
         }
         if (this.mainNode != null && this.connections.size() == 0) {
             // Destroying the node might cause a block update,
@@ -67,8 +66,7 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void buildInitialConnections(Level world, BlockPos pos) {
-    }
+    public void buildInitialConnections(Level world, BlockPos pos) {}
 
     @Override
     public void updateConnections(Level world, BlockPos pos) {

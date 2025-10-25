@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class MIBucketItem extends BucketItem {
-
     public final int color;
 
     public MIBucketItem(MIFluid fluid, int color, Properties settings) {

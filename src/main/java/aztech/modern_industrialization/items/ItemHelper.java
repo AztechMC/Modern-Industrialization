@@ -40,6 +40,5 @@ public final class ItemHelper {
                 .build();
     }
 
-    private ItemHelper() {
-    }
+    private ItemHelper() {}
 }

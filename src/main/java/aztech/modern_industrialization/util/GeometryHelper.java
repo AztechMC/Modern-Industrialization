@@ -28,8 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 public final class GeometryHelper {
-    private GeometryHelper() {
-    }
+    private GeometryHelper() {}
 
     /**
      * Vectors to the right of the face, i.e. the X axis in the XY plane of the

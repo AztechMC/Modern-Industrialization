@@ -172,7 +172,8 @@ public class PipeMeshBuilder extends PipePartBuilder {
         // Try to match every pattern
         for (int i = 0; i < CENTER_PATTERNS.length; ++i) {
             // With every possible rotation
-            rotations: for (int j = 0; j < 4; ++j) {
+            rotations:
+            for (int j = 0; j < 4; ++j) {
                 for (int k = 0; k < 4; ++k) {
                     if (CENTER_PATTERNS[i][k] != sidesDirections[(j + k) % 4]) {
                         continue rotations;

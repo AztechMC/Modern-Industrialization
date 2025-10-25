@@ -54,8 +54,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
     }
 
-    protected void onRematch(ShapeMatcher shapeMatcher) {
-    }
+    protected void onRematch(ShapeMatcher shapeMatcher) {}
 
     protected final void link() {
         if (shapeMatcher == null) {

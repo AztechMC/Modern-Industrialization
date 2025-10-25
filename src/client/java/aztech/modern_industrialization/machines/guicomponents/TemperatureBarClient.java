@@ -54,7 +54,6 @@ public class TemperatureBarClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-
         private final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
         private final int WIDTH = 100, HEIGHT = 2;
 
@@ -67,7 +66,6 @@ public class TemperatureBarClient implements GuiComponentClient {
             guiGraphics.blit(TEXTURE, x + params.renderX, y + params.renderY, 0, 0, barPixels,
                     HEIGHT, 102, 6);
             guiGraphics.blit(MachineScreen.SLOT_ATLAS, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
-
         }
 
         @Override

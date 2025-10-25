@@ -47,7 +47,6 @@ public record ForgeHammerRecipe(
         int count,
         ItemStack result,
         int hammerDamage) implements Recipe<RecipeInput> {
-
     private static final MapCodec<ForgeHammerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(ForgeHammerRecipe::ingredient),

@@ -34,8 +34,7 @@ public class StatisticValue {
     private final int[] remainingTicks = new int[StatisticsRate.COUNT];
     private long lastTick = 0;
 
-    public StatisticValue() {
-    }
+    public StatisticValue() {}
 
     public StatisticValue(CompoundTag nbt) {
         allTime = nbt.getLong("at");

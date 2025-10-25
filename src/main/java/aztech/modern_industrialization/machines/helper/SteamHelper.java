@@ -49,6 +49,5 @@ public final class SteamHelper {
         return totalRem;
     }
 
-    private SteamHelper() {
-    }
+    private SteamHelper() {}
 }

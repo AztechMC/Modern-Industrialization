@@ -82,7 +82,6 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                             ret.conditions = conditions;
                             return ret;
                         }));
-
     }
 
     public static StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec(MachineRecipeType type) {
@@ -204,7 +203,6 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                     Optional::of);
 
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
-
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
@@ -258,7 +256,6 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     public record ItemOutput(ItemVariant variant, int amount, float probability) {
-
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item")

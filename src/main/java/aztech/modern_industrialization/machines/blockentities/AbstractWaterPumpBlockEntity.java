@@ -64,7 +64,6 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
                 pumpingTicks = tag.getInt("pumpingTicks");
             }
         });
-
     }
 
     abstract protected long consumeEu(long max);
@@ -125,5 +124,4 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         }
         return count;
     }
-
 }

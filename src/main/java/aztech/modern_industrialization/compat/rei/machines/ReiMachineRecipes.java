@@ -109,6 +109,5 @@ public class ReiMachineRecipes {
         MULTIBLOCK,
     }
 
-    public record MultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
-    }
+    public record MultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {}
 }

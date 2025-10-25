@@ -42,8 +42,7 @@ public interface FTBQuestsFacade {
             }
         }
 
-        return (uuid, item, amount) -> {
-        };
+        return (uuid, item, amount) -> {};
     }
 
     void addCompleted(UUID uuid, Item item, long amount);

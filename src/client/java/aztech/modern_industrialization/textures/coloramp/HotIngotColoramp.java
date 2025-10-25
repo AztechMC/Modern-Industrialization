@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.textures.coloramp;
 
 public class HotIngotColoramp implements IColoramp {
-
     private final IColoramp from;
     private final double bias, gamma;
 

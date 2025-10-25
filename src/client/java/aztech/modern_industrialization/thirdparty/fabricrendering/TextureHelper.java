@@ -25,13 +25,10 @@
 package aztech.modern_industrialization.thirdparty.fabricrendering;
 /*
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,8 +45,7 @@ import net.minecraft.core.Direction;
  * block-breaking models for enhanced models.
  */
 public class TextureHelper {
-    private TextureHelper() {
-    }
+    private TextureHelper() {}
 
     private static final float NORMALIZER = 1f / 16f;
 
@@ -62,9 +58,9 @@ public class TextureHelper {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UVLOCKERS[quad.nominalFace().get3DDataValue()]);
         } else if ((MutableQuadView.BAKE_NORMALIZED & bakeFlags) == 0) { // flag is NOT set, UVs are assumed to not be
-                                                                         // normalized yet as is the default, normalize
-                                                                         // through dividing by 16
-            // Scales from 0-16 to 0-1
+                                                                        // normalized yet as is the default, normalize
+                                                                        // through dividing by 16
+                                                                        // Scales from 0-16 to 0-1
             applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * NORMALIZER, q.v(i) * NORMALIZER));
         }
 

@@ -32,7 +32,6 @@ import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import java.util.List;
 
 public record RawMetalPart(boolean isBlock) implements PartKeyProvider {
-
     public PartTemplate of(MaterialRawSet set) {
         PartTemplate part = new PartTemplate(isBlock ? "Block of Raw %s" : "Raw %s", key());
 

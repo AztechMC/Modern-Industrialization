@@ -39,8 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 public final class SteamDrillHooks {
-    private SteamDrillHooks() {
-    }
+    private SteamDrillHooks() {}
 
     private static final ThreadLocal<Boolean> canOverride = ThreadLocal.withInitial(() -> true);
 

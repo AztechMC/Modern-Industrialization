@@ -134,25 +134,17 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         setChanged();
     }
 
-    protected void tickTransfer() {
-    }
+    protected void tickTransfer() {}
 
-    public void appendItemInputs(List<ConfigurableItemStack> list) {
-    }
+    public void appendItemInputs(List<ConfigurableItemStack> list) {}
 
-    public void appendItemOutputs(List<ConfigurableItemStack> list) {
-    }
+    public void appendItemOutputs(List<ConfigurableItemStack> list) {}
 
-    public void appendFluidInputs(List<ConfigurableFluidStack> list) {
-    }
+    public void appendFluidInputs(List<ConfigurableFluidStack> list) {}
 
-    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
-    }
+    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {}
 
-    public void appendEnergyInputs(List<EnergyComponent> list) {
-    }
+    public void appendEnergyInputs(List<EnergyComponent> list) {}
 
-    public void appendEnergyOutputs(List<EnergyComponent> list) {
-
-    }
+    public void appendEnergyOutputs(List<EnergyComponent> list) {}
 }

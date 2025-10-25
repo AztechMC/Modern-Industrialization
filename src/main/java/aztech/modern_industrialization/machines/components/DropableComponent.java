@@ -27,7 +27,5 @@ package aztech.modern_industrialization.machines.components;
 import net.minecraft.world.item.ItemStack;
 
 public interface DropableComponent {
-
     ItemStack getDrop();
-
 }

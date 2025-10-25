@@ -47,8 +47,7 @@ public class PlayerStatisticsData extends SavedData {
         }
     }
 
-    private PlayerStatisticsData() {
-    }
+    private PlayerStatisticsData() {}
 
     public PlayerStatistics get(UUID uuid) {
         Objects.requireNonNull(uuid);

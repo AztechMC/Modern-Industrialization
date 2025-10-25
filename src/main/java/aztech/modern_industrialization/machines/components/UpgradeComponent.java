@@ -37,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 public class UpgradeComponent implements IComponent.ServerOnly, DropableComponent {
-
     private ItemStack itemStack = ItemStack.EMPTY;
 
     public static long getExtraEu(ItemLike item) {

@@ -73,6 +73,5 @@ public final class MIDataMaps {
             })
             .build();
 
-    private MIDataMaps() {
-    }
+    private MIDataMaps() {}
 }

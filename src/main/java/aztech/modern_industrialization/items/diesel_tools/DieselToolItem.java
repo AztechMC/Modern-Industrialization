@@ -297,7 +297,6 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
-
         final int defaultMb = 100;
         float speedMultiplier = this.getMiningSpeedMultiplier(stack);
         int costMb = (int) (defaultMb / speedMultiplier);

@@ -32,7 +32,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class TagsToGenerate {
-
     static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
     static final Set<TagKey<Item>> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();

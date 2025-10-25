@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
  * Values will be serialized using the toString() function of the enum.
  */
 public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
-
     protected final Map<K, int[]> histories;
     protected final int[] updatingValues; // indexed by enum ordinal
     protected final double[] averages; // indexed by enum ordinal

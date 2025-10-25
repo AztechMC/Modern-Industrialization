@@ -66,8 +66,7 @@ public class FluidPipeTests {
             pipe.addInConnection(Direction.EAST);
             pipe.addOutConnection(Direction.WEST);
         });
-        helper.pipe(new BlockPos(1, 2, 0), fluidPipe, pipe -> {
-        });
+        helper.pipe(new BlockPos(1, 2, 0), fluidPipe, pipe -> {});
         helper.startSequence()
                 .thenIdle(1)
                 .thenExecute(() -> {

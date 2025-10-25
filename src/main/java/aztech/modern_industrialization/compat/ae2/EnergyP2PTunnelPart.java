@@ -34,7 +34,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Sto
 import java.util.List;
 
 public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnelPart, MIEnergyStorage> {
-
     private static final P2PModels MODELS = new P2PModels("part/energy_p2p_tunnel");
 
     public EnergyP2PTunnelPart(IPartItem<?> partItem) {

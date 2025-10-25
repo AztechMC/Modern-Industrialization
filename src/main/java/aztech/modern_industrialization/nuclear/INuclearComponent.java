@@ -31,7 +31,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public interface INuclearComponent<T extends TransferVariant> {
-
     double getHeatConduction();
 
     INeutronBehaviour getNeutronBehaviour();
@@ -56,11 +55,9 @@ public interface INuclearComponent<T extends TransferVariant> {
 
     static ResourceLocation getEmiRecipeId(INuclearComponent<?> component, String category, String type) {
         return switch (component.getVariant()) {
-        case ItemVariant itemVariant ->
-            BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
-        case FluidVariant fluidVariant ->
-            BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);
-        case Object object -> throw new IllegalArgumentException("Unknown component variant " + object);
+            case ItemVariant itemVariant -> BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
+            case FluidVariant fluidVariant -> BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);
+            case Object object -> throw new IllegalArgumentException("Unknown component variant " + object);
         };
     }
 }

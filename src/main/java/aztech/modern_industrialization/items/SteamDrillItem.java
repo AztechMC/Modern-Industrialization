@@ -98,7 +98,6 @@ import org.jetbrains.annotations.Nullable;
 public class SteamDrillItem
         extends Item
         implements DynamicToolItem, ItemContainingItemHelper, ActivatableItem {
-
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
         public long getCapacityForResource(ItemVariant resource) {
@@ -109,7 +108,6 @@ public class SteamDrillItem
             int burnTicks = item.toStack().getBurnTime(null);
             return burnTicks > 0;
         }
-
     };
 
     private static final int FULL_WATER = 18000;
@@ -187,8 +185,7 @@ public class SteamDrillItem
         return ItemAttributeModifiers.EMPTY;
     }
 
-    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {
-    }
+    public record Area(BlockPos center, BlockPos corner1, BlockPos corner2) {}
 
     @Nullable
     public Area getArea(BlockGetter level, Player player, ItemStack stack, boolean rayTraceOnly) {
@@ -280,7 +277,8 @@ public class SteamDrillItem
             return;
         }
 
-        outer: for (var entity : event.getDrops()) {
+        outer:
+        for (var entity : event.getDrops()) {
             if (entity.getItem().isEmpty()) {
                 continue;
             }
@@ -308,8 +306,7 @@ public class SteamDrillItem
         }
     }
 
-    private record ClickedBlock(BlockPos pos, Direction face) {
-    }
+    private record ClickedBlock(BlockPos pos, Direction face) {}
 
     private static final ThreadLocal<Boolean> recursiveMineBlock = ThreadLocal.withInitial(() -> false);
 
@@ -569,6 +566,5 @@ public class SteamDrillItem
     }
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)
-            implements TooltipComponent {
-    }
+            implements TooltipComponent {}
 }

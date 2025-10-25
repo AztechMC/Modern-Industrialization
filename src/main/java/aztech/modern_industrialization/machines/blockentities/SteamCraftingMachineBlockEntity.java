@@ -43,7 +43,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
-
     private final OverclockComponent overclockComponent;
 
     public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,

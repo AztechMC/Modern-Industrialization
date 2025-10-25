@@ -39,43 +39,30 @@ public class KubeJSProxy {
 
     public static KubeJSProxy instance = new KubeJSProxy();
 
-    public void fireAddMaterialsEvent() {
-    }
+    public void fireAddMaterialsEvent() {}
 
-    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {
-    }
+    public void fireModifyMaterialEvent(MaterialBuilder materialBuilder) {}
 
-    public void fireRegisterFluidsEvent() {
-    }
+    public void fireRegisterFluidsEvent() {}
 
-    public void fireRegisterRecipeTypesEvent() {
-    }
+    public void fireRegisterRecipeTypesEvent() {}
 
-    public void fireRegisterMachineCasingsEvent() {
-    }
+    public void fireRegisterMachineCasingsEvent() {}
 
-    public void fireRegisterMachinesEvent() {
-    }
+    public void fireRegisterMachinesEvent() {}
 
-    public void fireRegisterHatchesEvent() {
-    }
+    public void fireRegisterHatchesEvent() {}
 
-    public void fireRegisterUpgradesEvent() {
-    }
+    public void fireRegisterUpgradesEvent() {}
 
     public void fireAddMultiblockSlotsEvent(String category, SlotPositions.Builder itemInputs, SlotPositions.Builder itemOutputs,
-            SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {
-    }
+            SlotPositions.Builder fluidInputs, SlotPositions.Builder fluidOutputs) {}
 
-    public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {
-    }
+    public void fireAddEbfTiersEvent(Consumer<ElectricBlastFurnaceBlockEntity.Tier> tierConsumer) {}
 
-    public void fireCustomConditionEvent() {
-    }
+    public void fireCustomConditionEvent() {}
 
-    public void fireCableTiersEvent() {
-    }
+    public void fireCableTiersEvent() {}
 
-    public void fireRegisterFluidNeutronInteractionsEvent() {
-    }
+    public void fireRegisterFluidNeutronInteractionsEvent() {}
 }

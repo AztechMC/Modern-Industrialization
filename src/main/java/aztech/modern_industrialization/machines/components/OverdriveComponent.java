@@ -37,7 +37,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class OverdriveComponent implements IComponent.ServerOnly, DropableComponent {
-
     public static final ResourceLocation ID = MI.id("overdrive");
 
     private ItemStack overdriveModule = ItemStack.EMPTY;

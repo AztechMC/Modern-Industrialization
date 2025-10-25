@@ -55,7 +55,6 @@ public enum PipeColor {
         this.color = color;
         this.englishNamePrefix = englishName + " ";
         this.prefix = name + "_";
-
     }
 
     PipeColor(int color) {
@@ -65,5 +64,4 @@ public enum PipeColor {
         this.prefix = "";
         this.color = color;
     }
-
 }

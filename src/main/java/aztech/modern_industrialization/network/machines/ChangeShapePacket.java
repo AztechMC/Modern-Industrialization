@@ -35,7 +35,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record ChangeShapePacket(int syncId, int shapeLine, boolean clickedLeftButton) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, ChangeShapePacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             ChangeShapePacket::syncId,

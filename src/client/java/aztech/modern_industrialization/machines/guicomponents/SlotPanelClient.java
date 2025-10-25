@@ -53,8 +53,7 @@ public class SlotPanelClient implements GuiComponentClient {
     }
 
     @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-    }
+    public void readCurrentData(RegistryFriendlyByteBuf buf) {}
 
     @Override
     public void setupMenu(GuiComponent.MenuFacade menu) {

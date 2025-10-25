@@ -42,7 +42,6 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockDefinition<T extends Block> extends Definition implements ItemLike, Supplier<T> {
-
     private final DeferredBlock<T> block;
     public final ItemDefinition<BlockItem> blockItem;
 
@@ -60,7 +59,6 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
             MIBlockLoot blockLoot,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
-
         super(englishName, block.getId().getPath(), false);
         this.block = block;
         this.blockItem = MIItem.item(
@@ -86,7 +84,6 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
         } else {
             return null;
         }
-
     }
 
     public T asBlock() {

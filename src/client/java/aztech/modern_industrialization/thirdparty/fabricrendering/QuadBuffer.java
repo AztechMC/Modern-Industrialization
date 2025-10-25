@@ -31,6 +31,5 @@ public class QuadBuffer extends MutableQuadViewImpl {
     }
 
     @Override
-    public void emitDirectly() {
-    }
+    public void emitDirectly() {}
 }

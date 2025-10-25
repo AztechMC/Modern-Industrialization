@@ -27,7 +27,6 @@ package aztech.modern_industrialization.definition;
 import net.minecraft.world.level.material.Fluid;
 
 public interface FluidLike {
-
     public Fluid asFluid();
 
     public static FluidLike of(Fluid fluid) {

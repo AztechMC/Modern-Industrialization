@@ -56,8 +56,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     }
 
     @Override
-    public void buildWorkstations(WorkstationConsumer consumer) {
-    }
+    public void buildWorkstations(WorkstationConsumer consumer) {}
 
     @Override
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {

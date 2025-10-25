@@ -34,7 +34,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public record SetPriorityPacket(int syncId, int channel, int priority) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, SetPriorityPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             SetPriorityPacket::syncId,

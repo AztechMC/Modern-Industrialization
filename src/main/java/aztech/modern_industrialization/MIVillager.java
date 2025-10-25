@@ -74,7 +74,6 @@ public class MIVillager {
         level5.add(buyItemsFromVillager(MIItem.ANALOG_CIRCUIT, 12, 1, 20));
         level5.add(buyItemsFromVillager(MIItem.MOTOR, 8, 2, 10));
         level5.add(buyItemsFromVillager(MIMaterials.BRONZE.getPart(MIParts.DRILL), 18, 4, 20));
-
     }
 
     private static VillagerTrades.ItemListing sellItemsToVillager(ItemLike soldItem, int numberOfItems, int maxUses, int xp) {

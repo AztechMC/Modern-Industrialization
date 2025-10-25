@@ -38,14 +38,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
 public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permits MaterialItemPartImpl {
-
     /**
      * External parts are already registered and already have a texture,
      * but they're in the material system for recipe generation.
      */
     static MaterialItemPart external(PartKey key, String taggedItemId, String itemId) {
-        return new MaterialItemPartImpl(key, taggedItemId, itemId, ctx -> {
-        }, new TextureGenParams.NoTexture(), false);
+        return new MaterialItemPartImpl(key, taggedItemId, itemId, ctx -> {}, new TextureGenParams.NoTexture(), false);
     }
 
     static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {

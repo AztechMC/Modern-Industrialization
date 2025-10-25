@@ -54,7 +54,6 @@ public class GunpowderOverclockGuiClient implements GuiComponentClient {
     }
 
     public class Renderer implements ClientComponentRenderer {
-
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             if (remTick > 0) {

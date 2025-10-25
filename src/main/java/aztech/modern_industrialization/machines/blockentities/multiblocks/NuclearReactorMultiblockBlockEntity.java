@@ -47,7 +47,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-
     private static final ShapeTemplate[] shapeTemplates;
     /**
      * For every possible shape, contains true if the position is within the bounds

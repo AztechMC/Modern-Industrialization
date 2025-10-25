@@ -85,8 +85,7 @@ public abstract class SnapshotJournal<T extends @Nullable Object> {
      * Signals that the snapshot will not be used anymore, and is safe to cache for future calls to {@link #createSnapshot},
      * or discard entirely.
      */
-    protected void releaseSnapshot(T snapshot) {
-    }
+    protected void releaseSnapshot(T snapshot) {}
 
     /**
      * Called after the root transaction was successfully committed,
@@ -123,8 +122,7 @@ public abstract class SnapshotJournal<T extends @Nullable Object> {
      * @param originalState state of this journal before the transactional operations.
      *                      This corresponds to the first {@link #createSnapshot() snapshot} that was created in the transactional operations.
      */
-    protected void onRootCommit(T originalState) {
-    }
+    protected void onRootCommit(T originalState) {}
 
     /**
      * Update the stored snapshots so that the changes happening as part of the passed transaction can be correctly

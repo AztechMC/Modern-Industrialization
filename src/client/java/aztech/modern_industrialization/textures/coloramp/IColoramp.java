@@ -29,7 +29,6 @@ import static aztech.modern_industrialization.textures.TextureHelper.*;
 import com.mojang.blaze3d.platform.NativeImage;
 
 public interface IColoramp {
-
     public int getRGB(double luminance);
 
     public int getMeanRGB();
@@ -48,5 +47,4 @@ public interface IColoramp {
         }
         return image;
     }
-
 }

@@ -42,11 +42,9 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("Convert2MethodRef")
 public class MachineCasings {
-
     public static final Map<ResourceLocation, MachineCasing> registeredCasings = new HashMap<>();
 
-    public record CasingName(MachineCasing casing, String englishName) {
-    }
+    public record CasingName(MachineCasing casing, String englishName) {}
 
     public static final List<CasingName> translations = new ArrayList<>();
 

@@ -33,9 +33,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class NuclearReactorGui {
-
     public record Server(Supplier<Data> dataSupplier) implements GuiComponent.Server<Data> {
-
         @Override
         public Data copyData() {
             return dataSupplier.get();
@@ -75,7 +73,6 @@ public class NuclearReactorGui {
                 buf.writeDouble(data.euProduction);
                 buf.writeDouble(data.euFuelConsumption);
             }
-
         }
 
         @Override
@@ -94,7 +91,6 @@ public class NuclearReactorGui {
     public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData,
             double euProduction,
             double euFuelConsumption) {
-
         public int toIndex(int x, int y) {
             return toIndex(x, y, gridSizeY);
         }
@@ -103,5 +99,4 @@ public class NuclearReactorGui {
             return x * sizeY + y;
         }
     }
-
 }

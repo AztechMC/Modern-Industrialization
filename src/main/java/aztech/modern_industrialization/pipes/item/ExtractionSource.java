@@ -32,5 +32,4 @@ record ExtractionSource(
         ItemNetworkNode.ItemConnection connection,
         IItemHandler storage,
         BlockPos queryPos,
-        Direction querySide) {
-}
+        Direction querySide) {}

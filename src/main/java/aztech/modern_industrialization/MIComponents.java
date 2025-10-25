@@ -74,6 +74,5 @@ public final class MIComponents {
         COMPONENTS.register(modEventBus);
     }
 
-    private MIComponents() {
-    }
+    private MIComponents() {}
 }

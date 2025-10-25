@@ -25,11 +25,9 @@
 package aztech.modern_industrialization.materials.part;
 
 public sealed interface PartEnglishNameFormatter {
-
     String format(String materialEnglishName);
 
     record Default(String name) implements PartEnglishNameFormatter {
-
         @Override
         public String format(String materialEnglishName) {
             if (!name.contains("%s")) {
@@ -41,7 +39,6 @@ public sealed interface PartEnglishNameFormatter {
     }
 
     record Overridden(String name) implements PartEnglishNameFormatter {
-
         @Override
         public String format(String materialEnglishName) {
             return name;

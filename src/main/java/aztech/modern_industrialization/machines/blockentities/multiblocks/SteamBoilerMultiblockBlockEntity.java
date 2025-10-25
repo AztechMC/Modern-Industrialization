@@ -44,7 +44,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-
     private final ShapeTemplate shapeTemplate;
     private final IsActiveComponent isActiveComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -78,7 +77,6 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
         registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
         registerGuiComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
         registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
     }
 
     @Override

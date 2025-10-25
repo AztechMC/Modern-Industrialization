@@ -40,7 +40,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class SteamHeaterComponent extends TemperatureComponent {
-
     private static final int STEAM_TO_WATER = 16;
 
     /**
@@ -79,7 +78,6 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     // return eu produced
     public double tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
-
         double euProducedLowPressure = 0;
         if (acceptLowPressure) {
             euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM.asFluid(), 1);
@@ -114,12 +112,10 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     private double tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam, int euPerSteamMb) {
         return tryMakeSteam(new MIFluidStorage(input), new MIFluidStorage(output), water, steam, euPerSteamMb);
-
     }
 
     // Return true if any steam was made.
     private double tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
-
         FluidVariant waterKey = FluidVariant.of(water);
         FluidVariant steamKey = FluidVariant.of(steam);
 

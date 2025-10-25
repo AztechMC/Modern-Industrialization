@@ -34,7 +34,6 @@ import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearOrder;
 
 public class ControlRodPart implements PartKeyProvider {
-
     @Override
     public PartKey key() {
         return FUEL_ROD.key;
@@ -66,5 +65,4 @@ public class ControlRodPart implements PartKeyProvider {
                                 SortOrder.NUCLEAR.create(NuclearOrder.CONTROL_ROD)))
                 .withCustomPath("%s_control_rod");
     }
-
 }

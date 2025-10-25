@@ -33,7 +33,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.material.Fluid;
 
 public class RegisterFluidNeutronInteractionsEventJS implements KubeEvent {
-
     public void register(
             Fluid fluid,
             double heatConduction,
@@ -48,13 +47,12 @@ public class RegisterFluidNeutronInteractionsEventJS implements KubeEvent {
             Fluid productFluid,
             long productPerNeutron,
             double productProbability) {
-
         var scatteringType = switch (scatteringString) {
-        case "ultra_light" -> NuclearConstant.ScatteringType.ULTRA_LIGHT;
-        case "light" -> NuclearConstant.ScatteringType.LIGHT;
-        case "medium" -> NuclearConstant.ScatteringType.MEDIUM;
-        case "heavy" -> NuclearConstant.ScatteringType.HEAVY;
-        default -> throw new IllegalArgumentException("Invalid ScatteringType: " + scatteringString);
+            case "ultra_light" -> NuclearConstant.ScatteringType.ULTRA_LIGHT;
+            case "light" -> NuclearConstant.ScatteringType.LIGHT;
+            case "medium" -> NuclearConstant.ScatteringType.MEDIUM;
+            case "heavy" -> NuclearConstant.ScatteringType.HEAVY;
+            default -> throw new IllegalArgumentException("Invalid ScatteringType: " + scatteringString);
         };
 
         FluidNuclearComponent.register(
@@ -91,7 +89,6 @@ public class RegisterFluidNeutronInteractionsEventJS implements KubeEvent {
             Fluid productFluid,
             long productPerNeutron,
             double productProbability) {
-
         remove(fluid);
         register(fluid, heatConduction, density, scatteringString, thermalAbsorption, fastAbsorption, thermalScattering, fastScattering, productFluid,
                 productPerNeutron, productProbability);

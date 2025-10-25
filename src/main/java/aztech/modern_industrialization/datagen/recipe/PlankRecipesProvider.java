@@ -31,7 +31,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 
 public final class PlankRecipesProvider extends MIRecipesProvider {
-
     public PlankRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }
@@ -51,7 +50,6 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
     }
 
     private static void genPlanks(RecipeOutput consumer, String prefix, boolean log) {
-
         String suffixTag = log ? "logs" : "stems";
         String suffix = log ? "log" : "stem";
 
@@ -88,5 +86,4 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
                 .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 3);
         packedStrippedWood.offerTo(consumer, "packer/stripped_wood/" + prefix);
     }
-
 }

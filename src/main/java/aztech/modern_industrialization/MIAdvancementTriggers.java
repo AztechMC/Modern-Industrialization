@@ -32,8 +32,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class MIAdvancementTriggers {
-    private MIAdvancementTriggers() {
-    }
+    private MIAdvancementTriggers() {}
 
     // Triggers
     private static final DeferredRegister<CriterionTrigger<?>> DR = DeferredRegister.create(Registries.TRIGGER_TYPE, MI.ID);

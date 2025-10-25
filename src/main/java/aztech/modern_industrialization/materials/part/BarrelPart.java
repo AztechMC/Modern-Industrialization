@@ -47,7 +47,6 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 public class BarrelPart implements PartKeyProvider {
-
     @Override
     public PartKey key() {
         return new PartKey("barrel");
@@ -106,5 +105,4 @@ public class BarrelPart implements PartKeyProvider {
         }
         return template;
     }
-
 }

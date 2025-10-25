@@ -60,7 +60,6 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
     }
 
     public static class AlloyBuilder {
-
         public final String output;
         private int totalAmount;
         private final List<String> ingredients = new ArrayList<>();
@@ -104,7 +103,5 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
             dusts.offerTo(consumer, "alloy/mixer/" + output + "/dust");
             tinyDusts.offerTo(consumer, "alloy/mixer/" + output + "/tiny_dust");
         }
-
     }
-
 }

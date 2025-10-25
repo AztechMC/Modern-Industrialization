@@ -29,5 +29,4 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.ba
  *
  * @param <T> The type of the stored resource.
  */
-public record ResourceAmount<T>(T resource, long amount) {
-}
+public record ResourceAmount<T>(T resource, long amount) {}

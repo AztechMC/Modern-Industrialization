@@ -36,7 +36,6 @@ import aztech.modern_industrialization.nuclear.NuclearOrder;
 import java.util.List;
 
 public class NuclearFuelPart implements PartKeyProvider {
-
     public enum Type {
         SIMPLE(1, "fuel_rod"),
         DOUBLE(2, "fuel_rod_double"),
@@ -67,10 +66,10 @@ public class NuclearFuelPart implements PartKeyProvider {
 
     private PartTemplate of() {
         String englishNameFormatter = switch (type) {
-        case SIMPLE -> "Fuel Rod";
-        case DOUBLE -> "Double Fuel Rod";
-        case QUAD -> "Quad Fuel Rod";
-        case DEPLETED -> "Depleted %s Fuel Rod";
+            case SIMPLE -> "Fuel Rod";
+            case DOUBLE -> "Double Fuel Rod";
+            case QUAD -> "Quad Fuel Rod";
+            case DEPLETED -> "Depleted %s Fuel Rod";
         };
 
         var out = new PartTemplate(englishNameFormatter, key)

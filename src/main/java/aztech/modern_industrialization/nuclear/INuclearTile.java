@@ -28,7 +28,6 @@ import aztech.modern_industrialization.machines.components.NuclearEfficiencyHist
 import java.util.Optional;
 
 public interface INuclearTile extends INuclearTileData {
-
     void setTemperature(double temp);
 
     void putHeat(double eu);
@@ -47,5 +46,4 @@ public interface INuclearTile extends INuclearTileData {
     int neutronGenerationTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
 
     void nuclearTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
-
 }

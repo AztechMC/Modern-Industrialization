@@ -119,56 +119,56 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
     @Override
     public void buildWidgets(Recipe recipe, WidgetList widgets) {
         widgets.text(switch (recipe.type) {
-        case NEUTRON_EFFICIENCY -> MIText.NeutronProductionTemperatureEffect.text();
-        case THERMAL_PROPERTIES -> MIText.ThermalInteraction.text();
+            case NEUTRON_EFFICIENCY -> MIText.NeutronProductionTemperatureEffect.text();
+            case THERMAL_PROPERTIES -> MIText.ThermalInteraction.text();
         }, centerX, 8, TextAlign.CENTER, false, true, null);
 
         switch (recipe.type) {
-        case NEUTRON_EFFICIENCY -> {
-            var nuclearComponent = (NuclearFuel) recipe.nuclearComponent;
-            var area = new Rectangle(10, 45, width - 20, height - 50);
-            widgets.rectangle(area, 0xFF8b8b8b);
+            case NEUTRON_EFFICIENCY -> {
+                var nuclearComponent = (NuclearFuel) recipe.nuclearComponent;
+                var area = new Rectangle(10, 45, width - 20, height - 50);
+                widgets.rectangle(area, 0xFF8b8b8b);
 
-            int py = height - 14;
+                int py = height - 14;
 
-            widgets.text(Component.literal("0°C"), 11, py, TextAlign.LEFT, true, false, null);
-            widgets.text(Component.literal(String.format("%d°C", nuclearComponent.tempLimitLow)), centerX, py, TextAlign.CENTER, true, false, null);
-            widgets.text(Component.literal(String.format("%d°C", nuclearComponent.tempLimitHigh)), width - 10, py, TextAlign.RIGHT, true, false,
-                    null);
+                widgets.text(Component.literal("0°C"), 11, py, TextAlign.LEFT, true, false, null);
+                widgets.text(Component.literal(String.format("%d°C", nuclearComponent.tempLimitLow)), centerX, py, TextAlign.CENTER, true, false, null);
+                widgets.text(Component.literal(String.format("%d°C", nuclearComponent.tempLimitHigh)), width - 10, py, TextAlign.RIGHT, true, false,
+                        null);
 
-            widgets.drawable(guiGraphics -> {
-                var helper = Minecraft.getInstance().screen;
-                for (int i = 1; i < area.w() / 2; i++) {
-                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, area.y() + 4, 0, 255, 1, 1);
-                }
-                for (int i = area.w() / 2; i < area.w() - 1; i++) {
-                    double f = (i - area.w() / 2d) / (area.w() - area.w() / 2d);
-                    int y = (int) ((1 - f) * (area.y() + 4) + f * (area.y() + area.h() - 14));
-                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, y, 0, 255, 1, 1);
-                }
-            });
+                widgets.drawable(guiGraphics -> {
+                    var helper = Minecraft.getInstance().screen;
+                    for (int i = 1; i < area.w() / 2; i++) {
+                        guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, area.y() + 4, 0, 255, 1, 1);
+                    }
+                    for (int i = area.w() / 2; i < area.w() - 1; i++) {
+                        double f = (i - area.w() / 2d) / (area.w() - area.w() / 2d);
+                        int y = (int) ((1 - f) * (area.y() + 4) + f * (area.y() + area.h() - 14));
+                        guiGraphics.blit(MachineScreen.SLOT_ATLAS, area.x() + i, y, 0, 255, 1, 1);
+                    }
+                });
 
-            widgets.text(Component.literal(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)), 11, area.y() + 2, TextAlign.LEFT,
-                    false, false, null);
-            widgets.text(Component.literal("0"), width - 10, py - 10, TextAlign.RIGHT, false, false, null);
-        }
-        case THERMAL_PROPERTIES -> {
-            var nuclearComponent = recipe.nuclearComponent;
-            int centerX = width / 2;
-            int centerY = height / 2;
-
-            Component heatConduction = MIText.HeatConduction.text(
-                    String.format("%d", (int) (1000 * nuclearComponent.getHeatConduction()))).setStyle(TextHelper.HEAT_CONDUCTION);
-
-            widgets.text(heatConduction, centerX, centerY, TextAlign.CENTER, false, false, null);
-
-            int maxTemperature = nuclearComponent.getMaxTemperature();
-
-            if (maxTemperature != Integer.MAX_VALUE) {
-                Component maxTemp = MIText.MaxTemp.text(maxTemperature).setStyle(TextHelper.MAX_TEMP_TEXT);
-                widgets.text(maxTemp, centerX, centerY + 12, TextAlign.CENTER, false, false, null);
+                widgets.text(Component.literal(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)), 11, area.y() + 2, TextAlign.LEFT,
+                        false, false, null);
+                widgets.text(Component.literal("0"), width - 10, py - 10, TextAlign.RIGHT, false, false, null);
             }
-        }
+            case THERMAL_PROPERTIES -> {
+                var nuclearComponent = recipe.nuclearComponent;
+                int centerX = width / 2;
+                int centerY = height / 2;
+
+                Component heatConduction = MIText.HeatConduction.text(
+                        String.format("%d", (int) (1000 * nuclearComponent.getHeatConduction()))).setStyle(TextHelper.HEAT_CONDUCTION);
+
+                widgets.text(heatConduction, centerX, centerY, TextAlign.CENTER, false, false, null);
+
+                int maxTemperature = nuclearComponent.getMaxTemperature();
+
+                if (maxTemperature != Integer.MAX_VALUE) {
+                    Component maxTemp = MIText.MaxTemp.text(maxTemperature).setStyle(TextHelper.MAX_TEMP_TEXT);
+                    widgets.text(maxTemp, centerX, centerY + 12, TextAlign.CENTER, false, false, null);
+                }
+            }
         }
     }
 
@@ -177,8 +177,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
         return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "thermal_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
-    protected record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {
-    }
+    protected record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {}
 
     enum CategoryType {
         NEUTRON_EFFICIENCY,

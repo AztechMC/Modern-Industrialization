@@ -40,7 +40,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class LargeTankFluidDisplayClient implements GuiComponentClient {
-
     LargeTankFluidDisplay.Data fluidData;
 
     public LargeTankFluidDisplayClient(RegistryFriendlyByteBuf buf) {
@@ -104,5 +103,4 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
             }
         };
     }
-
 }

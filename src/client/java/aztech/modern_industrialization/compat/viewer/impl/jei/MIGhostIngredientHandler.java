@@ -124,8 +124,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
     }
 
     @Override
-    public void onComplete() {
-    }
+    public void onComplete() {}
 
     private static Rect2i getWidgetBounds(AbstractWidget cw) {
         return new Rect2i(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight());

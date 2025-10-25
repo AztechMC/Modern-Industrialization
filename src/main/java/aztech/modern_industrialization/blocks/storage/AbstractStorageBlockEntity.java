@@ -52,7 +52,6 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
         implements SingleSlotStorage<T>, WrenchableBlockEntity {
-
     @Override
     public long getVersion() {
         return version;
@@ -286,12 +285,10 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
                 amount = 0;
             }
         }
-
     }
 
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-
         if (behaviour.isLockable()) {
             tag.putBoolean("locked", isLocked);
         }

@@ -61,8 +61,7 @@ public class MIAEAddon {
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
             p -> new PartItem<>(new Item.Properties(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {
-            },
+            (item, gen) -> {},
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
@@ -93,15 +92,15 @@ public class MIAEAddon {
 
     private static void registerMEPipeType(PipeColor color) {
         var aeColor = switch (color) {
-        case REGULAR -> AEColor.TRANSPARENT;
-        default -> {
-            for (var candidate : AEColor.values()) {
-                if (candidate.registryPrefix.equals(color.name)) {
-                    yield candidate;
+            case REGULAR -> AEColor.TRANSPARENT;
+            default -> {
+                for (var candidate : AEColor.values()) {
+                    if (candidate.registryPrefix.equals(color.name)) {
+                        yield candidate;
+                    }
                 }
+                throw new UnsupportedOperationException("No AE color for " + color.name);
             }
-            throw new UnsupportedOperationException("No AE color for " + color.name);
-        }
         };
 
         var pipeId = color.prefix + "me_wire";

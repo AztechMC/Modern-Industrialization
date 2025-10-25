@@ -124,18 +124,18 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
                 if (lockingMode) {
                     switch (actionType) {
-                    case PICKUP -> {
-                        ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                        itemStack.togglePlayerLock(getCarried().getItem());
-                    }
-                    case QUICK_MOVE -> {
-                        // Try to move everything to player inventory
-                        insertItem(itemSlot, 0, PLAYER_SLOTS, true);
-                        // Lock to air if empty
-                        if (slot.getItem().isEmpty()) {
-                            itemSlot.getConfStack().playerLock(Items.AIR, Simulation.ACT);
+                        case PICKUP -> {
+                            ConfigurableItemStack itemStack = itemSlot.getConfStack();
+                            itemStack.togglePlayerLock(getCarried().getItem());
                         }
-                    }
+                        case QUICK_MOVE -> {
+                            // Try to move everything to player inventory
+                            insertItem(itemSlot, 0, PLAYER_SLOTS, true);
+                            // Lock to air if empty
+                            if (slot.getItem().isEmpty()) {
+                                itemSlot.getConfStack().playerLock(Items.AIR, Simulation.ACT);
+                            }
+                        }
                     }
                     return;
                 }

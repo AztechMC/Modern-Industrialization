@@ -44,8 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * Client-side display of fluid variants.
  */
 public final class FluidVariantRendering {
-    private FluidVariantRendering() {
-    }
+    private FluidVariantRendering() {}
 
     /**
      * Return the render handler for the passed fluid, if available, or the default instance otherwise.

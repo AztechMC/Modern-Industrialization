@@ -34,7 +34,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record AdjustSlotCapacityPacket(int syncId, int slotId, boolean isIncrease, boolean isShiftDown) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, AdjustSlotCapacityPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             AdjustSlotCapacityPacket::syncId,

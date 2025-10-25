@@ -83,11 +83,9 @@ public abstract class ViewerCategory<D> {
     public abstract ResourceLocation getRecipeId(D recipe);
 
     public sealed interface Icon {
-        record Stack(ItemStack stack) implements Icon {
-        }
+        record Stack(ItemStack stack) implements Icon {}
 
-        record Texture(ResourceLocation loc, int u, int v) implements Icon {
-        }
+        record Texture(ResourceLocation loc, int u, int v) implements Icon {}
     }
 
     public interface WorkstationConsumer {

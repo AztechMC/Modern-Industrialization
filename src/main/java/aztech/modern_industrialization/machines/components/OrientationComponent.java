@@ -129,5 +129,4 @@ public class OrientationComponent implements IComponent {
             this(hasOutput, hasExtractItems, hasExtractFluids, false);
         }
     }
-
 }

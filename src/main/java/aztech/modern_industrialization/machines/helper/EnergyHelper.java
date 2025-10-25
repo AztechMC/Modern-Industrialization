@@ -33,7 +33,6 @@ import dev.technici4n.grandpower.api.EnergyStorageUtil;
 import net.minecraft.core.Direction;
 
 public class EnergyHelper {
-
     public static void autoOutput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, MIEnergyStorage energySource) {
         autoOutput(machine, orientation.outputDirection, output, energySource);
     }

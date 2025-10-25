@@ -51,7 +51,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
-
     protected final EnergyComponent energy;
     private final RedstoneControlComponent redstoneControl;
 
@@ -65,7 +64,6 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity) {
         this(bep, from, to, name, euCapacity, true);
-
     }
 
     public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity,
@@ -89,7 +87,6 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                 new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
 
         this.extractableOnOutputDirection = extractableOnOutputDirection;
-
     }
 
     @Override

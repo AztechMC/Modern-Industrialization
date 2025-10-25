@@ -219,7 +219,6 @@ public class OrePart implements PartKeyProvider {
     }
 
     public static class OrePartParams {
-
         public final UniformInt xpDropped;
         public final MaterialOreSet set;
         public final boolean generate;
@@ -253,5 +252,4 @@ public class OrePart implements PartKeyProvider {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel, biomeTag);
         }
     }
-
 }

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 
 public class IsotopeFuelParams extends IsotopeParams {
-
     public final int maxTemp;
     public final double neutronsMultiplication;
     public final double directEnergyFactor;
@@ -37,7 +36,6 @@ public class IsotopeFuelParams extends IsotopeParams {
 
     public IsotopeFuelParams(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
             double neutronsMultiplication, double directEnergyFactor) {
-
         super(thermalAbsorbProba, INeutronBehaviour.reduceCrossProba(thermalAbsorbProba, 0.1), thermalScatterings,
                 INeutronBehaviour.reduceCrossProba(thermalScatterings, 0.5));
 
@@ -46,7 +44,6 @@ public class IsotopeFuelParams extends IsotopeParams {
         this.directEnergyFactor = directEnergyFactor;
         this.tempLimitLow = tempLimitLow;
         this.tempLimitHigh = tempLimitHigh;
-
     }
 
     public static IsotopeFuelParams of(Material material) {
@@ -79,7 +76,6 @@ public class IsotopeFuelParams extends IsotopeParams {
 
         return new IsotopeFuelParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newTempLimitLow, newTempLimitHigh,
                 newNeutronMultiplicationFactor, newDirectEnergyFactor);
-
     }
 
     private static double mix(double a, double b, double r) {

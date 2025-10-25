@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidStorageComponent implements IComponent, FluidAccess {
-
     private final Runnable changeCallback;
     private long capacity;
 

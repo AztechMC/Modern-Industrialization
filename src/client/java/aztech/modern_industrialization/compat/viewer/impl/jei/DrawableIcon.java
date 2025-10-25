@@ -34,9 +34,9 @@ public class DrawableIcon implements IDrawable {
 
     public static IDrawable create(IGuiHelper guiHelper, ViewerCategory.Icon icon) {
         return switch (icon) {
-        case ViewerCategory.Icon.Stack stack -> guiHelper.createDrawableItemStack(stack.stack());
-        case ViewerCategory.Icon.Texture texture -> new DrawableIcon(texture);
-        case null -> throw new NullPointerException("Icon cannot be null");
+            case ViewerCategory.Icon.Stack stack -> guiHelper.createDrawableItemStack(stack.stack());
+            case ViewerCategory.Icon.Texture texture -> new DrawableIcon(texture);
+            case null -> throw new NullPointerException("Icon cannot be null");
         };
     }
 

@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class TextureHelper {
-
     public static void colorize(NativeImage image, IColoramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
@@ -308,7 +307,6 @@ public class TextureHelper {
                 image.setPixelRGBA(i, j, flipped[i][j]);
             }
         }
-
     }
 
     public static NativeImage copy(NativeImage image) {

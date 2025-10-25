@@ -72,9 +72,9 @@ class ForgeHammerRecipeHandler implements StandardRecipeHandler<ForgeHammerScree
                 context.getScreenHandler().containerId,
                 recipe.getId(),
                 switch (context.getDestination()) {
-                case NONE -> 0;
-                case CURSOR -> 1;
-                case INVENTORY -> 2;
+                    case NONE -> 0;
+                    case CURSOR -> 1;
+                    case INVENTORY -> 2;
                 },
                 context.getAmount()).sendToServer();
 

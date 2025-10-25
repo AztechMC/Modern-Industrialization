@@ -32,7 +32,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 public interface INuclearTileData {
-
     double getTemperature();
 
     double getHeatTransferCoeff();
@@ -70,7 +69,6 @@ public interface INuclearTileData {
     }
 
     static void write(Optional<INuclearTileData> maybeData, RegistryFriendlyByteBuf buf) {
-
         if (maybeData.isPresent()) {
             INuclearTileData tile = maybeData.get();
             buf.writeBoolean(true);
@@ -95,7 +93,6 @@ public interface INuclearTileData {
         } else {
             buf.writeBoolean(false);
         }
-
     }
 
     static Optional<INuclearTileData> read(RegistryFriendlyByteBuf buf) {
@@ -120,7 +117,6 @@ public interface INuclearTileData {
             final long amount = buf.readLong();
 
             return Optional.of(new INuclearTileData() {
-
                 @Override
                 public double getTemperature() {
                     return temperature;
@@ -175,7 +171,6 @@ public interface INuclearTileData {
                 public boolean isFluid() {
                     return !isItem;
                 }
-
             });
 
         } else {
@@ -203,7 +198,5 @@ public interface INuclearTileData {
         } else {
             return true;
         }
-
     }
-
 }

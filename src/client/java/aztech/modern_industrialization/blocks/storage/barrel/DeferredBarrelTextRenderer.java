@@ -38,8 +38,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class DeferredBarrelTextRenderer {
-    private record Entry(BlockPos pos, int sideMask, int itemNameColor) {
-    }
+    private record Entry(BlockPos pos, int sideMask, int itemNameColor) {}
 
     private static final List<Entry> barrelsToRender = new ArrayList<>();
     private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new ByteBufferBuilder(128));

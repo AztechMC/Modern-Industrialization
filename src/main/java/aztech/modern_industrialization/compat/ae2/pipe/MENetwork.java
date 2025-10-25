@@ -39,7 +39,6 @@ import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 public class MENetwork extends PipeNetwork {
-
     final AEColor color;
 
     public MENetwork(int id, PipeNetworkData data, AEColor color) {

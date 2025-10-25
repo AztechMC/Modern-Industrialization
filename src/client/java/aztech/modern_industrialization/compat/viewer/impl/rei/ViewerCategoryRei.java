@@ -300,9 +300,9 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
                     @Nullable Component tooltip) {
                 var label = Widgets.createLabel(new Point(bounds.x + x, bounds.y + y), text);
                 switch (align) {
-                case LEFT -> label.leftAligned();
-                case CENTER -> label.centered();
-                case RIGHT -> label.rightAligned();
+                    case LEFT -> label.leftAligned();
+                    case CENTER -> label.centered();
+                    case RIGHT -> label.rightAligned();
                 }
                 label.shadow(shadow);
                 if (overrideColor) {
@@ -346,8 +346,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
-            }
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
         });
 
         // Inputs and outputs

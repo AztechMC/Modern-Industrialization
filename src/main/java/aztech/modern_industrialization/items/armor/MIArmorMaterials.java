@@ -89,6 +89,5 @@ public final class MIArmorMaterials {
         DR.register(modEventBus);
     }
 
-    private MIArmorMaterials() {
-    }
+    private MIArmorMaterials() {}
 }

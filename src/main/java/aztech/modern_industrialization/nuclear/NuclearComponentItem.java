@@ -31,7 +31,6 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import net.minecraft.world.item.Item;
 
 public class NuclearComponentItem extends Item implements INuclearComponent<ItemVariant> {
-
     public final int maxTemperature;
     public final double heatConduction;
     public final INeutronBehaviour neutronBehaviour;

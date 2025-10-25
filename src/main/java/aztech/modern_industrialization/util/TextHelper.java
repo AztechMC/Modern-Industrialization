@@ -45,13 +45,11 @@ public class TextHelper {
     public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
     public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
 
-    public record Amount(String digit, String unit) {
-    }
+    public record Amount(String digit, String unit) {}
 
     ;
 
-    public record MaxedAmount(String digit, String maxDigit, String unit) {
-    }
+    public record MaxedAmount(String digit, String maxDigit, String unit) {}
 
     ;
 
@@ -180,5 +178,4 @@ public class TextHelper {
         }
         return text;
     }
-
 }

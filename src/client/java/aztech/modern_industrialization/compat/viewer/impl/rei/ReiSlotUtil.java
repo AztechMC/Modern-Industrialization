@@ -41,8 +41,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.Nullable;
 
 public class ReiSlotUtil {
-    private ReiSlotUtil() {
-    }
+    private ReiSlotUtil() {}
 
     public static EntryStack<?> createFluidEntryStack(FluidVariant fluid, long amount, float probability, boolean input) {
         @Nullable

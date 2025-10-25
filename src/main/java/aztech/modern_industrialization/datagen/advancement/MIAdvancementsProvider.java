@@ -48,7 +48,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public record MIAdvancementsProvider(TranslationProvider translations) implements AdvancementProvider.AdvancementGenerator {
-
     private static Criterion<?> createSimpleCriterion(Supplier<PlayerTrigger> trigger) {
         return trigger.get().createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()));
     }

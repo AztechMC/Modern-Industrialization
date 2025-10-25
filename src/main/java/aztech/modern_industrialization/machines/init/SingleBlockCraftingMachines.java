@@ -174,7 +174,6 @@ public final class SingleBlockCraftingMachines {
             RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams, Consumer<SlotPositions.Builder> itemPositions,
             Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers,
             int ioBucketCapacity, Config extraConfig) {
-
         for (int i = 0; i < 2; ++i) {
             if (i == 0 && (tiers & TIER_BRONZE) == 0) {
                 continue;
@@ -290,7 +289,6 @@ public final class SingleBlockCraftingMachines {
      */
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,
             SlotPositions itemPositions, SlotPositions fluidPositions, int steamBuckets, int ioBucketCapacity) {
-
         List<ConfigurableItemStack> itemInputStacks = new ArrayList<>();
         for (int i = 0; i < itemInputCount; ++i) {
             itemInputStacks.add(ConfigurableItemStack.standardInputSlot());
@@ -314,8 +312,7 @@ public final class SingleBlockCraftingMachines {
         return new MachineInventoryComponent(itemInputStacks, itemOutputStacks, fluidInputStacks, fluidOutputStacks, itemPositions, fluidPositions);
     }
 
-    private SingleBlockCraftingMachines() {
-    }
+    private SingleBlockCraftingMachines() {}
 
     public static class Config {
         public List<OverclockComponent.Catalyst> steamOverclockCatalysts = OverclockComponent.getDefaultCatalysts();

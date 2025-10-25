@@ -34,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGui {
     public static class Server implements GuiComponent.Server<Data> {
-
         private final CrafterComponent crafter;
         private final Supplier<Boolean> isShapeValid;
         private final Supplier<Float> progressSupplier;
@@ -78,7 +77,6 @@ public class CraftingMultiblockGui {
                     || cachedData.progress != progressSupplier.get() || crafter.getEfficiencyTicks() != cachedData.efficiencyTicks
                     || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks || recipe
                     || cachedData.remainingOverclockTicks != remainingOverclockTicks.getAsInt();
-
         }
 
         @Override

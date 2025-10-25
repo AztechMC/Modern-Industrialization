@@ -46,10 +46,10 @@ class ConnectionTypeButton extends Button {
     @Override
     public Component getMessage() {
         return switch (connectionType.getConnectionType()) {
-        case 0 -> MIText.PipeConnectionIn.text();
-        case 1 -> MIText.PipeConnectionIO.text();
-        case 2 -> MIText.PipeConnectionOut.text();
-        default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
+            case 0 -> MIText.PipeConnectionIn.text();
+            case 1 -> MIText.PipeConnectionIO.text();
+            case 2 -> MIText.PipeConnectionOut.text();
+            default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
         };
     }
 

@@ -64,8 +64,7 @@ public abstract class PipeNetwork {
     /**
      * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
      */
-    public void tick(ServerLevel world) {
-    }
+    public void tick(ServerLevel world) {}
 
     /**
      * Allow merging networks when the player explicitly requests to do so. When
@@ -83,8 +82,7 @@ public abstract class PipeNetwork {
      * Called when the network is removed from the world.
      * At that point, all the nodes are already gone.
      */
-    public void onRemove() {
-    }
+    public void onRemove() {}
 
     @Nullable
     public PipeNetworkNode getNode(BlockPos pos) {

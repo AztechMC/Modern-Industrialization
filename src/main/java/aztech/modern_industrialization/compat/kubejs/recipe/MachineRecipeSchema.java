@@ -34,8 +34,7 @@ import dev.latvian.mods.kubejs.util.TickDuration;
 import java.util.List;
 
 public final class MachineRecipeSchema {
-    private MachineRecipeSchema() {
-    }
+    private MachineRecipeSchema() {}
 
     private static <T> RecipeKey<List<T>> optionalList(RecipeComponentType<T> component, String name, ComponentRole role) {
         return component.instance()
@@ -67,8 +66,8 @@ public final class MachineRecipeSchema {
             ITEM_INPUTS,
             FLUID_INPUTS,
             MACHINE_PROCESS_CONDITIONS)
-            .factory(MachineKubeRecipe.FACTORY)
-            .constructor(EU, DURATION);
+                    .factory(MachineKubeRecipe.FACTORY)
+                    .constructor(EU, DURATION);
 
     public static final RecipeSchema FORGE_HAMMER_SCHEMA = new RecipeSchema(
             ItemStackComponent.ITEM_STACK.outputKey("result"),

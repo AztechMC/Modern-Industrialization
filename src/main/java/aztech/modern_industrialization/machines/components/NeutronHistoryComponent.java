@@ -75,5 +75,4 @@ public class NeutronHistoryComponent extends IntegerHistoryComponent<NeutronHist
     public double getAverageEuGeneration() {
         return getAverage(Type.euGeneration);
     }
-
 }

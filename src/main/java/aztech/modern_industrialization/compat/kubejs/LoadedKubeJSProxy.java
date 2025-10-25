@@ -101,5 +101,4 @@ public class LoadedKubeJSProxy extends KubeJSProxy {
     public void fireRegisterFluidNeutronInteractionsEvent() {
         MIRegistrationKubeJSEvents.REGISTER_FLUID_NEUTRON_INTERACTIONS.post(new RegisterFluidNeutronInteractionsEventJS());
     }
-
 }

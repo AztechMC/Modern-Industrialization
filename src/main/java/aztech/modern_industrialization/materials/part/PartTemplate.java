@@ -35,7 +35,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class PartTemplate implements PartKeyProvider {
-
     private final PartEnglishNameFormatter englishNameFormatter;
     private final PartKey partKey;
     private final Register register;
@@ -236,7 +235,6 @@ public class PartTemplate implements PartKeyProvider {
     }
 
     public MaterialItemPart create(String material, String materialEnglishName) {
-
         String itemPath = this.itemPathFormatter.getPartItemPath(material, partKey);
         String itemId = this.itemPathFormatter.getPartItemId(material, partKey);
         String itemTag = this.itemPathFormatter.getPartItemTag(material, partKey);
@@ -254,8 +252,6 @@ public class PartTemplate implements PartKeyProvider {
 
     @FunctionalInterface
     public interface Register {
-
         void register(MaterialBuilder.PartContext partContext, PartKey part, String itemPath, String itemId, String itemTag, String itemEnglishName);
-
     }
 }

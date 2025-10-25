@@ -161,6 +161,5 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         return new InGameInfo(stored, capacity, ((ElectricityNetwork) network).stats.getValue(), getMaxTransfer());
     }
 
-    public record InGameInfo(long stored, long capacity, long transfer, long maxTransfer) {
-    }
+    public record InGameInfo(long stored, long capacity, long transfer, long maxTransfer) {}
 }

@@ -140,7 +140,6 @@ public class MIBlock {
 
     public static <T extends Block> BlockDefinition<T> block(
             String englishName, String id, BlockDefinitionParams<T> params) {
-
         var holder = BLOCKS.registerBlock(id, params.ctor, params.props);
         var def = new BlockDefinition<>(
                 englishName,
@@ -175,11 +174,9 @@ public class MIBlock {
     }
 
     public static class BlockDefinitionParams<T extends Block> {
-
         public final BlockBehaviour.Properties props;
         public BiConsumer<Block, BaseModelProvider> modelGenerator;
-        public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {
-        };
+        public BiConsumer<Item, ItemModelProvider> itemModelGenerator = (item, gen) -> {};
         @Nullable
         public MIBlockLoot blockLoot;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
@@ -348,5 +345,4 @@ public class MIBlock {
             return this;
         }
     }
-
 }

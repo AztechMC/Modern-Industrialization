@@ -44,8 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * If the resource is known, there will generally be a more performance efficient way.
  */
 public final class StorageUtil {
-    private StorageUtil() {
-    }
+    private StorageUtil() {}
 
     /**
      * Move resources between two storages, matching the passed filter, and return the amount that was successfully transferred.

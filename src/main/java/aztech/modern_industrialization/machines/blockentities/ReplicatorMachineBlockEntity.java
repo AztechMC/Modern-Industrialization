@@ -56,7 +56,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final IsActiveComponent isActiveComponent;
     private final MachineInventoryComponent inventoryComponent;
     private final RedstoneControlComponent redstoneControl;
@@ -67,7 +66,6 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     public static final TagKey<Fluid> BLACKLISTED_FLUIDS = FluidTags.create(MI.id("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
-
         super(bep, new MachineGuiParameters.Builder("replicator", true).build(), new OrientationComponent.Params(true, true, false));
 
         this.isActiveComponent = new IsActiveComponent();
@@ -102,7 +100,6 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
         registerGuiComponent(new AutoExtract.Server(orientation, false));
         registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
-
     }
 
     @Override

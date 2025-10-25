@@ -41,7 +41,6 @@ import java.util.List;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
     private final MIInventory inventory;
 
     public ConfigurableTankMachineBlockEntity(BEP bep) {

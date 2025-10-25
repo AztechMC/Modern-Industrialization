@@ -135,19 +135,16 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     @Override
     public MachineButton addButton(int u, Consumer<Integer> pressAction, Supplier<List<Component>> tooltipSupplier,
             Supplier<Boolean> isPressed) {
-
         return addRenderableWidget(new MachineButton(buttonX(), buttonY(), 20, 20, b -> pressAction.accept(menu.containerId),
                 tooltipSupplier,
                 (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
                     blitButton(button, guiGraphics, u, isPressed.get() ? 38 : 18);
                 }, () -> true));
-
     }
 
     @Override
     public MachineButton addButton(int posX, int posY, int width, int height, Consumer<Integer> pressAction,
             Supplier<List<Component>> tooltipSupplier, ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent) {
-
         return addRenderableWidget(new MachineButton(posX + leftPos, posY + topPos, width, height, b -> {
             pressAction.accept(menu.containerId);
         }, tooltipSupplier, renderer, isButtonPresent));

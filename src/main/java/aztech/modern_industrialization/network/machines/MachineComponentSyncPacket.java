@@ -34,7 +34,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record MachineComponentSyncPacket(int syncId, int componentIndex, byte[] data) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, MachineComponentSyncPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             MachineComponentSyncPacket::syncId,

@@ -113,8 +113,7 @@ public class ShapeTemplate {
 
         private int iController, jController, kController;
 
-        private record KeyDefinition(SimpleMember member, @Nullable HatchFlags flags) {
-        }
+        private record KeyDefinition(SimpleMember member, @Nullable HatchFlags flags) {}
 
         public LayeredBuilder(MachineCasing hatchCasing, String[][] layers) {
             innerBuilder = new Builder(hatchCasing);

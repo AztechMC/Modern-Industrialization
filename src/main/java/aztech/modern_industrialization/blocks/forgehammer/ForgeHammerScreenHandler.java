@@ -50,7 +50,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 public class ForgeHammerScreenHandler extends AbstractContainerMenu {
-
     private final DataSlot selectedRecipe;
     private final List<RecipeHolder<ForgeHammerRecipe>> availableRecipes;
 
@@ -461,8 +460,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             // Process fill action
             ItemStack oldOutput = output.getItem().copy();
             switch (fillAction) {
-            case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
-            case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
+                case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
+                case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
             }
             if (!ItemStack.matches(oldOutput, output.getItem())) {
                 didSomething = true;

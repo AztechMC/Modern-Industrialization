@@ -58,8 +58,7 @@ public class MIPackets {
     private static final List<Registration<?>> registrations = new ArrayList<>();
 
     private record Registration<P extends BasePacket>(CustomPacketPayload.Type<P> packetType, Class<P> clazz,
-            StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {
-    }
+            StreamCodec<? super RegistryFriendlyByteBuf, P> packetCodec) {}
 
     private static <P extends BasePacket> void register(String path, Class<P> clazz,
             StreamCodec<? super RegistryFriendlyByteBuf, P> packetConstructor) {

@@ -36,7 +36,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 
 public class UpgradeProvider extends MIRecipesProvider {
-
     public UpgradeProvider(PackOutput packOutput) {
         super(packOutput);
     }

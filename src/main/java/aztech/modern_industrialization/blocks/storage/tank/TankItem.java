@@ -37,14 +37,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
-
     public TankItem(TankBlock block, Properties settings) {
         super(block, settings);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-
         if (this.behaviour.isCreative()) {
             tooltip.add(FluidHelper.getFluidName(getResource(stack), true));
         } else {

@@ -42,7 +42,6 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.biome.Biome;
 
 public class PartJsonCreator {
-
     public PartTemplate regularPart(String name) {
         try {
             return (PartTemplate) MIParts.class.getField(name.toUpperCase()).get(null);
@@ -142,7 +141,6 @@ public class PartJsonCreator {
         } else {
             return act.of(UniformInt.of(minXp, maxXp), oreSet);
         }
-
     }
 
     public PartTemplate rawMetalPart(String materialSet, boolean block) {
@@ -167,6 +165,5 @@ public class PartJsonCreator {
             double thermalScatteringProba, double fastScatteringProba, NuclearConstant.ScatteringType scatteringType, double size) {
         return MIParts.CONTROL_ROD.of(maxTemperature, heatConduction, thermalAbsorbProba, fastAbsorbProba, thermalScatteringProba,
                 fastScatteringProba, scatteringType, size);
-
     }
 }

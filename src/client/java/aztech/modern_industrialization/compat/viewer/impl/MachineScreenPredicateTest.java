@@ -32,15 +32,15 @@ import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblock
 public class MachineScreenPredicateTest {
     public static boolean test(ReiMachineRecipes.MachineScreenPredicate predicate, MachineScreen screen) {
         return switch (predicate) {
-        case ANY -> true;
-        case MULTIBLOCK -> {
-            for (GuiComponentClient client : screen.getMenu().components) {
-                if (client instanceof CraftingMultiblockGuiClient cmGui && cmGui.isShapeValid) {
-                    yield true;
+            case ANY -> true;
+            case MULTIBLOCK -> {
+                for (GuiComponentClient client : screen.getMenu().components) {
+                    if (client instanceof CraftingMultiblockGuiClient cmGui && cmGui.isShapeValid) {
+                        yield true;
+                    }
                 }
+                yield false;
             }
-            yield false;
-        }
         };
     }
 }

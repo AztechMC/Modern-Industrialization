@@ -59,7 +59,6 @@ import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, FluidStorageComponentHolder {
-
     private static final int[] X_SIZES = new int[] { 3, 5, 7 };
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
     private static final int[] Z_SIZES = new int[] { 3, 4, 5, 6, 7 };
@@ -150,7 +149,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private LargeTankFluidDisplay.Data oldFluidData;
 
     public LargeTankMultiblockBlockEntity(BEP bep) {
-
         super(bep, new MachineGuiParameters.Builder("large_tank", false).build(), new OrientationComponent.Params(false, false, false));
 
         activeShape = new ActiveShapeComponent(shapeTemplates);
@@ -184,9 +182,9 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
                 int shape = activeShape.getActiveShapeIndex();
 
                 return switch (line) {
-                case 0 -> getXComponent(shape);
-                case 1 -> getYComponent(shape);
-                default -> getZComponent(shape);
+                    case 0 -> getXComponent(shape);
+                    case 1 -> getYComponent(shape);
+                    default -> getZComponent(shape);
                 };
             }
         }, createLineInfo(X_SIZES, MIText.ShapeTextWidth), createLineInfo(Y_SIZES, MIText.ShapeTextHeight),
@@ -222,7 +220,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     @Override
     protected MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection);
-
     }
 
     @Override
@@ -308,7 +305,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
 
         return cornerPosition;
-
     }
 
     @Override

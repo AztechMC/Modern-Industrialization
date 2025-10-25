@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 public class CasingComponent implements IComponent, DropableComponent {
-
     @FunctionalInterface
     public interface UpdatedCallback {
         void onUpdated(CableTier from, CableTier to);
@@ -145,7 +144,6 @@ public class CasingComponent implements IComponent, DropableComponent {
             var sound = group.getBreakSound();
             be.getLevel().playSound(null, be.getBlockPos(), sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
         });
-
     }
 
     @Nullable

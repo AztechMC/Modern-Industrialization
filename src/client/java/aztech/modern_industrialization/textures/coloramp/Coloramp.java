@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 
 public class Coloramp implements IColoramp {
-
     private final int[] colors = new int[256];
     private final int meanRGB;
 

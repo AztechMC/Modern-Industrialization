@@ -192,10 +192,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     public static final Codec<PipeEndpointType> CONNECTION_TYPE_CODEC = Codec.INT.comapFlatMap(
             i -> switch (i) {
-            case 0 -> DataResult.success(BLOCK_IN);
-            case 1 -> DataResult.success(BLOCK_IN_OUT);
-            case 2 -> DataResult.success(BLOCK_OUT);
-            default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
+                case 0 -> DataResult.success(BLOCK_IN);
+                case 1 -> DataResult.success(BLOCK_IN_OUT);
+                case 2 -> DataResult.success(BLOCK_OUT);
+                default -> DataResult.error(() -> "Unknown item pipe connection type: " + i);
             },
             ItemNetworkNode::encodeConnectionType);
 
@@ -479,6 +479,5 @@ public class ItemNetworkNode extends PipeNetworkNode {
         return new InGameInfo(itemNetwork.lastMovedItems, itemNetwork.inactiveTicks);
     }
 
-    public record InGameInfo(long movedItems, int pulse) {
-    }
+    public record InGameInfo(long movedItems, int pulse) {}
 }

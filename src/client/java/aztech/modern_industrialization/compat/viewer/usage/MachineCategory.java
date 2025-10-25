@@ -195,15 +195,15 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
             guiGraphics.pose().translate(5, 5, 0);
             guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
             switch (params.steamMode) {
-            case BOTH -> {
-                guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
-            }
-            case STEAM_ONLY -> {
-                guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
-            }
-            case ELECTRIC_ONLY -> {
-                EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
-            }
+                case BOTH -> {
+                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
+                }
+                case STEAM_ONLY -> {
+                    guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
+                }
+                case ELECTRIC_ONLY -> {
+                    EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
+                }
             }
 
             guiGraphics.pose().popPose();
@@ -304,8 +304,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         return new DrawOffset(xoffset, yoffset);
     }
 
-    private record DrawOffset(int x, int y) {
-    }
+    private record DrawOffset(int x, int y) {}
 
     @Override
     public ResourceLocation getRecipeId(RecipeHolder<MachineRecipe> recipe) {

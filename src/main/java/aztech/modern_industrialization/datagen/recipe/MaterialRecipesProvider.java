@@ -30,7 +30,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 
 public class MaterialRecipesProvider extends MIRecipesProvider {
-
     public MaterialRecipesProvider(PackOutput packOutput) {
         super(packOutput);
     }

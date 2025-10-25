@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.materials.part;
 
 public sealed interface PartItemPathFormatter {
-
     static String idFromPath(String path) {
         return "modern_industrialization:" + path;
     }
@@ -39,7 +38,6 @@ public sealed interface PartItemPathFormatter {
     }
 
     record Default() implements PartItemPathFormatter {
-
         @Override
         public String getPartItemPath(String materialName, PartKey partKey) {
             return materialName + "_" + partKey.key;
@@ -56,7 +54,6 @@ public sealed interface PartItemPathFormatter {
     }
 
     record Overridden(String path, String tag) implements PartItemPathFormatter {
-
         @Override
         public String getPartItemPath(String materialName, PartKey partKey) {
             if (path.contains("%s")) {
@@ -79,5 +76,4 @@ public sealed interface PartItemPathFormatter {
             }
         }
     }
-
 }

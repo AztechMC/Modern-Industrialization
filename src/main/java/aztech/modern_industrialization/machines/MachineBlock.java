@@ -50,7 +50,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends Block implements TickableBlock {
-
     private final BiFunction<BlockPos, BlockState, ? extends MachineBlockEntity> blockEntityConstructor;
     private volatile MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, BER registration, etc...
 

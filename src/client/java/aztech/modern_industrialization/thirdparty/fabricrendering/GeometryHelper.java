@@ -25,13 +25,10 @@
 package aztech.modern_industrialization.thirdparty.fabricrendering;
 /*
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,8 +50,7 @@ import org.joml.Vector3f;
  * they were designed to be usable without the default renderer.
  */
 public abstract class GeometryHelper {
-    private GeometryHelper() {
-    }
+    private GeometryHelper() {}
 
     /** set when a quad touches all four corners of a unit cube. */
     public static final int CUBIC_FLAG = 1;
@@ -147,24 +143,24 @@ public abstract class GeometryHelper {
         int a, b;
 
         switch (lightFace) {
-        case EAST:
-        case WEST:
-            a = 1;
-            b = 2;
-            break;
-        case UP:
-        case DOWN:
-            a = 0;
-            b = 2;
-            break;
-        case SOUTH:
-        case NORTH:
-            a = 1;
-            b = 0;
-            break;
-        default:
-            // handle WTF case
-            return false;
+            case EAST:
+            case WEST:
+                a = 1;
+                b = 2;
+                break;
+            case UP:
+            case DOWN:
+                a = 0;
+                b = 2;
+                break;
+            case SOUTH:
+            case NORTH:
+                a = 1;
+                b = 0;
+                break;
+            default:
+                // handle WTF case
+                return false;
         }
 
         return confirmSquareCorners(a, b, quad);
@@ -218,18 +214,18 @@ public abstract class GeometryHelper {
     public static Direction lightFace(QuadView quad) {
         final Vector3f normal = quad.faceNormal();
         switch (GeometryHelper.longestAxis(normal)) {
-        case X:
-            return normal.x() > 0 ? Direction.EAST : Direction.WEST;
+            case X:
+                return normal.x() > 0 ? Direction.EAST : Direction.WEST;
 
-        case Y:
-            return normal.y() > 0 ? Direction.UP : Direction.DOWN;
+            case Y:
+                return normal.y() > 0 ? Direction.UP : Direction.DOWN;
 
-        case Z:
-            return normal.z() > 0 ? Direction.SOUTH : Direction.NORTH;
+            case Z:
+                return normal.z() > 0 ? Direction.SOUTH : Direction.NORTH;
 
-        default:
-            // handle WTF case
-            return Direction.UP;
+            default:
+                // handle WTF case
+                return Direction.UP;
         }
     }
 

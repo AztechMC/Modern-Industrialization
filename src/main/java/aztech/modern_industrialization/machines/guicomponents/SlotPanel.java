@@ -154,5 +154,4 @@ public class SlotPanel {
             return insertionChecker.test(stack);
         }
     }
-
 }

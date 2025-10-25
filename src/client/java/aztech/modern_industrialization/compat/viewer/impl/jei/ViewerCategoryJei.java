@@ -214,12 +214,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void invisibleInput(ItemStack stack) {
-            }
+            public void invisibleInput(ItemStack stack) {}
 
             @Override
-            public void invisibleOutput(ItemStack stack) {
-            }
+            public void invisibleOutput(ItemStack stack) {}
 
             @Override
             public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
@@ -242,9 +240,9 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                 var font = Minecraft.getInstance().font;
                 var width = font.width(text);
                 var alignedX = switch (align) {
-                case LEFT -> x;
-                case CENTER -> x - width / 2f;
-                case RIGHT -> x - width;
+                    case LEFT -> x;
+                    case CENTER -> x - width / 2f;
+                    case RIGHT -> x - width;
                 };
 
                 guiGraphics.drawString(font, text, (int) alignedX, (int) y, overrideColor ? 0xFF404040 : -1, shadow);
@@ -267,12 +265,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
-            }
+            public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {}
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
-            }
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
         });
 
         guiGraphics.pose().popPose();
@@ -297,16 +293,13 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void arrow(int x, int y) {
-            }
+            public void arrow(int x, int y) {}
 
             @Override
-            public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
-            }
+            public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {}
 
             @Override
-            public void drawable(Consumer<GuiGraphics> widget) {
-            }
+            public void drawable(Consumer<GuiGraphics> widget) {}
 
             @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {
@@ -316,8 +309,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
-            }
+            public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
         });
     }
 

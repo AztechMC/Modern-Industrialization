@@ -47,7 +47,6 @@ import net.minecraft.world.level.material.Fluid;
  * A component that turns fluids and/or item into energy.
  */
 public class FluidItemConsumerComponent implements IComponent.ServerOnly {
-
     protected long euBuffer = 0;
     /**
      * The maximum EU that can be produced by one production operation, to limit the
@@ -61,11 +60,9 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     public FluidItemConsumerComponent(long maxEuProduction,
             EUProductionMap<Item> itemEUProductionMap,
             EUProductionMap<Fluid> fluidEUProductionMap) {
-
         this.itemEUProductionMap = itemEUProductionMap;
         this.fluidEUProductionMap = fluidEUProductionMap;
         this.maxEuProduction = maxEuProduction;
-
     }
 
     public boolean doAllowMoreThanOne() {
@@ -104,7 +101,6 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     public long getEuProduction(List<ConfigurableFluidStack> fluidInputs,
             List<ConfigurableItemStack> itemInputs,
             long maxEnergyInsertable) {
-
         long maxEuProduced = Math.min(maxEnergyInsertable, maxEuProduction);
 
         if (maxEuProduced == 0) {
@@ -163,7 +159,6 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     public List<Component> getTooltips() {
-
         List<Component> returnList = new ArrayList<>();
 
         returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
@@ -217,9 +212,7 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     public interface EUProductionMap<T> {
-
-        record InformationEntry<T>(long eu, T variant) {
-        }
+        record InformationEntry<T>(long eu, T variant) {}
 
         long getEuProduction(T variant);
 
@@ -267,13 +260,11 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
                     .map(variant -> new InformationEntry<>(getEuProduction(variant), variant)).sorted(Comparator.comparingLong(InformationEntry::eu))
                     .collect(Collectors.toList());
         }
-
     }
 
     public static class EuProductionMapBuilder<T> {
-
         private final Map<ResourceLocation, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource
-                                                                         // location
+                                                                        // location
         private final DefaultedRegistry<T> registryAccess;
 
         public EuProductionMapBuilder(DefaultedRegistry<T> registryAccess) {
@@ -302,7 +293,6 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
     }
 
     public static EUProductionMap<Item> itemFuels() {
-
         return new EUProductionMap<>() {
             @Override
             public long getEuProduction(Item variant) {
@@ -320,12 +310,10 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
             public List<Item> getAllAccepted() {
                 throw new UnsupportedOperationException("The list of accepted items is not available for standard fuels");
             }
-
         };
     }
 
     public static EUProductionMap<Fluid> fluidFuels() {
-
         return new EUProductionMap<>() {
             @Override
             public long getEuProduction(Fluid variant) {
@@ -342,7 +330,6 @@ public class FluidItemConsumerComponent implements IComponent.ServerOnly {
                 throw new UnsupportedOperationException("The list of accepted fluids is not available for fluid fuels");
             }
         };
-
     }
 
     public enum NumberOfFuel {

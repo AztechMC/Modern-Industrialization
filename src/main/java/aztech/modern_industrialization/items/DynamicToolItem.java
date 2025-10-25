@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface DynamicToolItem {
-
     ItemStack SHEAR_STACK = new ItemStack(Items.SHEARS, 1);
 
     @ApiStatus.NonExtendable
@@ -47,5 +46,4 @@ public interface DynamicToolItem {
 //                        (state.is(FabricMineableTags.SHEARS_MINEABLE) || Items.SHEARS.getDestroySpeed(
 //                                SHEAR_STACK, state) > 1.0f)
     }
-
 }

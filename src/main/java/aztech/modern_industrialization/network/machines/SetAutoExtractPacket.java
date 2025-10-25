@@ -35,7 +35,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract) implements BasePacket {
-
     public static final StreamCodec<ByteBuf, SetAutoExtractPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             SetAutoExtractPacket::syncId,

@@ -104,5 +104,4 @@ public class ShapeSelection {
             return GuiComponents.SHAPE_SELECTION;
         }
     }
-
 }

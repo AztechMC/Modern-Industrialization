@@ -29,8 +29,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public final class MIStreamCodecs {
-    private MIStreamCodecs() {
-    }
+    private MIStreamCodecs() {}
 
     public static final StreamCodec<ByteBuf, Integer> BYTE = ByteBufCodecs.BYTE.map(b -> (int) b, i -> (byte) i.intValue());
 }

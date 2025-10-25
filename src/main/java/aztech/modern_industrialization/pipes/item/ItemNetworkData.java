@@ -36,9 +36,7 @@ public class ItemNetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-
-    }
+    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {}
 
     @Override
     public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {

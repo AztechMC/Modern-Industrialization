@@ -63,7 +63,6 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
 
     @Override
     public Collection<IGuiClickableArea> getGuiClickableAreas(MachineScreen screen, double guiMouseX, double guiMouseY) {
-
         MachineMenuClient screenHandler = screen.getMenu();
         ResourceLocation blockId = screenHandler.guiParams.blockId;
         List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,

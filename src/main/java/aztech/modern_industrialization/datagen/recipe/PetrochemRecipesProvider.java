@@ -159,8 +159,7 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         return f(fluid.asFluid(), amount);
     }
 
-    private record FluidEntry(Fluid fluid, int amount) {
-    }
+    private record FluidEntry(Fluid fluid, int amount) {}
 
     private enum PolymerizationKind {
         LEAD("lead", 4, 300),

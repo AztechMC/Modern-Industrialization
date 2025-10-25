@@ -106,10 +106,10 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
 
     protected static Component getConnectionTypeText(int connectionType) {
         return switch (connectionType) {
-        case 0 -> MIText.PipeConnectionTooltipInsertOnly.text();
-        case 1 -> MIText.PipeConnectionTooltipInsertOrExtract.text();
-        case 2 -> MIText.PipeConnectionTooltipExtractOnly.text();
-        default -> throw new IllegalArgumentException("Connection Type " + connectionType + " must be either 0, 1, 2");
+            case 0 -> MIText.PipeConnectionTooltipInsertOnly.text();
+            case 1 -> MIText.PipeConnectionTooltipInsertOrExtract.text();
+            case 2 -> MIText.PipeConnectionTooltipExtractOnly.text();
+            default -> throw new IllegalArgumentException("Connection Type " + connectionType + " must be either 0, 1, 2");
         };
     }
 
@@ -127,5 +127,4 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             return lines;
         }, connectionType));
     }
-
 }

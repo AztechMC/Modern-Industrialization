@@ -40,7 +40,6 @@ import net.minecraft.network.chat.Style;
 import org.joml.Matrix4f;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
-
     @Override
     public int getHeight() {
         return 30;
@@ -53,7 +52,6 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
 
     @Override
     public void renderText(Font textRenderer, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource immediate) {
-
         Style style = MITooltips.DEFAULT_STYLE;
 
         textRenderer.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate,
@@ -61,7 +59,6 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
 
         textRenderer.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, Font.DisplayMode.NORMAL, 0,
                 LightTexture.FULL_BRIGHT);
-
     }
 
     public Component getItemNumber() {

@@ -42,7 +42,6 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
             PoseStack matrices,
             MultiBufferSource vertexConsumers,
             int light, int overlay) {
-
         if (!tank.getResource().isBlank()) {
             if (tank.behaviour.isCreative()) {
                 RenderHelper.drawFluidInTank(tank, matrices, vertexConsumers, tank.getResource(), 1);

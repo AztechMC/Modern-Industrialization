@@ -69,7 +69,6 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
         registerGuiComponent(new SlotPanel.Server(this)
                 .withRedstoneControl(redstoneControl)
                 .withCasing(casing));
-
     }
 
     private final MIInventory inventory;

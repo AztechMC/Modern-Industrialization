@@ -57,7 +57,6 @@ import net.minecraft.world.level.material.Fluid;
 
 @SuppressWarnings("unused")
 public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
-
     public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
         return new ProgressBar.Parameters(renderX, renderY, type);
     }
@@ -81,11 +80,9 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             Consumer<SlotPositions.Builder> itemSlotPositions, Consumer<SlotPositions.Builder> fluidSlotPositions,
             // model
             boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-
         craftingSingleBlock(englishName, internalName, recipeType, tiers, backgroundHeight, progressBar, efficiencyBar, energyBar,
                 itemInputs, itemOutputs, fluidInputs, fluidOutputs, bucketCapacity, itemSlotPositions, fluidSlotPositions,
-                frontOverlay, topOverlay, sideOverlay, config -> {
-                });
+                frontOverlay, topOverlay, sideOverlay, config -> {});
     }
 
     public void craftingSingleBlock(
@@ -101,21 +98,19 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
             // Optional config
             Consumer<ExtraMachineConfig.CraftingSingleBlock> extraConfig) {
-
         var config = new SingleBlockCraftingMachines.Config();
         extraConfig.accept(new ExtraMachineConfig.CraftingSingleBlock(config));
 
         int tiersMask = 0;
         for (String tier : tiers) {
             tiersMask |= switch (tier) {
-            case "bronze" -> TIER_BRONZE;
-            case "steel" -> TIER_STEEL;
-            case "electric" -> TIER_ELECTRIC;
-            default -> throw new IllegalArgumentException("Unknown tier: " + tier);
+                case "bronze" -> TIER_BRONZE;
+                case "steel" -> TIER_STEEL;
+                case "electric" -> TIER_ELECTRIC;
+                default -> throw new IllegalArgumentException("Unknown tier: " + tier);
             };
         }
-        Consumer<MachineGuiParameters.Builder> guiParams = backgroundHeight < 0 ? p -> {
-        } : p -> p.backgroundHeight(backgroundHeight);
+        Consumer<MachineGuiParameters.Builder> guiParams = backgroundHeight < 0 ? p -> {} : p -> p.backgroundHeight(backgroundHeight);
 
         SingleBlockCraftingMachines.registerMachineTiers(
                 englishName, internalName, recipeType,
@@ -148,12 +143,10 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-
         simpleElectricCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
-                config -> {
-                });
+                config -> {});
     }
 
     public void simpleElectricCraftingMultiBlock(
@@ -167,7 +160,6 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
             // Optional config
             Consumer<ExtraMachineConfig.CraftingMultiBlock> extraConfig) {
-
         var config = new ExtraMachineConfig.CraftingMultiBlock();
         extraConfig.accept(config);
 
@@ -187,12 +179,10 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-
         simpleSteamCraftingMultiBlock(englishName, internalName, recipeType, multiblockShape, progressBar,
                 itemInputPositions, itemOutputPositions, fluidInputPositions, fluidOutputPositions,
                 controllerCasingName, overlayFolder, frontOverlay, topOverlay, sideOverlay,
-                config -> {
-                });
+                config -> {});
     }
 
     public void simpleSteamCraftingMultiBlock(
@@ -206,7 +196,6 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
             // optional config
             Consumer<ExtraMachineConfig.CraftingMultiBlock> extraConfig) {
-
         var config = new ExtraMachineConfig.CraftingMultiBlock();
         config.reiConfigs.add(rei -> rei.steam(true));
         extraConfig.accept(config);
@@ -229,7 +218,6 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             String controllerCasingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
             // machine entity and rei configuration
             Function<BEP, MachineBlockEntity> factory, List<Consumer<MultiblockMachines.Rei>> reiConfigs) {
-
         simpleMultiBlock(englishName, internalName, multiblockShape, controllerCasingName, overlayFolder, frontOverlay,
                 topOverlay, sideOverlay, factory);
 
@@ -251,7 +239,6 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             long fluidStorageCapacity,
             Consumer<FluidItemConsumerBuilder> builder,
             String casingName, String overlayFolder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-
         var componentBuilder = new FluidItemConsumerBuilder(maxEnergyProduction);
         builder.accept(componentBuilder);
 
@@ -305,7 +292,6 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
     }
 
     public static class FluidItemConsumerBuilder {
-
         long maxEnergyProduction;
 
         FluidItemConsumerComponent.EuProductionMapBuilder<Item> itemEuProductionMapBuilder = new FluidItemConsumerComponent.EuProductionMapBuilder<>(
@@ -348,5 +334,4 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
                     doesAcceptAllFluidFuels ? FluidItemConsumerComponent.fluidFuels() : fluidEuProductionMapBuilder.build());
         }
     }
-
 }

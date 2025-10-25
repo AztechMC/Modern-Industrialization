@@ -34,7 +34,6 @@ import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 public class ItemDefinition<T extends Item> extends Definition implements ItemLike {
-
     private final DeferredItem<T> item;
     public final SortOrder sortOrder;
 
@@ -82,5 +81,4 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
     public String getTranslationKey() {
         return item.get().getDescriptionId();
     }
-
 }

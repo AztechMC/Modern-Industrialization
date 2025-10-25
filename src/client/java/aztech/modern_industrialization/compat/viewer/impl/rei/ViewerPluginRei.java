@@ -36,7 +36,6 @@ import me.shedaniel.rei.forge.REIPluginClient;
 
 @REIPluginClient
 public class ViewerPluginRei implements REIClientPlugin {
-
     private final List<ViewerCategoryRei<?>> categories = new ArrayList<>();
 
     @Override

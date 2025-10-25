@@ -124,7 +124,8 @@ public class FuelBurningComponent implements IComponent {
         }
 
         // Refill buffer with item fuel
-        outer: while (burningEuBuffer < maxEuProduction) {
+        outer:
+        while (burningEuBuffer < maxEuProduction) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
                 var fuel = stack.getResource().toStack((int) stack.getAmount());
@@ -143,7 +144,8 @@ public class FuelBurningComponent implements IComponent {
             break;
         }
         // Refill buffer with fluid fuel
-        outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
+        outer:
+        while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
                     long euPerMb = FluidFuel.getEu(stack.getResource().getFluid()) * burningEuMultiplier;

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.textures.TextureHelper;
 import java.awt.*;
 
 public class DepletedColoramp implements IColoramp {
-
     private final IColoramp coloramp;
 
     public DepletedColoramp(IColoramp coloramp) {

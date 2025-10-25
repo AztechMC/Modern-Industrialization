@@ -44,7 +44,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ForgeHammerBlock extends Block {
-
     private VoxelShape shape;
     private int part_height[] = { 4, 1, 5, 5 };
     private int part_width[] = { 14, 10, 8, 14 };
@@ -64,7 +63,6 @@ public class ForgeHammerBlock extends Block {
         for (int i = 1; i < part_height.length; i++) {
             shape = Shapes.or(shape, parts[i]);
         }
-
     }
 
     @Override
@@ -73,7 +71,6 @@ public class ForgeHammerBlock extends Block {
             return InteractionResult.SUCCESS;
         } else {
             player.openMenu(new MenuProvider() {
-
                 @Override
                 public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
                     return new ForgeHammerScreenHandler(syncId, inv, ContainerLevelAccess.create(world, pos));

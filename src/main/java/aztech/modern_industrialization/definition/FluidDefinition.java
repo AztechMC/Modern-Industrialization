@@ -40,7 +40,6 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class FluidDefinition extends Definition implements FluidLike {
-
     public static final int LOW_OPACITY = 180;
     public static final int FULL_OPACITY = 255;
     public static final int NEAR_OPACITY = 240;
@@ -102,5 +101,4 @@ public class FluidDefinition extends Definition implements FluidLike {
     public FluidVariant variant() {
         return FluidVariant.of(asFluid());
     }
-
 }

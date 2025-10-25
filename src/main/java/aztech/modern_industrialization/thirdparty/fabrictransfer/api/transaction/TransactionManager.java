@@ -155,6 +155,5 @@ final class TransactionManager {
         return closeException;
     }
 
-    private TransactionManager() {
-    }
+    private TransactionManager() {}
 }

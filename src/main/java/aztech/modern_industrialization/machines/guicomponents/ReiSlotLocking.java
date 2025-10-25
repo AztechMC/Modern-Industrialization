@@ -71,5 +71,4 @@ public class ReiSlotLocking {
             return GuiComponents.REI_SLOT_LOCKING;
         }
     }
-
 }

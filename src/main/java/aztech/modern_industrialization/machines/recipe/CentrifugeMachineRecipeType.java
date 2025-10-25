@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.ComposterBlock;
 
 public class CentrifugeMachineRecipeType extends ProxyableMachineRecipeType {
-
     public CentrifugeMachineRecipeType(ResourceLocation id) {
         super(id);
     }
@@ -46,6 +45,5 @@ public class CentrifugeMachineRecipeType extends ProxyableMachineRecipeType {
                 recipeList.add(recipe);
             }
         }
-
     }
 }

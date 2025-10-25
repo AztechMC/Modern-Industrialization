@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.materials.set;
 
 public enum MaterialBlockSet {
-
     IRON("iron"),
     GOLD("diamond"),
     DIAMOND("diamond"),

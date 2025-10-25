@@ -30,8 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewerSetup {
-    private ViewerSetup() {
-    }
+    private ViewerSetup() {}
 
     public static List<ViewerCategory<?>> setup() {
         List<ViewerCategory<?>> registry = new ArrayList<>();

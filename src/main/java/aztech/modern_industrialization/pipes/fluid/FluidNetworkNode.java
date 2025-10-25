@@ -349,6 +349,5 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return new InGameInfo(getFluid(), stored, capacity, fluidNetwork.stats.getValue(), fluidNetwork.capacityStats.getValue());
     }
 
-    public record InGameInfo(FluidVariant fluid, long stored, long capacity, long transfer, long maxTransfer) {
-    }
+    public record InGameInfo(FluidVariant fluid, long stored, long capacity, long transfer, long maxTransfer) {}
 }

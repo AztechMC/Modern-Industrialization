@@ -28,7 +28,6 @@ import aztech.modern_industrialization.items.SortOrder;
 import org.jetbrains.annotations.Nullable;
 
 public class CasingPart implements PartKeyProvider {
-
     public final String englishName;
     public final PartKey key;
 

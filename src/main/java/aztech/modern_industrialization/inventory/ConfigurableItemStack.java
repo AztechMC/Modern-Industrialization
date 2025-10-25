@@ -49,8 +49,7 @@ import net.minecraft.world.item.Items;
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
 
-    public ConfigurableItemStack() {
-    }
+    public ConfigurableItemStack() {}
 
     public ConfigurableItemStack(CompoundTag compound, HolderLookup.Provider registries) {
         super(compound, registries);

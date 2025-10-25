@@ -35,7 +35,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
 public class ExtraMachineConfig {
-
     public static class CraftingSingleBlock {
         private final SingleBlockCraftingMachines.Config config;
 

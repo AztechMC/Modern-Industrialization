@@ -161,15 +161,15 @@ class PartTextureGenerator {
         boolean deepslate = stoneType.equals(OrePart.TYPE_DEEPSLATE);
         if (stoneType.equals(OrePart.TYPE_STONE) || deepslate) {
             from = ResourceLocation.withDefaultNamespace(switch (oreSet) {
-            case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
-            case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
-            case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
-            case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
-            case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
-            case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
-            case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
-            case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
-            default -> deepslate ? "deepslate" : "stone";
+                case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
+                case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
+                case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
+                case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
+                case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
+                case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
+                case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
+                case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
+                default -> deepslate ? "deepslate" : "stone";
             });
         } else {
             // Ore textures don't exist for any blocks other than stone or deepslate,

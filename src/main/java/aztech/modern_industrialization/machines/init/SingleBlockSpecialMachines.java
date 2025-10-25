@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SingleBlockSpecialMachines {
-
     public static void init() {
         MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
@@ -111,8 +110,7 @@ public class SingleBlockSpecialMachines {
     }
 
     private static void registerTransformers() {
-        record TierPair(CableTier low, CableTier high) {
-        }
+        record TierPair(CableTier low, CableTier high) {}
 
         Set<TierPair> registeredPairs = new HashSet<>();
 
@@ -164,5 +162,4 @@ public class SingleBlockSpecialMachines {
             MachineRegistrationHelper.addMachineModel(id, "electric_storage", tier.casing, true, false, true, false);
         }
     }
-
 }

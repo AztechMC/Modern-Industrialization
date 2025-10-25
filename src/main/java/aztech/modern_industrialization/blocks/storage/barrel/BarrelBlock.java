@@ -47,7 +47,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
-
     public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
@@ -169,7 +168,6 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
     }
 
     public static class BarrelStorage extends StorageBehaviour<ItemVariant> {
-
         public final long stackCapacity;
 
         public BarrelStorage(long stackCapacity) {
@@ -195,5 +193,4 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
             return resource.getItem().canFitInsideContainerItems();
         }
     }
-
 }

@@ -24,6 +24,8 @@
 
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -34,6 +36,7 @@ import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public class ItemHatch extends HatchBlockEntity {
     public ItemHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
@@ -89,5 +92,12 @@ public class ItemHatch extends HatchBlockEntity {
                 inventory.autoExtractItems(level, worldPosition, orientation.outputDirection);
             }
         }
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return List.of(MITooltips.line(MIText.HatchCapacityItem)
+                .arg(inventory.getItemStacks().size())
+                .build());
     }
 }

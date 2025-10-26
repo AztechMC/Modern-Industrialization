@@ -1626,6 +1626,8 @@
   "text.modern_industrialization.GunpowderUpgrade": "Double MI Steam Machines speed for 2 minutes",
   "text.modern_industrialization.GunpowderUpgradeMachine": "Use Gunpowder to double this machine speed for 2 minutes",
   "text.modern_industrialization.HasBetterYieldAssemblerRecipe": "Has an Assembler recipe with better yield.",
+  "text.modern_industrialization.HatchCapacityFluid": "Has a capacity of %s.",
+  "text.modern_industrialization.HatchCapacityItem": "Has a capacity of %s slots.",
   "text.modern_industrialization.HeatConduction": "Heat Conduction %s/°kCt",
   "text.modern_industrialization.ItemAutoExtractOff": "Item auto-eject disabled",
   "text.modern_industrialization.ItemAutoExtractOn": "Item auto-eject enabled",

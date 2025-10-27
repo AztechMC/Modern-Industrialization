@@ -61,6 +61,10 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
         return new ProgressBar.Parameters(renderX, renderY, type);
     }
 
+    public ProgressBar.Parameters progressBar(int renderX, int renderY, String type, int width, int height) {
+        return new ProgressBar.Parameters(renderX, renderY, type, width, height, false);
+    }
+
     public RecipeEfficiencyBar.Parameters efficiencyBar(int renderX, int renderY) {
         return new RecipeEfficiencyBar.Parameters(renderX, renderY);
     }

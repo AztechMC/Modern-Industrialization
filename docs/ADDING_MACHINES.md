@@ -71,6 +71,9 @@ The following parameters need to be provided, in order:
 - GUI configuration:
   - 5: Height of the background in the machine screen.
   - 6: Where the progress bar is located, in pixels, and the type of progress bar to use. You can look at the available progress bars [here](../src/main/resources/assets/modern_industrialization/textures/gui/progress_bar/).
+
+    By default, the progress bar has 20x20 pixels. This can be changed by adding a width and a height as 4th and 5th parameters when creating it.
+    For example, for a 40x20 long arrow: `event.progressBar(x pos, y pos, "long_arrow", 40, 20)`.
   - 7: Where the efficiency bar goes. This is where the current overclock is displayed (only in electric machines).
   - 8: Where the energy bar goes. This is where the current energy is displayed (only in electric machines).
 - Slot configuration:

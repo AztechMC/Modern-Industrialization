@@ -57,6 +57,8 @@ public class ProgressBar {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             buf.writeUtf(params.progressBarType);
+            buf.writeInt(params.width);
+            buf.writeInt(params.height);
             buf.writeBoolean(params.isVertical);
             writeCurrentData(buf);
         }
@@ -77,9 +79,10 @@ public class ProgressBar {
         /**
          * The real path will be
          * {@code modern_industrialization:textures/gui/progress_bar/<progressBarType>.png}.
-         * Must have a size of 20 x 40.
+         * Must have a size of width x 2*height.
          */
         public final String progressBarType;
+        public final int width, height;
         public final boolean isVertical;
 
         public Parameters(int renderX, int renderY, String progressBarType) {
@@ -87,9 +90,19 @@ public class ProgressBar {
         }
 
         public Parameters(int renderX, int renderY, String progressBarType, boolean isVertical) {
+            this(renderX, renderY, progressBarType, 20, 20, isVertical);
+        }
+
+        public Parameters(int renderX, int renderY, String progressBarType, int width, int height, boolean isVertical) {
+            if (width < 2 || height < 2) {
+                throw new IllegalArgumentException("Width and height must be at least 2, currently " + width + " and " + height);
+            }
+
             this.renderX = renderX;
             this.renderY = renderY;
             this.progressBarType = progressBarType;
+            this.width = width;
+            this.height = height;
             this.isVertical = isVertical;
         }
 
@@ -97,8 +110,12 @@ public class ProgressBar {
             return MI.id("textures/gui/progress_bar/" + progressBarType + ".png");
         }
 
+        public int textureHeight() {
+            return 2 * height;
+        }
+
         public Rectangle toRectangle() {
-            return new Rectangle(renderX, renderY, 20, 20);
+            return new Rectangle(renderX, renderY, width, height);
         }
     }
 }

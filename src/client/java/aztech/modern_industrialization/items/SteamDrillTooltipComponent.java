@@ -56,7 +56,7 @@ public class SteamDrillTooltipComponent implements ClientTooltipComponent {
         // Stack itself
         RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
         // Burning flame next to the stack
-        var progressParams = new ProgressBar.Parameters(0, 0, "furnace", true);
+        var progressParams = new ProgressBar.Parameters(0, 0, "furnace", 14, 14, true);
         ProgressBarClient.renderProgress(guiGraphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
     }
 }

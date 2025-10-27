@@ -35,22 +35,22 @@ public class ProgressBarClient implements GuiComponentClient {
     public float progress;
 
     public ProgressBarClient(RegistryFriendlyByteBuf buf) {
-        this.params = new ProgressBar.Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readBoolean());
+        this.params = new ProgressBar.Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readInt(), buf.readInt(), buf.readBoolean());
         readCurrentData(buf);
     }
 
     public static void renderProgress(GuiGraphics guiGraphics, int x, int y, ProgressBar.Parameters params, float progress) {
         // background
-        guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, 0, 20, 20, 20, 40);
+        guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, 0, params.width, params.height, params.width, params.textureHeight());
         // foreground
-        int foregroundPixels = (int) (progress * 20);
-        if (foregroundPixels > 0) {
+        if (progress > 0) {
             if (!params.isVertical) {
-                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, 20, foregroundPixels, 20,
-                        20, 40);
+                int foregroundPixels = (int) (progress * params.width);
+                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, params.height, foregroundPixels, params.height, params.width, params.textureHeight());
             } else {
-                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY + 20 - foregroundPixels, 0,
-                        40 - foregroundPixels, 20, foregroundPixels, 20, 40);
+                int foregroundPixels = (int) (progress * params.height);
+                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY + params.height - foregroundPixels, 0,
+                        params.textureHeight() - foregroundPixels, params.width, foregroundPixels, params.width, params.textureHeight());
             }
         }
     }

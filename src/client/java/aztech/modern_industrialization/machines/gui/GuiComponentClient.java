@@ -27,7 +27,6 @@ package aztech.modern_industrialization.machines.gui;
 /**
  * Client part of a synced component.
  */
-// TODO: check every usage for rawtypes
 public abstract class GuiComponentClient<P, D> implements GuiComponent {
     protected final P params;
     protected D data;

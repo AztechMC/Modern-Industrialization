@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.minecraft.resources.ResourceLocation;
 import org.jspecify.annotations.Nullable;
 
 public sealed class ComponentStorage<C> implements Iterable<C> permits ComponentStorage.GuiServer, ComponentStorage.Server {
@@ -70,13 +69,21 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
     }
 
     @Nullable
-    public final <T> T get(Class<T> clazz) {
+    public final <T> T getNullable(Class<T> clazz) {
         for (C component : components) {
             if (clazz.isInstance(component)) {
                 return (T) component;
             }
         }
         return null;
+    }
+
+    public final <T> T getOrThrow(Class<T> clazz) {
+        T ret = getNullable(clazz);
+        if (ret == null) {
+            throw new RuntimeException("Component not found: " + clazz);
+        }
+        return ret;
     }
 
     public final <T> List<T> getAll(Class<T> clazz) {
@@ -107,19 +114,7 @@ public sealed class ComponentStorage<C> implements Iterable<C> permits Component
         }
     }
 
-    public static final class GuiServer extends ComponentStorage<GuiComponent.Server> {
-        /**
-         * @throws RuntimeException if the component doesn't exist.
-         */
-        public <S extends GuiComponent.Server> S get(ResourceLocation componentId) {
-            for (GuiComponent.Server component : components) {
-                if (component.getId().equals(componentId)) {
-                    return (S) component;
-                }
-            }
-            throw new RuntimeException("Couldn't find component " + componentId);
-        }
-    }
+    public static final class GuiServer extends ComponentStorage<GuiComponentServer<?, ?>> {}
 
     public static final class Server extends ComponentStorage<IComponent> {}
 }

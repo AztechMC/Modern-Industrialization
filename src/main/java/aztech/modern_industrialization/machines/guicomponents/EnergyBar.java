@@ -24,68 +24,55 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.function.Supplier;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class EnergyBar {
-    public static class Server implements GuiComponent.Server<Data> {
-        public final Parameters params;
-        public final Supplier<Long> euSupplier, maxEuSupplier;
+public class EnergyBar implements GuiComponentServer<EnergyBar.Params, EnergyBar.Data> {
+    public static final Type<Params, Data> TYPE = new Type<>(MI.id("energy_bar"), Params.STREAM_CODEC, Data.STREAM_CODEC);
 
-        public Server(Parameters params, Supplier<Long> euSupplier, Supplier<Long> maxEuSupplier) {
-            this.params = params;
-            this.euSupplier = euSupplier;
-            this.maxEuSupplier = maxEuSupplier;
-        }
+    public final Params params;
+    public final Supplier<Long> euSupplier, maxEuSupplier;
 
-        @Override
-        public Data copyData() {
-            return new Data(euSupplier.get(), maxEuSupplier.get());
-        }
-
-        @Override
-        public boolean needsSync(Data cachedData) {
-            return cachedData.eu != euSupplier.get() || cachedData.maxEu != maxEuSupplier.get();
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(params.renderX);
-            buf.writeInt(params.renderY);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeLong(euSupplier.get());
-            buf.writeLong(maxEuSupplier.get());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.ENERGY_BAR;
-        }
+    public EnergyBar(Params params, Supplier<Long> euSupplier, Supplier<Long> maxEuSupplier) {
+        this.params = params;
+        this.euSupplier = euSupplier;
+        this.maxEuSupplier = maxEuSupplier;
     }
 
-    private static class Data {
-        final long eu;
-        final long maxEu;
-
-        Data(long eu, long maxEu) {
-            this.eu = eu;
-            this.maxEu = maxEu;
-        }
+    @Override
+    public Params getParams() {
+        return params;
     }
 
-    public static class Parameters {
-        public final int renderX, renderY;
+    @Override
+    public Data extractData() {
+        return new Data(euSupplier.get(), maxEuSupplier.get());
+    }
 
-        public Parameters(int renderX, int renderY) {
-            this.renderX = renderX;
-            this.renderY = renderY;
-        }
+    @Override
+    public Type<Params, Data> getType() {
+        return TYPE;
+    }
+
+    public record Params(int renderX, int renderY) {
+        public static final StreamCodec<FriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT,
+                Params::renderX,
+                ByteBufCodecs.VAR_INT,
+                Params::renderY,
+                Params::new);
+    }
+
+    public record Data(long eu, long maxEu) {
+        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_LONG,
+                Data::eu,
+                ByteBufCodecs.VAR_LONG,
+                Data::maxEu,
+                Data::new);
     }
 }

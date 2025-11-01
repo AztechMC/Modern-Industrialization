@@ -53,39 +53,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
 
-public class NuclearReactorGuiClient implements GuiComponentClient {
+public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearReactorGui.Data> {
     public static final ResourceLocation TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
 
-    private NuclearReactorGui.Data data;
-
-    public NuclearReactorGuiClient(RegistryFriendlyByteBuf buf) {
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        boolean valid = buf.readBoolean();
-        if (valid) {
-            int sizeX = buf.readInt();
-            int sizeY = buf.readInt();
-            Optional<INuclearTileData>[] tilesData = new Optional[sizeX * sizeY];
-
-            for (int i = 0; i < sizeX * sizeY; i++) {
-                tilesData[i] = INuclearTileData.read(buf);
-            }
-            double euProduction = buf.readDouble();
-            double euFuelConsumption = buf.readDouble();
-            data = new NuclearReactorGui.Data(true, sizeX, sizeY, tilesData, euProduction, euFuelConsumption);
-
-        } else {
-            data = new NuclearReactorGui.Data(false, 0, 0, null, 0, 0);
-        }
+    public NuclearReactorGuiClient(Unit params, NuclearReactorGui.Data data) {
+        super(params, data);
     }
 
     @Override
@@ -128,7 +105,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                 for (int i = 0; i < data.gridSizeX(); i++) {
                     for (int j = 0; j < data.gridSizeY(); j++) {
                         int index = data.toIndex(i, j);
-                        Optional<INuclearTileData> tile = data.tilesData()[index];
+                        Optional<INuclearTileData> tile = data.tilesData().get(index).data();
                         if (tile.isPresent()) {
                             INuclearTileData tileData = tile.get();
                             int px = x + centerX - data.gridSizeX() * 9 + i * 18;
@@ -235,7 +212,7 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
             if (data.valid()) {
                 if (i >= 0 && j >= 0 && i < data.gridSizeX() && j < data.gridSizeY()) {
                     int index = data.toIndex(i, j);
-                    Optional<INuclearTileData> tile = data.tilesData()[index];
+                    Optional<INuclearTileData> tile = data.tilesData().get(index).data();
                     if (tile.isPresent()) {
                         INuclearTileData tileData = tile.get();
                         TransferVariant<?> variant = tileData.getVariant();
@@ -327,7 +304,6 @@ public class NuclearReactorGuiClient implements GuiComponentClient {
                             }
 
                             if (currentMode == Renderer.Mode.NEUTRON_GENERATION) {
-                                @Nullable
                                 INuclearComponent<?> component = tileData.getComponent();
                                 if (component instanceof NuclearFuel fuel) {
                                     double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());

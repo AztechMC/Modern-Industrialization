@@ -49,8 +49,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity implements EnergyComponentHolder, CableTierHolder {
     public ElectricCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
-            MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
-            RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
+            MachineGuiParameters guiParams, EnergyBar.Params energyBarParams, ProgressBar.Params progressBarParams,
+            RecipeEfficiencyBar.Params efficiencyBarParams, MachineTier tier, long euCapacity) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         this.redstoneControl = new RedstoneControlComponent();
         this.casing = new CasingComponent();
@@ -58,9 +58,9 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.overdrive = new OverdriveComponent();
         this.energy = new EnergyComponent(this, casing::getEuCapacity);
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
-        registerGuiComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity));
+        registerGuiComponent(new RecipeEfficiencyBar(efficiencyBarParams, crafter));
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
                 .withCasing(casing)

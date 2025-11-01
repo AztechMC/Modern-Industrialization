@@ -24,71 +24,68 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Supports both auto-extract and auto-insert. Auto-insert is just a GUI change,
  * but the logic stays the same.
  */
-public class AutoExtract {
-    public static class Server implements GuiComponent.Server<Data> {
-        private final OrientationComponent orientation;
-        private final boolean displayAsInsert; // true for auto-insert
+public class AutoExtract implements GuiComponentServer<AutoExtract.Params, AutoExtract.Data> {
+    public static final Type<Params, Data> TYPE = new Type<>(MI.id("auto_extract"), Params.STREAM_CODEC, Data.STREAM_CODEC);
 
-        public Server(OrientationComponent orientation, boolean displayAsInsert) {
-            this.orientation = orientation;
-            this.displayAsInsert = displayAsInsert;
-        }
+    private final OrientationComponent orientation;
+    private final boolean displayAsInsert; // true for auto-insert
 
-        public Server(OrientationComponent orientation) {
-            this(orientation, false);
-        }
-
-        @Override
-        public Data copyData() {
-            return new Data(orientation.extractItems, orientation.extractFluids);
-        }
-
-        @Override
-        public boolean needsSync(Data cachedData) {
-            return cachedData.extractItems != orientation.extractItems || cachedData.extractFluids != orientation.extractFluids;
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeBoolean(displayAsInsert);
-            buf.writeBoolean(orientation.params.hasExtractItems);
-            buf.writeBoolean(orientation.params.hasExtractFluids);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeBoolean(orientation.extractItems);
-            buf.writeBoolean(orientation.extractFluids);
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.AUTO_EXTRACT;
-        }
-
-        public OrientationComponent getOrientation() {
-            return orientation;
-        }
+    public AutoExtract(OrientationComponent orientation, boolean displayAsInsert) {
+        this.orientation = orientation;
+        this.displayAsInsert = displayAsInsert;
     }
 
-    private static class Data {
-        public final boolean extractItems;
-        public final boolean extractFluids;
+    public AutoExtract(OrientationComponent orientation) {
+        this(orientation, false);
+    }
 
-        private Data(boolean extractItems, boolean extractFluids) {
-            this.extractItems = extractItems;
-            this.extractFluids = extractFluids;
-        }
+    @Override
+    public Params getParams() {
+        return new Params(displayAsInsert, orientation.params.hasExtractItems, orientation.params.hasExtractFluids);
+    }
+
+    @Override
+    public Data extractData() {
+        return new Data(orientation.extractItems, orientation.extractFluids);
+    }
+
+    @Override
+    public Type<Params, Data> getType() {
+        return TYPE;
+    }
+
+    public OrientationComponent getOrientation() {
+        return orientation;
+    }
+
+    public record Params(boolean displayAsInsert, boolean hasExtractItems, boolean hasExtractFluids) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                Params::displayAsInsert,
+                ByteBufCodecs.BOOL,
+                Params::hasExtractItems,
+                ByteBufCodecs.BOOL,
+                Params::hasExtractFluids,
+                Params::new);
+    }
+
+    public record Data(boolean extractItems, boolean extractFluids) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                Data::extractItems,
+                ByteBufCodecs.BOOL,
+                Data::extractFluids,
+                Data::new);
     }
 }

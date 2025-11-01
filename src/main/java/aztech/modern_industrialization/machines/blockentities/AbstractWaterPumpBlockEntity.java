@@ -45,14 +45,14 @@ import net.neoforged.neoforge.fluids.FluidType;
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
     protected static final int OUTPUT_SLOT_Y = 30;
-    private static final ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(79, 29, "extract");
+    private static final ProgressBar.Params PROGRESS_BAR = new ProgressBar.Params(79, 29, "extract");
     private static final int OPERATION_TICKS = 100;
 
     public AbstractWaterPumpBlockEntity(BEP bep, String blockName) {
         super(bep, new MachineGuiParameters.Builder(blockName, false).build(), new OrientationComponent.Params(true, false, false));
 
         isActiveComponent = new IsActiveComponent();
-        registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
+        registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new IComponent() {
             @Override
             public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {

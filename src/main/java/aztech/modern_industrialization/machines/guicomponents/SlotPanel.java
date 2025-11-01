@@ -24,17 +24,17 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.inventory.HackySlot;
 import aztech.modern_industrialization.inventory.SlotGroup;
-import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
 import aztech.modern_industrialization.machines.components.OverdriveComponent;
 import aztech.modern_industrialization.machines.components.RedstoneControlComponent;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,90 +42,95 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-public class SlotPanel {
-    public static int getSlotX(MachineGuiParameters guiParameters) {
-        return guiParameters.backgroundWidth + 6;
+public class SlotPanel implements GuiComponentServer<List<SlotPanel.SlotType>, Unit> {
+    public static final Type<List<SlotPanel.SlotType>, Unit> TYPE = new Type<>(MI.id("slot_panel"),
+            NeoForgeStreamCodecs.enumCodec(SlotPanel.SlotType.class).apply(ByteBufCodecs.list()), StreamCodec.unit(Unit.INSTANCE));
+
+    private final MachineBlockEntity machine;
+    private final List<Consumer<MenuFacade>> slotFactories = new ArrayList<>();
+    private final List<SlotType> slotTypes = new ArrayList<>();
+
+    public SlotPanel(MachineBlockEntity machine) {
+        this.machine = machine;
+    }
+
+    public SlotPanel withRedstoneControl(RedstoneControlComponent redstoneControlComponent) {
+        return addSlot(SlotType.REDSTONE_MODULE, () -> redstoneControlComponent.getDrop().copy(), redstoneControlComponent::setStackServer);
+    }
+
+    public SlotPanel withUpgrades(UpgradeComponent upgradeComponent) {
+        return addSlot(SlotType.UPGRADES, () -> upgradeComponent.getDrop().copy(), upgradeComponent::setStackServer);
+    }
+
+    public SlotPanel withCasing(CasingComponent casingComponent) {
+        return addSlot(SlotType.CASINGS, () -> casingComponent.getDrop().copy(), casingComponent::setCasingServer);
+    }
+
+    public SlotPanel withOverdrive(OverdriveComponent overdriveComponent) {
+        return addSlot(SlotType.OVERDRIVE_MODULE, () -> overdriveComponent.getDrop().copy(), overdriveComponent::setStackServer);
+    }
+
+    private SlotPanel addSlot(SlotType type, Supplier<ItemStack> getStack, BiConsumer<MachineBlockEntity, ItemStack> setStack) {
+        int slotIndex = slotTypes.size();
+        slotFactories.add(facade -> facade.addSlotToMenu(new HackySlot(getSlotX(machine.guiParams), getSlotY(slotIndex)) {
+            @Override
+            protected ItemStack getRealStack() {
+                return getStack.get();
+            }
+
+            @Override
+            protected void setRealStack(ItemStack stack) {
+                setStack.accept(machine, stack);
+            }
+
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return type.mayPlace(stack);
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return type.slotLimit;
+            }
+        }, type.group));
+        slotTypes.add(type);
+        return this;
+    }
+
+    @Override
+    public List<SlotType> getParams() {
+        return slotTypes;
+    }
+
+    @Override
+    public Unit extractData() {
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    public Type<List<SlotType>, Unit> getType() {
+        return TYPE;
+    }
+
+    @Override
+    public void setupMenu(MenuFacade menu) {
+        for (var factory : slotFactories) {
+            factory.accept(menu);
+        }
     }
 
     public static int getSlotY(int slotIndex) {
         return 19 + slotIndex * 20;
     }
 
-    public static class Server implements GuiComponent.ServerNoData {
-        private final MachineBlockEntity machine;
-        private final List<Consumer<GuiComponent.MenuFacade>> slotFactories = new ArrayList<>();
-        private final List<SlotType> slotTypes = new ArrayList<>();
-
-        public Server(MachineBlockEntity machine) {
-            this.machine = machine;
-        }
-
-        public Server withRedstoneControl(RedstoneControlComponent redstoneControlComponent) {
-            return addSlot(SlotType.REDSTONE_MODULE, () -> redstoneControlComponent.getDrop().copy(), redstoneControlComponent::setStackServer);
-        }
-
-        public Server withUpgrades(UpgradeComponent upgradeComponent) {
-            return addSlot(SlotType.UPGRADES, () -> upgradeComponent.getDrop().copy(), upgradeComponent::setStackServer);
-        }
-
-        public Server withCasing(CasingComponent casingComponent) {
-            return addSlot(SlotType.CASINGS, () -> casingComponent.getDrop().copy(), casingComponent::setCasingServer);
-        }
-
-        public Server withOverdrive(OverdriveComponent overdriveComponent) {
-            return addSlot(SlotType.OVERDRIVE_MODULE, () -> overdriveComponent.getDrop().copy(), overdriveComponent::setStackServer);
-        }
-
-        private Server addSlot(SlotType type, Supplier<ItemStack> getStack, BiConsumer<MachineBlockEntity, ItemStack> setStack) {
-            int slotIndex = slotTypes.size();
-            slotFactories.add(facade -> facade.addSlotToMenu(new HackySlot(getSlotX(machine.guiParams), getSlotY(slotIndex)) {
-                @Override
-                protected ItemStack getRealStack() {
-                    return getStack.get();
-                }
-
-                @Override
-                protected void setRealStack(ItemStack stack) {
-                    setStack.accept(machine, stack);
-                }
-
-                @Override
-                public boolean mayPlace(ItemStack stack) {
-                    return type.mayPlace(stack);
-                }
-
-                @Override
-                public int getMaxStackSize() {
-                    return type.slotLimit;
-                }
-            }, type.group));
-            slotTypes.add(type);
-            return this;
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeVarInt(slotFactories.size());
-            for (var type : slotTypes) {
-                buf.writeEnum(type);
-            }
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.SLOT_PANEL;
-        }
-
-        @Override
-        public void setupMenu(GuiComponent.MenuFacade menu) {
-            for (var factory : slotFactories) {
-                factory.accept(menu);
-            }
-        }
+    public static int getSlotX(MachineGuiParameters guiParameters) {
+        return guiParameters.backgroundWidth + 6;
     }
 
     public enum SlotType {

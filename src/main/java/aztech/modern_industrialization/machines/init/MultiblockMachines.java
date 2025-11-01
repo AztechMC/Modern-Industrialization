@@ -594,7 +594,7 @@ public class MultiblockMachines {
 
     private static void clientInit() {
         MachineRegistrationHelper.addMachineModel("coke_oven", "coke_oven", MachineCasings.BRICKS, true, false, false);
-        new Rei("Coke Oven", "coke_oven", MIMachineRecipeTypes.COKE_OVEN, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Coke Oven", "coke_oven", MIMachineRecipeTypes.COKE_OVEN, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
                 .fluids(inputs -> {
                 }, outputs -> outputs.addSlot(102, 53))
@@ -602,7 +602,7 @@ public class MultiblockMachines {
                 .register();
 
         MachineRegistrationHelper.addMachineModel("steam_blast_furnace", "steam_blast_furnace", MachineCasings.FIREBRICKS, true, false, false);
-        new Rei("Steam Blast Furnace", "steam_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Steam Blast Furnace", "steam_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlots(102, 35, 1, 1))
                 .fluids(fluids -> fluids.addSlots(36, 35, 1, 1), outputs -> outputs.addSlots(122, 35, 1, 1))
                 .workstations("steam_blast_furnace", "electric_blast_furnace").extraTest(recipe -> recipe.eu <= 4)
@@ -622,12 +622,12 @@ public class MultiblockMachines {
                 false);
 
         MachineRegistrationHelper.addMachineModel("steam_quarry", "steam_quarry", MachineCasings.STEEL, true, false, false);
-        new Rei("Steam Quarry", "steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Steam Quarry", "steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
                 .workstations("steam_quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
                 .steam(false)
                 .register();
-        new Rei("Electric Quarry", "electric_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Electric Quarry", "electric_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
                 .workstations("electric_quarry").extraTest(recipe -> recipe.eu > 4)
                 .register();
@@ -635,13 +635,13 @@ public class MultiblockMachines {
         MachineRegistrationHelper.addMachineModel("electric_quarry", "electric_quarry", MachineCasings.STEEL, true, false, false);
 
         MachineRegistrationHelper.addMachineModel("vacuum_freezer", "vacuum_freezer", MachineCasings.FROSTPROOF, true, false, false);
-        new Rei("Vacuum Freezer", "vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Vacuum Freezer", "vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlot(102, 35))
                 .fluids(inputs -> inputs.addSlots(36, 35, 1, 2), outputs -> outputs.addSlot(122, 35))
                 .register();
 
         MachineRegistrationHelper.addMachineModel("oil_drilling_rig", "oil_drilling_rig", MachineCasings.STEEL, true, false, false);
-        new Rei("Oil Drilling Rig", "oil_drilling_rig", MIMachineRecipeTypes.OIL_DRILLING_RIG, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Oil Drilling Rig", "oil_drilling_rig", MIMachineRecipeTypes.OIL_DRILLING_RIG, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> {
                 })
                 .fluids(inputs -> {
@@ -649,7 +649,7 @@ public class MultiblockMachines {
                 .register();
 
         MachineRegistrationHelper.addMachineModel("distillation_tower", "distillation_tower", CLEAN_STAINLESS_STEEL, true, false, false);
-        new Rei("Distillation Tower", "distillation_tower", MIMachineRecipeTypes.DISTILLATION_TOWER, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Distillation Tower", "distillation_tower", MIMachineRecipeTypes.DISTILLATION_TOWER, new ProgressBar.Params(77, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 8, 1))
                 .register();
 
@@ -658,13 +658,13 @@ public class MultiblockMachines {
         MachineRegistrationHelper.addMachineModel("large_steam_turbine", "steam_turbine", CLEAN_STAINLESS_STEEL, true, false, false);
 
         MachineRegistrationHelper.addMachineModel("heat_exchanger", "heat_exchanger", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
-        new Rei("Heat Exchanger", "heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Parameters(77, 42, "arrow"))
+        new Rei("Heat Exchanger", "heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Params(77, 42, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                 .fluids(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlots(102, 35, 1, 2))
                 .register();
 
         MachineRegistrationHelper.addMachineModel("pressurizer", "pressurizer", MachineCasings.TITANIUM_PIPE, true, false, false);
-        new Rei("Pressurizer", "pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("Pressurizer", "pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Params(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(38, 35), outputs -> {
                 })
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
@@ -672,7 +672,7 @@ public class MultiblockMachines {
 
         MachineRegistrationHelper.addMachineModel("implosion_compressor", "compressor", MachineCasings.SOLID_TITANIUM, true, false, false);
         new Rei("Implosion Compressor", "implosion_compressor", MIMachineRecipeTypes.IMPLOSION_COMPRESSOR,
-                new ProgressBar.Parameters(77, 42, "compress"))
+                new ProgressBar.Params(77, 42, "compress"))
                         .items(inputs -> inputs.addSlots(36, 35, 2, 2), outputs -> outputs.addSlot(102, 42))
                         .register();
 
@@ -683,7 +683,7 @@ public class MultiblockMachines {
 
         MachineRegistrationHelper.addMachineModel("fusion_reactor",
                 "fusion_reactor", CableTier.EV.casing, true, false, false, true);
-        new Rei("Fusion Reactor", "fusion_reactor", MIMachineRecipeTypes.FUSION_REACTOR, new ProgressBar.Parameters(66, 33, "arrow"))
+        new Rei("Fusion Reactor", "fusion_reactor", MIMachineRecipeTypes.FUSION_REACTOR, new ProgressBar.Params(66, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlots(26, 35, 2, 1), outputs -> outputs.addSlots(92, 35, 3, 1))
                 .register();
 
@@ -706,7 +706,7 @@ public class MultiblockMachines {
 
             new Rei("EBF (%s Tier)".formatted(tier.englishName()), "electric_blast_furnace_" + tier.coilBlockId().getPath(),
                     MIMachineRecipeTypes.BLAST_FURNACE,
-                    new ProgressBar.Parameters(77, 33, "arrow"))
+                    new ProgressBar.Params(77, 33, "arrow"))
                             .items(inputs -> inputs.addSlots(56, 35, 1, 2), outputs -> outputs.addSlot(102, 35))
                             .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                             .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax)
@@ -720,7 +720,7 @@ public class MultiblockMachines {
         private final String englishName;
         private final ResourceLocation category;
         private final MachineRecipeType recipeType;
-        private final ProgressBar.Parameters progressBarParams;
+        private final ProgressBar.Params progressBarParams;
         private final List<ResourceLocation> workstations;
         // extra workstations to be displayed in viewers, can be any item id
         private final List<ResourceLocation> extraWorkstations;
@@ -731,7 +731,7 @@ public class MultiblockMachines {
         private final SlotPositions.Builder fluidOutputs = new SlotPositions.Builder();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
 
-        public Rei(String englishName, ResourceLocation category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+        public Rei(String englishName, ResourceLocation category, MachineRecipeType recipeType, ProgressBar.Params progressBarParams) {
             this.englishName = englishName;
             this.category = category;
             this.recipeType = recipeType;
@@ -741,7 +741,7 @@ public class MultiblockMachines {
             workstations.add(category);
         }
 
-        public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+        public Rei(String englishName, String category, MachineRecipeType recipeType, ProgressBar.Params progressBarParams) {
             this(englishName, MI.id(category), recipeType, progressBarParams);
         }
 

@@ -24,59 +24,47 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class TemperatureBar {
-    public static class Server implements GuiComponent.Server<Integer> {
-        private final Parameters params;
-        private final Supplier<Integer> temperatureSupplier;
+public class TemperatureBar implements GuiComponentServer<TemperatureBar.Params, Integer> {
+    public static final Type<Params, Integer> TYPE = new Type<>(MI.id("temperature_bar"), Params.STREAM_CODEC, ByteBufCodecs.VAR_INT);
 
-        public Server(Parameters params, Supplier<Integer> temperatureSupplier) {
-            this.params = params;
-            this.temperatureSupplier = temperatureSupplier;
-        }
+    private final Params params;
+    private final Supplier<Integer> temperatureSupplier;
 
-        @Override
-        public Integer copyData() {
-            return temperatureSupplier.get();
-        }
-
-        @Override
-        public boolean needsSync(Integer cachedData) {
-            return !cachedData.equals(temperatureSupplier.get());
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(params.renderX);
-            buf.writeInt(params.renderY);
-            buf.writeInt(params.temperatureMax);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(temperatureSupplier.get());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.TEMPERATURE_BAR;
-        }
+    public TemperatureBar(Params params, Supplier<Integer> temperatureSupplier) {
+        this.params = params;
+        this.temperatureSupplier = temperatureSupplier;
     }
 
-    public static class Parameters {
-        public final int renderX, renderY;
-        public final int temperatureMax;
+    @Override
+    public Params getParams() {
+        return params;
+    }
 
-        public Parameters(int renderX, int renderY, int temperatureMax) {
-            this.renderX = renderX;
-            this.renderY = renderY;
-            this.temperatureMax = temperatureMax;
-        }
+    @Override
+    public Integer extractData() {
+        return temperatureSupplier.get();
+    }
+
+    @Override
+    public Type<Params, Integer> getType() {
+        return TYPE;
+    }
+
+    public record Params(int renderX, int renderY, int temperatureMax) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT,
+                Params::renderX,
+                ByteBufCodecs.VAR_INT,
+                Params::renderY,
+                ByteBufCodecs.VAR_INT,
+                Params::temperatureMax,
+                Params::new);
     }
 }

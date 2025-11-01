@@ -46,16 +46,16 @@ import org.jspecify.annotations.Nullable;
 public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable,
         CrafterComponentHolder {
     public AbstractCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
-            MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
+            MachineGuiParameters guiParams, ProgressBar.Params progressBarParams, MachineTier tier) {
         super(bep, guiParams, new OrientationComponent.Params(true, inventory.itemOutputCount > 0, inventory.fluidOutputCount > 0));
         this.inventory = inventory;
         this.crafter = new CrafterComponent(this, inventory, this);
         this.type = recipeType;
         this.tier = tier;
         this.isActiveComponent = new IsActiveComponent();
-        registerGuiComponent(new AutoExtract.Server(orientation));
-        registerGuiComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
-        registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> true));
+        registerGuiComponent(new AutoExtract(orientation));
+        registerGuiComponent(new ProgressBar(progressBarParams, crafter::getProgress));
+        registerGuiComponent(new ReiSlotLocking(crafter::lockRecipe, () -> true));
         this.registerComponents(crafter, this.inventory, isActiveComponent);
     }
 

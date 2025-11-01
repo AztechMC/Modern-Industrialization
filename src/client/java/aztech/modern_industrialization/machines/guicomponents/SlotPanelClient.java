@@ -27,38 +27,28 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.Rectangle;
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class SlotPanelClient implements GuiComponentClient {
-    private final List<SlotPanel.SlotType> slotTypes = new ArrayList<>();
-
-    public SlotPanelClient(RegistryFriendlyByteBuf buf) {
-        int slotCount = buf.readVarInt();
-        for (int i = 0; i < slotCount; ++i) {
-            slotTypes.add(buf.readEnum(SlotPanel.SlotType.class));
-        }
+public class SlotPanelClient extends GuiComponentClient<List<SlotPanel.SlotType>, Unit> {
+    public SlotPanelClient(List<SlotPanel.SlotType> params, Unit data) {
+        super(params, data);
     }
 
     @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {}
-
-    @Override
-    public void setupMenu(GuiComponent.MenuFacade menu) {
-        for (int i = 0; i < slotTypes.size(); ++i) {
-            var type = slotTypes.get(i);
+    public void setupMenu(MenuFacade menu) {
+        for (int i = 0; i < params.size(); ++i) {
+            var type = params.get(i);
 
             class ClientSlot extends SlotWithBackground implements SlotTooltip {
                 public ClientSlot(int i) {
@@ -99,7 +89,7 @@ public class SlotPanelClient implements GuiComponentClient {
     public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
         return new ClientComponentRenderer() {
             private Rectangle getBox(int leftPos, int topPos) {
-                return new Rectangle(leftPos + machineScreen.getGuiParams().backgroundWidth, topPos + 10, 31, 14 + 20 * slotTypes.size());
+                return new Rectangle(leftPos + machineScreen.getGuiParams().backgroundWidth, topPos + 10, 31, 14 + 20 * params.size());
             }
 
             @Override

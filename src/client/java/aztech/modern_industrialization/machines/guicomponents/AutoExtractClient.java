@@ -33,25 +33,11 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-public class AutoExtractClient implements GuiComponentClient {
-    final boolean displayAsInsert;
-    final boolean hasExtractItems, hasExtractFluids;
-    boolean[] extractStatus = new boolean[2];
-
-    public AutoExtractClient(RegistryFriendlyByteBuf buf) {
-        displayAsInsert = buf.readBoolean();
-        hasExtractItems = buf.readBoolean();
-        hasExtractFluids = buf.readBoolean();
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        extractStatus[0] = buf.readBoolean();
-        extractStatus[1] = buf.readBoolean();
+public class AutoExtractClient extends GuiComponentClient<AutoExtract.Params, AutoExtract.Data> {
+    public AutoExtractClient(AutoExtract.Params params, AutoExtract.Data data) {
+        super(params, data);
     }
 
     @Override
@@ -62,26 +48,30 @@ public class AutoExtractClient implements GuiComponentClient {
     private class Renderer implements ClientComponentRenderer {
         @Override
         public void addButtons(ButtonContainer container) {
-            if (hasExtractFluids) {
+            if (params.hasExtractFluids()) {
                 addExtractButton(container, false);
             }
-            if (hasExtractItems) {
+            if (params.hasExtractItems()) {
                 addExtractButton(container, true);
             }
         }
 
         private void addExtractButton(ButtonContainer container, boolean isItem) {
             int u = isItem ? 20 : 0;
-            String type = isItem ? "item" : "fluid";
-            int index = isItem ? 0 : 1;
-            String insertOrExtract = displayAsInsert ? "insert" : "extract";
+            boolean displayAsInsert = params.displayAsInsert();
             container.addButton(u, syncId -> {
-                boolean newExtract = !extractStatus[index];
-                extractStatus[index] = newExtract;
+                boolean newExtract;
+                if (isItem) {
+                    newExtract = !data.extractItems();
+                    data = new AutoExtract.Data(newExtract, data.extractFluids());
+                } else {
+                    newExtract = !data.extractFluids();
+                    data = new AutoExtract.Data(data.extractItems(), newExtract);
+                }
                 new SetAutoExtractPacket(syncId, isItem, newExtract).sendToServer();
             }, () -> {
                 List<Component> lines = new ArrayList<>();
-                if (extractStatus[index]) {
+                if (isItem ? data.extractItems() : data.extractFluids()) {
                     Component component;
 
                     if (isItem) {
@@ -119,7 +109,7 @@ public class AutoExtractClient implements GuiComponentClient {
                     lines.add(MIText.ClickToEnable.text().setStyle(TextHelper.GRAY_TEXT));
                 }
                 return lines;
-            }, () -> extractStatus[index]);
+            }, () -> isItem ? data.extractItems() : data.extractFluids());
         }
 
         @Override

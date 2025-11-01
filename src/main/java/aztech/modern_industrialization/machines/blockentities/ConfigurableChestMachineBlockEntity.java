@@ -53,7 +53,7 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
         SlotPositions itemPositions = new SlotPositions.Builder().addSlots(8, 30, 9, 3).build();
         inventory = new MIInventory(stacks, Collections.emptyList(), itemPositions, SlotPositions.empty());
 
-        registerGuiComponent(new AutoExtract.Server(orientation));
+        registerGuiComponent(new AutoExtract(orientation));
         registerComponents(inventory);
     }
 

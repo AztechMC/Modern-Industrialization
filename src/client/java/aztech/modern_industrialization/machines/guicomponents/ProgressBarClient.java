@@ -28,36 +28,26 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 
-public class ProgressBarClient implements GuiComponentClient {
-    public final ProgressBar.Parameters params;
-    public float progress;
-
-    public ProgressBarClient(RegistryFriendlyByteBuf buf) {
-        this.params = new ProgressBar.Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readInt(), buf.readInt(), buf.readBoolean());
-        readCurrentData(buf);
+public class ProgressBarClient extends GuiComponentClient<ProgressBar.Params, Float> {
+    public ProgressBarClient(ProgressBar.Params params, Float data) {
+        super(params, data);
     }
 
-    public static void renderProgress(GuiGraphics guiGraphics, int x, int y, ProgressBar.Parameters params, float progress) {
+    public static void renderProgress(GuiGraphics guiGraphics, int x, int y, ProgressBar.Params params, float progress) {
         // background
-        guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, 0, params.width, params.height, params.width, params.textureHeight());
+        guiGraphics.blit(params.getTextureId(), x + params.renderX(), y + params.renderY(), 0, 0, params.width(), params.height(), params.width(), params.textureHeight());
         // foreground
         if (progress > 0) {
-            if (!params.isVertical) {
-                int foregroundPixels = (int) (progress * params.width);
-                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY, 0, params.height, foregroundPixels, params.height, params.width, params.textureHeight());
+            if (!params.isVertical()) {
+                int foregroundPixels = (int) (progress * params.width());
+                guiGraphics.blit(params.getTextureId(), x + params.renderX(), y + params.renderY(), 0, params.height(), foregroundPixels, params.height(), params.width(), params.textureHeight());
             } else {
-                int foregroundPixels = (int) (progress * params.height);
-                guiGraphics.blit(params.getTextureId(), x + params.renderX, y + params.renderY + params.height - foregroundPixels, 0,
-                        params.textureHeight() - foregroundPixels, params.width, foregroundPixels, params.width, params.textureHeight());
+                int foregroundPixels = (int) (progress * params.height());
+                guiGraphics.blit(params.getTextureId(), x + params.renderX(), y + params.renderY() + params.height() - foregroundPixels, 0,
+                        params.textureHeight() - foregroundPixels, params.width(), foregroundPixels, params.width(), params.textureHeight());
             }
         }
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        this.progress = buf.readFloat();
     }
 
     @Override
@@ -68,7 +58,7 @@ public class ProgressBarClient implements GuiComponentClient {
     public class Renderer implements ClientComponentRenderer {
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            renderProgress(guiGraphics, x, y, params, progress);
+            renderProgress(guiGraphics, x, y, params, data);
         }
     }
 }

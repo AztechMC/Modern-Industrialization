@@ -27,22 +27,15 @@ package aztech.modern_industrialization.machines.guicomponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.util.Unit;
 
-public class ReiSlotLockingClient implements GuiComponentClient {
-    private boolean allowLocking;
-
-    public ReiSlotLockingClient(RegistryFriendlyByteBuf initialData) {
-        readCurrentData(initialData);
+public class ReiSlotLockingClient extends GuiComponentClient<Unit, Boolean> {
+    public ReiSlotLockingClient(Unit params, Boolean data) {
+        super(params, data);
     }
 
     public boolean isLockingAllowed() {
-        return allowLocking;
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        allowLocking = buf.readBoolean();
+        return data;
     }
 
     @Override

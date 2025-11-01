@@ -25,85 +25,73 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-public class ProgressBar {
-    public static class Server implements GuiComponent.Server<Float> {
-        private final Parameters params;
-        private final Supplier<Float> progressSupplier;
+public class ProgressBar implements GuiComponentServer<ProgressBar.Params, Float> {
+    public static final Type<Params, Float> TYPE = new Type<>(MI.id("progress_bar"), Params.STREAM_CODEC, ByteBufCodecs.FLOAT);
 
-        public Server(Parameters params, Supplier<Float> progressSupplier) {
-            this.params = params;
-            this.progressSupplier = progressSupplier;
-        }
+    private final Params params;
+    private final Supplier<Float> progressSupplier;
 
-        @Override
-        public Float copyData() {
-            return progressSupplier.get();
-        }
-
-        @Override
-        public boolean needsSync(Float cachedData) {
-            return !cachedData.equals(progressSupplier.get());
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(params.renderX);
-            buf.writeInt(params.renderY);
-            buf.writeUtf(params.progressBarType);
-            buf.writeInt(params.width);
-            buf.writeInt(params.height);
-            buf.writeBoolean(params.isVertical);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeFloat(progressSupplier.get());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.PROGRESS_BAR;
-        }
+    public ProgressBar(Params params, Supplier<Float> progressSupplier) {
+        this.params = params;
+        this.progressSupplier = progressSupplier;
     }
 
-    public static class Parameters {
-        public final int renderX, renderY;
-        /**
-         * The real path will be
-         * {@code modern_industrialization:textures/gui/progress_bar/<progressBarType>.png}.
-         * Must have a size of width x 2*height.
-         */
-        public final String progressBarType;
-        public final int width, height;
-        public final boolean isVertical;
+    @Override
+    public Params getParams() {
+        return params;
+    }
 
-        public Parameters(int renderX, int renderY, String progressBarType) {
+    @Override
+    public Float extractData() {
+        return progressSupplier.get();
+    }
+
+    @Override
+    public Type<Params, Float> getType() {
+        return TYPE;
+    }
+
+    /**
+     * @param progressBarType The real path will be
+     *                        {@code modern_industrialization:textures/gui/progress_bar/<progressBarType>.png}.
+     *                        Must have a size of width x 2*height.
+     */
+    public record Params(int renderX, int renderY, String progressBarType, int width, int height, boolean isVertical) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT,
+                Params::renderX,
+                ByteBufCodecs.VAR_INT,
+                Params::renderY,
+                ByteBufCodecs.STRING_UTF8,
+                Params::progressBarType,
+                ByteBufCodecs.VAR_INT,
+                Params::width,
+                ByteBufCodecs.VAR_INT,
+                Params::height,
+                ByteBufCodecs.BOOL,
+                Params::isVertical,
+                Params::new);
+
+        public Params(int renderX, int renderY, String progressBarType) {
             this(renderX, renderY, progressBarType, false);
         }
 
-        public Parameters(int renderX, int renderY, String progressBarType, boolean isVertical) {
+        public Params(int renderX, int renderY, String progressBarType, boolean isVertical) {
             this(renderX, renderY, progressBarType, 20, 20, isVertical);
         }
 
-        public Parameters(int renderX, int renderY, String progressBarType, int width, int height, boolean isVertical) {
+        public Params {
             if (width < 2 || height < 2) {
                 throw new IllegalArgumentException("Width and height must be at least 2, currently " + width + " and " + height);
             }
-
-            this.renderX = renderX;
-            this.renderY = renderY;
-            this.progressBarType = progressBarType;
-            this.width = width;
-            this.height = height;
-            this.isVertical = isVertical;
         }
 
         public ResourceLocation getTextureId() {

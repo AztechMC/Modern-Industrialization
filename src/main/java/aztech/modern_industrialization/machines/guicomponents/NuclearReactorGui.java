@@ -24,61 +24,33 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.nuclear.*;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 
-public class NuclearReactorGui {
-    public record Server(Supplier<Data> dataSupplier) implements GuiComponent.Server<Data> {
-        @Override
-        public Data copyData() {
-            return dataSupplier.get();
-        }
+public record NuclearReactorGui(Supplier<Data> dataSupplier) implements GuiComponentServer<Unit, NuclearReactorGui.Data> {
+    public static final Type<Unit, Data> TYPE = new Type<>(MI.id("nuclear_reactor_gui"), StreamCodec.unit(Unit.INSTANCE), Data.STREAM_CODEC);
 
-        @Override
-        public boolean needsSync(Data cachedData) {
-            Data data = copyData();
-            if (data.valid != cachedData.valid || data.gridSizeX != cachedData.gridSizeX || data.gridSizeY != cachedData.gridSizeY
-                    || data.euProduction != cachedData.euProduction || data.euFuelConsumption != cachedData.euFuelConsumption) {
-                return true;
-            } else {
-                for (int i = 0; i < data.gridSizeY * data.gridSizeX; i++) {
-                    if (INuclearTileData.areEquals(data.tilesData[i], cachedData.tilesData[i])) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+    @Override
+    public Unit getParams() {
+        return Unit.INSTANCE;
+    }
 
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            writeCurrentData(buf);
-        }
+    @Override
+    public Data extractData() {
+        return dataSupplier.get();
+    }
 
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            Data data = copyData();
-            buf.writeBoolean(data.valid);
-            if (data.valid) {
-                buf.writeInt(data.gridSizeX);
-                buf.writeInt(data.gridSizeY);
-                for (Optional<INuclearTileData> tiles : data.tilesData) {
-                    INuclearTileData.write(tiles, buf);
-                }
-                buf.writeDouble(data.euProduction);
-                buf.writeDouble(data.euFuelConsumption);
-            }
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.NUCLEAR_REACTOR_GUI;
-        }
+    @Override
+    public Type<Unit, Data> getType() {
+        return TYPE;
     }
 
     final private static double neutronsMax = 8192;
@@ -88,15 +60,45 @@ public class NuclearReactorGui {
         return Math.log(1 + 10 * neutronNumber) / Math.log(1 + 10 * neutronsMax);
     }
 
-    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData,
-            double euProduction,
-            double euFuelConsumption) {
+    public record Data(
+            boolean valid,
+            int gridSizeX, int gridSizeY,
+            List<TileData> tilesData,
+            double euProduction, double euFuelConsumption) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                Data::valid,
+                ByteBufCodecs.VAR_INT,
+                Data::gridSizeX,
+                ByteBufCodecs.VAR_INT,
+                Data::gridSizeY,
+                TileData.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                Data::tilesData,
+                ByteBufCodecs.DOUBLE,
+                Data::euProduction,
+                ByteBufCodecs.DOUBLE,
+                Data::euFuelConsumption,
+                Data::new);
+
         public int toIndex(int x, int y) {
             return toIndex(x, y, gridSizeY);
         }
 
         public static int toIndex(int x, int y, int sizeY) {
             return x * sizeY + y;
+        }
+    }
+
+    /**
+     * Wrapper record for {@link INuclearTileData} to have a suitable equals implementation.
+     */
+    public record TileData(Optional<INuclearTileData> data) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, TileData> STREAM_CODEC = StreamCodec.ofMember(INuclearTileData::write, INuclearTileData::read)
+                .map(TileData::new, TileData::data);
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof TileData(var odata) && INuclearTileData.areEquals(this.data, odata);
         }
     }
 }

@@ -36,7 +36,7 @@ public class FusionReactorBlockEntity extends AbstractElectricCraftingMultiblock
     public FusionReactorBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate) {
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     @Override

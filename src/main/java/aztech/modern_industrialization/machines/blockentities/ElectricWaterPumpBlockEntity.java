@@ -65,8 +65,8 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
 
         this.registerComponents(inventory, redstoneControl, casing, energy);
 
-        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new EnergyBar(new EnergyBar.Params(18, 32), energy::getEu, energy::getCapacity));
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withCasing(casing));
     }

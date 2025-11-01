@@ -24,50 +24,47 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 
-public class LargeTankFluidDisplay {
-    public static class Server implements GuiComponent.Server<Data> {
-        public final Supplier<Data> fluidDataSupplier;
+public class LargeTankFluidDisplay implements GuiComponentServer<Unit, LargeTankFluidDisplay.Data> {
+    public static final Type<Unit, Data> TYPE = new Type<>(MI.id("large_tank_fluid_display"), StreamCodec.unit(Unit.INSTANCE), Data.STREAM_CODEC);
 
-        public Server(Supplier<Data> fluidDataSupplier) {
-            this.fluidDataSupplier = fluidDataSupplier;
-        }
+    public final Supplier<Data> fluidDataSupplier;
 
-        @Override
-        public Data copyData() {
-            return fluidDataSupplier.get();
-        }
-
-        @Override
-        public boolean needsSync(Data cachedData) {
-            Data newFluidData = fluidDataSupplier.get();
-            return !cachedData.equals(newFluidData);
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            Data fluidData = fluidDataSupplier.get();
-            fluidData.fluid.toPacket(buf);
-            buf.writeLong(fluidData.amount);
-            buf.writeLong(fluidData.capacity);
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.LARGE_TANK_FLUID_DISPLAY;
-        }
+    public LargeTankFluidDisplay(Supplier<Data> fluidDataSupplier) {
+        this.fluidDataSupplier = fluidDataSupplier;
     }
 
-    public static record Data(FluidVariant fluid, long amount, long capacity) {}
+    @Override
+    public Unit getParams() {
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    public Data extractData() {
+        return fluidDataSupplier.get();
+    }
+
+    @Override
+    public Type<Unit, Data> getType() {
+        return TYPE;
+    }
+
+    public record Data(FluidVariant fluid, long amount, long capacity) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                FluidVariant.STREAM_CODEC,
+                Data::fluid,
+                ByteBufCodecs.VAR_LONG,
+                Data::amount,
+                ByteBufCodecs.VAR_LONG,
+                Data::capacity,
+                Data::new);
+    }
 }

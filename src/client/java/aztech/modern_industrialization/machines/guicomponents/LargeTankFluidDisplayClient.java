@@ -37,18 +37,11 @@ import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.util.Unit;
 
-public class LargeTankFluidDisplayClient implements GuiComponentClient {
-    LargeTankFluidDisplay.Data fluidData;
-
-    public LargeTankFluidDisplayClient(RegistryFriendlyByteBuf buf) {
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        fluidData = new LargeTankFluidDisplay.Data(FluidVariant.fromPacket(buf), buf.readLong(), buf.readLong());
+public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeTankFluidDisplay.Data> {
+    public LargeTankFluidDisplayClient(Unit params, LargeTankFluidDisplay.Data data) {
+        super(params, data);
     }
 
     @Override
@@ -58,8 +51,8 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
 
             @Override
             public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
-                FluidVariant fluid = fluidData.fluid();
-                float fracFull = (float) fluidData.amount() / fluidData.capacity();
+                FluidVariant fluid = data.fluid();
+                float fracFull = (float) data.amount() / data.capacity();
 
                 guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX, topPos + posY, 92, 38, 46, 62);
 
@@ -82,9 +75,9 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
                 var renderer = Objects.requireNonNull(shapeSelection).getRenderer();
                 if (renderer.isPanelOpen) {
                     var shapePanelBox = renderer.getBox(leftPos, topPos);
-                    int[] selectedShape = shapeSelection.currentData;
+                    var selectedShape = shapeSelection.getData();
                     long capacity = LargeTankMultiblockBlockEntity.getCapacityFromComponents(
-                            selectedShape[0], selectedShape[1], selectedShape[2]);
+                            selectedShape.get(0), selectedShape.get(1), selectedShape.get(2));
                     var capacityText = FluidHelper.getFluidAmountLarge(capacity);
 
                     guiGraphics.drawString(Minecraft.getInstance().font, capacityText, shapePanelBox.x() + 14, shapePanelBox.y() + 14, 0x404040,
@@ -96,7 +89,7 @@ public class LargeTankFluidDisplayClient implements GuiComponentClient {
             public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
                     guiGraphics.renderTooltip(font,
-                            FluidHelper.getTooltipForFluidStorage(fluidData.fluid(), fluidData.amount(), fluidData.capacity()),
+                            FluidHelper.getTooltipForFluidStorage(data.fluid(), data.amount(), data.capacity()),
                             Optional.empty(),
                             cursorX, cursorY);
                 }

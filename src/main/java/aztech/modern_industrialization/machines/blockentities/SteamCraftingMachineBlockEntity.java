@@ -46,13 +46,13 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     private final OverclockComponent overclockComponent;
 
     public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,
-            ProgressBar.Parameters progressBarParams, MachineTier tier, List<OverclockComponent.Catalyst> overclockCatalysts) {
+            ProgressBar.Params progressBarParams, MachineTier tier, List<OverclockComponent.Catalyst> overclockCatalysts) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
 
-        GunpowderOverclockGui.Parameters gunpowderOverclockGuiParams = new GunpowderOverclockGui.Parameters(progressBarParams.renderX,
-                progressBarParams.renderY + 20);
-        registerGuiComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, overclockComponent::getTicks));
+        GunpowderOverclockGui.Params gunpowderOverclockGuiParams = new GunpowderOverclockGui.Params(progressBarParams.renderX(),
+                progressBarParams.renderY() + 20);
+        registerGuiComponent(new GunpowderOverclockGui(gunpowderOverclockGuiParams, overclockComponent::getTicks));
         this.registerComponents(overclockComponent);
     }
 

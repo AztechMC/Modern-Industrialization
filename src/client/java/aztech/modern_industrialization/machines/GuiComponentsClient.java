@@ -25,47 +25,74 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.machines.gui.GuiComponentClient;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtractClient;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
+import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
+import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGuiClient;
+import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplay;
 import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplayClient;
+import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGuiClient;
+import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBarClient;
+import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBarClient;
+import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLockingClient;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelectionClient;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanelClient;
+import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBarClient;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponentsClient {
-    private static final Map<ResourceLocation, GuiComponentClient.Factory> components = new HashMap<>();
+    private static final Map<ResourceLocation, Registration<?, ?>> components = new HashMap<>();
 
-    public static GuiComponentClient.Factory get(ResourceLocation identifier) {
-        return components.get(identifier);
+    public static Registration<?, ?> get(ResourceLocation id) {
+        var registration = components.get(id);
+        if (registration == null) {
+            throw new IllegalArgumentException("Unknown GUI component ID: " + id);
+        }
+        return registration;
     }
 
-    public static void register(ResourceLocation id, GuiComponentClient.Factory clientFactory) {
-        if (components.put(id, clientFactory) != null) {
+    public static <P, D> void register(GuiComponentServer.Type<P, D> type, BiFunction<P, D, GuiComponentClient<P, D>> clientFactory) {
+        if (components.put(type.id(), new Registration<>(type, clientFactory)) != null) {
             throw new RuntimeException("Duplicate registration of component identifier.");
         }
     }
 
     static {
-        register(GuiComponents.AUTO_EXTRACT, AutoExtractClient::new);
-        register(GuiComponents.CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGuiClient::new);
-        register(GuiComponents.ENERGY_BAR, EnergyBarClient::new);
-        register(GuiComponents.LARGE_TANK_FLUID_DISPLAY, LargeTankFluidDisplayClient::new);
-        register(GuiComponents.GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGuiClient::new);
-        register(GuiComponents.NUCLEAR_REACTOR_GUI, NuclearReactorGuiClient::new);
-        register(GuiComponents.PROGRESS_BAR, ProgressBarClient::new);
-        register(GuiComponents.RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBarClient::new);
-        register(GuiComponents.REI_SLOT_LOCKING, ReiSlotLockingClient::new);
-        register(GuiComponents.SHAPE_SELECTION, ShapeSelectionClient::new);
-        register(GuiComponents.SLOT_PANEL, SlotPanelClient::new);
-        register(GuiComponents.TEMPERATURE_BAR, TemperatureBarClient::new);
+        register(AutoExtract.TYPE, AutoExtractClient::new);
+        register(CraftingMultiblockGui.TYPE, CraftingMultiblockGuiClient::new);
+        register(EnergyBar.TYPE, EnergyBarClient::new);
+        register(LargeTankFluidDisplay.TYPE, LargeTankFluidDisplayClient::new);
+        register(GunpowderOverclockGui.TYPE, GunpowderOverclockGuiClient::new);
+        register(NuclearReactorGui.TYPE, NuclearReactorGuiClient::new);
+        register(ProgressBar.TYPE, ProgressBarClient::new);
+        register(RecipeEfficiencyBar.TYPE, RecipeEfficiencyBarClient::new);
+        register(ReiSlotLocking.TYPE, ReiSlotLockingClient::new);
+        register(ShapeSelection.TYPE, ShapeSelectionClient::new);
+        register(SlotPanel.TYPE, SlotPanelClient::new);
+        register(TemperatureBar.TYPE, TemperatureBarClient::new);
+    }
+
+    public record Registration<P, D>(GuiComponentServer.Type<P, D> type, BiFunction<P, D, GuiComponentClient<P, D>> clientFactory) {
+        public GuiComponentClient<P, D> readNewComponent(RegistryFriendlyByteBuf buf) {
+            P params = type.paramsCodec().decode(buf);
+            D data = type.dataCodec().decode(buf);
+            return clientFactory.apply(params, data);
+        }
     }
 }

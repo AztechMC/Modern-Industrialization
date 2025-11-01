@@ -79,8 +79,8 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         this.fluidItemConsumer = fluidItemConsumer;
         this.redstoneControl = new RedstoneControlComponent();
 
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity));
 
         List<ConfigurableItemStack> itemStacks;
         List<ConfigurableFluidStack> fluidStacks;
@@ -138,7 +138,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.registerComponents(energy, isActiveComponent, inventory, fluidItemConsumer, redstoneControl);
-        this.registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        this.registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     public GeneratorMachineBlockEntity(BEP bep,

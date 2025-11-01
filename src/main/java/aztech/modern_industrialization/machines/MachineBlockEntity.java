@@ -31,7 +31,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -98,7 +98,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         registerComponents(orientation, placedBy);
     }
 
-    protected final void registerGuiComponent(GuiComponent.Server... components) {
+    protected final void registerGuiComponent(GuiComponentServer... components) {
         guiComponents.register(components);
     }
 
@@ -133,12 +133,18 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         inv.fluidPositions.write(buf);
         buf.writeInt(guiComponents.size());
         // Write components
-        for (GuiComponent.Server component : guiComponents) {
-            buf.writeResourceLocation(component.getId());
-            component.writeInitialData(buf);
+        for (GuiComponentServer<?, ?> component : guiComponents) {
+            writeInitialGuiComponent(buf, component);
         }
         // Write GUI params
         guiParams.write(buf);
+    }
+
+    private static <P, D> void writeInitialGuiComponent(RegistryFriendlyByteBuf buf, GuiComponentServer<P, D> component) {
+        var type = component.getType();
+        buf.writeResourceLocation(type.id());
+        type.paramsCodec().encode(buf, component.getParams());
+        type.dataCodec().encode(buf, component.extractData());
     }
 
     /**

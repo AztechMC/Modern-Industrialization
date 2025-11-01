@@ -32,46 +32,22 @@ import aztech.modern_industrialization.network.machines.ChangeShapePacket;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 
-public class ShapeSelectionClient implements GuiComponentClient {
-    private final ShapeSelection.LineInfo[] lines;
-    final int[] currentData;
+public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection.LineInfo>, List<Integer>> {
     private Renderer renderer;
 
-    public ShapeSelectionClient(RegistryFriendlyByteBuf buf) {
-        lines = new ShapeSelection.LineInfo[buf.readVarInt()];
-        for (int i = 0; i < lines.length; ++i) {
-            int numValues = buf.readVarInt();
-            List<Component> components = new ArrayList<>();
-            for (int j = 0; j < numValues; ++j) {
-                components.add(ComponentSerialization.STREAM_CODEC.decode(buf));
-            }
-            lines[i] = new ShapeSelection.LineInfo(numValues, components, buf.readBoolean());
-        }
-        currentData = new int[lines.length];
-
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        for (int i = 0; i < currentData.length; ++i) {
-            currentData[i] = buf.readVarInt();
-        }
+    public ShapeSelectionClient(List<ShapeSelection.LineInfo> params, List<Integer> data) {
+        super(params, data);
     }
 
     @Override
     public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
         // Compute the max width of all the components!
         int maxWidth = 1;
-        for (var line : lines) {
+        for (var line : params) {
             for (var tooltip : line.translations()) {
                 maxWidth = Math.max(maxWidth, Minecraft.getInstance().font.width(tooltip));
             }
@@ -82,6 +58,10 @@ public class ShapeSelectionClient implements GuiComponentClient {
 
     Renderer getRenderer() {
         return renderer;
+    }
+
+    List<Integer> getData() {
+        return data;
     }
 
     class Renderer implements ClientComponentRenderer {
@@ -106,9 +86,9 @@ public class ShapeSelectionClient implements GuiComponentClient {
         @Override
         public void addButtons(ButtonContainer container) {
             // Two buttons per line
-            for (int i = 0; i < lines.length; ++i) {
+            for (int i = 0; i < params.size(); ++i) {
                 int iCopy = i;
-                var line = lines[i];
+                var line = params.get(i);
                 int baseU = line.useArrows() ? 174 : 150;
                 int v = 58;
 
@@ -116,7 +96,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
                 container.addButton(-panelWidth + borderSize + outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
                     new ChangeShapePacket(syncId, iCopy, true).sendToServer();
                 }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
-                    if (currentData[iCopy] == 0) {
+                    if (data.get(iCopy) == 0) {
                         screen.blitButtonNoHighlight(button, guiGraphics, baseU, v + 12);
                     } else {
                         screen.blitButtonSmall(button, guiGraphics, baseU, v);
@@ -127,7 +107,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
                 container.addButton(-btnSize - outerPadding, getVerticalPos(i), btnSize, btnSize, syncId -> {
                     new ChangeShapePacket(syncId, iCopy, false).sendToServer();
                 }, List::of, (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
-                    if (currentData[iCopy] == line.numValues() - 1) {
+                    if (data.get(iCopy) == line.numValues() - 1) {
                         screen.blitButtonNoHighlight(button, guiGraphics, baseU + 12, v + 12);
                     } else {
                         screen.blitButtonSmall(button, guiGraphics, baseU + 12, v);
@@ -150,9 +130,9 @@ public class ShapeSelectionClient implements GuiComponentClient {
 
             if (isPanelOpen) {
                 RenderSystem.disableDepthTest();
-                for (int i = 0; i < lines.length; ++i) {
-                    var line = lines[i];
-                    var tooltip = line.translations().get(currentData[i]);
+                for (int i = 0; i < params.size(); ++i) {
+                    var line = params.get(i);
+                    var tooltip = line.translations().get(data.get(i));
                     var width = Minecraft.getInstance().font.width(tooltip);
                     guiGraphics.drawString(
                             Minecraft.getInstance().font, tooltip,
@@ -167,7 +147,7 @@ public class ShapeSelectionClient implements GuiComponentClient {
             if (isPanelOpen) {
                 int topOffset = 10;
                 return new Rectangle(leftPos - panelWidth, topPos + topOffset, panelWidth,
-                        getVerticalPos(lines.length - 1) - topOffset + btnSize + outerPadding + borderSize);
+                        getVerticalPos(params.size() - 1) - topOffset + btnSize + outerPadding + borderSize);
             } else {
                 return new Rectangle(leftPos - 31, topPos + 10, 31, 34);
             }

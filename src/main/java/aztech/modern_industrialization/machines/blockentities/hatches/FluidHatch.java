@@ -48,7 +48,7 @@ public class FluidHatch extends HatchBlockEntity {
         this.inventory = inventory;
 
         registerComponents(inventory);
-        registerGuiComponent(new AutoExtract.Server(orientation, input));
+        registerGuiComponent(new AutoExtract(orientation, input));
     }
 
     private final boolean input;

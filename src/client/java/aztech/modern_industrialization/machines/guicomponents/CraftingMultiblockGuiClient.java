@@ -33,37 +33,16 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 
-public class CraftingMultiblockGuiClient implements GuiComponentClient {
-    public boolean isShapeValid;
-    boolean hasActiveRecipe;
-    float progress;
-    int efficiencyTicks;
-    int maxEfficiencyTicks;
-    long currentRecipeEu;
-    long baseRecipeEu;
-    int remainingOverclockTicks;
-
-    public CraftingMultiblockGuiClient(RegistryFriendlyByteBuf buf) {
-        readCurrentData(buf);
+public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, CraftingMultiblockGui.Data> {
+    public CraftingMultiblockGuiClient(Unit params, CraftingMultiblockGui.Data data) {
+        super(params, data);
     }
 
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        isShapeValid = buf.readBoolean();
-        if (isShapeValid) {
-            hasActiveRecipe = buf.readBoolean();
-            if (hasActiveRecipe) {
-                progress = buf.readFloat();
-                efficiencyTicks = buf.readInt();
-                maxEfficiencyTicks = buf.readInt();
-                currentRecipeEu = buf.readLong();
-                baseRecipeEu = buf.readLong();
-            }
-        }
-        remainingOverclockTicks = buf.readVarInt();
+    public boolean isShapeValid() {
+        return data.isShapeValid();
     }
 
     @Override
@@ -83,37 +62,41 @@ public class CraftingMultiblockGuiClient implements GuiComponentClient {
 
             int deltaY = 23;
 
-            guiGraphics.drawString(font, isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(), x + 10, y + deltaY,
-                    isShapeValid ? 0xFFFFFF : 0xFF0000, false);
+            guiGraphics.drawString(font,
+                    data.isShapeValid() ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
+                    x + 10, y + deltaY,
+                    data.isShapeValid() ? 0xFFFFFF : 0xFF0000, false);
             deltaY += 11;
 
-            if (isShapeValid) {
+            if (data.isShapeValid()) {
                 guiGraphics.drawString(font, MIText.MultiblockStatusActive.text(), x + 10, y + deltaY, 0xFFFFFF, false);
                 deltaY += 11;
 
-                if (hasActiveRecipe) {
-                    guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", progress * 100) + " %"), x + 10, y + deltaY, 0xFFFFFF,
+                if (data.activeRecipe().isPresent()) {
+                    var recipe = data.activeRecipe().get();
+
+                    guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", recipe.progress() * 100) + " %"), x + 10, y + deltaY, 0xFFFFFF,
                             false);
                     deltaY += 11;
 
-                    if (efficiencyTicks != 0 || maxEfficiencyTicks != 0) {
-                        guiGraphics.drawString(font, MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks), x + 10, y + deltaY, 0xFFFFFF,
+                    if (recipe.efficiencyTicks() != 0 || recipe.maxEfficiencyTicks() != 0) {
+                        guiGraphics.drawString(font, MIText.EfficiencyTicks.text(recipe.efficiencyTicks(), recipe.maxEfficiencyTicks()), x + 10, y + deltaY, 0xFFFFFF,
                                 false);
                         deltaY += 11;
                     }
 
-                    guiGraphics.drawString(font, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(baseRecipeEu)), x + 10, y + deltaY, 0xFFFFFF,
+                    guiGraphics.drawString(font, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(recipe.baseRecipeEu())), x + 10, y + deltaY, 0xFFFFFF,
                             false);
                     deltaY += 11;
 
-                    guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(currentRecipeEu)), x + 10, y + deltaY, 0xFFFFFF,
+                    guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(recipe.currentRecipeEu())), x + 10, y + deltaY, 0xFFFFFF,
                             false);
                     deltaY += 11;
                 }
             }
 
-            if (remainingOverclockTicks > 0) {
-                guiGraphics.drawString(font, GunpowderOverclockGuiClient.Renderer.formatOverclock(remainingOverclockTicks), x + 10, y + deltaY,
+            if (data.remainingOverclockTicks() > 0) {
+                guiGraphics.drawString(font, GunpowderOverclockGuiClient.Renderer.formatOverclock(data.remainingOverclockTicks()), x + 10, y + deltaY,
                         0xFFFFFF, false);
             }
         }

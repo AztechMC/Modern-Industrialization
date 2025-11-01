@@ -40,7 +40,7 @@ public class MachineCategoryParams {
     public final SlotPositions itemOutputs;
     public final SlotPositions fluidInputs;
     public final SlotPositions fluidOutputs;
-    public final ProgressBar.Parameters progressBarParams;
+    public final ProgressBar.Params progressBarParams;
     public final MachineRecipeType recipeType;
     public final Predicate<MachineRecipe> recipePredicate;
     public final boolean isMultiblock;
@@ -48,7 +48,7 @@ public class MachineCategoryParams {
     public final List<ResourceLocation> workstations = new ArrayList<>();
 
     public MachineCategoryParams(String englishName, ResourceLocation category, SlotPositions itemInputs, SlotPositions itemOutputs,
-            SlotPositions fluidInputs, SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, MachineRecipeType recipeType,
+            SlotPositions fluidInputs, SlotPositions fluidOutputs, ProgressBar.Params progressBarParams, MachineRecipeType recipeType,
             Predicate<MachineRecipe> recipePredicate, boolean isMultiblock, SteamMode steamMode) {
         this.englishName = englishName;
         this.category = category;

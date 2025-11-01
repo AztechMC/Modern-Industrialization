@@ -24,28 +24,21 @@
 
 package aztech.modern_industrialization.machines.gui;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-
 /**
  * Client part of a synced component.
  */
-public interface GuiComponentClient extends GuiComponent.Common {
-    /**
-     * Read the current data, written by {@link GuiComponent.Server#writeCurrentData}.
-     */
-    void readCurrentData(RegistryFriendlyByteBuf buf);
+// TODO: check every usage for rawtypes
+public abstract class GuiComponentClient<P, D> implements GuiComponent {
+    protected final P params;
+    protected D data;
+
+    protected GuiComponentClient(P params, D data) {
+        this.params = params;
+        this.data = data;
+    }
 
     /**
      * @return A new renderer linked to this client-side component.
      */
-    ClientComponentRenderer createRenderer(MachineScreen machineScreen);
-
-    @FunctionalInterface
-    interface Factory {
-        /**
-         * Create a new client synced component from the initial data, written by
-         * {@link GuiComponent.Server#writeInitialData}.
-         */
-        GuiComponentClient createFromInitialData(RegistryFriendlyByteBuf buf);
-    }
+    public abstract ClientComponentRenderer createRenderer(MachineScreen machineScreen);
 }

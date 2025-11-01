@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
@@ -54,29 +53,36 @@ public class MachineMenuClient extends MachineMenuCommon {
         SlotPositions fluidPositions = SlotPositions.read(buf);
         MIInventory inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
         // Components
-        ComponentStorage<GuiComponentClient> components = new ComponentStorage<>();
         int componentCount = buf.readInt();
+        List<GuiComponentServer.Type<?, ?>> componentTypes = new ArrayList<>(componentCount);
+        ComponentStorage<GuiComponentClient<?, ?>> components = new ComponentStorage<>();
         for (int i = 0; i < componentCount; ++i) {
-            ResourceLocation id = buf.readResourceLocation();
-            components.register(GuiComponentsClient.get(id).createFromInitialData(buf));
+            var id = buf.readResourceLocation();
+            var registration = GuiComponentsClient.get(id);
+            componentTypes.add(registration.type());
+            components.register(registration.readNewComponent(buf));
         }
         // GUI params
         MachineGuiParameters guiParams = MachineGuiParameters.read(buf);
 
-        return new MachineMenuClient(syncId, playerInventory, inventory, components, guiParams);
+        return new MachineMenuClient(syncId, playerInventory, inventory, componentTypes, components, guiParams);
     }
 
-    public final ComponentStorage<GuiComponentClient> components;
+    private final List<GuiComponentServer.Type<?, ?>> componentTypes;
+    public final ComponentStorage<GuiComponentClient<?, ?>> components;
 
-    private MachineMenuClient(int syncId, Inventory playerInventory, MIInventory inventory, ComponentStorage<GuiComponentClient> components,
+    private MachineMenuClient(
+            int syncId, Inventory playerInventory, MIInventory inventory,
+            List<GuiComponentServer.Type<?, ?>> componentTypes, ComponentStorage<GuiComponentClient<?, ?>> components,
             MachineGuiParameters guiParams) {
         super(syncId, playerInventory, inventory, guiParams, components);
+        this.componentTypes = componentTypes;
         this.components = components;
     }
 
     @Nullable
-    public <T extends GuiComponentClient> T getComponent(Class<T> klass) {
-        return components.get(klass);
+    public <T extends GuiComponentClient<?, ?>> T getComponent(Class<T> klass) {
+        return components.getNullable(klass);
     }
 
     @Override
@@ -84,8 +90,10 @@ public class MachineMenuClient extends MachineMenuCommon {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void readClientComponentSyncData(int componentIndex, RegistryFriendlyByteBuf buf) {
-        components.get(componentIndex).readCurrentData(buf);
+        var type = componentTypes.get(componentIndex);
+        ((GuiComponentClient<?, Object>) components.get(componentIndex)).data = type.dataCodec().decode(buf);
     }
 }

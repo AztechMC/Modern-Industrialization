@@ -70,7 +70,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         this.isActiveComponent = new IsActiveComponent();
         this.redstoneControl = new RedstoneControlComponent();
-        ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(85, 34, "arrow");
+        ProgressBar.Params progressBarParams = new ProgressBar.Params(85, 34, "arrow");
 
         long capacity = FluidType.BUCKET_VOLUME * 256;
 
@@ -97,9 +97,9 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
         });
 
-        registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
-        registerGuiComponent(new AutoExtract.Server(orientation, false));
-        registerGuiComponent(new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        registerGuiComponent(new ProgressBar(progressBarParams, () -> (float) progressTick / 20));
+        registerGuiComponent(new AutoExtract(orientation, false));
+        registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
     }
 
     @Override

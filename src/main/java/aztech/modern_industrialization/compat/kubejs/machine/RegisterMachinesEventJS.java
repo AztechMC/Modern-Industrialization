@@ -57,20 +57,20 @@ import net.minecraft.world.level.material.Fluid;
 
 @SuppressWarnings("unused")
 public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
-    public ProgressBar.Parameters progressBar(int renderX, int renderY, String type) {
-        return new ProgressBar.Parameters(renderX, renderY, type);
+    public ProgressBar.Params progressBar(int renderX, int renderY, String type) {
+        return new ProgressBar.Params(renderX, renderY, type);
     }
 
-    public ProgressBar.Parameters progressBar(int renderX, int renderY, String type, int width, int height) {
-        return new ProgressBar.Parameters(renderX, renderY, type, width, height, false);
+    public ProgressBar.Params progressBar(int renderX, int renderY, String type, int width, int height) {
+        return new ProgressBar.Params(renderX, renderY, type, width, height, false);
     }
 
-    public RecipeEfficiencyBar.Parameters efficiencyBar(int renderX, int renderY) {
-        return new RecipeEfficiencyBar.Parameters(renderX, renderY);
+    public RecipeEfficiencyBar.Params efficiencyBar(int renderX, int renderY) {
+        return new RecipeEfficiencyBar.Params(renderX, renderY);
     }
 
-    public EnergyBar.Parameters energyBar(int renderX, int renderY) {
-        return new EnergyBar.Parameters(renderX, renderY);
+    public EnergyBar.Params energyBar(int renderX, int renderY) {
+        return new EnergyBar.Params(renderX, renderY);
     }
 
     public void craftingSingleBlock(
@@ -78,7 +78,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             String englishName, String internalName, MachineRecipeType recipeType, List<String> tiers,
             // gui
             int backgroundHeight, // can be -1 to use default
-            ProgressBar.Parameters progressBar, RecipeEfficiencyBar.Parameters efficiencyBar, EnergyBar.Parameters energyBar,
+            ProgressBar.Params progressBar, RecipeEfficiencyBar.Params efficiencyBar, EnergyBar.Params energyBar,
             // slots
             int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs, int bucketCapacity,
             Consumer<SlotPositions.Builder> itemSlotPositions, Consumer<SlotPositions.Builder> fluidSlotPositions,
@@ -94,7 +94,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             String englishName, String internalName, MachineRecipeType recipeType, List<String> tiers,
             // gui
             int backgroundHeight, // can be -1 to use default
-            ProgressBar.Parameters progressBar, RecipeEfficiencyBar.Parameters efficiencyBar, EnergyBar.Parameters energyBar,
+            ProgressBar.Params progressBar, RecipeEfficiencyBar.Params efficiencyBar, EnergyBar.Params energyBar,
             // slots
             int itemInputs, int itemOutputs, int fluidInputs, int fluidOutputs, int bucketCapacity,
             Consumer<SlotPositions.Builder> itemSlotPositions, Consumer<SlotPositions.Builder> fluidSlotPositions,
@@ -142,7 +142,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
-            ProgressBar.Parameters progressBar,
+            ProgressBar.Params progressBar,
             Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
@@ -157,7 +157,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
-            ProgressBar.Parameters progressBar,
+            ProgressBar.Params progressBar,
             Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
@@ -178,7 +178,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
-            ProgressBar.Parameters progressBar,
+            ProgressBar.Params progressBar,
             Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
@@ -193,7 +193,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
-            ProgressBar.Parameters progressBar,
+            ProgressBar.Params progressBar,
             Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model
@@ -215,7 +215,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
             // general
             String englishName, String internalName, MachineRecipeType recipeType, ShapeTemplate multiblockShape,
             // REI parameters
-            ProgressBar.Parameters progressBar,
+            ProgressBar.Params progressBar,
             Consumer<SlotPositions.Builder> itemInputPositions, Consumer<SlotPositions.Builder> itemOutputPositions,
             Consumer<SlotPositions.Builder> fluidInputPositions, Consumer<SlotPositions.Builder> fluidOutputPositions,
             // model

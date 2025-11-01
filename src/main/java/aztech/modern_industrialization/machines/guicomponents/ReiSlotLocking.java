@@ -24,51 +24,43 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.function.Supplier;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ReiSlotLocking {
+public class ReiSlotLocking implements GuiComponentServer<Unit, Boolean> {
+    public static final Type<Unit, Boolean> TYPE = new Type<>(MI.id("rei_slot_locking"), StreamCodec.unit(Unit.INSTANCE), ByteBufCodecs.BOOL);
+
+    public final SlotLockable slotLockable;
+    public final Supplier<Boolean> allowLocking;
+
+    public ReiSlotLocking(SlotLockable slotLockable, Supplier<Boolean> allowLocking) {
+        this.slotLockable = slotLockable;
+        this.allowLocking = allowLocking;
+    }
+
+    @Override
+    public Unit getParams() {
+        return Unit.INSTANCE;
+    }
+
+    @Override
+    public Boolean extractData() {
+        return allowLocking.get();
+    }
+
+    @Override
+    public Type<Unit, Boolean> getType() {
+        return TYPE;
+    }
+
     @FunctionalInterface
     public interface SlotLockable {
         void lockSlots(ResourceLocation recipeId, Inventory inventory);
-    }
-
-    public static class Server implements GuiComponent.Server<Boolean> {
-        public final SlotLockable slotLockable;
-        public final Supplier<Boolean> allowLocking;
-
-        public Server(SlotLockable slotLockable, Supplier<Boolean> allowLocking) {
-            this.slotLockable = slotLockable;
-            this.allowLocking = allowLocking;
-        }
-
-        @Override
-        public Boolean copyData() {
-            return allowLocking.get();
-        }
-
-        @Override
-        public boolean needsSync(Boolean cachedData) {
-            return allowLocking.get() != cachedData;
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeBoolean(allowLocking.get());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.REI_SLOT_LOCKING;
-        }
     }
 }

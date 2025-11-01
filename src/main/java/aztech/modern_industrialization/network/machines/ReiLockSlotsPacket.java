@@ -24,7 +24,6 @@
 
 package aztech.modern_industrialization.network.machines;
 
-import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.network.BasePacket;
@@ -49,7 +48,7 @@ public record ReiLockSlotsPacket(int containedId, ResourceLocation recipeId) imp
         AbstractContainerMenu sh = ctx.getPlayer().containerMenu;
         if (sh.containerId == containedId && sh instanceof MachineMenuServer screenHandler) {
             // Check that locking the slots is allowed in the first place
-            ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.guiComponents.get(GuiComponents.REI_SLOT_LOCKING);
+            var slotLocking = screenHandler.blockEntity.guiComponents.getOrThrow(ReiSlotLocking.class);
             if (!slotLocking.allowLocking.get())
                 return;
 

@@ -24,7 +24,6 @@
 
 package aztech.modern_industrialization.network.machines;
 
-import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
@@ -50,7 +49,7 @@ public record SetAutoExtractPacket(int syncId, boolean isItem, boolean isExtract
 
         if (ctx.getPlayer().containerMenu.containerId == syncId) {
             var screenHandler = (MachineMenuServer) ctx.getPlayer().containerMenu;
-            AutoExtract.Server autoExtract = screenHandler.blockEntity.guiComponents.get(GuiComponents.AUTO_EXTRACT);
+            var autoExtract = screenHandler.blockEntity.guiComponents.getOrThrow(AutoExtract.class);
             OrientationComponent orientation = autoExtract.getOrientation();
             if (isItem) {
                 orientation.extractItems = isExtract;

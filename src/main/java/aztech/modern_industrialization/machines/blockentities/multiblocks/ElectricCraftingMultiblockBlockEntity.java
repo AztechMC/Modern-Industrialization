@@ -42,7 +42,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractElectricCraft
         this.upgrades = new UpgradeComponent();
         this.overdrive = new OverdriveComponent();
         this.registerComponents(upgrades, overdrive);
-        registerGuiComponent(new SlotPanel.Server(this)
+        registerGuiComponent(new SlotPanel(this)
                 .withRedstoneControl(redstoneControl)
                 .withUpgrades(upgrades)
                 .withOverdrive(overdrive));

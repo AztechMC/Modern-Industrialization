@@ -54,7 +54,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlots(68, 20, 3, 3).build();
         inventory = new MIInventory(Collections.emptyList(), stacks, SlotPositions.empty(), fluidPositions);
 
-        registerGuiComponent(new AutoExtract.Server(orientation));
+        registerGuiComponent(new AutoExtract(orientation));
         registerComponents(inventory);
     }
 

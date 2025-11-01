@@ -31,21 +31,11 @@ import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-public class GunpowderOverclockGuiClient implements GuiComponentClient {
-    final GunpowderOverclockGui.Parameters params;
-    int remTick;
-
-    public GunpowderOverclockGuiClient(RegistryFriendlyByteBuf buf) {
-        this.params = new GunpowderOverclockGui.Parameters(buf.readInt(), buf.readInt());
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        remTick = buf.readInt();
+public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOverclockGui.Params, Integer> {
+    public GunpowderOverclockGuiClient(GunpowderOverclockGui.Params params, Integer data) {
+        super(params, data);
     }
 
     @Override
@@ -56,18 +46,18 @@ public class GunpowderOverclockGuiClient implements GuiComponentClient {
     public class Renderer implements ClientComponentRenderer {
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            if (remTick > 0) {
-                int px = x + params.renderX;
-                int py = y + params.renderY;
+            if (data > 0) {
+                int px = x + params.renderX();
+                int py = y + params.renderY();
                 guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 0, 58, 20, 20);
             }
         }
 
         @Override
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
-            if (remTick > 0) {
-                if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                    guiGraphics.renderTooltip(font, formatOverclock(remTick), cursorX, cursorY);
+            if (data > 0) {
+                if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), 20, 20, cursorX - x, cursorY - y)) {
+                    guiGraphics.renderTooltip(font, formatOverclock(data), cursorX, cursorY);
                 }
             }
         }

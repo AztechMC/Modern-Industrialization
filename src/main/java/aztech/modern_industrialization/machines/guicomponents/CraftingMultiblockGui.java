@@ -24,128 +24,80 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
+import java.util.Optional;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 
-public class CraftingMultiblockGui {
-    public static class Server implements GuiComponent.Server<Data> {
-        private final CrafterComponent crafter;
-        private final Supplier<Boolean> isShapeValid;
-        private final Supplier<Float> progressSupplier;
-        private final IntSupplier remainingOverclockTicks;
+public class CraftingMultiblockGui implements GuiComponentServer<Unit, CraftingMultiblockGui.Data> {
+    public static final Type<Unit, Data> TYPE = new Type<>(MI.id("crafting_multiblock_gui"), StreamCodec.unit(Unit.INSTANCE), Data.STREAM_CODEC);
 
-        @Deprecated(forRemoval = true)
-        public Server(Supplier<Boolean> isShapeValid, Supplier<Float> progressSupplier, CrafterComponent crafter) {
-            this(isShapeValid, progressSupplier, crafter, () -> 0);
-        }
+    private final CrafterComponent crafter;
+    private final Supplier<Boolean> isShapeValid;
+    private final Supplier<Float> progressSupplier;
+    private final IntSupplier remainingOverclockTicks;
 
-        public Server(Supplier<Boolean> isShapeValid, Supplier<Float> progressSupplier, CrafterComponent crafter,
-                IntSupplier remainingOverclockTicks) {
-            this.isShapeValid = isShapeValid;
-            this.crafter = crafter;
-            this.progressSupplier = progressSupplier;
-            this.remainingOverclockTicks = remainingOverclockTicks;
-        }
-
-        @Override
-        public Data copyData() {
-            if (isShapeValid.get()) {
-                if (crafter.hasActiveRecipe()) {
-                    return new Data(progressSupplier.get(), crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(),
-                            crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu(), remainingOverclockTicks.getAsInt());
-                } else {
-                    return new Data(true, remainingOverclockTicks.getAsInt());
-                }
-            } else {
-                return new Data(remainingOverclockTicks.getAsInt());
-            }
-        }
-
-        @Override
-        public boolean needsSync(Data cachedData) {
-            boolean recipe = false;
-
-            if (crafter.hasActiveRecipe()) {
-                recipe = crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu;
-            }
-            return cachedData.isShapeValid != isShapeValid.get() || cachedData.hasActiveRecipe != crafter.hasActiveRecipe()
-                    || cachedData.progress != progressSupplier.get() || crafter.getEfficiencyTicks() != cachedData.efficiencyTicks
-                    || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks || recipe
-                    || cachedData.remainingOverclockTicks != remainingOverclockTicks.getAsInt();
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            if (isShapeValid.get()) {
-                buf.writeBoolean(true);
-                if (crafter.hasActiveRecipe()) {
-                    buf.writeBoolean(true);
-                    buf.writeFloat(progressSupplier.get());
-                    buf.writeInt(crafter.getEfficiencyTicks());
-                    buf.writeInt(crafter.getMaxEfficiencyTicks());
-                    buf.writeLong(crafter.getCurrentRecipeEu());
-                    buf.writeLong(crafter.getBaseRecipeEu());
-                } else {
-                    buf.writeBoolean(false);
-                }
-            } else {
-                buf.writeBoolean(false);
-            }
-            buf.writeVarInt(remainingOverclockTicks.getAsInt());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.CRAFTING_MULTIBLOCK_GUI;
-        }
+    public CraftingMultiblockGui(Supplier<Boolean> isShapeValid, Supplier<Float> progressSupplier, CrafterComponent crafter,
+            IntSupplier remainingOverclockTicks) {
+        this.isShapeValid = isShapeValid;
+        this.crafter = crafter;
+        this.progressSupplier = progressSupplier;
+        this.remainingOverclockTicks = remainingOverclockTicks;
     }
 
-    private static class Data {
-        final boolean isShapeValid;
-        final boolean hasActiveRecipe;
-        final float progress;
-        final int efficiencyTicks;
-        final int maxEfficiencyTicks;
-        final long currentRecipeEu;
-        final long baseRecipeEu;
-        final int remainingOverclockTicks;
+    @Override
+    public Unit getParams() {
+        return Unit.INSTANCE;
+    }
 
-        private Data(int remainingOverclockTicks) {
-            this(false, remainingOverclockTicks);
+    @Override
+    public Data extractData() {
+        boolean shapeValid = isShapeValid.get();
+        Optional<RecipeData> activeRecipe;
+        if (shapeValid && crafter.hasActiveRecipe()) {
+            activeRecipe = Optional.of(new RecipeData(progressSupplier.get(), crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(),
+                    crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu()));
+        } else {
+            activeRecipe = Optional.empty();
         }
+        return new Data(shapeValid, activeRecipe, remainingOverclockTicks.getAsInt());
+    }
 
-        private Data(boolean isShapeValid, int remainingOverclockTicks) {
-            this.isShapeValid = isShapeValid;
-            this.hasActiveRecipe = false;
-            this.efficiencyTicks = 0;
-            this.progress = 0;
-            this.maxEfficiencyTicks = 0;
-            this.currentRecipeEu = 0;
-            this.baseRecipeEu = 0;
-            this.remainingOverclockTicks = remainingOverclockTicks;
-        }
+    @Override
+    public Type<Unit, Data> getType() {
+        return TYPE;
+    }
 
-        private Data(float progress, int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu,
-                int remainingOverclockTicks) {
-            this.efficiencyTicks = efficiencyTicks;
-            this.progress = progress;
-            this.maxEfficiencyTicks = maxEfficiencyTicks;
-            this.isShapeValid = true;
-            this.hasActiveRecipe = true;
-            this.currentRecipeEu = currentRecipeEu;
-            this.baseRecipeEu = baseRecipeEu;
-            this.remainingOverclockTicks = remainingOverclockTicks;
-        }
+    public record Data(boolean isShapeValid, Optional<RecipeData> activeRecipe, int remainingOverclockTicks) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                Data::isShapeValid,
+                ByteBufCodecs.optional(RecipeData.STREAM_CODEC),
+                Data::activeRecipe,
+                ByteBufCodecs.VAR_INT,
+                Data::remainingOverclockTicks,
+                Data::new);
+    }
+
+    public record RecipeData(float progress, int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, RecipeData> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.FLOAT,
+                RecipeData::progress,
+                ByteBufCodecs.VAR_INT,
+                RecipeData::efficiencyTicks,
+                ByteBufCodecs.VAR_INT,
+                RecipeData::maxEfficiencyTicks,
+                ByteBufCodecs.VAR_LONG,
+                RecipeData::currentRecipeEu,
+                ByteBufCodecs.VAR_LONG,
+                RecipeData::baseRecipeEu,
+                RecipeData::new);
     }
 
     public static final int X = 5;

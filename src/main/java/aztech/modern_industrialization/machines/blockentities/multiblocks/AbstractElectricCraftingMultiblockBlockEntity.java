@@ -52,7 +52,7 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
         super(bep, blockId, orientationParams, shapeTemplates);
 
         this.redstoneControl = new RedstoneControlComponent();
-        registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, () -> 0));
+        registerGuiComponent(new CraftingMultiblockGui(() -> shapeValid.shapeValid, crafter::getProgress, crafter, () -> 0));
         registerComponents(redstoneControl);
     }
 

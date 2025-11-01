@@ -39,7 +39,7 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
     public final MachineGuiParameters guiParams;
 
     MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
-            ComponentStorage<? extends GuiComponent.Common> guiComponents) {
+            ComponentStorage<? extends GuiComponent> guiComponents) {
         super(MIRegistries.MACHINE_MENU.get(), syncId, playerInventory, inventory);
         this.guiParams = guiParams;
 

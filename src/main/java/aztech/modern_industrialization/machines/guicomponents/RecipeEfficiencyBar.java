@@ -24,103 +24,68 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class RecipeEfficiencyBar {
-    public static class Server implements GuiComponent.Server<Data> {
-        private final Parameters params;
-        private final CrafterComponent crafter;
+public class RecipeEfficiencyBar implements GuiComponentServer<RecipeEfficiencyBar.Params, RecipeEfficiencyBar.Data> {
+    public static final Type<Params, Data> TYPE = new Type<>(MI.id("recipe_efficiency_bar"), Params.STREAM_CODEC, Data.STREAM_CODEC);
 
-        public Server(Parameters params, CrafterComponent crafter) {
-            this.params = params;
-            this.crafter = crafter;
-        }
+    private final Params params;
+    private final CrafterComponent crafter;
 
-        @Override
-        public Data copyData() {
-            if (crafter.hasActiveRecipe()) {
-                return new Data(crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(), crafter.getCurrentRecipeEu(),
-                        crafter.getBaseRecipeEu(), crafter.getBehavior().getMaxRecipeEu());
-            } else {
-                return new Data();
-            }
-        }
+    public RecipeEfficiencyBar(Params params, CrafterComponent crafter) {
+        this.params = params;
+        this.crafter = crafter;
+    }
 
-        @Override
-        public boolean needsSync(Data cachedData) {
-            if (!crafter.hasActiveRecipe()) {
-                return cachedData.hasActiveRecipe || crafter.getBehavior().getMaxRecipeEu() != cachedData.maxRecipeEu;
-            } else {
-                return crafter.getEfficiencyTicks() != cachedData.efficiencyTicks || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
-                        || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu
-                        || crafter.getBehavior().getMaxRecipeEu() != cachedData.maxRecipeEu;
-            }
-        }
+    @Override
+    public Params getParams() {
+        return params;
+    }
 
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(params.renderX);
-            buf.writeInt(params.renderY);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            if (crafter.hasActiveRecipe()) {
-                buf.writeBoolean(true);
-                buf.writeInt(crafter.getEfficiencyTicks());
-                buf.writeInt(crafter.getMaxEfficiencyTicks());
-                buf.writeLong(crafter.getCurrentRecipeEu());
-                buf.writeLong(crafter.getBaseRecipeEu());
-            } else {
-                buf.writeBoolean(false);
-            }
-            buf.writeLong(crafter.getBehavior().getMaxRecipeEu());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.RECIPE_EFFICIENCY_BAR;
+    @Override
+    public Data extractData() {
+        if (crafter.hasActiveRecipe()) {
+            return new Data(true,
+                    crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(),
+                    crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu(), crafter.getBehavior().getMaxRecipeEu());
+        } else {
+            return new Data(false, 0, 0, 0, 0, crafter.getBehavior().getMaxRecipeEu());
         }
     }
 
-    private static class Data {
-        final boolean hasActiveRecipe;
-        final int efficiencyTicks;
-        final int maxEfficiencyTicks;
-        final long currentRecipeEu;
-        final long baseRecipeEu;
-        final long maxRecipeEu;
-
-        private Data() {
-            this.hasActiveRecipe = false;
-            this.efficiencyTicks = 0;
-            this.maxEfficiencyTicks = 0;
-            this.currentRecipeEu = 0;
-            this.baseRecipeEu = 0;
-            this.maxRecipeEu = 0;
-        }
-
-        private Data(int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu, long maxRecipeEu) {
-            this.efficiencyTicks = efficiencyTicks;
-            this.maxEfficiencyTicks = maxEfficiencyTicks;
-            this.hasActiveRecipe = true;
-            this.currentRecipeEu = currentRecipeEu;
-            this.baseRecipeEu = baseRecipeEu;
-            this.maxRecipeEu = maxRecipeEu;
-        }
+    @Override
+    public Type<Params, Data> getType() {
+        return TYPE;
     }
 
-    public static class Parameters {
-        public final int renderX, renderY;
+    public record Data(boolean hasActiveRecipe, int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu, long maxRecipeEu) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.BOOL,
+                Data::hasActiveRecipe,
+                ByteBufCodecs.VAR_INT,
+                Data::efficiencyTicks,
+                ByteBufCodecs.VAR_INT,
+                Data::maxEfficiencyTicks,
+                ByteBufCodecs.VAR_LONG,
+                Data::currentRecipeEu,
+                ByteBufCodecs.VAR_LONG,
+                Data::baseRecipeEu,
+                ByteBufCodecs.VAR_LONG,
+                Data::maxRecipeEu,
+                Data::new);
+    }
 
-        public Parameters(int renderX, int renderY) {
-            this.renderX = renderX;
-            this.renderY = renderY;
-        }
+    public record Params(int renderX, int renderY) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT,
+                Params::renderX,
+                ByteBufCodecs.VAR_INT,
+                Params::renderY,
+                Params::new);
     }
 }

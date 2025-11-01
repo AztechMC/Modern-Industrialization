@@ -25,73 +25,17 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.inventory.SlotGroup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.Slot;
 
-public final class GuiComponent {
-    public interface MenuFacade {
+/**
+ * Common class for the client and the server side of gui components.
+ */
+public interface GuiComponent {
+    default void setupMenu(MenuFacade menu) {}
+
+    interface MenuFacade {
         void addSlotToMenu(Slot slot, SlotGroup slotGroup);
 
         MachineGuiParameters getGuiParams();
-    }
-
-    public interface Common {
-        default void setupMenu(MenuFacade menu) {}
-    }
-
-    /**
-     * Server part of a synced component.
-     *
-     * @param <D> Synced data type.
-     */
-    public interface Server<D> extends Common {
-        /**
-         * @return A copy of the current sync data.
-         */
-        D copyData();
-
-        /**
-         * @return Whether the cached data is outdated, meaning that a sync must be
-         *         performed.
-         */
-        boolean needsSync(D cachedData);
-
-        /**
-         * Write the initial data to the packet byte buf, used only when the screen is
-         * opened.
-         */
-        void writeInitialData(RegistryFriendlyByteBuf buf);
-
-        /**
-         * Write the current data to the packet byte buf, used when syncing after the
-         * screen was opened.
-         */
-        void writeCurrentData(RegistryFriendlyByteBuf buf);
-
-        /**
-         * Return the id of the component. Must match that of the {@code GuiComponentClient}
-         * registered with {@code GuiComponentsClient#register}.
-         */
-        ResourceLocation getId();
-    }
-
-    /**
-     * Convenience override when no data needs to be synced.
-     */
-    public interface ServerNoData extends Server<Unit> {
-        @Override
-        default Unit copyData() {
-            return Unit.INSTANCE;
-        }
-
-        @Override
-        default boolean needsSync(Unit cachedData) {
-            return false;
-        }
-
-        @Override
-        default void writeCurrentData(RegistryFriendlyByteBuf buf) {}
     }
 }

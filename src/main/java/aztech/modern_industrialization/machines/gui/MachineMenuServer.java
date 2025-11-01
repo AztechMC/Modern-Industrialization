@@ -29,6 +29,7 @@ import aztech.modern_industrialization.network.machines.MachineComponentSyncPack
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -37,14 +38,14 @@ import net.minecraft.world.entity.player.Player;
 
 public class MachineMenuServer extends MachineMenuCommon {
     public final MachineBlockEntity blockEntity;
-    protected final List trackedData;
+    protected final List<Object> trackedData;
 
     public MachineMenuServer(int syncId, Inventory playerInventory, MachineBlockEntity blockEntity, MachineGuiParameters guiParams) {
         super(syncId, playerInventory, blockEntity.getInventory(), guiParams, blockEntity.guiComponents);
         this.blockEntity = blockEntity;
         trackedData = new ArrayList<>();
-        for (GuiComponent.Server component : blockEntity.guiComponents) {
-            trackedData.add(component.copyData());
+        for (GuiComponentServer component : blockEntity.guiComponents) {
+            trackedData.add(component.extractData());
         }
     }
 
@@ -52,13 +53,14 @@ public class MachineMenuServer extends MachineMenuCommon {
     public void broadcastChanges() {
         super.broadcastChanges();
         blockEntity.guiComponents.forEachIndexed((i, component) -> {
-            if (component.needsSync(trackedData.get(i))) {
+            var newData = component.extractData();
+            if (!Objects.equals(trackedData.get(i), newData)) {
                 var buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), blockEntity.getLevel().registryAccess());
-                component.writeCurrentData(buf);
+                ((GuiComponentServer.Type<?, Object>) component.getType()).dataCodec().encode(buf, newData);
                 byte[] bytes = new byte[buf.writerIndex()];
                 buf.readBytes(bytes);
                 new MachineComponentSyncPacket(containerId, i, bytes).sendToClient((ServerPlayer) playerInventory.player);
-                trackedData.set(i, component.copyData());
+                trackedData.set(i, newData);
                 buf.release();
             }
         });

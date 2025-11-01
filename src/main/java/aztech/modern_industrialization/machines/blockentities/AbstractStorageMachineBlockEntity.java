@@ -82,9 +82,9 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
         this.registerComponents(energy, redstoneControl);
 
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity),
-                new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity),
+                new SlotPanel(this).withRedstoneControl(redstoneControl));
 
         this.extractableOnOutputDirection = extractableOnOutputDirection;
     }

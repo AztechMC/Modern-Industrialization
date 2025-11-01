@@ -31,21 +31,11 @@ import aztech.modern_industrialization.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public class TemperatureBarClient implements GuiComponentClient {
-    public final TemperatureBar.Parameters params;
-    public int temperature;
-
-    public TemperatureBarClient(RegistryFriendlyByteBuf buf) {
-        this.params = new TemperatureBar.Parameters(buf.readInt(), buf.readInt(), buf.readInt());
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        this.temperature = buf.readInt();
+public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Params, Integer> {
+    public TemperatureBarClient(TemperatureBar.Params params, Integer data) {
+        super(params, data);
     }
 
     @Override
@@ -60,19 +50,19 @@ public class TemperatureBarClient implements GuiComponentClient {
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             // background
-            guiGraphics.blit(TEXTURE, x + params.renderX - 1, y + params.renderY - 1, 0, 2,
+            guiGraphics.blit(TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2,
                     WIDTH + 2, HEIGHT + 2, 102, 6);
-            int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
-            guiGraphics.blit(TEXTURE, x + params.renderX, y + params.renderY, 0, 0, barPixels,
+            int barPixels = (int) ((float) data / params.temperatureMax() * WIDTH);
+            guiGraphics.blit(TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels,
                     HEIGHT, 102, 6);
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
+            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x + params.renderX() - 22, y + params.renderY() + HEIGHT / 2 - 10, 144, 0, 20, 20);
         }
 
         @Override
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
-            if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x,
+            if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
-                guiGraphics.renderTooltip(font, MIText.Temperature.text(temperature), cursorX, cursorY);
+                guiGraphics.renderTooltip(font, MIText.Temperature.text(data), cursorX, cursorY);
             }
         }
     }

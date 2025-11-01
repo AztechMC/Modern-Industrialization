@@ -53,8 +53,8 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
         this.energy = new EnergyComponent(this, 30 * 20 * tier.getEu());
         insertable = energy.buildInsertable((CableTier tier2) -> tier2 == tier);
         extractable = energy.buildExtractable((CableTier tier2) -> tier2 == tier);
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        EnergyBar.Params energyBarParams = new EnergyBar.Params(76, 39);
+        registerGuiComponent(new EnergyBar(energyBarParams, energy::getEu, energy::getCapacity));
 
         this.registerComponents(energy);
     }

@@ -58,7 +58,7 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         this.overclockComponent = new OverclockComponent(overclockCatalysts);
         this.recipeType = recipeType;
         registerGuiComponent(
-                new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter, overclockComponent::getTicks));
+                new CraftingMultiblockGui(() -> shapeValid.shapeValid, crafter::getProgress, crafter, overclockComponent::getTicks));
         this.registerComponents(overclockComponent);
     }
 

@@ -35,22 +35,11 @@ import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-public class EnergyBarClient implements GuiComponentClient {
-    final EnergyBar.Parameters params;
-    long eu, maxEu;
-
-    public EnergyBarClient(RegistryFriendlyByteBuf buf) {
-        this.params = new EnergyBar.Parameters(buf.readInt(), buf.readInt());
-        readCurrentData(buf);
-    }
-
-    @Override
-    public void readCurrentData(RegistryFriendlyByteBuf buf) {
-        eu = buf.readLong();
-        maxEu = buf.readLong();
+public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, EnergyBar.Data> {
+    public EnergyBarClient(EnergyBar.Params parameters, EnergyBar.Data data) {
+        super(parameters, data);
     }
 
     @Override
@@ -72,17 +61,17 @@ public class EnergyBarClient implements GuiComponentClient {
 
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            renderEnergy(guiGraphics, x + params.renderX, y + params.renderY, (float) eu / maxEu);
+            renderEnergy(guiGraphics, x + params.renderX(), y + params.renderY(), (float) data.eu() / data.maxEu());
         }
 
         @Override
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
-            if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
+            if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 Component tooltip;
                 if (Screen.hasShiftDown()) {
-                    tooltip = MIText.EuMaxed.text(eu, maxEu, "");
+                    tooltip = MIText.EuMaxed.text(data.eu(), data.maxEu(), "");
                 } else {
-                    TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
+                    TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(data.eu(), data.maxEu());
                     tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
                 }
                 guiGraphics.renderTooltip(font, Collections.singletonList(tooltip), Optional.empty(), cursorX, cursorY);

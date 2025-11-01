@@ -22,22 +22,34 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.machines;
+package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.MI;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
-public final class GuiComponents {
-    public static final ResourceLocation AUTO_EXTRACT = MI.id("auto_extract");
-    public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = MI.id("crafting_multiblock_gui");
-    public static final ResourceLocation ENERGY_BAR = MI.id("energy_bar");
-    public static final ResourceLocation LARGE_TANK_FLUID_DISPLAY = MI.id("large_tank_fluid_display");
-    public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = MI.id("gunpowder_overclock_gui");
-    public static final ResourceLocation NUCLEAR_REACTOR_GUI = MI.id("nuclear_reactor_gui");
-    public static final ResourceLocation PROGRESS_BAR = MI.id("progress_bar");
-    public static final ResourceLocation RECIPE_EFFICIENCY_BAR = MI.id("recipe_efficiency_bar");
-    public static final ResourceLocation REI_SLOT_LOCKING = MI.id("rei_slot_locking");
-    public static final ResourceLocation SHAPE_SELECTION = MI.id("shape_selection");
-    public static final ResourceLocation SLOT_PANEL = MI.id("slot_panel");
-    public static final ResourceLocation TEMPERATURE_BAR = MI.id("temperature_bar");
+/**
+ * Server part of a synced component.
+ *
+ * @param <P> Parameters, synced to the client when the menu is opened.
+ * @param <D> Data synced to the client when the menu is opened and when it changes. Must be equals-comparable.
+ */
+public interface GuiComponentServer<P, D> extends GuiComponent {
+    P getParams();
+
+    /**
+     * Extracts the syncable data from the state of the component, block entity, etc.
+     */
+    D extractData();
+
+    /**
+     * Return the id of the component. Must match that of the {@code GuiComponentClient}
+     * registered with {@code GuiComponentsClient#register}.
+     */
+    Type<P, D> getType();
+
+    record Type<P, D>(
+            ResourceLocation id,
+            StreamCodec<? super RegistryFriendlyByteBuf, P> paramsCodec,
+            StreamCodec<? super RegistryFriendlyByteBuf, D> dataCodec) {}
 }

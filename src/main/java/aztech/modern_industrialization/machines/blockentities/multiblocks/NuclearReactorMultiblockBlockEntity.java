@@ -41,6 +41,7 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -71,9 +72,9 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         this.isActive = new IsActiveComponent();
         this.redstoneControl = new RedstoneControlComponent();
         registerComponents(activeShape, isActive, efficiencyHistory, redstoneControl);
-        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData), new SlotPanel.Server(this).withRedstoneControl(redstoneControl));
+        this.registerGuiComponent(new NuclearReactorGui(this::sendData), new SlotPanel(this).withRedstoneControl(redstoneControl));
 
-        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+        registerGuiComponent(new ShapeSelection(new ShapeSelection.Behavior() {
             @Override
             public void handleClick(int clickedLine, int delta) {
                 activeShape.incrementShape(NuclearReactorMultiblockBlockEntity.this, delta);
@@ -84,7 +85,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 return activeShape.getActiveShapeIndex();
             }
         }, new ShapeSelection.LineInfo(
-                4, List.of(MIText.ShapeTextSmall.text(), MIText.ShapeTextMedium.text(), MIText.ShapeTextLarge.text(), MIText.ShapeTextExtreme.text()),
+                List.of(MIText.ShapeTextSmall.text(), MIText.ShapeTextMedium.text(), MIText.ShapeTextLarge.text(), MIText.ShapeTextExtreme.text()),
                 true)));
     }
 
@@ -169,15 +170,13 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             nuclearGrid = new NuclearGrid(size, size, hatchesGrid);
 
             dataSupplier = () -> {
-                Optional<INuclearTileData>[] tilesData = new Optional[size * size];
+                List<NuclearReactorGui.TileData> tilesData = new ArrayList<>(size * size);
                 for (int i = 0; i < size; i++) {
                     for (int j = 0; j < size; j++) {
-
                         final int x = size - 1 - i;
                         final int y = size - 1 - j;
 
-                        int index = NuclearReactorGui.Data.toIndex(i, j, size);
-                        tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
+                        tilesData.add(new NuclearReactorGui.TileData(Optional.ofNullable(hatchesGrid[x][y])));
                     }
                 }
                 return new NuclearReactorGui.Data(true, size, size, tilesData,

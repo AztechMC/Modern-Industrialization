@@ -24,17 +24,48 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.stream.IntStream;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class ShapeSelection {
+public class ShapeSelection implements GuiComponentServer<List<ShapeSelection.LineInfo>, List<Integer>> {
+    public static final Type<List<ShapeSelection.LineInfo>, List<Integer>> TYPE = new Type<>(
+            MI.id("shape_selection"),
+            LineInfo.STREAM_CODEC.apply(ByteBufCodecs.list()),
+            ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list()));
+
+    public final Behavior behavior;
+    private final List<LineInfo> lines;
+
+    public ShapeSelection(Behavior behavior, LineInfo... lines) {
+        Preconditions.checkArgument(lines.length > 0);
+
+        this.behavior = behavior;
+        this.lines = List.of(lines);
+    }
+
+    @Override
+    public List<LineInfo> getParams() {
+        return lines;
+    }
+
+    @Override
+    public List<Integer> extractData() {
+        return IntStream.range(0, lines.size()).map(behavior::getCurrentIndex).boxed().toList();
+    }
+
+    @Override
+    public Type<List<LineInfo>, List<Integer>> getType() {
+        return TYPE;
+    }
+
     public interface Behavior {
         /**
          * @param delta +1 if clicked on right button, -1 if clicked on left button
@@ -47,61 +78,16 @@ public class ShapeSelection {
     /**
      * @param useArrows True for arrows {@code < and >}, false for +/-.
      */
-    public record LineInfo(int numValues, List<? extends Component> translations, boolean useArrows) {
-        public LineInfo {
-            Preconditions.checkArgument(numValues == translations.size());
-        }
-    }
+    public record LineInfo(List<Component> translations, boolean useArrows) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, LineInfo> STREAM_CODEC = StreamCodec.composite(
+                ComponentSerialization.STREAM_CODEC.apply(ByteBufCodecs.list()),
+                LineInfo::translations,
+                ByteBufCodecs.BOOL,
+                LineInfo::useArrows,
+                LineInfo::new);
 
-    public static class Server implements GuiComponent.Server<int[]> {
-        public final Behavior behavior;
-        private final List<LineInfo> lines;
-
-        public Server(Behavior behavior, LineInfo... lines) {
-            Preconditions.checkArgument(lines.length > 0);
-
-            this.behavior = behavior;
-            this.lines = List.of(lines);
-        }
-
-        @Override
-        public int[] copyData() {
-            return IntStream.range(0, lines.size()).map(behavior::getCurrentIndex).toArray();
-        }
-
-        @Override
-        public boolean needsSync(int[] cachedData) {
-            for (int i = 0; i < lines.size(); ++i) {
-                if (cachedData[i] != behavior.getCurrentIndex(i)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeVarInt(lines.size());
-            for (var line : lines) {
-                buf.writeVarInt(line.numValues);
-                for (var component : line.translations) {
-                    ComponentSerialization.STREAM_CODEC.encode(buf, component);
-                }
-                buf.writeBoolean(line.useArrows);
-            }
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            for (int i = 0; i < lines.size(); ++i) {
-                buf.writeVarInt(behavior.getCurrentIndex(i));
-            }
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.SHAPE_SELECTION;
+        public int numValues() {
+            return translations.size();
         }
     }
 }

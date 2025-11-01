@@ -24,56 +24,45 @@
 
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
-public class GunpowderOverclockGui {
-    public static class Server implements GuiComponent.Server<Integer> {
-        public final Parameters params;
-        public final Supplier<Integer> remTickSupplier;
+public class GunpowderOverclockGui implements GuiComponentServer<GunpowderOverclockGui.Params, Integer> {
+    public static final Type<Params, Integer> TYPE = new Type<>(MI.id("gunpowder_overclock_gui"), Params.STREAM_CODEC, ByteBufCodecs.VAR_INT);
 
-        public Server(Parameters params, Supplier<Integer> remTickSupplier) {
-            this.params = params;
-            this.remTickSupplier = remTickSupplier;
-        }
+    public final Params params;
+    public final Supplier<Integer> remTickSupplier;
 
-        @Override
-        public Integer copyData() {
-            return remTickSupplier.get();
-        }
-
-        @Override
-        public boolean needsSync(Integer cachedData) {
-            return !cachedData.equals(remTickSupplier.get());
-        }
-
-        @Override
-        public void writeInitialData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(params.renderX);
-            buf.writeInt(params.renderY);
-            writeCurrentData(buf);
-        }
-
-        @Override
-        public void writeCurrentData(RegistryFriendlyByteBuf buf) {
-            buf.writeInt(remTickSupplier.get());
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return GuiComponents.GUNPOWDER_OVERCLOCK_GUI;
-        }
+    public GunpowderOverclockGui(Params params, Supplier<Integer> remTickSupplier) {
+        this.params = params;
+        this.remTickSupplier = remTickSupplier;
     }
 
-    public static class Parameters {
-        public final int renderX, renderY;
+    @Override
+    public Params getParams() {
+        return params;
+    }
 
-        public Parameters(int renderX, int renderY) {
-            this.renderX = renderX;
-            this.renderY = renderY;
-        }
+    @Override
+    public Integer extractData() {
+        return remTickSupplier.get();
+    }
+
+    @Override
+    public Type<Params, Integer> getType() {
+        return TYPE;
+    }
+
+    public record Params(int renderX, int renderY) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT,
+                Params::renderX,
+                ByteBufCodecs.VAR_INT,
+                Params::renderY,
+                Params::new);
     }
 }

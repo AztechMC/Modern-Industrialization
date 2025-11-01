@@ -1620,6 +1620,8 @@
   "text.modern_industrialization.FluidSlotOutput": "Fluid Output, Left Click to Extract",
   "text.modern_industrialization.GeneratedResources": "MI Generated Resources",
   "text.modern_industrialization.GeneratedResourcesDescription": "Resources from the modern_industrialization/generated_resources folder.",
+  "text.modern_industrialization.GeneratorCurrentEu": "Production: %s",
+  "text.modern_industrialization.GeneratorMaxEu": "Max Production: %s",
   "text.modern_industrialization.GravichestplateDisabled": "Gravichestplate disabled!",
   "text.modern_industrialization.GravichestplateEnabled": "Gravichestplate enabled!",
   "text.modern_industrialization.GunpowderTime": "Overclock: %s",

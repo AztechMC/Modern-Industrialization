@@ -50,28 +50,41 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
         return new Renderer();
     }
 
-    public class Renderer implements ClientComponentRenderer {
+    public static class BaseScreenRenderer {
         private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
-        @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            Minecraft minecraftClient = Minecraft.getInstance();
+        /**
+         * Returns {@code deltaY}.
+         */
+        public int renderScreenAndStatus(boolean shapeValid, Font font, GuiGraphics guiGraphics, int x, int y) {
             guiGraphics.blit(TEXTURE, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
                     CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
-            Font font = minecraftClient.font;
 
             int deltaY = 23;
 
             guiGraphics.drawString(font,
-                    data.isShapeValid() ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
+                    shapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
                     x + 10, y + deltaY,
-                    data.isShapeValid() ? 0xFFFFFF : 0xFF0000, false);
+                    shapeValid ? 0xFFFFFF : 0xFF0000, false);
             deltaY += 11;
 
-            if (data.isShapeValid()) {
+            if (shapeValid) {
                 guiGraphics.drawString(font, MIText.MultiblockStatusActive.text(), x + 10, y + deltaY, 0xFFFFFF, false);
                 deltaY += 11;
+            }
 
+            return deltaY;
+        }
+    }
+
+    public class Renderer extends BaseScreenRenderer implements ClientComponentRenderer {
+        @Override
+        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+            Font font = Minecraft.getInstance().font;
+
+            int deltaY = renderScreenAndStatus(data.isShapeValid(), font, guiGraphics, x, y);
+
+            if (data.isShapeValid()) {
                 if (data.activeRecipe().isPresent()) {
                     var recipe = data.activeRecipe().get();
 

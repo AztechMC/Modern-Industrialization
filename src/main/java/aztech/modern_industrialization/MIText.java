@@ -136,6 +136,8 @@ public enum MIText {
     FluidSlotOutput("Fluid Output, Left Click to Extract"),
     GeneratedResources("MI Generated Resources"),
     GeneratedResourcesDescription("Resources from the modern_industrialization/generated_resources folder."),
+    GeneratorCurrentEu("Production: %s"),
+    GeneratorMaxEu("Max Production: %s"),
     GravichestplateDisabled("Gravichestplate disabled!"),
     GravichestplateEnabled("Gravichestplate enabled!"),
     GunpowderTime("Overclock: %s"),

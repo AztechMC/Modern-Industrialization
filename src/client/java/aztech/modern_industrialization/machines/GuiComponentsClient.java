@@ -32,6 +32,8 @@ import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblock
 import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.guicomponents.EnergyBarClient;
+import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGui;
+import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGuiClient;
 import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplay;
@@ -78,6 +80,7 @@ public final class GuiComponentsClient {
         register(CraftingMultiblockGui.TYPE, CraftingMultiblockGuiClient::new);
         register(EnergyBar.TYPE, EnergyBarClient::new);
         register(LargeTankFluidDisplay.TYPE, LargeTankFluidDisplayClient::new);
+        register(GeneratorMultiblockGui.TYPE, GeneratorMultiblockGuiClient::new);
         register(GunpowderOverclockGui.TYPE, GunpowderOverclockGuiClient::new);
         register(NuclearReactorGui.TYPE, NuclearReactorGuiClient::new);
         register(ProgressBar.TYPE, ProgressBarClient::new);

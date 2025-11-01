@@ -30,6 +30,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.GeneratorMultiblockGui;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
@@ -49,7 +50,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
             ShapeTemplate shapeTemplate,
             FluidItemConsumerComponent fluidConsumer) {
         super(bep, new MachineGuiParameters.Builder(name, false)
-                .backgroundHeight(128).build(),
+                .backgroundHeight(200).build(),
                 new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });
@@ -60,6 +61,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         this.registerComponents(activeShape, isActiveComponent, fluidConsumer, redstoneControl);
         registerGuiComponent(new SlotPanel(this).withRedstoneControl(redstoneControl));
+        registerGuiComponent(new GeneratorMultiblockGui(() -> shapeValid.shapeValid, () -> lastEuProduction, fluidConsumer.maxEuProduction));
     }
 
     private boolean allowNormalOperation = false;
@@ -70,6 +72,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private final RedstoneControlComponent redstoneControl;
     private final List<EnergyComponent> energyOutputs = new ArrayList<>();
     private final FluidItemConsumerComponent fluidConsumer;
+    private long lastEuProduction;
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
@@ -99,11 +102,13 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
     public final void tick() {
         if (!level.isClientSide) {
             link();
+            lastEuProduction = 0;
             if (allowNormalOperation) {
                 if (this.redstoneControl.doAllowNormalOperation(this)) {
                     long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(),
                             inventory.getItemInputs(),
                             insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
+                    lastEuProduction = euProduced;
                     insertEnergy(euProduced, Simulation.ACT);
                     isActiveComponent.updateActive(euProduced != 0, this);
                 } else {

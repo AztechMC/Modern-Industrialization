@@ -26,8 +26,8 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -53,7 +53,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
         isActiveComponent = new IsActiveComponent();
         registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
-        this.registerComponents(isActiveComponent, new IComponent() {
+        this.registerComponents(isActiveComponent, new MachineComponent() {
             @Override
             public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("pumpingTicks", pumpingTicks);

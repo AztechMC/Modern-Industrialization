@@ -35,7 +35,7 @@ import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
@@ -72,7 +72,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * The BlockEntity for a pipe.
  */
-public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, WrenchableBlockEntity {
+public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandlerHelper, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     private static final VoxelShape[] ME_WIRE_CONNECTOR_SHAPES;
@@ -373,7 +373,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return false;
     }
 
-    public IPipeMenuProvider getGui(PipeNetworkType type, Direction direction) {
+    public PipeMenuProvider getGui(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
                 return pipe.getConnectionGui(direction, this);

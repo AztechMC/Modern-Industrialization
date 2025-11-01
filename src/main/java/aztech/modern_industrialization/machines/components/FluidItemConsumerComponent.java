@@ -30,7 +30,7 @@ import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +46,7 @@ import net.minecraft.world.level.material.Fluid;
 /**
  * A component that turns fluids and/or item into energy.
  */
-public class FluidItemConsumerComponent implements IComponent.ServerOnly {
+public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     protected long euBuffer = 0;
     /**
      * The maximum EU that can be produced by one production operation, to limit the

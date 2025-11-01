@@ -22,29 +22,22 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.client.textures.coloramp;
+package aztech.modern_industrialization.pipes.gui;
 
-import static aztech.modern_industrialization.client.textures.TextureHelper.*;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.ApiStatus;
 
-import com.mojang.blaze3d.platform.NativeImage;
+/**
+ * Functions for use in screen handler. Don't implement.
+ */
+@ApiStatus.NonExtendable
+public interface PipeScreenHandlerHelper {
+    void callSync();
 
-public interface IColoramp {
-    public int getRGB(double luminance);
+    void callMarkDirty();
 
-    public int getMeanRGB();
+    boolean isWithinUseDistance(Player player);
 
-    default NativeImage bakeAsImage() {
-        NativeImage image = new NativeImage(256, 256, true);
-        for (int i = 0; i < 256; i++) {
-            for (int j = 0; j < 256; j++) {
-                double luminance = (i) / 255.0;
-                int rgb = getRGB(luminance);
-                int r = getRrgb(rgb);
-                int g = getGrgb(rgb);
-                int b = getBrgb(rgb);
-                image.setPixelRGBA(i, j, fromArgb(255, r, g, b));
-            }
-        }
-        return image;
-    }
+    boolean doesNodeStillExist(PipeNetworkNode node);
 }

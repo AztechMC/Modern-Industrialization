@@ -26,8 +26,8 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-public class UpgradeComponent implements IComponent.ServerOnly, DropableComponent {
+public class UpgradeComponent implements MachineComponent.ServerOnly, DropableComponent {
     private ItemStack itemStack = ItemStack.EMPTY;
 
     public static long getExtraEu(ItemLike item) {

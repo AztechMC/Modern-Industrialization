@@ -30,12 +30,12 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.world.item.Item;
 
-public class NuclearComponentItem extends Item implements INuclearComponent<ItemVariant> {
+public class NuclearComponentItem extends Item implements NuclearComponent<ItemVariant> {
     public final int maxTemperature;
     public final double heatConduction;
-    public final INeutronBehaviour neutronBehaviour;
+    public final NeutronBehaviour neutronBehaviour;
 
-    public NuclearComponentItem(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
+    public NuclearComponentItem(Properties settings, int maxTemperature, double heatConduction, NeutronBehaviour neutronBehaviour) {
         super(settings);
         this.maxTemperature = maxTemperature;
         this.heatConduction = heatConduction;
@@ -43,7 +43,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent<Item
     }
 
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
-            INeutronBehaviour neutronBehaviour) {
+            NeutronBehaviour neutronBehaviour) {
         return MIItem
                 .item(englishName, id, (settings) -> new NuclearComponentItem(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour),
                         SortOrder.NUCLEAR.create(NuclearOrder.HEAT_EXCHANGER).and(heatConduction));
@@ -59,7 +59,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent<Item
     }
 
     @Override
-    public INeutronBehaviour getNeutronBehaviour() {
+    public NeutronBehaviour getNeutronBehaviour() {
         return neutronBehaviour;
     }
 

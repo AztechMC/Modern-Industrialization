@@ -35,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 public class NuclearAbsorbable extends NuclearComponentItem {
     public final int desintegrationMax;
 
-    public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
+    public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, NeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         super(settings.component(MIComponents.REMAINING_DISINTEGRATIONS, desintegrationMax), maxTemperature, heatConduction, neutronBehaviour);
         this.desintegrationMax = desintegrationMax;
@@ -51,7 +51,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     public static ItemDefinition<NuclearComponentItem> of(String englishName, String id, int maxTemperature, double heatConduction,
-            INeutronBehaviour neutronBehaviour, int desintegrationMax, SortOrder sortOrder) {
+            NeutronBehaviour neutronBehaviour, int desintegrationMax, SortOrder sortOrder) {
         return MIItem.item(englishName, id,
                 (settings) -> new NuclearAbsorbable(settings.stacksTo(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
                 sortOrder);

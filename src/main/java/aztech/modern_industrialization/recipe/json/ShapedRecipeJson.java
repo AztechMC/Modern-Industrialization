@@ -41,7 +41,7 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson implements IMIRecipeBuilder {
+public class ShapedRecipeJson implements MIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, Ingredient> key = new HashMap<>();

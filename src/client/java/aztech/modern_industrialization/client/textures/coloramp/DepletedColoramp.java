@@ -27,10 +27,10 @@ package aztech.modern_industrialization.client.textures.coloramp;
 import aztech.modern_industrialization.client.textures.TextureHelper;
 import java.awt.*;
 
-public class DepletedColoramp implements IColoramp {
-    private final IColoramp coloramp;
+public class DepletedColoramp implements Coloramp {
+    private final Coloramp coloramp;
 
-    public DepletedColoramp(IColoramp coloramp) {
+    public DepletedColoramp(Coloramp coloramp) {
         this.coloramp = coloramp;
     }
 

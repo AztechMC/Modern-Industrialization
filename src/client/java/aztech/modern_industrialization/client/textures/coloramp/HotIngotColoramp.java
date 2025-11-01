@@ -24,11 +24,11 @@
 
 package aztech.modern_industrialization.client.textures.coloramp;
 
-public class HotIngotColoramp implements IColoramp {
-    private final IColoramp from;
+public class HotIngotColoramp implements Coloramp {
+    private final Coloramp from;
     private final double bias, gamma;
 
-    public HotIngotColoramp(IColoramp from, double bias, double gamma) {
+    public HotIngotColoramp(Coloramp from, double bias, double gamma) {
         this.from = from;
         this.bias = bias;
         this.gamma = gamma;

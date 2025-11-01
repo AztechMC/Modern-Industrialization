@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.client.textures;
 
-import aztech.modern_industrialization.client.textures.coloramp.IColoramp;
+import aztech.modern_industrialization.client.textures.coloramp.Coloramp;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.awt.*;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class TextureHelper {
-    public static void colorize(NativeImage image, IColoramp colorramp) {
+    public static void colorize(NativeImage image, Coloramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
                 int color = image.getPixelRGBA(i, j);

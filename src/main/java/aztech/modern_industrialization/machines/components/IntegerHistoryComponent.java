@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ import net.minecraft.nbt.CompoundTag;
  * Tracks a history of values for different enum values as keys.
  * Values will be serialized using the toString() function of the enum.
  */
-public class IntegerHistoryComponent<K extends Enum<K>> implements IComponent {
+public class IntegerHistoryComponent<K extends Enum<K>> implements MachineComponent {
     protected final Map<K, int[]> histories;
     protected final int[] updatingValues; // indexed by enum ordinal
     protected final double[] averages; // indexed by enum ordinal

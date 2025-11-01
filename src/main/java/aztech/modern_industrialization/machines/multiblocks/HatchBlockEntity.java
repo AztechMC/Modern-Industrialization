@@ -27,8 +27,8 @@ package aztech.modern_industrialization.machines.multiblocks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -49,7 +49,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep, guiParams, orientationParams);
 
-        registerComponents(new IComponent.ClientOnly() {
+        registerComponents(new MachineComponent.ClientOnly() {
             @Override
             public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 if (matchedCasing != null) {

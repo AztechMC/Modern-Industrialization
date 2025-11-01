@@ -34,8 +34,8 @@ import aztech.modern_industrialization.compat.almostunified.AlmostUnifiedFacade;
 import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
@@ -68,7 +68,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jspecify.annotations.Nullable;
 
-public class CrafterComponent implements IComponent.ServerOnly, CrafterAccess {
+public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAccess {
     private final MachineProcessCondition.Context conditionContext;
 
     public CrafterComponent(MachineBlockEntity blockEntity, Inventory inventory, Behavior behavior) {

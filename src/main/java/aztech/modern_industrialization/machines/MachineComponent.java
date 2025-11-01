@@ -27,7 +27,7 @@ package aztech.modern_industrialization.machines;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
-public interface IComponent {
+public interface MachineComponent {
     void writeNbt(CompoundTag tag, HolderLookup.Provider registries);
 
     void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine);
@@ -40,7 +40,7 @@ public interface IComponent {
         readNbt(tag, registries, false);
     }
 
-    interface ClientOnly extends IComponent {
+    interface ClientOnly extends MachineComponent {
         @Override
         default void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {}
 
@@ -54,7 +54,7 @@ public interface IComponent {
         void readClientNbt(CompoundTag tag, HolderLookup.Provider registries);
     }
 
-    interface ServerOnly extends IComponent {
+    interface ServerOnly extends MachineComponent {
         @Override
         default void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {}
 

@@ -52,7 +52,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, int size) {}
 
-    public NuclearFuel(Properties settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, ResourceLocation depletedVersionId) {
+    public NuclearFuel(Properties settings, NuclearFuelParams params, NeutronBehaviour neutronBehaviour, ResourceLocation depletedVersionId) {
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
     }
@@ -62,7 +62,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
-            double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size,
+            double neutronMultiplicationFactor, double directEnergyFactor, NeutronBehaviour neutronBehaviour, int size,
             ResourceLocation depletedVersionId) {
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
 
@@ -78,7 +78,7 @@ public class NuclearFuel extends NuclearAbsorbable {
         this.totalEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * (1.0 + directEnergyFactor) * neutronMultiplicationFactor);
     }
 
-    public static ItemDefinition<NuclearFuel> of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
+    public static ItemDefinition<NuclearFuel> of(String englishName, String id, NuclearFuelParams params, NeutronBehaviour neutronBehaviour,
             String depletedVersionId, SortOrder sortOrder) {
         return MIItem
                 .item(englishName, id, (settings) -> new NuclearFuel(settings.stacksTo(1), params, neutronBehaviour, MI.id(depletedVersionId)),

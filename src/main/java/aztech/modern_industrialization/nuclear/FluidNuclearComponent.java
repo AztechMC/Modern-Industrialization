@@ -36,10 +36,10 @@ import org.jspecify.annotations.Nullable;
 public record FluidNuclearComponent(
         FluidVariant variant,
         double heatConduction,
-        INeutronBehaviour neutronBehaviour,
+        NeutronBehaviour neutronBehaviour,
         FluidVariant neutronProduct,
         long neutronProductAmount,
-        double neutronProductProbability) implements INuclearComponent<FluidVariant> {
+        double neutronProductProbability) implements NuclearComponent<FluidVariant> {
     public FluidNuclearComponent(
             Fluid fluid,
             double heatConduction,
@@ -52,7 +52,7 @@ public record FluidNuclearComponent(
         this(
                 FluidVariant.of(fluid),
                 heatConduction * density,
-                INeutronBehaviour.of(type, params, density),
+                NeutronBehaviour.of(type, params, density),
                 neutronProduct,
                 neutronProductAmount,
                 neutronProductProbability);
@@ -69,7 +69,7 @@ public record FluidNuclearComponent(
     }
 
     @Override
-    public INeutronBehaviour getNeutronBehaviour() {
+    public NeutronBehaviour getNeutronBehaviour() {
         return neutronBehaviour;
     }
 

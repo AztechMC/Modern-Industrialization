@@ -24,11 +24,11 @@
 
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
-public class TemperatureComponent implements IComponent {
+public class TemperatureComponent implements MachineComponent {
     private double temperature;
     public final double temperatureMax;
 

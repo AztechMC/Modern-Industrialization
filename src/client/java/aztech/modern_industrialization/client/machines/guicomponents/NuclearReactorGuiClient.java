@@ -35,12 +35,12 @@ import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
-import aztech.modern_industrialization.nuclear.INuclearComponent;
-import aztech.modern_industrialization.nuclear.INuclearTileData;
 import aztech.modern_industrialization.nuclear.NeutronType;
+import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.nuclear.NuclearTileData;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
@@ -106,9 +106,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                 for (int i = 0; i < data.gridSizeX(); i++) {
                     for (int j = 0; j < data.gridSizeY(); j++) {
                         int index = data.toIndex(i, j);
-                        Optional<INuclearTileData> tile = data.tilesData().get(index).data();
+                        Optional<NuclearTileData> tile = data.tilesData().get(index).data();
                         if (tile.isPresent()) {
-                            INuclearTileData tileData = tile.get();
+                            NuclearTileData tileData = tile.get();
                             int px = x + centerX - data.gridSizeX() * 9 + i * 18;
                             int py = y + centerY - data.gridSizeY() * 9 + j * 18;
 
@@ -213,9 +213,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
             if (data.valid()) {
                 if (i >= 0 && j >= 0 && i < data.gridSizeX() && j < data.gridSizeY()) {
                     int index = data.toIndex(i, j);
-                    Optional<INuclearTileData> tile = data.tilesData().get(index).data();
+                    Optional<NuclearTileData> tile = data.tilesData().get(index).data();
                     if (tile.isPresent()) {
-                        INuclearTileData tileData = tile.get();
+                        NuclearTileData tileData = tile.get();
                         TransferVariant<?> variant = tileData.getVariant();
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
                             long variantAmount = tile.get().getVariantAmount();
@@ -305,7 +305,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                             }
 
                             if (currentMode == Renderer.Mode.NEUTRON_GENERATION) {
-                                INuclearComponent<?> component = tileData.getComponent();
+                                NuclearComponent<?> component = tileData.getComponent();
                                 if (component instanceof NuclearFuel fuel) {
                                     double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());
                                     tooltips.add(MIText.ThermalEfficiency.text(String.format("%.1f", efficiencyFactor * 100))

@@ -25,8 +25,8 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -43,7 +43,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
-public class CasingComponent implements IComponent, DropableComponent {
+public class CasingComponent implements MachineComponent, DropableComponent {
     @FunctionalInterface
     public interface UpdatedCallback {
         void onUpdated(CableTier from, CableTier to);

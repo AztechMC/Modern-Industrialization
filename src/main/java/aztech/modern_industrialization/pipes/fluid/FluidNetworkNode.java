@@ -27,11 +27,11 @@ package aztech.modern_industrialization.pipes.fluid;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
+import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -202,7 +202,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public IPipeMenuProvider getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
+    public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (FluidConnection connection : connections) {
             if (connection.direction == guiDirection) {
                 return connection.new ScreenHandlerFactory(helper, getType().getIdentifier());
@@ -231,11 +231,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        private class ScreenHandlerFactory implements IPipeMenuProvider {
+        private class ScreenHandlerFactory implements PipeMenuProvider {
             private final FluidPipeInterface iface;
             private final ResourceLocation pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
                     public FluidVariant getNetworkFluid() {

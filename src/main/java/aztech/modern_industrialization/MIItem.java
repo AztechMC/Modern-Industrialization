@@ -36,7 +36,7 @@ import aztech.modern_industrialization.items.armor.MIArmorMaterials;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
@@ -203,10 +203,10 @@ public final class MIItem {
     public static final ItemDefinition<Item> WAX = item("Wax", "wax", WaxItem::new, ITEMS_ORDERED.next());
     public static final ItemDefinition<NuclearComponentItem> SMALL_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Small Heat Exchanger", "small_heat_exchanger",
-            2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
+            2500, 15 * NuclearConstant.BASE_HEAT_CONDUCTION, NeutronBehaviour.NO_INTERACTION);
     public static final ItemDefinition<NuclearComponentItem> LARGE_HEAT_EXCHANGER = NuclearComponentItem.of(
             "Large Heat Exchanger", "large_heat_exchanger",
-            1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, INeutronBehaviour.NO_INTERACTION);
+            1800, 30 * NuclearConstant.BASE_HEAT_CONDUCTION, NeutronBehaviour.NO_INTERACTION);
 
     public static final ItemDefinition<ConfigCardItem> CONFIG_CARD = item("Pipe Config Card", "config_card", ConfigCardItem::new, PIPES);
 

@@ -36,7 +36,7 @@ public class MENetworkData extends PipeNetworkData {
         this.mainNode = GridHelper.createManagedNode(this, (nodeOwner, node) -> {})
                 .setFlags(GridFlags.PREFERRED)
                 .setIdlePowerUsage(0.0);
-        this.mainNode.addService(INetworkInternalNode.class, INetworkInternalNode.INSTANCE);
+        this.mainNode.addService(NetworkInternalNode.class, NetworkInternalNode.INSTANCE);
     }
 
     public IManagedGridNode getMainNode() {

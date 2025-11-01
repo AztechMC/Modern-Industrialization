@@ -22,22 +22,8 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.pipes.gui;
+package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.ApiStatus;
-
-/**
- * Functions for use in screen handler. Don't implement.
- */
-@ApiStatus.NonExtendable
-public interface IPipeScreenHandlerHelper {
-    void callSync();
-
-    void callMarkDirty();
-
-    boolean isWithinUseDistance(Player player);
-
-    boolean doesNodeStillExist(PipeNetworkNode node);
+public interface ConfigurableSlot {
+    SlotConfig getConfig();
 }

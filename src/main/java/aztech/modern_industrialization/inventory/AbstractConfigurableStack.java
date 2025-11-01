@@ -42,7 +42,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
-        implements StorageView<K>, IConfigurableSlot {
+        implements StorageView<K>, ConfigurableSlot {
     private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
     protected long amount = 0;

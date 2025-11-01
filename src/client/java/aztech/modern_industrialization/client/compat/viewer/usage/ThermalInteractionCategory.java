@@ -29,8 +29,8 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
-import aztech.modern_industrialization.nuclear.INuclearComponent;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
@@ -79,7 +79,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
         for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
-                INuclearComponent<?> component = FluidNuclearComponent.get(fluid);
+                NuclearComponent<?> component = FluidNuclearComponent.get(fluid);
 
                 if (component != null) {
                     consumer.accept(new Recipe(component, CategoryType.THERMAL_PROPERTIES));
@@ -88,14 +88,14 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
         }
 
         for (String s : new String[] { "item", "fluid" }) {
-            consumer.accept(new Recipe(new INuclearComponent<ItemVariant>() {
+            consumer.accept(new Recipe(new NuclearComponent<ItemVariant>() {
                 @Override
                 public double getHeatConduction() {
                     return NuclearConstant.BASE_HEAT_CONDUCTION;
                 }
 
                 @Override
-                public INeutronBehaviour getNeutronBehaviour() {
+                public NeutronBehaviour getNeutronBehaviour() {
                     return null;
                 }
 
@@ -174,10 +174,10 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
     @Override
     public ResourceLocation getRecipeId(Recipe recipe) {
-        return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "thermal_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
+        return NuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "thermal_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
-    protected record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {}
+    protected record Recipe(NuclearComponent<?> nuclearComponent, CategoryType type) {}
 
     enum CategoryType {
         NEUTRON_EFFICIENCY,

@@ -22,28 +22,10 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.nuclear;
+package aztech.modern_industrialization.recipe.json;
 
-import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
-import java.util.Optional;
+import net.minecraft.data.recipes.RecipeOutput;
 
-public interface INuclearTile extends INuclearTileData {
-    void setTemperature(double temp);
-
-    void putHeat(double eu);
-
-    default Optional<NuclearFuel> getFuel() {
-        if (getComponent() instanceof NuclearFuel fuel) {
-            return Optional.of(fuel);
-        }
-        return Optional.empty();
-    }
-
-    void absorbNeutrons(int neutronNumber, NeutronType type);
-
-    void addNeutronsToFlux(int neutronNumber, NeutronType type);
-
-    int neutronGenerationTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
-
-    void nuclearTick(NuclearEfficiencyHistoryComponent efficiencyHistory);
+public interface MIRecipeBuilder {
+    void offerTo(RecipeOutput recipeOutput, String path);
 }

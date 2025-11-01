@@ -31,9 +31,9 @@ public class IsotopeParams {
     public final double thermalScattering;
 
     public IsotopeParams(double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba, double fastScatteringProba) {
-        this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
-        this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
-        this.thermalScattering = INeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
-        this.fastScattering = INeutronBehaviour.crossSectionFromProba(fastScatteringProba);
+        this.thermalAbsorption = NeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
+        this.fastAbsorption = NeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
+        this.thermalScattering = NeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
+        this.fastScattering = NeutronBehaviour.crossSectionFromProba(fastScatteringProba);
     }
 }

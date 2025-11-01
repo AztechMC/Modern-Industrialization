@@ -110,7 +110,7 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends IItemSink> sinks, Predicate<ItemStack> filter,
+    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends ItemSink> sinks, Predicate<ItemStack> filter,
             int maxToMove) {
         IItemHandler source = target.storage();
         int moved = 0;
@@ -123,7 +123,7 @@ public class ItemNetwork extends PipeNetwork {
                 continue;
             }
 
-            moved += IItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
+            moved += ItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
             if (moved >= maxToMove) {
                 break;
             }
@@ -149,7 +149,7 @@ public class ItemNetwork extends PipeNetwork {
                     var target = connection.cache.getCapability();
                     if (target != null && target.getSlots() > 0) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
-                        InsertTarget it = new InsertTarget(connection, new IItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
+                        InsertTarget it = new InsertTarget(connection, new ItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
                             bucket.whitelist.add(it);
@@ -201,14 +201,14 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private interface Aggregate extends IItemSink {
+    private interface Aggregate extends ItemSink {
         int getPriority();
     }
 
     private static class WhitelistAggregate implements Aggregate {
         private final int priority;
         // Used when the inserted item doesn't have NBT
-        private final Map<Item, List<IItemSink>> map = new IdentityHashMap<>();
+        private final Map<Item, List<ItemSink>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
@@ -243,9 +243,9 @@ public class ItemNetwork extends PipeNetwork {
                 return insertTargets(targets, world, source, sourceSlot, maxAmount);
             }
 
-            List<IItemSink> targets = map.get(stack.getItem());
+            List<ItemSink> targets = map.get(stack.getItem());
             if (targets != null) {
-                return IItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
+                return ItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
             }
             return 0;
         }
@@ -299,5 +299,5 @@ public class ItemNetwork extends PipeNetwork {
         return moved;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, IItemSink.HandlerWrapper target) {}
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, ItemSink.HandlerWrapper target) {}
 }

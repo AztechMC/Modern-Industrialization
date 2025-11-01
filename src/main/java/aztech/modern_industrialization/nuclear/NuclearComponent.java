@@ -31,10 +31,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import org.jspecify.annotations.Nullable;
 
-public interface INuclearComponent<T extends TransferVariant> {
+public interface NuclearComponent<T extends TransferVariant> {
     double getHeatConduction();
 
-    INeutronBehaviour getNeutronBehaviour();
+    NeutronBehaviour getNeutronBehaviour();
 
     T getVariant();
 
@@ -55,7 +55,7 @@ public interface INuclearComponent<T extends TransferVariant> {
         return Integer.MAX_VALUE;
     }
 
-    static ResourceLocation getEmiRecipeId(INuclearComponent<?> component, String category, String type) {
+    static ResourceLocation getEmiRecipeId(NuclearComponent<?> component, String category, String type) {
         return switch (component.getVariant()) {
             case ItemVariant itemVariant -> BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
             case FluidVariant fluidVariant -> BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);

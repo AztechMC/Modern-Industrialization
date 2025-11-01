@@ -26,62 +26,25 @@ package aztech.modern_industrialization.client.textures.coloramp;
 
 import static aztech.modern_industrialization.client.textures.TextureHelper.*;
 
-import aztech.modern_industrialization.client.textures.TextureHelper;
-import aztech.modern_industrialization.client.textures.TextureManager;
 import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 
-public class Coloramp implements IColoramp {
-    private final int[] colors = new int[256];
-    private final int meanRGB;
+public interface Coloramp {
+    public int getRGB(double luminance);
 
-    public Coloramp(TextureManager mtm, int meanRGB, String name) {
-        this.meanRGB = meanRGB;
+    public int getMeanRGB();
 
-        var gradientMapPath = "modern_industrialization:textures/gradient_maps/" + name + ".png";
-
-        if (mtm.hasAsset(gradientMapPath)) {
-            try (NativeImage gradientMap = mtm.getAssetAsTexture(gradientMapPath)) {
-                for (int i = 0; i < 256; i++) {
-                    int color = gradientMap.getPixelRGBA(i, 0);
-                    int r = getR(color);
-                    int g = getG(color);
-                    int b = getB(color);
-                    colors[i] = r << 16 | g << 8 | b;
-
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    default NativeImage bakeAsImage() {
+        NativeImage image = new NativeImage(256, 256, true);
+        for (int i = 0; i < 256; i++) {
+            for (int j = 0; j < 256; j++) {
+                double luminance = (i) / 255.0;
+                int rgb = getRGB(luminance);
+                int r = getRrgb(rgb);
+                int g = getGrgb(rgb);
+                int b = getBrgb(rgb);
+                image.setPixelRGBA(i, j, fromArgb(255, r, g, b));
             }
-        } else {
-            fillUniform();
         }
-    }
-
-    public Coloramp(int meanRGB) {
-        this.meanRGB = meanRGB;
-        fillUniform();
-    }
-
-    private void fillUniform() {
-        // Use uniform coloramp
-        int meanR = TextureHelper.getRrgb(meanRGB);
-        int meanG = TextureHelper.getGrgb(meanRGB);
-        int meanB = TextureHelper.getBrgb(meanRGB);
-
-        for (int i = 0; i < 256; ++i) {
-            colors[i] = TextureHelper.toRGB(meanR * i / 255, meanG * i / 255, meanB * i / 255);
-        }
-    }
-
-    @Override
-    public int getRGB(double luminance) {
-        int i = (int) (luminance * 255);
-        return colors[i];
-    }
-
-    @Override
-    public int getMeanRGB() {
-        return meanRGB;
+        return image;
     }
 }

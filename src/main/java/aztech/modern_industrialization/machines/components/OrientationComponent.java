@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jspecify.annotations.Nullable;
 
-public class OrientationComponent implements IComponent {
+public class OrientationComponent implements MachineComponent {
     public Direction facingDirection = Direction.NORTH;
     public Direction outputDirection = null;
     public boolean extractItems = false;

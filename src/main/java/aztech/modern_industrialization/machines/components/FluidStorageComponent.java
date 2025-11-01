@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkExtensionTank;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
@@ -35,7 +35,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-public class FluidStorageComponent implements IComponent, FluidAccess {
+public class FluidStorageComponent implements MachineComponent, FluidAccess {
     private final Runnable changeCallback;
     private long capacity;
 

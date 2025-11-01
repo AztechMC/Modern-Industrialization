@@ -31,7 +31,7 @@ import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jspecify.annotations.Nullable;
 
-public interface INuclearTileData {
+public interface NuclearTileData {
     double getTemperature();
 
     double getHeatTransferCoeff();
@@ -51,11 +51,11 @@ public interface INuclearTileData {
     boolean isFluid();
 
     @Nullable
-    default INuclearComponent<?> getComponent() {
+    default NuclearComponent<?> getComponent() {
         TransferVariant<?> variant = getVariant();
 
         if (variant instanceof ItemVariant resource) {
-            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent<?> comp) {
+            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof NuclearComponent<?> comp) {
                 return comp;
             }
 
@@ -68,9 +68,9 @@ public interface INuclearTileData {
         return null;
     }
 
-    static void write(Optional<INuclearTileData> maybeData, RegistryFriendlyByteBuf buf) {
+    static void write(Optional<NuclearTileData> maybeData, RegistryFriendlyByteBuf buf) {
         if (maybeData.isPresent()) {
-            INuclearTileData tile = maybeData.get();
+            NuclearTileData tile = maybeData.get();
             buf.writeBoolean(true);
 
             buf.writeDouble(tile.getTemperature());
@@ -95,7 +95,7 @@ public interface INuclearTileData {
         }
     }
 
-    static Optional<INuclearTileData> read(RegistryFriendlyByteBuf buf) {
+    static Optional<NuclearTileData> read(RegistryFriendlyByteBuf buf) {
         boolean isPresent = buf.readBoolean();
         if (isPresent) {
 
@@ -116,7 +116,7 @@ public interface INuclearTileData {
             final TransferVariant variant = isItem ? ItemVariant.fromPacket(buf) : FluidVariant.fromPacket(buf);
             final long amount = buf.readLong();
 
-            return Optional.of(new INuclearTileData() {
+            return Optional.of(new NuclearTileData() {
                 @Override
                 public double getTemperature() {
                     return temperature;
@@ -178,12 +178,12 @@ public interface INuclearTileData {
         }
     }
 
-    static boolean areEquals(Optional<INuclearTileData> a, Optional<INuclearTileData> b) {
+    static boolean areEquals(Optional<NuclearTileData> a, Optional<NuclearTileData> b) {
         if (a.isPresent() != b.isPresent()) {
             return false;
         } else if (a.isPresent()) {
-            INuclearTileData A = a.get();
-            INuclearTileData B = b.get();
+            NuclearTileData A = a.get();
+            NuclearTileData B = b.get();
             for (NeutronType type : NeutronType.TYPES) {
                 if (A.getMeanNeutronAbsorption(type) != B.getMeanNeutronAbsorption(type)) {
                     return false;

@@ -65,7 +65,7 @@ public class SlotConfig {
      * Read new list into the old list, replacing slots that have a matching config
      * in the new list.
      */
-    public static <T extends IConfigurableSlot> void readSlotList(List<T> oldList, List<T> newList) {
+    public static <T extends ConfigurableSlot> void readSlotList(List<T> oldList, List<T> newList) {
         // Store positions of slots with the old config
         Map<SlotConfig, ArrayDeque<Integer>> configMatches = new HashMap<>();
         for (int i = 0; i < oldList.size(); ++i) {

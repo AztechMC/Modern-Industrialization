@@ -29,10 +29,10 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.machines.guicomponents.NuclearReactorGuiClient;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
-import aztech.modern_industrialization.nuclear.INuclearComponent;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NeutronInteraction;
 import aztech.modern_industrialization.nuclear.NeutronType;
+import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
@@ -74,7 +74,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
-            if (component.neutronBehaviour != INeutronBehaviour.NO_INTERACTION) {
+            if (component.neutronBehaviour != NeutronBehaviour.NO_INTERACTION) {
                 consumer.accept(new Recipe(component, CategoryType.FAST_NEUTRON_INTERACTION));
                 consumer.accept(new Recipe(component, CategoryType.THERMAL_NEUTRON_INTERACTION));
             }
@@ -92,7 +92,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
         for (Fluid fluid : BuiltInRegistries.FLUID) {
             if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
-                INuclearComponent<?> component = FluidNuclearComponent.get(fluid);
+                NuclearComponent<?> component = FluidNuclearComponent.get(fluid);
                 if (component != null) {
                     consumer.accept(new Recipe(component, CategoryType.FAST_NEUTRON_INTERACTION));
                     consumer.accept(new Recipe(component, CategoryType.THERMAL_NEUTRON_INTERACTION));
@@ -256,10 +256,10 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
     @Override
     public ResourceLocation getRecipeId(NeutronInteractionCategory.Recipe recipe) {
-        return INuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
+        return NuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 
-    public record Recipe(INuclearComponent<?> nuclearComponent, CategoryType type) {}
+    public record Recipe(NuclearComponent<?> nuclearComponent, CategoryType type) {}
 
     public enum CategoryType {
         FAST_NEUTRON_INTERACTION,

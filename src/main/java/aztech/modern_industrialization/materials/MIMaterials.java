@@ -42,8 +42,8 @@ import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearOrder;
@@ -393,7 +393,7 @@ public class MIMaterials {
                                 LARGE_PLATE
                                         .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> NuclearAbsorbable
                                                 .of(englishName, itemPath, 3200, -0.9 * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                                        INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.INVAR,
+                                                        NeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.INVAR,
                                                                 2),
                                                         NuclearConstant.DESINTEGRATION_BY_ROD * 2, SortOrder.NUCLEAR.create(NuclearOrder.LARGE_PLATE))))
                         .addParts(BLOCK.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply));
@@ -508,7 +508,7 @@ public class MIMaterials {
                                         LARGE_PLATE
                                                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> NuclearAbsorbable
                                                         .of(englishName, itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
-                                                                INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
+                                                                NeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
                                                                         2),
                                                                 NuclearConstant.DESINTEGRATION_BY_ROD * 2, SortOrder.NUCLEAR.create(NuclearOrder.LARGE_PLATE))))
                                 .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1)

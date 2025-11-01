@@ -31,11 +31,11 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.config.MIServerConfig;
-import aztech.modern_industrialization.pipes.api.IPipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
+import aztech.modern_industrialization.pipes.api.PipeMenuProvider;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -200,7 +200,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             ItemNetworkNode::encodeConnectionType);
 
     @Override
-    public IPipeMenuProvider getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
+    public PipeMenuProvider getConnectionGui(Direction guiDirection, PipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
             if (connection.direction == guiDirection) {
                 return connection.new ScreenHandlerFactory(helper, getType().getIdentifier());
@@ -375,11 +375,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }
 
-        private class ScreenHandlerFactory implements IPipeMenuProvider {
+        private class ScreenHandlerFactory implements PipeMenuProvider {
             private final ItemPipeInterface iface;
             private final ResourceLocation pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {

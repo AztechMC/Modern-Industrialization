@@ -102,7 +102,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         guiComponents.register(components);
     }
 
-    protected final void registerComponents(IComponent... components) {
+    protected final void registerComponents(MachineComponent... components) {
         this.components.register(components);
     }
 
@@ -201,7 +201,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
-        for (IComponent component : components) {
+        for (MachineComponent component : components) {
             component.writeClientNbt(tag, registries);
         }
         return tag;
@@ -209,7 +209,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        for (IComponent component : components) {
+        for (MachineComponent component : components) {
             component.writeNbt(tag, registries);
         }
     }
@@ -221,12 +221,12 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
         if (!tag.contains("remesh")) {
-            for (IComponent component : components) {
+            for (MachineComponent component : components) {
                 component.readNbt(tag, registries, isUpgradingMachine);
             }
         } else {
             boolean forceChunkRemesh = tag.getBoolean("remesh");
-            for (IComponent component : components) {
+            for (MachineComponent component : components) {
                 component.readClientNbt(tag, registries);
             }
             if (forceChunkRemesh) {

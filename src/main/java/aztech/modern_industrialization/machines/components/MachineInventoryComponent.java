@@ -29,13 +29,13 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
-public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent.ServerOnly {
+public class MachineInventoryComponent implements CrafterComponent.Inventory, MachineComponent.ServerOnly {
     public final int itemInputCount;
     public final int itemOutputCount;
     public final int fluidInputCount;

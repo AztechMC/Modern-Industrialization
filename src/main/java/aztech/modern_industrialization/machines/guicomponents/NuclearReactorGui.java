@@ -90,15 +90,15 @@ public record NuclearReactorGui(Supplier<Data> dataSupplier) implements GuiCompo
     }
 
     /**
-     * Wrapper record for {@link INuclearTileData} to have a suitable equals implementation.
+     * Wrapper record for {@link NuclearTileData} to have a suitable equals implementation.
      */
-    public record TileData(Optional<INuclearTileData> data) {
-        public static final StreamCodec<RegistryFriendlyByteBuf, TileData> STREAM_CODEC = StreamCodec.ofMember(INuclearTileData::write, INuclearTileData::read)
+    public record TileData(Optional<NuclearTileData> data) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, TileData> STREAM_CODEC = StreamCodec.ofMember(NuclearTileData::write, NuclearTileData::read)
                 .map(TileData::new, TileData::data);
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof TileData(var odata) && INuclearTileData.areEquals(this.data, odata);
+            return obj instanceof TileData(var odata) && NuclearTileData.areEquals(this.data, odata);
         }
     }
 }

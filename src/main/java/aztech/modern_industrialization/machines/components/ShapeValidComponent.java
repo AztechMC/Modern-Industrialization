@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
@@ -32,7 +32,7 @@ import net.minecraft.nbt.CompoundTag;
  * Syncing whether the multiblock shape is currently valid with the clients, to
  * decide if the BER should display something or not.
  */
-public class ShapeValidComponent implements IComponent.ClientOnly {
+public class ShapeValidComponent implements MachineComponent.ClientOnly {
     private boolean lastShapeValid = false;
     public boolean shapeValid = false;
 

@@ -27,8 +27,8 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
-import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.IsotopeFuelParams;
+import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
@@ -87,7 +87,7 @@ public class NuclearFuelPart implements PartKeyProvider {
                                 params.tempLimitLow,
                                 params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
 
-                        INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
+                        NeutronBehaviour neutronBehaviour = NeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
 
                         NuclearFuel.of(englishName, itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted", sortOrder);

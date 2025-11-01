@@ -27,7 +27,7 @@ package aztech.modern_industrialization.client.textures;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.client.textures.coloramp.Coloramp;
-import aztech.modern_industrialization.client.textures.coloramp.IColoramp;
+import aztech.modern_industrialization.client.textures.coloramp.TabulatedColoramp;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -71,7 +71,7 @@ public final class MITextures {
                 continue;
             }
 
-            IColoramp coloramp = new Coloramp(mtm, meanRgb, material.name);
+            Coloramp coloramp = new TabulatedColoramp(mtm, meanRgb, material.name);
 
             for (MaterialItemPart part : material.getParts().values()) {
                 defer.accept(() -> PartTextureGenerator.processPart(coloramp, mtm, material, part));
@@ -122,14 +122,14 @@ public final class MITextures {
     /**
      * Colorize layer if necessary.
      */
-    private static void colorizeLayer(NativeImage image, String layer, IColoramp coloramp) {
+    private static void colorizeLayer(NativeImage image, String layer, Coloramp coloramp) {
         if (layer.equals("")) {
             TextureHelper.colorize(image, coloramp);
         }
     }
 
     public static void generateItemPartTexture(TextureManager mtm, String partTemplate, @Nullable String overlay, String materialSet, String path,
-            boolean isBlock, IColoramp coloramp) {
+            boolean isBlock, Coloramp coloramp) {
         try {
             NativeImage texture = generateTexture(mtm, partTemplate, materialSet, coloramp);
 
@@ -150,7 +150,7 @@ public final class MITextures {
     }
 
     public static void generateItemPartTexture(TextureManager mtm, String partTemplate, String materialSet, String path, boolean isBlock,
-            IColoramp coloramp) {
+            Coloramp coloramp) {
         generateItemPartTexture(mtm, partTemplate, null, materialSet, path, isBlock, coloramp);
     }
 
@@ -160,7 +160,7 @@ public final class MITextures {
                 throwable);
     }
 
-    public static NativeImage generateTexture(TextureManager mtm, String partTemplate, String materialSet, IColoramp coloramp) throws IOException {
+    public static NativeImage generateTexture(TextureManager mtm, String partTemplate, String materialSet, Coloramp coloramp) throws IOException {
         NativeImage image = null;
         for (String layer : LAYERS) {
             String template;
@@ -253,7 +253,7 @@ public final class MITextures {
         String bucket = path + "bucket.png";
         String bucket_content = path + "bucket_content.png";
 
-        IColoramp fluidColoramp = new Coloramp(fluid.color);
+        Coloramp fluidColoramp = new TabulatedColoramp(fluid.color);
 
         // Bucket
         try {

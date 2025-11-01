@@ -26,9 +26,9 @@ package aztech.modern_industrialization.client.textures;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.SET;
 
+import aztech.modern_industrialization.client.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.client.textures.coloramp.DepletedColoramp;
 import aztech.modern_industrialization.client.textures.coloramp.HotIngotColoramp;
-import aztech.modern_industrialization.client.textures.coloramp.IColoramp;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
@@ -43,7 +43,7 @@ import net.minecraft.resources.ResourceLocation;
  * All the per-part texture processing logic.
  */
 class PartTextureGenerator {
-    static void processPart(IColoramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
+    static void processPart(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         var gen = new PartTextureGenerator(coloramp, mtm, material, part);
 
         try {
@@ -53,13 +53,13 @@ class PartTextureGenerator {
         }
     }
 
-    private final IColoramp coloramp;
+    private final Coloramp coloramp;
     private final TextureManager mtm;
     private final Material material;
     private final String materialName;
     private final String itemPath;
 
-    private PartTextureGenerator(IColoramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
+    private PartTextureGenerator(Coloramp coloramp, TextureManager mtm, Material material, MaterialItemPart part) {
         this.coloramp = coloramp;
         this.mtm = mtm;
         this.material = material;

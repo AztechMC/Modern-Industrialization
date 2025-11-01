@@ -55,7 +55,7 @@ public class MENetwork extends PipeNetwork {
                 // Disconnect node from previous network
                 for (var connection : aeManagedNode.getNode().getConnections()) {
                     var otherSide = connection.getOtherSide(aeManagedNode.getNode());
-                    if (otherSide.getService(INetworkInternalNode.class) != null) {
+                    if (otherSide.getService(NetworkInternalNode.class) != null) {
                         // Internal connection to old network, destroy it!
                         connection.destroy();
                         break; // max 1 connection to break
@@ -112,7 +112,7 @@ public class MENetwork extends PipeNetwork {
 
             if (node.mainNode.isReady()) {
                 for (var conn : node.mainNode.getNode().getConnections()) {
-                    if (conn.getOtherSide(node.mainNode.getNode()).getService(INetworkInternalNode.class) != null) {
+                    if (conn.getOtherSide(node.mainNode.getNode()).getService(NetworkInternalNode.class) != null) {
                         hasInternalConnection = true;
                         break;
                     }

@@ -30,7 +30,7 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
-public class FuelBurningComponent implements IComponent {
+public class FuelBurningComponent implements MachineComponent {
     /**
      * How many EUs worth of heat can be produced every tick at most.
      */

@@ -26,8 +26,8 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -40,7 +40,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class OverclockComponent implements IComponent {
+public class OverclockComponent implements MachineComponent {
     private final List<Catalyst> catalysts;
 
     private final NavigableMap<Double, MutableTickCount> tickMap = new TreeMap<>();

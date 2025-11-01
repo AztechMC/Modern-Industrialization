@@ -47,7 +47,7 @@ public final class NuclearGrid {
     }
 
     @Nullable
-    public INuclearTile getNuclearTile(int x, int y) {
+    public NuclearTile getNuclearTile(int x, int y) {
         return hatchesGrid[x][y];
     }
 

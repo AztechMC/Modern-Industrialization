@@ -43,12 +43,12 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class RuntimeDataGen {
     @FunctionalInterface
-    public interface IDataGenConfig {
+    public interface DataGenConfig {
         void run(DataGenerator gen, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries, boolean run,
                 boolean runtimeDatagen);
     }
 
-    public static void run(IDataGenConfig... configs) {
+    public static void run(DataGenConfig... configs) {
         try {
             runInner(configs);
         } catch (Exception ex) {
@@ -56,7 +56,7 @@ public class RuntimeDataGen {
         }
     }
 
-    private static void runInner(IDataGenConfig... configs) throws Exception {
+    private static void runInner(DataGenConfig... configs) throws Exception {
         var miFolder = FMLPaths.GAMEDIR.get().resolve("modern_industrialization");
 
         // Create some relevant texture folders because I'm sure some people will forget it

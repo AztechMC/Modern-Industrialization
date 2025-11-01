@@ -28,8 +28,8 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -85,7 +85,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.inventoryComponent = new MachineInventoryComponent(itemInputs, itemOutputs, fluidInput, Collections.emptyList(), itemSlotPositions,
                 fluidSlotPositions);
 
-        this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new IComponent() {
+        this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new MachineComponent() {
             @Override
             public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
                 tag.putInt("progressTick", progressTick);

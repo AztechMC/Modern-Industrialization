@@ -56,7 +56,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jspecify.annotations.Nullable;
 
-public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
+public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
     private final MIInventory inventory;
 
     public final NeutronHistoryComponent neutronHistory;
@@ -139,7 +139,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     @Override
     public double getHeatTransferCoeff() {
         @Nullable
-        INuclearComponent<?> component = getComponent();
+        NuclearComponent<?> component = getComponent();
 
         return Math.max(NuclearConstant.BASE_HEAT_CONDUCTION + (component != null ? component.getHeatConduction() : 0), 0);
     }
@@ -262,7 +262,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void fluidNeutronProductTick(int neutron, boolean simul) {
         if (isFluid) {
             @Nullable
-            INuclearComponent<FluidVariant> component = (INuclearComponent<FluidVariant>) this.getComponent();
+            NuclearComponent<FluidVariant> component = (NuclearComponent<FluidVariant>) this.getComponent();
 
             if (component == null) {
                 return;
@@ -295,7 +295,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     private void checkComponentMaxTemperature() {
         if (!isFluid) {
             @Nullable
-            INuclearComponent<?> component = this.getComponent();
+            NuclearComponent<?> component = this.getComponent();
 
             if (component != null) {
                 if (component.getMaxTemperature() < this.getTemperature()) {

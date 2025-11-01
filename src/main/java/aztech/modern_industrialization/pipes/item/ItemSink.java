@@ -32,8 +32,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-interface IItemSink {
-    static int listMoveAll(List<? extends IItemSink> sinks, ServerLevel world, ExtractionSource target, int sourceSlot, int maxAmount) {
+interface ItemSink {
+    static int listMoveAll(List<? extends ItemSink> sinks, ServerLevel world, ExtractionSource target, int sourceSlot, int maxAmount) {
         int moved = 0;
 
         for (var sink : sinks) {
@@ -57,7 +57,7 @@ interface IItemSink {
      */
     int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount);
 
-    record HandlerWrapper(IItemHandler handler, BlockPos pipePos, Direction direction) implements IItemSink {
+    record HandlerWrapper(IItemHandler handler, BlockPos pipePos, Direction direction) implements ItemSink {
         @Override
         public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxToMove) {
             IItemHandler sourceHandler = source.storage();

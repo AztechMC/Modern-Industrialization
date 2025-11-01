@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.compat.ae2.pipe;
+package aztech.modern_industrialization.pipes.api;
 
-import appeng.api.networking.IGridNodeService;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.MenuProvider;
 
-public interface INetworkInternalNode extends IGridNodeService {
-    INetworkInternalNode INSTANCE = new INetworkInternalNode() {};
+public interface PipeMenuProvider extends MenuProvider {
+    void writeAdditionalData(RegistryFriendlyByteBuf buf);
 }

@@ -93,7 +93,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (shapeValid.shapeValid) {
             return dataSupplier.get();
         } else {
-            return new NuclearReactorGui.Data(false, 0, 0, null, 0, 0);
+            return new NuclearReactorGui.Data(false, 0, 0, List.of(), 0, 0);
         }
     }
 

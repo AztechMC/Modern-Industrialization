@@ -33,11 +33,11 @@ import net.minecraft.world.phys.Vec3;
 /**
  * A class that can build pipe model parts using a simple interface.
  */
-abstract class PipePartBuilder {
+public abstract class PipePartBuilder {
     /**
      * The width of a pipe.
      */
-    static final float SIDE = 2.0f / 16;
+    protected static final float SIDE = 2.0f / 16;
     /**
      * The spacing between two pipes.
      */
@@ -47,11 +47,11 @@ abstract class PipePartBuilder {
      * slots.
      */
     protected static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
-    Vec3 pos;
-    Vec3 facing;
-    Vec3 right;
+    protected Vec3 pos;
+    protected Vec3 facing;
+    protected Vec3 right;
 
-    PipePartBuilder(int slotPos, Direction direction) {
+    protected PipePartBuilder(int slotPos, Direction direction) {
         this.facing = Vec3.atLowerCornerOf(direction.getNormal());
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
@@ -96,7 +96,7 @@ abstract class PipePartBuilder {
     /**
      * Draw a pipe.
      */
-    abstract void drawPipe(float length, Intent intent, boolean end);
+    protected abstract void drawPipe(float length, Intent intent, boolean end);
 
     /**
      * Move forward.
@@ -108,7 +108,7 @@ abstract class PipePartBuilder {
     /**
      * Get up vector.
      */
-    Vec3 up() {
+    protected Vec3 up() {
         return right.cross(facing);
     }
 
@@ -129,7 +129,7 @@ abstract class PipePartBuilder {
     /**
      * Draw a straight line.
      */
-    void straightLine(boolean reduced, boolean end) {
+    public void straightLine(boolean reduced, boolean end) {
         if (reduced)
             moveForward(SIDE + SPACING);
         drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
@@ -138,7 +138,7 @@ abstract class PipePartBuilder {
     /**
      * Draw a short bend.
      */
-    void shortBend(boolean reduced, boolean end) {
+    public void shortBend(boolean reduced, boolean end) {
         if (reduced)
             moveForward(SIDE + SPACING);
         // horizontal
@@ -168,7 +168,7 @@ abstract class PipePartBuilder {
     /**
      * Draw a short bend, on the extra slot.
      */
-    void farShortBend(boolean reduced, boolean end) {
+    public void farShortBend(boolean reduced, boolean end) {
         if (reduced)
             moveForward(SIDE + SPACING);
         // horizontal
@@ -197,7 +197,7 @@ abstract class PipePartBuilder {
     /**
      * Draw a long bend.
      */
-    void longBend(boolean reduced, boolean end) {
+    public void longBend(boolean reduced, boolean end) {
         if (reduced)
             moveForward(SIDE + SPACING);
         // horizontal
@@ -230,7 +230,7 @@ abstract class PipePartBuilder {
     /**
      * Get the type of a connection.
      */
-    static int getRenderType(int logicalSlot, Direction direction, PipeEndpointType[][] connections) {
+    public static int getRenderType(int logicalSlot, Direction direction, PipeEndpointType[][] connections) {
         if (connections[logicalSlot][direction.get3DDataValue()] == null) {
             // no connection
             return 0;
@@ -266,7 +266,7 @@ abstract class PipePartBuilder {
     /**
      * Get the initial direction of a connection.
      */
-    static Direction getInitialDirection(int logicalSlot, Direction connectionDirection, int renderType) {
+    public static Direction getInitialDirection(int logicalSlot, Direction connectionDirection, int renderType) {
         if (renderType == 2) { // only for short bend
             if (logicalSlot == 1) {
                 if (connectionDirection == NORTH)

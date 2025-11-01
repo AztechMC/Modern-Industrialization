@@ -541,7 +541,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         return PipeBlock.useWrench(this, player, hand, hitResult);
     }
 
-    record RenderAttachment(
+    public record RenderAttachment(
             @Nullable BlockState camouflage,
             PipeNetworkType[] types,
             PipeEndpointType[][] renderedConnections,

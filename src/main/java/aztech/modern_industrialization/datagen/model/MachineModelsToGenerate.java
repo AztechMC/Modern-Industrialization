@@ -30,15 +30,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MachineModelsToGenerate {
-    static final Map<String, MachineModelProperties> props = new HashMap<>();
+    public static final Map<String, MachineModelProperties> props = new HashMap<>();
 
     public static void register(String machine, MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side,
             boolean active) {
         props.put(machine, new MachineModelProperties(defaultCasing, overlay, front, top, side, active));
     }
 
-    record MachineModelProperties(MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side, boolean active) {
-        void addToMachineJson(JsonObject obj) {
+    public record MachineModelProperties(MachineCasing defaultCasing, String overlay, boolean front, boolean top, boolean side, boolean active) {
+        public void addToMachineJson(JsonObject obj) {
             obj.addProperty("casing", defaultCasing.key.getPath());
 
             var defaultOverlays = new JsonObject();

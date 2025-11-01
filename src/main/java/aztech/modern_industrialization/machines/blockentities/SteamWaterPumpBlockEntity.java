@@ -70,7 +70,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

@@ -42,7 +42,6 @@ import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -106,7 +105,7 @@ public class MITooltips {
         boolean hasPrintRequiredShift = false;
         for (var tooltip : TOOLTIPS) {
             var maybeComponents = tooltip.tooltipLines.apply(stack, stack.getItem());
-            if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
+            if (!tooltip.requiresShift || MICommonProxy.INSTANCE.hasShiftDown()) {
                 lines.addAll(maybeComponents);
             } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
                 if (!maybeComponents.isEmpty()) {

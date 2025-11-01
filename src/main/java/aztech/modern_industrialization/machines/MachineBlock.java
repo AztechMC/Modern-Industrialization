@@ -24,9 +24,9 @@
 
 package aztech.modern_industrialization.machines;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.List;
 import java.util.function.BiFunction;
 import net.minecraft.core.BlockPos;
@@ -160,7 +160,7 @@ public class MachineBlock extends Block implements TickableBlock {
             // Well... we pull the information from the model, so nothing to do here.
             return state;
         } else {
-            return CommonProxy.INSTANCE.getMachineCasingBlockState(state, renderView, pos);
+            return MICommonProxy.INSTANCE.getMachineCasingBlockState(state, renderView, pos);
         }
     }
 }

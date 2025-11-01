@@ -44,7 +44,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final int serialNumber;
     private final int color;
     private final boolean opensGui;
-    Object renderer;
+    public Object renderer;
 
     private static final Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
     private static int nextSerialNumber = 0;

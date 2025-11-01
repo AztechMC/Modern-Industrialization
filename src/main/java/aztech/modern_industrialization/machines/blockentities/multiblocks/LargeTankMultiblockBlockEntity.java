@@ -217,7 +217,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection);
     }
 

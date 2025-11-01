@@ -64,7 +64,7 @@ public class ConfigurableTankMachineBlockEntity extends MachineBlockEntity imple
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.CONFIGURABLE_TANK);
         orientation.writeModelData(data);
         return data;

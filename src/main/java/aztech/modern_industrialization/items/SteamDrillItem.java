@@ -24,10 +24,10 @@
 
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.Simulation;
@@ -146,7 +146,7 @@ public class SteamDrillItem
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        return !newStack.is(this) || !canUse(newStack) || CommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
+        return !newStack.is(this) || !canUse(newStack) || MICommonProxy.INSTANCE.shouldSteamDrillForceBreakReset();
     }
 
     @Override
@@ -163,7 +163,7 @@ public class SteamDrillItem
             if (isCorrectToolForDrops(stack, state)) {
                 float speed = 4.0f;
 
-                Player player = CommonProxy.INSTANCE.findUser(stack);
+                Player player = MICommonProxy.INSTANCE.findUser(stack);
 
                 if (player != null && !should3by3(stack, player)) {
                     speed *= 4f;

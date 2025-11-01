@@ -108,7 +108,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     }
 
     @Override
-    protected MachineModelClientData getMachineModelData() {
+    public MachineModelClientData getMachineModelData() {
         MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);

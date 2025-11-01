@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MICapabilities;
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
@@ -37,7 +38,6 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.Block;
@@ -108,7 +108,7 @@ public class TankPart implements PartKeyProvider {
                         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
                     });
 
-                    CommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));
+                    MICommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));
                 });
 
         if (maybePathOverridden != null) {

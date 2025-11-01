@@ -24,8 +24,8 @@
 
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class FluidHelper {
     }
 
     public static MutableComponent getFluidAmount(long amount, long capacity) {
-        if (capacity < 100 * FluidType.BUCKET_VOLUME || CommonProxy.INSTANCE.hasShiftDown()) {
+        if (capacity < 100 * FluidType.BUCKET_VOLUME || MICommonProxy.INSTANCE.hasShiftDown()) {
             String text = amount + " / " + capacity;
             return Component.literal(text + " mB");
         } else {
@@ -58,7 +58,7 @@ public class FluidHelper {
     }
 
     public static MutableComponent getFluidAmount(long amount) {
-        if (amount < 100 * FluidType.BUCKET_VOLUME || CommonProxy.INSTANCE.hasShiftDown()) {
+        if (amount < 100 * FluidType.BUCKET_VOLUME || MICommonProxy.INSTANCE.hasShiftDown()) {
             String text = String.valueOf(amount);
             return Component.literal(text + " mB");
         } else {
@@ -96,7 +96,7 @@ public class FluidHelper {
             list.add(getFluidName(fluid, grayIfEmpty));
             return list;
         }
-        return CommonProxy.INSTANCE.getFluidTooltip(fluid);
+        return MICommonProxy.INSTANCE.getFluidTooltip(fluid);
     }
 
     public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {

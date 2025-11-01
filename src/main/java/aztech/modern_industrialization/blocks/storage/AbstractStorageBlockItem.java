@@ -24,9 +24,9 @@
 
 package aztech.modern_industrialization.blocks.storage;
 
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.ContainerItem;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.List;
 import java.util.function.Consumer;
@@ -59,6 +59,6 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
     @Override
     @SuppressWarnings("rawtype")
     public void initializeClient(Consumer stupidClientProperties) {
-        CommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
+        MICommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
     }
 }

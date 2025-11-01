@@ -103,7 +103,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
-    protected final MachineModelClientData getMachineModelData() {
+    public final MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActive.isActive);
     }
 

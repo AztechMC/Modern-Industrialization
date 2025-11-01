@@ -90,7 +90,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     }
 
     @Override
-    protected final MachineModelClientData getMachineModelData() {
+    public final MachineModelClientData getMachineModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActive.isActive);
     }
 

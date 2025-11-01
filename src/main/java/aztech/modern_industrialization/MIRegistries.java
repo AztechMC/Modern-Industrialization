@@ -33,7 +33,6 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
@@ -91,7 +90,7 @@ public class MIRegistries {
         return new MenuType<>(ForgeHammerScreenHandler::new, FeatureFlags.VANILLA_SET);
     });
     public static final Supplier<MenuType<? extends MachineMenuCommon>> MACHINE_MENU = MENUS.register("machine", () -> {
-        return IMenuTypeExtension.create(CommonProxy.INSTANCE::createClientMachineMenu);
+        return IMenuTypeExtension.create(MICommonProxy.INSTANCE::createClientMachineMenu);
     })::get;
 
     // POIs

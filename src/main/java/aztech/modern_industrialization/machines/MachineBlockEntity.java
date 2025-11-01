@@ -158,7 +158,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         player.openMenu(this, this::writeScreenOpeningData);
     }
 
-    protected abstract MachineModelClientData getMachineModelData();
+    public abstract MachineModelClientData getMachineModelData();
 
     @MustBeInvokedByOverriders
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {

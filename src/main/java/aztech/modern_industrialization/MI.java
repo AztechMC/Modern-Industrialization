@@ -53,7 +53,6 @@ import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.network.MIPackets;
 import aztech.modern_industrialization.nuclear.FluidNuclearComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.resource.GeneratedPathPackResources;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import aztech.modern_industrialization.test.framework.MIGameTests;
@@ -132,7 +131,7 @@ public class MI {
 
         MIPipes.INSTANCE.setup();
 
-        CommonProxy.initEvents();
+        MICommonProxy.initEvents();
         ChunkEventListeners.init();
         DebugCommands.init();
         GuidebookEvents.init();

@@ -38,7 +38,7 @@ import net.minecraft.world.inventory.Slot;
 public abstract class MachineMenuCommon extends ConfigurableScreenHandler implements GuiComponent.MenuFacade {
     public final MachineGuiParameters guiParams;
 
-    MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
+    protected MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
             ComponentStorage<? extends GuiComponent> guiComponents) {
         super(MIRegistries.MACHINE_MENU.get(), syncId, playerInventory, inventory);
         this.guiParams = guiParams;

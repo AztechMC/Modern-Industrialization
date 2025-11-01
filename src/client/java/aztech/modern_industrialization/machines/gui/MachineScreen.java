@@ -47,8 +47,11 @@ import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -191,6 +194,27 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         for (ClientComponentRenderer renderer : renderers) {
             renderer.renderTooltip(this, font, guiGraphics, leftPos, topPos, mouseX, mouseY);
         }
+    }
+
+    private FormattedCharSequence titleToRender() {
+        final int maxWidth = this.nextButtonX + 22 - this.titleLabelX;
+        if (font.width(this.title) > maxWidth) {
+            var text = FormattedText.composite(
+                    font.substrByWidth(this.title, maxWidth - font.width("...")),
+                    FormattedText.of("..."));
+            return Language.getInstance().getVisualOrder(text);
+        } else {
+            return title.getVisualOrderText();
+        }
+    }
+
+    /**
+     * We override this method to clip the title if it's too long.
+     */
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(this.font, titleToRender(), this.titleLabelX, this.titleLabelY, 4210752, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
     }
 
     @Override

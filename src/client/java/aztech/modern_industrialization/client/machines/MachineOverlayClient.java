@@ -48,7 +48,7 @@ public class MachineOverlayClient {
         BlockPos pos = blockHitResult.getBlockPos();
         var level = Minecraft.getInstance().level;
         if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine
-                && machine.orientation != null
+                && (machine.orientation.params.hasFacing || machine.orientation.params.hasOutput)
                 && Minecraft.getInstance().player.getMainHandItem().is(MITags.WRENCHES)) {
             var poseStack = event.getPoseStack();
 

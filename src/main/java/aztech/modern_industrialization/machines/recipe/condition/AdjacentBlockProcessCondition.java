@@ -66,7 +66,7 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
             }
             case BEHIND -> {
                 var orientation = context.getBlockEntity().orientation;
-                if (orientation == null) {
+                if (!orientation.params.hasFacing) {
                     yield false;
                 }
                 var direction = orientation.facingDirection;

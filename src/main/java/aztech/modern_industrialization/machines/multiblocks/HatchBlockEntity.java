@@ -109,16 +109,14 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     public MachineModelClientData getMachineModelData() {
         MachineCasing casing = isMatched() ? MachineCasings.get(matchedCasing) : null;
         MachineModelClientData data = new MachineModelClientData(casing);
-        if (orientation != null) {
-            orientation.writeModelData(data);
-        }
+        orientation.writeModelData(data);
         return data;
     }
 
     @Override
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(placer, itemStack);
-        if (orientation != null && orientation.params.hasOutput) {
+        if (orientation.params.hasOutput) {
             orientation.outputDirection = orientation.outputDirection.getOpposite();
         }
     }

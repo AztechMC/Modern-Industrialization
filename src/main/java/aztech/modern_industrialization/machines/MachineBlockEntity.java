@@ -86,21 +86,16 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Nullable
     private Boolean hasRedstoneHighSignal = null;
 
-    @Nullable
     public final OrientationComponent orientation;
     public final PlacedByComponent placedBy;
 
-    public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.@Nullable Params orientationParams) {
+    public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
-        if (orientationParams == null) {
-            this.orientation = null;
-        } else {
-            this.orientation = new OrientationComponent(orientationParams, this);
-            registerComponents(orientation);
-        }
+        this.orientation = new OrientationComponent(orientationParams, this);
         this.placedBy = new PlacedByComponent();
-        registerComponents(placedBy);
+
+        registerComponents(orientation, placedBy);
     }
 
     protected final void registerGuiComponent(GuiComponentServer... components) {
@@ -167,15 +162,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @MustBeInvokedByOverriders
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
-        if (orientation != null) {
-            orientation.onPlaced(placer, itemStack);
-        }
+        orientation.onPlaced(placer, itemStack);
         placedBy.onPlaced(placer);
     }
 
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (orientation != null && orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
+        if (orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
             getLevel().blockUpdated(getBlockPos(), Blocks.AIR);
             setChanged();
             if (!getLevel().isClientSide()) {

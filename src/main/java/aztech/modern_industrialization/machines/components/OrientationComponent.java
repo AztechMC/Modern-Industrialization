@@ -53,7 +53,9 @@ public class OrientationComponent implements MachineComponent {
     }
 
     public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
+        if (params.hasFacing) {
+            facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
+        }
         if (params.hasOutput) {
             outputDirection = Direction.from3DDataValue(tag.getInt("outputDirection"));
         }
@@ -62,7 +64,9 @@ public class OrientationComponent implements MachineComponent {
     }
 
     public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putInt("facingDirection", facingDirection.get3DDataValue());
+        if (params.hasFacing) {
+            tag.putInt("facingDirection", facingDirection.get3DDataValue());
+        }
         if (params.hasOutput) {
             tag.putInt("outputDirection", outputDirection.get3DDataValue());
             tag.putBoolean("extractItems", extractItems);
@@ -71,7 +75,9 @@ public class OrientationComponent implements MachineComponent {
     }
 
     public void writeModelData(MachineModelClientData data) {
-        data.frontDirection = facingDirection;
+        if (params.hasFacing) {
+            data.frontDirection = facingDirection;
+        }
         if (params.hasOutput) {
             data.outputDirection = outputDirection;
             data.itemAutoExtract = extractItems;
@@ -89,7 +95,7 @@ public class OrientationComponent implements MachineComponent {
                 machine.invalidateCapabilities();
                 return true;
             }
-        } else {
+        } else if (params.hasFacing) {
             if (params.canBeVertical || face.getAxis().isHorizontal()) {
                 facingDirection = face;
             }
@@ -100,15 +106,18 @@ public class OrientationComponent implements MachineComponent {
     }
 
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
-        // The placer can be null using some mods' automatic placement: pick NORTH arbitrarily.
-        Direction dir = placer != null ? (params.canBeVertical ? placer.getNearestViewDirection() : placer.getDirection()) : Direction.NORTH;
-        facingDirection = dir.getOpposite();
+        if (params.hasFacing) {
+            // The placer can be null using some mods' automatic placement: pick NORTH arbitrarily.
+            Direction dir = placer != null ? (params.canBeVertical ? placer.getNearestViewDirection() : placer.getDirection()) : Direction.NORTH;
+            facingDirection = dir.getOpposite();
+        }
         if (params.hasOutput) {
             outputDirection = placer != null ? placer.getNearestViewDirection() : Direction.NORTH;
         }
     }
 
     public static class Params {
+        public final boolean hasFacing;
         public final boolean hasOutput;
         public final boolean hasExtractItems;
         public final boolean hasExtractFluids;
@@ -118,15 +127,28 @@ public class OrientationComponent implements MachineComponent {
          */
         public final boolean canBeVertical;
 
-        public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids, boolean canBeVertical) {
+        private Params(boolean hasFacing, boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids, boolean canBeVertical) {
+            this.hasFacing = hasFacing;
             this.hasOutput = hasOutput;
             this.hasExtractItems = hasExtractItems;
             this.hasExtractFluids = hasExtractFluids;
             this.canBeVertical = canBeVertical;
         }
 
+        public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids, boolean canBeVertical) {
+            this(true, hasOutput, hasExtractItems, hasExtractFluids, canBeVertical);
+        }
+
         public Params(boolean hasOutput, boolean hasExtractItems, boolean hasExtractFluids) {
             this(hasOutput, hasExtractItems, hasExtractFluids, false);
+        }
+
+        public static Params noFacingNoOutput() {
+            return new Params(false, false, false, false, false);
+        }
+
+        public static Params noFacing(boolean hasExtractItems, boolean hasExtractFluids) {
+            return new Params(false, true, hasExtractItems, hasExtractFluids, false);
         }
     }
 }

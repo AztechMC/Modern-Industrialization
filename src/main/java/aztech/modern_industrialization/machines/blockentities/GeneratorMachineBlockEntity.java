@@ -70,7 +70,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             long fluidCapacity,
             FluidItemConsumerComponent fluidItemConsumer) {
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
-                new OrientationComponent.Params(true, false, false));
+                OrientationComponent.Params.noFacing(false, false));
 
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(this, energyCapacity);

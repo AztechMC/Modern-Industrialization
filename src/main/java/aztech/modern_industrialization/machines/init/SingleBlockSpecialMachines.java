@@ -24,8 +24,11 @@
 
 package aztech.modern_industrialization.machines.init;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.datagen.model.MachineModelProperties;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.*;
 import aztech.modern_industrialization.machines.components.FluidItemConsumerComponent;
@@ -86,12 +89,22 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.addModelsForTiers("water_pump", true, true, true, "bronze", "steel", "electric");
         MachineRegistrationHelper.addMachineModel("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
         MachineRegistrationHelper.addMachineModel("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
-        MachineRegistrationHelper.addMachineModel("lv_diesel_generator", "diesel_generator", CableTier.LV.casing, true, true, true);
-        MachineRegistrationHelper.addMachineModel("mv_diesel_generator", "diesel_generator", CableTier.MV.casing, true, true, true);
-        MachineRegistrationHelper.addMachineModel("hv_diesel_generator", "diesel_generator", CableTier.HV.casing, true, true, true);
+        addDieselGeneratorModel("lv_diesel_generator", CableTier.LV.casing);
+        addDieselGeneratorModel("mv_diesel_generator", CableTier.MV.casing);
+        addDieselGeneratorModel("hv_diesel_generator", CableTier.HV.casing);
         MachineRegistrationHelper.addMachineModel("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
         MachineRegistrationHelper.addMachineModel("replicator", "replicator", CableTier.SUPERCONDUCTOR.casing, true, false, true, true);
+    }
+
+    private static void addDieselGeneratorModel(String id, MachineCasing casing) {
+        MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(casing)
+                .addOverlay("top", MI.id("block/machines/diesel_generator/overlay_top"))
+                .addOverlay("top_active", MI.id("block/machines/diesel_generator/overlay_top_active"))
+                .addOverlay("front", MI.id("block/machines/diesel_generator/overlay_front"))
+                .addOverlay("front_active", MI.id("block/machines/diesel_generator/overlay_front_active"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
     }
 
     private static void registerTransformer(CableTier low, CableTier up) {
@@ -105,8 +118,18 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
                 AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.addMachineModel(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
-        MachineRegistrationHelper.addMachineModel(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
+        MachineModelsToGenerate.register(lowToUp, new MachineModelProperties.Builder(up.casing)
+                .addOverlay("top", MI.id("block/machines/transformer/overlay_top"))
+                .addOverlay("side", MI.id("block/machines/transformer/overlay_side"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
+
+        MachineModelsToGenerate.register(upToLow, new MachineModelProperties.Builder(up.casing)
+                .addOverlay("top", MI.id("block/machines/transformer/overlay_top"))
+                .addOverlay("side", MI.id("block/overlays/output_energy"))
+                .addOverlay("output", MI.id("block/machines/transformer/overlay_side"))
+                .noOverlayOnOutputSide()
+                .build());
     }
 
     private static void registerTransformers() {
@@ -133,14 +156,6 @@ public class SingleBlockSpecialMachines {
         }
     }
 
-    public static MachineCasing getTransformerCasingFromTier(CableTier from, CableTier to) {
-        if (from.eu > to.eu) {
-            return from.casing;
-        } else {
-            return to.casing;
-        }
-    }
-
     private static void registerSteamTurbine(CableTier tier, int eu, int fluidCapacity) {
         String id = tier.name + "_steam_turbine";
         String englishName = tier.shortEnglishName + " Steam Turbine";
@@ -149,7 +164,11 @@ public class SingleBlockSpecialMachines {
                         MIFluids.STEAM, 1),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.addMachineModel(id, "steam_turbine", tier.casing, true, false, false);
+        MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(tier.casing)
+                .addOverlay("front", MI.id("block/machines/steam_turbine/overlay_front"))
+                .addOverlay("front_active", MI.id("block/machines/steam_turbine/overlay_front_active"))
+                .addOverlay("output", MI.id("block/overlays/output_energy"))
+                .build());
     }
 
     private static void registerEUStorage() {
@@ -159,7 +178,10 @@ public class SingleBlockSpecialMachines {
             MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 100000 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-            MachineRegistrationHelper.addMachineModel(id, "electric_storage", tier.casing, true, false, true, false);
+            MachineModelsToGenerate.register(id, new MachineModelProperties.Builder(tier.casing)
+                    .addOverlay("side", MI.id("block/machines/electric_storage/overlay_side"))
+                    .addOverlay("output", MI.id("block/overlays/output_energy"))
+                    .build());
         }
     }
 }

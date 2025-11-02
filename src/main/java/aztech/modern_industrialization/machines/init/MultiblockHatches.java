@@ -24,8 +24,11 @@
 
 package aztech.modern_industrialization.machines.init;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
+import aztech.modern_industrialization.datagen.model.MachineModelProperties;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -109,7 +112,12 @@ public class MultiblockHatches {
                 return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerItemApi);
             definitions.add(def);
-            MachineRegistrationHelper.addMachineModel(machine, "hatch_item", casing, true, false, true, false);
+
+            var model = new MachineModelProperties.Builder(casing);
+            model.addOverlay("side", MI.id("block/machines/hatch_item/overlay_side"));
+            model.addOverlay("output", MI.id("block/overlays/output_item"));
+            model.addOverlay("item_auto", MI.id("block/overlays/item_auto"));
+            MachineModelsToGenerate.register(machine, model.build());
         }
 
         return new HatchPair<>(definitions.get(0), definitions.get(1));
@@ -134,7 +142,12 @@ public class MultiblockHatches {
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerFluidApi);
             definitions.add(def);
-            MachineRegistrationHelper.addMachineModel(machine, "hatch_fluid", casing, true, false, true, false);
+
+            var model = new MachineModelProperties.Builder(casing);
+            model.addOverlay("side", MI.id("block/machines/hatch_fluid/overlay_side"));
+            model.addOverlay("output", MI.id("block/overlays/output_fluid"));
+            model.addOverlay("fluid_auto", MI.id("block/overlays/fluid_auto"));
+            MachineModelsToGenerate.register(machine, model.build());
         }
 
         return new HatchPair<>(definitions.get(0), definitions.get(1));
@@ -151,7 +164,13 @@ public class MultiblockHatches {
                     bet -> new EnergyHatch(bet, new MachineGuiParameters.Builder(machine, false).build(), input, tier),
                     EnergyHatch::registerEnergyApi);
             definitions.add(def);
-            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", tier.casing, true, false, true, false);
+
+            var model = new MachineModelProperties.Builder(tier.casing);
+            model.addOverlay("side", MI.id("block/machines/hatch_energy/overlay_side"));
+            if (!input) {
+                model.addOverlay("output", MI.id("block/overlays/output_energy"));
+            }
+            MachineModelsToGenerate.register(machine, model.build());
         }
 
         return new HatchPair<>(definitions.get(0), definitions.get(1));

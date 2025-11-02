@@ -58,6 +58,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
     private final MachineCasing baseCasing;
     private final @Nullable Material[] defaultOverlays;
     private final Map<MachineCasing, @Nullable Material[]> tieredOverlays = new HashMap<>();
+    private final boolean noOverlayOnOutputSide;
 
     private MachineUnbakedModel(JsonObject obj) {
         this.baseCasing = MachineCasings.get(GsonHelper.getAsString(obj, "casing"));
@@ -70,6 +71,8 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
             var casingOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(tieredOverlays, casingTier), defaultOverlaysJson);
             this.tieredOverlays.put(MachineCasings.get(casingTier), casingOverlaysJson.toSpriteIds());
         }
+
+        this.noOverlayOnOutputSide = GsonHelper.getAsBoolean(obj, "no_overlay_on_output_side", false);
     }
 
     @Override
@@ -80,7 +83,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }
-        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays);
+        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
     }
 
     private static @Nullable TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {

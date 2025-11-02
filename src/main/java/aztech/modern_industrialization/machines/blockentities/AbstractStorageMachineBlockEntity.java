@@ -68,7 +68,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity,
             boolean extractableOnOutputDirection) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(true, false, false));
+        super(bep, new MachineGuiParameters.Builder(name, false).build(), OrientationComponent.Params.noFacing(false, false));
 
         this.from = from;
         this.to = to;

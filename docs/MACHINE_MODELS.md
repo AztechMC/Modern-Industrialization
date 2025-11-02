@@ -75,5 +75,7 @@ Example JSON:
       // By default values from default_overlays above will be used, unless overridden here specifically.
     }
   }
+  // Optionally, hide the overlays on the output side (default to false)
+  // "no_overlay_on_output_side": true
 }
 ```

@@ -25,16 +25,16 @@
 package aztech.modern_industrialization.client.datagen.model;
 
 import aztech.modern_industrialization.client.machines.models.MachineUnbakedModel;
-import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
+import aztech.modern_industrialization.datagen.model.MachineModelProperties;
 import com.google.gson.JsonObject;
 import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
-    private final MachineModelsToGenerate.MachineModelProperties props;
+    private final MachineModelProperties props;
 
-    protected MachineModelBuilder(MachineModelsToGenerate.MachineModelProperties props, T parent, ExistingFileHelper existingFileHelper) {
+    protected MachineModelBuilder(MachineModelProperties props, T parent, ExistingFileHelper existingFileHelper) {
         super(MachineUnbakedModel.LOADER_ID, parent, existingFileHelper, false);
 
         this.props = props;

@@ -68,14 +68,17 @@ public class MachineBakedModel implements IDynamicBakedModel {
     private final MachineCasing baseCasing;
     private final @Nullable TextureAtlasSprite[] defaultOverlays;
     private final Map<MachineCasing, @Nullable TextureAtlasSprite[]> tieredOverlays;
+    private final boolean noOverlayOnOutputSide;
     private final MachineModelClientData defaultData;
 
     MachineBakedModel(MachineCasing baseCasing,
             @Nullable TextureAtlasSprite[] defaultOverlays,
-            Map<MachineCasing, @Nullable TextureAtlasSprite[]> tieredOverlays) {
+            Map<MachineCasing, @Nullable TextureAtlasSprite[]> tieredOverlays,
+            boolean noOverlayOnOutputSide) {
         this.baseCasing = baseCasing;
         this.defaultOverlays = defaultOverlays;
         this.tieredOverlays = tieredOverlays;
+        this.noOverlayOnOutputSide = noOverlayOnOutputSide;
         this.defaultData = new MachineModelClientData(baseCasing, Direction.NORTH);
     }
 
@@ -139,17 +142,21 @@ public class MachineBakedModel implements IDynamicBakedModel {
             // Casing
             quads.addAll(getCasingModel(casing).getQuads(state, side, rand, extraData, renderType));
             // Machine overlays
-            // Draw the "front" texture on the north side if the machine has no facing
-            var facingDirection = Objects.requireNonNullElse(data.frontDirection, Direction.NORTH);
-            TextureAtlasSprite sprite = getSprite(sprites, side, facingDirection, false);
-            if (sprite != null) {
-                quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
+            if (!noOverlayOnOutputSide || side != data.outputDirection) {
+                // Draw the "front" texture on the north side if the machine has no facing
+                var facingDirection = Objects.requireNonNullElse(data.frontDirection, Direction.NORTH);
+                TextureAtlasSprite sprite = getSprite(sprites, side, facingDirection, false);
+                if (sprite != null) {
+                    quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
+                }
             }
         }
 
         // Output overlays
         if (data.outputDirection != null && side == data.outputDirection) {
-            quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET));
+            if (sprites[24] != null) {
+                quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET));
+            }
             if (data.itemAutoExtract) {
                 quads.add(ModelHelper.bakeSprite(vc, data.outputDirection, sprites[25], -3 * Z_OFFSET));
             }

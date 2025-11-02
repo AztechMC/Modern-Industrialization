@@ -66,13 +66,13 @@ public class MachineBakedModel implements IDynamicBakedModel {
     }
 
     private final MachineCasing baseCasing;
-    private final TextureAtlasSprite[] defaultOverlays;
-    private final Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays;
+    private final @Nullable TextureAtlasSprite[] defaultOverlays;
+    private final Map<MachineCasing, @Nullable TextureAtlasSprite[]> tieredOverlays;
     private final MachineModelClientData defaultData;
 
     MachineBakedModel(MachineCasing baseCasing,
-            TextureAtlasSprite[] defaultOverlays,
-            Map<MachineCasing, TextureAtlasSprite[]> tieredOverlays) {
+            @Nullable TextureAtlasSprite[] defaultOverlays,
+            Map<MachineCasing, @Nullable TextureAtlasSprite[]> tieredOverlays) {
         this.baseCasing = baseCasing;
         this.defaultOverlays = defaultOverlays;
         this.tieredOverlays = tieredOverlays;
@@ -83,7 +83,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
         return baseCasing;
     }
 
-    public TextureAtlasSprite[] getSprites(@Nullable MachineCasing casing) {
+    public @Nullable TextureAtlasSprite[] getSprites(@Nullable MachineCasing casing) {
         if (casing == null) {
             return defaultOverlays;
         }
@@ -94,7 +94,7 @@ public class MachineBakedModel implements IDynamicBakedModel {
      * Returns null if nothing should be rendered.
      */
     @Nullable
-    public static TextureAtlasSprite getSprite(TextureAtlasSprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
+    public static TextureAtlasSprite getSprite(@Nullable TextureAtlasSprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
         int spriteId;
         if (side.getAxis().isHorizontal()) {
             spriteId = (facingDirection.get2DDataValue() - side.get2DDataValue() + 4) % 4 * 2;
@@ -139,7 +139,9 @@ public class MachineBakedModel implements IDynamicBakedModel {
             // Casing
             quads.addAll(getCasingModel(casing).getQuads(state, side, rand, extraData, renderType));
             // Machine overlays
-            TextureAtlasSprite sprite = getSprite(sprites, side, data.frontDirection, false);
+            // Draw the "front" texture on the north side if the machine has no facing
+            var facingDirection = Objects.requireNonNullElse(data.frontDirection, Direction.NORTH);
+            TextureAtlasSprite sprite = getSprite(sprites, side, facingDirection, false);
             if (sprite != null) {
                 quads.add(ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
             }

@@ -89,6 +89,9 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     @Nullable
     private BakedQuad getCachedQuad(MachineModelClientData data, Direction d) {
         var facing = data.frontDirection;
+        if (data.frontDirection == null) {
+            return null;
+        }
         int cachedQuadIndex = facing.ordinal() * 6 + d.ordinal();
         var casing = data.casing;
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);

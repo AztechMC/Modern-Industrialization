@@ -46,7 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
-    public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
+    public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.@Nullable Params orientationParams) {
         super(bep, guiParams, orientationParams);
 
         registerComponents(new MachineComponent.ClientOnly() {
@@ -109,14 +109,16 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     public MachineModelClientData getMachineModelData() {
         MachineCasing casing = isMatched() ? MachineCasings.get(matchedCasing) : null;
         MachineModelClientData data = new MachineModelClientData(casing);
-        orientation.writeModelData(data);
+        if (orientation != null) {
+            orientation.writeModelData(data);
+        }
         return data;
     }
 
     @Override
     public void onPlaced(@Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(placer, itemStack);
-        if (orientation.params.hasOutput) {
+        if (orientation != null && orientation.params.hasOutput) {
             orientation.outputDirection = orientation.outputDirection.getOpposite();
         }
     }

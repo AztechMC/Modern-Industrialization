@@ -59,14 +59,21 @@ public record AdjacentBlockProcessCondition(Block block, RelativePosition relati
 
     @Override
     public boolean canProcessRecipe(Context context, MachineRecipe recipe) {
-        var checkPos = switch (relativePosition) {
-            case BELOW -> context.getBlockEntity().getBlockPos().below();
+        return switch (relativePosition) {
+            case BELOW -> {
+                var checkPos = context.getBlockEntity().getBlockPos().below();
+                yield context.getLevel().getBlockState(checkPos).is(block);
+            }
             case BEHIND -> {
-                var direction = context.getBlockEntity().orientation.facingDirection;
-                yield context.getBlockEntity().getBlockPos().relative(direction.getOpposite());
+                var orientation = context.getBlockEntity().orientation;
+                if (orientation == null) {
+                    yield false;
+                }
+                var direction = orientation.facingDirection;
+                var checkPos = context.getBlockEntity().getBlockPos().relative(direction.getOpposite());
+                yield context.getLevel().getBlockState(checkPos).is(block);
             }
         };
-        return context.getLevel().getBlockState(checkPos).is(block);
     }
 
     @Override

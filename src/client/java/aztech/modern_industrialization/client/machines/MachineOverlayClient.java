@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.client.thirdparty.fabricrendering.QuadBuffer;
 import aztech.modern_industrialization.client.util.RenderHelper;
-import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.util.GeometryHelper;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -36,7 +36,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import org.joml.Matrix4f;
@@ -47,8 +46,9 @@ public class MachineOverlayClient {
         var blockHitResult = event.getTarget();
 
         BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = Minecraft.getInstance().level.getBlockState(pos);
-        if (state.getBlock() instanceof MachineBlock
+        var level = Minecraft.getInstance().level;
+        if (level.getBlockEntity(pos) instanceof MachineBlockEntity machine
+                && machine.orientation != null
                 && Minecraft.getInstance().player.getMainHandItem().is(MITags.WRENCHES)) {
             var poseStack = event.getPoseStack();
 

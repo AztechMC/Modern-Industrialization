@@ -76,14 +76,14 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelState, ItemOverrides overrides) {
         var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
-        var tieredOverlays = new HashMap<MachineCasing, TextureAtlasSprite[]>();
+        var tieredOverlays = new HashMap<MachineCasing, @Nullable TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
         }
         return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays);
     }
 
-    private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {
+    private static @Nullable TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {
         var sprites = new TextureAtlasSprite[ids.length];
         for (int i = 0; i < ids.length; ++i) {
             if (ids[i] != null) {

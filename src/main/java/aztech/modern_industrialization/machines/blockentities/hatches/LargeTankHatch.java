@@ -53,7 +53,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
     private LargeTankMultiblockBlockEntity controller = null;
 
     public LargeTankHatch(BEP bep) {
-        super(bep, new MachineGuiParameters.Builder("large_tank_hatch", false).build(), new OrientationComponent.Params(false, false, false));
+        super(bep, new MachineGuiParameters.Builder("large_tank_hatch", false).build(), OrientationComponent.Params.noFacingNoOutput());
     }
 
     @Override

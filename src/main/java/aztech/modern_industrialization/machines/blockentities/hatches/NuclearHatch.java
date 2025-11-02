@@ -66,7 +66,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
-                new OrientationComponent.Params(false, false, false));
+                OrientationComponent.Params.noFacingNoOutput());
 
         this.isFluid = isFluid;
         SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 1, 2).build();

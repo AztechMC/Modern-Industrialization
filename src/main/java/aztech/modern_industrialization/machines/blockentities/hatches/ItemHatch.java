@@ -40,7 +40,7 @@ import net.minecraft.network.chat.Component;
 
 public class ItemHatch extends HatchBlockEntity {
     public ItemHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
-        super(bep, guiParams, new OrientationComponent.Params(true, true, false));
+        super(bep, guiParams, OrientationComponent.Params.noFacing(true, false));
 
         this.input = input;
         this.upgradesToSteel = upgradesToSteel;

@@ -120,15 +120,26 @@ public class OrePart implements PartKeyProvider {
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
                     PartKey mainPartKey = partContext.get(MAIN_PART).key();
-                    String loot;
+                    PartKeyProvider partToDrop;
                     if (mainPartKey.equals(MIParts.INGOT.key())) {
-                        loot = partContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
+                        partToDrop = MIParts.RAW_METAL;
                     } else if (mainPartKey.equals(MIParts.DUST.key())) {
-                        loot = partContext.getMaterialPart(MIParts.DUST).getItemId();
+                        partToDrop = MIParts.DUST;
                     } else if (mainPartKey.equals(MIParts.GEM.key())) {
-                        loot = partContext.getMaterialPart(MIParts.GEM).getItemId();
+                        partToDrop = MIParts.GEM;
                     } else {
                         throw new UnsupportedOperationException("Could not find matching main part.");
+                    }
+                    MaterialItemPart lootPart = partContext.getMaterialPart(partToDrop);
+                    if (lootPart == null) {
+                        throw new IllegalStateException(String.format("Tried to generate loot for %s ore. "
+                                + "Since the main part is \"%s\", the drop should be \"%s\" but it could not be found. "
+                                + "Either add a \"%s\" part, or change the main part of %s.",
+                                partContext.getMaterialName(),
+                                mainPartKey,
+                                partToDrop.key(),
+                                partToDrop.key(),
+                                partContext.getMaterialName()));
                     }
 
                     BlockDefinition<OreBlock> oreBlockBlockDefinition;
@@ -137,7 +148,7 @@ public class OrePart implements PartKeyProvider {
                             itemPath,
                             MIBlock.BlockDefinitionParams.of(BlockBehaviour.Properties.ofFullCopy(stoneBlock))
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
-                                    .withLoot(new MIBlockLoot.Ore(loot))
+                                    .withLoot(new MIBlockLoot.Ore(lootPart.getItemId()))
                                     .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(stoneBlock.defaultDestroyTime() + 1.5f)
                                     .requiresCorrectToolForDrops());

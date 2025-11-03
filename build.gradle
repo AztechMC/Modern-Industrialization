@@ -204,13 +204,15 @@ dependencies {
     }
 
     compileOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
-    if (project.runtime_itemlist_mod == "emi") {
+    if (project.runtime_itemlist_mod.endsWith("emi")) {
         localRuntimeOnly "dev.emi:emi-neoforge:${project.emi_version}+${project.emi_minecraft_version}"
-        // Add JEI so that we can use EMI's builtin compat layer
-        localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        if (project.runtime_itemlist_mod == "jemi") {
+            // Add JEI so that we can use EMI's builtin compat layer
+            localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
+        }
     }
 
-    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "none"])) {
+    if (!(project.runtime_itemlist_mod in ["jei", "rei", "emi", "jemi", "none"])) {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 

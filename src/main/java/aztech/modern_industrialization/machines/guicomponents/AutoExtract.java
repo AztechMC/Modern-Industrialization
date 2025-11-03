@@ -30,6 +30,7 @@ import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 /**
  * Supports both auto-extract and auto-insert. Auto-insert is just a GUI change,
@@ -39,11 +40,15 @@ public class AutoExtract implements GuiComponentServer<AutoExtract.Params, AutoE
     public static final Type<Params, Data> TYPE = new Type<>(MI.id("auto_extract"), Params.STREAM_CODEC, Data.STREAM_CODEC);
 
     private final OrientationComponent orientation;
-    private final boolean displayAsInsert; // true for auto-insert
+    private final Display display;
+
+    public AutoExtract(OrientationComponent orientation, Display display) {
+        this.orientation = orientation;
+        this.display = display;
+    }
 
     public AutoExtract(OrientationComponent orientation, boolean displayAsInsert) {
-        this.orientation = orientation;
-        this.displayAsInsert = displayAsInsert;
+        this(orientation, displayAsInsert ? Display.INSERT : Display.EXTRACT);
     }
 
     public AutoExtract(OrientationComponent orientation) {
@@ -52,7 +57,7 @@ public class AutoExtract implements GuiComponentServer<AutoExtract.Params, AutoE
 
     @Override
     public Params getParams() {
-        return new Params(displayAsInsert, orientation.params.hasExtractItems, orientation.params.hasExtractFluids);
+        return new Params(display, orientation.params.hasExtractItems, orientation.params.hasExtractFluids);
     }
 
     @Override
@@ -69,10 +74,16 @@ public class AutoExtract implements GuiComponentServer<AutoExtract.Params, AutoE
         return orientation;
     }
 
-    public record Params(boolean displayAsInsert, boolean hasExtractItems, boolean hasExtractFluids) {
+    public enum Display {
+        EXTRACT,
+        INSERT,
+        BOTH,
+    }
+
+    public record Params(Display display, boolean hasExtractItems, boolean hasExtractFluids) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Params> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.BOOL,
-                Params::displayAsInsert,
+                NeoForgeStreamCodecs.enumCodec(Display.class),
+                Params::display,
                 ByteBufCodecs.BOOL,
                 Params::hasExtractItems,
                 ByteBufCodecs.BOOL,

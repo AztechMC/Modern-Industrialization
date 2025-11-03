@@ -82,8 +82,16 @@ public class MultiblockHatches {
     public static void init() {
         // Triggers static init
 
-        MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
-        MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
+        MachineModelsToGenerate.register(
+                "nuclear_item_hatch", new MachineModelProperties.Builder(MachineCasings.NUCLEAR)
+                        .addOverlay("top", MI.id("block/overlays/output_item"))
+                        .addOverlay("item_auto", MI.id("block/overlays/item_auto"))
+                        .build());
+        MachineModelsToGenerate.register(
+                "nuclear_fluid_hatch", new MachineModelProperties.Builder(MachineCasings.NUCLEAR)
+                        .addOverlay("top", MI.id("block/overlays/output_fluid"))
+                        .addOverlay("fluid_auto", MI.id("block/overlays/fluid_auto"))
+                        .build());
 
         MachineRegistrationHelper.addMachineModel("large_tank_hatch", "hatch_fluid", MachineCasings.STEEL, false, false, true, false);
 

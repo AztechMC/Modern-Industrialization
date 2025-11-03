@@ -59,7 +59,7 @@ public class AutoExtractClient extends GuiComponentClient<AutoExtract.Params, Au
 
         private void addExtractButton(ButtonContainer container, boolean isItem) {
             int u = isItem ? 20 : 0;
-            boolean displayAsInsert = params.displayAsInsert();
+            var display = params.display();
             container.addButton(u, syncId -> {
                 boolean newExtract;
                 if (isItem) {
@@ -73,40 +73,38 @@ public class AutoExtractClient extends GuiComponentClient<AutoExtract.Params, Au
             }, () -> {
                 List<Component> lines = new ArrayList<>();
                 if (isItem ? data.extractItems() : data.extractFluids()) {
-                    Component component;
-
                     if (isItem) {
-                        if (displayAsInsert) {
-                            component = MIText.ItemAutoInsertOn.text();
-                        } else {
-                            component = MIText.ItemAutoExtractOn.text();
+                        if (display != AutoExtract.Display.EXTRACT) {
+                            lines.add(MIText.ItemAutoInsertOn.text());
+                        }
+                        if (display != AutoExtract.Display.INSERT) {
+                            lines.add(MIText.ItemAutoExtractOn.text());
                         }
                     } else {
-                        if (displayAsInsert) {
-                            component = MIText.FluidAutoInsertOn.text();
-                        } else {
-                            component = MIText.FluidAutoExtractOn.text();
+                        if (display != AutoExtract.Display.EXTRACT) {
+                            lines.add(MIText.FluidAutoInsertOn.text());
+                        }
+                        if (display != AutoExtract.Display.INSERT) {
+                            lines.add(MIText.FluidAutoExtractOn.text());
                         }
                     }
-                    lines.add(component);
                     lines.add(MIText.ClickToDisable.text().setStyle(TextHelper.GRAY_TEXT));
                 } else {
-                    Component component;
                     if (isItem) {
-                        if (displayAsInsert) {
-                            component = MIText.ItemAutoInsertOff.text();
-                        } else {
-                            component = MIText.ItemAutoExtractOff.text();
+                        if (display != AutoExtract.Display.EXTRACT) {
+                            lines.add(MIText.ItemAutoInsertOff.text());
+                        }
+                        if (display != AutoExtract.Display.INSERT) {
+                            lines.add(MIText.ItemAutoExtractOff.text());
                         }
                     } else {
-                        if (displayAsInsert) {
-                            component = MIText.FluidAutoInsertOff.text();
-                        } else {
-                            component = MIText.FluidAutoExtractOff.text();
+                        if (display != AutoExtract.Display.EXTRACT) {
+                            lines.add(MIText.FluidAutoInsertOff.text());
+                        }
+                        if (display != AutoExtract.Display.INSERT) {
+                            lines.add(MIText.FluidAutoExtractOff.text());
                         }
                     }
-
-                    lines.add(component);
                     lines.add(MIText.ClickToEnable.text().setStyle(TextHelper.GRAY_TEXT));
                 }
                 return lines;

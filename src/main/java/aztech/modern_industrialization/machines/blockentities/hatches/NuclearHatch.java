@@ -35,7 +35,9 @@ import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
+import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
@@ -47,6 +49,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +69,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
-                OrientationComponent.Params.noFacingNoOutput());
+                OrientationComponent.Params.noFacingNoOutput(!isFluid, isFluid));
 
         this.isFluid = isFluid;
         SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 1, 2).build();
@@ -94,6 +97,8 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
         TemperatureBar.Params temperatureParams = new TemperatureBar.Params(43, 63, NuclearConstant.MAX_TEMPERATURE);
         registerGuiComponent(new TemperatureBar(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
+
+        registerGuiComponent(new AutoExtract(this.orientation, AutoExtract.Display.BOTH));
     }
 
     @Override
@@ -112,13 +117,32 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
     }
 
     @Override
+    public MachineModelClientData getMachineModelData() {
+        var data = super.getMachineModelData();
+        data.outputDirection = Direction.UP;
+        data.itemAutoExtract = orientation.extractItems;
+        data.fluidAutoExtract = orientation.extractFluids;
+        return data;
+    }
+
+    @Override
     public final void tick() {
         super.tick();
         this.clearMachineLock();
 
         if (isFluid) {
+            if (!level.isClientSide() && orientation.extractFluids) {
+                this.inventory.autoInsertFluids(level, worldPosition, Direction.UP);
+                this.inventory.autoExtractFluids(level, worldPosition, Direction.UP);
+            }
+
             fluidNeutronProductTick(1, true);
         } else {
+            if (!level.isClientSide() && orientation.extractItems) {
+                this.inventory.autoInsertItems(level, worldPosition, Direction.UP);
+                this.inventory.autoExtractItems(level, worldPosition, Direction.UP);
+            }
+
             ItemVariant itemVariant = (ItemVariant) this.getVariant();
             if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
                 if (abs.getNeutronProduct() != null) {

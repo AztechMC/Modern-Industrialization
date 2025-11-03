@@ -69,8 +69,12 @@ public class OrientationComponent implements MachineComponent {
         }
         if (params.hasOutput) {
             tag.putInt("outputDirection", outputDirection.get3DDataValue());
-            tag.putBoolean("extractItems", extractItems);
-            tag.putBoolean("extractFluids", extractFluids);
+        }
+        if (extractItems) {
+            tag.putBoolean("extractItems", true);
+        }
+        if (extractFluids) {
+            tag.putBoolean("extractFluids", true);
         }
     }
 
@@ -144,7 +148,11 @@ public class OrientationComponent implements MachineComponent {
         }
 
         public static Params noFacingNoOutput() {
-            return new Params(false, false, false, false, false);
+            return noFacingNoOutput(false, false);
+        }
+
+        public static Params noFacingNoOutput(boolean hasExtractItems, boolean hasExtractFluids) {
+            return new Params(false, false, hasExtractItems, hasExtractFluids, false);
         }
 
         public static Params noFacing(boolean hasExtractItems, boolean hasExtractFluids) {

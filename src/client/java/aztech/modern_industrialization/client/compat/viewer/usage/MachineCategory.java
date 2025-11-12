@@ -208,10 +208,16 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             guiGraphics.pose().popPose();
         });
+        int endOfEuText;
         if (params.steamMode != SteamMode.NEITHER) {
-            widgets.text(
-                    TextHelper.getEuTextTick(recipe.eu),
-                    15 + (params.steamMode.steam ? 2 : 0), 5, TextAlign.LEFT, false, true, null);
+            var euText = TextHelper.getEuTextTick(recipe.eu);
+            int startx = 15 + (params.steamMode.steam ? 2 : 0);
+            widgets.text(euText, startx, 5, TextAlign.LEFT, false, true, null);
+
+            var font = Minecraft.getInstance().font;
+            endOfEuText = startx + font.width(euText);
+        } else {
+            endOfEuText = 15;
         }
         widgets.text(
                 MIText.BaseDurationSeconds.text(getSeconds(recipe)),
@@ -252,7 +258,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 ItemStack displayedItem = displayedItems.get(itemIndex).copyWithCount(1);
 
                 graphics.pose().pushPose();
-                graphics.pose().translate(x, y, 0);
+                // Make sure that we don't overlap with the EU/t text
+                double itemx = Math.max(x, endOfEuText + 1);
+                graphics.pose().translate(itemx, y, 0);
                 graphics.pose().scale((float) wh / 16, (float) wh / 16, 1);
                 graphics.renderFakeItem(displayedItem, 0, 0);
                 graphics.pose().popPose();
@@ -279,7 +287,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
             }
         }
         if (!tooltips.isEmpty()) {
-            widgets.tooltip(2, 5, width - 10, 11, tooltips);
+            widgets.tooltip(3, 3, width - 6, 13, tooltips);
         }
     }
 

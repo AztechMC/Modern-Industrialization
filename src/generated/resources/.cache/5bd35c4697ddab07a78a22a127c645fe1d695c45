@@ -1,19 +1,19 @@
-// 1.21.1	2025-10-17T22:04:47.2719957	Tags for minecraft:block mod id modern_industrialization
+// 1.21.1	2025-11-18T00:08:48.8815209	Tags for minecraft:block mod id modern_industrialization
 ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/block/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/block/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/block/ores/bauxite.json
 93ec56b0d5b6f7a7fd054f38bbfe24e69296efb3 data/c/tags/block/ores/iridium.json
-7d27152a3b746f6efd59aef093831375fdb6c256 data/c/tags/block/ores/lead.json
-1ee88f53ff517b182d645bd62f925de3c04d6385 data/c/tags/block/ores/lignite_coal.json
-61c6894f9934f768b34b023fbd5342e6932a9534 data/c/tags/block/ores/monazite.json
-f20af47e8005e507b530a08868d87b31220b0dc4 data/c/tags/block/ores/nickel.json
+a40379560990b4c94ac0bf8dda70c18633f39434 data/c/tags/block/ores/lead.json
+5482ec0c47c85285f0a13dc14ddce64b7175e8ce data/c/tags/block/ores/lignite_coal.json
+832e8ccba241a85489107f56ecb228eff78aa8bd data/c/tags/block/ores/monazite.json
+5d3261f8531db7f3f8a7f853c060bbf2fd2c60c7 data/c/tags/block/ores/nickel.json
 39fc1c4c64211c6fd2ba828894193ef57ab2b07d data/c/tags/block/ores/platinum.json
 666b9ea4ed1b7b84cd00e057a5cd57096b890b4d data/c/tags/block/ores/quartz.json
-46418ab88bf9fca19463ce373d5c8ada1665205f data/c/tags/block/ores/salt.json
-ddbc5d79273339aced9298587c441be4e6397ef0 data/c/tags/block/ores/tin.json
+ce3cc247a1cac2c4b047f545cf1cb469b348a62e data/c/tags/block/ores/salt.json
+cf3229a47b1eaec01a2957f35b44eb68df300441 data/c/tags/block/ores/tin.json
 9ee5a5a7cf5cd3c6931fa0cb61d4f92961558dde data/c/tags/block/ores/titanium.json
-321b8ae992d4f9f0ff1c9113dc5b9204191bf8d4 data/c/tags/block/ores/tungsten.json
-9c24b7c7006a6cac94f7d2bca413598ea1e76c40 data/c/tags/block/ores/uranium.json
+4f7ea8f3663dfa7ed63260623627a8ac1eeecb66 data/c/tags/block/ores/tungsten.json
+eeb8fb3260f194115d7da2f45c010ea30e86a01c data/c/tags/block/ores/uranium.json
 c9af7fbde3eae6cf88f40e1f20edaf96858da682 data/c/tags/block/ores_in_ground/deepslate.json
 06148afe1907864eb205006233b7b317091027b4 data/c/tags/block/ores_in_ground/stone.json
 2bcaf74d6280a33696eef8093a0f049f5cc888cd data/c/tags/block/relocation_not_supported.json
@@ -70,5 +70,5 @@ fa0a7374138ac46efd360cd4765701a3ac88bc37 data/c/tags/block/storage_blocks/uraniu
 ba09e47df7025bb1c4d4a072a54ce0b2e307f003 data/c/tags/block/storage_blocks/yttrium.json
 83ef9558d99b272a951490db40941728b6755366 data/minecraft/tags/block/mineable/pickaxe.json
 0598637f8fa446913456c69504f5c6bc1a6b19f1 data/minecraft/tags/block/needs_stone_tool.json
-716915cb6473dfe2016b5dbb5d41aaf75f8b4099 data/modern_industrialization/tags/block/barrels.json
-539cf80a4392a9829b2414215686239c257e9e1c data/modern_industrialization/tags/block/tanks.json
+2f4942034efc4f0ca583b4947ecf67ae3ee08540 data/modern_industrialization/tags/block/barrels.json
+ed3e8137fcabedef6118d8d5980c348ad5ef1d22 data/modern_industrialization/tags/block/tanks.json

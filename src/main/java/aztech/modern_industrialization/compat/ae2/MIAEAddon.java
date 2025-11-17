@@ -116,7 +116,7 @@ public class MIAEAddon {
                 pipeId,
                 prop -> new PipeItem(prop, type, new MENetworkData()),
                 MIPipes.ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         MIPipes.INSTANCE.register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires");
     }

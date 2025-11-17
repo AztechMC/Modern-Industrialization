@@ -118,7 +118,7 @@ public class MIPipes {
                 pipeId,
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
     }
@@ -131,7 +131,7 @@ public class MIPipes {
                 pipeId,
                 prop -> new PipeItem(prop, type, new ItemNetworkData()),
                 ITEM_MODEL_GENERATOR,
-                SortOrder.PIPES);
+                SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
     }

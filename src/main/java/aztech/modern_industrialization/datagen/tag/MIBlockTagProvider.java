@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
-import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,7 +35,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
@@ -60,13 +58,9 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE.get());
         tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED).add(MIPipes.BLOCK_PIPE.get());
 
-        for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
+        for (var entry : TagsToGenerate.getTags().entrySet()) {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
-            var items = entry.getValue().stream()
-                    .map(ItemLike::asItem)
-                    .sorted(Comparator.comparing(BuiltInRegistries.ITEM::getKey))
-                    .toList();
-            for (var item : items) {
+            for (var item : entry.getValue()) {
                 var itemKey = BuiltInRegistries.ITEM.getKey(item);
                 var block = BuiltInRegistries.BLOCK.getOptional(itemKey);
                 if (block.isEmpty()) {

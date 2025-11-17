@@ -1,4 +1,4 @@
-// 1.21.1	2025-10-17T22:04:47.2401589	Tags for minecraft:item mod id modern_industrialization
+// 1.21.1	2025-11-18T00:08:48.8429161	Tags for minecraft:item mod id modern_industrialization
 b7ef4462150855d29d57f806fb1387764e6fa77f data/c/tags/item/dusts.json
 9d2318af59c4e4de55974d6da062f468a5a9aafc data/c/tags/item/dusts/aluminum.json
 001769a3fa1d20ea297d8f5fa7b6c26073f43996 data/c/tags/item/dusts/annealed_copper.json
@@ -138,17 +138,17 @@ ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/item/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/item/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/item/ores/bauxite.json
 93ec56b0d5b6f7a7fd054f38bbfe24e69296efb3 data/c/tags/item/ores/iridium.json
-7d27152a3b746f6efd59aef093831375fdb6c256 data/c/tags/item/ores/lead.json
-1ee88f53ff517b182d645bd62f925de3c04d6385 data/c/tags/item/ores/lignite_coal.json
-61c6894f9934f768b34b023fbd5342e6932a9534 data/c/tags/item/ores/monazite.json
-f20af47e8005e507b530a08868d87b31220b0dc4 data/c/tags/item/ores/nickel.json
+a40379560990b4c94ac0bf8dda70c18633f39434 data/c/tags/item/ores/lead.json
+5482ec0c47c85285f0a13dc14ddce64b7175e8ce data/c/tags/item/ores/lignite_coal.json
+832e8ccba241a85489107f56ecb228eff78aa8bd data/c/tags/item/ores/monazite.json
+5d3261f8531db7f3f8a7f853c060bbf2fd2c60c7 data/c/tags/item/ores/nickel.json
 39fc1c4c64211c6fd2ba828894193ef57ab2b07d data/c/tags/item/ores/platinum.json
 666b9ea4ed1b7b84cd00e057a5cd57096b890b4d data/c/tags/item/ores/quartz.json
-46418ab88bf9fca19463ce373d5c8ada1665205f data/c/tags/item/ores/salt.json
-ddbc5d79273339aced9298587c441be4e6397ef0 data/c/tags/item/ores/tin.json
+ce3cc247a1cac2c4b047f545cf1cb469b348a62e data/c/tags/item/ores/salt.json
+cf3229a47b1eaec01a2957f35b44eb68df300441 data/c/tags/item/ores/tin.json
 9ee5a5a7cf5cd3c6931fa0cb61d4f92961558dde data/c/tags/item/ores/titanium.json
-321b8ae992d4f9f0ff1c9113dc5b9204191bf8d4 data/c/tags/item/ores/tungsten.json
-9c24b7c7006a6cac94f7d2bca413598ea1e76c40 data/c/tags/item/ores/uranium.json
+4f7ea8f3663dfa7ed63260623627a8ac1eeecb66 data/c/tags/item/ores/tungsten.json
+eeb8fb3260f194115d7da2f45c010ea30e86a01c data/c/tags/item/ores/uranium.json
 c9af7fbde3eae6cf88f40e1f20edaf96858da682 data/c/tags/item/ores_in_ground/deepslate.json
 06148afe1907864eb205006233b7b317091027b4 data/c/tags/item/ores_in_ground/stone.json
 4e76afad27bd51cc50f67f8398876580616e68d8 data/c/tags/item/plates.json
@@ -332,11 +332,11 @@ e97d49d175079da46cd8502728969fb968b332cd data/minecraft/tags/item/foot_armor.jso
 8e792e48deabe90b35e2f5357c0623749ac75d89 data/minecraft/tags/item/piglin_loved.json
 15d2f846cf819d8fa5ec996552cb0381cab8cf28 data/minecraft/tags/item/shovels.json
 2f204826ad75cd484ab07440a7109fd8aeeefccf data/minecraft/tags/item/swords.json
-716915cb6473dfe2016b5dbb5d41aaf75f8b4099 data/modern_industrialization/tags/item/barrels.json
-47c33d73422ba77e4285a3db7c8995419ac72b3e data/modern_industrialization/tags/item/fluid_pipes.json
-59a4f9ee19af64693fed1dc5d7e2df4ace51b291 data/modern_industrialization/tags/item/forge_hammer_tools.json
-dc9d0976f05ddbf5c9deaf99a9683e4ea342d86b data/modern_industrialization/tags/item/item_pipes.json
-6bf45e5add4e70bff08b3ce8bdb8b482f32b474a data/modern_industrialization/tags/item/me_wires.json
+2f4942034efc4f0ca583b4947ecf67ae3ee08540 data/modern_industrialization/tags/item/barrels.json
+0b68cb2c76cb73825e68828347d3e8c6e7f455fd data/modern_industrialization/tags/item/fluid_pipes.json
+bcd1765d188d82343681c1699ca1e4e17d99dbcb data/modern_industrialization/tags/item/forge_hammer_tools.json
+a335e8b04f86283a098ffd9c05c12aba4408693d data/modern_industrialization/tags/item/item_pipes.json
+acf5da4a6bab59d4560eb70220b35209b38343ca data/modern_industrialization/tags/item/me_wires.json
 acbc6850b543565a80db8d5482f401cc7346059b data/modern_industrialization/tags/item/p2p_attunements/energy_p2p_tunnel.json
 426e1f7cccffbc0433e739c56c50a4f7f9df55c1 data/modern_industrialization/tags/item/replicator_blacklist.json
-539cf80a4392a9829b2414215686239c257e9e1c data/modern_industrialization/tags/item/tanks.json
+ed3e8137fcabedef6118d8d5980c348ad5ef1d22 data/modern_industrialization/tags/item/tanks.json

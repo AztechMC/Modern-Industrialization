@@ -24,7 +24,9 @@
 
 package aztech.modern_industrialization.datagen.tag;
 
+import aztech.modern_industrialization.MIItem;
 import java.util.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -32,10 +34,34 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class TagsToGenerate {
-    static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
+    private static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
     static final Set<TagKey<Item>> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
     static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
+
+    static Map<TagKey<Item>, List<Item>> getTags() {
+        var ret = HashMap.<TagKey<Item>, List<Item>>newHashMap(tagToItemMap.size());
+        for (var entry : tagToItemMap.entrySet()) {
+            var items = new ArrayList<Item>(entry.getValue().size());
+            for (var item : entry.getValue()) {
+                items.add(item.asItem());
+            }
+            items.sort((item1, item2) -> {
+                var key1 = BuiltInRegistries.ITEM.getKey(item1.asItem());
+                var key2 = BuiltInRegistries.ITEM.getKey(item2.asItem());
+                var def1 = MIItem.ITEM_DEFINITIONS.get(key1);
+                var def2 = MIItem.ITEM_DEFINITIONS.get(key2);
+
+                if (def1 != null && def2 != null) {
+                    return def1.sortOrder.compareTo(def2.sortOrder);
+                } else {
+                    return key1.compareTo(key2);
+                }
+            });
+            ret.put(entry.getKey(), items);
+        }
+        return ret;
+    }
 
     private static void addTranslation(String tag, String tagEnglishName) {
         var tagId = ResourceLocation.parse(tag);

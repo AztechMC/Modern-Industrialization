@@ -34,6 +34,7 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getL
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machines.recipe.ConflictsChecker;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
@@ -42,6 +43,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.logging.LogUtils;
+import java.io.IOException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
@@ -99,6 +102,13 @@ public class DebugCommands {
                                             .executes(ctx -> {
                                                 return buildMultiblock(ctx.getSource(), getLoadedBlockPos(ctx, "controller_pos"));
                                             }))
+                            )
+                    )
+                    .then(literal("recipes")
+                            .then(literal("check_for_conflicts")
+                                .executes(ctx -> {
+                                    return checkForConflicts(ctx.getSource());
+                                })
                             )
                     )
             );
@@ -181,6 +191,17 @@ public class DebugCommands {
                     controllerPos, updatedBlocks)), true);
         } else {
             src.sendFailure(Component.literal("Block at position %s is not a multiblock controller.".formatted(controllerPos)));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int checkForConflicts(CommandSourceStack src) {
+        try {
+            var reportPath = ConflictsChecker.writeConflictReport(src.getLevel());
+            src.sendSuccess(() -> Component.literal("Conflicts written to file " + reportPath), true);
+        } catch (IOException exception) {
+            src.sendFailure(Component.literal("Failed to write recipe conflicts"));
+            LogUtils.getLogger().error("Failed to write recipe conflicts", exception);
         }
         return Command.SINGLE_SUCCESS;
     }

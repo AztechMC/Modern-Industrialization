@@ -364,16 +364,18 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 lastInvHash = currentHash;
             }
 
-            ServerLevel serverWorld = (ServerLevel) behavior.getCrafterWorld();
-            MachineRecipeType recipeType = behavior.recipeType();
-            List<RecipeHolder<MachineRecipe>> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
-            for (ConfigurableItemStack stack : inventory.getItemInputs()) {
-                if (!stack.isEmpty()) {
-                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getResource().getItem()));
-                }
-            }
-            return recipes;
+            return getRecipes(behavior.getCrafterWorld(), behavior.recipeType(), inventory.getItemInputs());
         }
+    }
+
+    public static List<RecipeHolder<MachineRecipe>> getRecipes(ServerLevel level, MachineRecipeType recipeType, List<ConfigurableItemStack> itemInputs) {
+        List<RecipeHolder<MachineRecipe>> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(level));
+        for (ConfigurableItemStack stack : itemInputs) {
+            if (!stack.isEmpty()) {
+                recipes.addAll(recipeType.getMatchingRecipes(level, stack.getResource().getItem()));
+            }
+        }
+        return recipes;
     }
 
     /**
@@ -434,8 +436,16 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
     }
 
+    public static boolean doInputsMatch(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, MachineRecipe recipe) {
+        return takeItemInputs(itemInputs, PlayerStatistics.DUMMY, recipe, true) &&
+                takeFluidInputs(fluidInputs, PlayerStatistics.DUMMY, recipe, true);
+    }
+
     protected boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
-        List<ConfigurableItemStack> baseList = inventory.getItemInputs();
+        return takeItemInputs(inventory.getItemInputs(), behavior.getStatsOrDummy(), recipe, simulate);
+    }
+
+    protected static boolean takeItemInputs(List<ConfigurableItemStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean simulate) {
         List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
 
         boolean ok = true;
@@ -450,7 +460,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (stack.getAmount() > 0 && stack.getResource().test(input.ingredient())) {
                     int taken = Math.min((int) stack.getAmount(), remainingAmount);
                     if (taken > 0 && !simulate) {
-                        behavior.getStatsOrDummy().addUsedItems(stack.getResource().getItem(), taken);
+                        stats.addUsedItems(stack.getResource().getItem(), taken);
                     }
                     stack.decrement(taken);
                     remainingAmount -= taken;
@@ -466,7 +476,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected boolean takeFluidInputs(MachineRecipe recipe, boolean simulate) {
-        List<ConfigurableFluidStack> baseList = inventory.getFluidInputs();
+        return takeFluidInputs(inventory.getFluidInputs(), behavior.getStatsOrDummy(), recipe, simulate);
+    }
+
+    protected static boolean takeFluidInputs(List<ConfigurableFluidStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean simulate) {
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
 
         boolean ok = true;
@@ -481,7 +494,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
                     if (taken > 0 && !simulate) {
-                        behavior.getStatsOrDummy().addUsedFluids(stack.getResource().getFluid(), taken);
+                        stats.addUsedFluids(stack.getResource().getFluid(), taken);
                     }
                     stack.decrement(taken);
                     remainingAmount -= taken;
@@ -495,7 +508,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         return ok;
     }
 
-    private boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
+    private static boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
         if (ingredient.isSimple()) {
             for (var stack : ingredient.getStacks()) {
                 if (resource.equals(FluidVariant.of(stack.getFluid()))) {

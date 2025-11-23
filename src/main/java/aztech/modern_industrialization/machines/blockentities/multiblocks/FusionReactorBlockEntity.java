@@ -53,4 +53,9 @@ public class FusionReactorBlockEntity extends AbstractElectricCraftingMultiblock
     public long getMaxRecipeEu() {
         return Integer.MAX_VALUE;
     }
+
+    @Override
+    public boolean oneFluidInputPerStack() {
+        return true;
+    }
 }

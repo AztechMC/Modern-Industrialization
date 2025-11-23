@@ -130,6 +130,14 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 return PlayerStatisticsData.get(getCrafterWorld().getServer()).get(uuid);
             }
         }
+
+        /**
+         * If {@code true}, {@link #takeFluidInputs} will only allow each fluid stack to be used
+         * for up to one fluid input. This is used for the fusion reactor.
+         */
+        default boolean oneFluidInputPerStack() {
+            return false;
+        }
     }
 
     private final Inventory inventory;
@@ -438,7 +446,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     public static boolean doInputsMatch(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, MachineRecipe recipe) {
         return takeItemInputs(itemInputs, PlayerStatistics.DUMMY, recipe, true) &&
-                takeFluidInputs(fluidInputs, PlayerStatistics.DUMMY, recipe, true);
+                takeFluidInputs(fluidInputs, PlayerStatistics.DUMMY, recipe, false, true);
     }
 
     protected boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
@@ -476,11 +484,12 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     }
 
     protected boolean takeFluidInputs(MachineRecipe recipe, boolean simulate) {
-        return takeFluidInputs(inventory.getFluidInputs(), behavior.getStatsOrDummy(), recipe, simulate);
+        return takeFluidInputs(inventory.getFluidInputs(), behavior.getStatsOrDummy(), recipe, behavior.oneFluidInputPerStack(), simulate);
     }
 
-    protected static boolean takeFluidInputs(List<ConfigurableFluidStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean simulate) {
+    protected static boolean takeFluidInputs(List<ConfigurableFluidStack> baseList, PlayerStatistics stats, MachineRecipe recipe, boolean oneInputPerStack, boolean simulate) {
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
+        boolean[] usedStacks = oneInputPerStack ? new boolean[stacks.size()] : null;
 
         boolean ok = true;
         for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
@@ -490,16 +499,25 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 }
             }
             long remainingAmount = input.amount();
-            for (ConfigurableFluidStack stack : stacks) {
+            for (int istack = 0; istack < stacks.size(); ++istack) {
+                if (oneInputPerStack && usedStacks[istack]) {
+                    continue;
+                }
+                ConfigurableFluidStack stack = stacks.get(istack);
                 if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
-                    if (taken > 0 && !simulate) {
-                        stats.addUsedFluids(stack.getResource().getFluid(), taken);
+                    if (taken > 0) {
+                        if (oneInputPerStack) {
+                            usedStacks[istack] = true;
+                        }
+                        if (!simulate) {
+                            stats.addUsedFluids(stack.getResource().getFluid(), taken);
+                        }
+                        stack.decrement(taken);
+                        remainingAmount -= taken;
+                        if (remainingAmount == 0)
+                            break;
                     }
-                    stack.decrement(taken);
-                    remainingAmount -= taken;
-                    if (remainingAmount == 0)
-                        break;
                 }
             }
             if (remainingAmount > 0)

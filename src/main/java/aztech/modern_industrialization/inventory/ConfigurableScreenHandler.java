@@ -107,9 +107,9 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int i, int j, ClickType actionType, Player player) {
-        if (i >= 0) {
-            Slot slot = this.slots.get(i);
+    public void clicked(int slotId, int button, ClickType actionType, Player player) {
+        if (slotId >= 0) {
+            Slot slot = this.slots.get(slotId);
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot) {
                 if (actionType != ClickType.PICKUP) {
                     return;
@@ -118,7 +118,11 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    fluidSlot.playerInteract(createCarriedSlotAccess(), player, true);
+                    if (button == 0) {
+                        fluidSlot.playerTakeFromSlot(createCarriedSlotAccess(), player);
+                    } else {
+                        fluidSlot.playerPutIntoSlot(createCarriedSlotAccess(), player);
+                    }
                 }
                 return;
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
@@ -141,7 +145,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 }
             }
         }
-        super.clicked(i, j, actionType, player);
+        super.clicked(slotId, button, actionType, player);
     }
 
     @Override
@@ -159,7 +163,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 var ctx = SlotAccess.forContainer(player.getInventory(), slot.getContainerSlot());
                 for (var maybeFluidSlot : slots) {
                     if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
-                            && fluidSlot.playerInteract(ctx, player, false)) {
+                            && fluidSlot.playerPutIntoSlot(ctx, player)) {
                         return;
                     }
                 }

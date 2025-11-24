@@ -277,7 +277,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             return isPlayerLocked() ? 90 : isMachineLocked() ? 126 : 18;
         }
 
-        public boolean playerInteract(SlotAccess slot, Player player, boolean allowSlotExtract) {
+        public boolean playerPutIntoSlot(SlotAccess slot, Player player) {
             var fluidHandlerItem = slot.get().getCapability(Capabilities.FluidHandler.ITEM);
             if (fluidHandlerItem == null) {
                 return false;
@@ -287,7 +287,6 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             var slotTank = new FluidTank(Ints.saturatedCast(getCapacity()), fs -> canInsertFluid(FluidVariant.of(fs)));
             slotTank.setFluid(getVariant().toStack(Ints.saturatedCast(getAmount())));
 
-            // Extract first
             var extractResult = FluidUtil.tryEmptyContainerAndStow(
                     slot.get(),
                     slotTank,
@@ -302,10 +301,22 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
                 return true;
             }
 
-            // Otherwise insert
-            if (!allowSlotExtract || isEmpty() || !canExtractFluid(getVariant())) {
+            return false;
+        }
+
+        public boolean playerTakeFromSlot(SlotAccess slot, Player player) {
+            if (isEmpty() || !canExtractFluid(getVariant())) {
                 return false;
             }
+
+            var fluidHandlerItem = slot.get().getCapability(Capabilities.FluidHandler.ITEM);
+            if (fluidHandlerItem == null) {
+                return false;
+            }
+
+            // Copy contents into temporary IFluidHandler
+            var slotTank = new FluidTank(Ints.saturatedCast(getCapacity()), fs -> canInsertFluid(FluidVariant.of(fs)));
+            slotTank.setFluid(getVariant().toStack(Ints.saturatedCast(getAmount())));
 
             var insertResult = FluidUtil.tryFillContainerAndStow(
                     slot.get(),

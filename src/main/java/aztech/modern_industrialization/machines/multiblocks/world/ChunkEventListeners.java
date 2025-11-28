@@ -78,7 +78,7 @@ public class ChunkEventListeners {
     public static void onBlockStateChange(Level world, ChunkPos chunkPos, BlockPos pos) {
         // We skip block state changes that happen outside of the server thread.
         // Hopefully that won't cause problems.
-        if (world instanceof ServerLevel serverLevel && serverLevel.getServer().isSameThread()) {
+        if (world instanceof ServerLevel serverLevel) {
             Set<ChunkEventListener> cels = listeners.get(world, chunkPos);
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -91,10 +91,6 @@ public class ChunkEventListeners {
     private static void ensureServerThread(@Nullable MinecraftServer server) {
         if (server == null) {
             throw new RuntimeException("Null server!");
-        }
-
-        if (!server.isSameThread()) {
-            throw new RuntimeException("Thread is not server thread!");
         }
     }
 

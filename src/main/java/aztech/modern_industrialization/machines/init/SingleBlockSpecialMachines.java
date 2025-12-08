@@ -62,18 +62,20 @@ public class SingleBlockSpecialMachines {
         registerSteamTurbine(CableTier.HV, 512, 64000);
 
         MachineRegistrationHelper.registerMachine("LV Diesel Generator", "lv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator",
+                bet -> new GeneratorMachineBlockEntity(bet, "lv_diesel_generator", false,
                         CableTier.LV, 4000, 16000,
                         FluidItemConsumerComponent.ofFluidFuels(64)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("MV Diesel Generator", "mv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "mv_diesel_generator", CableTier.MV, 12000, 32000,
+                bet -> new GeneratorMachineBlockEntity(bet, "mv_diesel_generator", false,
+                        CableTier.MV, 12000, 32000,
                         FluidItemConsumerComponent.ofFluidFuels(256)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
         MachineRegistrationHelper.registerMachine("HV Diesel Generator", "hv_diesel_generator",
-                bet -> new GeneratorMachineBlockEntity(bet, "hv_diesel_generator", CableTier.HV, 60000, 64000,
+                bet -> new GeneratorMachineBlockEntity(bet, "hv_diesel_generator", false,
+                        CableTier.HV, 60000, 64000,
                         FluidItemConsumerComponent.ofFluidFuels(1024)),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 
@@ -160,7 +162,8 @@ public class SingleBlockSpecialMachines {
         String id = tier.name + "_steam_turbine";
         String englishName = tier.shortEnglishName + " Steam Turbine";
         MachineRegistrationHelper.registerMachine(englishName, id,
-                bet -> new GeneratorMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu,
+                bet -> new GeneratorMachineBlockEntity(bet, id, true,
+                        tier, eu * 100L, fluidCapacity, eu,
                         MIFluids.STEAM, 1),
                 MachineBlockEntity::registerFluidApi, GeneratorMachineBlockEntity::registerEnergyApi);
 

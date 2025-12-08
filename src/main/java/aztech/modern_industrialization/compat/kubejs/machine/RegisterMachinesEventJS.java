@@ -250,6 +250,7 @@ public class RegisterMachinesEventJS implements KubeEvent, ShapeTemplateHelper {
                 englishName, internalName,
                 bep -> new GeneratorMachineBlockEntity(bep,
                         internalName,
+                        true, // Assume facing
                         CableTier.getTier(cableTierName),
                         energyCapacity,
                         fluidStorageCapacity,

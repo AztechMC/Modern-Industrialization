@@ -65,12 +65,13 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
     public GeneratorMachineBlockEntity(BEP bep,
             String name,
+            boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
             long fluidCapacity,
             FluidItemConsumerComponent fluidItemConsumer) {
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
-                OrientationComponent.Params.noFacing(false, false));
+                hasFacing ? new OrientationComponent.Params(true, false, false) : OrientationComponent.Params.noFacing(false, false));
 
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(this, energyCapacity);
@@ -143,13 +144,14 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
     public GeneratorMachineBlockEntity(BEP bep,
             String name,
+            boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
             long fluidCapacity,
             long maxEnergyOutput,
             FluidDefinition acceptedFluid,
             long fluidEUperMb) {
-        this(bep, name, outputTier, energyCapacity, fluidCapacity,
+        this(bep, name, hasFacing, outputTier, energyCapacity, fluidCapacity,
                 FluidItemConsumerComponent.ofSingleFluid(
                         maxEnergyOutput,
                         acceptedFluid,

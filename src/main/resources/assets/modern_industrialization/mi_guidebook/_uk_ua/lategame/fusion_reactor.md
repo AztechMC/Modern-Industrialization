@@ -15,7 +15,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:electric_age/machine/fusion_reactor_asbl" />
 
-Плазмова турбіна може перетворювати гелієву плазму в EU зі швидкістю 100 kEU на mb. Його максимальна продуктивність становить приблизно 1 MEU/т.
+Плазмова турбіна може перетворювати гелієву плазму в EU зі швидкістю 100 kEU на мВ. Його максимальна продуктивність становить приблизно 1 MEU/т.
 
 <Recipe id="modern_industrialization:electric_age/machine/plasma_turbine_asbl" />
 

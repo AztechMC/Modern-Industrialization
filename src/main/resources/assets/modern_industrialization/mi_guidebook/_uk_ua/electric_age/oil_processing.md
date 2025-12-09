@@ -11,6 +11,10 @@ item_ids:
 
 # Переробка нафти
 
+<GameScene zoom="1.5" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="oil_drilling_rig" />
+</GameScene>
+      
 Нафтодобувна установка — це величезний багатоблок, який може добувати сиру нафту під корінною породою за допомогою бурових установок. Так, це в основному нафтовий кар'єр. Переробка нафти дасть вам дуже багато побічних продуктів та енергії!
 
 <Recipe id="modern_industrialization:oil/oil_drilling_rig_asbl" />

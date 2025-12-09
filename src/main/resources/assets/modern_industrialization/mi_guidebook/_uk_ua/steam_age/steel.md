@@ -14,6 +14,10 @@ item_ids:
 
 Створіть контролер, 29 шамотної цегли та ті самі три шлюзи, що й у коксовій печі.
 
+<GameScene zoom="3" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="steam_blast_furnace" />
+</GameScene>
+
 Структура парової доменної печі така ж, як і коксової печі, з цеглою, заміненою шамотною цеглою та одним додатковим порожнистим шаром зверху.
 
 <Recipe id="modern_industrialization:steam_age/fireclay/steam_blast_furnace" />

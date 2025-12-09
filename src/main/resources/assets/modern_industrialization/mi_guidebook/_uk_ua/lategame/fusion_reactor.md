@@ -11,9 +11,21 @@ item_ids:
 
 # ТЕЕЕЕРМОЯДЕРНИЙ СИНТЕЗ
 
+## Термоядерний реактор
+
+<GameScene zoom="1" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="fusion_reactor" />
+</GameScene>
+
 Термоядерний реактор — найкраще джерело енергії! Він може поєднувати дейтерій, тритій та/або гелій-3 у гелієву плазму, найпотужніше паливо в грі! Однак, щоб запалити реакцію, потрібна велика кількість енергії.
 
 <Recipe id="modern_industrialization:electric_age/machine/fusion_reactor_asbl" />
+
+## Плазмова турбіна
+
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="plasma_turbine" />
+</GameScene>
 
 Плазмова турбіна може перетворювати гелієву плазму в EU зі швидкістю 100 kEU на мВ. Його максимальна продуктивність становить приблизно 1 MEU/т.
 

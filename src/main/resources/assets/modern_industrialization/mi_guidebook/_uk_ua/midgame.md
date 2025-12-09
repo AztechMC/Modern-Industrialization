@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Середній гри"
+  title: "Середня гра"
   icon: "modern_industrialization:digital_circuit"
   position: 3
 ---

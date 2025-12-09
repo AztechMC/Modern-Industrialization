@@ -6,13 +6,16 @@ navigation:
   parent: modern_industrialization:steam_age.md
 item_ids:
   - modern_industrialization:bronze_drill
+  - modern_industrialization:steam_quarry
 ---
 
 # Нескінченні ресурси?
 
 ## Паровий кар'єр
 
-<ItemImage id="modern_industrialization:steam_quarry" />
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="steam_quarry" />
+</GameScene>
 
 Паровий кар'єр — це парова багатоблокова машина, яка використовує бронзові бури, щоб копати глибше, ніж корінна порода, і повертає вам руду, як ви можете бачити в REI.
 

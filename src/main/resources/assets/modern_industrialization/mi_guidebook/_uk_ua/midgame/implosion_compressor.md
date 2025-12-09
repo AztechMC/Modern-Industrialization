@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: "Імплозійний компресор!"
+  title: "Вибуховий компресор!"
   icon: "modern_industrialization:implosion_compressor"
   position: 205
   parent: modern_industrialization:midgame.md
@@ -8,13 +8,13 @@ item_ids:
   - modern_industrialization:implosion_compressor
 ---
 
-# Імплозійний компресор!
+# Вибуховий компресор!
 
 ## Знайомий блакитний камінь
 
 <ItemImage id="minecraft:diamond" />
 
-Використовуючи промисловий динаміт, імплозійний компресор здатний стискати пил і злитки найстійкіших матеріалів. Це включає вольфрам, вибухостійкий сплав, берилій — ці матеріали дуже важливі для ядерного поділу — і, нарешті, діаманти!
+Використовуючи промисловий динаміт, вибуховий компресор здатний стискати пил і злитки найстійкіших матеріалів. Це включає вольфрам, вибухостійкий сплав, берилій — ці матеріали дуже важливі для ядерного поділу — і, нарешті, діаманти!
 
 <GameScene zoom="2" interactive={true} fullWidth={true}>
     <MultiblockShape controller="implosion_compressor" />

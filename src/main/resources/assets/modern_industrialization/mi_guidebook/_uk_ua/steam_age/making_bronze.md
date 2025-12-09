@@ -22,7 +22,7 @@ item_ids:
 
 <Recipe id="modern_industrialization:materials/bronze_tiny_dust" />
 
-Виплавляючи бронзовий пил, ви отримаєте бронзовий злиток.
+Витоплюючи бронзовий пил, ви отримаєте бронзовий злиток.
 
 <Recipe id="modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting" />
 

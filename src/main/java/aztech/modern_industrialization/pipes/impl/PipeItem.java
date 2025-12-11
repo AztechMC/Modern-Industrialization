@@ -30,7 +30,10 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -154,6 +157,13 @@ public class PipeItem extends Item {
     }
 
     private static boolean canPlace(UseOnContext ctx, BlockPos pos) {
+        if(!ctx.getLevel().isInWorldBounds(pos)) {
+            int worldHeightLimit = ctx.getLevel().getMaxBuildHeight();
+            if(ctx.getPlayer() instanceof ServerPlayer player && pos.getY() >= worldHeightLimit) {
+                player.sendSystemMessage(Component.translatable("build.tooHigh", worldHeightLimit - 1).withStyle(ChatFormatting.RED), true);
+            }
+            return false;
+        }
         BlockState state = MIPipes.BLOCK_PIPE.get().defaultBlockState();
         CollisionContext shapeContext = ctx.getPlayer() == null ? CollisionContext.empty() : CollisionContext.of(ctx.getPlayer());
         return ctx.getLevel().getBlockState(pos).canBeReplaced(new BlockPlaceContext(ctx)) && state.canSurvive(ctx.getLevel(), pos)

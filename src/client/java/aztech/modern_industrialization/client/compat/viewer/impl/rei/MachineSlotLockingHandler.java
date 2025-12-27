@@ -35,7 +35,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -61,7 +61,7 @@ class MachineSlotLockingHandler implements TransferHandler {
 
     private boolean canApply(MachineMenuClient handler, CategoryIdentifier<?> category) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
-        ResourceLocation blockId = handler.guiParams.blockId;
+        Identifier blockId = handler.guiParams.blockId;
         List<EntryIngredient> workstations = CategoryRegistry.getInstance().get(category).getWorkstations();
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {

@@ -27,13 +27,13 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class OrientationComponent implements MachineComponent {
@@ -52,29 +52,29 @@ public class OrientationComponent implements MachineComponent {
         this.machine = machine;
     }
 
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
         if (params.hasFacing) {
-            facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
+            facingDirection = Direction.from3DDataValue(input.getIntOr("facingDirection", 0));
         }
         if (params.hasOutput) {
-            outputDirection = Direction.from3DDataValue(tag.getInt("outputDirection"));
+            outputDirection = Direction.from3DDataValue(input.getIntOr("outputDirection", 0));
         }
-        extractItems = tag.getBoolean("extractItems");
-        extractFluids = tag.getBoolean("extractFluids");
+        extractItems = input.getBooleanOr("extractItems", false);
+        extractFluids = input.getBooleanOr("extractFluids", false);
     }
 
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+    public void writeNbt(ValueOutput output) {
         if (params.hasFacing) {
-            tag.putInt("facingDirection", facingDirection.get3DDataValue());
+            output.putInt("facingDirection", facingDirection.get3DDataValue());
         }
         if (params.hasOutput) {
-            tag.putInt("outputDirection", outputDirection.get3DDataValue());
+            output.putInt("outputDirection", outputDirection.get3DDataValue());
         }
         if (extractItems) {
-            tag.putBoolean("extractItems", true);
+            output.putBoolean("extractItems", true);
         }
         if (extractFluids) {
-            tag.putBoolean("extractFluids", true);
+            output.putBoolean("extractFluids", true);
         }
     }
 

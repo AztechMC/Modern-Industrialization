@@ -36,17 +36,17 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ManualPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = MI.id("manual");
+    private static final Identifier ID = MI.id("manual");
 
     private IJeiRuntime jeiRuntime;
 
-    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(ResourceLocation category) {
+    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(Identifier category) {
         return RecipeType.create(category.getNamespace(), category.getPath(), (Class) RecipeHolder.class);
     }
 
@@ -73,7 +73,7 @@ public class ManualPluginJei implements IModPlugin {
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 }

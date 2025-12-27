@@ -27,6 +27,8 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.DropableComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -39,7 +41,10 @@ import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.Util;
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -50,7 +55,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -59,11 +64,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 /**
  * The base block entity for the machine system. Contains components, and an
@@ -72,6 +81,7 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings("rawtypes")
 public abstract class MachineBlockEntity extends FastBlockEntity
         implements MenuProvider, WrenchableBlockEntity {
+    private static final Logger LOGGER = LogUtils.getLogger();
     public final ComponentStorage.GuiServer guiComponents = new ComponentStorage.GuiServer();
     public final ComponentStorage.Server components = new ComponentStorage.Server();
     public final MachineGuiParameters guiParams;
@@ -125,8 +135,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         // Write inventory
         MIInventory inv = getInventory();
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putList(tag, "items", inv.getItemStacks(), configurableItemStack -> configurableItemStack.toNbt(buf.registryAccess()));
-        NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), configurableFluidStack -> configurableFluidStack.toNbt(buf.registryAccess()));
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, buf.registryAccess());
+            NbtHelper.putList(output, "items", inv.getItemStacks(), ConfigurableItemStack.CODEC);
+            NbtHelper.putList(output, "fluids", inv.getFluidStacks(), ConfigurableFluidStack.CODEC);
+        }
         buf.writeNbt(tag);
         // Write slot positions
         inv.itemPositions.write(buf);
@@ -142,7 +155,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     private static <P, D> void writeInitialGuiComponent(RegistryFriendlyByteBuf buf, GuiComponentServer<P, D> component) {
         var type = component.getType();
-        buf.writeResourceLocation(type.id());
+        buf.writeIdentifier(type.id());
         type.paramsCodec().encode(buf, component.getParams());
         type.dataCodec().encode(buf, component.extractData());
     }
@@ -150,8 +163,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     /**
      * @param face The face that was targeted, taking the overlay into account.
      */
-    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public void openMenu(ServerPlayer player) {
@@ -169,7 +182,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
-            getLevel().blockUpdated(getBlockPos(), Blocks.AIR);
+            getLevel().updateNeighborsAt(getBlockPos(), Blocks.AIR);
             setChanged();
             if (!getLevel().isClientSide()) {
                 sync();
@@ -198,36 +211,39 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("remesh", syncCausesRemesh);
-        syncCausesRemesh = false;
-        for (MachineComponent component : components) {
-            component.writeClientNbt(tag, registries);
-        }
-        return tag;
-    }
-
-    @Override
-    public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        for (MachineComponent component : components) {
-            component.writeNbt(tag, registries);
-        }
-    }
-
-    @Override
-    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        load(tag, registries, false);
-    }
-
-    public final void load(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        if (!tag.contains("remesh")) {
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            output.putBoolean("remesh", syncCausesRemesh);
+            syncCausesRemesh = false;
             for (MachineComponent component : components) {
-                component.readNbt(tag, registries, isUpgradingMachine);
+                component.writeClientNbt(output);
+            }
+            return output.buildResult();
+        }
+    }
+
+    @Override
+    public final void saveAdditional(ValueOutput output) {
+        for (MachineComponent component : components) {
+            component.writeNbt(output);
+        }
+    }
+
+    @Override
+    public final void loadAdditional(ValueInput input) {
+        load(input, false);
+    }
+
+    public final void load(ValueInput input, boolean isUpgradingMachine) {
+        var remesh = input.read("remesh", Codec.BOOL);
+        if (remesh.isEmpty()) {
+            for (MachineComponent component : components) {
+                component.readNbt(input, isUpgradingMachine);
             }
         } else {
-            boolean forceChunkRemesh = tag.getBoolean("remesh");
+            boolean forceChunkRemesh = remesh.get();
             for (MachineComponent component : components) {
-                component.readClientNbt(tag, registries);
+                component.readClientNbt(input);
             }
             if (forceChunkRemesh) {
                 WorldHelper.forceChunkRemesh(level, worldPosition);
@@ -249,15 +265,17 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     public static void registerItemApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
-                    (be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage.itemHandler);
+            // TODO 26.1
+//            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
+//                    (be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage.itemHandler);
         });
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
-                    (be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage.fluidHandler);
+            // TODO 26.1
+//            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
+//                    (be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage.fluidHandler);
         });
     }
 

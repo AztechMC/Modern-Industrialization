@@ -26,13 +26,13 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
 import java.util.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
-    public FurnaceRecipeProxy(ResourceLocation id) {
+    public FurnaceRecipeProxy(Identifier id) {
         super(id);
     }
 
@@ -42,6 +42,6 @@ public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
             recipeList.add(recipe);
         }
 
-        recipeList.sort(Comparator.comparing(r -> r.id().getNamespace().equals(MI.ID) ? 0 : 1));
+        recipeList.sort(Comparator.comparing(r -> r.id().identifier().getNamespace().equals(MI.ID) ? 0 : 1));
     }
 }

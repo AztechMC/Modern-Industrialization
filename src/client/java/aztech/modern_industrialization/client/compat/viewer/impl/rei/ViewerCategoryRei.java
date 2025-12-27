@@ -50,7 +50,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -281,7 +281,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
         }
 
         @Override
-        public Optional<ResourceLocation> getDisplayLocation() {
+        public Optional<Identifier> getDisplayLocation() {
             return Optional.of(wrapped.getRecipeId(recipe));
         }
     }
@@ -320,7 +320,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
+            public void texture(Identifier loc, int x, int y, int u, int v, int width, int height) {
                 widgets.add(Widgets.createTexturedWidget(loc, bounds.x + x, bounds.y + y, u, v, width, height));
             }
 

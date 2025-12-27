@@ -35,6 +35,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -45,7 +47,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.player.Player;
@@ -58,6 +59,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -137,13 +139,13 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
 
         if (context.registries() != null) {
             var enchantmentRegistry = context.registries().lookupOrThrow(Registries.ENCHANTMENT);
 
-            tooltip.add(MIText.MiningMode.text(enchantmentRegistry.get(isFortune(stack) ? Enchantments.FORTUNE : Enchantments.SILK_TOUCH)
+            tooltip.accept(MIText.MiningMode.text(enchantmentRegistry.get(isFortune(stack) ? Enchantments.FORTUNE : Enchantments.SILK_TOUCH)
                     .orElseThrow().value().description().copy().setStyle(TextHelper.NUMBER_TEXT)).setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
         }
     }
@@ -182,17 +184,17 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         // Toggle between silk touch and fortune
         if (hand == InteractionHand.MAIN_HAND && user.isShiftKeyDown()) {
             ItemStack stack = user.getItemInHand(hand);
             setFortune(stack, !isFortune(stack));
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 user.displayClientMessage(
                         isFortune(stack) ? MIText.ToolSwitchedFortune.text() : MIText.ToolSwitchedSilkTouch.text(),
                         true);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
         return super.use(world, user, hand);
     }
@@ -211,22 +213,22 @@ public class DieselToolItem extends Item implements DynamicToolItem {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
                     w.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1, 1);
-                    if (!w.isClientSide) {
+                    if (!w.isClientSide()) {
                         w.setBlock(pos, newBlock.defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)), 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return InteractionResult.sidedSuccess(w.isClientSide);
+                    return InteractionResult.sidedSuccess(w.isClientSide());
                 }
             }
             if (stack.is(ItemTags.SHOVELS)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);
-                    if (!w.isClientSide) {
+                    if (!w.isClientSide()) {
                         w.setBlock(pos, newState, 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return InteractionResult.sidedSuccess(w.isClientSide);
+                    return InteractionResult.sidedSuccess(w.isClientSide());
                 }
             }
             if (stack.is(ItemTags.HOES)) {
@@ -237,14 +239,14 @@ public class DieselToolItem extends Item implements DynamicToolItem {
 //                    Consumer<UseOnContext> consumer = pair.getSecond();
 //                    if (predicate.test(context)) {
 //                        w.playSound(player, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-//                        if (!w.isClientSide) {
+//                        if (!w.isClientSide()) {
 //                            consumer.accept(context);
 //                            if (player != null) {
 //                                FluidFuelItemHelper.decrement(stack);
 //                            }
 //                        }
 //
-//                        return InteractionResult.sidedSuccess(w.isClientSide);
+//                        return InteractionResult.sidedSuccess(w.isClientSide());
 //                    }
 //                }
             }
@@ -303,7 +305,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
 
         if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
             if (stack.is(Tags.Items.TOOLS_SHEAR) && interactionTarget instanceof Shearable shearable) {
-                if (!interactionTarget.level().isClientSide && shearable.readyForShearing()) {
+                if (!interactionTarget.level().isClientSide() && shearable.readyForShearing()) {
                     shearable.shear(SoundSource.PLAYERS);
                     interactionTarget.gameEvent(GameEvent.SHEAR, player);
                     return InteractionResult.SUCCESS;

@@ -26,8 +26,12 @@ package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+
+import java.util.Dictionary;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -54,32 +58,33 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
         return factory.newBlockEntity(pos, state);
     }
 
-    protected ItemStack getStack(@Nullable BlockEntity entity) {
-        var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
-        ItemStack stack = new ItemStack(asItem());
-        if (storageBlockEntity != null && (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked())) {
-            storageBlockEntity.saveToItem(stack, storageBlockEntity.getLevel().registryAccess());
-        }
-        return stack;
-    }
+    // TODO 1.21.11
+//    protected ItemStack getStack(@Nullable BlockEntity entity) {
+//        var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
+//        ItemStack stack = new ItemStack(asItem());
+//        if (storageBlockEntity != null && (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked())) {
+//            storageBlockEntity.saveToItem(stack, storageBlockEntity.getLevel().registryAccess());
+//        }
+//        return stack;
+//    }
+//
+//    @Override
+//    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+//        return List.of(getStack(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY)));
+//    }
+//
+//    @Override
+//    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+//        return getStack(world.getBlockEntity(pos));
+//    }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        return List.of(getStack(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY)));
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
-        return getStack(world.getBlockEntity(pos));
-    }
-
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState state) {
+    protected boolean hasAnalogOutputSignal(BlockState state) {
         return !behavior.isCreative();
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         if (level.getBlockEntity(pos) instanceof AbstractStorageBlockEntity<?> storageBlockEntity) {
             return StorageUtil.calculateComparatorOutput(storageBlockEntity);
         }

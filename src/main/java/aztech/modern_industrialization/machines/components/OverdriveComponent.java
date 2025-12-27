@@ -28,16 +28,16 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.MachineComponent;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class OverdriveComponent implements MachineComponent.ServerOnly, DropableComponent {
-    public static final ResourceLocation ID = MI.id("overdrive");
+    public static final Identifier ID = MI.id("overdrive");
 
     private ItemStack overdriveModule = ItemStack.EMPTY;
 
@@ -46,29 +46,29 @@ public class OverdriveComponent implements MachineComponent.ServerOnly, Dropable
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("overdriveModuleStack", overdriveModule.saveOptional(registries));
+    public void writeNbt(ValueOutput output) {
+        output.store("overdriveModuleStack", ItemStack.OPTIONAL_CODEC, overdriveModule);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        overdriveModule = ItemStack.parseOptional(registries, tag.getCompound("overdriveModuleStack"));
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        overdriveModule = input.read("overdriveModuleStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
-    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.isEmpty()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (MIItem.OVERDRIVE_MODULE.is(stackInHand) && overdriveModule.isEmpty()) {
             overdriveModule = stackInHand.copyWithCount(1);
             stackInHand.consume(1, player);
 
             be.setChanged();
-            return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

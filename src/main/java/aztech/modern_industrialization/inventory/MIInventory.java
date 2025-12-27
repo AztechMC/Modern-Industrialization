@@ -32,10 +32,10 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -87,55 +87,59 @@ public final class MIInventory implements MachineComponent {
     }
 
     public void autoExtractItems(Level world, BlockPos pos, Direction direction) {
-        // The second check is needed in case we change the output side...
-        boolean updateCache = outputCache == null || outputCache.context() != direction.getOpposite();
-
-        if (updateCache) {
-            outputCache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, (ServerLevel) world, pos.relative(direction),
-                    direction.getOpposite());
-        }
-
-        var target = outputCache.getCapability();
-        if (target != null) {
-            TransferHelper.moveAll(itemStorage.itemHandler, target, true);
-        }
+        // TODO 26.1
+//        // The second check is needed in case we change the output side...
+//        boolean updateCache = outputCache == null || outputCache.context() != direction.getOpposite();
+//
+//        if (updateCache) {
+//            outputCache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, (ServerLevel) world, pos.relative(direction),
+//                    direction.getOpposite());
+//        }
+//
+//        var target = outputCache.getCapability();
+//        if (target != null) {
+//            TransferHelper.moveAll(itemStorage.itemHandler, target, true);
+//        }
     }
 
     public void autoExtractFluids(Level world, BlockPos pos, Direction direction) {
-        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
-
-        if (target != null) {
-            TransferHelper.tryFluidTransfer(target, fluidStorage.fluidHandler, Integer.MAX_VALUE, true);
-        }
+        // TODO 26.1
+//        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+//
+//        if (target != null) {
+//            TransferHelper.tryFluidTransfer(target, fluidStorage.fluidHandler, Integer.MAX_VALUE, true);
+//        }
     }
 
     public void autoInsertItems(Level world, BlockPos pos, Direction direction) {
-        IItemHandler target = world.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(direction), direction.getOpposite());
-
-        if (target != null) {
-            TransferHelper.moveAll(target, itemStorage.itemHandler, false);
-        }
+        // TODO 26.1
+//        IItemHandler target = world.getCapability(Capabilities.ItemHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+//
+//        if (target != null) {
+//            TransferHelper.moveAll(target, itemStorage.itemHandler, false);
+//        }
     }
 
     public void autoInsertFluids(Level world, BlockPos pos, Direction direction) {
-        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
-
-        if (target != null) {
-            TransferHelper.tryFluidTransfer(fluidStorage.fluidHandler, target, Integer.MAX_VALUE, true);
-        }
+        // TODO 26.1
+//        IFluidHandler target = world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite());
+//
+//        if (target != null) {
+//            TransferHelper.tryFluidTransfer(fluidStorage.fluidHandler, target, Integer.MAX_VALUE, true);
+//        }
     }
 
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        NbtHelper.putList(tag, "items", itemStorage.stacks, configurableItemStack -> configurableItemStack.toNbt(registries));
-        NbtHelper.putList(tag, "fluids", fluidStorage.stacks, configurableFluidStack -> configurableFluidStack.toNbt(registries));
+    public void writeNbt(ValueOutput output) {
+        NbtHelper.putList(output, "items", itemStorage.stacks, ConfigurableItemStack.CODEC);
+        NbtHelper.putList(output, "fluids", fluidStorage.stacks, ConfigurableFluidStack.CODEC);
     }
 
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 
-        NbtHelper.getList(tag, "items", newItemStacks, t -> new ConfigurableItemStack(t, registries));
-        NbtHelper.getList(tag, "fluids", newFluidStacks, t -> new ConfigurableFluidStack(t, registries));
+        NbtHelper.getList(input, "items", newItemStacks, ConfigurableItemStack.CODEC);
+        NbtHelper.getList(input, "fluids", newFluidStacks, ConfigurableFluidStack.CODEC);
 
         if (isUpgradingMachine) {
             // Increase fluid slot capacities if upgrading

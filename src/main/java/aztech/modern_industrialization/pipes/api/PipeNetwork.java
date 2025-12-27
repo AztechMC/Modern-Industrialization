@@ -51,7 +51,7 @@ public abstract class PipeNetwork {
     }
 
     public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        id = tag.getInt("id");
+        id = tag.getIntOr("id", 0);
         data.fromTag(tag.getCompound("data"), registries);
     }
 

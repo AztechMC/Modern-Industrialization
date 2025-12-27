@@ -39,7 +39,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
@@ -48,12 +48,12 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jspecify.annotations.Nullable;
 
 public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
-    public static final ResourceLocation LOADER_ID = MI.id("machine");
+    public static final Identifier LOADER_ID = MI.id("machine");
     public static final IGeometryLoader<MachineUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
         return new MachineUnbakedModel(jsonObject);
     };
 
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new Identifier.Serializer()).create();
 
     private final MachineCasing baseCasing;
     private final @Nullable Material[] defaultOverlays;
@@ -98,39 +98,39 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
 
     private static class OverlaysJson {
         // All fields are nullable.
-        private @Nullable ResourceLocation top;
-        private @Nullable ResourceLocation top_active;
-        private @Nullable ResourceLocation side;
-        private @Nullable ResourceLocation side_active;
-        private @Nullable ResourceLocation bottom;
-        private @Nullable ResourceLocation bottom_active;
-        private @Nullable ResourceLocation front;
-        private @Nullable ResourceLocation front_active;
-        private @Nullable ResourceLocation left;
-        private @Nullable ResourceLocation left_active;
-        private @Nullable ResourceLocation right;
-        private @Nullable ResourceLocation right_active;
-        private @Nullable ResourceLocation back;
-        private @Nullable ResourceLocation back_active;
-        private @Nullable ResourceLocation top_s;
-        private @Nullable ResourceLocation top_s_active;
-        private @Nullable ResourceLocation top_w;
-        private @Nullable ResourceLocation top_w_active;
-        private @Nullable ResourceLocation top_n;
-        private @Nullable ResourceLocation top_n_active;
-        private @Nullable ResourceLocation top_e;
-        private @Nullable ResourceLocation top_e_active;
-        private @Nullable ResourceLocation bottom_s;
-        private @Nullable ResourceLocation bottom_s_active;
-        private @Nullable ResourceLocation bottom_w;
-        private @Nullable ResourceLocation bottom_w_active;
-        private @Nullable ResourceLocation bottom_n;
-        private @Nullable ResourceLocation bottom_n_active;
-        private @Nullable ResourceLocation bottom_e;
-        private @Nullable ResourceLocation bottom_e_active;
-        private @Nullable ResourceLocation output;
-        private @Nullable ResourceLocation item_auto;
-        private @Nullable ResourceLocation fluid_auto;
+        private @Nullable Identifier top;
+        private @Nullable Identifier top_active;
+        private @Nullable Identifier side;
+        private @Nullable Identifier side_active;
+        private @Nullable Identifier bottom;
+        private @Nullable Identifier bottom_active;
+        private @Nullable Identifier front;
+        private @Nullable Identifier front_active;
+        private @Nullable Identifier left;
+        private @Nullable Identifier left_active;
+        private @Nullable Identifier right;
+        private @Nullable Identifier right_active;
+        private @Nullable Identifier back;
+        private @Nullable Identifier back_active;
+        private @Nullable Identifier top_s;
+        private @Nullable Identifier top_s_active;
+        private @Nullable Identifier top_w;
+        private @Nullable Identifier top_w_active;
+        private @Nullable Identifier top_n;
+        private @Nullable Identifier top_n_active;
+        private @Nullable Identifier top_e;
+        private @Nullable Identifier top_e_active;
+        private @Nullable Identifier bottom_s;
+        private @Nullable Identifier bottom_s_active;
+        private @Nullable Identifier bottom_w;
+        private @Nullable Identifier bottom_w_active;
+        private @Nullable Identifier bottom_n;
+        private @Nullable Identifier bottom_n_active;
+        private @Nullable Identifier bottom_e;
+        private @Nullable Identifier bottom_e_active;
+        private @Nullable Identifier output;
+        private @Nullable Identifier item_auto;
+        private @Nullable Identifier fluid_auto;
 
         private static OverlaysJson parse(JsonObject json, @Nullable OverlaysJson defaultOverlay) {
             var overlays = GSON.fromJson(json, OverlaysJson.class);
@@ -192,7 +192,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
          * Select first non-null id, and convert it to a sprite id.
          */
         @Nullable
-        private static Material select(@Nullable ResourceLocation... candidates) {
+        private static Material select(@Nullable Identifier... candidates) {
             for (var id : candidates) {
                 if (id != null) {
                     return new Material(InventoryMenu.BLOCK_ATLAS, id);

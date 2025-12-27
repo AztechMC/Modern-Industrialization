@@ -45,9 +45,10 @@ public class ItemHandlerItem extends ForwardingItemHandler {
         this.slot = slot;
     }
 
-    public ItemHandlerItem(SlotAccess slot) {
-        this(slot, stack -> stack.getCapability(Capabilities.ItemHandler.ITEM));
-    }
+    // TODO 26.1
+//    public ItemHandlerItem(SlotAccess slot) {
+//        this(slot, stack -> stack.getCapability(Capabilities.ItemHandler.ITEM));
+//    }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {

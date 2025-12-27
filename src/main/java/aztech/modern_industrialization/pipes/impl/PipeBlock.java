@@ -37,7 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -180,14 +180,14 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
         if (player.isShiftKeyDown()) {
             boolean removeBlock = pipe.connections.size() == 1;
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 pipe.removePipeAndDropContainedItems(partShape.type);
             }
             if (removeBlock) {
                 world.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
             }
             // update adjacent blocks
-            world.blockUpdated(blockPos, Blocks.AIR);
+            world.updateNeighborsAt(blockPos, Blocks.AIR);
             // spawn pipe item
             world.addFreshEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
             // play break sound
@@ -196,19 +196,19 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         } else {
             SoundEvent sound = null;
             if (partShape.direction == null) {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     pipe.addConnection(player, partShape.type, hit.getDirection());
                 } else {
                     sound = group.getPlaceSound();
                 }
             } else {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     pipe.removeConnection(partShape.type, partShape.direction);
                 } else {
                     sound = group.getBreakSound();
                 }
             }
-            world.blockUpdated(blockPos, Blocks.AIR);
+            world.updateNeighborsAt(blockPos, Blocks.AIR);
             if (sound != null) {
                 world.playSound(player, blockPos, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
             }
@@ -219,26 +219,26 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @SuppressWarnings("deprecation")
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand,
-            BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         if (pipeEntity.tryApplyCamouflage(player, hand)) {
-            return ItemInteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
         if (partShape == null || !partShape.opensGui || pipeEntity.hasCamouflage()) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             if (!pipeEntity.customUse(partShape, player, hand) && !player.isShiftKeyDown()) {
                 var menuOpener = pipeEntity.getGui(partShape.type, partShape.direction);
-                ((ServerPlayer) player).openMenu(menuOpener, menuOpener::writeAdditionalData);
+                player.openMenu(menuOpener, menuOpener::writeAdditionalData);
             }
         }
-        return ItemInteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @SuppressWarnings("deprecation")
@@ -259,7 +259,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             ((PipeBlockEntity) world.getBlockEntity(pos)).updateConnections();
         }
         super.neighborChanged(state, world, pos, block, fromPos, notify);
@@ -267,8 +267,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @SuppressWarnings("deprecation")
     @Override
-    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return state.getValue(CAMOUFLAGED) ? world.getMaxLightLevel() : 0;
+    protected int getLightBlock(BlockState state) {
+        return state.getValue(CAMOUFLAGED) ? Level.MAX_BRIGHTNESS : 0;
     }
 
     @Override
@@ -286,7 +286,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    protected VoxelShape getOcclusionShape(BlockState state) {
         return state.getValue(CAMOUFLAGED) ? Shapes.block() : Shapes.empty();
     }
 
@@ -295,13 +295,11 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return false;
     }
 
+    // TODO 26.1: audit this
     @Override
-    protected void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.is(newState.getBlock())) {
-            if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
-                pipe.stateReplaced = true;
-            }
-            world.removeBlockEntity(pos);
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+            pipe.stateReplaced = true;
         }
     }
 

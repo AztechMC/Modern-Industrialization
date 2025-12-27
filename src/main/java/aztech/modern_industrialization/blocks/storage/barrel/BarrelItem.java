@@ -31,9 +31,13 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -43,30 +47,32 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
-    private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
+    private static final int ITEM_BAR_COLOR = ARGB.colorFromFloat(1.0F, 0.44F, 0.53F, 1.0F);
 
     public BarrelItem(BarrelBlock block, Properties settings) {
         super(block, settings.stacksTo(1));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         if (behaviour instanceof BarrelBlock.BarrelStorage barrelStorage) {
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
             if (isEmpty(stack) && isUnlocked(stack)) {
-                tooltip.add(MIText.Empty.text().setStyle(style));
-                tooltip.add(MIText.BarrelStack.text(barrelStorage.stackCapacity).setStyle(TextHelper.YELLOW));
+                tooltip.accept(MIText.Empty.text().setStyle(style));
+                tooltip.accept(MIText.BarrelStack.text(barrelStorage.stackCapacity).setStyle(TextHelper.YELLOW));
             }
         }
-        super.appendHoverText(stack, context, tooltip, flag);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltip, flag);
     }
 
     public long getCurrentCapacity(ItemStack stack) {
         return behaviour.getCapacityForResource(getResource(stack));
     }
 
+    @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
         if (!getBehaviour().isCreative()) {
             if (!isEmpty(stack) || !isUnlocked(stack)) {
@@ -80,14 +86,17 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
         return Optional.empty();
     }
 
+    @Override
     public boolean isBarVisible(ItemStack stack) {
         return !getBehaviour().isCreative() && getAmount(stack) > 0;
     }
 
+    @Override
     public int getBarWidth(ItemStack stack) {
         return (int) Math.min(1 + (12 * getAmount(stack)) / getCurrentCapacity(stack), 13);
     }
 
+    @Override
     public int getBarColor(ItemStack stack) {
         return ITEM_BAR_COLOR;
     }

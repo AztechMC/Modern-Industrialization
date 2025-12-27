@@ -59,7 +59,7 @@ import aztech.modern_industrialization.test.framework.MIGameTests;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackSelectionConfig;
@@ -103,8 +103,8 @@ public class MI {
     public static final String ID = "modern_industrialization";
     public static final Logger LOGGER = LoggerFactory.getLogger("Modern Industrialization");
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(ID, path);
     }
 
     public MI(ModContainer modContainer, IEventBus modBus, Dist dist) {
@@ -142,7 +142,7 @@ public class MI {
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
             var player = (ServerPlayer) event.getEntity();
-            var server = Objects.requireNonNull(player.getServer());
+            var server = Objects.requireNonNull(player.level().getServer());
             PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
         });
         NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
@@ -234,7 +234,7 @@ public class MI {
         modBus.addListener(AddPackFindersEvent.class, event -> {
             if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA
                     && MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
-                RuntimeDataGen.run(MIDatagenServer::configure);
+                RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenServer.configure(gen, fileHelper, lookupProvider, run, runtimeDatagen));
             }
 
             if (MIStartupConfig.INSTANCE.loadRuntimeGeneratedResources.getAsBoolean()) {

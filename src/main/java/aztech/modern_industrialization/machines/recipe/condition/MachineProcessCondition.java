@@ -34,12 +34,12 @@ import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
 public interface MachineProcessCondition {
-    Codec<MachineProcessCondition> CODEC = ResourceLocation.CODEC
+    Codec<MachineProcessCondition> CODEC = Identifier.CODEC
             .<MapCodec<? extends MachineProcessCondition>>flatXmap(
                     resLoc -> Optional.ofNullable(MachineProcessConditions.getCodec(resLoc))
                             .map(DataResult::success)
@@ -49,7 +49,7 @@ public interface MachineProcessCondition {
                             .orElseGet(() -> DataResult.error(() -> "Unknown machine process condition codec " + codec)))
             .dispatch(MachineProcessCondition::codec, c -> c);
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    StreamCodec<RegistryFriendlyByteBuf, MachineProcessCondition> STREAM_CODEC = ResourceLocation.STREAM_CODEC
+    StreamCodec<RegistryFriendlyByteBuf, MachineProcessCondition> STREAM_CODEC = Identifier.STREAM_CODEC
             .<RegistryFriendlyByteBuf>mapStream(b -> b)
             .map(
                     resLoc -> Optional.ofNullable(MachineProcessConditions.getStreamCodec(resLoc))

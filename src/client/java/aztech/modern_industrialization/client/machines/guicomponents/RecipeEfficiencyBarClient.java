@@ -38,7 +38,7 @@ import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficiencyBar.Params, RecipeEfficiencyBar.Data> {
     public RecipeEfficiencyBarClient(RecipeEfficiencyBar.Params params, RecipeEfficiencyBar.Data data) {
@@ -50,7 +50,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
         return new Renderer();
     }
 
-    private static final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
+    private static final Identifier TEXTURE = MI.id("textures/gui/efficiency_bar.png");
     private static final int WIDTH = 100, HEIGHT = 2;
 
     public class Renderer implements ClientComponentRenderer {

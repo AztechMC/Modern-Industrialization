@@ -27,7 +27,9 @@ package aztech.modern_industrialization.materials.recipe.builder;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
@@ -102,7 +104,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            recipeOutput.accept(MI.id(fullId), smeltingRecipe, null);
+            recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(fullId)), smeltingRecipe, null);
         }
     }
 }

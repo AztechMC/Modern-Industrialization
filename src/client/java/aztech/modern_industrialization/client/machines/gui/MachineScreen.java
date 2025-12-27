@@ -51,7 +51,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -61,8 +61,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
-    public static final ResourceLocation SLOT_ATLAS = MI.id("textures/gui/container/slot_atlas.png");
-    public static final ResourceLocation BACKGROUND = MI.id("textures/gui/container/background.png");
+    public static final Identifier SLOT_ATLAS = MI.id("textures/gui/container/slot_atlas.png");
+    public static final Identifier BACKGROUND = MI.id("textures/gui/container/background.png");
 
     private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 

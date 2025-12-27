@@ -25,10 +25,10 @@
 package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.MI;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PipeGuiHelper {
-    public static final ResourceLocation BUTTON_TEXTURE = MI.id("textures/gui/pipe/buttons.png");
+    public static final Identifier BUTTON_TEXTURE = MI.id("textures/gui/pipe/buttons.png");
 
     /**
      * Return the starting y of the first inventory slots given the GUI height.

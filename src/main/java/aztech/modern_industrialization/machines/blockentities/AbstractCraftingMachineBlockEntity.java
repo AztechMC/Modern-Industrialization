@@ -88,7 +88,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean newActive = crafter.tickRecipe();
             isActiveComponent.updateActive(newActive, this);
             if (orientation.extractItems) {

@@ -27,7 +27,7 @@ package aztech.modern_industrialization.client.compat.jade;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -37,7 +37,7 @@ import snownee.jade.api.ui.IElementHelper;
 
 public class OverclockComponentProvider implements IBlockComponentProvider {
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("overclock");
     }
 

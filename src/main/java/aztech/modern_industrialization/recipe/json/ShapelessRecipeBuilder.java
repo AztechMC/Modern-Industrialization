@@ -26,7 +26,9 @@ package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -114,6 +116,6 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
 
     @Override
     public void offerTo(RecipeOutput output, String path) {
-        output.accept(MI.id(path), buildRecipe(), null);
+        output.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), buildRecipe(), null);
     }
 }

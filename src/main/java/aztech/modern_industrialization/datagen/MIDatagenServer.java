@@ -30,17 +30,17 @@ import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.loot.MIGiftLoot;
-import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.DyeRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.HatchRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
-import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.AlloyRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.AssemblerRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.CompatRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.DyeRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.HatchRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.MaterialRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.PetrochemRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.PlankRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.UpgradeRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipeProvider;
 import aztech.modern_industrialization.datagen.structure.EmptyTestStructureGenerator;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
@@ -52,6 +52,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
@@ -67,19 +68,19 @@ public class MIDatagenServer {
             boolean runtimeDatagen) {
         var aggregate = gen.addProvider(run, new AggregateDataProvider(gen.getPackOutput(), "Server Data"));
 
-        aggregate.addProvider(PetrochemRecipesProvider::new);
-        aggregate.addProvider(PlankRecipesProvider::new);
-        aggregate.addProvider(HeatExchangerRecipesProvider::new);
-        aggregate.addProvider(HatchRecipesProvider::new);
-        aggregate.addProvider(AlloyRecipesProvider::new);
-        aggregate.addProvider(MaterialRecipesProvider::new);
-        aggregate.addProvider(DyeRecipesProvider::new);
-        aggregate.addProvider(AssemblerRecipesProvider::new);
+        aggregate.addProvider(PetrochemRecipeProvider.Runner::new);
+        aggregate.addProvider(PlankRecipeProvider::new);
+        aggregate.addProvider(HeatExchangerRecipeProvider::new);
+        aggregate.addProvider(HatchRecipeProvider::new);
+        aggregate.addProvider(AlloyRecipeProvider::new);
+        aggregate.addProvider(MaterialRecipeProvider::new);
+        aggregate.addProvider(DyeRecipeProvider::new);
+        aggregate.addProvider((PackOutput registries) -> new AssemblerRecipeProvider(registries, packOutput));
         if (!runtimeDatagen) {
-            aggregate.addProvider(CompatRecipesProvider::new);
+            aggregate.addProvider(CompatRecipeProvider::new);
         }
-        aggregate.addProvider(UpgradeProvider::new);
-        aggregate.addProvider(VanillaCompatRecipesProvider::new);
+        aggregate.addProvider(UpgradeRecipeProvider::new);
+        aggregate.addProvider(VanillaCompatRecipeProvider::new);
 
         aggregate.addProvider(EmptyTestStructureGenerator::new);
 

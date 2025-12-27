@@ -51,7 +51,7 @@ public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
             return !isResourceBlank();
         } else {
             // Fill all of the stacks, fuck it!
-            var fluidHandler = player.getItemInHand(InteractionHand.MAIN_HAND).getCapability(Capabilities.FluidHandler.ITEM);
+            var fluidHandler = FluidUtil.getFluidHandler(player.getItemInHand(InteractionHand.MAIN_HAND)).orElse(null);
             if (fluidHandler != null) {
                 int inserted = fluidHandler.fill(resource.toStack(Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
                 if (inserted > 0) {

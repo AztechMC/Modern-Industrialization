@@ -31,16 +31,13 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.FluidTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jspecify.annotations.Nullable;
 
 public class MIFluidTagProvider extends FluidTagsProvider {
-    public MIFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-            @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MI.ID, existingFileHelper);
+    public MIFluidTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, MI.ID);
     }
 
     @Override
@@ -51,7 +48,7 @@ public class MIFluidTagProvider extends FluidTagsProvider {
             }
 
             // Give a #c: tag to every MI fluid. That should allow other mods to use MI's fluids in many cases.
-            tag(FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", def.path())))
+            tag(FluidTags.create(Identifier.fromNamespaceAndPath("c", def.path())))
                     .add(def.asFluid());
         }
 

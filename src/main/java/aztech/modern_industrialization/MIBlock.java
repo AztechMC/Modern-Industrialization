@@ -48,7 +48,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -70,7 +70,7 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings("unused")
 public class MIBlock {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MI.ID);
-    public static final SortedMap<ResourceLocation, BlockDefinition<?>> BLOCK_DEFINITIONS = new TreeMap<>();
+    public static final SortedMap<Identifier, BlockDefinition<?>> BLOCK_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         BLOCKS.register(modBus);
@@ -88,11 +88,11 @@ public class MIBlock {
             .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
     // Other
-    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = nonConductorBlock("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = nonConductorBlock("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = nonConductorBlock("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = nonConductorBlock("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.location().getPath());
-    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.location().getPath(), BlockDefinitionParams.defaultStone().explosionResistance(6000f).dontConductRedstone());
+    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = nonConductorBlock("Basic Machine Hull", MIBlockKeys.BASIC_MACHINE_HULL.identifier().getPath());
+    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = nonConductorBlock("Advanced Machine Hull", MIBlockKeys.ADVANCED_MACHINE_HULL.identifier().getPath());
+    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = nonConductorBlock("Turbo Machine Hull", MIBlockKeys.TURBO_MACHINE_HULL.identifier().getPath());
+    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = nonConductorBlock("Highly Advanced Machine Hull", MIBlockKeys.HIGHLY_ADVANCED_MACHINE_HULL.identifier().getPath());
+    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", MIBlockKeys.QUANTUM_MACHINE_HULL.identifier().getPath(), BlockDefinitionParams.defaultStone().explosionResistance(6000f).dontConductRedstone());
 
     public static final BlockDefinition<Block> FUSION_CHAMBER = nonConductorBlock("Fusion Chamber", "fusion_chamber");
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
@@ -110,7 +110,8 @@ public class MIBlock {
     )
             .withBlockRegistrationEvent((block, item) -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, vd) -> new ContainerItem.FluidHandler(stack, (TankItem) item), item);
+                    // TODO 26.1
+//                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, vd) -> new ContainerItem.FluidHandler(stack, (TankItem) item), item);
                 });
             });
 

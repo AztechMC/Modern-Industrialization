@@ -48,7 +48,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -253,7 +253,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
         }
 
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return wrapped.getRecipeId(recipe);
         }
 
@@ -308,7 +308,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 }
 
                 @Override
-                public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
+                public void texture(Identifier loc, int x, int y, int u, int v, int width, int height) {
                     widgets.addTexture(loc, x - 4, y - 4, width, height, u, v);
                 }
 

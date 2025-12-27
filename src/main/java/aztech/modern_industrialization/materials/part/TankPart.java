@@ -95,17 +95,18 @@ public class TankPart implements PartKeyProvider {
                     TagsToGenerate.generateTag(MITags.TANKS, blockDefinition, "Tanks");
 
                     MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
-                        var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
+                        var ret = new BlockEntityType<>(factory::newBlockEntity, blockDefinition.asBlock());
                         // noinspection unchecked,rawtypes
                         bet.setValue((BlockEntityType) ret);
                         return ret;
                     });
 
                     MICapabilities.onEvent(event -> {
-                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
-
-                        var item = (TankItem) blockDefinition.asItem();
-                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
+                        // TODO 26.1
+//                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
+//
+//                        var item = (TankItem) blockDefinition.asItem();
+//                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
                     });
 
                     MICommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));

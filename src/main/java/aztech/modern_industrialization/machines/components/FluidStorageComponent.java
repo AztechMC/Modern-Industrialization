@@ -31,8 +31,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleVariantStorage;
 import com.google.common.base.Preconditions;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidStorageComponent implements MachineComponent, FluidAccess {
@@ -92,17 +92,17 @@ public class FluidStorageComponent implements MachineComponent, FluidAccess {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("fluid", singleStorageVariant.variant.toNbt(registries));
-        tag.putLong("amount", singleStorageVariant.amount);
-        tag.putLong("capacity", capacity);
+    public void writeNbt(ValueOutput output) {
+        output.store("fluid", FluidVariant.CODEC, singleStorageVariant.variant);
+        output.putLong("amount", singleStorageVariant.amount);
+        output.putLong("capacity", capacity);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"), registries);
-        singleStorageVariant.amount = tag.getLong("amount");
-        capacity = tag.getLong("capacity");
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        singleStorageVariant.variant = input.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
+        singleStorageVariant.amount = input.getLongOr("amount", 0);
+        capacity = input.getLongOr("capacity", 0);
     }
 
     @Override

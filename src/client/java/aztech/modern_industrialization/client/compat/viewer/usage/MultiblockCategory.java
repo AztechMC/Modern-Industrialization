@@ -38,7 +38,7 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -79,16 +79,16 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     }
 
     @Override
-    public ResourceLocation getRecipeId(Recipe recipe) {
+    public Identifier getRecipeId(Recipe recipe) {
         return recipe.id;
     }
 
     protected static class Recipe {
         public final ItemStack controller;
         public final List<ItemStack> materials = new ArrayList<>();
-        public final ResourceLocation id;
+        public final Identifier id;
 
-        public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+        public Recipe(Identifier controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
             this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
@@ -103,7 +103,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
             for (var entry : materials.entrySet()) {
                 this.materials.add(new ItemStack(entry.getKey(), entry.getValue()));
             }
-            this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
+            this.id = Identifier.fromNamespaceAndPath(controller.getNamespace(),
                     "/" + controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));
         }
     }

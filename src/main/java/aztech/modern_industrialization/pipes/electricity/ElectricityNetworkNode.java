@@ -36,11 +36,11 @@ import java.util.Arrays;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jspecify.annotations.Nullable;
 
@@ -128,17 +128,16 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putByte("connections", NbtHelper.encodeDirections(connections));
-        tag.putLong("eu", eu);
-        return tag;
+    public void save(ValueOutput output) {
+        output.putByte("connections", NbtHelper.encodeDirections(connections));
+        output.putLong("eu", eu);
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
+    public void read(ValueInput input) {
+        connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(input.getByteOr("connections", (byte) 0))));
         caches.clear();
-        eu = tag.getLong("eu");
+        eu = input.getLongOr("eu", 0);
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {

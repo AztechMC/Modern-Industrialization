@@ -38,7 +38,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -96,7 +96,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
 
     private boolean canApply(MachineMenuClient handler) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
-        ResourceLocation blockId = handler.guiParams.blockId;
+        Identifier blockId = handler.guiParams.blockId;
 
         var lookup = getLookup();
         if (lookup == null) {

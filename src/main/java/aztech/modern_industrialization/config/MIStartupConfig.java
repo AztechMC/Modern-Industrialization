@@ -26,6 +26,7 @@ package aztech.modern_industrialization.config;
 
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class MIStartupConfig {
@@ -96,7 +97,7 @@ public final class MIStartupConfig {
         this.debugCommands = builder.start("debugCommands",
                 "Debug commands",
                 "Enable UNSUPPORTED and DANGEROUS debug commands.")
-                .define("debugCommands", !FMLEnvironment.production);
+                .define("debugCommands", !FMLLoader.getCurrent().isProduction());
         this.maxDistillationTowerHeight = builder.start("maxDistillationTowerHeight",
                 "Max distillation tower height",
                 "Maximum height of the distillation tower multiblock.")

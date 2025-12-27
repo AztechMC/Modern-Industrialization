@@ -35,6 +35,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> extends BlockItem implements ContainerItem<T> {
     public final StorageBehaviour<T> behaviour;
@@ -45,9 +46,9 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         if (!isUnlocked(stack)) {
-            tooltip.add(MIText.Locked.text());
+            tooltip.accept(MIText.Locked.text());
         }
     }
 
@@ -55,10 +56,11 @@ public abstract class AbstractStorageBlockItem<T extends TransferVariant<?>> ext
         return behaviour;
     }
 
-    // A bit stupid but I don't want to have client-only code in the main sourceset
-    @Override
-    @SuppressWarnings("rawtype")
-    public void initializeClient(Consumer stupidClientProperties) {
-        MICommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
-    }
+    // TODO 1.21.11
+//    // A bit stupid but I don't want to have client-only code in the main sourceset
+//    @Override
+//    @SuppressWarnings("rawtype")
+//    public void initializeClient(Consumer stupidClientProperties) {
+//        MICommonProxy.INSTANCE.withStandardItemRenderer(stupidClientProperties);
+//    }
 }

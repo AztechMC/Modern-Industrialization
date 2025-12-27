@@ -56,7 +56,7 @@ public class GeneratedPathPackResources extends FastPathPackResources {
                             "pack_format": %d
                         }
                     }
-                    """.formatted(SharedConstants.getCurrentVersion().getPackVersion(type)).getBytes());
+                    """.formatted(SharedConstants.getCurrentVersion().packVersion(type)).getBytes());
         }
         return super.getRootResource(elements);
     }

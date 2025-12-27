@@ -42,6 +42,6 @@ public class MIBucketItem extends BucketItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        return Component.translatable(this.getDescriptionId(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+        return Component.translatable(this.getDescriptionId()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

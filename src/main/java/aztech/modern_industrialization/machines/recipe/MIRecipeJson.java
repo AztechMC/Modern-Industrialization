@@ -29,7 +29,7 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -78,12 +78,12 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     public T addItemInput(String maybeTag, int amount, float probability) {
         Ingredient ing;
         if (maybeTag.startsWith("#")) {
-            ing = Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))));
+            ing = Ingredient.of(ItemTags.create(Identifier.parse(maybeTag.substring(1))));
         } else {
-            if (!BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(maybeTag))) {
+            if (!BuiltInRegistries.ITEM.containsKey(Identifier.parse(maybeTag))) {
                 throw new RuntimeException("Could not find item " + maybeTag);
             }
-            ing = Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
+            ing = Ingredient.of(BuiltInRegistries.ITEM.get(Identifier.parse(maybeTag)));
         }
         return addItemInput(ing, amount, probability);
     }
@@ -106,7 +106,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addItemOutput(String itemId, int amount, float probability) {
-        return addItemOutput(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId)), amount, probability);
+        return addItemOutput(BuiltInRegistries.ITEM.getValue(Identifier.parse(itemId)), amount, probability);
     }
 
     public T addItemOutput(ItemLike item, int amount) {
@@ -131,7 +131,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidInput(String fluid, int amount, float probability) {
-        return addFluidInput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability);
+        return addFluidInput(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
     }
 
     public T addFluidInput(FluidLike fluid, int amount, float probability) {
@@ -147,7 +147,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidInput(Fluid fluid, int amount, float probability) {
-        ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+        Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
@@ -176,7 +176,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidOutput(String fluid, int amount, float probability) {
-        return addFluidOutput(BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluid)), amount, probability);
+        return addFluidOutput(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
     }
 
     public T addFluidOutput(Fluid fluid, int amount) {
@@ -184,7 +184,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidOutput(Fluid fluid, int amount, float probability) {
-        ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+        Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }

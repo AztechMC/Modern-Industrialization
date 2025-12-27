@@ -40,7 +40,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -73,7 +73,7 @@ public class MIItemTagProvider extends ItemTagsProvider {
         }
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
-            var tagId = ResourceLocation.parse(entry.getKey());
+            var tagId = Identifier.parse(entry.getKey());
             for (var tag : entry.getValue()) {
                 tag(key(tagId)).addTag(key(tag));
             }
@@ -114,11 +114,11 @@ public class MIItemTagProvider extends ItemTagsProvider {
         }
     }
 
-    private static TagKey<Item> key(ResourceLocation id) {
+    private static TagKey<Item> key(Identifier id) {
         return TagKey.create(BuiltInRegistries.ITEM.key(), id);
     }
 
     private static TagKey<Item> key(String id) {
-        return key(ResourceLocation.parse(id));
+        return key(Identifier.parse(id));
     }
 }

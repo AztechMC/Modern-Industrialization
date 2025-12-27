@@ -31,17 +31,19 @@ import aztech.modern_industrialization.pipes.impl.CamouflageHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -66,13 +68,13 @@ public class ConfigCardItem extends Item {
                 var pipeUseResult = pipe.useItemOn(c.getItemInHand(), c.getLevel().getBlockState(c.getClickedPos()), c.getLevel(), c.getClickedPos(),
                         c.getPlayer(), c.getHand(), new BlockHitResult(c.getClickLocation(), c.getClickedFace(), c.getClickedPos(), c.isInside()));
                 if (pipeUseResult.consumesAction()) {
-                    return pipeUseResult.result();
+                    return pipeUseResult;
                 }
             }
 
             // Try to save block for pipe facade
             if (setCamouflage(player, usedHand, hitState)) {
-                return InteractionResult.sidedSuccess(c.getLevel().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -90,18 +92,18 @@ public class ConfigCardItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
             player.getItemInHand(usedHand).remove(MIComponents.CAMOUFLAGE);
             player.displayClientMessage(MIText.ConfigCardCleared.text(), true);
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         var savedConfig = stack.get(MIComponents.SAVED_CONFIG);
         if (savedConfig != null) {
             var filterSize = savedConfig.filter().size();
@@ -111,13 +113,13 @@ public class ConfigCardItem extends Item {
             } else {
                 component = MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
             }
-            tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));
+            tooltip.accept(component.withStyle(MITooltips.DEFAULT_STYLE));
         }
 
         var camouflage = readCamouflage(stack);
         if (!camouflage.isAir()) {
-            tooltipComponents
-                    .add(MITooltips.line(MIText.ConfigCardConfiguredCamouflage, Style.EMPTY).arg(camouflage, MITooltips.BLOCK_STATE_PARSER).build());
+            tooltip
+                    .accept(MITooltips.line(MIText.ConfigCardConfiguredCamouflage, Style.EMPTY).arg(camouflage, MITooltips.BLOCK_STATE_PARSER).build());
         }
     }
 

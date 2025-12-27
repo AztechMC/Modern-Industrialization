@@ -25,15 +25,15 @@
 package aztech.modern_industrialization.machines.models;
 
 import java.util.function.Supplier;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.Nullable;
 
 public class MachineCasing {
-    public final ResourceLocation key;
+    public final Identifier key;
     /**
      * Not null when registered as an imitation. The actual model might not be an imitation since it is resource pack driven.
      * Mostly used to pull the name of the casing from the block it imitates. Will also generate a corresponding casing model.
@@ -41,7 +41,7 @@ public class MachineCasing {
     @Nullable
     public final Supplier<? extends Block> imitatedBlock;
 
-    MachineCasing(ResourceLocation key, @Nullable Supplier<? extends Block> imitatedBlock) {
+    MachineCasing(Identifier key, @Nullable Supplier<? extends Block> imitatedBlock) {
         this.key = key;
         this.imitatedBlock = imitatedBlock;
     }

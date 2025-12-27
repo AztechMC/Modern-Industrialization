@@ -38,7 +38,7 @@ import java.util.Objects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
@@ -71,19 +71,17 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.pipesExtract = other.pipesExtract;
     }
 
-    public AbstractConfigurableStack(CompoundTag tag, HolderLookup.Provider registries) {
-        this.key = readVariantFromNbt(tag.getCompound("key"), registries);
-        this.amount = tag.getLong("amount");
-        if (tag.contains("locked")) {
-            this.lockedInstance = getRegistry().get(ResourceLocation.parse(tag.getString("locked")));
-        }
-        this.machineLocked = tag.getBoolean("machineLocked");
-        this.playerLocked = tag.getBoolean("playerLocked");
-        this.playerLockable = tag.getBoolean("playerLockable");
-        this.playerInsert = tag.getBoolean("playerInsert");
-        this.playerExtract = tag.getBoolean("playerExtract");
-        this.pipesInsert = tag.getBoolean("pipesInsert");
-        this.pipesExtract = tag.getBoolean("pipesExtract");
+    protected AbstractConfigurableStack(K key, long amount, @Nullable T lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract) {
+        this.key = key;
+        this.amount = amount;
+        this.lockedInstance = lockedInstance;
+        this.playerLocked = playerLocked;
+        this.machineLocked = machineLocked;
+        this.playerLockable = playerLockable;
+        this.playerInsert = playerInsert;
+        this.playerExtract = playerExtract;
+        this.pipesInsert = pipesInsert;
+        this.pipesExtract = pipesExtract;
     }
 
     protected void notifyListeners() {
@@ -340,23 +338,5 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     @Override
     protected void onRootCommit(ResourceAmount<K> originalState) {
         notifyListeners();
-    }
-
-    public CompoundTag toNbt(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("key", key.toNbt(registries));
-        tag.putLong("amount", amount);
-        if (lockedInstance != null) {
-            tag.putString("locked", getRegistry().getKey(lockedInstance).toString());
-        }
-        // TODO: more efficient encoding?
-        tag.putBoolean("machineLocked", machineLocked);
-        tag.putBoolean("playerLocked", playerLocked);
-        tag.putBoolean("playerLockable", playerLockable);
-        tag.putBoolean("playerInsert", playerInsert);
-        tag.putBoolean("playerExtract", playerExtract);
-        tag.putBoolean("pipesInsert", pipesInsert);
-        tag.putBoolean("pipesExtract", pipesExtract);
-        return tag;
     }
 }

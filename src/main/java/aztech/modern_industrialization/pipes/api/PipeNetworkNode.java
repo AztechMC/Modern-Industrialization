@@ -35,6 +35,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public abstract class PipeNetworkNode {
@@ -63,9 +65,9 @@ public abstract class PipeNetworkNode {
         return null;
     }
 
-    public abstract CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries);
+    public abstract void save(ValueOutput output);
 
-    public abstract void fromTag(CompoundTag tag, HolderLookup.Provider registries);
+    public abstract void read(ValueInput input);
 
     public final PipeNetworkType getType() {
         return network.manager.getType();

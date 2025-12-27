@@ -44,7 +44,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
@@ -55,7 +55,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("unused")
 public final class MIItem {
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MI.ID);
-    public static final SortedMap<ResourceLocation, ItemDefinition<?>> ITEM_DEFINITIONS = new TreeMap<>();
+    public static final SortedMap<Identifier, ItemDefinition<?>> ITEM_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         ITEMS.register(modBus);
@@ -245,7 +245,7 @@ public final class MIItem {
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
-            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(ResourceLocation.parse("minecraft:item/handheld")));
+            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(Identifier.parse("minecraft:item/handheld")));
         }, sortOrder);
     }
 

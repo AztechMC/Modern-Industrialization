@@ -118,7 +118,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                if (stack.getItem() instanceof BarrelItem barrelItem) {
 //                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
 //                    if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
+//                        return InteractionResult.sidedSuccess(world.isClientSide());
 //                    }
 //                }
 
@@ -146,7 +146,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 
             if (useBlock(event.getHitVec(), event.getHand(), event.getEntity(), event.getLevel())) {
                 event.setCanceled(true);
-                event.setCancellationResult(InteractionResult.sidedSuccess(event.getSide().isClient()));
+                event.setCancellationResult(InteractionResult.SUCCESS);
             }
         });
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.LeftClickBlock.class, event -> {

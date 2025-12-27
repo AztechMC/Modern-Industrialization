@@ -34,7 +34,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 
 public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, CraftingMultiblockGui.Data> {
@@ -52,7 +52,7 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
     }
 
     public static class BaseScreenRenderer {
-        private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
+        private static final Identifier TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
         /**
          * Returns {@code deltaY}.

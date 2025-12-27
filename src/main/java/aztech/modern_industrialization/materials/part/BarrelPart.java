@@ -78,8 +78,9 @@ public class BarrelPart implements PartKeyProvider {
                                     .withBlockItemConstructor(BarrelItem::new)
                                     .withModel((block, gen) -> {
                                         String name = gen.name(block);
-                                        gen.simpleBlock(block,
-                                                gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                                        // TODO 26.1
+//                                        gen.simpleBlock(block,
+//                                                gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
                                     })
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
@@ -88,14 +89,15 @@ public class BarrelPart implements PartKeyProvider {
                     TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition, "Barrels");
 
                     MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
-                        var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
+                        var ret = new BlockEntityType<>(factory::newBlockEntity, blockDefinition.asBlock());
                         // noinspection unchecked,rawtypes
                         bet.setValue((BlockEntityType) ret);
                         return ret;
                     });
 
                     MICapabilities.onEvent(event -> {
-                        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet.getValue(), (be, side) -> new SlotItemHandler(be));
+                        // TODO 26.1
+//                        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet.getValue(), (be, side) -> new SlotItemHandler(be));
                     });
 
                     MICommonProxy.INSTANCE.registerPartBarrelClient(bet::getValue, partContext.get(MEAN_RGB));

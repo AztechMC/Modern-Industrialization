@@ -55,12 +55,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearReactorGui.Data> {
-    public static final ResourceLocation TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
+    public static final Identifier TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
 
     public NuclearReactorGuiClient(Unit params, NuclearReactorGui.Data data) {
         super(params, data);
@@ -78,7 +78,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
         ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")), 1);
 
-        private final ResourceLocation COLORBAR = MI.id("textures/gui/colorbar.png");
+        private final Identifier COLORBAR = MI.id("textures/gui/colorbar.png");
 
         private enum Mode {
             NUCLEAR_FUEL(0),

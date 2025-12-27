@@ -35,14 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("Convert2MethodRef")
 public class MachineCasings {
-    public static final Map<ResourceLocation, MachineCasing> registeredCasings = new HashMap<>();
+    public static final Map<Identifier, MachineCasing> registeredCasings = new HashMap<>();
 
     public record CasingName(MachineCasing casing, String englishName) {}
 
@@ -82,19 +82,19 @@ public class MachineCasings {
         KubeJSProxy.instance.fireRegisterMachineCasingsEvent();
     }
 
-    public static MachineCasing createBlockImitation(ResourceLocation key, Supplier<? extends Block> block) {
+    public static MachineCasing createBlockImitation(Identifier key, Supplier<? extends Block> block) {
         Objects.requireNonNull(block);
         return register(key, block);
     }
 
-    public static MachineCasing create(ResourceLocation key, String englishName) {
+    public static MachineCasing create(Identifier key, String englishName) {
         Objects.requireNonNull(englishName);
         var casing = register(key, null);
         translations.add(new CasingName(casing, englishName));
         return casing;
     }
 
-    private static MachineCasing register(ResourceLocation key, @Nullable Supplier<? extends Block> blockImitation) {
+    private static MachineCasing register(Identifier key, @Nullable Supplier<? extends Block> blockImitation) {
         if (registeredCasings.containsKey(key)) {
             throw new IllegalArgumentException("Duplicate machine casing definition: " + key);
         }
@@ -104,7 +104,7 @@ public class MachineCasings {
         return casing;
     }
 
-    public static MachineCasing get(ResourceLocation key) {
+    public static MachineCasing get(Identifier key) {
         MachineCasing casing = registeredCasings.get(key);
         if (casing != null) {
             return casing;
@@ -114,6 +114,6 @@ public class MachineCasings {
     }
 
     public static MachineCasing get(String name) {
-        return get(ResourceLocation.isValidPath(name) ? MI.id(name) : ResourceLocation.parse(name));
+        return get(Identifier.isValidPath(name) ? MI.id(name) : Identifier.parse(name));
     }
 }

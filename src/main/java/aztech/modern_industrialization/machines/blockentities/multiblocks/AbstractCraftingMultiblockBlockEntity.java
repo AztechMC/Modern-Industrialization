@@ -37,11 +37,11 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
-    public AbstractCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId, OrientationComponent.Params orientationParams,
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, Identifier blockId, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
         super(bep, new MachineGuiParameters.Builder(blockId, false).backgroundHeight(200).build(), orientationParams);
 
@@ -96,7 +96,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     @Override
     public final void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             link();
 
             boolean newActive = false;

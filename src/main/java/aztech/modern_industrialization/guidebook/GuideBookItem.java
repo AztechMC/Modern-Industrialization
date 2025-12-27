@@ -28,13 +28,16 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import guideme.GuidesCommon;
 import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 public class GuideBookItem extends Item {
@@ -43,15 +46,15 @@ public class GuideBookItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
-        if (world.isClientSide) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        if (world.isClientSide()) {
             GuidesCommon.openGuide(user, MIGuide.ID);
         }
-        return InteractionResultHolder.consume(user.getItemInHand(hand));
+        return InteractionResult.CONSUME;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(MIText.BookSubtitle.text().setStyle(TextHelper.GRAY_TEXT));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(MIText.BookSubtitle.text().setStyle(TextHelper.GRAY_TEXT));
     }
 }

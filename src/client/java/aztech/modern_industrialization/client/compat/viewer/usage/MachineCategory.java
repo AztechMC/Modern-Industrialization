@@ -51,7 +51,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -87,7 +87,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
     @Override
     public void buildWorkstations(WorkstationConsumer consumer) {
-        for (ResourceLocation workstation : params.workstations) {
+        for (Identifier workstation : params.workstations) {
             consumer.accept(BuiltInRegistries.ITEM.get(workstation));
         }
     }
@@ -315,7 +315,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private record DrawOffset(int x, int y) {}
 
     @Override
-    public ResourceLocation getRecipeId(RecipeHolder<MachineRecipe> recipe) {
+    public Identifier getRecipeId(RecipeHolder<MachineRecipe> recipe) {
         return recipe.id();
     }
 }

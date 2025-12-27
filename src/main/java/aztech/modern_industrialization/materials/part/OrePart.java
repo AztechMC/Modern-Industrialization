@@ -43,7 +43,7 @@ import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -65,10 +65,10 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
 public class OrePart implements PartKeyProvider {
-    public static final ResourceLocation TYPE_STONE = ResourceLocation.fromNamespaceAndPath("minecraft", "stone");
-    public static final ResourceLocation TYPE_DEEPSLATE = ResourceLocation.fromNamespaceAndPath("minecraft", "deepslate");
+    public static final Identifier TYPE_STONE = Identifier.fromNamespaceAndPath("minecraft", "stone");
+    public static final Identifier TYPE_DEEPSLATE = Identifier.fromNamespaceAndPath("minecraft", "deepslate");
 
-    private final ResourceLocation stoneType;
+    private final Identifier stoneType;
     private final Block stoneBlock;
     private final PartKey key;
 
@@ -97,14 +97,14 @@ public class OrePart implements PartKeyProvider {
         return of(new OrePartParams(UniformInt.of(0, 0), set));
     }
 
-    public OrePart(ResourceLocation stoneType) {
+    public OrePart(Identifier stoneType) {
         this.stoneType = stoneType;
         if (stoneType.equals(TYPE_STONE)) {
             key = new PartKey("ore");
         } else {
             key = new PartKey("ore_%s".formatted(stoneType.getPath()));
         }
-        stoneBlock = BuiltInRegistries.BLOCK.getOrThrow(ResourceKey.create(Registries.BLOCK, stoneType));
+        stoneBlock = BuiltInRegistries.BLOCK.getValueOrThrow(ResourceKey.create(Registries.BLOCK, stoneType));
     }
 
     public PartTemplate of(OrePartParams oreParams) {
@@ -171,7 +171,7 @@ public class OrePart implements PartKeyProvider {
 
                     if (oreParams.generate) {
                         String genIdPrefix = stoneType.equals(TYPE_STONE) ? "" : "%s_".formatted(stoneType.getPath());
-                        ResourceLocation oreGenId = MI.id(
+                        Identifier oreGenId = MI.id(
                                 genIdPrefix + "ore_generator_" + partContext.getMaterialName());
 
                         var featureKey = ResourceKey.create(Registries.CONFIGURED_FEATURE, oreGenId);

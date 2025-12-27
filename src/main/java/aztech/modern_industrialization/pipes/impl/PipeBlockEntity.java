@@ -40,6 +40,8 @@ import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
+
+import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,9 +52,10 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -61,18 +64,23 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 /**
  * The BlockEntity for a pipe.
  */
 public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandlerHelper, WrenchableBlockEntity {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     private static final VoxelShape[] ME_WIRE_CONNECTOR_SHAPES;
@@ -109,7 +117,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
     boolean stateReplaced = false;
 
     public void loadPipes() {
-        if (level.isClientSide || unloadedPipes.size() == 0)
+        if (level.isClientSide() || unloadedPipes.size() == 0)
             return;
 
         for (Tuple<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
@@ -148,7 +156,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
      */
     boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return connections.size() < MAX_PIPES && !connections.containsKey(type);
         } else {
             if (pipes.size() == MAX_PIPES)
@@ -254,7 +262,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
      * Set the camouflage directly. The camouflage block should be consumed from the player before calling this.
      */
     private void setCamouflage(@Nullable BlockState newCamouflage) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             throw new IllegalStateException("Cannot call setCamouflage on the client");
         }
 
@@ -310,7 +318,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             return false;
         }
 
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             setCamouflage(null);
         }
 
@@ -343,7 +351,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
         }
 
         // Item capabilities shouldn't be messed with (and in some cases cannot - leading to inconsistent behavior) on the client side
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return true;
         }
 
@@ -401,48 +409,52 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public void saveAdditional(ValueOutput output) {
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
-            tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
-            tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag(), registries));
+            output.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
+            pipe.save(output.child("pipe_data_" + i));
             i++;
         }
         for (Tuple<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
-            tag.putString("pipe_type_" + i, entry.getA().getIdentifier().toString());
-            tag.put("pipe_data_" + i, entry.getB().toTag(new CompoundTag(), registries));
+            output.putString("pipe_type_" + i, entry.getA().getIdentifier().toString());
+            entry.getB().save(output.child("pipe_data_" + i));
             i++;
         }
         if (camouflage != null) {
-            tag.put("camouflage", NbtUtils.writeBlockState(camouflage));
+            output.store("camouflage", CompoundTag.CODEC, NbtUtils.writeBlockState(camouflage));
         }
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        camouflage = tag.contains("camouflage") ? NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("camouflage")) : null;
+    public void loadAdditional(ValueInput input) {
+        camouflage = input.read("camouflage", CompoundTag.CODEC)
+                .map(t -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK, t))
+                .orElse(null);
 
-        if (!tag.contains("pipes")) {
+        var keySet = input.keySet();
+
+        if (!keySet.contains("pipes")) {
             pipes.clear();
 
             int i = 0;
-            while (tag.contains("pipe_type_" + i)) {
-                ResourceLocation typeId = ResourceLocation.parse(tag.getString("pipe_type_" + i));
+            while (keySet.contains("pipe_type_" + i)) {
+                Identifier typeId = Identifier.parse(input.getString("pipe_type_" + i).orElseThrow());
                 PipeNetworkType type = PipeNetworkType.get(typeId);
                 PipeNetworkNode node = type.getNodeCtor().get();
-                node.fromTag(tag.getCompound("pipe_data_" + i), registries);
+                node.read(input.child("pipe_data_" + i).orElseThrow());
                 unloadedPipes.add(new Tuple<>(type, node));
                 i++;
             }
         } else {
             connections.clear();
             customData.clear();
-            CompoundTag pipesTag = tag.getCompound("pipes");
-            for (String key : pipesTag.getAllKeys()) {
-                CompoundTag nodeTag = pipesTag.getCompound(key);
-                PipeNetworkType type = PipeNetworkType.get(ResourceLocation.parse(key));
-                connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
-                customData.put(type, nodeTag.getCompound("custom").copy());
+            var pipesTag = input.childOrEmpty("pipes");
+            for (String key : pipesTag.keySet()) {
+                var nodeTag = pipesTag.read(key, CompoundTag.CODEC).orElseThrow();
+                PipeNetworkType type = PipeNetworkType.get(Identifier.parse(key));
+                connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections").orElseThrow()));
+                customData.put(type, nodeTag.getCompoundOrEmpty("custom"));
             }
             rebuildCollisionShape();
 
@@ -473,20 +485,21 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        loadPipes();
-        CompoundTag pipesTag = new CompoundTag();
-        for (PipeNetworkNode pipe : pipes) {
-            CompoundTag nodeTag = new CompoundTag();
-            nodeTag.put("custom", pipe.writeCustomData(registries));
-            nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(worldPosition)));
-            pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+            loadPipes();
+            var pipesTag = output.child("pipes");
+            for (PipeNetworkNode pipe : pipes) {
+                CompoundTag nodeTag = new CompoundTag();
+                nodeTag.put("custom", pipe.writeCustomData(registries));
+                nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(worldPosition)));
+                pipesTag.store(pipe.getType().getIdentifier().toString(), CompoundTag.CODEC, nodeTag);
+            }
+            if (camouflage != null) {
+                output.store("camouflage", CompoundTag.CODEC, NbtUtils.writeBlockState(camouflage));
+            }
+            return output.buildResult();
         }
-        tag.put("pipes", pipesTag);
-        if (camouflage != null) {
-            tag.put("camouflage", NbtUtils.writeBlockState(camouflage));
-        }
-        return tag;
     }
 
     @Nullable

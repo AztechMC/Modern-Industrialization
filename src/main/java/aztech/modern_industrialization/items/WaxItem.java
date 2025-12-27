@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.items;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.HoneycombItem;
@@ -41,7 +41,7 @@ public class WaxItem extends HoneycombItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         var ret = super.useOn(context);
-        if (ret.indicateItemUse()) {
+        if (ret.consumesAction()) {
             if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
                 grantWaxOn(serverPlayer);
             }
@@ -49,7 +49,7 @@ public class WaxItem extends HoneycombItem {
         return ret;
     }
 
-    private static final ResourceLocation WAX_ON = ResourceLocation.withDefaultNamespace("husbandry/wax_on");
+    private static final Identifier WAX_ON = Identifier.withDefaultNamespace("husbandry/wax_on");
 
     private static void grantWaxOn(ServerPlayer serverPlayer) {
         var advancement = serverPlayer.server.getAdvancements().get(WAX_ON);

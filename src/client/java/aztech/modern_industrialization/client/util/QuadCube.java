@@ -31,15 +31,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.jspecify.annotations.Nullable;
 
 public class QuadCube {
-    private final ResourceLocation spriteLocation;
+    private final Identifier spriteLocation;
     private BakedQuad @Nullable [] quads;
 
-    public QuadCube(ResourceLocation spriteLocation) {
+    public QuadCube(Identifier spriteLocation) {
         this.spriteLocation = spriteLocation;
     }
 

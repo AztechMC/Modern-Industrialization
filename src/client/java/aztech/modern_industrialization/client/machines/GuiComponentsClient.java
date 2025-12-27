@@ -56,12 +56,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class GuiComponentsClient {
-    private static final Map<ResourceLocation, Registration<?, ?>> components = new HashMap<>();
+    private static final Map<Identifier, Registration<?, ?>> components = new HashMap<>();
 
-    public static Registration<?, ?> get(ResourceLocation id) {
+    public static Registration<?, ?> get(Identifier id) {
         var registration = components.get(id);
         if (registration == null) {
             throw new IllegalArgumentException("Unknown GUI component ID: " + id);

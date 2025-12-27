@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -76,20 +76,20 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         }
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
-            var tagId = ResourceLocation.parse(entry.getKey());
+            var tagId = Identifier.parse(entry.getKey());
             for (var tag : entry.getValue()) {
-                if (this.builders.containsKey(ResourceLocation.parse(tag))) {
+                if (this.builders.containsKey(Identifier.parse(tag))) {
                     tag(key(tagId)).addTag(key(tag));
                 }
             }
         }
     }
 
-    private static TagKey<Block> key(ResourceLocation id) {
+    private static TagKey<Block> key(Identifier id) {
         return TagKey.create(BuiltInRegistries.BLOCK.key(), id);
     }
 
     private static TagKey<Block> key(String id) {
-        return key(ResourceLocation.parse(id));
+        return key(Identifier.parse(id));
     }
 }

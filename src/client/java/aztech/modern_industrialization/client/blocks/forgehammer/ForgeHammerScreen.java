@@ -34,12 +34,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler> {
-    public static final ResourceLocation FORGE_HAMMER_GUI = MI.id("textures/gui/container/forge_hammer.png");
+    public static final Identifier FORGE_HAMMER_GUI = MI.id("textures/gui/container/forge_hammer.png");
 
     private static final int X_OFFSET = 61, Y_OFFSET = 14;
 

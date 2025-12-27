@@ -36,13 +36,13 @@ import java.util.Comparator;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammerRecipe>> {
-    public static final ResourceLocation ID = MI.id("forge_hammer");
+    public static final Identifier ID = MI.id("forge_hammer");
 
     private final int startPointX;
     private final int startPointY;
@@ -96,7 +96,7 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
     }
 
     @Override
-    public ResourceLocation getRecipeId(RecipeHolder<ForgeHammerRecipe> recipe) {
+    public Identifier getRecipeId(RecipeHolder<ForgeHammerRecipe> recipe) {
         return recipe.id();
     }
 }

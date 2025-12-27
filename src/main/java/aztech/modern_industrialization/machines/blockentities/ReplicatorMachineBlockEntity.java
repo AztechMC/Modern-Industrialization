@@ -44,16 +44,19 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
     private final IsActiveComponent isActiveComponent;
@@ -87,13 +90,13 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         this.registerComponents(isActiveComponent, inventoryComponent, redstoneControl, new MachineComponent() {
             @Override
-            public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-                tag.putInt("progressTick", progressTick);
+            public void writeNbt(ValueOutput output) {
+                output.putInt("progressTick", progressTick);
             }
 
             @Override
-            public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-                progressTick = tag.getInt("progressTick");
+            public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+                progressTick = input.getIntOr("progressTick", 0);
             }
         });
 
@@ -121,21 +124,19 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         }
 
         // Containers are only allowed if they are empty.
-        var itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+        var itemAccess = ItemAccess.forStack(stack);
+        var itemHandler = itemAccess.getCapability(Capabilities.Item.ITEM);
         if (itemHandler != null) {
-            int slots = itemHandler.getSlots();
-            for (int i = 0; i < slots; ++i) {
-                if (!itemHandler.getStackInSlot(i).isEmpty()) {
-                    return false;
-                }
+            if (!ResourceHandlerUtil.isEmpty(itemHandler)) {
+                return false;
             }
         }
 
         // Disallow anything that contains disallowed fluids
-        var fluidItem = stack.getCapability(Capabilities.FluidHandler.ITEM);
+        var fluidItem = itemAccess.getCapability(Capabilities.Fluid.ITEM);
         if (fluidItem != null) {
-            for (int tank = 0; tank < fluidItem.getTanks(); ++tank) {
-                if (fluidItem.getFluidInTank(tank).is(BLACKLISTED_FLUIDS)) {
+            for (int tank = 0; tank < fluidItem.size(); ++tank) {
+                if (fluidItem.getResource(tank).is(BLACKLISTED_FLUIDS)) {
                     return false;
                 }
             }
@@ -173,7 +174,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (!redstoneControl.doAllowNormalOperation(this)) {
                 isActiveComponent.updateActive(false, this);
             } else {

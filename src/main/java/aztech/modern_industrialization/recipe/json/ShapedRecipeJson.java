@@ -31,8 +31,10 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -49,15 +51,15 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
 
     public ShapedRecipeJson(String resultItem, int count, String... pattern) {
         this.pattern = pattern;
-        this.result = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(resultItem)), count);
+        this.result = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(resultItem)), count);
     }
 
     public ShapedRecipeJson addInput(char key, String maybeTag) {
         Ingredient input;
         if (maybeTag.startsWith("#")) {
-            input = Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))));
+            input = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))));
         } else {
-            input = Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
+            input = Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
         }
         if (this.key.put(key, input) != null) {
             throw new IllegalStateException("Key mapping is already registered: " + key);
@@ -131,7 +133,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
 
     @Override
     public void offerTo(RecipeOutput recipeOutput, String path) {
-        recipeOutput.accept(MI.id(path), new ShapedRecipe(
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), new ShapedRecipe(
                 "",
                 CraftingBookCategory.MISC,
                 ShapedRecipePattern.of(key, pattern),

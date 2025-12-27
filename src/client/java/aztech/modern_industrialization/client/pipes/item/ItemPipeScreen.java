@@ -43,11 +43,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/item.png");
+    private static final Identifier TEXTURE = MI.id("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, Inventory inventory, Component title) {
@@ -138,7 +138,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     @Override
-    protected ResourceLocation getBackgroundTexture() {
+    protected Identifier getBackgroundTexture() {
         return TEXTURE;
     }
 

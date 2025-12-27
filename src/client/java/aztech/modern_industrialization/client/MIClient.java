@@ -84,7 +84,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -158,7 +158,7 @@ public class MIClient {
 
             if (event.getFlags().isAdvanced() && MIClientConfig.INSTANCE.itemTagTooltips.getAsBoolean()) {
                 var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
-                for (ResourceLocation id : ids) {
+                for (Identifier id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
                 }
             }
@@ -190,7 +190,7 @@ public class MIClient {
         if (MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
             modBus.addListener(AddPackFindersEvent.class, event -> {
                 if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-                    RuntimeDataGen.run(MIDatagenClient::configure, MIDatagenServer::configure);
+                    RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenClient.configure(gen, fileHelper, lookupProvider, run, runtimeDatagen), (gen1, lookupProvider1, run1, runtimeDatagen1) -> MIDatagenServer.configure(gen1, fileHelper, lookupProvider1, run1, runtimeDatagen1));
                 }
             });
         }

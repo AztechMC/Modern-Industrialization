@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jspecify.annotations.Nullable;
@@ -226,7 +226,7 @@ public final class MITextures {
         }
     }
 
-    public static void casingFromTextureBricked(TextureManager tm, MachineCasing casing, ResourceLocation topTexturePath) {
+    public static void casingFromTextureBricked(TextureManager tm, MachineCasing casing, Identifier topTexturePath) {
         try (
                 var topTexture = tm.getAssetAsTexture(topTexturePath.toString());
                 var brickTexture = tm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")) {

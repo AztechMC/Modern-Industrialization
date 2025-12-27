@@ -173,7 +173,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
 
     @Override
     public void tick() {
-        if (level == null || level.isClientSide)
+        if (level == null || level.isClientSide())
             return;
 
         if (!redstoneControl.doAllowNormalOperation(this)) {

@@ -36,7 +36,7 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.view.ClientViewGroup;
@@ -51,7 +51,7 @@ import snownee.jade.api.view.ViewGroup;
 public abstract sealed class MachineComponentProvider<S, C>
         implements IServerExtensionProvider<S>, IClientExtensionProvider<S, C> {
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("machine");
     }
 

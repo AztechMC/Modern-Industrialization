@@ -31,7 +31,7 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
@@ -39,7 +39,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     public final double directEnergyFactor;
     public final double neutronMultiplicationFactor;
 
-    public final ResourceLocation depletedVersionId;
+    public final Identifier depletedVersionId;
 
     public final int size;
 
@@ -52,7 +52,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, int size) {}
 
-    public NuclearFuel(Properties settings, NuclearFuelParams params, NeutronBehaviour neutronBehaviour, ResourceLocation depletedVersionId) {
+    public NuclearFuel(Properties settings, NuclearFuelParams params, NeutronBehaviour neutronBehaviour, Identifier depletedVersionId) {
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
     }
@@ -63,7 +63,7 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, NeutronBehaviour neutronBehaviour, int size,
-            ResourceLocation depletedVersionId) {
+            Identifier depletedVersionId) {
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
 
         this.size = size;

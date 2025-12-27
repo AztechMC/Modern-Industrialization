@@ -26,7 +26,7 @@ package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.MI;
 import java.util.function.Consumer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -44,10 +44,10 @@ public class MIFluidType extends FluidType {
     @Override
     public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
         consumer.accept(new IClientFluidTypeExtensions() {
-            private @Nullable ResourceLocation textureLocation;
+            private @Nullable Identifier textureLocation;
 
             @Override
-            public ResourceLocation getStillTexture() {
+            public Identifier getStillTexture() {
                 if (textureLocation == null) {
                     textureLocation = MI.id("fluid/%s_still".formatted(fluidBlock.getId().getPath()));
                 }
@@ -55,7 +55,7 @@ public class MIFluidType extends FluidType {
             }
 
             @Override
-            public ResourceLocation getFlowingTexture() {
+            public Identifier getFlowingTexture() {
                 return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
             }
         });

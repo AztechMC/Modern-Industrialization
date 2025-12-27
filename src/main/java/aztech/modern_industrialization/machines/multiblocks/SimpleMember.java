@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -59,8 +59,8 @@ public interface SimpleMember {
         };
     }
 
-    static SimpleMember forBlockId(ResourceLocation id) {
-        return forBlock(() -> BuiltInRegistries.BLOCK.get(id));
+    static SimpleMember forBlockId(Identifier id) {
+        return forBlock(() -> BuiltInRegistries.BLOCK.getValue(id));
     }
 
     static SimpleMember forBlockState(BlockState state) {
@@ -83,12 +83,12 @@ public interface SimpleMember {
         return new SimpleMember() {
             @Override
             public boolean matchesState(BlockState state) {
-                return state.is(Blocks.CHAIN) && state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y;
+                return state.is(Blocks.IRON_CHAIN) && state.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y;
             }
 
             @Override
             public BlockState getPreviewState() {
-                return Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+                return Blocks.IRON_CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y);
             }
         };
     }

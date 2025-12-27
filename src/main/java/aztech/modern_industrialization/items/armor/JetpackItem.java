@@ -31,7 +31,10 @@ import aztech.modern_industrialization.items.ActivatableItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
@@ -41,40 +44,46 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jspecify.annotations.Nullable;
 
-public class JetpackItem extends ArmorItem implements ActivatableItem {
+public class JetpackItem extends Item implements ActivatableItem {
     public static final int CAPACITY = 8 * FluidType.BUCKET_VOLUME;
 
-    public JetpackItem(Properties settings) {
-        super(MIArmorMaterials.DIESEL_JETPACK, Type.CHESTPLATE,
-                settings.stacksTo(1).rarity(Rarity.UNCOMMON).component(MIComponents.ACTIVATED.get(), false));
+    public JetpackItem(Properties properties) {
+        super(properties
+                // TODO 1.21.11 - do I need to set the assetId?
+                .equippable(EquipmentSlot.CHEST)
+                .stacksTo(1)
+                .rarity(Rarity.UNCOMMON)
+                .component(MIComponents.ACTIVATED.get(), false));
     }
 
-    @Override
-    public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
-        return isActivated(stack) && FluidFuelItemHelper.getAmount(stack) > 0;
-    }
+    // TODO 1.21.11 - need to be converted into a Glider component; which must probably be added/removed dynamically
+//    @Override
+//    public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
+//        return isActivated(stack) && FluidFuelItemHelper.getAmount(stack) > 0;
+//    }
+//
+//    @Override
+//    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+//        // Fluid consumption is handled in the armor tick.
+//        return true;
+//    }
 
     @Override
-    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
-        // Fluid consumption is handled in the armor tick.
-        return true;
-    }
-
-    @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (entity instanceof Player player && stack == player.getItemBySlot(EquipmentSlot.CHEST)) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        if (entity instanceof Player player && slot == EquipmentSlot.CHEST) {
             tickArmor(stack, player);
         }
     }
@@ -148,13 +157,8 @@ public class JetpackItem extends ArmorItem implements ActivatableItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
-    }
-
-    @Override
-    public ItemAttributeModifiers getDefaultAttributeModifiers() {
-        return ItemAttributeModifiers.EMPTY;
     }
 
     @Override

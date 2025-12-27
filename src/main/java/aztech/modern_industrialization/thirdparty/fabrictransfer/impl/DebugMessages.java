@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 public final class DebugMessages {
     public static String forGlobalPos(@Nullable Level world, BlockPos pos) {
-        String dimension = world != null ? world.dimension().location().toString() : "<no dimension>";
+        String dimension = world != null ? world.dimension().identifier().toString() : "<no dimension>";
         return dimension + "@" + pos.toShortString();
     }
 

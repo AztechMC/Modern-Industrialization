@@ -75,11 +75,12 @@ public class ItemNetwork extends PipeNetwork {
                     var queryPos = pos.relative(connection.direction);
                     var querySide = connection.direction.getOpposite();
 
-                    var source = world.getCapability(Capabilities.ItemHandler.BLOCK, queryPos, querySide);
-
-                    if (source != null) {
-                        extractionSources.add(new ExtractionSource(connection, source, queryPos, querySide));
-                    }
+                    // TODO 26.1
+//                    var source = world.getCapability(Capabilities.ItemHandler.BLOCK, queryPos, querySide);
+//
+//                    if (source != null) {
+//                        extractionSources.add(new ExtractionSource(connection, source, queryPos, querySide));
+//                    }
                 }
             }
         }
@@ -143,8 +144,9 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world,
-                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
+                        // TODO 26.1
+//                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world,
+//                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
                     }
                     var target = connection.cache.getCapability();
                     if (target != null && target.getSlots() > 0) {

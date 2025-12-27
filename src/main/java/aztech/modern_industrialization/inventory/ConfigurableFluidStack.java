@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.base.Preconditions;
@@ -35,10 +36,17 @@ import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -55,6 +63,23 @@ import org.jspecify.annotations.Nullable;
  * A fluid stack that can be configured.
  */
 public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidVariant> implements FluidAccess {
+    // TODO: more efficient encoding?
+    public static final Codec<ConfigurableFluidStack> CODEC = RecordCodecBuilder.create(
+            i -> i.group(
+                    FluidVariant.CODEC.fieldOf("key").forGetter(s -> s.key),
+                    MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(s -> s.amount),
+                    BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("locked").forGetter(s -> Optional.ofNullable(s.lockedInstance)),
+                    Codec.BOOL.fieldOf("machineLocked").forGetter(s -> s.machineLocked),
+                    Codec.BOOL.fieldOf("playerLocked").forGetter(s -> s.playerLocked),
+                    Codec.BOOL.fieldOf("playerLockable").forGetter(s -> s.playerLockable),
+                    Codec.BOOL.fieldOf("playerInsert").forGetter(s -> s.playerInsert),
+                    Codec.BOOL.fieldOf("playerExtract").forGetter(s -> s.playerExtract),
+                    Codec.BOOL.fieldOf("pipesInsert").forGetter(s -> s.pipesInsert),
+                    Codec.BOOL.fieldOf("pipesExtract").forGetter(s -> s.pipesExtract),
+                    MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("capacity").forGetter(s -> s.capacity))
+                    .apply(i, ConfigurableFluidStack::new));
+    public static final StreamCodec<ByteBuf, ConfigurableFluidStack> STREAM_CODEC = ByteBufCodecs.fromCodecTrusted(CODEC);
+
     private long capacity;
 
     public ConfigurableFluidStack(long capacity) {
@@ -111,9 +136,9 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         this.capacity = other.capacity;
     }
 
-    public ConfigurableFluidStack(CompoundTag compound, HolderLookup.Provider registries) {
-        super(compound, registries);
-        this.capacity = compound.getLong("capacity");
+    private ConfigurableFluidStack(FluidVariant key, long amount, Optional<Fluid> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, long capacity) {
+        super(key, amount, lockedInstance.orElse(null), playerLocked, machineLocked, playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
+        this.capacity = capacity;
     }
 
     @Override
@@ -198,12 +223,6 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return capacity - amount;
     }
 
-    public CompoundTag toNbt(HolderLookup.Provider registries) {
-        CompoundTag tag = super.toNbt(registries);
-        tag.putLong("capacity", capacity);
-        return tag;
-    }
-
     @Override
     public FluidVariant getVariant() {
         return getResource();
@@ -278,7 +297,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         public boolean playerInteract(SlotAccess slot, Player player, boolean allowSlotExtract) {
-            var fluidHandlerItem = slot.get().getCapability(Capabilities.FluidHandler.ITEM);
+            var fluidHandlerItem = FluidUtil.getFluidHandler(slot.get()).orElse(null);
             if (fluidHandlerItem == null) {
                 return false;
             }

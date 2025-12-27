@@ -31,7 +31,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
@@ -40,12 +40,12 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 public class DelegatingUnbakedModel implements IUnbakedGeometry<DelegatingUnbakedModel> {
     public static final IGeometryLoader<DelegatingUnbakedModel> LOADER = (object, context) -> {
         var loc = GsonHelper.getAsString(object, "delegate");
-        return new DelegatingUnbakedModel(ResourceLocation.parse(loc));
+        return new DelegatingUnbakedModel(Identifier.parse(loc));
     };
 
-    private final ResourceLocation delegate;
+    private final Identifier delegate;
 
-    public DelegatingUnbakedModel(ResourceLocation delegate) {
+    public DelegatingUnbakedModel(Identifier delegate) {
         this.delegate = delegate;
     }
 

@@ -45,14 +45,14 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
-    public static final ResourceLocation TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
-    private static final ResourceLocation PROGRESS_BAR = MI.id("textures/gui/progress_bar/long_arrow.png");
+    public static final Identifier TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
+    private static final Identifier PROGRESS_BAR = MI.id("textures/gui/progress_bar/long_arrow.png");
 
     private final int centerX;
     private final int centerY;
@@ -255,7 +255,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     }
 
     @Override
-    public ResourceLocation getRecipeId(NeutronInteractionCategory.Recipe recipe) {
+    public Identifier getRecipeId(NeutronInteractionCategory.Recipe recipe) {
         return NuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 

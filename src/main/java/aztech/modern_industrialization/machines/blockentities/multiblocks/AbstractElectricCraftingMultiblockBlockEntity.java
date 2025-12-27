@@ -37,16 +37,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity
         implements EnergyListComponentHolder, CrafterComponent.Behavior {
-    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, ResourceLocation blockId,
+    public AbstractElectricCraftingMultiblockBlockEntity(BEP bep, Identifier blockId,
             OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
         super(bep, blockId, orientationParams, shapeTemplates);
@@ -81,7 +81,7 @@ public abstract class AbstractElectricCraftingMultiblockBlockEntity extends Abst
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+    protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
         var result = super.useItemOn(player, hand, face);
         if (!result.consumesAction()) {
             result = LubricantHelper.onUse(this.crafter, player, hand);

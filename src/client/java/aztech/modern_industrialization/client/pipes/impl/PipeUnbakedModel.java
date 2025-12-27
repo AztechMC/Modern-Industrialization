@@ -39,21 +39,21 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
 public class PipeUnbakedModel implements IUnbakedGeometry<PipeUnbakedModel> {
-    public static final ResourceLocation LOADER_ID = MI.id("pipe");
+    public static final Identifier LOADER_ID = MI.id("pipe");
     public static final IGeometryLoader<PipeUnbakedModel> LOADER = (object, context) -> {
         return new PipeUnbakedModel();
     };
 
-    private static final ResourceLocation ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
+    private static final Identifier ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
     private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
-            ResourceLocation.parse("minecraft:block/iron_block"));
+            Identifier.parse("minecraft:block/iron_block"));
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,

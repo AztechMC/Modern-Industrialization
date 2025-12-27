@@ -44,13 +44,13 @@ import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/fluid.png");
+    private static final Identifier TEXTURE = MI.id("textures/gui/pipe/fluid.png");
 
     public FluidPipeScreen(FluidPipeScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
@@ -76,7 +76,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     @Override
-    protected ResourceLocation getBackgroundTexture() {
+    protected Identifier getBackgroundTexture() {
         return TEXTURE;
     }
 

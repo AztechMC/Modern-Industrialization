@@ -29,22 +29,28 @@ import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.items.ActivatableItem;
 import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import org.jspecify.annotations.Nullable;
 
-public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, ISimpleEnergyItem {
-    public GraviChestPlateItem(Properties settings) {
-        super(MIArmorMaterials.GRAVICHESTPLATE, Type.CHESTPLATE,
-                settings.stacksTo(1).rarity(Rarity.EPIC).component(MIComponents.ACTIVATED.get(), false));
+public class GraviChestPlateItem extends Item implements ActivatableItem, ISimpleEnergyItem {
+    public GraviChestPlateItem(Properties properties) {
+        super(properties
+                // TODO 1.21.11 - do I need to set the assetId?
+                .equippable(EquipmentSlot.CHEST)
+                .stacksTo(1)
+                .rarity(Rarity.EPIC)
+                .component(MIComponents.ACTIVATED.get(), false));
     }
 
     @Override
@@ -77,10 +83,8 @@ public class GraviChestPlateItem extends ArmorItem implements ActivatableItem, I
     public static final long ENERGY_CAPACITY = 1 << 24;
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (level.isClientSide())
-            return;
-        if (entity instanceof Player player && stack == player.getItemBySlot(EquipmentSlot.CHEST)) {
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
+        if (entity instanceof Player player && slot == EquipmentSlot.CHEST) {
             if (player.getAbilities().flying) {
                 setEnergy(stack, Math.max(0, getEnergy(stack) - FLIGHT_COST));
             }

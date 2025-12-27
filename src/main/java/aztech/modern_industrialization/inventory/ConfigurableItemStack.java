@@ -28,40 +28,61 @@ import aztech.modern_industrialization.api.machine.component.ItemAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.util.MIExtraCodecs;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 import org.jspecify.annotations.Nullable;
 
 /**
  * An item stack that can be configured.
  */
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
+    // TODO: more efficient encoding?
+    public static final Codec<ConfigurableItemStack> CODEC = RecordCodecBuilder.create(
+            i -> i.group(
+                            ItemVariant.CODEC.fieldOf("key").forGetter(s -> s.key),
+                            MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(s -> s.amount),
+                            BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("locked").forGetter(s -> Optional.ofNullable(s.lockedInstance)),
+                            Codec.BOOL.fieldOf("machineLocked").forGetter(s -> s.machineLocked),
+                            Codec.BOOL.fieldOf("playerLocked").forGetter(s -> s.playerLocked),
+                            Codec.BOOL.fieldOf("playerLockable").forGetter(s -> s.playerLockable),
+                            Codec.BOOL.fieldOf("playerInsert").forGetter(s -> s.playerInsert),
+                            Codec.BOOL.fieldOf("playerExtract").forGetter(s -> s.playerExtract),
+                            Codec.BOOL.fieldOf("pipesInsert").forGetter(s -> s.pipesInsert),
+                            Codec.BOOL.fieldOf("pipesExtract").forGetter(s -> s.pipesExtract),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("adjCap").forGetter(s -> s.adjustedCapacity))
+                    .apply(i, ConfigurableItemStack::new));
+    public static final StreamCodec<ByteBuf, ConfigurableItemStack> STREAM_CODEC = ByteBufCodecs.fromCodecTrusted(CODEC);
+
     private int adjustedCapacity = 64;
 
     public ConfigurableItemStack() {}
 
-    public ConfigurableItemStack(CompoundTag compound, HolderLookup.Provider registries) {
-        super(compound, registries);
-        this.adjustedCapacity = compound.getInt("adjCap");
-    }
-
-    @Override
-    public CompoundTag toNbt(HolderLookup.Provider registries) {
-        CompoundTag nbt = super.toNbt(registries);
-        nbt.putInt("adjCap", this.adjustedCapacity);
-        return nbt;
+    private ConfigurableItemStack(ItemVariant key, long amount, Optional<Item> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, int adjustedCapacity) {
+        super(key, amount, lockedInstance.orElse(null), playerLocked, machineLocked, playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
+        this.adjustedCapacity = adjustedCapacity;
     }
 
     public static ConfigurableItemStack standardInputSlot() {

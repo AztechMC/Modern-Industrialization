@@ -41,10 +41,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.jspecify.annotations.Nullable;
 
 public class MIGameTestHelper extends GameTestHelper {
@@ -52,9 +55,14 @@ public class MIGameTestHelper extends GameTestHelper {
         super(testInfo);
     }
 
+    // TODO 26.1 - neoforge should have it
+    public void fail(String message, BlockPos pos) {
+        fail(Component.literal(message), pos);
+    }
+
     public void creativeTank(BlockPos pos, Fluid fluid) {
         setBlock(pos, MIBlock.CREATIVE_TANK.get());
-        var tank = (CreativeTankBlockEntity) getBlockEntity(pos);
+        var tank = getBlockEntity(pos, CreativeTankBlockEntity.class);
         tank.setFluid(FluidVariant.of(fluid));
     }
 
@@ -74,15 +82,15 @@ public class MIGameTestHelper extends GameTestHelper {
         assertAir(pos);
         // Mimic logic inside of PipeItem
         setBlock(pos, MIPipes.BLOCK_PIPE.get());
-        var pipeBe = (PipeBlockEntity) getBlockEntity(pos);
+        var pipeBe = getBlockEntity(pos, PipeBlockEntity.class);
         var item = MIPipes.INSTANCE.getPipeItem(type);
         pipeBe.addPipe(type, item.defaultData);
-        getLevel().blockUpdated(absolutePos(pos), Blocks.AIR);
+        getLevel().updateNeighborsAt(absolutePos(pos), Blocks.AIR);
         setup.accept(new PipeBuilder(this, pipeBe, type));
     }
 
     public PipeNetworkNode getPipeNode(BlockPos pos, PipeNetworkType type) {
-        var pipeBe = (PipeBlockEntity) getBlockEntity(pos);
+        var pipeBe = getBlockEntity(pos, PipeBlockEntity.class);
         for (var node : pipeBe.getNodes()) {
             if (node.getType() == type) {
                 return node;
@@ -92,6 +100,7 @@ public class MIGameTestHelper extends GameTestHelper {
         throw new RuntimeException("Unreachable!");
     }
 
+    // TODO 26.1
     public <T, C extends @Nullable Object> T requireCapability(BlockCapability<T, C> cap, BlockPos pos, C context) {
         var ret = getLevel().getCapability(cap, absolutePos(pos), context);
         if (ret == null) {
@@ -101,19 +110,20 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void assertFluid(BlockPos pos, Fluid fluid, int amount) {
-        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
+        var fluidHandler = requireCapability(Capabilities.Fluid.BLOCK, pos, null);
         boolean foundAny = false;
         var fluidName = BuiltInRegistries.FLUID.getKey(fluid);
-        for (int i = 0; i < fluidHandler.getTanks(); ++i) {
-            var stack = fluidHandler.getFluidInTank(i);
-            if (stack.isEmpty()) {
+        for (int i = 0; i < fluidHandler.size(); ++i) {
+            var storedResource = fluidHandler.getResource(i);
+            int storedAmount = fluidHandler.getAmountAsInt(i);
+            if (ResourceHandlerUtil.isEmpty(storedResource, storedAmount)) {
                 continue;
             }
-            if (stack.is(fluid) && stack.getAmount() == amount) {
+            if (storedResource.is(fluid) && storedAmount == amount) {
                 foundAny = true;
                 continue;
             }
-            fail("Expected fluid %s and amount %d, got %s".formatted(fluidName, amount, stack), pos);
+            fail("Expected fluid %s and amount %d, got %dx%s".formatted(fluidName, amount, storedAmount, storedResource), pos);
         }
         if (!foundAny) {
             fail("Expected fluid %s and amount %d, got nothing".formatted(fluidName, amount), pos);
@@ -121,9 +131,9 @@ public class MIGameTestHelper extends GameTestHelper {
     }
 
     public void assertNoFluid(BlockPos pos) {
-        var fluidHandler = requireCapability(Capabilities.FluidHandler.BLOCK, pos, null);
-        for (int i = 0; i < fluidHandler.getTanks(); ++i) {
-            var stack = fluidHandler.getFluidInTank(i);
+        var fluidHandler = requireCapability(Capabilities.Fluid.BLOCK, pos, null);
+        for (int i = 0; i < fluidHandler.size(); ++i) {
+            var stack = FluidUtil.getStack(fluidHandler, i);
             if (!stack.isEmpty()) {
                 fail("Expected no fluid, got %s".formatted(stack), pos);
             }

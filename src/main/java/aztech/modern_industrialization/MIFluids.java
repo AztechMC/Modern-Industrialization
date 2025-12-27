@@ -32,7 +32,7 @@ import aztech.modern_industrialization.definition.FluidTexture;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -44,7 +44,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 public class MIFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, MI.ID);
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MI.ID);
-    public static final SortedMap<ResourceLocation, FluidDefinition> FLUID_DEFINITIONS = new TreeMap<>();
+    public static final SortedMap<Identifier, FluidDefinition> FLUID_DEFINITIONS = new TreeMap<>();
 
     public static void init(IEventBus modBus) {
         FLUIDS.register(modBus);

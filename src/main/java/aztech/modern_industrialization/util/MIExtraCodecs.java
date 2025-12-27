@@ -36,6 +36,7 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
 public class MIExtraCodecs {
     public static final Codec<Float> FLOAT_01 = Codec.floatRange(0, 1);
+    // TODO: remove in favor of ExtraCodecs equivalents
     public static final Codec<Long> NON_NEGATIVE_LONG = longRange(0, Long.MAX_VALUE);
     public static final Codec<Long> POSITIVE_LONG = longRange(1, Long.MAX_VALUE);
 

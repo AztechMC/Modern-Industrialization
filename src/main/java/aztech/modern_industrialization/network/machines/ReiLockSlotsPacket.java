@@ -30,14 +30,14 @@ import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public record ReiLockSlotsPacket(int containedId, ResourceLocation recipeId) implements BasePacket {
+public record ReiLockSlotsPacket(int containedId, Identifier recipeId) implements BasePacket {
     public static final StreamCodec<ByteBuf, ReiLockSlotsPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             ReiLockSlotsPacket::containedId,
-            ResourceLocation.STREAM_CODEC,
+            Identifier.STREAM_CODEC,
             ReiLockSlotsPacket::recipeId,
             ReiLockSlotsPacket::new);
 

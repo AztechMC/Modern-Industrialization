@@ -37,7 +37,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.material.Fluid;
 
@@ -77,7 +77,7 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     }
 
     @Override
-    public ResourceLocation getRecipeId(Fluid recipe) {
+    public Identifier getRecipeId(Fluid recipe) {
         return MI.id("/fluid_fuels/" + BuiltInRegistries.FLUID.getKey(recipe).toString().replace(':', '_'));
     }
 }

@@ -31,7 +31,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
@@ -90,7 +90,7 @@ public class TankComponentProvider implements IServerExtensionProvider<CompoundT
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("tank");
     }
 }

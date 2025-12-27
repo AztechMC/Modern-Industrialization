@@ -68,7 +68,7 @@ public class PipeItem extends Item {
             Player player = context.getPlayer();
 
             // update adjacent pipes
-            world.blockUpdated(placingPos, Blocks.AIR);
+            world.updateNeighborsAt(placingPos, Blocks.AIR);
             // remove one from stack
             ItemStack placementStack = context.getItemInHand();
             if (player != null && !player.getAbilities().instabuild) {
@@ -80,7 +80,7 @@ public class PipeItem extends Item {
             world.playSound(player, placingPos, group.getPlaceSound(), SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                     group.getPitch() * 0.8F);
 
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             // if we couldn't place a pipe, we try to add a connection instead
             placingPos = context.getClickedPos().relative(context.getClickedFace());
@@ -88,17 +88,17 @@ public class PipeItem extends Item {
             BlockEntity entity = world.getBlockEntity(placingPos);
             if (entity instanceof PipeBlockEntity pipeEntity) {
                 if (pipeEntity.connections.containsKey(type)) {
-                    if (!world.isClientSide) {
+                    if (!world.isClientSide()) {
                         pipeEntity.addConnection(context.getPlayer(), type, context.getClickedFace().getOpposite());
                     }
                     // update adjacent pipes
-                    world.blockUpdated(placingPos, Blocks.AIR);
+                    world.updateNeighborsAt(placingPos, Blocks.AIR);
                     // play placing sound
                     BlockState newState = world.getBlockState(placingPos);
                     SoundType group = newState.getSoundType();
                     world.playSound(context.getPlayer(), placingPos, group.getPlaceSound(), SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                             group.getPitch() * 0.8F);
-                    return InteractionResult.sidedSuccess(world.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

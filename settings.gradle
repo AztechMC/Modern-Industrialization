@@ -6,7 +6,80 @@ pluginManagement {
 }
 
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    id 'net.neoforged.moddev.repositories' version '2.0.134'
 }
 
 rootProject.name = "Modern-Industrialization"
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
+    repositories {
+        mavenCentral()
+        // for KJS
+        maven {
+            url "https://www.cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+        maven {
+            name "Modmaven"
+            url "https://modmaven.dev"
+            content {
+                includeGroup "dev.technici4n"
+                includeGroup "mezz.jei"
+                includeGroup "com.almostreliable.mods"
+            }
+        }
+        maven {
+            url "https://maven.shedaniel.me"
+            content {
+                includeGroup "me.sargunvohra.mcmods"
+                includeGroup "me.shedaniel.cloth"
+                includeGroup "me.shedaniel"
+                includeGroup "dev.architectury"
+            }
+        }
+        maven {
+            url "https://maven.terraformersmc.com"
+            content {
+                includeGroup "com.terraformersmc"
+                includeGroup "dev.emi"
+            }
+        }
+        maven {
+            name 'Jitpack'
+            url 'https://jitpack.io'
+            content {
+                // For KubeJS
+                includeGroup "com.github.rtyley"
+            }
+        }
+        maven {
+            url "https://maven.ftb.dev/releases"
+            content {
+                includeGroup "dev.ftb.mods"
+            }
+        }
+        // For KubeJS & FTBTeams/FTBQuests
+        maven {
+            url "https://maven.latvian.dev/releases"
+            content {
+                includeGroup "dev.latvian.apps"
+                includeGroup "dev.latvian.mods"
+                includeGroup "dev.ftb.mods"
+            }
+        }
+        maven {
+            url "https://maven.teamresourceful.com/repository/maven-public/"
+            content {
+                includeGroup "com.teamresourceful"
+                includeGroup "com.teamresourceful.resourcefullib"
+                includeGroup "earth.terrarium.argonauts"
+                includeGroup "earth.terrarium.athena"
+            }
+        }
+    }
+}

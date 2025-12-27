@@ -30,7 +30,7 @@ import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -70,7 +70,7 @@ public class PipeNetworks extends SavedData {
 
     public static PipeNetworks readNbt(CompoundTag nbt, HolderLookup.Provider registries) {
         Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
-        for (Map.Entry<ResourceLocation, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
+        for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
             if (nbt.contains(tagKey)) {

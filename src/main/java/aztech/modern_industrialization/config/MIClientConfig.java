@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.config;
 
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class MIClientConfig {
@@ -88,7 +89,7 @@ public final class MIClientConfig {
         this.itemTagTooltips = builder.start("itemTagTooltips",
                 "Item tag tooltips",
                 "Add item tags to item tooltips.")
-                .define("itemTagTooltips", !FMLEnvironment.production);
+                .define("itemTagTooltips", !FMLLoader.getCurrent().isProduction());
         this.defaultOreGenTooltips = builder.start("defaultOreGenTooltips",
                 "Ore generation tooltips",
                 "Enable the default ore generation tooltips.",

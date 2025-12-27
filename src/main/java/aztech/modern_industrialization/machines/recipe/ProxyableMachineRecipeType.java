@@ -27,7 +27,7 @@ package aztech.modern_industrialization.machines.recipe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -36,7 +36,7 @@ import net.minecraft.world.level.Level;
  * A machine recipe type that allows adding proxies
  */
 public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
-    public ProxyableMachineRecipeType(ResourceLocation id) {
+    public ProxyableMachineRecipeType(Identifier id) {
         super(id);
     }
 

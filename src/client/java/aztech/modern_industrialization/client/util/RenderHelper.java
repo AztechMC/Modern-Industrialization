@@ -59,7 +59,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
@@ -86,7 +86,7 @@ public class RenderHelper {
         }
     }
 
-    private static final QuadCube whiteQuads = new QuadCube(ResourceLocation.fromNamespaceAndPath("neoforge", "white"));
+    private static final QuadCube whiteQuads = new QuadCube(Identifier.fromNamespaceAndPath("neoforge", "white"));
 
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
@@ -194,7 +194,7 @@ public class RenderHelper {
         consumer.putBulkData(matrixEntry, quad, red, green, blue, alpha, light, overlay);
     }
 
-    private static final ResourceLocation LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
+    private static final Identifier LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
 
     public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
         VertexConsumer vc = vertexConsumers.getBuffer(Sheets.cutoutBlockSheet());

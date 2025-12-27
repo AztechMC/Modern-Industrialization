@@ -39,7 +39,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -57,7 +57,7 @@ import snownee.jade.api.ui.IElementHelper;
  */
 public class PipeComponentProvider implements IBlockComponentProvider {
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("pipe");
     }
 

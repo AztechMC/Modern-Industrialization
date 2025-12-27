@@ -27,7 +27,7 @@ package aztech.modern_industrialization.datagen.model;
 import aztech.modern_industrialization.MI;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
@@ -39,7 +39,7 @@ public abstract class BaseModelProvider extends BlockStateProvider {
         super(output, MI.ID, exFileHelper);
     }
 
-    protected ResourceLocation key(Block block) {
+    protected Identifier key(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
@@ -47,7 +47,7 @@ public abstract class BaseModelProvider extends BlockStateProvider {
         return key(block).getPath();
     }
 
-    public ResourceLocation blockTexture(String path) {
+    public Identifier blockTexture(String path) {
         return modLoc(ModelProvider.BLOCK_FOLDER + "/" + path);
     }
 

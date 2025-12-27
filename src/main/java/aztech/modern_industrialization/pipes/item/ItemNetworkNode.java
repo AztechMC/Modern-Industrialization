@@ -45,11 +45,10 @@ import com.mojang.serialization.DataResult;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -59,6 +58,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -141,7 +142,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void save(ValueOutput output) {
         for (ItemConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
@@ -152,17 +153,16 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 connectionTag.put(Integer.toString(i), connection.stacks[i].saveOptional(registries));
             }
             connectionTag.put("upgradeStack", connection.upgradeStack.saveOptional(registries));
-            tag.put(connection.direction.toString(), connectionTag);
+            output.put(connection.direction.toString(), connectionTag);
         }
-        tag.putInt("inactiveTicks", inactiveTicks);
-        return tag;
+        output.putInt("inactiveTicks", inactiveTicks);
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void read(ValueInput input) {
         for (Direction direction : Direction.values()) {
-            if (tag.contains(direction.toString())) {
-                CompoundTag connectionTag = tag.getCompound(direction.toString());
+            if (input.contains(direction.toString())) {
+                CompoundTag connectionTag = input.getCompound(direction.toString());
                 int insertPriority = connectionTag.getInt("insertPriority");
                 int extractPriority = connectionTag.getInt("extractPriority");
                 ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
@@ -179,7 +179,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 connections.add(connection);
             }
         }
-        inactiveTicks = tag.getInt("inactiveTicks");
+        inactiveTicks = input.getInt("inactiveTicks");
     }
 
     public static PipeEndpointType decodeConnectionType(int i) {
@@ -300,7 +300,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         int getMoves() {
-            var upgradeData = upgradeStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
+            var upgradeData = upgradeStack.typeHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
             int extraExtractedItems = upgradeData == null ? 0 : upgradeData.maxExtractedItems();
             return MIServerConfig.INSTANCE.baseItemPipeTransfer.getAsInt() + (extraExtractedItems * upgradeStack.getCount());
         }
@@ -377,9 +377,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
         private class ScreenHandlerFactory implements PipeMenuProvider {
             private final ItemPipeInterface iface;
-            private final ResourceLocation pipeType;
+            private final Identifier pipeType;
 
-            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, Identifier pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {

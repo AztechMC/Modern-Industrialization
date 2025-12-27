@@ -30,7 +30,7 @@ import java.util.Set;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 
@@ -59,7 +59,7 @@ public class BlockLootTableProvider extends BlockLootSubProvider {
             if (blockDefinition.blockLoot instanceof MIBlockLoot.DropSelf) {
                 dropSelf(block);
             } else if (blockDefinition.blockLoot instanceof MIBlockLoot.Ore ore) {
-                add(block, createOreDrop(block, BuiltInRegistries.ITEM.get(ResourceLocation.parse(ore.loot()))));
+                add(block, createOreDrop(block, BuiltInRegistries.ITEM.getValue(Identifier.parse(ore.loot()))));
             }
         }
     }

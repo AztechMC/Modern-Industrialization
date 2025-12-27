@@ -26,15 +26,15 @@ package aztech.modern_industrialization.datagen.model;
 
 import aztech.modern_industrialization.MI;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class DelegatingModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
-    public static final ResourceLocation LOADER_ID = MI.id("delegate");
-    private ResourceLocation delegate;
+    public static final Identifier LOADER_ID = MI.id("delegate");
+    private Identifier delegate;
 
     public DelegatingModelBuilder(T parent, ExistingFileHelper existingFileHelper) {
         super(LOADER_ID, parent, existingFileHelper, false);

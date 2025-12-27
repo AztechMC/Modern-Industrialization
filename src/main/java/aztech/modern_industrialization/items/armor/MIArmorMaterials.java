@@ -28,30 +28,20 @@ import aztech.modern_industrialization.MI;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class MIArmorMaterials {
     private static final DeferredRegister<ArmorMaterial> DR = DeferredRegister.create(Registries.ARMOR_MATERIAL, MI.ID);
 
-    public static final Holder<ArmorMaterial> DIESEL_JETPACK = DR.register("diesel_jetpack", location -> new ArmorMaterial(
-            Map.of(),
-            0,
-            SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair Diesel Jetpack");
-            },
-            List.of(new ArmorMaterial.Layer(location)),
-            0,
-            0));
     public static final Holder<ArmorMaterial> GRAVICHESTPLATE = DR.register("gravichestplate", location -> new ArmorMaterial(
             Map.of(),
             0,

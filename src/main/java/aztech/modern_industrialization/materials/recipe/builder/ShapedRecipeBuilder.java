@@ -35,8 +35,10 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -100,8 +102,8 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
                 throw new IllegalArgumentException("Key mapping is already registered: " + key);
             }
             Ingredient ingredient = maybeTag.startsWith("#")
-                    ? Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))))
-                    : Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
+                    ? Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))))
+                    : Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
             inputs.put(key, ingredient);
         }
         return this;
@@ -161,7 +163,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             }
 
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            recipeOutput.accept(MI.id(fullId), new ShapedRecipe(
+            recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(fullId)), new ShapedRecipe(
                     "",
                     CraftingBookCategory.MISC,
                     ShapedRecipePattern.of(inputs, pattern),

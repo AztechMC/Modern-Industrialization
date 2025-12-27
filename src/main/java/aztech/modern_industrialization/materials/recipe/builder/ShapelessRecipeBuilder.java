@@ -28,7 +28,9 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -83,7 +85,7 @@ public class ShapelessRecipeBuilder implements MaterialRecipeBuilder {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
             recipeOutput.accept(
-                    MI.id(fullId),
+                    ResourceKey.create(Registries.RECIPE, MI.id(fullId)),
                     new ShapelessRecipe(
                             "",
                             CraftingBookCategory.MISC,

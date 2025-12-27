@@ -95,9 +95,10 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     public static void registerFluidAPI(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> {
-                return ((LargeTankMultiblockBlockEntity) be).getExposedFluidHandler();
-            });
+            // TODO 26.1
+//            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet, (be, direction) -> {
+//                return ((LargeTankMultiblockBlockEntity) be).getExposedFluidHandler();
+//            });
         });
     }
 
@@ -223,7 +224,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             link();
             if (!this.getFluidData().equals(oldFluidData)) {
                 oldFluidData = this.getFluidData();

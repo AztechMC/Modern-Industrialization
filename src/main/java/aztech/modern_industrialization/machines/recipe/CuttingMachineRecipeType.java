@@ -25,13 +25,13 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import java.util.List;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
-    public CuttingMachineRecipeType(ResourceLocation id) {
+    public CuttingMachineRecipeType(Identifier id) {
         super(id);
     }
 

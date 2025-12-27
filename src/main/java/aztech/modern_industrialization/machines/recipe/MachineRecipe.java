@@ -29,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
@@ -47,6 +50,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -256,9 +260,12 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     public record ItemOutput(ItemVariant variant, int amount, float probability) {
+        private static final Codec<Holder<Item>> ITEM_NON_AIR_CODEC = BuiltInRegistries.ITEM
+                .holderByNameCodec()
+                .validate(item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item));
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item")
+                        ITEM_NON_AIR_CODEC.fieldOf("item")
                                 .forGetter(itemOutput -> itemOutput.variant.getItem().builtInRegistryHolder()),
                         AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.amount),
                         DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)

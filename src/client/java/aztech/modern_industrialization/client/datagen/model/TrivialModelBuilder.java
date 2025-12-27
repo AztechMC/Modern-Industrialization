@@ -25,17 +25,17 @@
 package aztech.modern_industrialization.client.datagen.model;
 
 import java.util.function.BiFunction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class TrivialModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
-    public static <T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, TrivialModelBuilder<T>> begin(ResourceLocation loaderId) {
+    public static <T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, TrivialModelBuilder<T>> begin(Identifier loaderId) {
         return (parent, helper) -> new TrivialModelBuilder<>(loaderId, parent, helper);
     }
 
-    private TrivialModelBuilder(ResourceLocation loaderId, T parent, ExistingFileHelper existingFileHelper) {
+    private TrivialModelBuilder(Identifier loaderId, T parent, ExistingFileHelper existingFileHelper) {
         super(loaderId, parent, existingFileHelper, false);
     }
 }

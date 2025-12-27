@@ -44,6 +44,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -56,7 +57,7 @@ public class MICommonProxy {
     public static MICommonProxy INSTANCE = instantiateProxy();
 
     private static MICommonProxy instantiateProxy() {
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLLoader.getCurrent().getDist().isClient()) {
             try {
                 Class<?> clientProxy = Class.forName("aztech.modern_industrialization.client.MIClientProxy");
                 return (MICommonProxy) clientProxy.getConstructor().newInstance();

@@ -28,19 +28,19 @@ import aztech.modern_industrialization.MI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class Definition {
     public static List<Definition> TRANSLATABLE_DEFINITION = new ArrayList<>();
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final String englishName;
 
     public String getEnglishName() {
         return englishName;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

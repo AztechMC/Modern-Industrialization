@@ -29,7 +29,7 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -358,7 +358,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         });
     }
 
-    public void moveRecipe(ResourceLocation recipeId, int fillAction, int amount) {
+    public void moveRecipe(Identifier recipeId, int fillAction, int amount) {
         var recipeHolder = this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream()
                 .filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
         if (recipeHolder == null) {

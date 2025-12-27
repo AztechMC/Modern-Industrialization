@@ -34,7 +34,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RotatedModelHelper {
     /**
@@ -61,7 +61,7 @@ public class RotatedModelHelper {
         };
     }
 
-    public static BakedModel[] loadRotatedModels(ResourceLocation modelId, ModelBaker modelBaker,
+    public static BakedModel[] loadRotatedModels(Identifier modelId, ModelBaker modelBaker,
             Function<Material, TextureAtlasSprite> spriteGetter) {
         // Load side models
         BakedModel[] models = new BakedModel[6];

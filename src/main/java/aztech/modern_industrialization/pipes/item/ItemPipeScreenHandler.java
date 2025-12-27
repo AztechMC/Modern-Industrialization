@@ -39,7 +39,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -82,13 +82,13 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     }
 
     @Override
-    public void clicked(int i, int j, ClickType actionType, Player playerEntity) {
+    public void clicked(int i, int j, ContainerInput actionType, Player playerEntity) {
         if (i >= 0) {
             Slot slot = slots.get(i);
             if (slot instanceof FilterSlot) {
-                if (actionType == ClickType.PICKUP) {
+                if (actionType == ContainerInput.PICKUP) {
                     slot.set(getCarried().copy());
-                } else if (actionType == ClickType.QUICK_MOVE) {
+                } else if (actionType == ContainerInput.QUICK_MOVE) {
                     slot.set(ItemStack.EMPTY);
                 }
                 return;
@@ -220,7 +220,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
                 // Prevent placing motors in `IN` pipes.
                 return false;
             }
-            return stack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES) != null;
+            return stack.typeHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES) != null;
         }
 
         @Override

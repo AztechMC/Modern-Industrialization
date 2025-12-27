@@ -37,7 +37,7 @@ import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.Objects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * All the per-part texture processing logic.
@@ -64,7 +64,7 @@ class PartTextureGenerator {
         this.mtm = mtm;
         this.material = material;
         this.materialName = material.name;
-        this.itemPath = ResourceLocation.parse(part.getItemId()).getPath();
+        this.itemPath = Identifier.parse(part.getItemId()).getPath();
     }
 
     private void build(MaterialItemPart part) throws IOException {
@@ -155,12 +155,12 @@ class PartTextureGenerator {
                 material.get(SET).name, itemPath, false, new HotIngotColoramp(coloramp, 0.1, 0.5));
     }
 
-    private void processOre(ResourceLocation stoneType, MaterialOreSet oreSet) throws IOException {
+    private void processOre(Identifier stoneType, MaterialOreSet oreSet) throws IOException {
         String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
-        ResourceLocation from;
+        Identifier from;
         boolean deepslate = stoneType.equals(OrePart.TYPE_DEEPSLATE);
         if (stoneType.equals(OrePart.TYPE_STONE) || deepslate) {
-            from = ResourceLocation.withDefaultNamespace(switch (oreSet) {
+            from = Identifier.withDefaultNamespace(switch (oreSet) {
                 case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
                 case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
                 case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";

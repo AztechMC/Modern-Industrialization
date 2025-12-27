@@ -45,7 +45,7 @@ public class GeneratorTests {
         var lvDieselGeneratorBlock = BuiltInRegistries.BLOCK.getOptional(MI.id("lv_diesel_generator")).orElseThrow();
         helper.setBlock(generatorPos, lvDieselGeneratorBlock);
 
-        var dieselGenerator = (GeneratorMachineBlockEntity) helper.getBlockEntity(generatorPos);
+        var dieselGenerator = helper.getBlockEntity(generatorPos, GeneratorMachineBlockEntity.class);
 
         try (var tx = Transaction.openRoot()) {
             long inserted = dieselGenerator.getInventory().fluidStorage.insert(MIFluids.BIODIESEL.variant(), 1, tx);

@@ -26,7 +26,9 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.recipe.json.MIRecipeBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 
 public class MachineRecipeBuilder extends MIRecipeJson<MachineRecipeBuilder> implements MIRecipeBuilder {
     public MachineRecipeBuilder(MachineRecipeType machineRecipeType, int eu, int duration) {
@@ -39,6 +41,6 @@ public class MachineRecipeBuilder extends MIRecipeJson<MachineRecipeBuilder> imp
 
     @Override
     public void offerTo(RecipeOutput recipeOutput, String path) {
-        recipeOutput.accept(MI.id(path), recipe, null);
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), recipe, null);
     }
 }

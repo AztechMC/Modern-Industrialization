@@ -38,11 +38,12 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
@@ -51,23 +52,23 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
         registerComponents(new MachineComponent.ClientOnly() {
             @Override
-            public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
+            public void writeClientNbt(ValueOutput output) {
                 if (matchedCasing != null) {
-                    tag.putString("matchedCasing", matchedCasing.toString());
+                    output.putString("matchedCasing", matchedCasing.toString());
                 }
             }
 
             @Override
-            public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-                matchedCasing = tag.contains("matchedCasing") ? ResourceLocation.tryParse(tag.getString("matchedCasing")) : null;
+            public void readClientNbt(ValueInput input) {
+                matchedCasing = input.getString("matchedCasing").map(Identifier::tryParse).orElse(null);
             }
         });
     }
 
     @Nullable
-    private ResourceLocation lastSyncedMachineCasing = null;
+    private Identifier lastSyncedMachineCasing = null;
     @Nullable
-    private ResourceLocation matchedCasing = null;
+    private Identifier matchedCasing = null;
 
     public abstract HatchType getHatchType();
 

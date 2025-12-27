@@ -46,7 +46,7 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -132,7 +132,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+    protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
         var energyItem = player.getItemInHand(hand).getCapability(EnergyApi.ITEM);
         int stackSize = player.getItemInHand(hand).getCount();
         if (energyItem != null) {
@@ -169,7 +169,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                     }
                 }
             }
-            return ItemInteractionResult.sidedSuccess(player.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(player, hand, face);
     }

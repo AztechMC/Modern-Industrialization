@@ -27,7 +27,7 @@ package aztech.modern_industrialization.datagen.tag;
 import aztech.modern_industrialization.MIItem;
 import java.util.*;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -64,7 +64,7 @@ public class TagsToGenerate {
     }
 
     private static void addTranslation(String tag, String tagEnglishName) {
-        var tagId = ResourceLocation.parse(tag);
+        var tagId = Identifier.parse(tag);
         tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 
@@ -72,7 +72,7 @@ public class TagsToGenerate {
         if (tag.startsWith("#")) {
             throw new IllegalArgumentException("Tag must not start with #: " + tag);
         }
-        generateTagNoTranslation(ItemTags.create(ResourceLocation.parse(tag)), item);
+        generateTagNoTranslation(ItemTags.create(Identifier.parse(tag)), item);
         addTranslation(tag, tagEnglishName);
     }
 

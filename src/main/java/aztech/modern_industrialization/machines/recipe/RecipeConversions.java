@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -46,7 +46,7 @@ import org.jspecify.annotations.Nullable;
 
 public class RecipeConversions {
     public static RecipeHolder<MachineRecipe> ofSmelting(RecipeHolder<SmeltingRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
+        Identifier id = Identifier.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
         var smeltingRecipe = holder.value();
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         MachineRecipe recipe = new MachineRecipe(type);
@@ -68,7 +68,7 @@ public class RecipeConversions {
             return null;
         }
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
+        Identifier id = Identifier.fromNamespaceAndPath(holder.id().getNamespace(),
                 "/" + holder.id().getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();
         MachineRecipe recipe = new MachineRecipe(type);
@@ -96,7 +96,7 @@ public class RecipeConversions {
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            Identifier id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;

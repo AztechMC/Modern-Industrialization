@@ -214,7 +214,7 @@ public class MITooltips {
 
     // Data-driven tooltips
     public static final TooltipAttachment DATA_DRIVEN = TooltipAttachment.ofMultilines((stack, item) -> {
-        var dataMap = stack.getItemHolder().getData(MIDataMaps.ITEM_TOOLTIPS);
+        var dataMap = stack.typeHolder().getData(MIDataMaps.ITEM_TOOLTIPS);
         if (dataMap != null) {
             return dataMap.components();
         } else {
@@ -348,7 +348,7 @@ public class MITooltips {
 
     public static final TooltipAttachment SPEED_UPGRADES = TooltipAttachment.ofMultilines(
             (itemStack, item) -> {
-                var upgrade = itemStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
+                var upgrade = itemStack.typeHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
                 if (upgrade != null) {
                     List<Component> lines = new ArrayList<>();
                     lines.add(new Line(MIText.TooltipSpeedUpgrade).arg(upgrade.maxExtractedItems()).build());
@@ -459,7 +459,7 @@ public class MITooltips {
     }
 
     private static void add(String itemId, String... englishTooltipsLine) {
-        add(BuiltInRegistries.ITEM.get(MI.id(itemId)), englishTooltipsLine);
+        add(BuiltInRegistries.ITEM.getValue(MI.id(itemId)), englishTooltipsLine);
     }
 
     static {

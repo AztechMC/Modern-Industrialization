@@ -46,7 +46,7 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var serverWorld = (ServerLevel) level;
 
             for (Direction direction : Direction.values()) {

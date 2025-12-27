@@ -45,7 +45,7 @@ import java.util.List;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -112,7 +112,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     @Override
     public void tick() {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
 
         steamHeater.tick(Collections.singletonList(inventory.getFluidStacks().get(0)), Collections.singletonList(inventory.getFluidStacks().get(1)));
@@ -133,7 +133,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+    protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
         var heldItem = player.getItemInHand(hand);
         if (!heldItem.isEmpty()) {
             var waterSlotHandler = new MIFluidStorage(inventory.getFluidStacks().subList(0, 1)).fluidHandler;
@@ -141,7 +141,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
                     Integer.MAX_VALUE, player, true);
             if (result.isSuccess()) {
                 player.setItemInHand(hand, result.getResult());
-                return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(player, hand, face);

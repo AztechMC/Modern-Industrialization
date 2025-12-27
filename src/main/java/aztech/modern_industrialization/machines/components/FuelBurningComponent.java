@@ -34,9 +34,10 @@ import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class FuelBurningComponent implements MachineComponent {
     /**
@@ -166,17 +167,17 @@ public class FuelBurningComponent implements MachineComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putLong("burningEuBuffer", burningEuBuffer);
+    public void writeNbt(ValueOutput output) {
+        output.putLong("burningEuBuffer", burningEuBuffer);
         if (burningItemTotalEu != 0) {
-            tag.putLong("burningItemTotalEu", burningItemTotalEu);
+            output.putLong("burningItemTotalEu", burningItemTotalEu);
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        burningEuBuffer = tag.getLong("burningEuBuffer");
-        burningItemTotalEu = tag.getLong("burningItemTotalEu");
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        burningEuBuffer = input.getLongOr("burningEuBuffer", 0);
+        burningItemTotalEu = input.getLongOr("burningItemTotalEu", 0);
     }
 
     public List<Component> getTooltips() {

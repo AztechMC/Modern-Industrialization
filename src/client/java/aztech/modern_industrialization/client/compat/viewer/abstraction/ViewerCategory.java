@@ -34,7 +34,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -47,17 +47,17 @@ import org.jspecify.annotations.Nullable;
  */
 public abstract class ViewerCategory<D> {
     public final Class<D> dataClass;
-    public final ResourceLocation id;
+    public final Identifier id;
     public final Component title;
     public final Icon icon;
     public final int width;
     public final int height;
 
-    protected ViewerCategory(Class<D> dataClass, ResourceLocation id, Component title, ItemStack icon, int width, int height) {
+    protected ViewerCategory(Class<D> dataClass, Identifier id, Component title, ItemStack icon, int width, int height) {
         this(dataClass, id, title, new Icon.Stack(icon), width, height);
     }
 
-    protected ViewerCategory(Class<D> dataClass, ResourceLocation id, Component title, Icon icon, int width, int height) {
+    protected ViewerCategory(Class<D> dataClass, Identifier id, Component title, Icon icon, int width, int height) {
         this.dataClass = dataClass;
         this.id = id;
         this.title = title;
@@ -80,12 +80,12 @@ public abstract class ViewerCategory<D> {
      */
     public abstract void buildWidgets(D recipe, WidgetList widgets);
 
-    public abstract ResourceLocation getRecipeId(D recipe);
+    public abstract Identifier getRecipeId(D recipe);
 
     public sealed interface Icon {
         record Stack(ItemStack stack) implements Icon {}
 
-        record Texture(ResourceLocation loc, int u, int v) implements Icon {}
+        record Texture(Identifier loc, int u, int v) implements Icon {}
     }
 
     public interface WorkstationConsumer {
@@ -176,7 +176,7 @@ public abstract class ViewerCategory<D> {
 
         void arrow(int x, int y);
 
-        void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height);
+        void texture(Identifier loc, int x, int y, int u, int v, int width, int height);
 
         default void rectangle(Rectangle rectangle, int fillColor) {
             drawable(guiGraphics -> {

@@ -37,7 +37,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
@@ -46,11 +46,11 @@ import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import net.neoforged.neoforge.common.util.Lazy;
 
 public class UseBlockModelUnbakedModel implements IUnbakedGeometry<UseBlockModelUnbakedModel> {
-    public static final ResourceLocation LOADER_ID = MI.id("use_block_model");
+    public static final Identifier LOADER_ID = MI.id("use_block_model");
     public static final IGeometryLoader<UseBlockModelUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
 
         var blockId = GsonHelper.getAsString(jsonObject, "block");
-        var block = BuiltInRegistries.BLOCK.getOptional(ResourceLocation.parse(blockId))
+        var block = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(blockId))
                 .orElseThrow(() -> new JsonSyntaxException("Expected \"block\" to be a block, was unknown string " + blockId));
 
         return new UseBlockModelUnbakedModel(block.defaultBlockState());

@@ -30,11 +30,14 @@ import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     public TankItem(TankBlock block, Properties settings) {
@@ -42,24 +45,24 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         if (this.behaviour.isCreative()) {
-            tooltip.add(FluidHelper.getFluidName(getResource(stack), true));
+            tooltip.accept(FluidHelper.getFluidName(getResource(stack), true));
         } else {
             long capacity = behaviour.getCapacityForResource(getResource(stack));
 
             if (isEmpty(stack)) {
                 if (!isUnlocked(stack)) {
-                    tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getResource(stack), 0, capacity));
+                    FluidHelper.getTooltipForFluidStorage(getResource(stack), 0, capacity).forEach(tooltip);
                 } else {
-                    tooltip.addAll(FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity));
+                    FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity).forEach(tooltip);
                 }
             } else {
-                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getResource(stack), getAmount(stack), capacity));
+                FluidHelper.getTooltipForFluidStorage(getResource(stack), getAmount(stack), capacity).forEach(tooltip);
             }
         }
 
-        super.appendHoverText(stack, context, tooltip, flag);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltip, flag);
     }
 
     @Override

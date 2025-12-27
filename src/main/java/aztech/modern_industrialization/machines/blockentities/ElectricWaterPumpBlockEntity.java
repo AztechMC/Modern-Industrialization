@@ -44,7 +44,7 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
@@ -117,7 +117,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
+    protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
         var result = super.useItemOn(player, hand, face);
         if (!result.consumesAction()) {
             result = redstoneControl.onUse(this, player, hand);

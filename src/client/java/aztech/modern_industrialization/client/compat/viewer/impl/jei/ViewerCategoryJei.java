@@ -51,7 +51,7 @@ import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -254,7 +254,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {
+            public void texture(Identifier loc, int x, int y, int u, int v, int width, int height) {
                 IDrawableStatic drawable = helpers.getGuiHelper().createDrawable(loc, u, v, width, height);
                 drawable.draw(guiGraphics, x, y);
             }
@@ -296,7 +296,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void arrow(int x, int y) {}
 
             @Override
-            public void texture(ResourceLocation loc, int x, int y, int u, int v, int width, int height) {}
+            public void texture(Identifier loc, int x, int y, int u, int v, int width, int height) {}
 
             @Override
             public void drawable(Consumer<GuiGraphics> widget) {}
@@ -314,7 +314,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     }
 
     @Override
-    public ResourceLocation getRegistryName(D recipe) {
+    public Identifier getRegistryName(D recipe) {
         return wrapped.getRecipeId(recipe);
     }
 }

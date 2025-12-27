@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.MI;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -33,10 +33,10 @@ import org.jspecify.annotations.Nullable;
  */
 public interface BackgroundRenderedSlot {
     /**
-     * @return the {@link ResourceLocation} of the slot atlas texture to use for the slot background. Return null to render no background.
+     * @return the {@link Identifier} of the slot atlas texture to use for the slot background. Return null to render no background.
      */
     @Nullable
-    default ResourceLocation getBackgroundAtlasLocation() {
+    default Identifier getBackgroundAtlasLocation() {
         return MI.id("textures/gui/container/slot_atlas.png");
     }
 

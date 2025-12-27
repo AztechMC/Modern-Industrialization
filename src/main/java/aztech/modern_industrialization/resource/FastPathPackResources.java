@@ -31,8 +31,8 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.minecraft.FileUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FileUtil;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
@@ -52,12 +52,12 @@ public class FastPathPackResources extends PathPackResources {
 
     @Nullable
     @Override
-    public IoSupplier<InputStream> getResource(PackType packType, ResourceLocation location) {
+    public IoSupplier<InputStream> getResource(PackType packType, Identifier location) {
         Path path = this.root.resolve(packType.getDirectory()).resolve(location.getNamespace());
         return getResource(location, path);
     }
 
-    public static IoSupplier<InputStream> getResource(ResourceLocation location, Path path) {
+    public static IoSupplier<InputStream> getResource(Identifier location, Path path) {
         return FileUtil.decomposePath(location.getPath()).mapOrElse(list -> {
             Path path2 = FileUtil.resolvePath(path, list);
             return returnFileIfExists(path2);

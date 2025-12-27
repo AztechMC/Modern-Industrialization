@@ -41,7 +41,7 @@ import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -77,7 +77,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
         }
 
         @Override
-        public Builder display(ItemLike pIcon, Component pTitle, Component pDescription, @Nullable ResourceLocation pBackground,
+        public Builder display(ItemLike pIcon, Component pTitle, Component pDescription, @Nullable Identifier pBackground,
                 AdvancementType pType, boolean pShowToast, boolean pAnnounceChat, boolean pHidden) {
             return (Builder) super.display(pIcon, pTitle, pDescription, pBackground, pType, pShowToast, pAnnounceChat, pHidden);
         }
@@ -86,7 +86,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
                 ItemLike icon,
                 String titleEnglishName,
                 String englishDescription,
-                @Nullable ResourceLocation pBackground,
+                @Nullable Identifier pBackground,
                 AdvancementType pType,
                 boolean pShowToast,
                 boolean pAnnounceChat,

@@ -38,7 +38,7 @@ import java.util.Objects;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -63,7 +63,7 @@ public final class CableTier implements Comparable<CableTier> {
      * {@code null} for LV only.
      */
     @Nullable
-    public final ResourceLocation itemKey;
+    public final Identifier itemKey;
     /**
      * {@code true} if this is present in base MI, {@code false} if added using some API.
      */
@@ -76,7 +76,7 @@ public final class CableTier implements Comparable<CableTier> {
     public final MachineCasing casing;
 
     @ApiStatus.Internal
-    public CableTier(String name, String shortEnglishName, String longEnglishName, long eu, ResourceLocation itemKey, boolean builtin) {
+    public CableTier(String name, String shortEnglishName, String longEnglishName, long eu, @Nullable Identifier itemKey, boolean builtin) {
         StoragePreconditions.notNegative(eu);
 
         this.name = name;
@@ -89,7 +89,7 @@ public final class CableTier implements Comparable<CableTier> {
     }
 
     private CableTier(String name, String shortEnglishName, String longEnglishName, long eu, @Nullable ResourceKey<Block> key) {
-        this(name, shortEnglishName, longEnglishName, eu, key == null ? null : key.location(), true);
+        this(name, shortEnglishName, longEnglishName, eu, key == null ? null : key.identifier(), true);
     }
 
     public String shortEnglishKey() {

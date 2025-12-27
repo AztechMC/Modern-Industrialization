@@ -27,7 +27,7 @@ package aztech.modern_industrialization.items.tools;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIRegistries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -39,7 +39,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class QuantumSword extends Item {
-    public static final ResourceLocation BASE_INFINITE_DAMAGE = MI.id("base_infinite_damage");
+    public static final Identifier BASE_INFINITE_DAMAGE = MI.id("base_infinite_damage");
 
     public QuantumSword(Properties settings) {
         super(settings.attributes(ItemAttributeModifiers.builder()
@@ -51,15 +51,14 @@ public class QuantumSword extends Item {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
+    public void hurtEnemy(ItemStack pStack, LivingEntity pTarget, LivingEntity pAttacker) {
         // TODO: if lama was hit, kill the wander trader (and the opposite) and give an
         // advancement
         // TODO: same for phantoms
-        return true;
     }
 
     @Override
-    public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
-        return !player.isCreative();
+    public boolean canDestroyBlock(ItemStack itemStack, BlockState state, Level level, BlockPos pos, LivingEntity user) {
+        return !(user instanceof Player player && player.isCreative());
     }
 }

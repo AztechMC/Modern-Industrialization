@@ -28,28 +28,28 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class HatchType {
-    private final ResourceLocation id;
-    private final Either<Component, ResourceLocation> descriptionOrBlockId;
+    private final Identifier id;
+    private final Either<Component, Identifier> descriptionOrBlockId;
 
-    HatchType(ResourceLocation id, Component description) {
+    HatchType(Identifier id, Component description) {
         this.id = id;
         this.descriptionOrBlockId = Either.left(description);
     }
 
-    HatchType(ResourceLocation id, ResourceLocation blockId) {
+    HatchType(Identifier id, Identifier blockId) {
         this.id = id;
         this.descriptionOrBlockId = Either.right(blockId);
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return id;
     }
 
     public MutableComponent description() {
-        return descriptionOrBlockId.map(Component::copy, id -> BuiltInRegistries.BLOCK.get(id).getName());
+        return descriptionOrBlockId.map(Component::copy, id -> BuiltInRegistries.BLOCK.getValue(id).getName());
     }
 
     @Override

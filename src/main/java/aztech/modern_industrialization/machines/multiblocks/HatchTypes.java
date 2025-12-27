@@ -30,10 +30,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class HatchTypes {
-    private static final Map<ResourceLocation, HatchType> registeredHatches = new HashMap<>();
+    private static final Map<Identifier, HatchType> registeredHatches = new HashMap<>();
 
     public static final HatchType ITEM_INPUT = register(MI.id("item_input"), MIText.ItemInputHatch);
     public static final HatchType ITEM_OUTPUT = register(MI.id("item_output"), MIText.ItemOutputHatch);
@@ -45,7 +45,7 @@ public class HatchTypes {
     public static final HatchType NUCLEAR_FLUID = register(MI.id("nuclear_fluid"), MI.id("nuclear_fluid_hatch"));
     public static final HatchType LARGE_TANK = register(MI.id("large_tank"), MI.id("large_tank_hatch"));
 
-    public static HatchType register(ResourceLocation id, MutableComponent description) {
+    public static HatchType register(Identifier id, MutableComponent description) {
         if (registeredHatches.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate hatch type definition: " + id);
         }
@@ -54,14 +54,14 @@ public class HatchTypes {
         return type;
     }
 
-    public static HatchType register(ResourceLocation id, MIText description) {
+    public static HatchType register(Identifier id, MIText description) {
         return register(id, description.text());
     }
 
     /**
      * The block id corresponds to the user-facing description of the hatch type.
      */
-    public static HatchType register(ResourceLocation id, ResourceLocation blockId) {
+    public static HatchType register(Identifier id, Identifier blockId) {
         if (registeredHatches.containsKey(id)) {
             throw new IllegalArgumentException("Duplicate hatch type definition: " + id);
         }
@@ -70,7 +70,7 @@ public class HatchTypes {
         return type;
     }
 
-    public static HatchType get(ResourceLocation id) {
+    public static HatchType get(Identifier id) {
         var type = registeredHatches.get(id);
         if (type != null) {
             return type;
@@ -80,7 +80,7 @@ public class HatchTypes {
     }
 
     public static HatchType get(String name) {
-        return get(ResourceLocation.isValidPath(name) ? MI.id(name) : ResourceLocation.parse(name));
+        return get(Identifier.isValidPath(name) ? MI.id(name) : Identifier.parse(name));
     }
 
     public static Collection<HatchType> values() {

@@ -52,14 +52,14 @@ public abstract class PipePartBuilder {
     protected Vec3 right;
 
     protected PipePartBuilder(int slotPos, Direction direction) {
-        this.facing = Vec3.atLowerCornerOf(direction.getNormal());
+        this.facing = direction.getUnitVec3();
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3(position, position, position);
         // Find a suitable right direction (both right and up must face inside of the
         // block).
         for (Direction d : Direction.values()) {
-            this.right = Vec3.atLowerCornerOf(d.getNormal());
+            this.right = d.getUnitVec3();
             if (isTowardsInside(this.right) && isTowardsInside(up()))
                 break;
         }

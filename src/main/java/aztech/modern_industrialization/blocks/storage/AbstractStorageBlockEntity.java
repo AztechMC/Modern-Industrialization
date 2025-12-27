@@ -35,6 +35,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
@@ -47,6 +48,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
@@ -80,7 +83,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     public void onChanged() {
         version++;
         setChanged();
-        if (!level.isClientSide)
+        if (!level.isClientSide())
             sync();
     }
 
@@ -99,7 +102,8 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.isShiftKeyDown()) {
             var block = (AbstractStorageBlock) getBlockState().getBlock();
-            level.addFreshEntity(new ItemEntity(level, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, block.getStack(this)));
+            // TODO 26.1
+//            level.addFreshEntity(new ItemEntity(level, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, block.getStack(this)));
             level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
         } else {
             if (this.behaviour.isLockable()) {
@@ -238,7 +242,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
 
         var storage = input.get(componentType());
@@ -264,23 +268,23 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
+    public void removeComponentsFromTag(ValueOutput output) {
+        super.removeComponentsFromTag(output);
 
-        tag.remove("locked");
-        tag.remove("amt");
+        output.discard("locked");
+        output.discard("amt");
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        resource = loadResource(tag, registries);
+    public void loadAdditional(ValueInput input) {
+        resource = loadResource(input);
 
         if (behaviour.isLockable()) {
-            isLocked = tag.getBoolean("locked");
+            isLocked = input.getBooleanOr("locked", false);
         }
 
         if (!behaviour.isCreative()) {
-            amount = tag.getLong("amt");
+            amount = input.getLongOr("amt", 0);
             if (resource.isBlank()) {
                 amount = 0;
             }
@@ -288,15 +292,15 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    public void saveAdditional(ValueOutput output) {
         if (behaviour.isLockable()) {
-            tag.putBoolean("locked", isLocked);
+            output.putBoolean("locked", isLocked);
         }
 
         if (!behaviour.isCreative()) {
-            tag.putLong("amt", amount);
+            output.putLong("amt", amount);
         }
-        saveResource(resource, tag, registries);
+        saveResource(resource, output);
     }
 
     public void setResource(T resource) {
@@ -305,9 +309,9 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     public abstract DataComponentType<ResourceStorage<T>> componentType();
 
-    public abstract T loadResource(CompoundTag tag, HolderLookup.Provider registries);
+    public abstract T loadResource(ValueInput input);
 
-    public abstract void saveResource(T resource, CompoundTag tag, HolderLookup.Provider registries);
+    public abstract void saveResource(T resource, ValueOutput output);
 
     public abstract T getBlankResource();
 }

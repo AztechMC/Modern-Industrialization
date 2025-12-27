@@ -36,12 +36,12 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ViewerPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = MI.id("viewer");
+    private static final Identifier ID = MI.id("viewer");
 
     private final List<ViewerCategoryJei<?>> categories = new ArrayList<>();
 
@@ -82,7 +82,7 @@ public class ViewerPluginJei implements IModPlugin {
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 }

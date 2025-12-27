@@ -38,7 +38,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -54,7 +54,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
-    protected abstract ResourceLocation getBackgroundTexture();
+    protected abstract Identifier getBackgroundTexture();
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {

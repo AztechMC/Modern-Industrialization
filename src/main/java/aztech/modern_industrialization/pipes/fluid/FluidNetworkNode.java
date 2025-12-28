@@ -96,10 +96,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private IFluidHandler getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
-        if (connection.cache == null) {
-            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
-                    connection.direction.getOpposite());
-        }
+        // TODO 26.1
+//        if (connection.cache == null) {
+//            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
+//                    connection.direction.getOpposite());
+//        }
         var storage = connection.cache.getCapability();
         return Objects.requireNonNullElse(storage, EmptyFluidHandler.INSTANCE);
     }
@@ -132,7 +133,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
-        return world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
+        // TODO 26.1
+//        return world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
+        return false;
     }
 
     @Override

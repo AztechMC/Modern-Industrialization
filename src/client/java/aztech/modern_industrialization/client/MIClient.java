@@ -62,7 +62,6 @@ import aztech.modern_industrialization.client.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
-import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
@@ -101,6 +100,7 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -132,6 +132,9 @@ public class MIClient {
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());
+        NeoForge.EVENT_BUS.addListener(RecipesReceivedEvent.class, event -> {
+            MIClientProxy.clientSideRecipes = event.getRecipeMap();
+        });
 
         NeoForge.EVENT_BUS.addListener(RenderFrameEvent.Pre.class, event -> {
             JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance());

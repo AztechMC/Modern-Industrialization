@@ -75,6 +75,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -87,6 +88,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -144,6 +146,12 @@ public class MI {
             var player = (ServerPlayer) event.getEntity();
             var server = Objects.requireNonNull(player.level().getServer());
             PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
+        });
+        NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
+            for (var entry : MIRegistries.RECIPE_TYPES.getEntries()) {
+                event.sendRecipes(entry.value());
+            }
+            event.sendRecipes(RecipeType.SMELTING, RecipeType.STONECUTTING);
         });
         NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
 

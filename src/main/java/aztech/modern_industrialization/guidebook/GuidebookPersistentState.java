@@ -24,23 +24,31 @@
 
 package aztech.modern_industrialization.guidebook;
 
-import java.util.*;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class GuidebookPersistentState extends SavedData {
-    private static final Factory<GuidebookPersistentState> FACTORY = new Factory<>(GuidebookPersistentState::new, GuidebookPersistentState::fromNbt);
-    private static final String NAME = "modern_industrialization_guidebook";
-    private final Set<String> receivedPlayers;
+    private static final Codec<GuidebookPersistentState> CODEC = RecordCodecBuilder.create(
+            i -> i.group(
+                    UUIDUtil.CODEC_SET.fieldOf("receivedPlayers").forGetter(s -> s.receivedPlayers))
+                    .apply(i, GuidebookPersistentState::new));
+    private static final SavedDataType<GuidebookPersistentState> TYPE = new SavedDataType<>(
+            "modern_industrialization_guidebook",
+            GuidebookPersistentState::new,
+            CODEC);
 
-    private GuidebookPersistentState(Set<String> receivedPlayers) {
+    private final Set<UUID> receivedPlayers;
+
+    private GuidebookPersistentState(Set<UUID> receivedPlayers) {
         this.receivedPlayers = receivedPlayers;
     }
 
@@ -49,35 +57,16 @@ public class GuidebookPersistentState extends SavedData {
     }
 
     public boolean hasPlayerReceivedGuidebook(Player player) {
-        return receivedPlayers.contains(player.getStringUUID());
+        return receivedPlayers.contains(player.getUUID());
     }
 
     public void addPlayerReceivedGuidebook(Player player) {
-        receivedPlayers.add(player.getStringUUID());
+        receivedPlayers.add(player.getUUID());
         setDirty();
-    }
-
-    public static GuidebookPersistentState fromNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        Set<String> receivedPlayers = new HashSet<>();
-        ListTag list = tag.getList("receivedPlayers", Tag.TAG_STRING);
-        for (int i = 0; i < list.size(); ++i) {
-            receivedPlayers.add(list.getString(i));
-        }
-        return new GuidebookPersistentState(receivedPlayers);
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        ListTag list = new ListTag();
-        for (String receivedPlayer : receivedPlayers) {
-            list.add(StringTag.valueOf(receivedPlayer));
-        }
-        tag.put("receivedPlayers", list);
-        return tag;
     }
 
     public static GuidebookPersistentState get(MinecraftServer server) {
         ServerLevel world = server.getLevel(ServerLevel.OVERWORLD);
-        return world.getDataStorage().computeIfAbsent(FACTORY, NAME);
+        return world.getDataStorage().computeIfAbsent(TYPE);
     }
 }

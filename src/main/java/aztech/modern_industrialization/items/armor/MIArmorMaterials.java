@@ -60,7 +60,7 @@ public final class MIArmorMaterials {
             }),
             10,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> Ingredient.of(BuiltInRegistries.ITEM.get(MI.id("rubber_sheet"))),
+            () -> Ingredient.of(BuiltInRegistries.ITEM.getValue(MI.id("rubber_sheet"))),
             List.of(new ArmorMaterial.Layer(location)),
             0,
             0));

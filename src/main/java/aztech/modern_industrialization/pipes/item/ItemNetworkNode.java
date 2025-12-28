@@ -87,7 +87,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.relative(direction);
-        return world.getCapability(Capabilities.ItemHandler.BLOCK, adjPos, direction.getOpposite()) != null;
+        // TODO 26.1
+//        return world.getCapability(Capabilities.ItemHandler.BLOCK, adjPos, direction.getOpposite()) != null;
+        return false;
     }
 
     @Override
@@ -150,36 +152,37 @@ public class ItemNetworkNode extends PipeNetworkNode {
             connectionTag.putInt("insertPriority", connection.insertPriority);
             connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].saveOptional(registries));
+                connectionTag.store(Integer.toString(i), ItemStack.OPTIONAL_CODEC, connection.stacks[i]);
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.saveOptional(registries));
-            output.put(connection.direction.toString(), connectionTag);
+            connectionTag.store("upgradeStack", ItemStack.OPTIONAL_CODEC, connection.upgradeStack);
+            output.store(connection.direction.toString(), CompoundTag.CODEC, connectionTag);
         }
         output.putInt("inactiveTicks", inactiveTicks);
     }
 
     @Override
     public void read(ValueInput input) {
+        var keySet = input.keySet();
         for (Direction direction : Direction.values()) {
-            if (input.contains(direction.toString())) {
-                CompoundTag connectionTag = input.getCompound(direction.toString());
-                int insertPriority = connectionTag.getInt("insertPriority");
-                int extractPriority = connectionTag.getInt("extractPriority");
-                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
+            if (keySet.contains(direction.toString())) {
+                CompoundTag connectionTag = input.read(direction.toString(), CompoundTag.CODEC).orElseThrow();
+                int insertPriority = connectionTag.getIntOr("insertPriority", 0);
+                int extractPriority = connectionTag.getIntOr("extractPriority", 0);
+                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByteOr("connections", (byte) 0)),
                         insertPriority, extractPriority);
-                connection.whitelist = connectionTag.getBoolean("whitelist");
+                connection.whitelist = connectionTag.getBooleanOr("whitelist", false);
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                    connection.stacks[i] = ItemStack.parseOptional(registries, connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i] = connectionTag.read(Integer.toString(i), ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
                     if (!connection.stacks[i].isEmpty()) {
                         connection.stacks[i].setCount(1);
                     }
                 }
                 connection.refreshStacksCache();
-                connection.upgradeStack = ItemStack.parseOptional(registries, connectionTag.getCompound("upgradeStack"));
+                connection.upgradeStack = connectionTag.read("upgradeStack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
                 connections.add(connection);
             }
         }
-        inactiveTicks = input.getInt("inactiveTicks");
+        inactiveTicks = input.getIntOr("inactiveTicks", 0);
     }
 
     public static PipeEndpointType decodeConnectionType(int i) {

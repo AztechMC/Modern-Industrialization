@@ -369,9 +369,8 @@ public class SteamDrillItem
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         useFuel(stack, attacker);
-        return true;
     }
 
     private void useFuel(ItemStack stack, @Nullable LivingEntity entity) {

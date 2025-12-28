@@ -27,16 +27,16 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.MIRegistries;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.List;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -67,11 +67,6 @@ public record ForgeHammerRecipe(
             ForgeHammerRecipe::new);
 
     @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
     public boolean matches(RecipeInput recipeInput, Level world) {
         throw new UnsupportedOperationException();
     }
@@ -82,28 +77,28 @@ public record ForgeHammerRecipe(
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        throw new UnsupportedOperationException();
+    public boolean isSpecial() {
+        return true;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.copyOf(List.of(ingredient));
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return result;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ForgeHammerRecipe> getSerializer() {
         return MIRegistries.FORGE_HAMMER_RECIPE_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<ForgeHammerRecipe> getType() {
         return MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get();
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        throw new UnsupportedOperationException();
     }
 
     public static class Serializer implements RecipeSerializer<ForgeHammerRecipe> {

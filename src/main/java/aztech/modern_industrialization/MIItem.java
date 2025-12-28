@@ -44,6 +44,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -66,10 +71,10 @@ public final class MIItem {
     public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
 
     // Forge hammer, then the various hammers!
-    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p), ITEMS_ORDERED.next());
-    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p), ITEMS_ORDERED.next());
-    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p), ITEMS_ORDERED.next());
-    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(p, ToolMaterial.IRON.durability(), ToolMaterial.IRON.durability()), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(p, 650, 16), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(p, ToolMaterial.DIAMOND.durability(), ToolMaterial.DIAMOND.enchantmentValue()), ITEMS_ORDERED.next());
+    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(p, ToolMaterial.NETHERITE.durability(), ToolMaterial.NETHERITE.enchantmentValue()), ITEMS_ORDERED.next());
 
     // Steam tier stuff
     public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade", SteelUpgradeItem::new, ITEMS_ORDERED.next());
@@ -153,20 +158,23 @@ public final class MIItem {
     public static final ItemDefinition<DieselToolItem> DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7), ITEMS_ORDERED.next())
             .withItemRegistrationEvent((item) -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                    // TODO 26.1
+//                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
                 });
             });
     public static final ItemDefinition<DieselToolItem> DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12), ITEMS_ORDERED.next())
             .withItemRegistrationEvent((item) -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
+                    // TODO 26.1
+//                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, DieselToolItem.CAPACITY), item);
                 });
             });
 
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    // TODO 26.1
+//                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
                 });
             });
 
@@ -216,7 +224,7 @@ public final class MIItem {
             String englishName,
             String path,
             Function<Item.Properties, T> ctor,
-            BiConsumer<Item, ItemModelProvider> modelGenerator,
+            BiConsumer<Item, ItemModelGenerators> modelGenerator,
             SortOrder sortOrder) {
         var holder = ITEMS.registerItem(path, ctor);
         var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
@@ -225,12 +233,12 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.basicItem(item), sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM), sortOrder);
     }
 
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
@@ -245,7 +253,7 @@ public final class MIItem {
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
         return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
-            modelGenerator.basicItem(item).parent(modelGenerator.getExistingFile(Identifier.parse("minecraft:item/handheld")));
+            modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
         }, sortOrder);
     }
 

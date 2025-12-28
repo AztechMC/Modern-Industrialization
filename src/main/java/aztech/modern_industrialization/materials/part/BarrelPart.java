@@ -77,8 +77,8 @@ public class BarrelPart implements PartKeyProvider {
                                     .withBlockConstructor(s -> new BarrelBlock(factory, barrelStorageBehaviour))
                                     .withBlockItemConstructor(BarrelItem::new)
                                     .withModel((block, gen) -> {
-                                        String name = gen.name(block);
                                         // TODO 26.1
+//                                        String name = gen.name(block);
 //                                        gen.simpleBlock(block,
 //                                                gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
                                     })

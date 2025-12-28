@@ -45,13 +45,16 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -160,5 +163,16 @@ public class MIClientProxy extends MICommonProxy {
         }
         // Couldn't find target state
         return state;
+    }
+
+    @Nullable
+    public static RecipeMap clientSideRecipes = null;
+
+    @Override
+    public RecipeMap getRecipeMap(Level level) {
+        if (level instanceof ClientLevel && clientSideRecipes != null) {
+            return clientSideRecipes;
+        }
+        return super.getRecipeMap(level);
     }
 }

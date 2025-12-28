@@ -183,9 +183,10 @@ public class PartTemplate implements PartKeyProvider {
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
                             .withModel((block, gen) -> {
-                                String name = gen.name(block);
-                                gen.simpleBlockWithItem(block,
-                                        gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                                // TODO 26.1
+//                                String name = gen.name(block);
+//                                gen.simpleBlockWithItem(block,
+//                                        gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
                             })
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)

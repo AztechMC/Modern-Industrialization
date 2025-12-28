@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
@@ -39,7 +40,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ResultContainer;
@@ -146,7 +147,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             protected void checkTakeAchievements(ItemStack pStack) {
                 // Do not trust the stack parameter!!
                 if (this.removeCount > 0) {
-                    pStack.onCraftedBy(player.level(), player, this.removeCount);
+                    pStack.onCraftedBy(player, this.removeCount);
                     this.removeCount = 0;
                 }
             }
@@ -210,7 +211,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         if (!input.getItem().isEmpty()) {
             Set<ItemVariant> outputs = new HashSet<>();
 
-            var recipes = new ArrayList<>(this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()));
+            var recipes = new ArrayList<>(MICommonProxy.INSTANCE.getRecipeMap(this.world).byType(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()));
             // Process recipes with hammer damage first, duplicates will be filtered by output!
             recipes.sort(Comparator.comparing(h -> -h.value().hammerDamage()));
 
@@ -278,7 +279,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 tool.set(ItemStack.EMPTY);
 
                 context.execute((world, pos) -> {
-                    world.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, SoundEvents.ITEM_BREAK.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 });
             }
 
@@ -304,7 +305,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
             if (index == 38) {
-                item.onCraftedBy(itemStack2, player.level(), player);
+                item.onCraftedBy(itemStack2, player);
                 if (!this.moveItemStackTo(itemStack2, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
@@ -344,9 +345,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return this.context.evaluate((level, pos) -> {
-            return level.getBlockState(pos).is(MIBlock.FORGE_HAMMER.asBlock()) && player.canInteractWithBlock(pos, 4.0);
-        }, true);
+        return stillValid(this.context, player, MIBlock.FORGE_HAMMER.asBlock());
     }
 
     @Override
@@ -359,8 +358,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     }
 
     public void moveRecipe(Identifier recipeId, int fillAction, int amount) {
-        var recipeHolder = this.world.getRecipeManager().getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream()
-                .filter(r -> r.id().equals(recipeId)).findFirst().orElse(null);
+        var recipeHolder = MICommonProxy.INSTANCE.getRecipeMap(this.world).byType(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()).stream()
+                .filter(r -> r.id().identifier().equals(recipeId)).findFirst().orElse(null);
         if (recipeHolder == null) {
             return;
         }
@@ -460,8 +459,8 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             // Process fill action
             ItemStack oldOutput = output.getItem().copy();
             switch (fillAction) {
-                case 1 -> clicked(output.index, 0, ClickType.PICKUP, player);
-                case 2 -> clicked(output.index, 0, ClickType.QUICK_MOVE, player);
+                case 1 -> clicked(output.index, 0, ContainerInput.PICKUP, player);
+                case 2 -> clicked(output.index, 0, ContainerInput.QUICK_MOVE, player);
             }
             if (!ItemStack.matches(oldOutput, output.getItem())) {
                 didSomething = true;

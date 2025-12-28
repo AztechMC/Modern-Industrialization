@@ -42,8 +42,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -55,8 +57,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -83,11 +84,6 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
         if (state.getDestroySpeed(world, pos) != 0.0f) {
             FluidFuelItemHelper.decrement(stack);
@@ -96,15 +92,14 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         FluidFuelItemHelper.decrement(stack);
-        return true;
     }
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (isSupportedBlock(stack, state) && FluidFuelItemHelper.getAmount(stack) > 0
-                && !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops())) {
+                && !state.is(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);
@@ -217,7 +212,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
                         w.setBlock(pos, newBlock.defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)), 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return InteractionResult.sidedSuccess(w.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
             if (stack.is(ItemTags.SHOVELS)) {
@@ -228,7 +223,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
                         w.setBlock(pos, newState, 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return InteractionResult.sidedSuccess(w.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
             if (stack.is(ItemTags.HOES)) {
@@ -278,9 +273,10 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         return FluidFuelItemHelper.getAmount(pStack) > 0;
     }
 
+    // TODO: use data map instead
     private static class StrippingAccess extends AxeItem {
-        private StrippingAccess(Tier material, Properties settings) {
-            super(material, settings);
+        private StrippingAccess(ToolMaterial material, float attackDamageBaseline, float attackSpeedBaseline, Item.Properties properties) {
+            super(material, attackDamageBaseline, attackSpeedBaseline, properties);
         }
 
         public static Map<Block, Block> getStrippedBlocks() {
@@ -289,8 +285,8 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     private static class PathingAccess extends ShovelItem {
-        private PathingAccess(Tier material, Properties settings) {
-            super(material, settings);
+        private PathingAccess(ToolMaterial material, float attackDamageBaseline, float attackSpeedBaseline, Item.Properties properties) {
+            super(material, attackDamageBaseline, attackSpeedBaseline, properties);
         }
 
         public static Map<Block, BlockState> getPathStates() {
@@ -304,9 +300,10 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         int costMb = (int) (defaultMb / speedMultiplier);
 
         if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
+            // TODO: use IShearable instead
             if (stack.is(Tags.Items.TOOLS_SHEAR) && interactionTarget instanceof Shearable shearable) {
-                if (!interactionTarget.level().isClientSide() && shearable.readyForShearing()) {
-                    shearable.shear(SoundSource.PLAYERS);
+                if (interactionTarget.level() instanceof ServerLevel serverLevel && shearable.readyForShearing()) {
+                    shearable.shear(serverLevel, SoundSource.PLAYERS, stack);
                     interactionTarget.gameEvent(GameEvent.SHEAR, player);
                     return InteractionResult.SUCCESS;
                 } else {

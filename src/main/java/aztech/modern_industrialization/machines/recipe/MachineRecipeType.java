@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.machines.recipe;
 
+import aztech.modern_industrialization.MICommonProxy;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import java.util.*;
@@ -60,7 +61,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
      * Never modify or store the result!
      */
     protected Collection<RecipeHolder<MachineRecipe>> getManagerRecipes(Level level) {
-        return level.getRecipeManager().getAllRecipesFor(this);
+        return MICommonProxy.INSTANCE.getRecipeMap(level).byType(this);
     }
 
     public Collection<RecipeHolder<MachineRecipe>> getRecipesWithoutCache(Level level) {

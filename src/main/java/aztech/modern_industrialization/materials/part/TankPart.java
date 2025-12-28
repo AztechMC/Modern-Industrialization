@@ -33,28 +33,26 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
-import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
-import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jspecify.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
-    public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
-        gen.simpleBlock(block, gen.models()
-                .getBuilder(gen.blockTexture(block).getPath())
-                .parent(gen.models().getExistingFile(gen.modLoc("base/tank")))
-                .texture("0", gen.blockTexture(block).toString()));
-    };
+    // TODO 26.1
+//    public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
+//        gen.simpleBlock(block, gen.models()
+//                .getBuilder(gen.blockTexture(block).getPath())
+//                .parent(gen.models().getExistingFile(gen.modLoc("base/tank")))
+//                .texture("0", gen.blockTexture(block).toString()));
+//    };
 
     @Override
     public PartKey key() {
@@ -87,7 +85,8 @@ public class TankPart implements PartKeyProvider {
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(s -> new TankBlock(factory, tankStorageBehaviour))
                                     .withBlockItemConstructor(TankItem::new)
-                                    .withModel(MODEL_GENERATOR)
+                                    // TODO 26.1
+//                                    .withModel(MODEL_GENERATOR)
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
                                     .sortOrder(SortOrder.TANKS.and(bucketCapacity)));

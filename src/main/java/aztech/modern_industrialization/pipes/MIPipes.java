@@ -31,7 +31,6 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.config.MIStartupConfig;
-import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.api.*;

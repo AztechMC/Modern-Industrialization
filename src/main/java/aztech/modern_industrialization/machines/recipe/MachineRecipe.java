@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.sun.jdi.request.StepRequest;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -89,7 +90,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     public static StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec(MachineRecipeType type) {
-        return NeoForgeStreamCodecs.composite(
+        return StreamCodec.composite(
                 ByteBufCodecs.VAR_INT,
                 r -> r.eu,
                 ByteBufCodecs.VAR_INT,
@@ -180,12 +181,12 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<MachineRecipe> getSerializer() {
         return type;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<MachineRecipe> getType() {
         return type;
     }
 

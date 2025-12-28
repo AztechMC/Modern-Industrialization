@@ -38,6 +38,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -50,12 +51,12 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jspecify.annotations.Nullable;
 
-public class MIItemTagProvider extends ItemTagsProvider {
+public class MIItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
     private final boolean runtimeDatagen;
 
     public MIItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-            @Nullable ExistingFileHelper existingFileHelper, boolean runtimeDatagen) {
-        super(output, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()), MI.ID, existingFileHelper);
+            boolean runtimeDatagen) {
+        super(output, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()), MI.ID);
         this.runtimeDatagen = runtimeDatagen;
     }
 

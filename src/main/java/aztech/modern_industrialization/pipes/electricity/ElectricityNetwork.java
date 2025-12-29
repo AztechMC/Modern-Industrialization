@@ -39,8 +39,8 @@ public class ElectricityNetwork extends PipeNetwork {
     final CableTier tier;
     final PipeStatsCollector stats = new PipeStatsCollector();
 
-    public ElectricityNetwork(int id, @Nullable PipeNetworkData data, CableTier tier) {
-        super(id, data == null ? new ElectricityNetworkData() : data);
+    public ElectricityNetwork(int id, ElectricityNetworkData data, CableTier tier) {
+        super(id, data);
         this.tier = tier;
     }
 

@@ -28,7 +28,6 @@ import appeng.api.features.P2PTunnelAttunement;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
-import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.part.MIParts;
@@ -39,7 +38,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
@@ -48,15 +46,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import org.jspecify.annotations.Nullable;
 
-public class MIItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
+public class MIItemTagProvider extends ItemTagsProvider {
     private final boolean runtimeDatagen;
 
     public MIItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
             boolean runtimeDatagen) {
-        super(output, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()), MI.ID);
+        super(output, lookupProvider, MI.ID);
         this.runtimeDatagen = runtimeDatagen;
     }
 
@@ -66,7 +64,7 @@ public class MIItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
             boolean optional = TagsToGenerate.optionalTags.contains(entry.getKey());
             for (var item : entry.getValue()) {
                 if (optional) {
-                    tag(entry.getKey()).addOptional(BuiltInRegistries.ITEM.getKey(item));
+                    tag(entry.getKey()).addOptional(item);
                 } else {
                     tag(entry.getKey()).add(item);
                 }
@@ -107,11 +105,12 @@ public class MIItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
         tag(ItemTags.LEG_ARMOR).add(MIItem.QUANTUM_LEGGINGS.asItem());
         tag(ItemTags.FOOT_ARMOR).add(MIItem.RUBBER_BOOTS.asItem(), MIItem.QUANTUM_BOOTS.asItem());
 
-        tag(ItemTags.COALS).add(ResourceKey.create(Registries.ITEM, MI.id("lignite_coal")));
+        tag(ItemTags.COALS).add(BuiltInRegistries.ITEM.getValue(MI.id("lignite_coal")));
 
         if (ModList.get().isLoaded("ae2") && !runtimeDatagen) {
-            tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
-                    .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
+            // TODO 26.1
+//            tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
+//                    .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
         }
     }
 

@@ -25,26 +25,15 @@
 package aztech.modern_industrialization.pipes.electricity;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.MapCodec;
 
 // There is no data for electricity pipes, two pipes of the same type can always connect
-public class ElectricityNetworkData extends PipeNetworkData {
+public record ElectricityNetworkData() implements PipeNetworkData {
+    public static final ElectricityNetworkData INSTANCE = new ElectricityNetworkData();
+    public static final MapCodec<ElectricityNetworkData> CODEC = MapCodec.unit(INSTANCE);
+
     @Override
-    public PipeNetworkData clone() {
+    public ElectricityNetworkData clone() {
         return new ElectricityNetworkData();
-    }
-
-    @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {}
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        return tag;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof ElectricityNetworkData;
     }
 }

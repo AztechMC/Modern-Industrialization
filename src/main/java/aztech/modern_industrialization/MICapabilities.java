@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
 
 public class MICapabilities {
     private static final List<Consumer<RegisterCapabilitiesEvent>> processors = new ArrayList<>();
@@ -44,7 +45,7 @@ public class MICapabilities {
     public static void init(RegisterCapabilitiesEvent event) {
         // Fluids
         for (var fluid : MIFluids.FLUID_DEFINITIONS.values()) {
-            event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), fluid.getBucket());
+            event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new BucketResourceHandler(access), fluid.getBucket());
         }
 
         // Delayed processors

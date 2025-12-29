@@ -26,6 +26,7 @@ package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
@@ -71,7 +72,7 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
      * Adds an ingredient that can be any item in the given tag.
      */
     public ShapelessRecipeBuilder requires(TagKey<Item> pTag) {
-        return this.requires(Ingredient.of(pTag));
+        return this.requires(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(pTag)));
     }
 
     /**

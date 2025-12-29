@@ -93,7 +93,7 @@ public record ForgeHammerRecipe(
 
     @Override
     public PlacementInfo placementInfo() {
-        throw new UnsupportedOperationException();
+        return PlacementInfo.NOT_PLACEABLE;
     }
 
     @Override

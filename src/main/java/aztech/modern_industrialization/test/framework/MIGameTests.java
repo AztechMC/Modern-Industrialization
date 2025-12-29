@@ -24,16 +24,10 @@
 
 package aztech.modern_industrialization.test.framework;
 
-import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.test.FluidPipeTests;
 import aztech.modern_industrialization.test.GeneratorTests;
 import aztech.modern_industrialization.test.MultiblockTests;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import net.minecraft.gametest.framework.GameTestGenerator;
-import net.minecraft.gametest.framework.StructureUtils;
-import net.minecraft.gametest.framework.TestFunction;
 
 public final class MIGameTests {
     private MIGameTests() {}
@@ -43,40 +37,41 @@ public final class MIGameTests {
             GeneratorTests.class,
             MultiblockTests.class);
 
-    @GameTestGenerator
-    public static List<TestFunction> generateTests() {
-        var result = new ArrayList<TestFunction>();
-
-        for (var testClass : TEST_CLASSES) {
-            for (var testMethod : testClass.getMethods()) {
-                var gametest = testMethod.getAnnotation(MIGameTest.class);
-                if (gametest == null) {
-                    continue;
-                }
-
-                result.add(new TestFunction(
-                        gametest.batch(),
-                        MI.ID + "." + testMethod.getName().toLowerCase(Locale.ROOT),
-                        MI.id("empty").toString(),
-                        StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
-                        gametest.timeoutTicks(),
-                        gametest.setupTicks(),
-                        gametest.required(),
-                        gametest.manualOnly(),
-                        gametest.attempts(),
-                        gametest.requiredSuccesses(),
-                        gametest.skyAccess(),
-                        gameTestHelper -> {
-                            try {
-                                var testObject = testClass.getConstructor().newInstance();
-                                testMethod.invoke(testObject, new MIGameTestHelper(gameTestHelper.testInfo));
-                            } catch (ReflectiveOperationException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }));
-            }
-        }
-
-        return result;
-    }
+    // TODO 26.1
+//    @GameTestGenerator
+//    public static List<TestFunction> generateTests() {
+//        var result = new ArrayList<TestFunction>();
+//
+//        for (var testClass : TEST_CLASSES) {
+//            for (var testMethod : testClass.getMethods()) {
+//                var gametest = testMethod.getAnnotation(MIGameTest.class);
+//                if (gametest == null) {
+//                    continue;
+//                }
+//
+//                result.add(new TestFunction(
+//                        gametest.batch(),
+//                        MI.ID + "." + testMethod.getName().toLowerCase(Locale.ROOT),
+//                        MI.id("empty").toString(),
+//                        StructureUtils.getRotationForRotationSteps(gametest.rotationSteps()),
+//                        gametest.timeoutTicks(),
+//                        gametest.setupTicks(),
+//                        gametest.required(),
+//                        gametest.manualOnly(),
+//                        gametest.attempts(),
+//                        gametest.requiredSuccesses(),
+//                        gametest.skyAccess(),
+//                        gameTestHelper -> {
+//                            try {
+//                                var testObject = testClass.getConstructor().newInstance();
+//                                testMethod.invoke(testObject, new MIGameTestHelper(gameTestHelper.testInfo));
+//                            } catch (ReflectiveOperationException e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                        }));
+//            }
+//        }
+//
+//        return result;
+//    }
 }

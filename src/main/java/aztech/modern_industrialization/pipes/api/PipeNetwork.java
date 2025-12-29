@@ -50,17 +50,6 @@ public abstract class PipeNetwork {
         this.data = data;
     }
 
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        id = tag.getIntOr("id", 0);
-        data.fromTag(tag.getCompound("data"), registries);
-    }
-
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putInt("id", id);
-        tag.put("data", data.toTag(new CompoundTag(), registries));
-        return tag;
-    }
-
     /**
      * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
      */

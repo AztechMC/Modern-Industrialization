@@ -73,7 +73,7 @@ public final class TranslationProvider implements DataProvider {
     private void addManualEntries() {
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
 
-        addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
+        addTranslation("entity.modern_industrialization.villager.industrialist", "Industrialist");
 
         addTranslation("key.categories.modern_industrialization.modern_industrialization", "Modern Industrialization");
         addTranslation("key.modern_industrialization.toggle_flight", "Toggle Flight");

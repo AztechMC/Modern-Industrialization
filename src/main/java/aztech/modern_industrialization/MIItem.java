@@ -52,9 +52,9 @@ import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
@@ -179,12 +179,13 @@ public final class MIItem {
             });
 
     // Armor
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.HELMET, s.stacksTo(1).durability(400)), ITEMS_ORDERED.next());
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(MIArmorMaterials.RUBBER, ArmorItem.Type.BOOTS, s.stacksTo(1).durability(400)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", p -> new Item(p.humanoidArmor(MIArmorMaterials.RUBBER, ArmorType.HELMET)), ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", p -> new Item(p.humanoidArmor(MIArmorMaterials.RUBBER, ArmorType.BOOTS)), ITEMS_ORDERED.next());
     public static final ItemDefinition<JetpackItem> DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, JetpackItem.CAPACITY), item);
+                    // TODO 26.1
+//                    event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidFuelItemHelper.ItemStorage(stack, JetpackItem.CAPACITY), item);
                 });
             });
 
@@ -196,10 +197,10 @@ public final class MIItem {
             });
 
     public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new, ITEMS_ORDERED.next());
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(ArmorItem.Type.HELMET, s), ITEMS_ORDERED.next());
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(ArmorItem.Type.CHESTPLATE, s), ITEMS_ORDERED.next());
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(ArmorItem.Type.LEGGINGS, s), ITEMS_ORDERED.next());
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(ArmorItem.Type.BOOTS, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(ArmorType.HELMET, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(ArmorType.CHESTPLATE, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(ArmorType.LEGGINGS, s), ITEMS_ORDERED.next());
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(ArmorType.BOOTS, s), ITEMS_ORDERED.next());
 
     // Material-like items
     public static final ItemDefinition<Item> UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust", MATERIALS.and("steel"));

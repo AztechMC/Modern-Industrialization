@@ -131,7 +131,9 @@ public class FuelBurningComponent implements MachineComponent {
             for (ConfigurableItemStack stack : itemInputs) {
                 var fuel = stack.getResource().toStack((int) stack.getAmount());
                 if (ItemStackHelper.consumeFuel(stack, true)) {
-                    int fuelTime = fuel.getBurnTime(null);
+                    // TODO 26.1
+//                    int fuelTime = fuel.getBurnTime(null);
+                    int fuelTime = 0;
                     if (fuelTime > 0) {
                         long fuelTotalEu = fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         burningEuBuffer += fuelTotalEu;

@@ -41,23 +41,24 @@ public class MIFluidType extends FluidType {
         this.fluidBlock = fluidBlock;
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
-            private @Nullable Identifier textureLocation;
-
-            @Override
-            public Identifier getStillTexture() {
-                if (textureLocation == null) {
-                    textureLocation = MI.id("fluid/%s_still".formatted(fluidBlock.getId().getPath()));
-                }
-                return textureLocation;
-            }
-
-            @Override
-            public Identifier getFlowingTexture() {
-                return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
-            }
-        });
-    }
+    // TODO 26.1
+//    @Override
+//    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+//        consumer.accept(new IClientFluidTypeExtensions() {
+//            private @Nullable Identifier textureLocation;
+//
+//            @Override
+//            public Identifier getStillTexture() {
+//                if (textureLocation == null) {
+//                    textureLocation = MI.id("fluid/%s_still".formatted(fluidBlock.getId().getPath()));
+//                }
+//                return textureLocation;
+//            }
+//
+//            @Override
+//            public Identifier getFlowingTexture() {
+//                return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
+//            }
+//        });
+//    }
 }

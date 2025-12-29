@@ -36,8 +36,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +50,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -62,6 +65,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -112,18 +116,16 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos,
-            BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-
-        return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+        return super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
     }
 
     @Override
-    public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+    public boolean canPlaceLiquid(@Nullable LivingEntity user, BlockGetter level, BlockPos pos, BlockState state, Fluid type) {
+        return !state.getValue(CAMOUFLAGED) && SimpleWaterloggedBlock.super.canPlaceLiquid(user, level, pos, state, type);
     }
 
     @Override
@@ -256,13 +258,12 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return droppedStacks;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-        if (!world.isClientSide()) {
-            ((PipeBlockEntity) world.getBlockEntity(pos)).updateConnections();
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        if (!level.isClientSide()) {
+            ((PipeBlockEntity) level.getBlockEntity(pos)).updateConnections();
         }
-        super.neighborChanged(state, world, pos, block, fromPos, notify);
+        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
     }
 
     @SuppressWarnings("deprecation")
@@ -319,21 +320,22 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return state;
     }
 
-    @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        if (target instanceof BlockHitResult bhr) {
-            if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
-                if (pipe.hasCamouflage()) {
-                    return pipe.getCamouflageStack();
-                }
-
-                var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
-                return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
-            }
-        }
-
-        return ItemStack.EMPTY;
-    }
+    // TODO 26.1
+//    @Override
+//    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+//        if (target instanceof BlockHitResult bhr) {
+//            if (player.level().getBlockEntity(bhr.getBlockPos()) instanceof PipeBlockEntity pipe) {
+//                if (pipe.hasCamouflage()) {
+//                    return pipe.getCamouflageStack();
+//                }
+//
+//                var targetedPart = PipeBlock.getHitPart(player.level(), bhr.getBlockPos(), bhr);
+//                return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
+//            }
+//        }
+//
+//        return ItemStack.EMPTY;
+//    }
 
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {

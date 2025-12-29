@@ -24,31 +24,47 @@
 
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
+
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 public class PipeNetworks extends SavedData {
-    private static final SavedData.Factory<PipeNetworks> FACTORY = new SavedData.Factory<>(() -> new PipeNetworks(new HashMap<>()),
-            PipeNetworks::readNbt);
-    private static final String NAME = "modern_industrialization_pipe_networks";
+    private static final Codec<PipeNetworks> CODEC = Codec.dispatchedMap(PipeNetworkType.CODEC, PipeNetworkManager::codec)
+            .xmap(PipeNetworks::new, n -> n.managers);
+    private static final SavedDataType<PipeNetworks> TYPE = new SavedDataType<>(
+            "modern_industrialization_pipe_networks",
+            () -> new PipeNetworks(new HashMap<>()),
+            CODEC);
 
     private final Map<PipeNetworkType, PipeNetworkManager> managers;
     private final Map<Long, List<Runnable>> loadPipesByChunk = new HashMap<>();
 
     public PipeNetworks(Map<PipeNetworkType, PipeNetworkManager> managers) {
         this.managers = managers;
+        for (PipeNetworkType type : PipeNetworkType.getTypes().values()) {
+            if (!managers.containsKey(type)) {
+                managers.put(type, new PipeNetworkManager(type));
+            }
+        }
     }
 
     public PipeNetworkManager getManager(PipeNetworkType type) {
@@ -60,29 +76,8 @@ public class PipeNetworks extends SavedData {
         return managers.get(type);
     }
 
-    @Override
-    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
-        for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
-            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag(), registries));
-        }
-        return nbt;
-    }
-
-    public static PipeNetworks readNbt(CompoundTag nbt, HolderLookup.Provider registries) {
-        Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
-        for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
-            PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
-            String tagKey = entry.getKey().toString();
-            if (nbt.contains(tagKey)) {
-                manager.fromNbt(nbt.getCompound(tagKey), registries);
-            }
-            managers.put(entry.getValue(), manager);
-        }
-        return new PipeNetworks(managers);
-    }
-
     public static PipeNetworks get(ServerLevel world) {
-        PipeNetworks networks = world.getDataStorage().computeIfAbsent(FACTORY, NAME);
+        PipeNetworks networks = world.getDataStorage().computeIfAbsent(TYPE);
         networks.setDirty();
         return networks;
     }

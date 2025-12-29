@@ -53,7 +53,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -137,11 +139,6 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
     public boolean matches(RecipeInput recipeInput, Level world) {
         throw new UnsupportedOperationException();
     }
@@ -152,32 +149,8 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        // This function is implemented for AE2 pattern shift-clicking compat.
-        // This is the reason the counts of the ItemStacks in the ingredient are
-        // modified.
-        // (They should never be used somewhere else anyway)
-        return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : i.ingredient.getItems()) {
-                stack.setCount(i.amount);
-            }
-            return i.ingredient;
-        }).collect(Collectors.toList()));
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        for (ItemOutput o : itemOutputs) {
-            if (o.probability == 1) {
-                return o.getStack();
-            }
-        }
-        return ItemStack.EMPTY;
+    public boolean isSpecial() {
+        return true;
     }
 
     @Override
@@ -188,6 +161,16 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     @Override
     public RecipeType<MachineRecipe> getType() {
         return type;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        throw new UnsupportedOperationException();
     }
 
     public boolean conditionsMatch(MachineProcessCondition.Context context) {
@@ -210,7 +193,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
+                        Ingredient.CODEC.fieldOf("ingredient").forGetter(ItemInput::ingredient),
                         AMOUNT_CODEC.forGetter(ItemInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(ItemInput::probability))
                         .apply(g, ItemInput::new));
@@ -229,7 +212,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
 
         public List<Item> getInputItems() {
-            return Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
+            return ingredient.items().map(Holder::value).distinct().collect(Collectors.toList());
         }
     }
 
@@ -241,7 +224,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        FluidIngredient.MAP_CODEC_NONEMPTY.forGetter(FluidInput::fluid),
+                        FluidIngredient.CODEC.fieldOf("ingredient").forGetter(FluidInput::fluid),
                         NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
@@ -256,7 +239,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                 FluidInput::new);
 
         public List<Fluid> getInputFluids() {
-            return Arrays.stream(fluid.getStacks()).map(FluidStack::getFluid).distinct().collect(Collectors.toList());
+            return fluid.fluids().stream().map(Holder::value).distinct().collect(Collectors.toList());
         }
     }
 

@@ -36,6 +36,7 @@ import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
@@ -520,7 +521,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             renderedConnections[i] = Arrays.copyOf(entry.getValue(), 6);
             var data = this.customData.get(entry.getKey());
             if (data.contains("fluid")) {
-                customData[i] = NbtHelper.getFluidCompatible(data, "fluid", level.registryAccess());
+                customData[i] = data.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
             }
             i++;
         }

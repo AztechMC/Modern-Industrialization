@@ -51,8 +51,8 @@ public class ItemNetwork extends PipeNetwork {
     int inactiveTicks = 0;
     long lastMovedItems = 0;
 
-    public ItemNetwork(int id, @Nullable PipeNetworkData data) {
-        super(id, data == null ? new ItemNetworkData() : data);
+    public ItemNetwork(int id, ItemNetworkData data) {
+        super(id, data);
     }
 
     @Override

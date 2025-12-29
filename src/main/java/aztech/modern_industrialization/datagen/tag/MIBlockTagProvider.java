@@ -38,13 +38,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jspecify.annotations.Nullable;
 
 public class MIBlockTagProvider extends BlockTagsProvider {
-    public MIBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
-            @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MI.ID, existingFileHelper);
+    public MIBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, MI.ID);
     }
 
     @Override
@@ -68,7 +65,7 @@ public class MIBlockTagProvider extends BlockTagsProvider {
                 }
                 var key = BlockTags.create(entry.getKey().location());
                 if (optional) {
-                    tag(key).addOptional(itemKey);
+                    tag(key).addOptional(block.get());
                 } else {
                     tag(key).add(block.get());
                 }

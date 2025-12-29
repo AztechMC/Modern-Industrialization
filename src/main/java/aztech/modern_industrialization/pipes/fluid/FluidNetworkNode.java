@@ -76,16 +76,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
             MI.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
-        if (amount > 0 && data.fluid.isBlank()) {
+        if (amount > 0 && data.fluid().isBlank()) {
             MI.LOGGER.warn("Amount > 0 but fluid is blank, deleting some fluid!");
             amount = 0;
         }
 
         for (FluidConnection connection : connections) {
             var storage = getNeighborStorage(world, pos, connection);
-            if (data.fluid.isBlank() && connection.canExtract()) {
+            if (data.fluid().isBlank() && connection.canExtract()) {
                 // Try to set fluid, will return null if none could be found.
-                data.fluid = FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE));
+                network.data = data = new FluidNetworkData(FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE)));
             }
             if (connection.canInsert() && connection.canExtract() && storage instanceof FluidNetworkExtensionTank extension) {
                 extensions.add(extension);
@@ -316,13 +316,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag writeCustomData(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        // TODO 26.1
-//        NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid, registries);
+        tag.store("fluid", FluidVariant.CODEC, ((FluidNetworkData) network.data).fluid());
         return tag;
     }
 
     public void afterTick(ServerLevel world, BlockPos pos) {
-        FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid;
+        FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid();
         if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
             // Equivalent to calling sync()
@@ -336,7 +335,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     // Used in the Waila plugin
     private FluidVariant getFluid() {
-        return ((FluidNetworkData) network.data).fluid;
+        return ((FluidNetworkData) network.data).fluid();
     }
 
     public InGameInfo collectNetworkInfo() {

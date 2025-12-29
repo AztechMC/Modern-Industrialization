@@ -46,6 +46,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -53,6 +54,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -64,7 +66,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -110,8 +111,10 @@ public class SteamDrillItem
         }
 
         public boolean canInsert(ItemVariant item) {
-            int burnTicks = item.toStack().getBurnTime(null);
-            return burnTicks > 0;
+            // TODO 26.1
+//            int burnTicks = item.toStack().getBurnTime(null);
+//            return burnTicks > 0;
+            return false;
         }
     };
 
@@ -418,25 +421,25 @@ public class SteamDrillItem
     private void fillWater(Player player, ItemStack stack) {
         if (stack.getOrDefault(MIComponents.WATER, 0) != FULL_WATER) {
             stack.set(MIComponents.WATER, FULL_WATER);
-            player.playNotifySound(SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1, 1);
+            player.playSound(SoundEvents.BUCKET_FILL, 1, 1);
         }
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        var fuel = stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+        var fuel = itemStack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         if (fuel.burnTicks() > 0) {
-            stack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(Math.max(0, fuel.burnTicks() - 5), fuel.maxBurnTicks()));
-            stack.update(MIComponents.WATER, 0, w -> Math.max(0, w - 5));
+            itemStack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(Math.max(0, fuel.burnTicks() - 5), fuel.maxBurnTicks()));
+            itemStack.update(MIComponents.WATER, 0, w -> Math.max(0, w - 5));
         }
         if (fuel.burnTicks() == 0) {
-            stack.set(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+            itemStack.set(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         }
-        if (stack.getOrDefault(MIComponents.WATER.get(), 0) == 0) {
-            if (entity instanceof Player player) {
+        if (itemStack.getOrDefault(MIComponents.WATER.get(), 0) == 0) {
+            if (owner instanceof Player player) {
                 var inv = player.getInventory();
                 for (int i = 0; i < inv.getContainerSize(); ++i) {
-                    if (tryFillWater(player, stack, inv.getItem(i))) {
+                    if (tryFillWater(player, itemStack, inv.getItem(i))) {
                         break;
                     }
                 }
@@ -452,7 +455,9 @@ public class SteamDrillItem
     }
 
     private int consumeFuel(ItemStack stack, Simulation simulation) {
-        int burnTicks = getResource(stack).toStack().getBurnTime(null);
+        // TODO 26.1
+//        int burnTicks = getResource(stack).toStack().getBurnTime(null);
+        int burnTicks = 0;
         if (burnTicks > 0) {
             if (simulation.isActing()) {
                 var burnt = getResource(stack).toStack();

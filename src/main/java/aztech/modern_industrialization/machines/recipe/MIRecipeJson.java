@@ -78,12 +78,12 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     public T addItemInput(String maybeTag, int amount, float probability) {
         Ingredient ing;
         if (maybeTag.startsWith("#")) {
-            ing = Ingredient.of(ItemTags.create(Identifier.parse(maybeTag.substring(1))));
+            ing = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))));
         } else {
             if (!BuiltInRegistries.ITEM.containsKey(Identifier.parse(maybeTag))) {
                 throw new RuntimeException("Could not find item " + maybeTag);
             }
-            ing = Ingredient.of(BuiltInRegistries.ITEM.get(Identifier.parse(maybeTag)));
+            ing = Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
         }
         return addItemInput(ing, amount, probability);
     }
@@ -159,7 +159,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addFluidInput(TagKey<Fluid> tag, int amount, float probability) {
-        return addFluidInput(FluidIngredient.tag(tag), amount, probability);
+        return addFluidInput(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(tag)), amount, probability);
     }
 
     public T addFluidInput(FluidIngredient ingredient, int amount, float probability) {

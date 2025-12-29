@@ -55,9 +55,9 @@ public abstract sealed class MachineComponentProvider<S, C>
         return MI.id("machine");
     }
 
-    public static final class Energy extends MachineComponentProvider<CompoundTag, EnergyView> {
+    public static final class Energy extends MachineComponentProvider<EnergyView.Data, EnergyView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+        public List<ViewGroup<EnergyView.Data>> getGroups(Accessor<?> accessor) {
             if (accessor.getTarget() instanceof EnergyListComponentHolder holder) {
                 var components = holder.getEnergyComponents();
 
@@ -71,26 +71,26 @@ public abstract sealed class MachineComponentProvider<S, C>
                     }
 
                     // TODO: set unit to EU once supported by the Jade API
-                    return List.of(new ViewGroup<>(List.of(EnergyView.of(stored, capacity))));
+                    return List.of(new ViewGroup<>(List.of(new EnergyView.Data(stored, capacity))));
                 }
             } else if (accessor.getTarget() instanceof EnergyComponentHolder holder) {
                 var component = holder.getEnergyComponent();
-                return List.of(new ViewGroup<>(List.of(EnergyView.of(component.getEu(), component.getCapacity()))));
+                return List.of(new ViewGroup<>(List.of(new EnergyView.Data(component.getEu(), component.getCapacity()))));
             }
 
             return List.of();
         }
 
         @Override
-        public List<ClientViewGroup<EnergyView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> list) {
+        public List<ClientViewGroup<EnergyView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<EnergyView.Data>> list) {
             // TODO: fix spacing between EU and the rest (another day)
             return ClientViewGroup.map(list, tag -> EnergyView.read(tag, " EU"), null);
         }
     }
 
-    public static final class Fluids extends MachineComponentProvider<CompoundTag, FluidView> {
+    public static final class Fluids extends MachineComponentProvider<FluidView.Data, FluidView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+        public List<ViewGroup<FluidView.Data>> getGroups(Accessor<?> accessor) {
             var machine = (MachineBlockEntity) accessor.getTarget();
             if (machine instanceof MultiblockInventoryComponentHolder holder) {
                 var component = holder.getMultiblockInventoryComponent();
@@ -98,7 +98,7 @@ public abstract sealed class MachineComponentProvider<S, C>
                 var outputs = component.getFluidOutputs();
 
                 if (!inputs.isEmpty() || !outputs.isEmpty()) {
-                    var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
+                    var fluidData = new ViewGroup<FluidView.Data>(new ArrayList<>());
                     addFluids(fluidData, inputs);
                     addFluids(fluidData, outputs);
                     return List.of(fluidData);
@@ -110,28 +110,28 @@ public abstract sealed class MachineComponentProvider<S, C>
 
                 if (component != null) {
                     var fluid = component.getVariant();
-                    var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
-                    fluidData.views.add(FluidView.writeDefault(MIJadeCommonPlugin.fluidStack(fluid, component.getAmount()), component.getCapacity()));
+                    var fluidData = new ViewGroup<FluidView.Data>(new ArrayList<>());
+                    fluidData.views.add(new FluidView.Data(MIJadeCommonPlugin.fluidStack(fluid, component.getAmount()), component.getCapacity()));
                     return List.of(fluidData);
                 } else {
                     return List.of();
                 }
             } else {
                 var stacks = machine.getInventory().getFluidStacks();
-                var fluidData = new ViewGroup<CompoundTag>(new ArrayList<>());
+                var fluidData = new ViewGroup<FluidView.Data>(new ArrayList<>());
                 addFluids(fluidData, stacks);
                 return List.of(fluidData);
             }
         }
 
-        private void addFluids(ViewGroup<CompoundTag> data, List<? extends FluidAccess> stacks) {
+        private void addFluids(ViewGroup<FluidView.Data> data, List<? extends FluidAccess> stacks) {
             for (var stack : stacks) {
-                data.views.add(FluidView.writeDefault(MIJadeCommonPlugin.fluidStack(stack.getVariant(), stack.getAmount()), stack.getCapacity()));
+                data.views.add(new FluidView.Data(MIJadeCommonPlugin.fluidStack(stack.getVariant(), stack.getAmount()), stack.getCapacity()));
             }
         }
 
         @Override
-        public List<ClientViewGroup<FluidView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> list) {
+        public List<ClientViewGroup<FluidView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<FluidView.Data>> list) {
             return ClientViewGroup.map(list, FluidView::readDefault, null);
         }
     }
@@ -176,16 +176,16 @@ public abstract sealed class MachineComponentProvider<S, C>
     }
 
     // TODO: probably needs to be rewritten to be standalone for a better display
-    public static final class Progress extends MachineComponentProvider<CompoundTag, ProgressView> {
+    public static final class Progress extends MachineComponentProvider<ProgressView.Data, ProgressView> {
         @Override
-        public List<ViewGroup<CompoundTag>> getGroups(Accessor<?> accessor) {
+        public List<ViewGroup<ProgressView.Data>> getGroups(Accessor<?> accessor) {
             if (accessor.getTarget() instanceof CrafterComponentHolder holder) {
                 var component = holder.getCrafterComponent();
                 var progress = component.getProgress();
 
                 if (progress > 0.0f) {
                     var inventory = holder.getCrafterComponent().getInventory();
-                    var progressData = new ViewGroup<CompoundTag>(new ArrayList<>());
+                    var progressData = new ViewGroup<ProgressView.Data>(new ArrayList<>());
 
                     // TODO potentially add inventory information if the Jade API ever supports it
 //                    for (var stack : inventory.getItemInputs()) {
@@ -196,7 +196,7 @@ public abstract sealed class MachineComponentProvider<S, C>
 //                        progressData.output(stack.toStack());
 //                    }
 
-                    progressData.views.add(ProgressView.create(progress));
+                    progressData.views.add(new ProgressView.Data(progress));
                     return List.of(progressData);
                 }
             }
@@ -204,7 +204,7 @@ public abstract sealed class MachineComponentProvider<S, C>
         }
 
         @Override
-        public List<ClientViewGroup<ProgressView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> list) {
+        public List<ClientViewGroup<ProgressView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<ProgressView.Data>> list) {
             return ClientViewGroup.map(list, ProgressView::read, null);
         }
     }

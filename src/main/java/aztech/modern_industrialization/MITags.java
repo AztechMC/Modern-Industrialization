@@ -26,11 +26,15 @@ package aztech.modern_industrialization;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class MITags {
     public static final TagKey<Item> WRENCHES = item("tools/wrench");
+
+    // TODO 26.1 - add MI.id("rubber_sheet") to it
+    public static final TagKey<Item> REPAIRS_RUBBER_ARMOR = miItem("repairs_rubber_armor");
 
     public static final TagKey<Item> BARRELS = miItem("barrels");
     public static final TagKey<Item> TANKS = miItem("tanks");

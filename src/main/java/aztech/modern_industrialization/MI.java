@@ -27,7 +27,6 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
-import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
@@ -94,7 +93,6 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.slf4j.Logger;
@@ -121,7 +119,6 @@ public class MI {
         MIBlock.init(modBus);
         MIItem.init(modBus);
         MIRegistries.init(modBus);
-        MIArmorMaterials.init(modBus);
         MIMaterials.init();
 
         MIMachineRecipeTypes.init();
@@ -153,7 +150,6 @@ public class MI {
             }
             event.sendRecipes(RecipeType.SMELTING, RecipeType.STONECUTTING);
         });
-        NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
 
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
             if (event.getUseBlock().isFalse()) {
@@ -173,7 +169,7 @@ public class MI {
                 if (world.getBlockEntity(hitResult.getBlockPos()) instanceof WrenchableBlockEntity wrenchable) {
                     if (wrenchable.useWrench(player, hand, hitResult)) {
                         event.setCanceled(true);
-                        event.setCancellationResult(InteractionResult.sidedSuccess(world.isClientSide()));
+                        event.setCancellationResult(InteractionResult.SUCCESS);
                     }
                 }
             }
@@ -187,12 +183,6 @@ public class MI {
             if ((event.getLeft().getItem() instanceof DynamicToolItem && !event.getRight().isEmpty()) ||
                     (!event.getLeft().isEmpty() && event.getRight().getItem() instanceof DynamicToolItem)) {
                 event.setCanceled(true);
-                // According to the documentation setCanceled should be all we need, but unfortunately we have to manually override the output and
-                // cost too??
-                if (event.getPlayer().containerMenu instanceof AnvilMenu anvilMenu) {
-                    anvilMenu.getSlot(2).set(ItemStack.EMPTY);
-                    anvilMenu.setMaximumCost(0);
-                }
             }
         });
 
@@ -219,9 +209,7 @@ public class MI {
         modBus.addListener(GatherDataEvent.class, event -> {
             MIDatagenServer.configure(
                     event.getGenerator(),
-                    event.getExistingFileHelper(),
                     event.getLookupProvider(),
-                    event.includeServer(),
                     false);
         });
 
@@ -236,13 +224,14 @@ public class MI {
         });
 
         if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
-            MIAEAddon.init(modBus);
+            // TODO 26.1
+//            MIAEAddon.init(modBus);
         }
 
         modBus.addListener(AddPackFindersEvent.class, event -> {
             if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA
                     && MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
-                RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenServer.configure(gen, fileHelper, lookupProvider, run, runtimeDatagen));
+                RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenServer.configure(gen, lookupProvider, runtimeDatagen));
             }
 
             if (MIStartupConfig.INSTANCE.loadRuntimeGeneratedResources.getAsBoolean()) {
@@ -268,7 +257,8 @@ public class MI {
         });
 
         modBus.addListener(RegisterGameTestsEvent.class, event -> {
-            event.register(MIGameTests.class);
+            // TODO 26.1
+//            event.register(MIGameTests.class);
         });
 
         LOGGER.info("Modern Industrialization setup done!");

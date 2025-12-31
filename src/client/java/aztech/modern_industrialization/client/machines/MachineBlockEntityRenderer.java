@@ -26,7 +26,6 @@ package aztech.modern_industrialization.client.machines;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.compat.sodium.SodiumCompat;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -61,7 +60,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     @Nullable
     private BlockState lastBlockState = null;
     @Nullable
-    private MachineBakedModel model = null;
+    private MachineBakedModel_old model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
 
@@ -97,10 +96,10 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
         if (cachedQuads[cachedQuadIndex] == null) {
-            TextureAtlasSprite sprite = model == null ? null : MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
+            TextureAtlasSprite sprite = model == null ? null : MachineBakedModel_old.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
                 var vc = new QuadBakingVertexConsumer();
-                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(vc, d, sprite, -2 * MachineBakedModel.Z_OFFSET);
+                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(vc, d, sprite, -2 * MachineBakedModel_old.Z_OFFSET);
             } else {
                 cachedQuads[cachedQuadIndex] = NO_QUAD;
             }
@@ -111,7 +110,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     }
 
     @Nullable
-    private MachineBakedModel getMachineModel(BlockState state) {
+    private MachineBakedModel_old getMachineModel(BlockState state) {
         var model = blockModels.getBlockModel(state);
 
         if (UNWRAP_BAKED_MODEL != null) {
@@ -122,7 +121,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
             }
         }
 
-        if (model instanceof MachineBakedModel mbm) {
+        if (model instanceof MachineBakedModel_old mbm) {
             return mbm;
         } else {
             MI.LOGGER.warn("Model {} should have been a MachineBakedModel, but was {}", state, model.getClass());

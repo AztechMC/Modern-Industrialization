@@ -30,7 +30,6 @@ import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEnti
 import aztech.modern_industrialization.client.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.client.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.client.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.client.textures.TextureHelper;
 import aztech.modern_industrialization.client.util.RenderHelper;
@@ -148,7 +147,7 @@ public class MIClientProxy extends MICommonProxy {
         if (casing == null) {
             // No override, then pull the casing from the machine's baked model.
             var machineModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            if (machineModel instanceof MachineBakedModel mbm) {
+            if (machineModel instanceof MachineBakedModel_old mbm) {
                 casing = mbm.getBaseCasing();
             } else {
                 // Couldn't find casing... :(
@@ -157,9 +156,9 @@ public class MIClientProxy extends MICommonProxy {
         }
 
         // Pull the block state from the casing model if possible
-        var casingModel = MachineBakedModel.getCasingModel(casing);
+        var casingModel = MachineBakedModel_old.getCasingModel(casing);
         if (casingModel instanceof UseBlockModelBakedModel ubmbm) {
-            return ubmbm.getTargetState();
+            return ubmbm.targetState();
         }
         // Couldn't find target state
         return state;

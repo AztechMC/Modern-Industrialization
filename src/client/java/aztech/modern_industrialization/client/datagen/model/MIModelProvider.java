@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.client.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
@@ -55,7 +54,7 @@ public class MIModelProvider extends BaseModelProvider {
         }
 
         simpleBlock(MIPipes.BLOCK_PIPE.get(), models().getBuilder("pipe")
-                .customLoader(TrivialModelBuilder.begin(PipeUnbakedModel.LOADER_ID))
+                .customLoader(TrivialModelBuilder.begin(PipeUnbakedModel_old.LOADER_ID))
                 .end());
 
         // Item models as well...

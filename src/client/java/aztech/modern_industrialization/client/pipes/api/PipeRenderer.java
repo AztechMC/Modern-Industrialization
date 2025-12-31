@@ -24,13 +24,13 @@
 
 package aztech.modern_industrialization.client.pipes.api;
 
-import aztech.modern_industrialization.client.pipes.impl.PipeRenderContext;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import java.util.Collection;
-import java.util.function.Function;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+
+import java.util.function.Consumer;
+
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import org.jspecify.annotations.Nullable;
@@ -47,18 +47,19 @@ public interface PipeRenderer {
     /**
      * Draw the connections for a logical slot.
      *
-     * @param ctx         Render context.
      * @param logicalSlot The logical slot, so 0 for center, 1 for lower and 2 for
      *                    upper.
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
-            @Nullable Object customData);
+    void draw(
+            Consumer<BakedQuad> cutoutQuads, Consumer<BakedQuad> translucentQuads,
+            @Nullable BlockAndTintGetter view, @Nullable BlockPos pos,
+            int logicalSlot, PipeEndpointType[][] connections,
+            int color, @Nullable Object customData);
 
+    @FunctionalInterface
     interface Factory {
-        Collection<Material> getSpriteDependencies();
-
-        PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter);
+        PipeRenderer create(ModelBaker modelBaker);
     }
 }

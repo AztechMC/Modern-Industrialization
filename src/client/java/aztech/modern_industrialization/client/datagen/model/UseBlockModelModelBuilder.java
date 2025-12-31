@@ -24,7 +24,6 @@
 
 package aztech.modern_industrialization.client.datagen.model;
 
-import aztech.modern_industrialization.client.machines.models.UseBlockModelUnbakedModel;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;

@@ -104,6 +104,10 @@ public class MachineCasings {
         return casing;
     }
 
+    public static @Nullable MachineCasing getOrNull(Identifier key) {
+        return registeredCasings.get(key);
+    }
+
     public static MachineCasing get(Identifier key) {
         MachineCasing casing = registeredCasings.get(key);
         if (casing != null) {

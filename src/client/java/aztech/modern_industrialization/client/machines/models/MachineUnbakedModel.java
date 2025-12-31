@@ -29,31 +29,59 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import org.jspecify.annotations.Nullable;
 
-public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
+public class MachineUnbakedModel implements CustomUnbakedBlockStateModel {
     public static final Identifier LOADER_ID = MI.id("machine");
-    public static final IGeometryLoader<MachineUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
-        return new MachineUnbakedModel(jsonObject);
-    };
 
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new Identifier.Serializer()).create();
+    // TODO: consider using a proper codec
+    public static final MapCodec<MachineUnbakedModel> CODEC = MapCodec.assumeMapUnsafe(
+            ExtraCodecs.converter(JsonOps.INSTANCE)
+                    .flatXmap(json -> {
+                        if (json instanceof JsonObject object) {
+                            return DataResult.success(new MachineUnbakedModel(object));
+                        } else {
+                            return DataResult.error(() -> "Can only read json objects, received " + json);
+                        }
+                    }, model -> DataResult.error(() -> "Cannot write machine unbaked models.")));
+
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Identifier.class, new JsonDeserializer<>() {
+                @Override
+                public Identifier deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    return Identifier.parse(GsonHelper.convertToString(json, "location"));
+                }
+            })
+            .create();
 
     private final MachineCasing baseCasing;
     private final @Nullable Material[] defaultOverlays;
@@ -76,28 +104,34 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides) {
-        var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
-        var tieredOverlays = new HashMap<MachineCasing, @Nullable TextureAtlasSprite[]>();
-        for (var entry : this.tieredOverlays.entrySet()) {
-            tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
-        }
-        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
+    public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
+        return CODEC;
     }
 
-    private static @Nullable TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {
+    @Override
+    public BlockStateModel bake(ModelBaker modelBakery) {
+        var defaultOverlays = loadSprites(modelBakery.sprites(), this.defaultOverlays);
+        var tieredOverlays = new HashMap<MachineCasing, @Nullable TextureAtlasSprite[]>();
+        for (var entry : this.tieredOverlays.entrySet()) {
+            tieredOverlays.put(entry.getKey(), loadSprites(modelBakery.sprites(), entry.getValue()));
+        }
+        return new MachineBlockStateModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
+    }
+
+    @Override
+    public void resolveDependencies(Resolver resolver) {}
+
+    private static @Nullable TextureAtlasSprite[] loadSprites(SpriteGetter spriteGetter, @Nullable Material[] ids) {
         var sprites = new TextureAtlasSprite[ids.length];
         for (int i = 0; i < ids.length; ++i) {
             if (ids[i] != null) {
-                sprites[i] = textureGetter.apply(ids[i]);
+                sprites[i] = spriteGetter.get(ids[i], () -> "machine unbaked model");
             }
         }
         return sprites;
     }
 
     private static class OverlaysJson {
-        // All fields are nullable.
         private @Nullable Identifier top;
         private @Nullable Identifier top_active;
         private @Nullable Identifier side;
@@ -195,7 +229,7 @@ public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel
         private static Material select(@Nullable Identifier... candidates) {
             for (var id : candidates) {
                 if (id != null) {
-                    return new Material(InventoryMenu.BLOCK_ATLAS, id);
+                    return new Material(AtlasIds.BLOCKS, id);
                 }
             }
             return null;

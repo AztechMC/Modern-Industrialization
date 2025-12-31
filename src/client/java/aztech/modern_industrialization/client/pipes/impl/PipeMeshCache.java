@@ -25,25 +25,34 @@
 package aztech.modern_industrialization.client.pipes.impl;
 
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.Mesh;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.MeshBuilder;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.MeshBuilderImpl;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.MutableQuadView;
 import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
+import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.impl.PipePartBuilder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
+
+import net.minecraft.client.model.geom.builders.UVPair;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import org.joml.Vector2fc;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 public class PipeMeshCache implements PipeRenderer {
+    private record Mesh(List<BakedQuad> pipeQuads, List<BakedQuad> innerQuads) {}
+
     /**
      * The cached meshes for the connections. Indexed by: [endpoint
      * type][logicalSlot][direction id]["render type" - 1]. "render type" is 0, 1,
@@ -79,13 +88,8 @@ public class PipeMeshCache implements PipeRenderer {
 
             TextureAtlasSprite sprite = textureGetter.apply(spriteIds[i]);
 
-            MeshBuilder meshBuilder = new MeshBuilderImpl();
-            PipeMeshBuilder pmb;
-            if (innerQuads) {
-                pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-            } else {
-                pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-            }
+            var mesh = new Mesh(new ArrayList<>(), new ArrayList<>());
+            PipeMeshBuilder pmb = new PipeMeshBuilder(mesh.pipeQuads, mesh.innerQuads, innerQuads, PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
             boolean reduced = j >= 4;
             boolean end = i != 0;
             int renderType = j % 4;
@@ -99,7 +103,7 @@ public class PipeMeshCache implements PipeRenderer {
                 pmb.longBend(reduced, end);
             }
 
-            return meshBuilder.build();
+            return mesh;
         };
 
         // Build the center cache
@@ -108,33 +112,21 @@ public class PipeMeshCache implements PipeRenderer {
             int logicalSlot = key.logicalSlot;
             int mask = key.bitmask;
 
-            MeshBuilder meshBuilder = new MeshBuilderImpl();
+            var mesh = new Mesh(new ArrayList<>(), new ArrayList<>());
             for (Direction direction : Direction.values()) {
-                PipeMeshBuilder pmb;
-                if (innerQuads) {
-                    pmb = new PipeMeshBuilder.InnerQuads(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-                } else {
-                    pmb = new PipeMeshBuilder(meshBuilder.getEmitter(), PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
-                }
+                PipeMeshBuilder pmb = new PipeMeshBuilder(mesh.pipeQuads, mesh.innerQuads, innerQuads, PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
                 pmb.noConnection(mask);
             }
 
-            return meshBuilder.build();
+            return mesh;
         };
     }
 
-    /**
-     * Draw the connections for a logical slot.
-     *
-     * @param ctx         Render context.
-     * @param logicalSlot The logical slot, so 0 for center, 1 for lower and 2 for
-     *                    upper.
-     * @param connections For every logical slot, then for every direction, the
-     *                    connection type or null for no connection.
-     */
-    public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, PipeRenderContext ctx, int logicalSlot,
-            @Nullable PipeEndpointType[][] connections,
-            @Nullable Object customData) {
+    public void draw(
+            Consumer<BakedQuad> cutoutQuads, Consumer<BakedQuad> translucentQuads,
+            @Nullable BlockAndTintGetter view, @Nullable BlockPos pos,
+            int logicalSlot, PipeEndpointType[][] connections,
+            int color, @Nullable Object customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
         int[] renderTypes = new int[6];
@@ -156,23 +148,14 @@ public class PipeMeshCache implements PipeRenderer {
             }
         }
 
-        // Fluid handling logic
+        TextureAtlasSprite still;
+        int fluidColor;
         if (customData instanceof FluidVariant fluid) {
-            TextureAtlasSprite still = FluidVariantRendering.getSprite(fluid);
-            int color = FluidVariantRendering.getColor(fluid, view, pos);
-            ctx.pushTransform(quad -> {
-                if (quad.tag() == 1) {
-                    if (still != null) {
-                        quad.spriteBake(still, MutableQuadView.BAKE_LOCK_UV);
-                        quad.color(color, color, color, color);
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return true;
-                }
-            });
+            still = FluidVariantRendering.getSprite(fluid);
+            fluidColor = FluidVariantRendering.getColor(fluid, view, pos);
+        } else {
+            still = null;
+            fluidColor = -1;
         }
 
         // Render every connection
@@ -183,18 +166,46 @@ public class PipeMeshCache implements PipeRenderer {
                 if (connectionsInDirection[initialDirections[i].get3DDataValue()] > 1) {
                     renderType += 4; // Conflict handling
                 }
-                Mesh mesh = connectionMeshes.computeIfAbsent(new ConnectionMeshKey(endpointType.getId(), logicalSlot, i, renderType),
+                Mesh mesh = connectionMeshes.computeIfAbsent(
+                        new ConnectionMeshKey(endpointType.getId(), logicalSlot, i, renderType),
                         connectionMeshBuilder);
-                mesh.outputTo(ctx.getEmitter());
+
+                for (var pipeQuad : mesh.pipeQuads) {
+                    cutoutQuads.accept(setColor(pipeQuad, color));
+                }
+                if (still != null) {
+                    for (var innerQuad : mesh.innerQuads) {
+                        var newUVs = ModelHelper.bakeUvs(new Vector3fc[] {
+                                innerQuad.position0(), innerQuad.position1(), innerQuad.position2(), innerQuad.position3(),
+                        }, still, innerQuad.direction());
+
+                        translucentQuads.accept(new BakedQuad(
+                                innerQuad.position0(), innerQuad.position1(), innerQuad.position2(), innerQuad.position3(),
+                                packUV(newUVs[0]), packUV(newUVs[1]), packUV(newUVs[2]), packUV(newUVs[3]),
+                                // TODO 26.1 - double check light emission
+                                innerQuad.tintIndex(), innerQuad.direction(), still, innerQuad.shade(), 15,
+                                innerQuad.bakedNormals(), BakedColors.of(fluidColor), innerQuad.hasAmbientOcclusion()));
+                    }
+                }
             }
         }
 
         // Render the center connector
-        centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder).outputTo(ctx.getEmitter());
-
-        // Fluid handling logic
-        if (customData instanceof FluidVariant) {
-            ctx.popTransform();
+        var centerMesh = centerMeshes.computeIfAbsent(new CenterMeshKey(logicalSlot, directionsMask), centerMeshBuilder);
+        for (var pipeQuad : centerMesh.pipeQuads) {
+            cutoutQuads.accept(setColor(pipeQuad, color));
         }
+    }
+
+    private static BakedQuad setColor(BakedQuad quad, int newColor) {
+        return new BakedQuad(
+                quad.position0(), quad.position1(), quad.position2(), quad.position3(),
+                quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(),
+                quad.tintIndex(), quad.direction(), quad.sprite(), quad.shade(), quad.lightEmission(),
+                quad.bakedNormals(), BakedColors.of(newColor), quad.hasAmbientOcclusion());
+    }
+
+    private static long packUV(Vector2fc uv) {
+        return UVPair.pack(uv.x(), uv.y());
     }
 }

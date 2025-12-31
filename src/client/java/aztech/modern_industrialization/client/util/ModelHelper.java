@@ -30,11 +30,13 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
 public class ModelHelper {
@@ -45,6 +47,15 @@ public class ModelHelper {
 
     public static int nullableDirectionIndex(@Nullable Direction side) {
         return side == null ? 6 : side.get3DDataValue();
+    }
+
+    // TODO: PR to NeoForge
+    public static void addQuad(QuadCollection.Builder quads, @Nullable Direction side, BakedQuad quad) {
+        if (side == null) {
+            quads.addUnculledFace(quad);
+        } else {
+            quads.addCulledFace(side, quad);
+        }
     }
 
     public static BakedQuad bakeSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth) {
@@ -64,7 +75,7 @@ public class ModelHelper {
             vc.setColor(255, 255, 255, 255);
             vc.setUv(uv[i].x, uv[i].y);
             vc.setLight(0);
-            var normal = d.getNormal();
+            var normal = d.getUnitVec3i();
             vc.setNormal(normal.getX(), normal.getY(), normal.getZ());
         }
 
@@ -111,7 +122,7 @@ public class ModelHelper {
         }
     }
 
-    public static Vector2f[] bakeUvs(Vector3f[] pos, TextureAtlasSprite sprite, Direction face) {
+    public static Vector2f[] bakeUvs(Vector3fc[] pos, TextureAtlasSprite sprite, Direction face) {
         Vector2f[] uvs = new Vector2f[4];
         for (int i = 0; i < 4; i++) {
             uvs[i] = lockUvs(pos[i], face);
@@ -120,7 +131,7 @@ public class ModelHelper {
         return uvs;
     }
 
-    private static Vector2f lockUvs(Vector3f pos, Direction face) {
+    private static Vector2f lockUvs(Vector3fc pos, Direction face) {
         return switch (face) {
             case EAST -> new Vector2f(1 - pos.z(), 1 - pos.y());
             case WEST -> new Vector2f(pos.z(), 1 - pos.y());

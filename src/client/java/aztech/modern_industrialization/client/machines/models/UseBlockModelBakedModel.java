@@ -24,19 +24,76 @@
 
 package aztech.modern_industrialization.client.machines.models;
 
+import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.resources.model.BakedModel;
+
+import aztech.modern_industrialization.MI;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.common.util.Lazy;
+import org.jspecify.annotations.Nullable;
 
-public class UseBlockModelBakedModel extends BakedModelWrapper<BakedModel> {
-    private final BlockState targetState;
+public record UseBlockModelBakedModel(BlockState targetState,
+                                      Supplier<BlockStateModel> stateModel) implements DynamicBlockStateModel {
 
-    public UseBlockModelBakedModel(BlockState targetState, Supplier<BakedModel> stateModel) {
-        super(stateModel);
-        this.targetState = targetState;
+    // The rest just delegates to stateModel.get()
+
+    @Override
+    public @Nullable Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+        return stateModel.get().createGeometryKey(level, pos, state, random);
     }
 
-    public BlockState getTargetState() {
-        return targetState;
+    @Override
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+        stateModel.get().collectParts(level, pos, state, random, parts);
+    }
+
+    @Override
+    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        return stateModel.get().particleIcon(level, pos, state);
+    }
+
+    @Override
+    public TextureAtlasSprite particleIcon() {
+        return stateModel.get().particleIcon();
+    }
+
+    public record Unbaked(Block block) implements CustomUnbakedBlockStateModel {
+        public static final Identifier TYPE_ID = MI.id("use_block_model");
+
+        public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(i ->
+                i.group(
+                        BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(Unbaked::block)
+                ).apply(i, Unbaked::new));
+
+        @Override
+        public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public BlockStateModel bake(ModelBaker modelBakery) {
+            var targetState = block.defaultBlockState();
+            return new UseBlockModelBakedModel(
+                    targetState,
+                    Lazy.of(() -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(targetState)));
+        }
+
+        @Override
+        public void resolveDependencies(Resolver resolver) {}
     }
 }

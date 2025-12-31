@@ -41,23 +41,23 @@ import org.joml.Matrix4f;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return 30;
     }
 
     @Override
-    public int getWidth(Font textRenderer) {
-        return Math.max(textRenderer.width(data.variant().toStack().getHoverName()), 20 + textRenderer.width(getItemNumber()));
+    public int getWidth(Font font) {
+        return Math.max(font.width(data.variant().toStack().getHoverName()), 20 + font.width(getItemNumber()));
     }
 
     @Override
-    public void renderText(Font textRenderer, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource immediate) {
+    public void renderText(GuiGraphics guiGraphics, Font font, int x, int y) {
         Style style = MITooltips.DEFAULT_STYLE;
 
-        textRenderer.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate,
+        font.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate,
                 Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
 
-        textRenderer.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, Font.DisplayMode.NORMAL, 0,
+        font.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, Font.DisplayMode.NORMAL, 0,
                 LightTexture.FULL_BRIGHT);
     }
 

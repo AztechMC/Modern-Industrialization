@@ -298,7 +298,7 @@ public class TextureHelper {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                flipped[i][height - j - 1] = image.getPixelRGBA(i, j);
+                flipped[i][height - j - 1] = image.getPixel(i, j);
             }
         }
 

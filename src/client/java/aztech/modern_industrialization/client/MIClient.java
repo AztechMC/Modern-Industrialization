@@ -47,16 +47,17 @@ import aztech.modern_industrialization.client.machines.MachineBlockEntityRendere
 import aztech.modern_industrialization.client.machines.MachineOverlayClient;
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.client.machines.models.CasingModels;
+import aztech.modern_industrialization.client.machines.models.MachineItemModel;
 import aztech.modern_industrialization.client.machines.models.MachineUnbakedModel;
-import aztech.modern_industrialization.client.machines.models.UseBlockModelUnbakedModel;
+import aztech.modern_industrialization.client.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.client.misc.VersionEvents;
 import aztech.modern_industrialization.client.pipes.MIPipesClient;
 import aztech.modern_industrialization.client.pipes.fluid.FluidPipeScreen;
-import aztech.modern_industrialization.client.pipes.impl.DelegatingUnbakedModel;
+import aztech.modern_industrialization.client.pipes.impl.PipeItemModel;
 import aztech.modern_industrialization.client.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.client.pipes.item.ItemPipeScreen;
 import aztech.modern_industrialization.config.MIClientConfig;
@@ -68,7 +69,6 @@ import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -101,8 +101,10 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
@@ -211,18 +213,21 @@ public class MIClient {
     }
 
     @SubscribeEvent
-    private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(DelegatingModelBuilder.LOADER_ID, DelegatingUnbakedModel.LOADER);
-        event.register(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.LOADER);
-        event.register(PipeUnbakedModel.LOADER_ID, PipeUnbakedModel.LOADER);
-        event.register(UseBlockModelUnbakedModel.LOADER_ID, UseBlockModelUnbakedModel.LOADER);
+    private static void registerBlockStateModels(RegisterBlockStateModels event) {
+        event.registerModel(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.CODEC);
+        event.registerModel(PipeUnbakedModel.TYPE_ID, PipeUnbakedModel.CODEC);
+        event.registerModel(UseBlockModelBakedModel.Unbaked.TYPE_ID, UseBlockModelBakedModel.Unbaked.CODEC);
     }
 
     @SubscribeEvent
-    private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        for (var casing : MachineCasings.registeredCasings.values()) {
-            event.register(MachineBakedModel.getCasingModelId(casing));
-        }
+    private static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(MachineItemModel.Unbaked.TYPE_ID, MachineItemModel.Unbaked.CODEC);
+        event.register(PipeItemModel.Unbaked.TYPE_ID, PipeItemModel.Unbaked.CODEC);
+    }
+
+    @SubscribeEvent
+    private static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
+        CasingModels.loadModels(event);
     }
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();

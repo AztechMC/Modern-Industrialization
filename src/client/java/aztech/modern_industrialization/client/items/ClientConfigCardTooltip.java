@@ -36,7 +36,7 @@ import org.joml.Matrix4f;
 
 public record ClientConfigCardTooltip(ConfigCardItem.TooltipData data) implements ClientTooltipComponent {
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return 20;
     }
 

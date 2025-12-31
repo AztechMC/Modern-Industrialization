@@ -27,7 +27,6 @@ package aztech.modern_industrialization.client.datagen.model;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import net.minecraft.data.PackOutput;
@@ -38,7 +37,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MachineCasingsProvider extends ModelProvider<BlockModelBuilder> {
     public MachineCasingsProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MI.ID, MachineBakedModel.CASING_FOLDER, BlockModelBuilder::new, existingFileHelper);
+        super(output, MI.ID, MachineBakedModel_old.CASING_FOLDER, BlockModelBuilder::new, existingFileHelper);
     }
 
     @Override

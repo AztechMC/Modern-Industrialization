@@ -26,6 +26,7 @@ package aztech.modern_industrialization.client.machines;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.compat.sodium.SodiumCompat;
+import aztech.modern_industrialization.client.machines.models.MachineBlockStateModel;
 import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -39,15 +40,18 @@ import java.util.IdentityHashMap;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jspecify.annotations.Nullable;
@@ -55,12 +59,12 @@ import org.jspecify.annotations.Nullable;
 /**
  * Renders an overlay if the machine is active.
  */
-public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T> {
+public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T, MachineRenderState> {
     private final BlockModelShaper blockModels;
     @Nullable
     private BlockState lastBlockState = null;
     @Nullable
-    private MachineBakedModel_old model = null;
+    private MachineBlockStateModel model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
 
@@ -68,21 +72,73 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     private static final MethodHandle UNWRAP_BAKED_MODEL;
     static {
         MethodHandle unwrapBakedModel = null;
-        // Support for Continuity's model wrapping
-        if (ModList.get().isLoaded("fabric_renderer_api_v1")) {
-            try {
-                var wrapperBakedModel = Class.forName("net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel");
-                var unwrap = wrapperBakedModel.getMethod("unwrap", BakedModel.class);
-                unwrapBakedModel = MethodHandles.lookup().unreflect(unwrap);
-            } catch (ReflectiveOperationException e) {
-                LogUtils.getLogger().error("Failed to reflect WrapperBakedModel.unwrap method", e);
-            }
-        }
+        // TODO Continuity support
+//        // Support for Continuity's model wrapping
+//        if (ModList.get().isLoaded("fabric_renderer_api_v1")) {
+//            try {
+//                var wrapperBakedModel = Class.forName("net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel");
+//                var unwrap = wrapperBakedModel.getMethod("unwrap", BakedModel.class);
+//                unwrapBakedModel = MethodHandles.lookup().unreflect(unwrap);
+//            } catch (ReflectiveOperationException e) {
+//                LogUtils.getLogger().error("Failed to reflect WrapperBakedModel.unwrap method", e);
+//            }
+//        }
         UNWRAP_BAKED_MODEL = unwrapBakedModel;
     }
 
     public MachineBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.blockModels = ctx.getBlockRenderDispatcher().getBlockModelShaper();
+        this.blockModels = ctx.blockRenderDispatcher().getBlockModelShaper();
+    }
+
+    @Override
+    public MachineRenderState createRenderState() {
+        return new MachineRenderState();
+    }
+
+    @Override
+    public void extractRenderState(T machine, MachineRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(machine, state, partialTicks, cameraPosition, breakProgress);
+
+        BlockState blockState = machine.getBlockState();
+        if (lastBlockState == null) {
+            lastBlockState = blockState;
+            model = getMachineModel(blockState);
+        } else if (lastBlockState != blockState) {
+            // Sanity check.
+            throw new IllegalStateException("Tried to use the same machine BER with two block states: " + blockState + " and " + lastBlockState);
+        }
+
+        MachineModelClientData data = machine.getMachineModelData();
+        if (data.isActive) {
+            for (Direction d : Direction.values()) {
+                BakedQuad quad = getCachedQuad(data, d);
+                state.activeOverlays[d.get3DDataValue()].quad = quad;
+                if (quad != null) {
+                    state.activeOverlays[d.get3DDataValue()].packedLight = LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, machine.getLevel(), machine.getBlockState(), machine.getBlockPos().relative(d));
+                }
+            }
+
+        } else {
+            for (Direction d : Direction.values()) {
+                state.activeOverlays[d.get3DDataValue()].quad = null;
+            }
+        }
+    }
+
+    @Override
+    public void submit(MachineRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        for (Direction d : Direction.values()) {
+            var activeOverlay = state.activeOverlays[d.get3DDataValue()];
+            var quad = activeOverlay.quad;
+            if (quad == null) {
+                continue;
+            }
+            int packedLight = activeOverlay.packedLight;
+            submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+                vc.putBulkData(pose, quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLight, OverlayTexture.NO_OVERLAY);
+                SodiumCompat.markSpriteActive(quad.sprite());
+            });
+        }
     }
 
     @Nullable
@@ -96,10 +152,9 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
         if (cachedQuads[cachedQuadIndex] == null) {
-            TextureAtlasSprite sprite = model == null ? null : MachineBakedModel_old.getSprite(model.getSprites(casing), d, facing, true);
+            TextureAtlasSprite sprite = model == null ? null : MachineBlockStateModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
-                var vc = new QuadBakingVertexConsumer();
-                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(vc, d, sprite, -2 * MachineBakedModel_old.Z_OFFSET);
+                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(d, sprite, -2 * MachineBlockStateModel.Z_OFFSET);
             } else {
                 cachedQuads[cachedQuadIndex] = NO_QUAD;
             }
@@ -110,49 +165,23 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     }
 
     @Nullable
-    private MachineBakedModel_old getMachineModel(BlockState state) {
+    private MachineBlockStateModel getMachineModel(BlockState state) {
         var model = blockModels.getBlockModel(state);
 
         if (UNWRAP_BAKED_MODEL != null) {
-            try {
-                model = (BakedModel) UNWRAP_BAKED_MODEL.invokeExact((BakedModel) model);
-            } catch (Throwable throwable) {
-                throw new RuntimeException("Failed to unwrap machine model", throwable);
-            }
+            // TODO Continuity support
+//            try {
+//                model = (BakedModel) UNWRAP_BAKED_MODEL.invokeExact((BakedModel) model);
+//            } catch (Throwable throwable) {
+//                throw new RuntimeException("Failed to unwrap machine model", throwable);
+//            }
         }
 
-        if (model instanceof MachineBakedModel_old mbm) {
+        if (model instanceof MachineBlockStateModel mbm) {
             return mbm;
         } else {
-            MI.LOGGER.warn("Model {} should have been a MachineBakedModel, but was {}", state, model.getClass());
+            MI.LOGGER.warn("Model {} should have been a MachineBlockStateModel, but was {}", state, model.getClass());
             return null;
-        }
-    }
-
-    @Override
-    public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
-        BlockState state = entity.getBlockState();
-        if (lastBlockState == null) {
-            lastBlockState = state;
-            model = getMachineModel(state);
-        } else if (lastBlockState != state) {
-            // Sanity check.
-            throw new IllegalStateException("Tried to use the same machine BER with two block states: " + state + " and " + lastBlockState);
-        }
-
-        MachineModelClientData data = entity.getMachineModelData();
-        if (data.isActive) {
-            VertexConsumer vc = vcp.getBuffer(Sheets.cutoutBlockSheet());
-
-            for (Direction d : Direction.values()) {
-                BakedQuad quad = getCachedQuad(data, d);
-                if (quad != null) {
-                    int faceLight = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockState(), entity.getBlockPos().relative(d));
-                    vc.putBulkData(matrices.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.NO_OVERLAY);
-
-                    SodiumCompat.markSpriteActive(quad.getSprite());
-                }
-            }
         }
     }
 

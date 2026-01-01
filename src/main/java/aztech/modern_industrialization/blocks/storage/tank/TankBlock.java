@@ -43,8 +43,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
-    public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
+    public TankBlock(BlockBehaviour.Properties properties, EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
+        super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory,
                 behaviour);
     }

@@ -39,9 +39,9 @@ import net.minecraft.world.level.material.PushReaction;
 public class MIFluidBlock extends Block {
     private final int color;
 
-    public MIFluidBlock(int color) {
+    public MIFluidBlock(Properties properties, int color) {
         // .air() to make `FluidType#canBePlacedInLevel` return false
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().pushReaction(PushReaction.DESTROY).liquid().air());
+        super(properties.mapColor(MapColor.WATER).replaceable().pushReaction(PushReaction.DESTROY).liquid().air());
         this.color = FluidHelper.getColorMinLuminance(color);
     }
 

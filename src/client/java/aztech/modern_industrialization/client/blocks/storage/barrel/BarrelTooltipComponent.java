@@ -29,14 +29,15 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.LightCoordsUtil;
 import org.joml.Matrix4f;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
@@ -51,14 +52,14 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, Font font, int x, int y) {
+    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
+        RenderHelper.renderAndDecorateItem(graphics, font, data.variant().toStack(), x, y + 10);
+
         Style style = MITooltips.DEFAULT_STYLE;
 
-        font.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate,
-                Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+        graphics.drawString(font, data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true);
 
-        font.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, Font.DisplayMode.NORMAL, 0,
-                LightTexture.FULL_BRIGHT);
+        graphics.drawString(font, getItemNumber(), x + 20, y + 15, -1, true);
     }
 
     public Component getItemNumber() {
@@ -75,7 +76,7 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
             String capacityStr;
             Component percent = MITooltips.INVERTED_RATIO_PERCENTAGE_PARSER.parse((double) amount / capacity);
 
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 amountStr = "" + amount;
                 capacityStr = "" + capacity;
 
@@ -89,10 +90,5 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
         }
 
         return itemNumber;
-    }
-
-    @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
-        RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack(), x, y + 10);
     }
 }

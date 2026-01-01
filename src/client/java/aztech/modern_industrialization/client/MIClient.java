@@ -81,7 +81,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -128,8 +127,8 @@ public class MIClient {
         modContainer.registerConfig(ModConfig.Type.CLIENT, MIClientConfig.SPEC);
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
-        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
-        NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
+//        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
+//        NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         DeferredBarrelTextRenderer.init();
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);
@@ -151,35 +150,34 @@ public class MIClient {
             // != null check
             if (Minecraft.getInstance().level != null && MIClientConfig.INSTANCE.fuelTooltips.getAsBoolean()) {
                 try {
-                    int fuelTime = event.getItemStack().getBurnTime(null);
-                    if (fuelTime > 0) {
-                        long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
-                        event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
-                    }
+                    // TODO 26.1
+//                    int fuelTime = event.getItemStack().getBurnTime(null);
+//                    if (fuelTime > 0) {
+//                        long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
+//                        event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+//                    }
                 } catch (Exception e) {
                     MI.LOGGER.warn("Could not show MI fuel tooltip.", e);
                 }
             }
 
             if (event.getFlags().isAdvanced() && MIClientConfig.INSTANCE.itemTagTooltips.getAsBoolean()) {
-                var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
+                var ids = event.getItemStack().tags().map(TagKey::location).sorted().toList();
                 for (Identifier id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
                 }
             }
         });
 
-        modBus.addListener(GatherDataEvent.class, event -> {
+        modBus.addListener(GatherDataEvent.Client.class, event -> {
             MIDatagenClient.configure(
                     event.getGenerator(),
-                    event.getExistingFileHelper(),
                     event.getLookupProvider(),
-                    event.includeServer(),
                     false);
         });
 
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
-            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
+//            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
         });
 
         // Warn if neither JEI nor REI is present!
@@ -195,7 +193,7 @@ public class MIClient {
         if (MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
             modBus.addListener(AddPackFindersEvent.class, event -> {
                 if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-                    RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenClient.configure(gen, fileHelper, lookupProvider, run, runtimeDatagen), (gen1, lookupProvider1, run1, runtimeDatagen1) -> MIDatagenServer.configure(gen1, fileHelper, lookupProvider1, run1, runtimeDatagen1));
+                    RuntimeDataGen.run(MIDatagenClient::configure, MIDatagenServer::configure);
                 }
             });
         }
@@ -233,7 +231,7 @@ public class MIClient {
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
     public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<? extends BlockEntityType<? extends U>> bet,
-            BlockEntityRendererProvider<T> renderer) {
+            BlockEntityRendererProvider<T, ?> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }
 
@@ -254,7 +252,7 @@ public class MIClient {
             }
         }
 
-        BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(0x000000));
+        BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(context.itemModelResolver(), 0x000000));
         BlockEntityRenderers.register(MIRegistries.CREATIVE_TANK_BE.get(), context -> new TankRenderer(0x000000));
 
         blockEntityRendererRegistrations.forEach(Runnable::run);
@@ -280,10 +278,11 @@ public class MIClient {
     @SubscribeEvent
     private static void registerItemProperties(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
-                    (stack, level, entity, seed) -> {
-                        return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
-                    });
+            // TODO 26.1
+//            ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
+//                    (stack, level, entity, seed) -> {
+//                        return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
+//                    });
         });
     }
 }

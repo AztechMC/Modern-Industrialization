@@ -47,8 +47,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
-    public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
+    public BarrelBlock(Properties properties, EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
+        super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
     }
 

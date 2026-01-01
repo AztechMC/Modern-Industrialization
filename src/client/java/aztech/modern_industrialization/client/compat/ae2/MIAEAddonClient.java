@@ -27,7 +27,6 @@ package aztech.modern_industrialization.client.compat.ae2;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.pipes.impl.PipeMeshCache;
-import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import java.util.Collection;
 import java.util.List;
@@ -36,28 +35,29 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.inventory.InventoryMenu;
 
+// TODO 26.1
 public class MIAEAddonClient {
-    private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
-        @Override
-        public Collection<Material> getSpriteDependencies() {
-            return List.of(new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks")));
-        }
-
-        @Override
-        public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
-            return new PipeMeshCache(textureGetter, new Material[] {
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks"))
-            }, false);
-        }
-    };
+//    private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
+//        @Override
+//        public Collection<Material> getSpriteDependencies() {
+//            return List.of(new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
+//                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks")));
+//        }
+//
+//        @Override
+//        public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
+//            return new PipeMeshCache(textureGetter, new Material[] {
+//                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
+//                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks"))
+//            }, false);
+//        }
+//    };
 
     public static void registerPipeRenderers() {
-        for (var type : PipeNetworkType.getTypes().values()) {
-            if (MIAEAddon.PIPES.contains(type)) {
-                PipeRenderer.register(type, ME_RENDERER);
-            }
-        }
+//        for (var type : PipeNetworkType.getTypes().values()) {
+//            if (MIAEAddon.PIPES.contains(type)) {
+//                PipeRenderer.register(type, ME_RENDERER);
+//            }
+//        }
     }
 }

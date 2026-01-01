@@ -38,11 +38,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import mezz.jei.api.gui.builder.IClickableIngredientFactory;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusFactory;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
 import mezz.jei.api.runtime.IJeiRuntime;
@@ -54,7 +56,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
-record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier<IJeiRuntime> jeiRuntime)
+record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier<@Nullable IJeiRuntime> jeiRuntime)
         implements IGuiContainerHandler<MachineScreen> {
     @Override
     public List<Rect2i> getGuiExtraAreas(MachineScreen screen) {
@@ -71,7 +73,7 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
 
         if (categories.size() > 0 && rectangle != null && contains(rectangle, guiMouseX, guiMouseY)) {
             boolean foundSome = false;
-            var result = new ArrayList<RecipeType<?>>();
+            var result = new ArrayList<IRecipeType<?>>();
             for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
                 if (!MachineScreenPredicateTest.test(cac.predicate, screen))
                     continue;
@@ -106,12 +108,12 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
     }
 
     @Override
-    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(MachineScreen screen, double mouseX, double mouseY) {
+    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(IClickableIngredientFactory builder, MachineScreen screen, double mouseX, double mouseY) {
         Slot slot = screen.getFocusedSlot();
         var maybeIngredient = getIngredientUnderMouse(slot);
 
         return Optional.ofNullable(maybeIngredient)
-                .map(ingredientManager::createTypedIngredient)
+                .map(ingredient -> ingredientManager.createTypedIngredient(ingredient, false))
                 .flatMap(ingredient -> ingredient.map(slotArea(screen, slot)));
     }
 

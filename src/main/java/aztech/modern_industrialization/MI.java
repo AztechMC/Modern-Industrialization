@@ -206,7 +206,7 @@ public class MI {
             FluidNuclearComponent.init();
         });
 
-        modBus.addListener(GatherDataEvent.class, event -> {
+        modBus.addListener(GatherDataEvent.Client.class, event -> {
             MIDatagenServer.configure(
                     event.getGenerator(),
                     event.getLookupProvider(),
@@ -231,7 +231,7 @@ public class MI {
         modBus.addListener(AddPackFindersEvent.class, event -> {
             if (dist == Dist.DEDICATED_SERVER && event.getPackType() == PackType.SERVER_DATA
                     && MIStartupConfig.INSTANCE.datagenOnStartup.getAsBoolean()) {
-                RuntimeDataGen.run((gen, lookupProvider, run, runtimeDatagen) -> MIDatagenServer.configure(gen, lookupProvider, runtimeDatagen));
+                RuntimeDataGen.run(MIDatagenServer::configure);
             }
 
             if (MIStartupConfig.INSTANCE.loadRuntimeGeneratedResources.getAsBoolean()) {

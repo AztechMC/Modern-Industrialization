@@ -42,7 +42,8 @@ public class MIJadeClientPlugin implements IWailaPlugin {
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(new OverclockComponentProvider(), MachineBlock.class);
 
-        registration.usePickedResult(MIPipes.BLOCK_PIPE.get());
+        // TODO 26.1
+//        registration.usePickedResult(MIPipes.BLOCK_PIPE.get());
         registration.registerBlockComponent(new PipeComponentProvider(), PipeBlock.class);
 
         registration.registerEnergyStorageClient(new MachineComponentProvider.Energy());

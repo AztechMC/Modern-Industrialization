@@ -53,9 +53,11 @@ class ConnectionTypeButton extends Button {
         };
     }
 
-    // Text is a bit too large, so override to avoid the default 2 pixel margin for the "scrolling" effect
     @Override
-    public void renderString(GuiGraphics guiGraphics, Font font, int color) {
-        renderScrollingString(guiGraphics, font, 0, color);
+    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float a) {
+        this.renderDefaultSprite(graphics);
+        // Text is a bit too large, so use a 0 (instead of 2) pixel margin for the "scrolling" effect
+        var output = graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE);
+        this.renderScrollingStringOverContents(output, message, 2);
     }
 }

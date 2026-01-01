@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.client.pipes.impl;
 
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.SpriteFinder;
 import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;

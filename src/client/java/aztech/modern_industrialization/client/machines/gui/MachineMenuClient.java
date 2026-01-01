@@ -36,21 +36,32 @@ import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 public class MachineMenuClient extends MachineMenuCommon {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     @SuppressWarnings("ConstantConditions")
     public static MachineMenuClient create(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         // Inventory
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         CompoundTag tag = buf.readNbt();
-        NbtHelper.getList(tag, "items", itemStacks, t -> new ConfigurableItemStack(t, buf.registryAccess()));
-        NbtHelper.getList(tag, "fluids", fluidStacks, t -> new ConfigurableFluidStack(t, buf.registryAccess()));
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(() -> "client machine menu", LOGGER)) {
+            var input = TagValueInput.create(reporter, buf.registryAccess(), tag);
+            NbtHelper.getList(input, "items", itemStacks, ConfigurableItemStack.CODEC);
+            NbtHelper.getList(input, "fluids", fluidStacks, ConfigurableFluidStack.CODEC);
+        }
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);
@@ -60,7 +71,7 @@ public class MachineMenuClient extends MachineMenuCommon {
         List<GuiComponentServer.Type<?, ?>> componentTypes = new ArrayList<>(componentCount);
         ComponentStorage<GuiComponentClient<?, ?>> components = new ComponentStorage<>();
         for (int i = 0; i < componentCount; ++i) {
-            var id = buf.readResourceLocation();
+            var id = buf.readIdentifier();
             var registration = GuiComponentsClient.get(id);
             componentTypes.add(registration.type());
             components.register(registration.readNewComponent(buf));

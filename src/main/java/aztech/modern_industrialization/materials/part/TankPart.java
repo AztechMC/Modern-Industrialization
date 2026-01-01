@@ -83,7 +83,7 @@ public class TankPart implements PartKeyProvider {
                             englishName,
                             itemPath,
                             MIBlock.BlockDefinitionParams.defaultStone()
-                                    .withBlockConstructor(s -> new TankBlock(factory, tankStorageBehaviour))
+                                    .withBlockConstructor(p -> new TankBlock(p, factory, tankStorageBehaviour))
                                     .withBlockItemConstructor(TankItem::new)
                                     // TODO 26.1
 //                                    .withModel(MODEL_GENERATOR)

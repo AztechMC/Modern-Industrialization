@@ -43,7 +43,7 @@ public class TabulatedColoramp implements Coloramp {
         if (mtm.hasAsset(gradientMapPath)) {
             try (NativeImage gradientMap = mtm.getAssetAsTexture(gradientMapPath)) {
                 for (int i = 0; i < 256; i++) {
-                    int color = gradientMap.getPixelRGBA(i, 0);
+                    int color = gradientMap.getPixel(i, 0);
                     int r = getR(color);
                     int g = getG(color);
                     int b = getB(color);

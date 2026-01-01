@@ -33,6 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.TooltipFlag;
@@ -94,8 +95,8 @@ public final class FluidVariantRendering {
         if (fluidVariant.isBlank()) {
             return null;
         }
-        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(getExtensions(fluidVariant).getStillTexture(fluidVariant.toStack(1)));
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                .getSprite(getExtensions(fluidVariant).getStillTexture(fluidVariant.toStack(1)));
     }
 
     /**

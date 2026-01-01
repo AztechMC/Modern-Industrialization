@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.client.compat.viewer.usage.ViewerSetup;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ViewerPluginJei implements IModPlugin {
         for (var category : categories) {
             category.wrapped.buildWorkstations(items -> {
                 for (var item : items) {
-                    registration.addRecipeCatalyst(item.asItem().getDefaultInstance(), category.recipeType);
+                    registration.addCraftingStation(category.recipeType, item.asItem().getDefaultInstance());
                 }
             });
         }
@@ -77,7 +78,7 @@ public class ViewerPluginJei implements IModPlugin {
     private static <D> void registerCategoryRecipes(IRecipeRegistration registration, ViewerCategoryJei<D> category) {
         var level = Minecraft.getInstance().level;
         List<D> recipes = new ArrayList<>();
-        category.wrapped.buildRecipes(level.getRecipeManager(), level.registryAccess(), recipes::add);
+        category.wrapped.buildRecipes(MICommonProxy.INSTANCE.getRecipeMap(level), level.registryAccess(), recipes::add);
         registration.addRecipes(category.recipeType, recipes);
     }
 

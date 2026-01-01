@@ -26,6 +26,7 @@ package aztech.modern_industrialization.client.pipes.impl;
 
 import static net.minecraft.core.Direction.*;
 
+import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.impl.PipePartBuilder;
 import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -48,7 +49,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
     private final float spriteSizeU;
     private final float spriteSizeV;
 
-    private final Vector3fc[] workPos = new Vector3fc[4];
+    private final Vector3f[] workPos = new Vector3f[4];
     private final long[] workUv = new long[4];
 
     PipeMeshBuilder(List<BakedQuad> pipeQuads, List<BakedQuad> innerQuads, boolean addInnerQuads, int slotPos, Direction direction, TextureAtlasSprite sprite) {
@@ -61,64 +62,18 @@ public class PipeMeshBuilder extends PipePartBuilder {
         this.spriteSizeV = sprite.getV1() - sprite.getV0();
     }
 
-    private static final float CULL_FACE_EPSILON = 0.00001f;
-
-    private void square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
-        if (Math.abs(depth) < CULL_FACE_EPSILON) {
-            depth = 0; // avoid any inconsistency for face quads
-        }
-
-        switch (nominalFace) {
-            case UP:
-                depth = 1 - depth;
-                top = 1 - top;
-                bottom = 1 - bottom;
-
-            case DOWN:
-                workPos[0] = new Vector3f(left, depth, top);
-                workPos[1] = new Vector3f(left, depth, bottom);
-                workPos[2] = new Vector3f(right, depth, bottom);
-                workPos[3] = new Vector3f(right, depth, top);
-                break;
-
-            case EAST:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
-
-            case WEST:
-                workPos[0] = new Vector3f(depth, top, left);
-                workPos[1] = new Vector3f(depth, bottom, left);
-                workPos[2] = new Vector3f(depth, bottom, right);
-                workPos[3] = new Vector3f(depth, top, right);
-                break;
-
-            case SOUTH:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
-
-            case NORTH:
-                workPos[0] = new Vector3f(1 - left, top, depth);
-                workPos[1] = new Vector3f(1 - left, bottom, depth);
-                workPos[2] = new Vector3f(1 - right, bottom, depth);
-                workPos[3] = new Vector3f(1 - right, top, depth);
-                break;
-        }
-    }
-
     private void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
         // Already emit the fluid quad, the UV will be baked when rendering so it's not needed here
         if (addInnerQuads) {
-            square(direction, left, bottom, right, top, depth + 0.001f);
+            ModelHelper.square(workPos, direction, left, bottom, right, top, depth + 0.001f);
             innerQuads.add(new BakedQuad(
-                    workPos[0], workPos[1], workPos[2], workPos[3],
+                    new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
                     0, 0, 0, 0,
                     -1, direction, sprite, true, 0,
                     BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));
         }
 
-        square(direction, left, bottom, right, top, depth);
+        ModelHelper.square(workPos, direction, left, bottom, right, top, depth);
     }
 
     // TODO: reformat and use vec2 for uvs
@@ -160,7 +115,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
         }
 
         pipeQuads.add(new BakedQuad(
-                workPos[0], workPos[1], workPos[2], workPos[3],
+                new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
                 workUv[0],  workUv[1], workUv[2], workUv[3],
                 -1, direction, sprite, true, 0,
                 BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));

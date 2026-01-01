@@ -41,14 +41,12 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class TextureManager {
     private final ResourceProvider rm;
     private final BiConsumer<NativeImage, String> textureWriter;
     private final BiConsumer<JsonElement, String> mcMetaWriter;
     private final Queue<IORunnable> endRunnables = new ConcurrentLinkedQueue<>();
-    private final Set<String> generatedTextures = ConcurrentHashMap.newKeySet();
 
     private final Gson GSON = new Gson();
 
@@ -102,8 +100,6 @@ public class TextureManager {
             textureWriter.accept(image, textureId);
         }
 
-        generatedTextures.add(textureId.replace(":textures/", ":"));
-
         // Close image in any case...
         if (closeImage) {
             image.close();
@@ -123,11 +119,5 @@ public class TextureManager {
                 endRunnables.stream().map(r -> CompletableFuture.runAsync(r::safeRun, Util.backgroundExecutor())).toArray(CompletableFuture[]::new));
         endRunnables.clear();
         return ret;
-    }
-
-    public void markTexturesAsGenerated(ExistingFileHelper helper) {
-        for (var texture : generatedTextures) {
-            helper.trackGenerated(Identifier.parse(texture), PackType.CLIENT_RESOURCES, "", "textures");
-        }
     }
 }

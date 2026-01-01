@@ -38,6 +38,7 @@ import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Unit;
 
 public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeTankFluidDisplay.Data> {
@@ -55,21 +56,19 @@ public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeT
                 FluidVariant fluid = data.fluid();
                 float fracFull = (float) data.amount() / data.capacity();
 
-                guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX, topPos + posY, 92, 38, 46, 62);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, leftPos + posX, topPos + posY, 92, 38, 46, 62, 256, 256);
 
-                RenderSystem.disableBlend();
                 if (!fluid.isBlank()) {
                     for (int i = 0; i < 2; i++) {
                         for (int j = 0; j < 3; j++) {
                             float localFullness = Math.min(Math.max(3 * fracFull - (2 - j), 0), 1);
                             RenderHelper.drawFluidInGui(guiGraphics, fluid, leftPos + posX + 7 + i * 16,
-                                    topPos + posY + 7 + j * 16 + (1 - localFullness) * 16, 16, localFullness);
+                                    topPos + posY + 7 + j * 16 + Math.round((1 - localFullness) * 16), 16, localFullness);
                         }
                     }
                 }
-                RenderSystem.enableBlend();
 
-                guiGraphics.blit(MachineScreen.SLOT_ATLAS, leftPos + posX + 7, topPos + posY + 7, 60, 38, 32, 48);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, leftPos + posX + 7, topPos + posY + 7, 60, 38, 32, 48, 256, 256);
 
                 // A bit hacky: draw the capacity corresponding to the shape in the shape selection GUI if it's open. ;)
                 var shapeSelection = machineScreen.getMenu().getComponent(ShapeSelectionClient.class);
@@ -89,7 +88,7 @@ public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeT
             @Override
             public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
-                    guiGraphics.renderTooltip(font,
+                    guiGraphics.setTooltipForNextFrame(font,
                             FluidHelper.getTooltipForFluidStorage(data.fluid(), data.amount(), data.capacity()),
                             Optional.empty(),
                             cursorX, cursorY);

@@ -44,16 +44,16 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class MIPipesClient {
@@ -63,24 +63,25 @@ public class MIPipesClient {
         });
         registerRenderers();
 
-        NeoForge.EVENT_BUS.addListener(RenderHighlightEvent.Block.class, event -> {
-            var level = Minecraft.getInstance().level;
-            var pos = event.getTarget().getBlockPos();
-
-            if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipe && !pipe.hasCamouflage()) {
-                var shape = PipeBlock.getHitPart(level, pos, event.getTarget());
-
-                if (shape != null) {
-                    Vec3 camPos = event.getCamera().getPosition();
-                    RenderHelper.renderVoxelShape(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.lines()), shape.shape,
-                            pos.getX() - camPos.x(),
-                            pos.getY() - camPos.y(),
-                            pos.getZ() - camPos.z(),
-                            0, 0, 0, 0.4f);
-                    event.setCanceled(true);
-                }
-            }
-        });
+        // TODO 26.1
+//        NeoForge.EVENT_BUS.addListener(RenderHighlightEvent.Block.class, event -> {
+//            var level = Minecraft.getInstance().level;
+//            var pos = event.getTarget().getBlockPos();
+//
+//            if (level.getBlockEntity(pos) instanceof PipeBlockEntity pipe && !pipe.hasCamouflage()) {
+//                var shape = PipeBlock.getHitPart(level, pos, event.getTarget());
+//
+//                if (shape != null) {
+//                    Vec3 camPos = event.getCamera().getPosition();
+//                    RenderHelper.renderVoxelShape(event.getPoseStack(), event.getMultiBufferSource().getBuffer(RenderType.lines()), shape.shape,
+//                            pos.getX() - camPos.x(),
+//                            pos.getY() - camPos.y(),
+//                            pos.getZ() - camPos.z(),
+//                            0, 0, 0, 0.4f);
+//                    event.setCanceled(true);
+//                }
+//            }
+//        });
 
         NeoForge.EVENT_BUS.addListener(InputEvent.MouseScrollingEvent.class, event -> {
             var player = Objects.requireNonNull(Minecraft.getInstance().player);
@@ -99,19 +100,12 @@ public class MIPipesClient {
     private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {
         return new PipeRenderer.Factory() {
             @Override
-            public Collection<Material> getSpriteDependencies() {
-                return sprites.stream().map(
-                        n -> new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/" + n)))
-                        .collect(Collectors.toList());
-            }
-
-            @Override
-            public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
+            public PipeRenderer create(ModelBaker modelBaker) {
                 Material[] ids = sprites.stream()
-                        .map(n -> new Material(InventoryMenu.BLOCK_ATLAS,
+                        .map(n -> new Material(AtlasIds.BLOCKS,
                                 MI.id("block/pipes/" + n)))
                         .toArray(Material[]::new);
-                return new PipeMeshCache(textureGetter, ids, innerQuads);
+                return new PipeMeshCache(modelBaker.sprites(), ids, innerQuads);
             }
         };
     }

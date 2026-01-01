@@ -48,7 +48,7 @@ import net.neoforged.fml.loading.FMLPaths;
 public class RuntimeDataGen {
     @FunctionalInterface
     public interface DataGenConfig {
-        void run(DataGenerator gen, CompletableFuture<HolderLookup.Provider> registries, boolean run, boolean runtimeDatagen);
+        void run(DataGenerator gen, CompletableFuture<HolderLookup.Provider> registries, boolean runtimeDatagen);
     }
 
     public static void run(DataGenConfig... configs) {
@@ -82,7 +82,7 @@ public class RuntimeDataGen {
         var gen = new DataGenerator(dataOutput, DetectedVersion.tryDetectVersion(), true);
 
         for (var config : configs) {
-            config.run(gen, registriesFuture, true, true);
+            config.run(gen, registriesFuture, true);
         }
 
         gen.run();

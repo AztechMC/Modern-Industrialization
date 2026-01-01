@@ -46,7 +46,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -59,7 +59,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
 
     public NeutronInteractionCategory() {
         super(Recipe.class, MI.id("neutron_interaction"), MIText.NeutronInteraction.text(),
-                BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
+                BuiltInRegistries.ITEM.getValue(MI.id("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
 
         this.centerX = width / 2;
         this.centerY = height / 2 - 5;
@@ -71,7 +71,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             if (component.neutronBehaviour != NeutronBehaviour.NO_INTERACTION) {

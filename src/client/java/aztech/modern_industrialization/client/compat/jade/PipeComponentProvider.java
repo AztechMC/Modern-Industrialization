@@ -49,8 +49,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.BoxStyle;
 import snownee.jade.api.ui.IDisplayHelper;
-import snownee.jade.api.ui.IElement;
-import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.ui.JadeUI;
 
 /**
  * Overrides the name of the pipes in Waila to prevent "block.modern_industrialization.pipe" being displayed.
@@ -82,15 +81,13 @@ public class PipeComponentProvider implements IBlockComponentProvider {
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
-            var helper = IElementHelper.get();
-
+            CompoundTag tag = accessor.getServerData().getCompoundOrEmpty(shape.type.getIdentifier().toString());
             if (tag.contains("fluid")) {
-                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompound("fluid"), accessor.getLevel().registryAccess());
-                long stored = tag.getLong("amount");
-                long capacity = tag.getInt("capacity");
-                long transfer = tag.getLong("transfer");
-                long maxTransfer = tag.getLong("maxTransfer");
+                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompoundOrEmpty("fluid"), accessor.getLevel().registryAccess());
+                long stored = tag.getLongOr("amount", 0);
+                long capacity = tag.getIntOr("capacity", 0);
+                long transfer = tag.getLongOr("transfer", 0);
+                long maxTransfer = tag.getLongOr("maxTransfer", 0);
 
                 var fluidName = IDisplayHelper.get().stripColor(FluidHelper.getFluidName(fluid, true));
 
@@ -107,14 +104,15 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 } else {
                     text = Component.translatable("jade.fluid", fluidName, storedText);
                 }
-                var progressStyle = helper.progressStyle().overlay(helper.fluid(MIJadeCommonPlugin.fluidStack(fluid, stored)));
-
-                tooltip.add(helper.progress(
-                        MIJadeClientPlugin.ratio(stored, capacity),
-                        text,
-                        progressStyle,
-                        BoxStyle.getNestedBox(),
-                        true));
+                // TODO 26.1
+//                var progressStyle = JadeUI.progressStyle().overlay(JadeUI.fluid(MIJadeCommonPlugin.fluidStack(fluid, stored)));
+//
+//                tooltip.add(JadeUI.progress(
+//                        MIJadeClientPlugin.ratio(stored, capacity),
+//                        text,
+//                        progressStyle,
+//                        BoxStyle.nestedBox(),
+//                        true));
 
                 // Transfer rate
                 if (!fluid.isBlank()) {
@@ -130,83 +128,89 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                                 .append(Component.literal(transferText));
                     }
 
-                    tooltip.add(helper.progress(
-                            MIJadeClientPlugin.ratio(transfer, maxTransfer),
-                            maxText,
-                            progressStyle,
-                            BoxStyle.getNestedBox(),
-                            true));
+                    // TODO 26.1
+//                    tooltip.add(JadeUI.progress(
+//                            MIJadeClientPlugin.ratio(transfer, maxTransfer),
+//                            maxText,
+//                            progressStyle,
+//                            BoxStyle.nestedBox(),
+//                            true));
                 }
             }
 
             if (tag.contains("eu")) {
-                long stored = tag.getLong("eu");
-                long capacity = tag.getLong("maxEu");
-                long transfer = tag.getLong("transfer");
-                long maxTransfer = tag.getLong("maxTransfer");
+                long stored = tag.getLongOr("eu", 0);
+                long capacity = tag.getLongOr("maxEu", 0);
+                long transfer = tag.getLongOr("transfer", 0);
+                long maxTransfer = tag.getLongOr("maxTransfer", 0);
 
                 // Total EU
                 // TODO: fix spacing between EU and the rest (another day)
-                tooltip.add(helper.progress(
-                        MIJadeClientPlugin.ratio(stored, capacity),
-                        Component.literal("")
-                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(stored, " EU", false))
-                                        .withStyle(ChatFormatting.WHITE))
-                                .append(" / ")
-                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(capacity, " EU", false)))
-                                .withStyle(ChatFormatting.GRAY),
-                        helper.progressStyle().color(-5636096, -10092544).textColor(-1),
-                        BoxStyle.getNestedBox(),
-                        true));
+                // TODO @6.1
+//                tooltip.add(JadeUI.progress(
+//                        MIJadeClientPlugin.ratio(stored, capacity),
+//                        Component.literal("")
+//                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(stored, " EU", false))
+//                                        .withStyle(ChatFormatting.WHITE))
+//                                .append(" / ")
+//                                .append(Component.literal(IDisplayHelper.get().humanReadableNumber(capacity, " EU", false)))
+//                                .withStyle(ChatFormatting.GRAY),
+//                        JadeUI.progressStyle().color(-5636096, -10092544).textColor(-1),
+//                        BoxStyle.nestedBox(),
+//                        true));
 
                 // Voltage tier
                 tooltip.add(
                         List.of(
-                                helper.text(MIText.NetworkTier.text().withStyle(ChatFormatting.WHITE)),
-                                helper.spacer(10, 0),
-                                helper.text(MIPipes.ELECTRICITY_PIPE_TIER.get(MIPipes.INSTANCE.getPipeItem(shape.type).type).longEnglishName()
+                                JadeUI.text(MIText.NetworkTier.text().withStyle(ChatFormatting.WHITE)),
+                                JadeUI.spacer(10, 0),
+                                JadeUI.text(MIPipes.ELECTRICITY_PIPE_TIER.get(MIPipes.INSTANCE.getPipeItem(shape.type).type).longEnglishName()
                                         .withStyle(MITooltips.NUMBER_TEXT))
-                                        .align(IElement.Align.CENTER)));
+                                // TODO 26.1
+                                        /*.align(IElement.Align.CENTER)*/));
 
                 // EU/t
-                tooltip.add(helper.progress(
-                        MIJadeClientPlugin.ratio(transfer, maxTransfer),
-                        MIJadeClientPlugin.textAndRatio(
-                                MIText.NetworkTransfer.text(),
-                                String.valueOf(IDisplayHelper.get().humanReadableNumber(transfer, "", false)),
-                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxTransfer, " EU/t", false))),
-                        helper.progressStyle().color(-5636096, -10092544).textColor(-1),
-                        BoxStyle.getNestedBox(),
-                        true));
+                // TODO: 26.1
+//                tooltip.add(JadeUI.progress(
+//                        MIJadeClientPlugin.ratio(transfer, maxTransfer),
+//                        MIJadeClientPlugin.textAndRatio(
+//                                MIText.NetworkTransfer.text(),
+//                                String.valueOf(IDisplayHelper.get().humanReadableNumber(transfer, "", false)),
+//                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxTransfer, " EU/t", false))),
+//                        JadeUI.progressStyle().color(-5636096, -10092544).textColor(-1),
+//                        BoxStyle.nestedBox(),
+//                        true));
             }
 
             if (tag.contains("items")) {
-                long items = tag.getLong("items");
-                int pulse = tag.getInt("pulse");
+                long items = tag.getLongOr("items", 0);
+                int pulse = tag.getIntOr("pulse", 0);
 
                 double delay = (ItemNetwork.TICK_RATE - pulse) / 20.0;
                 double maxDelay = ItemNetwork.TICK_RATE / 20.0;
 
                 // Delay
-                tooltip.add(helper.progress(
-                        MIJadeClientPlugin.ratio(delay, maxDelay),
-                        MIJadeClientPlugin.textAndRatio(
-                                MIText.NetworkDelay.text(),
-                                String.valueOf(IDisplayHelper.get().humanReadableNumber(delay + 0.3, "", false)),
-                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxDelay, " s", false))),
-                        helper.progressStyle().color(0xFFFFD14A, 0xFFCCA73B).textColor(-1),
-                        BoxStyle.getNestedBox(),
-                        false)
-                        .tag(MI.id("pipe/items/delay")) // tag to give the progress bar its own interpolation
-                );
+                // TODO 26.1
+//                tooltip.add(JadeUI.progress(
+//                        MIJadeClientPlugin.ratio(delay, maxDelay),
+//                        MIJadeClientPlugin.textAndRatio(
+//                                MIText.NetworkDelay.text(),
+//                                String.valueOf(IDisplayHelper.get().humanReadableNumber(delay + 0.3, "", false)),
+//                                String.valueOf(IDisplayHelper.get().humanReadableNumber(maxDelay, " s", false))),
+//                        JadeUI.progressStyle().color(0xFFFFD14A, 0xFFCCA73B).textColor(-1),
+//                        BoxStyle.nestedBox(),
+//                        false)
+//                        .tag(MI.id("pipe/items/delay")) // tag to give the progress bar its own interpolation
+//                );
 
                 // Moved items
                 tooltip.add(
                         List.of(
-                                helper.text(MIText.NetworkMovedItems.text().withStyle(ChatFormatting.WHITE)),
-                                helper.spacer(10, 0),
-                                helper.text(Component.literal("" + items).withStyle(MITooltips.NUMBER_TEXT))
-                                        .align(IElement.Align.CENTER)));
+                                JadeUI.text(MIText.NetworkMovedItems.text().withStyle(ChatFormatting.WHITE)),
+                                JadeUI.spacer(10, 0),
+                                JadeUI.text(Component.literal("" + items).withStyle(MITooltips.NUMBER_TEXT))
+                                // TODO 26.1
+                                        /*.align(IElement.Align.CENTER)*/));
             }
         }
     }

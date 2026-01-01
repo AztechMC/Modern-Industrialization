@@ -26,6 +26,7 @@ package aztech.modern_industrialization.client;
 
 import aztech.modern_industrialization.client.util.RenderHelper;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
@@ -36,7 +37,7 @@ public class DynamicTooltip extends Tooltip {
     private final Supplier<List<Component>> tooltipSupplier;
 
     public DynamicTooltip(Supplier<List<Component>> tooltipSupplier) {
-        super(null, null);
+        super(null, null, Optional.empty(), null);
         this.tooltipSupplier = tooltipSupplier;
     }
 

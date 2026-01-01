@@ -42,6 +42,7 @@ import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -78,7 +79,7 @@ public class PipeMeshCache implements PipeRenderer {
      *
      * @param innerQuads Whether to add inner quads, e.g. for fluid rendering.
      */
-    public PipeMeshCache(Function<Material, TextureAtlasSprite> textureGetter, Material[] spriteIds, boolean innerQuads) {
+    public PipeMeshCache(SpriteGetter spriteGetter, Material[] spriteIds, boolean innerQuads) {
         // Build the connection cache
         connectionMeshBuilder = key -> {
             int i = key.endpointType;
@@ -86,7 +87,7 @@ public class PipeMeshCache implements PipeRenderer {
             Direction direction = Direction.from3DDataValue(key.directionId);
             int j = key.renderType;
 
-            TextureAtlasSprite sprite = textureGetter.apply(spriteIds[i]);
+            TextureAtlasSprite sprite = spriteGetter.get(spriteIds[i], () -> "pipe model");
 
             var mesh = new Mesh(new ArrayList<>(), new ArrayList<>());
             PipeMeshBuilder pmb = new PipeMeshBuilder(mesh.pipeQuads, mesh.innerQuads, innerQuads, PipePartBuilder.getSlotPos(logicalSlot), direction, sprite);
@@ -107,7 +108,7 @@ public class PipeMeshCache implements PipeRenderer {
         };
 
         // Build the center cache
-        TextureAtlasSprite sprite = textureGetter.apply(spriteIds[0]);
+        TextureAtlasSprite sprite = spriteGetter.get(spriteIds[0], () -> "pipe model");
         centerMeshBuilder = key -> {
             int logicalSlot = key.logicalSlot;
             int mask = key.bitmask;
@@ -181,7 +182,7 @@ public class PipeMeshCache implements PipeRenderer {
 
                         translucentQuads.accept(new BakedQuad(
                                 innerQuad.position0(), innerQuad.position1(), innerQuad.position2(), innerQuad.position3(),
-                                packUV(newUVs[0]), packUV(newUVs[1]), packUV(newUVs[2]), packUV(newUVs[3]),
+                                newUVs[0], newUVs[1], newUVs[2], newUVs[3],
                                 // TODO 26.1 - double check light emission
                                 innerQuad.tintIndex(), innerQuad.direction(), still, innerQuad.shade(), 15,
                                 innerQuad.bakedNormals(), BakedColors.of(fluidColor), innerQuad.hasAmbientOcclusion()));
@@ -203,9 +204,5 @@ public class PipeMeshCache implements PipeRenderer {
                 quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(),
                 quad.tintIndex(), quad.direction(), quad.sprite(), quad.shade(), quad.lightEmission(),
                 quad.bakedNormals(), BakedColors.of(newColor), quad.hasAmbientOcclusion());
-    }
-
-    private static long packUV(Vector2fc uv) {
-        return UVPair.pack(uv.x(), uv.y());
     }
 }

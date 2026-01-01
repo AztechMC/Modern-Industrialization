@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -133,7 +134,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
                         MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
                         .setStyle(TextHelper.GRAY_TEXT));
             }
-            guiGraphics.renderTooltip(font, RenderHelper.splitTooltip(lines), x, y);
+            guiGraphics.setTooltipForNextFrame(font, RenderHelper.splitTooltip(lines), x, y);
         }
     }
 
@@ -157,12 +158,11 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             int u = menu.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHoveredOrFocused() ? 20 : 0;
 
-            RenderSystem.enableDepthTest();
-            guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
         }
     }
 }

@@ -43,8 +43,8 @@ public class HudRenderer {
     public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, MIClientConfig.INSTANCE.armorHudYPosition.getAsInt(), 0);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(0, MIClientConfig.INSTANCE.armorHudYPosition.getAsInt());
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
             if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);
@@ -75,7 +75,7 @@ public class HudRenderer {
                         gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
                 guiGraphics.drawString(mc.font, fillText, 4, 10, 16383998);
             }
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 }

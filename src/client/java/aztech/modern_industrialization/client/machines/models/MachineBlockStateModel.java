@@ -84,7 +84,6 @@ public class MachineBlockStateModel implements DynamicBlockStateModel {
         var sprites = getSprites(casing);
 
         QuadCollection.Builder quads = new QuadCollection.Builder();
-        var vc = new QuadBakingVertexConsumer();
 
         // Machine overlays
         for (var side : Direction.values()) {
@@ -93,7 +92,7 @@ public class MachineBlockStateModel implements DynamicBlockStateModel {
                 var facingDirection = Objects.requireNonNullElse(data.frontDirection, Direction.NORTH);
                 TextureAtlasSprite sprite = getSprite(sprites, side, facingDirection, false);
                 if (sprite != null) {
-                    quads.addCulledFace(side, ModelHelper.bakeSprite(vc, side, sprite, -Z_OFFSET));
+                    quads.addCulledFace(side, ModelHelper.bakeSprite(side, sprite, -Z_OFFSET));
                 }
             }
         }
@@ -101,13 +100,13 @@ public class MachineBlockStateModel implements DynamicBlockStateModel {
         // Output overlays
         if (data.outputDirection != null) {
             if (sprites[24] != null) {
-                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(vc, data.outputDirection, sprites[24], -3 * Z_OFFSET));
+                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(data.outputDirection, sprites[24], -3 * Z_OFFSET));
             }
             if (data.itemAutoExtract) {
-                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(vc, data.outputDirection, sprites[25], -3 * Z_OFFSET));
+                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(data.outputDirection, sprites[25], -3 * Z_OFFSET));
             }
             if (data.fluidAutoExtract) {
-                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(vc, data.outputDirection, sprites[26], -3 * Z_OFFSET));
+                quads.addCulledFace(data.outputDirection, ModelHelper.bakeSprite(data.outputDirection, sprites[26], -3 * Z_OFFSET));
             }
         }
 

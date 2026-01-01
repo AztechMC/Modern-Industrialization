@@ -32,6 +32,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -46,27 +47,30 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
 import org.jspecify.annotations.Nullable;
 
 class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     private final IJeiHelpers helpers;
     public final ViewerCategory<D> wrapped;
-    public final RecipeType<D> recipeType;
+    public final IRecipeType<D> recipeType;
     private final IDrawable fluidSlot;
 
     public ViewerCategoryJei(IJeiHelpers helpers, ViewerCategory<D> wrapped) {
         super(
-                RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass),
+                IRecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass),
                 wrapped.title,
                 DrawableIcon.create(helpers.getGuiHelper(), wrapped.icon),
                 wrapped.width - 8,
@@ -74,7 +78,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
         this.helpers = helpers;
         this.wrapped = wrapped;
-        this.recipeType = RecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass);
+        this.recipeType = IRecipeType.create(wrapped.id.getNamespace(), wrapped.id.getPath(), wrapped.dataClass);
 
         var guiHelper = helpers.getGuiHelper();
         this.fluidSlot = guiHelper.createDrawable(MachineScreen.SLOT_ATLAS, 18, 0, 18, 18);
@@ -96,19 +100,19 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             @Override
             public void invisibleInput(ItemStack stack) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
-                        .addItemStack(stack);
+                        .add(stack);
             }
 
             @Override
             public void invisibleOutput(ItemStack stack) {
                 builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
-                        .addItemStack(stack);
+                        .add(stack);
             }
 
             @Override
             public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {
                 for (var stack : stacks) {
-                    builder.addInputSlot().addItemStack(stack);
+                    builder.addInputSlot().add(stack);
                 }
             }
 
@@ -124,7 +128,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                         } else if (variant instanceof FluidVariant fluid) {
                             if (!fluid.isBlank()) {
                                 // Use 1000 as the amount to make JEI render the full sprite
-                                slotBuilder.addFluidStack(fluid.getFluid(), FluidType.BUCKET_VOLUME, fluid.getComponentsPatch());
+                                slotBuilder.add(fluid.getFluid(), FluidType.BUCKET_VOLUME, fluid.getComponentsPatch());
                             }
                             slotBuilder.setBackground(fluidSlot, -1, -1);
                         } else {
@@ -145,7 +149,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
                     @Override
                     public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
-                        slotBuilder.addFluidStack(fluid.getFluid(), amount, fluid.getComponentsPatch());
+                        slotBuilder.add(fluid.getFluid(), amount, fluid.getComponentsPatch());
                         // This call displays the full sprite (instead of JEI's partial rendering)
                         slotBuilder.setFluidRenderer(1, false, 16, 16);
                         addProbability(slotBuilder, probability);
@@ -155,9 +159,10 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
                     @Override
                     public ViewerCategory.SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability) {
-                        for (var fs : ingredient.getStacks()) {
-                            slotBuilder.addFluidStack(fs.getFluid(), amount, fs.getComponentsPatch());
-                        }
+                        var context = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
+                        ingredient.display().resolve(context, FluidStackContentsFactory.INSTANCE).forEach(fs -> {
+                            slotBuilder.add(fs.getFluid(), amount, fs.getComponentsPatch());
+                        });
                         // This call displays the full sprite (instead of JEI's partial rendering)
                         slotBuilder.setFluidRenderer(1, false, 16, 16);
                         addProbability(slotBuilder, probability);
@@ -178,7 +183,8 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
                     @Override
                     public ViewerCategory.SlotBuilder ingredient(Ingredient ingredient, long amount, float probability) {
-                        return items(Stream.of(ingredient.getItems()).map(i -> {
+                        var context = SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
+                        return items(ingredient.display().resolve(context, SlotDisplay.ItemStackContentsFactory.INSTANCE).map(i -> {
                             var cp = i.copy();
                             cp.setCount((int) amount);
                             return cp;
@@ -230,8 +236,8 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
     @Override
     public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(-4, -4, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(-4, -4);
 
         wrapped.buildWidgets(recipe, new ViewerCategory.WidgetList() {
             @Override
@@ -271,7 +277,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void scrollableSlots(int cols, int rows, List<ItemStack> stacks) {}
         });
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -314,7 +320,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     }
 
     @Override
-    public Identifier getRegistryName(D recipe) {
+    public Identifier getIdentifier(D recipe) {
         return wrapped.getRecipeId(recipe);
     }
 }

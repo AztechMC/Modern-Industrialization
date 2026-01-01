@@ -63,7 +63,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         this.isGas = isGas;
 
         fluid = MIFluids.FLUIDS.register(id, () -> new MIFluid(fluidBlock, bucketItemDefinition, fluidType, color));
-        fluidBlock = MIBlock.BLOCKS.register(id, () -> new MIFluidBlock(color));
+        fluidBlock = MIBlock.BLOCKS.registerBlock(id, p -> new MIFluidBlock(p, color));
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
                 id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
         fluidType = MIFluids.FLUID_TYPES.register(id,

@@ -34,6 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -50,17 +51,13 @@ class PriorityButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         this.active = this.isEnabled.getAsBoolean();
 
         Minecraft minecraftClient = Minecraft.getInstance();
         Font font = minecraftClient.font;
         int v = this.isHoveredOrFocused() ? 40 + this.height : 40;
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
         int j = this.active ? 16777215 : 10526880;
         guiGraphics.drawCenteredString(font, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
                 j | Mth.ceil(this.alpha * 255.0F) << 24);

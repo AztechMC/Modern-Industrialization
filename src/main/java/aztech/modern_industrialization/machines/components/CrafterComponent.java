@@ -57,9 +57,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -699,7 +701,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         AbstractConfigurableStack.playerLockNoOverride(newLockedInstance, requiredAmount, stacks);
     }
 
-    public void lockRecipe(Identifier recipeId, net.minecraft.world.entity.player.Inventory inventory) {
+    public void lockRecipe(ResourceKey<Recipe<?>> recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
         Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipesWithCache(behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.id().equals(recipeId)).findFirst();

@@ -50,7 +50,9 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -101,7 +103,7 @@ public class MIBlock {
             "Creative Tank",
             "creative_tank",
             BlockDefinitionParams.defaultStone()
-                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockConstructor(p -> new TankBlock(p, CreativeTankBlockEntity::new, StorageBehaviour.creative()))
                     .withBlockItemConstructor(TankItem::new)
                     // TODO 26.1
 //                    .withModel(TankPart.MODEL_GENERATOR)
@@ -119,7 +121,7 @@ public class MIBlock {
             "Creative Barrel",
             "creative_barrel",
             BlockDefinitionParams.defaultStone()
-                    .withBlockConstructor((p) -> new BarrelBlock(CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
+                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
                     .withBlockItemConstructor(BarrelItem::new)
                     // TODO 26.1
 //                    .withModel((block, gen) -> {
@@ -142,7 +144,7 @@ public class MIBlock {
 
     public static <T extends Block> BlockDefinition<T> block(
             String englishName, String id, BlockDefinitionParams<T> params) {
-        var holder = BLOCKS.registerBlock(id, params.ctor, p -> params.props);
+        var holder = BLOCKS.register(id, () -> params.ctor.apply(params.props.setId(ResourceKey.create(Registries.BLOCK, MI.id(id)))));
         var def = new BlockDefinition<>(
                 englishName,
                 holder,
@@ -175,6 +177,7 @@ public class MIBlock {
         // TODO : Datagen model
     }
 
+    // TODO: try to clean this up
     public static class BlockDefinitionParams<T extends Block> {
         public final BlockBehaviour.Properties props;
         public BiConsumer<Block, BlockModelGenerators> modelGenerator;
@@ -219,15 +222,6 @@ public class MIBlock {
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
             return new BlockDefinitionParams<>(props, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.blockLoot, this.tags);
-        }
-
-        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
-            return new BlockDefinitionParams<>(props,
-                    p -> ctor.get(),
-                    (BiFunction) this.blockItemCtor,
-                    this.modelGenerator,
-                    this.blockLoot,
-                    this.tags);
         }
 
         public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor) {

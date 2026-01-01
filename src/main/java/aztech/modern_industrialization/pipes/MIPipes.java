@@ -65,8 +65,8 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.register("pipe",
-            () -> new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f)));
+    public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.registerBlock("pipe",
+            p -> new PipeBlock(p.mapColor(MapColor.METAL).destroyTime(2.0f)));
     public static Supplier<BlockEntityType<PipeBlockEntity>> BLOCK_ENTITY_TYPE_PIPE;
     public static volatile boolean transparentCamouflage = false;
     private final Map<PipeNetworkType, Supplier<PipeItem>> pipeItems = new HashMap<>();
@@ -92,13 +92,14 @@ public class MIPipes {
         }
 
         if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
-            try {
-                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
-                        .getMethod("onInitializePipes")
-                        .invoke(null);
-            } catch (ReflectiveOperationException e) {
-                throw new RuntimeException(e);
-            }
+            // TODO 26.1
+//            try {
+//                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
+//                        .getMethod("onInitializePipes")
+//                        .invoke(null);
+//            } catch (ReflectiveOperationException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 

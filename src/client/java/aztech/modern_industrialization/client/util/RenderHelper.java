@@ -27,13 +27,10 @@ package aztech.modern_industrialization.client.util;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.client.compat.sodium.SodiumCompat;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.MutableQuadView;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.QuadBuffer;
 import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -46,20 +43,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
@@ -73,110 +72,101 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.RenderTypeHelper;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.client.model.quad.BakedNormals;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 public class RenderHelper {
     private static final QuadCube overlayQuads = new QuadCube(MI.id("block/hatch_placement_overlay"));
 
-    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
-        for (BakedQuad overlayQuad : overlayQuads.getQuads()) {
-            vc.putBulkData(ms.last(), overlayQuad, 1.0f, 1.0f, 1.0f, 1.0f, LightTexture.FULL_BRIGHT, /* not used by shader */ overlay);
-        }
-    }
+    // TODO 26.1
+//    public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, int overlay) {
+//        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
+//        for (BakedQuad overlayQuad : overlayQuads.getQuads()) {
+//            vc.putBulkData(ms.last(), overlayQuad, 1.0f, 1.0f, 1.0f, 1.0f, LightTexture.FULL_BRIGHT, /* not used by shader */ overlay);
+//        }
+//    }
 
     private static final QuadCube whiteQuads = new QuadCube(Identifier.fromNamespaceAndPath("neoforge", "white"));
 
-    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
-        for (BakedQuad cubeQuad : whiteQuads.getQuads()) {
-            vc.putBulkData(ms.last(), cubeQuad, r, g, b, 1.0f, light, overlay);
-        }
-    }
+    // TODO 26.1
+//    public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
+//        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.cutoutHighlight());
+//        for (BakedQuad cubeQuad : whiteQuads.getQuads()) {
+//            vc.putBulkData(ms.last(), cubeQuad, r, g, b, 1.0f, light, overlay);
+//        }
+//    }
 
     private static final float TANK_W = 1 / 16f + 0.001f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-        drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
-    }
+    public static void drawFluidInTank(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, FluidVariant fluid, float fillLevel, int color) {
+        submitNodeCollector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(), (pose, vc) -> {
+            TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
+            if (sprite == null) {
+                return;
+            }
+            float r = ((color >> 16) & 255) / 256f;
+            float g = ((color >> 8) & 255) / 256f;
+            float b = (color & 255) / 256f;
 
-    public static void drawFluidInTank(@Nullable Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-        VertexConsumer vc = vcp.getBuffer(RenderTypeHelper.getEntityRenderType(RenderType.translucent(), false));
-        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
-        int color = FluidVariantRendering.getColor(fluid, world, pos);
-        float r = ((color >> 16) & 255) / 256f;
-        float g = ((color >> 8) & 255) / 256f;
-        float b = (color & 255) / 256f;
+            SodiumCompat.markSpriteActive(sprite);
 
-        SodiumCompat.markSpriteActive(sprite);
-
-        // Make sure fill is within [TANK_W, 1 - TANK_W]
-        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
-        // Top and bottom positions of the fluid inside the tank
-        float topHeight = fill;
-        float bottomHeight = TANK_W;
-        // Render gas from top to bottom
-        if (fluid.getFluid().getFluidType().isLighterThanAir()) {
-            topHeight = 1 - TANK_W;
-            bottomHeight = 1 - fill;
-        }
-
-        var emitter = new QuadBuffer();
-        for (Direction direction : Direction.values()) {
-            emitter.emit();
-
-            if (direction.getAxis().isVertical()) {
-                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
-            } else {
-                emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
+            // Make sure fill is within [TANK_W, 1 - TANK_W]
+            float fill = fillLevel;
+            fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
+            // Top and bottom positions of the fluid inside the tank
+            float topHeight = fill;
+            float bottomHeight = TANK_W;
+            // Render gas from top to bottom
+            if (fluid.getFluid().getFluidType().isLighterThanAir()) {
+                topHeight = 1 - TANK_W;
+                bottomHeight = 1 - fill;
             }
 
-            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.color(-1, -1, -1, -1);
-            vc.putBulkData(ms.last(), emitter.toBakedQuad(sprite), r, g, b, 1, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
-        }
+            for (Direction direction : Direction.values()) {
+                Vector3f[] pos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
+                if (direction.getAxis().isVertical()) {
+                    ModelHelper.square(pos, direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
+                } else {
+                    ModelHelper.square(pos, direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
+                }
+
+                long[] uv = ModelHelper.bakeUvs(pos, sprite, direction);
+
+                var quad = new BakedQuad(
+                        pos[0], pos[1], pos[2], pos[3],
+                        uv[0], uv[1], uv[2], uv[3],
+                        -1, direction, sprite, true, 0,
+                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT, true);
+
+                vc.putBulkData(pose, quad, r, g, b, 1, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+            }
+        });
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int i, int j) {
-        drawFluidInGui(guiGraphics, fluid, i, j, 16, 1);
-        RenderSystem.enableDepthTest();
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int x0, int y0) {
+        drawFluidInGui(guiGraphics, fluid, x0, y0, 16, 1);
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, float i, float j, int scale, float fractionUp) {
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int x0, int y0, int scale, float fractionUp) {
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid);
 
         if (sprite == null)
             return;
 
-        float r = ((color >> 16) & 255) / 256f;
-        float g = ((color >> 8) & 255) / 256f;
-        float b = (color & 255) / 256f;
-        RenderSystem.disableDepthTest();
-
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        float x0 = i;
-        float y0 = j;
-        float x1 = x0 + scale;
-        float y1 = y0 + scale * fractionUp;
-        float z = 0.5f;
+        int x1 = x0 + scale;
+        int y1 = y0 + Math.round(scale * fractionUp);
         float u0 = sprite.getU0();
         float v1 = sprite.getV1();
         float v0 = v1 + (sprite.getV0() - v1) * fractionUp;
         float u1 = sprite.getU1();
 
-        Matrix4f model = guiGraphics.pose().last().pose();
-        bufferBuilder.addVertex(model, x0, y1, z).setUv(u0, v1).setColor(r, g, b, 1);
-        bufferBuilder.addVertex(model, x1, y1, z).setUv(u1, v1).setColor(r, g, b, 1);
-        bufferBuilder.addVertex(model, x1, y0, z).setUv(u1, v0).setColor(r, g, b, 1);
-        bufferBuilder.addVertex(model, x0, y0, z).setUv(u0, v0).setColor(r, g, b, 1);
-        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-
-        RenderSystem.enableDepthTest();
+        guiGraphics.innerBlit(RenderPipelines.GUI_TEXTURED, AtlasIds.BLOCKS, x0, x1, y0, y1, u0, u1, v0, v1, color | 0xFF000000);
 
         SodiumCompat.markSpriteActive(sprite);
     }
@@ -194,66 +184,73 @@ public class RenderHelper {
         consumer.putBulkData(matrixEntry, quad, red, green, blue, alpha, light, overlay);
     }
 
-    private static final Identifier LOCKED_TEXTURE_LOCATION = MI.id("block/locked");
+    private static final Material LOCKED_TEXTURE_LOCATION = new Material(AtlasIds.BLOCKS, MI.id("block/locked"));
 
-    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers, int colorRgb) {
-        VertexConsumer vc = vertexConsumers.getBuffer(Sheets.cutoutBlockSheet());
-        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
-        // draw the sprite on each face
+    public static void drawLockedTexture(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int colorRgb) {
+        submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+            var sprite = Minecraft.getInstance().getAtlasManager().get(LOCKED_TEXTURE_LOCATION);
+            // draw the sprite on each face
 
-        var pos = entity.getBlockPos();
-        var state = entity.getBlockState();
-        float r = (colorRgb >> 16 & 255) / 255.0F;
-        float g = (colorRgb >> 8 & 255) / 255.0F;
-        float b = (colorRgb & 255) / 255.0F;
+            float r = (colorRgb >> 16 & 255) / 255.0F;
+            float g = (colorRgb >> 8 & 255) / 255.0F;
+            float b = (colorRgb & 255) / 255.0F;
 
-        var emitter = new QuadBuffer();
-        for (Direction direction : Direction.values()) {
-            if (direction.getAxis().isVertical() ||
-            // Note: level can be null from builtin item renderer
-                    entity.getLevel() != null && !Block.shouldRenderFace(state, entity.getLevel(), pos,
-                            direction.getOpposite(), pos.relative(direction.getOpposite()))) {
-                continue;
+            for (Direction direction : Direction.values()) {
+                if (direction.getAxis().isVertical()) {
+                    // TODO 26.1: it would be nice to restore this?
+//            // Note: level can be null from builtin item renderer
+//                    entity.getLevel() != null && !Block.shouldRenderFace(state, entity.getLevel(), pos,
+//                            direction.getOpposite(), pos.relative(direction.getOpposite()))) {
+                    continue;
+                }
+
+                Vector3f[] pos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
+                ModelHelper.square(pos, direction, 1, 0, 0, 1, 1.015f);
+
+                long[] uv = ModelHelper.bakeUvs(pos, sprite, direction);
+
+                var quad = new BakedQuad(
+                        pos[0], pos[1], pos[2], pos[3],
+                        uv[0], uv[1], uv[2], uv[3],
+                        -1, direction, sprite, true, 0,
+                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT, true);
+
+                vc.putBulkData(pose,
+                        quad,
+                        r, g, b, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
             }
-
-            emitter.emit();
-            emitter.square(direction, 1, 0, 0, 1, 1.015f);
-            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-
-            vc.putBulkData(matrices.last(),
-                    emitter.toBakedQuad(sprite),
-                    r, g, b, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
-        }
+        });
     }
 
-    public static final BlockEntityWithoutLevelRenderer BLOCK_AND_ENTITY_RENDERER = new BlockEntityWithoutLevelRenderer(null, null) {
-        @Override
-        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
-                int overlay) {
-            if (!(stack.getItem() instanceof BlockItem blockItem)) {
-                throw new IllegalArgumentException("Stack must be a block item!");
-            }
-            if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
-                throw new IllegalArgumentException("Block must be an entity block!");
-            }
-
-            var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
-            Objects.requireNonNull(fakeBlockEntity);
-            fakeBlockEntity.applyComponentsFromItemStack(stack);
-
-            // Render the base block first
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
-            // Render additional data using the block entity renderer
-            var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
-            Objects.requireNonNull(renderer).render(fakeBlockEntity, 0.0f, matrices, vertexConsumers, light,
-                    overlay);
-        }
-    };
+    // TODO 26.1
+//    public static final BlockEntityWithoutLevelRenderer BLOCK_AND_ENTITY_RENDERER = new BlockEntityWithoutLevelRenderer(null, null) {
+//        @Override
+//        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
+//                int overlay) {
+//            if (!(stack.getItem() instanceof BlockItem blockItem)) {
+//                throw new IllegalArgumentException("Stack must be a block item!");
+//            }
+//            if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
+//                throw new IllegalArgumentException("Block must be an entity block!");
+//            }
+//
+//            var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
+//            Objects.requireNonNull(fakeBlockEntity);
+//            fakeBlockEntity.applyComponentsFromItemStack(stack);
+//
+//            // Render the base block first
+//            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
+//            // Render additional data using the block entity renderer
+//            var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
+//            Objects.requireNonNull(renderer).render(fakeBlockEntity, 0.0f, matrices, vertexConsumers, light,
+//                    overlay);
+//        }
+//    };
 
     public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
             float green, float blue, float alpha) {
         for (AABB aabb : shape.toAabbs()) {
-            LevelRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, red, green, blue, alpha);
+            ShapeRenderer.renderShape(poseStack, consumer, Shapes.create(aabb), x, y, z, ARGB.colorFromFloat(alpha, red, green, blue), Minecraft.getInstance().getWindow().getAppropriateLineWidth());
         }
     }
 

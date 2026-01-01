@@ -34,6 +34,7 @@ import aztech.modern_industrialization.util.Rectangle;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
@@ -103,14 +104,14 @@ public class SlotPanelClient extends GuiComponentClient<List<SlotPanel.SlotType>
                 var box = getBox(x, y);
 
                 int textureX = box.x() - x - box.w();
-                guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y(), textureX, 0, box.w(), box.h() - 4);
-                guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, textureX, 252, box.w(), 4);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.BACKGROUND, box.x(), box.y(), textureX, 0, box.w(), box.h() - 4, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, textureX, 252, box.w(), 4, 256, 256);
             }
 
             @Override
             public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (screen.getFocusedSlot() instanceof SlotTooltip st && !screen.getFocusedSlot().hasItem()) {
-                    guiGraphics.renderTooltip(font, st.getTooltip(), cursorX, cursorY);
+                    guiGraphics.setTooltipForNextFrame(font, st.getTooltip(), cursorX, cursorY);
                 }
             }
         };

@@ -37,7 +37,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import org.jspecify.annotations.Nullable;
@@ -68,7 +68,7 @@ public abstract class ViewerCategory<D> {
 
     public abstract void buildWorkstations(WorkstationConsumer consumer);
 
-    public abstract void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<D> consumer);
+    public abstract void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<D> consumer);
 
     /**
      * Add input and outputs items/fluids.
@@ -91,9 +91,10 @@ public abstract class ViewerCategory<D> {
     public interface WorkstationConsumer {
         void accept(ItemLike... item);
 
+        // TODO: nuke this...
         default void accept(String... itemPath) {// only items in the MI namespace!
             for (var item : itemPath) {
-                accept(BuiltInRegistries.ITEM.get(MI.id(item)));
+                accept(BuiltInRegistries.ITEM.getValue(MI.id(item)));
             }
         }
     }

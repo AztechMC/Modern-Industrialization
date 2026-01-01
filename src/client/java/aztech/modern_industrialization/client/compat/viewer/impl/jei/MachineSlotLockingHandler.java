@@ -31,11 +31,11 @@ import aztech.modern_industrialization.network.machines.ReiLockSlotsPacket;
 import java.util.Optional;
 import java.util.function.Supplier;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.IRecipeCatalystLookup;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.ICraftingStationLookup;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -45,21 +45,21 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
 class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuClient, RecipeHolder<MachineRecipe>> {
-    private final Supplier<IJeiRuntime> runtimeSupplier;
-    private final mezz.jei.api.recipe.RecipeType<RecipeHolder<MachineRecipe>> type;
+    private final Supplier<@Nullable IJeiRuntime> runtimeSupplier;
+    private final IRecipeType<RecipeHolder<MachineRecipe>> type;
     private final IRecipeTransferHandlerHelper helper;
 
-    public MachineSlotLockingHandler(IRecipeTransferHandlerHelper helper, Supplier<IJeiRuntime> runtimeSupplier,
-            RecipeType<RecipeHolder<MachineRecipe>> type) {
+    public MachineSlotLockingHandler(IRecipeTransferHandlerHelper helper, Supplier<@Nullable IJeiRuntime> runtimeSupplier,
+            IRecipeType<RecipeHolder<MachineRecipe>> type) {
         this.helper = helper;
         this.runtimeSupplier = runtimeSupplier;
         this.type = type;
     }
 
-    private IRecipeCatalystLookup getLookup() {
+    private @Nullable ICraftingStationLookup getLookup() {
         var runtime = runtimeSupplier.get();
         if (runtime != null) {
-            return runtime.getRecipeManager().createRecipeCatalystLookup(type);
+            return runtime.getRecipeManager().createCraftingStationLookup(type);
         }
         return null;
     }
@@ -75,7 +75,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
     }
 
     @Override
-    public mezz.jei.api.recipe.RecipeType<RecipeHolder<MachineRecipe>> getRecipeType() {
+    public IRecipeType<RecipeHolder<MachineRecipe>> getRecipeType() {
         return type;
     }
 
@@ -103,7 +103,7 @@ class MachineSlotLockingHandler implements IRecipeTransferHandler<MachineMenuCli
             return false;
         }
 
-        var item = BuiltInRegistries.ITEM.get(blockId);
+        var item = BuiltInRegistries.ITEM.getValue(blockId);
         return lookup.getItemStack().anyMatch(is -> is.is(item));
     }
 }

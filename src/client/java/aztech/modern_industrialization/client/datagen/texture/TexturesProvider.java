@@ -40,7 +40,11 @@ import aztech.modern_industrialization.resource.FastPathPackResources;
 import com.google.common.hash.Hashing;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.channels.Channels;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +59,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.VanillaPackResourcesBuilder;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.resource.ResourcePackLoader;
+import org.lwjgl.stb.STBImage;
 
-public record TexturesProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper, boolean runtimeDatagen) implements DataProvider {
+public record TexturesProvider(PackOutput packOutput, boolean runtimeDatagen) implements DataProvider {
     private static PackLocationInfo makePackInfo(String name) {
         return new PackLocationInfo(name, Component.literal(name), PackSource.BUILT_IN, Optional.empty());
     }
@@ -77,8 +81,8 @@ public record TexturesProvider(PackOutput packOutput, ExistingFileHelper existin
 
         if (runtimeDatagen) {
             // MI jar
-            packs.add(new PathPackResources(makePackInfo("mi:runtimedatagen"),
-                    ModList.get().getModFileById(MI.ID).getFile().getSecureJar().getRootPath()));
+            packs.add(ResourcePackLoader.createPackForJarContents(ModList.get().getModFileById(MI.ID).getFile().getContents())
+                    .openPrimary(makePackInfo("mi:runtimedatagen")));
 
             // extra_datagen_resources folder
             var extra = FMLPaths.GAMEDIR.get().resolve("modern_industrialization").resolve("extra_datagen_resources");
@@ -117,15 +121,30 @@ public record TexturesProvider(PackOutput packOutput, ExistingFileHelper existin
                         return generated;
                     }
                     return fallbackResourceProvider.getResource(resourceLocation);
-                },
-                existingFileHelper)
+                })
                 .whenComplete((result, throwable) -> outputPack.close());
+    }
+
+    private static byte[] asByteArray(NativeImage image) {
+        try (
+                var outputStream = new ByteArrayOutputStream();
+                var channel = Channels.newChannel(outputStream)) {
+
+            if (!image.writeToChannel(channel)) {
+                throw new IOException("Could not write image to byte array: " + STBImage.stbi_failure_reason());
+            }
+
+            return outputStream.toByteArray();
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 
     private void writeTexture(CachedOutput cache, NativeImage image, String textureId) {
         try {
             var path = packOutput.getOutputFolder().resolve("assets").resolve(textureId.replace(':', '/'));
-            cache.writeIfNeeded(path, image.asByteArray(), Hashing.sha1().hashBytes(image.asByteArray()));
+            var bytes = asByteArray(image);
+            cache.writeIfNeeded(path, bytes, Hashing.sha1().hashBytes(bytes));
         } catch (IOException ex) {
             throw new RuntimeException("Failed to write texture " + textureId, ex);
         }

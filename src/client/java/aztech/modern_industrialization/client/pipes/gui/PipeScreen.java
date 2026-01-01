@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.client.pipes.gui;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.network.pipes.IncrementPriorityPacket;
 import aztech.modern_industrialization.network.pipes.SetConnectionTypePacket;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
@@ -36,7 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,12 +48,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 /**
  * A helper for functionality commonly used by pipe screens.
  */
-public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHandledScreen<SH> {
+public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIContainerScreen<SH> {
     @SuppressWarnings("AssignmentToSuperclassField")
-    public PipeScreen(SH handler, Inventory inventory, Component title, int backgroundHeight) {
-        super(handler, inventory, title);
+    public PipeScreen(SH handler, Inventory inventory, Component title, int imageHeight) {
+        super(handler, inventory, title, DEFAULT_IMAGE_WIDTH, imageHeight);
 
-        this.imageHeight = backgroundHeight;
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
@@ -58,8 +60,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        guiGraphics.blit(getBackgroundTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getBackgroundTexture(), this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 
     @Override
@@ -97,7 +98,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     }
 
     protected int connectionTypeNext(ConnectionTypeInterface connectionType) {
-        if (!hasShiftDown()) {
+        if (!Minecraft.getInstance().hasShiftDown()) {
             return connectionTypeForward(connectionType);
         } else {
             return connectionTypeBackward(connectionType);

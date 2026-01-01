@@ -80,7 +80,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
 
                 tooltip.add(MIText.EfficiencyMaxOverclock.text(data.maxRecipeEu()));
 
-                guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
+                guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), cursorX, cursorY);
             }
         }
     }

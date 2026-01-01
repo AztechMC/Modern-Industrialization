@@ -32,6 +32,7 @@ import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     final SteamDrillItem.SteamDrillTooltipData data;
@@ -41,23 +42,23 @@ public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return 20;
     }
 
     @Override
-    public int getWidth(Font textRenderer) {
+    public int getWidth(Font font) {
         return 40;
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
+    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
         // Slot background
-        guiGraphics.blit(MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
         // Stack itself
-        RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
+        RenderHelper.renderAndDecorateItem(graphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
         // Burning flame next to the stack
         var progressParams = new ProgressBar.Params(0, 0, "furnace", 14, 14, true);
-        ProgressBarClient.renderProgress(guiGraphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
+        ProgressBarClient.renderProgress(graphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
     }
 }

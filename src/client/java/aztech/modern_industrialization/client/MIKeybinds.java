@@ -55,10 +55,11 @@ public class MIKeybinds {
     }
 
     public static void init(RegisterKeyMappingsEvent event) {
+        event.registerCategory(CATEGORY);
         MAPPINGS.forEach(m -> event.register(m.holder().get()));
     }
 
-    public static final String CATEGORY = Util.makeDescriptionId("key.categories", MI.id(MI.ID));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(MI.id(MI.ID));
 
     public static final Keybind TOGGLE_FLIGHT = create(
             "toggle_flight",

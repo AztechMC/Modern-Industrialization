@@ -27,7 +27,7 @@ package aztech.modern_industrialization.client.machines.gui;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.DynamicTooltip;
-import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -60,21 +61,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
+public class MachineScreen extends MIContainerScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
     public static final Identifier SLOT_ATLAS = MI.id("textures/gui/container/slot_atlas.png");
     public static final Identifier BACKGROUND = MI.id("textures/gui/container/background.png");
 
     private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
     public MachineScreen(MachineMenuClient handler, Inventory inventory, Component title) {
-        super(handler, inventory, title);
+        super(handler, inventory, title, handler.guiParams.backgroundWidth, handler.guiParams.backgroundHeight);
 
         for (GuiComponentClient<?, ?> component : handler.components) {
             renderers.add(component.createRenderer(this));
         }
 
-        this.imageHeight = handler.guiParams.backgroundHeight;
-        this.imageWidth = handler.guiParams.backgroundWidth;
         this.inventoryLabelY = this.imageHeight - 94;
     }
 
@@ -112,9 +111,9 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     public void blitButton(Button button, GuiGraphics guiGraphics, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV) {
-        guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), baseU, baseV, button.getWidth(), button.getHeight());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), baseU, baseV, button.getWidth(), button.getHeight(), 256, 256);
         if (button.isHoveredOrFocused()) {
-            guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight(), 256, 256);
         }
     }
 
@@ -133,7 +132,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     public void blitButtonNoHighlight(Button button, GuiGraphics guiGraphics, int u, int v) {
-        guiGraphics.blit(SLOT_ATLAS, button.getX(), button.getY(), u, v, button.getWidth(), button.getHeight());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), u, v, button.getWidth(), button.getHeight(), 256, 256);
     }
 
     @Override
@@ -156,7 +155,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     private void addLockButton() {
         addButton(40, syncId -> {
-            if (hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 boolean lock = menu.hasUnlockedSlot();
                 menu.lockAll(lock);
                 new LockAllPacket(syncId, lock).sendToServer();
@@ -222,8 +221,8 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
         int bw = menu.guiParams.backgroundWidth;
         int bh = menu.guiParams.backgroundHeight;
-        guiGraphics.blit(BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4);
-        guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, bw, 4);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, bw, 4, 256, 256);
 
         for (ClientComponentRenderer renderer : renderers) {
             renderer.renderBackground(guiGraphics, leftPos, topPos);
@@ -241,13 +240,13 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 }
                 int px = leftPos + slot.x - 1;
                 int py = topPos + slot.y - 1;
-                guiGraphics.blit(atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, atlas, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18, 256, 256);
             }
         }
     }
 
     @Override
-    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
             ConfigurableFluidStack stack = cfs.getConfStack();
             FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
@@ -266,7 +265,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 }
             }
         }
-        super.renderSlot(guiGraphics, slot);
+        super.renderSlot(guiGraphics, slot, mouseX, mouseY);
     }
 
     private void renderConfigurableSlotTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -286,12 +285,12 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
             } else if (stack.canPlayerExtract()) {
                 tooltip.add(MIText.FluidSlotOutput.text().setStyle(TextHelper.GRAY_TEXT));
             }
-            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), mouseX, mouseY);
         } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot confSlot) {
             renderConfigurableItemStackTooltip(guiGraphics, confSlot.getConfStack(), mouseX, mouseY);
         } else if (slot != null && slot.hasItem()) {
             // regular tooltip
-            guiGraphics.renderTooltip(font, slot.getItem(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(font, slot.getItem(), mouseX, mouseY);
         }
     }
 
@@ -314,7 +313,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
         textTooltip.add(MIText.ConfigurableSlotCapacity.text(capacityText).setStyle(TextHelper.GRAY_TEXT));
         // Render
-        guiGraphics.renderTooltip(font, textTooltip, data, mouseX, mouseY);
+        guiGraphics.setTooltipForNextFrame(font, textTooltip, data, mouseX, mouseY);
     }
 
     @Override
@@ -322,7 +321,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         if (hoveredSlot instanceof ConfigurableItemStack.ConfigurableItemSlot confSlot) {
             ConfigurableItemStack stack = confSlot.getConfStack();
             boolean isIncrease = amountY > 0;
-            boolean isShiftDown = hasShiftDown();
+            boolean isShiftDown = Minecraft.getInstance().hasShiftDown();
             // Client side update
             stack.adjustCapacity(isIncrease, isShiftDown);
             // Server side update
@@ -334,9 +333,9 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     }
 
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
-        return getExtraBoxes().stream().noneMatch(r -> r.contains(mouseX, mouseY))
-                && super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton);
+    protected boolean hasClickedOutside(double mx, double my, int xo, int yo) {
+        return getExtraBoxes().stream().noneMatch(r -> r.contains(mx, my))
+                && super.hasClickedOutside(mx, my, xo, yo);
     }
 
     public MachineGuiParameters getGuiParams() {
@@ -383,7 +382,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             renderer.renderButton(MachineScreen.this, this, guiGraphics, mouseX, mouseY, partialTick);
         }
 

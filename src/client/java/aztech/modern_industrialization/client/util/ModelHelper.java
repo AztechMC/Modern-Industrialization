@@ -26,6 +26,8 @@ package aztech.modern_industrialization.client.util;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
+
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,7 +36,10 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.client.model.quad.BakedNormals;
 import org.joml.Vector2f;
+import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
@@ -58,31 +63,26 @@ public class ModelHelper {
         }
     }
 
-    public static BakedQuad bakeSprite(QuadBakingVertexConsumer vc, Direction d, TextureAtlasSprite sprite, float depth) {
-        vc.setTintIndex(-1);
-        vc.setDirection(d);
-        vc.setSprite(sprite);
-        vc.setShade(true);
-        vc.setHasAmbientOcclusion(true);
+    private static final float CULL_FACE_EPSILON = 0.00001f;
 
+    public static BakedQuad bakeSprite(Direction d, TextureAtlasSprite sprite, float depth) {
         Vector3f[] pos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
         ModelHelper.square(pos, d, 0, 0, 1, 1, depth);
 
-        Vector2f[] uv = ModelHelper.bakeUvs(pos, sprite, d);
+        long[] uv = ModelHelper.bakeUvs(pos, sprite, d);
 
-        for (int i = 0; i < 4; ++i) {
-            vc.addVertex(pos[i].x, pos[i].y, pos[i].z);
-            vc.setColor(255, 255, 255, 255);
-            vc.setUv(uv[i].x, uv[i].y);
-            vc.setLight(0);
-            var normal = d.getUnitVec3i();
-            vc.setNormal(normal.getX(), normal.getY(), normal.getZ());
-        }
-
-        return vc.bakeQuad();
+        return new BakedQuad(
+                pos[0], pos[1], pos[2], pos[3],
+                uv[0], uv[1], uv[2], uv[3],
+                -1, d, sprite, true, 0,
+                BakedNormals.of(BakedNormals.pack(d.getUnitVec3f())), BakedColors.DEFAULT, true);
     }
 
     public static void square(Vector3f[] out, Direction nominalFace, float left, float bottom, float right, float top, float depth) {
+        if (Math.abs(depth) < CULL_FACE_EPSILON) {
+            depth = 0; // avoid any inconsistency for face quads
+        }
+
         switch (nominalFace) {
             case UP:
                 depth = 1 - depth;
@@ -122,13 +122,13 @@ public class ModelHelper {
         }
     }
 
-    public static Vector2f[] bakeUvs(Vector3fc[] pos, TextureAtlasSprite sprite, Direction face) {
+    public static long[] bakeUvs(Vector3fc[] pos, TextureAtlasSprite sprite, Direction face) {
         Vector2f[] uvs = new Vector2f[4];
         for (int i = 0; i < 4; i++) {
             uvs[i] = lockUvs(pos[i], face);
         }
         interpolate(uvs, sprite);
-        return uvs;
+        return new long[] { packUV(uvs[0]), packUV(uvs[1]), packUV(uvs[2]), packUV(uvs[3]) };
     }
 
     private static Vector2f lockUvs(Vector3fc pos, Direction face) {
@@ -157,32 +157,7 @@ public class ModelHelper {
         }
     }
 
-    /**
-     * The vanilla model transformation logic is closely coupled with model deserialization.
-     * That does little good for modded model loaders and procedurally generated models.
-     * This convenient construction method applies the same scaling factors used for vanilla models.
-     * This means you can use values from a vanilla JSON file as inputs to this method.
-     */
-    private static ItemTransform makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY,
-            float translationZ, float scaleX, float scaleY, float scaleZ) {
-        Vector3f translation = new Vector3f(translationX, translationY, translationZ);
-        translation.mul(0.0625f);
-        translation.set(Mth.clamp(translation.x, -5.0F, 5.0F), Mth.clamp(translation.y, -5.0F, 5.0F), Mth.clamp(translation.z, -5.0F, 5.0F));
-        return new ItemTransform(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
+    private static long packUV(Vector2fc uv) {
+        return UVPair.pack(uv.x(), uv.y());
     }
-
-    public static final ItemTransform TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);
-    public static final ItemTransform TRANSFORM_BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f, 0.25f, 0.25f);
-    public static final ItemTransform TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-    public static final ItemTransform TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f, 0.375f, 0.375f);
-    public static final ItemTransform TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
-    public static final ItemTransform TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
-
-    /**
-     * Mimics the vanilla model transformation used for most vanilla blocks,
-     * and should be suitable for most custom block-like models.
-     */
-    public static final ItemTransforms MODEL_TRANSFORM_BLOCK = new ItemTransforms(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
-            TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, ItemTransform.NO_TRANSFORM, TRANSFORM_BLOCK_GUI,
-            TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED, ImmutableMap.of());
 }

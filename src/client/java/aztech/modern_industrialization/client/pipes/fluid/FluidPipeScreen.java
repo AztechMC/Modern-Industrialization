@@ -41,8 +41,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -103,7 +106,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             if (!fluid.isBlank()) {
                 targetFluid = fluid;
             }
-        } else if (hasShiftDown()) {
+        } else if (Minecraft.getInstance().hasShiftDown()) {
             targetFluid = FluidVariant.blank();
         }
         if (targetFluid != null) {
@@ -133,20 +136,21 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             // Render fluid slot
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, getX() - 1, getY() - 1, 18, 0, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, getX() - 1, getY() - 1, 18, 0, 18, 18, 256, 256);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isBlank()) {
                 RenderHelper.drawFluidInGui(guiGraphics, iface.getNetworkFluid(), getX(), getY());
             }
             // Render the white hover effect
             if (isHoveredOrFocused()) {
-                RenderSystem.disableDepthTest();
-                RenderSystem.colorMask(true, true, true, false);
+                // TODO 26.1
+//                RenderSystem.disableDepthTest();
+//                RenderSystem.colorMask(true, true, true, false);
                 guiGraphics.fillGradient(getX(), getY(), getX() + 16, getY() + 16, -2130706433, -2130706433);
-                RenderSystem.colorMask(true, true, true, true);
-                RenderSystem.enableDepthTest();
+//                RenderSystem.colorMask(true, true, true, true);
+//                RenderSystem.enableDepthTest();
             }
         }
 

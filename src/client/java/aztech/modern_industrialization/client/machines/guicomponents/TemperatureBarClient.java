@@ -33,6 +33,7 @@ import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Params, Integer> {
@@ -57,14 +58,14 @@ public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Para
             int barPixels = (int) ((float) data / params.temperatureMax() * WIDTH);
             guiGraphics.blit(TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels,
                     HEIGHT, 102, 6);
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x + params.renderX() - 22, y + params.renderY() + HEIGHT / 2 - 10, 144, 0, 20, 20);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x + params.renderX() - 22, y + params.renderY() + HEIGHT / 2 - 10, 144, 0, 20, 20, 256, 256);
         }
 
         @Override
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
-                guiGraphics.renderTooltip(font, MIText.Temperature.text(data), cursorX, cursorY);
+                guiGraphics.setTooltipForNextFrame(font, MIText.Temperature.text(data), cursorX, cursorY);
             }
         }
     }

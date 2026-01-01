@@ -25,12 +25,18 @@
 package aztech.modern_industrialization.client.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
+import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity> {
+public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity, TankRenderState> {
     private final int lockIconColor;
 
     public TankRenderer(int lockIconColor) {
@@ -38,25 +44,36 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
     }
 
     @Override
-    public void render(AbstractTankBlockEntity tank,
-            float tickDelta,
-            PoseStack matrices,
-            MultiBufferSource vertexConsumers,
-            int light, int overlay) {
+    public TankRenderState createRenderState() {
+        return new TankRenderState();
+    }
+
+    @Override
+    public void extractRenderState(AbstractTankBlockEntity tank, TankRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(tank, state, partialTicks, cameraPosition, breakProgress);
+        state.resource = tank.getResource();
+        state.fluidColor = FluidVariantRendering.getColor(state.resource, tank.getLevel(), tank.getBlockPos());;
         if (!tank.getResource().isBlank()) {
             if (tank.behaviour.isCreative()) {
-                RenderHelper.drawFluidInTank(tank, matrices, vertexConsumers, tank.getResource(), 1);
+                state.fillLevel = 1;
+            } else if (tank.getAmount() > 0) {
+                state.fillLevel = (float) tank.getAmount() / tank.getCapacity();
+            } else if (tank.isLocked()) {
+                state.fillLevel = 0.01f;
             } else {
-                if (tank.getAmount() > 0) {
-                    RenderHelper.drawFluidInTank(tank, matrices, vertexConsumers, tank.getResource(), (float) tank.getAmount() / tank.getCapacity());
-                } else if (tank.isLocked()) {
-                    RenderHelper.drawFluidInTank(tank, matrices, vertexConsumers, tank.getResource(), 0.01f);
-                }
+                state.fillLevel = 0;
             }
         }
+        state.locked = tank.isLocked();
+    }
 
-        if (tank.isLocked()) {
-            RenderHelper.drawLockedTexture(tank, matrices, vertexConsumers, lockIconColor);
+    @Override
+    public void submit(TankRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (!state.resource.isBlank() && state.fillLevel > 0) {
+            RenderHelper.drawFluidInTank(poseStack, submitNodeCollector, state.resource, state.fillLevel, state.fluidColor);
+        }
+        if (state.locked) {
+            RenderHelper.drawLockedTexture(poseStack, submitNodeCollector, lockIconColor);
         }
     }
 }

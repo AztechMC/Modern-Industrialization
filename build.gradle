@@ -147,14 +147,14 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")
 
     localRuntimeOnly compileOnly("org.appliedenergistics:appliedenergistics2:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
-    localRuntimeOnly compileOnly("earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}")
+    compileOnly("earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}")
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"

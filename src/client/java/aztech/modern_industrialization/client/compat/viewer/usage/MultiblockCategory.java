@@ -42,7 +42,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     public void buildWorkstations(WorkstationConsumer consumer) {}
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         for (ReiMachineRecipes.MultiblockShape entry : ReiMachineRecipes.multiblockShapes) {
             consumer.accept(new Recipe(entry.machine(), entry.shapeTemplate(), entry.alternative()));
         }
@@ -89,7 +89,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
         public final Identifier id;
 
         public Recipe(Identifier controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
-            this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
+            this.controller = BuiltInRegistries.ITEM.getValue(controller).getDefaultInstance();
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {

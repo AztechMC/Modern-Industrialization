@@ -38,7 +38,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
 
 public class FluidFuelsCategory extends ViewerCategory<Fluid> {
@@ -56,8 +56,8 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Fluid> consumer) {
-        for (var fluid : registryAccess.registryOrThrow(Registries.FLUID)) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<Fluid> consumer) {
+        for (var fluid : registryAccess.lookupOrThrow(Registries.FLUID)) {
             if (fluid.builtInRegistryHolder().getData(MIDataMaps.FLUID_FUELS) != null) {
                 consumer.accept(fluid);
             }

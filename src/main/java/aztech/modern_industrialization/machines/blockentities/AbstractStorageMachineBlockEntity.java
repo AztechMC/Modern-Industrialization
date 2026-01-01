@@ -41,14 +41,16 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
+import com.google.common.primitives.Ints;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
     protected final EnergyComponent energy;
@@ -133,7 +135,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     @Override
     protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
-        var energyItem = player.getItemInHand(hand).getCapability(EnergyApi.ITEM);
+        var energyItem = ItemAccess.forPlayerInteraction(player, hand).getCapability(EnergyApi.ITEM);
         int stackSize = player.getItemInHand(hand).getCount();
         if (energyItem != null) {
             if (!player.level().isClientSide()) {
@@ -141,7 +143,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
                 for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
                     try (Transaction transaction = Transaction.openRoot()) {
-                        long inserted = energyItem.receive(energy.getEu() / stackSize, false);
+                        long inserted = energyItem.insert(Ints.saturatedCast(energy.getEu()), transaction);
 
                         if (inserted == 0) {
                             break;
@@ -157,7 +159,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
                 if (!insertedSomething) {
                     for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
                         try (Transaction transaction = Transaction.openRoot()) {
-                            long extracted = energyItem.extract(energy.getRemainingCapacity() / stackSize, false);
+                            long extracted = energyItem.extract(Ints.saturatedCast(energy.getRemainingCapacity()), transaction);
 
                             if (extracted == 0) {
                                 break;

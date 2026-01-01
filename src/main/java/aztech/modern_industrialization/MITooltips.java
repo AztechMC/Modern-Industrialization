@@ -67,6 +67,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @SuppressWarnings("unused")
 public class MITooltips {
@@ -260,12 +261,12 @@ public class MITooltips {
     public static final TooltipAttachment ENERGY_STORED_ITEM = TooltipAttachment.of(
             (itemStack, item) -> {
                 if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(MI.ID)) {
-                    var energyStorage = itemStack.getCapability(EnergyApi.ITEM);
+                    var energyStorage = ItemAccess.forStack(itemStack).getCapability(EnergyApi.ITEM);
                     if (energyStorage != null) {
-                        long capacity = energyStorage.getCapacity();
+                        long capacity = energyStorage.getCapacityAsLong();
                         if (capacity > 0) {
                             return Optional.of(new Line(MIText.EnergyStored)
-                                    .arg(new NumberWithMax(energyStorage.getAmount(), capacity), EU_MAXED_PARSER).build());
+                                    .arg(new NumberWithMax(energyStorage.getAmountAsLong(), capacity), EU_MAXED_PARSER).build());
                         }
                     }
                 }

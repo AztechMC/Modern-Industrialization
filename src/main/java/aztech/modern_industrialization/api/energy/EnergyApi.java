@@ -27,26 +27,31 @@ package aztech.modern_industrialization.api.energy;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
-import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 /**
- * MI's energy API. It uses the same types as GrandPower (i.e. {@link ILongEnergyStorage},
- * however the conversion ratio between EU and GrandPower energy is configurable.
+ * MI's energy API. It uses the same types as NeoForge (i.e. {@link EnergyHandler},
+ * however the conversion ratio between EU and FE is configurable.
  * So don't mix them up!
  */
 public class EnergyApi {
+    // TODO: rename to MIEnergyHandler, reorganize to match NeoForge caps
     public static final BlockCapability<MIEnergyStorage, Direction> SIDED = BlockCapability
             .createSided(MI.id("sided_mi_energy_storage"), MIEnergyStorage.class);
-    public static final ItemCapability<ILongEnergyStorage, Void> ITEM = ItemCapability
-            .createVoid(MI.id("energy_storage"), ILongEnergyStorage.class);
+    public static final ItemCapability<EnergyHandler, ItemAccess> ITEM = ItemCapability
+            .create(MI.id("energy_storage"), EnergyHandler.class, ItemAccess.class);
 
     private static final ThreadLocal<Boolean> IN_COMPAT = ThreadLocal.withInitial(() -> false);
 
@@ -57,22 +62,17 @@ public class EnergyApi {
         }
 
         @Override
-        public long extract(long maxAmount, boolean simulate) {
-            return maxAmount;
+        public int extract(int amount, TransactionContext transaction) {
+            return amount;
         }
 
         @Override
-        public boolean canExtract() {
-            return true;
-        }
-
-        @Override
-        public long getAmount() {
+        public long getAmountAsLong() {
             return Long.MAX_VALUE;
         }
 
         @Override
-        public long getCapacity() {
+        public long getCapacityAsLong() {
             return Long.MAX_VALUE;
         }
     };
@@ -86,12 +86,12 @@ public class EnergyApi {
         }
 
         @Override
-        public long getAmount() {
+        public long getAmountAsLong() {
             return 0;
         }
 
         @Override
-        public long getCapacity() {
+        public long getCapacityAsLong() {
             return 0;
         }
     }
@@ -100,7 +100,7 @@ public class EnergyApi {
     public static void init(RegisterCapabilitiesEvent event, Block[] allBlocks, Item[] allItems) {
         // Compat wrapper for TR energy
         if (MIStartupConfig.INSTANCE.bidirectionalEnergyCompat.getAsBoolean()) {
-            event.registerBlock(ILongEnergyStorage.BLOCK, (world, pos, state, blockEntity, context) -> {
+            event.registerBlock(Capabilities.Energy.BLOCK, (world, pos, state, blockEntity, context) -> {
                 if (IN_COMPAT.get()) {
                     return null;
                 }
@@ -119,60 +119,60 @@ public class EnergyApi {
 
                 IN_COMPAT.set(true);
                 try {
-                    return WrappedExternalStorage.of(world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context));
+                    return WrappedExternalStorage.of(world.getCapability(Capabilities.Energy.BLOCK, pos, state, blockEntity, context));
                 } finally {
                     IN_COMPAT.set(false);
                 }
             }, allBlocks);
 
-            event.registerItem(ILongEnergyStorage.ITEM, (stack, ignored) -> {
+            event.registerItem(Capabilities.Energy.ITEM, (stack, itemAccess) -> {
                 if (IN_COMPAT.get()) {
                     return null;
                 }
 
                 IN_COMPAT.set(true);
                 try {
-                    return WrappedMIStorage.of(stack.getCapability(ITEM));
+                    return WrappedMIStorage.of(stack.getCapability(ITEM, itemAccess));
                 } finally {
                     IN_COMPAT.set(false);
                 }
             }, allItems);
-            event.registerItem(ITEM, (stack, ctx) -> {
+            event.registerItem(ITEM, (stack, itemAccess) -> {
                 if (IN_COMPAT.get()) {
                     return null;
                 }
 
                 IN_COMPAT.set(true);
                 try {
-                    return WrappedExternalStorage.of(stack.getCapability(ILongEnergyStorage.ITEM));
+                    return WrappedExternalStorage.of(stack.getCapability(Capabilities.Energy.ITEM, itemAccess));
                 } finally {
                     IN_COMPAT.set(false);
                 }
             }, allItems);
         } else {
             event.registerBlock(SIDED, (world, pos, state, blockEntity, context) -> {
-                return InsertOnlyExternalStorage.of(world.getCapability(ILongEnergyStorage.BLOCK, pos, state, blockEntity, context));
+                return InsertOnlyExternalStorage.of(world.getCapability(Capabilities.Energy.BLOCK, pos, state, blockEntity, context));
             }, allBlocks);
-            event.registerItem(ITEM, (stack, ctx) -> {
+            event.registerItem(ITEM, (stack, itemAccess) -> {
                 if (IN_COMPAT.get()) {
                     return null;
                 }
 
                 IN_COMPAT.set(true);
                 try {
-                    return InsertOnlyExternalStorage.of(stack.getCapability(ILongEnergyStorage.ITEM));
+                    return InsertOnlyExternalStorage.of(stack.getCapability(Capabilities.Energy.ITEM, itemAccess));
                 } finally {
                     IN_COMPAT.set(false);
                 }
             }, allItems);
-            event.registerItem(ILongEnergyStorage.ITEM, (stack, ctx) -> {
+            event.registerItem(Capabilities.Energy.ITEM, (stack, itemAccess) -> {
                 if (IN_COMPAT.get()) {
                     return null;
                 }
 
                 IN_COMPAT.set(true);
                 try {
-                    return ExtractOnlyMIStorage.of(stack.getCapability(ITEM));
+                    return ExtractOnlyMIStorage.of(stack.getCapability(ITEM, itemAccess));
                 } finally {
                     IN_COMPAT.set(false);
                 }
@@ -180,7 +180,7 @@ public class EnergyApi {
         }
     }
 
-    private static long ratio() {
+    private static int ratio() {
         return MIServerConfig.INSTANCE.forgeEnergyPerEu.getAsInt();
     }
 
@@ -189,13 +189,13 @@ public class EnergyApi {
      */
     private static class WrappedExternalStorage implements MIEnergyStorage {
         @Nullable
-        private static WrappedExternalStorage of(@Nullable ILongEnergyStorage externalStorage) {
+        private static WrappedExternalStorage of(@Nullable EnergyHandler externalStorage) {
             return externalStorage == null ? null : new WrappedExternalStorage(externalStorage);
         }
 
-        private final ILongEnergyStorage externalStorage;
+        private final EnergyHandler externalStorage;
 
-        private WrappedExternalStorage(ILongEnergyStorage externalStorage) {
+        private WrappedExternalStorage(EnergyHandler externalStorage) {
             this.externalStorage = externalStorage;
         }
 
@@ -205,67 +205,61 @@ public class EnergyApi {
         }
 
         @Override
-        public long receive(long maxReceive, boolean simulate) {
-            long ratio = ratio();
-            maxReceive = Math.min(maxReceive, Long.MAX_VALUE / ratio); // avoid overflow
-            maxReceive *= ratio;
+        public int insert(int maxInsert, TransactionContext transaction) {
+            int ratio = ratio();
+            maxInsert = Math.min(maxInsert, Integer.MAX_VALUE / ratio); // avoid overflow
+            maxInsert *= ratio;
             if (ratio > 1) {
                 // Do a simulate insertion to round down to a multiple of ratio that should be accepted.
-                maxReceive = externalStorage.receive(maxReceive, true) / ratio * ratio;
+                try (var nested = Transaction.open(transaction)) {
+                    maxInsert = externalStorage.insert(maxInsert, nested) / ratio * ratio;
+                }
             }
-            return externalStorage.receive(maxReceive, simulate) / ratio;
+            return externalStorage.insert(maxInsert, transaction) / ratio;
         }
 
         @Override
-        public long extract(long maxExtract, boolean simulate) {
-            long ratio = ratio();
-            maxExtract = Math.min(maxExtract, Long.MAX_VALUE / ratio); // avoid overflow
+        public int extract(int maxExtract, TransactionContext transaction) {
+            int ratio = ratio();
+            maxExtract = Math.min(maxExtract, Integer.MAX_VALUE / ratio); // avoid overflow
             maxExtract *= ratio;
             if (ratio > 1) {
                 // Do a simulate extraction to round down to a multiple of ratio that should be accepted.
-                maxExtract = externalStorage.extract(maxExtract, true) / ratio * ratio;
+                try (var nested = Transaction.open(transaction)) {
+                    maxExtract = externalStorage.extract(maxExtract, nested) / ratio * ratio;
+                }
             }
-            return externalStorage.extract(maxExtract, simulate) / ratio;
+            return externalStorage.extract(maxExtract, transaction) / ratio;
         }
 
         @Override
-        public long getAmount() {
-            return externalStorage.getAmount() / ratio();
+        public long getAmountAsLong() {
+            return externalStorage.getAmountAsLong() / ratio();
         }
 
         @Override
-        public long getCapacity() {
-            return externalStorage.getCapacity() / ratio();
-        }
-
-        @Override
-        public boolean canExtract() {
-            return externalStorage.canExtract();
-        }
-
-        @Override
-        public boolean canReceive() {
-            return externalStorage.canReceive();
+        public long getCapacityAsLong() {
+            return externalStorage.getCapacityAsLong() / ratio();
         }
     }
 
     private static class InsertOnlyExternalStorage extends WrappedExternalStorage {
         @Nullable
-        private static InsertOnlyExternalStorage of(@Nullable ILongEnergyStorage externalStorage) {
-            return externalStorage == null || !externalStorage.canReceive() ? null : new InsertOnlyExternalStorage(externalStorage);
+        private static InsertOnlyExternalStorage of(@Nullable EnergyHandler externalStorage) {
+            return externalStorage == null /*|| !externalStorage.supportsInsertion()*/ ? null : new InsertOnlyExternalStorage(externalStorage);
         }
 
-        private InsertOnlyExternalStorage(ILongEnergyStorage externalStorage) {
+        private InsertOnlyExternalStorage(EnergyHandler externalStorage) {
             super(externalStorage);
         }
 
         @Override
-        public long extract(long maxExtract, boolean simulate) {
+        public int extract(int maxExtract, TransactionContext transaction) {
             return 0;
         }
 
         @Override
-        public boolean canExtract() {
+        public boolean supportsExtraction() {
             return false;
         }
     }
@@ -273,68 +267,68 @@ public class EnergyApi {
     /**
      * An external storage that wraps an MI storage to apply the energy conversion ratio to it.
      */
-    private static class WrappedMIStorage implements ILongEnergyStorage {
+    private static class WrappedMIStorage implements EnergyHandler {
         @Nullable
-        private static WrappedMIStorage of(@Nullable ILongEnergyStorage miStorage) {
+        private static WrappedMIStorage of(@Nullable EnergyHandler miStorage) {
             return miStorage == null ? null : new WrappedMIStorage(miStorage);
         }
 
-        private final ILongEnergyStorage miStorage;
+        private final EnergyHandler miStorage;
 
-        private WrappedMIStorage(ILongEnergyStorage miStorage) {
+        private WrappedMIStorage(EnergyHandler miStorage) {
             this.miStorage = miStorage;
         }
 
         @Override
-        public long receive(long maxReceive, boolean simulate) {
-            long ratio = ratio();
-            return miStorage.receive(maxReceive / ratio, simulate) * ratio;
+        public int insert(int maxInsert, TransactionContext transaction) {
+            int ratio = ratio();
+            return miStorage.insert(maxInsert / ratio, transaction) * ratio;
         }
 
         @Override
-        public long extract(long maxExtract, boolean simulate) {
-            long ratio = ratio();
-            return miStorage.extract(maxExtract / ratio, simulate) * ratio;
+        public int extract(int maxExtract, TransactionContext transaction) {
+            int ratio = ratio();
+            return miStorage.extract(maxExtract / ratio, transaction) * ratio;
         }
 
         @Override
-        public long getAmount() {
-            return miStorage.getAmount() * ratio();
+        public long getAmountAsLong() {
+            return miStorage.getAmountAsLong() * ratio();
         }
 
         @Override
-        public long getCapacity() {
-            return miStorage.getCapacity() * ratio();
+        public long getCapacityAsLong() {
+            return miStorage.getCapacityAsLong() * ratio();
         }
 
-        @Override
-        public boolean canExtract() {
-            return miStorage.canExtract();
-        }
-
-        @Override
-        public boolean canReceive() {
-            return miStorage.canReceive();
-        }
+//        @Override
+//        public boolean supportsExtraction() {
+//            return miStorage.supportsExtraction();
+//        }
+//
+//        @Override
+//        public boolean supportsInsertion() {
+//            return miStorage.supportsInsertion();
+//        }
     }
 
     private static class ExtractOnlyMIStorage extends WrappedMIStorage {
-        private static EnergyApi.@Nullable ExtractOnlyMIStorage of(@Nullable ILongEnergyStorage miStorage) {
-            return miStorage == null || !miStorage.canExtract() ? null : new ExtractOnlyMIStorage(miStorage);
+        private static EnergyApi.@Nullable ExtractOnlyMIStorage of(@Nullable EnergyHandler miStorage) {
+            return miStorage == null /*|| !miStorage.supportsExtraction()*/ ? null : new ExtractOnlyMIStorage(miStorage);
         }
 
-        private ExtractOnlyMIStorage(ILongEnergyStorage miStorage) {
+        private ExtractOnlyMIStorage(EnergyHandler miStorage) {
             super(miStorage);
         }
 
         @Override
-        public long receive(long maxReceive, boolean simulate) {
+        public int insert(int maxInsert, TransactionContext transaction) {
             return 0;
         }
 
-        @Override
-        public boolean canReceive() {
-            return false;
-        }
+//        @Override
+//        public boolean supportsInsertion() {
+//            return false;
+//        }
     }
 }

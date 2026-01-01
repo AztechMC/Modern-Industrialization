@@ -36,11 +36,30 @@ import java.util.function.Supplier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergyComponent implements MachineComponent.ServerOnly, EnergyAccess {
     private long storedEu;
     private final Supplier<Long> capacity;
     private final BlockEntity blockEntity; // used to call setChanged()
+
+    private final SnapshotJournal<Long> journal = new SnapshotJournal<>() {
+        @Override
+        protected Long createSnapshot() {
+            return storedEu;
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            storedEu = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Long originalState) {
+            blockEntity.setChanged();
+        }
+    };
 
     public EnergyComponent(BlockEntity blockEntity, Supplier<Long> capacity) {
         this.capacity = capacity;
@@ -102,12 +121,12 @@ public class EnergyComponent implements MachineComponent.ServerOnly, EnergyAcces
 
     private abstract class EnergyStorage implements MIEnergyStorage {
         @Override
-        public long getAmount() {
+        public long getAmountAsLong() {
             return storedEu;
         }
 
         @Override
-        public long getCapacity() {
+        public long getCapacityAsLong() {
             return capacity.get();
         }
     }
@@ -115,22 +134,21 @@ public class EnergyComponent implements MachineComponent.ServerOnly, EnergyAcces
     public MIEnergyStorage buildInsertable(Predicate<CableTier> canInsert) {
         return new EnergyStorage() {
             @Override
-            public long receive(long maxReceive, boolean simulate) {
-                return insertEu(maxReceive, simulate ? Simulation.SIMULATE : Simulation.ACT);
+            public int insert(int amount, TransactionContext transaction) {
+                Preconditions.checkArgument(amount >= 0, "May not insert < 0 energy.");
+                int inserted = (int) Math.min(amount, capacity.get() - getEu());
+                journal.updateSnapshots(transaction);
+                storedEu += inserted;
+                return inserted;
             }
 
             @Override
-            public boolean canReceive() {
-                return true;
-            }
-
-            @Override
-            public long extract(long maxExtract, boolean simulate) {
+            public int extract(int amount, TransactionContext transaction) {
                 return 0;
             }
 
             @Override
-            public boolean canExtract() {
+            public boolean supportsExtraction() {
                 return false;
             }
 
@@ -144,23 +162,22 @@ public class EnergyComponent implements MachineComponent.ServerOnly, EnergyAcces
     public MIEnergyStorage buildExtractable(Predicate<CableTier> canExtract) {
         return new EnergyStorage() {
             @Override
-            public long receive(long maxReceive, boolean simulate) {
+            public int insert(int amount, TransactionContext transaction) {
                 return 0;
             }
 
             @Override
-            public boolean canReceive() {
+            public boolean supportsInsertion() {
                 return false;
             }
 
             @Override
-            public long extract(long maxExtract, boolean simulate) {
-                return consumeEu(maxExtract, simulate ? Simulation.SIMULATE : Simulation.ACT);
-            }
-
-            @Override
-            public boolean canExtract() {
-                return true;
+            public int extract(int amount, TransactionContext transaction) {
+                Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
+                int extracted = (int) Math.min(amount, getEu());
+                journal.updateSnapshots(transaction);
+                storedEu -= extracted;
+                return extracted;
             }
 
             @Override

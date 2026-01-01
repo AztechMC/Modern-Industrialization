@@ -27,8 +27,7 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.items.ActivatableItem;
-import dev.technici4n.grandpower.api.ISimpleEnergyItem;
-import net.minecraft.core.component.DataComponentType;
+import aztech.modern_industrialization.items.MIEnergyItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,11 +38,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jspecify.annotations.Nullable;
 
-public class GraviChestPlateItem extends Item implements ActivatableItem, ISimpleEnergyItem {
+public class GraviChestPlateItem extends Item implements ActivatableItem, MIEnergyItem {
     public GraviChestPlateItem(Properties properties) {
         super(properties
                 // TODO 1.21.11 - do I need to set the assetId?
@@ -55,7 +53,7 @@ public class GraviChestPlateItem extends Item implements ActivatableItem, ISimpl
 
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
-        if (this.getStoredEnergy(stack) > 0 && this.isActivated(stack)) {
+        if (this.getEnergy(stack) > 0 && this.isActivated(stack)) {
             return ItemAttributeModifiers.builder()
                     .add(
                             NeoForgeMod.CREATIVE_FLIGHT,
@@ -64,19 +62,6 @@ public class GraviChestPlateItem extends Item implements ActivatableItem, ISimpl
                     .build();
         }
         return ItemAttributeModifiers.EMPTY;
-    }
-
-    @Override
-    public DataComponentType<Long> getEnergyComponent() {
-        return MIComponents.ENERGY.get();
-    }
-
-    public long getEnergy(ItemStack stack) {
-        return getStoredEnergy(stack);
-    }
-
-    public void setEnergy(ItemStack stack, long energy) {
-        setStoredEnergy(stack, energy);
     }
 
     public static final long FLIGHT_COST = 1024;
@@ -99,20 +84,5 @@ public class GraviChestPlateItem extends Item implements ActivatableItem, ISimpl
     @Override
     public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getEnergy(stack) / (double) ENERGY_CAPACITY * 13);
-    }
-
-    @Override
-    public long getEnergyCapacity(ItemStack stack) {
-        return ENERGY_CAPACITY;
-    }
-
-    @Override
-    public long getEnergyMaxInput(ItemStack stack) {
-        return ENERGY_CAPACITY;
-    }
-
-    @Override
-    public long getEnergyMaxOutput(ItemStack stack) {
-        return 0;
     }
 }

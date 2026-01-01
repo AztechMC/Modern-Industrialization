@@ -29,8 +29,8 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
-import dev.technici4n.grandpower.api.EnergyStorageUtil;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 
 public class EnergyHelper {
     public static void autoOutput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, MIEnergyStorage energySource) {
@@ -40,7 +40,7 @@ public class EnergyHelper {
     public static void autoOutput(MachineBlockEntity machine, Direction side, CableTier output, MIEnergyStorage energySource) {
         var storage = machine.getLevel().getCapability(EnergyApi.SIDED, machine.getBlockPos().relative(side), side.getOpposite());
         if (storage != null && storage.canConnect(output)) {
-            if (EnergyStorageUtil.move(energySource, storage, Long.MAX_VALUE) > 0) {
+            if (EnergyHandlerUtil.move(energySource, storage, Integer.MAX_VALUE, null) > 0) {
                 machine.setChanged();
             }
         }

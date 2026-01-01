@@ -51,6 +51,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class MIPackets {
@@ -101,8 +102,9 @@ public class MIPackets {
     }
 
     private static <P extends BasePacket> void register(PayloadRegistrar registrar, Registration<P> reg) {
-        registrar.playBidirectional(reg.packetType, reg.packetCodec, (packet, context) -> {
+        IPayloadHandler<P> handler = (packet, context) -> {
             packet.handle(new BasePacket.Context(reg.clazz, context));
-        });
+        };
+        registrar.playBidirectional(reg.packetType, reg.packetCodec, handler, handler);
     }
 }

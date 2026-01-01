@@ -34,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements Tickable {
@@ -57,7 +58,10 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
                 var target = caches[direction.ordinal()].getCapability();
                 if (target != null) {
-                    target.receive(Long.MAX_VALUE, false);
+                    try (var tx = Transaction.openRoot()) {
+                        target.insert(Integer.MAX_VALUE, tx);
+                        tx.commit();
+                    }
                 }
             }
         }

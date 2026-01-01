@@ -119,7 +119,6 @@ configurations {
 }
 
 dependencies {
-    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
     api "org.jspecify:jspecify:${project.jspecify_version}"
     implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
@@ -167,7 +166,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
-            grandpower_version_range: grandpower_version_range,
             guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
             jei_version_range: jei_version_range,
@@ -345,7 +343,6 @@ publishMods {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         javaVersions.add JavaVersion.VERSION_25
         shared it
-        embeds "grandpower"
         optional "roughly-enough-items"
     }
 

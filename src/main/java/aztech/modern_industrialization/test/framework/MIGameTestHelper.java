@@ -142,7 +142,7 @@ public class MIGameTestHelper extends GameTestHelper {
 
     public void assertEnergy(BlockPos pos, long energy, @Nullable Direction side) {
         var miEnergyHandler = requireCapability(EnergyApi.SIDED, pos, side);
-        long storedEnergy = miEnergyHandler.getAmount();
+        long storedEnergy = miEnergyHandler.getAmountAsLong();
         if (storedEnergy != energy) {
             fail("Expected energy to be " + energy + ", was " + storedEnergy, pos);
         }

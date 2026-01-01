@@ -24,11 +24,20 @@
 
 package aztech.modern_industrialization.api.energy;
 
-import dev.technici4n.grandpower.api.ILongEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus;
 
-public interface MIEnergyStorage extends ILongEnergyStorage {
+public interface MIEnergyStorage extends EnergyHandler {
     boolean canConnect(CableTier cableTier);
+
+    default boolean supportsInsertion() {
+        return true;
+    }
+
+    default boolean supportsExtraction() {
+        return true;
+    }
 
     /**
      * Overload of {@link #canConnect(CableTier)} that's easier to access by reflection.
@@ -47,24 +56,24 @@ public interface MIEnergyStorage extends ILongEnergyStorage {
 
     interface NoExtract extends MIEnergyStorage {
         @Override
-        default boolean canExtract() {
+        default boolean supportsExtraction() {
             return false;
         }
 
         @Override
-        default long extract(long maxExtract, boolean simulate) {
+        default int extract(int amount, TransactionContext transaction) {
             return 0;
         }
     }
 
     interface NoInsert extends MIEnergyStorage {
         @Override
-        default boolean canReceive() {
+        default boolean supportsInsertion() {
             return false;
         }
 
         @Override
-        default long receive(long amount, boolean simulate) {
+        default int insert(int amount, TransactionContext transaction) {
             return 0;
         }
     }

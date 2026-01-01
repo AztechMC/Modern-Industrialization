@@ -142,7 +142,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         var storage = world.getCapability(EnergyApi.SIDED, pos.relative(direction), direction.getOpposite());
-        return storage != null && (storage.canReceive() || storage.canExtract()) && storage.canConnect(((ElectricityNetwork) network).tier);
+        return storage != null && /*(storage.supportsInsertion() || storage.supportsExtraction()) &&*/ storage.canConnect(((ElectricityNetwork) network).tier);
     }
 
     // Used in the Waila plugin

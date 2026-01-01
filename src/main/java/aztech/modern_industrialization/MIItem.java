@@ -39,7 +39,6 @@ import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
-import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
@@ -56,6 +55,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @SuppressWarnings("unused")
 public final class MIItem {
@@ -173,8 +173,12 @@ public final class MIItem {
     public static final ItemDefinition<PortableStorageUnit> PORTABLE_STORAGE_UNIT = itemHandheld("Portable Storage Unit", "portable_storage_unit", PortableStorageUnit::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    // TODO 26.1
-//                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, itemAccess) -> new ItemEnergyHandler(itemAccess, MIComponents.ENERGY.get(), Integer.MAX_VALUE) {
+                        @Override
+                        protected long getCapacity(ItemResource accessResource) {
+                            return item.getEnergyCapacity(accessResource.toStack());
+                        }
+                    }, item);
                 });
             });
 
@@ -192,7 +196,12 @@ public final class MIItem {
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new, ITEMS_ORDERED.next())
             .withItemRegistrationEvent(item -> {
                 MICapabilities.onEvent(event -> {
-                    event.registerItem(EnergyApi.ITEM, (stack, ctx) -> ISimpleEnergyItem.createStorage(stack, MIComponents.ENERGY.get(), item.getEnergyCapacity(stack), item.getEnergyMaxInput(stack), item.getEnergyMaxOutput(stack)), item);
+                    event.registerItem(EnergyApi.ITEM, (stack, itemAccess) -> new ItemEnergyHandler(itemAccess, MIComponents.ENERGY.get(), Integer.MAX_VALUE) {
+                        @Override
+                        protected long getCapacity(ItemResource accessResource) {
+                            return GraviChestPlateItem.ENERGY_CAPACITY;
+                        }
+                    }, item);
                 });
             });
 

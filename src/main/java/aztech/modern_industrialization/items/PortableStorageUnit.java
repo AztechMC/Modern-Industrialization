@@ -24,11 +24,9 @@
 
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import dev.technici4n.grandpower.api.ISimpleEnergyItem;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.Optional;
@@ -40,7 +38,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class PortableStorageUnit extends Item implements ItemContainingItemHelper {
+public class PortableStorageUnit extends Item implements ItemContainingItemHelper, MIEnergyItem {
     public static final Reference2LongMap<Item> CAPACITY_PER_BATTERY = new Reference2LongOpenHashMap<>();
     private final static int MAX_BATTERY_COUNT = 10000;
 
@@ -50,7 +48,7 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
 
     @Override
     public void onChange(ItemStack stack) {
-        this.setStoredEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getStoredEnergy(stack)));
+        this.setEnergy(stack, Math.min(this.getEnergyCapacity(stack), this.getEnergy(stack)));
     }
 
     public long getEnergyCapacity(ItemStack stack) {
@@ -59,14 +57,6 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
         } else {
             return CAPACITY_PER_BATTERY.getLong(this.getResource(stack).getItem()) * this.getAmount(stack);
         }
-    }
-
-    public long getEnergyMaxInput(ItemStack stack) {
-        return Long.MAX_VALUE;
-    }
-
-    public long getEnergyMaxOutput(ItemStack stack) {
-        return Long.MAX_VALUE;
     }
 
     @Override
@@ -111,24 +101,9 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
     @Override
     public int getBarWidth(ItemStack stack) {
         if (getEnergyCapacity(stack) > 0) {
-            return (int) Math.round(getStoredEnergy(stack) / (double) getEnergyCapacity(stack) * 13);
+            return (int) Math.round(getEnergy(stack) / (double) getEnergyCapacity(stack) * 13);
         } else {
             return 0;
         }
-    }
-
-    /**
-     * @return The energy stored in the stack. Count is ignored.
-     */
-    public long getStoredEnergy(ItemStack stack) {
-        return ISimpleEnergyItem.getStoredEnergyUnchecked(stack, MIComponents.ENERGY.get());
-    }
-
-    /**
-     * Directly set the energy stored in the stack. Count is ignored.
-     * It's up to callers to ensure that the new amount is >= 0 and <= capacity.
-     */
-    public void setStoredEnergy(ItemStack stack, long newAmount) {
-        ISimpleEnergyItem.setStoredEnergyUnchecked(stack, MIComponents.ENERGY.get(), newAmount);
     }
 }

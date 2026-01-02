@@ -25,14 +25,14 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.MITradeSets;
+import aztech.modern_industrialization.datagen.tag.MIVillagerTradesTagProvider;
+import aztech.modern_industrialization.trading.MITradeSets;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.loot.MIGiftLoot;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipeProvider;
-import aztech.modern_industrialization.datagen.recipe.AssemblerRecipeProvider;
 import aztech.modern_industrialization.datagen.recipe.CompatRecipeProvider;
 import aztech.modern_industrialization.datagen.recipe.DyeRecipeProvider;
 import aztech.modern_industrialization.datagen.recipe.HatchRecipeProvider;
@@ -51,11 +51,15 @@ import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import aztech.modern_industrialization.trading.MITrades;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 
@@ -91,13 +95,17 @@ public class MIDatagenServer {
 
         var registrySetBuilder = DynamicRegistryDatagen.getBuilder();
         registrySetBuilder.add(Registries.TRADE_SET, MITradeSets::bootstrap);
+        registrySetBuilder.add(Registries.VILLAGER_TRADE, MITrades::bootstrap);
+        var registriesWithMiPatch = RegistryPatchGenerator.createLookup(registries, registrySetBuilder);
         gen.addProvider(true,
-                new DatapackBuiltinEntriesProvider(gen.getPackOutput(), registries, registrySetBuilder, Set.of(MI.ID)));
+                new DatapackBuiltinEntriesProvider(gen.getPackOutput(), registriesWithMiPatch, Set.of(MI.ID)));
+        var registriesWithMi = registriesWithMiPatch.thenApply(RegistrySetBuilder.PatchedRegistries::full);
 
         gen.addProvider(true, new MIBlockTagProvider(gen.getPackOutput(), registries));
         gen.addProvider(true, new MIFluidTagProvider(gen.getPackOutput(), registries));
         gen.addProvider(true, new MIItemTagProvider(gen.getPackOutput(), registries, runtimeDatagen));
         gen.addProvider(true, new MIPoiTypeTagProvider(gen.getPackOutput(), registries));
+        gen.addProvider(true, new MIVillagerTradesTagProvider(gen.getPackOutput(), registriesWithMi));
 
         gen.addProvider(true, new MIDataMapProvider(gen.getPackOutput(), registries));
 

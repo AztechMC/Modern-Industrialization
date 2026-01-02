@@ -1116,8 +1116,6 @@
   "modern_industrialization.configuration.datagenOnStartup.tooltip": "Run MI runtime datagen on startup.",
   "modern_industrialization.configuration.debugCommands": "Debug commands",
   "modern_industrialization.configuration.debugCommands.tooltip": "Enable UNSUPPORTED and DANGEROUS debug commands.",
-  "modern_industrialization.configuration.defaultIndustrialistTrades": "Default Industrialist trades",
-  "modern_industrialization.configuration.defaultIndustrialistTrades.tooltip": "Enable the default trades from the Industrialist villager provided by MI. Disable this to provide your own set of trades.",
   "modern_industrialization.configuration.defaultOreGenTooltips": "Ore generation tooltips",
   "modern_industrialization.configuration.defaultOreGenTooltips.tooltip": "Enable the default ore generation tooltips. These tooltips show how each MI ore generates, based on the default ore generation settings in MI. Set this to false if you change the ore features in a datapack.",
   "modern_industrialization.configuration.forgeEnergyPerEu": "FE per EU",

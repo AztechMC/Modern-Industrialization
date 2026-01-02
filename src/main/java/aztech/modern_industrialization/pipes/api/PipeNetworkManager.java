@@ -451,7 +451,7 @@ public class PipeNetworkManager {
         private static Codec<SerializedNode> CODEC = RecordCodecBuilder.create(i -> i.group(
                 BlockPos.CODEC.fieldOf("pos").forGetter(SerializedNode::pos),
                 Codec.INT.fieldOf("networkId").forGetter(SerializedNode::networkId),
-                Direction.CODEC.listOf(1, Direction.values().length).xmap(Set::copyOf, List::copyOf)
+                Direction.CODEC.listOf(0, Direction.values().length).xmap(Set::copyOf, List::copyOf)
                         .fieldOf("directions").forGetter(SerializedNode::directions)
         ).apply(i, SerializedNode::new));
     }

@@ -54,7 +54,6 @@ public final class MIStartupConfig {
     // These should ideally be moved to the server config one day.
     public final ModConfigSpec.BooleanValue debugCommands;
     public final ModConfigSpec.IntValue maxDistillationTowerHeight;
-    public final ModConfigSpec.BooleanValue defaultIndustrialistTrades;
 
     private MIStartupConfig(MIConfigBuilder builder) {
         builder.pushSection("compat", "Mod Compatibility");
@@ -103,10 +102,5 @@ public final class MIStartupConfig {
                 "Maximum height of the distillation tower multiblock.")
                 .gameRestart()
                 .defineInRange("maxDistillationTowerHeight", 9, 1, 32);
-        this.defaultIndustrialistTrades = builder.start("defaultIndustrialistTrades",
-                "Default Industrialist trades",
-                "Enable the default trades from the Industrialist villager provided by MI.",
-                "Disable this to provide your own set of trades.")
-                .define("defaultIndustrialistTrades", true);
     }
 }

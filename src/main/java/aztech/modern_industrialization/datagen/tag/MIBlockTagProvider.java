@@ -74,10 +74,10 @@ public class MIBlockTagProvider extends BlockTagsProvider {
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
             for (var tag : entry.getValue()) {
-                // TODO: suspicious check
-//                if (this.builders.containsKey(Identifier.parse(tag))) {
+                // Skip item tag if it was already skipped above due to no item existing
+                if (this.builders.containsKey(tag.location())) {
                     tag(key(entry.getKey().location())).addTag(key(tag.location()));
-//                }
+                }
             }
         }
     }

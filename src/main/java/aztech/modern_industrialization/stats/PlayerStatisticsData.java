@@ -43,7 +43,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class PlayerStatisticsData extends SavedData {
-    private static final Codec<PlayerStatisticsData> CODEC = Codec.unboundedMap(UUIDUtil.LENIENT_CODEC, PlayerStatistics.CODEC)
+    private static final Codec<PlayerStatisticsData> CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerStatistics.CODEC)
             .xmap(m -> new PlayerStatisticsData(new HashMap<>(m)), psd -> psd.stats);
     private static final SavedDataType<PlayerStatisticsData> TYPE = new SavedDataType<>(
             "modern_industrialization_player_stats",

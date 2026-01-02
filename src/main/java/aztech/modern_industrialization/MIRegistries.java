@@ -33,6 +33,7 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.trading.MITradeSets;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
@@ -52,7 +53,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.trading.TradeSets;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.conditions.ICondition;

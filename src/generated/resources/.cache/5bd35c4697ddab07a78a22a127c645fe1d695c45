@@ -1,9 +1,5 @@
-// 26.1-snapshot-1	2026-01-02T14:25:41.2714698	Tags for minecraft:block mod id modern_industrialization
-3b74d51b75902d5c5a18b1a0613552cf1a69fcc6 data/c/tags/block/dusts.json
-e308546b565da054692fb0d2c909d4b556f603d9 data/c/tags/block/gears.json
-c1aafe5ee71d7080a5c7ded7d27cc2bda2e1076c data/c/tags/block/ingots.json
-0e7ed932b365a3a3f8a4539729f83ecaaac50a1d data/c/tags/block/nuggets.json
-bfbe63ae4b248acd63b27e286b125f4337eec142 data/c/tags/block/ores.json
+// 26.1-snapshot-1	2026-01-02T15:07:34.046156	Tags for minecraft:block mod id modern_industrialization
+ef72297aa0ecfbc2672c0b74167d4bf1fa4b262e data/c/tags/block/ores.json
 b74bc7a6e8507c54ded11660bf60f4e7e06910a0 data/c/tags/block/ores/antimony.json
 692748c1f1e0425903fdf4da21c318c4c4a739bb data/c/tags/block/ores/bauxite.json
 93ec56b0d5b6f7a7fd054f38bbfe24e69296efb3 data/c/tags/block/ores/iridium.json
@@ -20,11 +16,8 @@ cf3229a47b1eaec01a2957f35b44eb68df300441 data/c/tags/block/ores/tin.json
 eeb8fb3260f194115d7da2f45c010ea30e86a01c data/c/tags/block/ores/uranium.json
 c9af7fbde3eae6cf88f40e1f20edaf96858da682 data/c/tags/block/ores_in_ground/deepslate.json
 06148afe1907864eb205006233b7b317091027b4 data/c/tags/block/ores_in_ground/stone.json
-ee4ba35d232989880253dd2c57c127fd42a5a56e data/c/tags/block/plates.json
-dd3326f1997b6aa5d8edd0f12c237f0f4155d5fc data/c/tags/block/raw_materials.json
 2bcaf74d6280a33696eef8093a0f049f5cc888cd data/c/tags/block/relocation_not_supported.json
-5867098a77be0ba16c31ca0aa30258faaa78f5b8 data/c/tags/block/rods.json
-8116fd8c222935cc337c58dd951c6e7200a0283f data/c/tags/block/storage_blocks.json
+d8b9b3e45e2f4befc2934da1c283b6e24a897478 data/c/tags/block/storage_blocks.json
 e3190b02d42e214470bf3ead1b0ec5567b48df27 data/c/tags/block/storage_blocks/aluminum.json
 b5ca28858883be0bbb19afcb8e48de9a8830aa16 data/c/tags/block/storage_blocks/annealed_copper.json
 2a04478b3e310da36b3c2b19b729ae275d224b6d data/c/tags/block/storage_blocks/antimony.json
@@ -75,7 +68,6 @@ a5d970bccae3680b21037d8211f7006af4d6d7a7 data/c/tags/block/storage_blocks/tungst
 01d6b97b8295064cef2373a68dcf31cfea9e83f8 data/c/tags/block/storage_blocks/uranium_235.json
 fa0a7374138ac46efd360cd4765701a3ac88bc37 data/c/tags/block/storage_blocks/uranium_238.json
 ba09e47df7025bb1c4d4a072a54ce0b2e307f003 data/c/tags/block/storage_blocks/yttrium.json
-111d117c51643b83e78625cded3707b1e5c92846 data/c/tags/block/tiny_dusts.json
 83ef9558d99b272a951490db40941728b6755366 data/minecraft/tags/block/mineable/pickaxe.json
 0598637f8fa446913456c69504f5c6bc1a6b19f1 data/minecraft/tags/block/needs_stone_tool.json
 2f4942034efc4f0ca583b4947ecf67ae3ee08540 data/modern_industrialization/tags/block/barrels.json

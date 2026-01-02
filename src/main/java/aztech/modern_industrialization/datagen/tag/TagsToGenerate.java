@@ -77,8 +77,10 @@ public class TagsToGenerate {
         tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
     }
 
+    private static final Comparator<TagKey<Item>> TAG_COMPARATOR = Comparator.comparing(TagKey::location);
+
     public static void addTagToTag(TagKey<Item> tagTobeAdded, TagKey<Item> tagTarget, String targetEnglishName) {
-        tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new HashSet<>()).add(tagTobeAdded);
+        tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new TreeSet<>(TAG_COMPARATOR)).add(tagTobeAdded);
         addTranslation(tagTarget, targetEnglishName);
     }
 

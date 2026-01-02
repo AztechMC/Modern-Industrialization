@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 1,
+    "id": "modern_industrialization:steel_hammer"
+  },
+  "max_uses": 12.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 8.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 10.0
+}

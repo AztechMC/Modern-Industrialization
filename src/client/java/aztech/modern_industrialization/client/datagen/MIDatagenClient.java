@@ -35,7 +35,10 @@ public class MIDatagenClient {
             DataGenerator gen,
             CompletableFuture<HolderLookup.Provider> lookupProvider,
             boolean runtimeDatagen) {
-        gen.addProvider(true, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider));
+        if (!runtimeDatagen) {
+            // Runtime datagen runs before sprite sources are registered, so skip this provider
+            gen.addProvider(true, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider));
+        }
         gen.addProvider(true, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
         // TODO 26.1
 //        gen.addProvider(true, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));

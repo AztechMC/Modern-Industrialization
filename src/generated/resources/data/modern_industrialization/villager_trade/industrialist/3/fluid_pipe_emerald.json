@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 1,
+    "id": "minecraft:emerald"
+  },
+  "max_uses": 20.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 4.0,
+    "id": "modern_industrialization:fluid_pipe"
+  },
+  "xp": 10.0
+}

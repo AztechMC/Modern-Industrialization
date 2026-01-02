@@ -26,8 +26,8 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;

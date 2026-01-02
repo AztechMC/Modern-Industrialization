@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

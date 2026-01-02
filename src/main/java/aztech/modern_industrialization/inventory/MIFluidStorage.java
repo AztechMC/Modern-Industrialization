@@ -26,7 +26,7 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.primitives.Ints;
 import java.util.List;
 import net.minecraft.world.level.material.Fluid;
@@ -67,7 +67,7 @@ public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableF
             if (resource.isEmpty()) {
                 return 0;
             }
-            try (var tx = Transaction.hackyOpen()) {
+            try (var tx = TransactionLegacy.hackyOpen()) {
                 long result = insert(FluidVariant.of(resource), resource.getAmount(), tx);
                 if (result > 0 && action.execute()) {
                     tx.commit();
@@ -81,7 +81,7 @@ public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableF
             if (resource.isEmpty()) {
                 return FluidStack.EMPTY;
             }
-            try (var tx = Transaction.hackyOpen()) {
+            try (var tx = TransactionLegacy.hackyOpen()) {
                 long result = extract(FluidVariant.of(resource), resource.getAmount(), tx);
                 if (result > 0 && action.execute()) {
                     tx.commit();
@@ -97,7 +97,7 @@ public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableF
             if (maxDrain <= 0) {
                 return FluidStack.EMPTY;
             }
-            try (var tx = Transaction.hackyOpen()) {
+            try (var tx = TransactionLegacy.hackyOpen()) {
                 var result = StorageUtil.extractAny(MIFluidStorage.this, maxDrain, tx);
                 if (result == null) {
                     return FluidStack.EMPTY;

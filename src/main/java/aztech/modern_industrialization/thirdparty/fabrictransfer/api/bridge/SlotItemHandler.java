@@ -24,9 +24,10 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.inventory.TransactionLegacy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -47,7 +48,7 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
         if (stack.isEmpty()) {
             return stack;
         }
-        try (var tx = Transaction.hackyOpen()) {
+        try (var tx = TransactionLegacy.hackyOpen()) {
             var inserted = storage.insert(ItemVariant.of(stack), stack.getCount(), tx);
             if (!simulate) {
                 tx.commit();
@@ -61,7 +62,7 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
         if (amount <= 0) {
             return ItemStack.EMPTY;
         }
-        try (var tx = Transaction.hackyOpen()) {
+        try (var tx = TransactionLegacy.hackyOpen()) {
             var resource = storage.getResource();
             if (resource.isBlank()) {
                 return ItemStack.EMPTY;

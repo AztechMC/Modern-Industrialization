@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:exposed_copper"
-    },
-    {
-      "item": "modern_industrialization:wax"
-    }
+    "minecraft:exposed_copper",
+    "modern_industrialization:wax"
   ],
   "result": {
     "count": 1,

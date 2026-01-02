@@ -41,7 +41,7 @@ public class MaterialRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes() {
         for (Material material : MaterialRegistry.getMaterials().values()) {
-            material.registerRecipes.accept(output);
+            material.registerRecipes.accept(items, output);
         }
     }
 

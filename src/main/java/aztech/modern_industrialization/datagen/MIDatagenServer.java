@@ -74,7 +74,8 @@ public class MIDatagenServer {
         aggregate.addProvider(AlloyRecipeProvider.Runner::new);
         aggregate.addProvider(MaterialRecipeProvider.Runner::new);
         aggregate.addProvider(DyeRecipeProvider.Runner::new);
-        aggregate.addProvider(AssemblerRecipeProvider.Runner::new);
+        // TODO 26.1
+//        aggregate.addProvider(AssemblerRecipeProvider.Runner::new);
         if (!runtimeDatagen) {
             aggregate.addProvider(CompatRecipeProvider.Runner::new);
         }

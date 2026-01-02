@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:plates/stainless_steel"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    }
+    "#": "#c:plates/stainless_steel",
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "###",

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "item": "modern_industrialization:kanthal_cable"
-    }
+    "x": "modern_industrialization:kanthal_cable"
   },
   "pattern": [
     "xxx",

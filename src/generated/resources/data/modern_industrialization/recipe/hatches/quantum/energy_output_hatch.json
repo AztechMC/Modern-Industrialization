@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:quantum_machine_hull"
-    },
-    "V": {
-      "item": "modern_industrialization:superconductor_cable"
-    }
+    "U": "modern_industrialization:quantum_machine_hull",
+    "V": "modern_industrialization:superconductor_cable"
   },
   "pattern": [
     "U",

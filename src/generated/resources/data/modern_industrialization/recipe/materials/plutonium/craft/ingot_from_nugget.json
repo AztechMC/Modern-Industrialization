@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/plutonium"
-    },
-    "y": {
-      "item": "modern_industrialization:plutonium_nugget"
-    }
+    "x": "#c:nuggets/plutonium",
+    "y": "modern_industrialization:plutonium_nugget"
   },
   "pattern": [
     "xxx",

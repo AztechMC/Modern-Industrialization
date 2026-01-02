@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/antimony"
-    },
-    "y": {
-      "item": "modern_industrialization:antimony_ingot"
-    }
+    "x": "#c:ingots/antimony",
+    "y": "modern_industrialization:antimony_ingot"
   },
   "pattern": [
     "xxx",

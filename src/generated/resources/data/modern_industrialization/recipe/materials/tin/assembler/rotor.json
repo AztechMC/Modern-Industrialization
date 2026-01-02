@@ -5,17 +5,17 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:soldering_alloy"
+      "ingredient": "modern_industrialization:soldering_alloy"
     }
   ],
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:tin_blade"
+      "ingredient": "modern_industrialization:tin_blade"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:tin_ring"
+      "ingredient": "modern_industrialization:tin_ring"
     }
   ],
   "item_outputs": [

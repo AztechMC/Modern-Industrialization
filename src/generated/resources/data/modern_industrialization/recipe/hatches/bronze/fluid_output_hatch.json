@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:bronze_machine_casing"
-    },
-    "V": {
-      "item": "modern_industrialization:bronze_tank"
-    }
+    "U": "modern_industrialization:bronze_machine_casing",
+    "V": "modern_industrialization:bronze_tank"
   },
   "pattern": [
     "U",

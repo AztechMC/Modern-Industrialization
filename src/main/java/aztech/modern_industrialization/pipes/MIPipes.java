@@ -92,14 +92,13 @@ public class MIPipes {
         }
 
         if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
-            // TODO 26.1
-//            try {
-//                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
-//                        .getMethod("onInitializePipes")
-//                        .invoke(null);
-//            } catch (ReflectiveOperationException e) {
-//                throw new RuntimeException(e);
-//            }
+            try {
+                Class.forName("aztech.modern_industrialization.compat.ae2.MIAEAddon")
+                        .getMethod("onInitializePipes")
+                        .invoke(null);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

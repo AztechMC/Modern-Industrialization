@@ -5,11 +5,11 @@
   "fluid_inputs": [
     {
       "amount": 16000,
-      "fluid": "modern_industrialization:heavy_water_steam"
+      "ingredient": "modern_industrialization:heavy_water_steam"
     },
     {
       "amount": 125,
-      "fluid": "modern_industrialization:high_pressure_water"
+      "ingredient": "modern_industrialization:high_pressure_water"
     }
   ],
   "fluid_outputs": [

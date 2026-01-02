@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:platinum_ingot"
-    }
+    "modern_industrialization:platinum_ingot"
   ],
   "result": {
     "count": 9,

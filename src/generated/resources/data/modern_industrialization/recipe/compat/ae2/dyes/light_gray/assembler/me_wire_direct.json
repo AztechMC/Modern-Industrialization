@@ -10,19 +10,19 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "ae2:quartz_fiber"
+      "ingredient": "ae2:quartz_fiber"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:bronze_curved_plate"
+      "ingredient": "modern_industrialization:bronze_curved_plate"
     },
     {
       "amount": 1,
-      "tag": "c:dyes/light_gray"
+      "ingredient": "#c:dyes/light_gray"
     },
     {
       "amount": 2,
-      "tag": "ae2:glass_cable"
+      "ingredient": "#ae2:glass_cable"
     }
   ],
   "item_outputs": [

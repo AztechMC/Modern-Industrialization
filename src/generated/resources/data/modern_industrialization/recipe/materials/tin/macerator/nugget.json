@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:nuggets/tin"
+      "ingredient": "#c:nuggets/tin"
     }
   ],
   "item_outputs": [

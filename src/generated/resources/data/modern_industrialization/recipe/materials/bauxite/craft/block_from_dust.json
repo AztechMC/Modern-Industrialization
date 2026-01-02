@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:dusts/bauxite"
-    },
-    "y": {
-      "item": "modern_industrialization:bauxite_dust"
-    }
+    "x": "#c:dusts/bauxite",
+    "y": "modern_industrialization:bauxite_dust"
   },
   "pattern": [
     "xxx",

@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/blue"
+      "ingredient": "#c:dyes/blue"
     },
     {
       "amount": 8,
-      "tag": "c:glass_blocks"
+      "ingredient": "#c:glass_blocks"
     }
   ],
   "item_outputs": [

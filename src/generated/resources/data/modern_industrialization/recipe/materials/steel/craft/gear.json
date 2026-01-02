@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "tag": "c:plates/steel"
-    },
-    "R": {
-      "item": "modern_industrialization:steel_ring"
-    },
-    "b": {
-      "item": "modern_industrialization:steel_bolt"
-    }
+    "P": "#c:plates/steel",
+    "R": "modern_industrialization:steel_ring",
+    "b": "modern_industrialization:steel_bolt"
   },
   "pattern": [
     "PbP",

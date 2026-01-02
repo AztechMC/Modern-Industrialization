@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:plates/aluminum"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    }
+    "#": "#c:plates/aluminum",
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "###",

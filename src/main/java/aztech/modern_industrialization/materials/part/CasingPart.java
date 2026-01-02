@@ -45,7 +45,7 @@ public class CasingPart implements PartKeyProvider {
         PartTemplate regPart = new PartTemplate(formatter, this.key)
                 .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(), 5, resistance, 1, false);
         if (path != null) {
-            return regPart.withCustomPath(path, path);
+            return regPart.withCustomPath(path);
         }
         return regPart;
     }

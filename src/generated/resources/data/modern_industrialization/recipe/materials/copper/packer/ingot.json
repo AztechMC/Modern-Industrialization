@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/copper"
+      "ingredient": "#c:nuggets/copper"
     }
   ],
   "item_outputs": [

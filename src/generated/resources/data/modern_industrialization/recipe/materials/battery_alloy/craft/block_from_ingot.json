@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/battery_alloy"
-    },
-    "y": {
-      "item": "modern_industrialization:battery_alloy_ingot"
-    }
+    "x": "#c:ingots/battery_alloy",
+    "y": "modern_industrialization:battery_alloy_ingot"
   },
   "pattern": [
     "xxx",

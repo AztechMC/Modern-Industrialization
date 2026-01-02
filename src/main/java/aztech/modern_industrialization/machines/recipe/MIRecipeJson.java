@@ -29,7 +29,9 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -63,29 +65,12 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         return new MIRecipeJson<>(machineRecipeType, eu, duration);
     }
 
-    public T addItemInput(String maybeTag, int amount) {
-        return addItemInput(maybeTag, amount, 1);
+    public T addItemInput(String id, int amount) {
+        return addItemInput(id, amount, 1);
     }
 
-    public T addItemInput(TagKey<Item> tag, int amount) {
-        return addItemInput(tag, amount, 1);
-    }
-
-    public T addItemInput(TagKey<Item> tag, int amount, float probability) {
-        return addItemInput("#" + tag.location(), amount, probability);
-    }
-
-    public T addItemInput(String maybeTag, int amount, float probability) {
-        Ingredient ing;
-        if (maybeTag.startsWith("#")) {
-            ing = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))));
-        } else {
-            if (!BuiltInRegistries.ITEM.containsKey(Identifier.parse(maybeTag))) {
-                throw new RuntimeException("Could not find item " + maybeTag);
-            }
-            ing = Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
-        }
-        return addItemInput(ing, amount, probability);
+    public T addItemInput(String id, int amount, float probability) {
+        return addItemInput(Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))), amount, probability);
     }
 
     public T addItemInput(ItemLike item, int amount) {
@@ -94,6 +79,10 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
 
     public T addItemInput(ItemLike item, int amount, float probability) {
         return addItemInput(Ingredient.of(item), amount, probability);
+    }
+
+    public T addItemInput(Ingredient ingredient, int amount) {
+        return addItemInput(ingredient, amount, 1);
     }
 
     public T addItemInput(Ingredient ingredient, int amount, float probability) {
@@ -106,7 +95,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T addItemOutput(String itemId, int amount, float probability) {
-        return addItemOutput(BuiltInRegistries.ITEM.getValue(Identifier.parse(itemId)), amount, probability);
+        return addItemOutput(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(itemId))), amount, probability);
     }
 
     public T addItemOutput(ItemLike item, int amount) {

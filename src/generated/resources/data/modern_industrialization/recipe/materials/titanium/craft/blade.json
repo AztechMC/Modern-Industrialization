@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:rods/titanium"
-    },
-    "P": {
-      "item": "modern_industrialization:titanium_curved_plate"
-    }
+    "I": "#c:rods/titanium",
+    "P": "modern_industrialization:titanium_curved_plate"
   },
   "pattern": [
     "P",

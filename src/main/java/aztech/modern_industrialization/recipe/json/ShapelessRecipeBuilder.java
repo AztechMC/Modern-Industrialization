@@ -30,7 +30,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -66,13 +65,6 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
 
     public static ShapelessRecipeBuilder shapeless(ItemStack result) {
         return new ShapelessRecipeBuilder(result);
-    }
-
-    /**
-     * Adds an ingredient that can be any item in the given tag.
-     */
-    public ShapelessRecipeBuilder requires(TagKey<Item> pTag) {
-        return this.requires(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(pTag)));
     }
 
     /**

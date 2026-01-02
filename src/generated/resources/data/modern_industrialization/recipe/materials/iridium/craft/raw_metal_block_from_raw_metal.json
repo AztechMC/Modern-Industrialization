@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:raw_materials/iridium"
-    },
-    "y": {
-      "item": "modern_industrialization:raw_iridium"
-    }
+    "x": "#c:raw_materials/iridium",
+    "y": "modern_industrialization:raw_iridium"
   },
   "pattern": [
     "xxx",

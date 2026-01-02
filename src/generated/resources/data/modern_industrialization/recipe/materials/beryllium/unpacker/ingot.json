@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/beryllium"
+      "ingredient": "#c:storage_blocks/beryllium"
     }
   ],
   "item_outputs": [

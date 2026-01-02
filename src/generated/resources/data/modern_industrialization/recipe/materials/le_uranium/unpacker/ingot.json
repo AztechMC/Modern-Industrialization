@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/le_uranium"
+      "ingredient": "#c:storage_blocks/le_uranium"
     }
   ],
   "item_outputs": [

@@ -43,10 +43,14 @@ public class MITags {
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
 
     public static TagKey<Item> item(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), Identifier.fromNamespaceAndPath("c", path));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 
     public static TagKey<Item> miItem(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), MI.id(path));
+        return ItemTags.create(MI.id(path));
+    }
+
+    public static TagKey<Item> convention(String path) {
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 }

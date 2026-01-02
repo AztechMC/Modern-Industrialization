@@ -1,8 +1,6 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "ingredient": {
-    "tag": "c:ingots/tin"
-  },
+  "ingredient": "#c:ingots/tin",
   "result": {
     "count": 1,
     "id": "modern_industrialization:tin_dust"

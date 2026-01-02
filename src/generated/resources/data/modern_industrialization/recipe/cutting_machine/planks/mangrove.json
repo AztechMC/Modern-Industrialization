@@ -5,13 +5,13 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "minecraft:mangrove_logs"
+      "ingredient": "#minecraft:mangrove_logs"
     }
   ],
   "item_outputs": [

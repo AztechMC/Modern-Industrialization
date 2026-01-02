@@ -89,7 +89,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            addItemInput(part.getTaggedItemId(), amount);
+            addItemInput(part.asIngredient(context.items()), amount);
         }
         return this;
     }

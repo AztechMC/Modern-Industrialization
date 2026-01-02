@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:plates/nuclear_alloy"
+      "ingredient": "#c:plates/nuclear_alloy"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:he_mox_fuel_rod_double"
+      "ingredient": "modern_industrialization:he_mox_fuel_rod_double"
     }
   ],
   "item_outputs": [

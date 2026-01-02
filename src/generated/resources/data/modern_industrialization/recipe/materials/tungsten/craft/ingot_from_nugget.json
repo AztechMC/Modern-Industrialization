@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/tungsten"
-    },
-    "y": {
-      "item": "modern_industrialization:tungsten_nugget"
-    }
+    "x": "#c:nuggets/tungsten",
+    "y": "modern_industrialization:tungsten_nugget"
   },
   "pattern": [
     "xxx",

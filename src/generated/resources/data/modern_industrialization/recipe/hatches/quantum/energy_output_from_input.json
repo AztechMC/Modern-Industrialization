@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:superconductor_energy_input_hatch"
-    }
+    "U": "modern_industrialization:superconductor_energy_input_hatch"
   },
   "pattern": [
     "U"

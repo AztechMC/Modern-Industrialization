@@ -87,7 +87,7 @@ public class ForgeHammerRecipes {
 
         if (input != null && output != null) {
             var outputStack = new ItemStack(output, outputCount);
-            new ForgeHammerRecipeBuilder(ctx, recipeName, input.getTaggedIngredient(), inputCount, outputStack, cost);
+            new ForgeHammerRecipeBuilder(ctx, recipeName, input.asIngredient(ctx.items()), inputCount, outputStack, cost);
         }
     }
 

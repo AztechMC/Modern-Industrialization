@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/cupronickel"
+      "ingredient": "#c:nuggets/cupronickel"
     }
   ],
   "item_outputs": [

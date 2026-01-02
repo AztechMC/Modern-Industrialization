@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/stainless_steel"
-    },
-    "y": {
-      "item": "modern_industrialization:stainless_steel_ingot"
-    }
+    "x": "#c:ingots/stainless_steel",
+    "y": "modern_industrialization:stainless_steel_ingot"
   },
   "pattern": [
     "xxx",

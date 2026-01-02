@@ -37,11 +37,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PetrochemRecipeProvider extends RecipeProvider {
+public class PetrochemRecipeProvider extends MIRecipeProvider {
     protected PetrochemRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -136,7 +137,7 @@ public class PetrochemRecipeProvider extends RecipeProvider {
 
         for (var kind : PolymerizationKind.values()) {
             new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
-                    .addItemInput("#c:tiny_dusts/" + kind.catalystMaterial, kind.inputTinyDust)
+                    .addItemInput(conventionTag("tiny_dusts/" + kind.catalystMaterial), kind.inputTinyDust)
                     .addFluidInput(input, 500)
                     .addFluidOutput(output, kind.outputMillis)
                     .offerTo(this.output, "petrochem/polymerization/" + baseNameInput + "_" + kind.name().toLowerCase());

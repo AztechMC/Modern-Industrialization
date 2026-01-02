@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:ingots/invar"
+      "ingredient": "#c:ingots/invar"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_double_ingot_template",
+      "ingredient": "modern_industrialization:packer_double_ingot_template",
       "probability": 0.0
     }
   ],

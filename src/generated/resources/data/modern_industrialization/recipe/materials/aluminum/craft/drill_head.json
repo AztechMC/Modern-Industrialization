@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:gears/aluminum"
-    },
-    "R": {
-      "tag": "c:rods/aluminum"
-    },
-    "b": {
-      "item": "modern_industrialization:aluminum_bolt"
-    },
-    "c": {
-      "item": "modern_industrialization:aluminum_curved_plate"
-    },
-    "p": {
-      "tag": "c:plates/aluminum"
-    }
+    "G": "#c:gears/aluminum",
+    "R": "#c:rods/aluminum",
+    "b": "modern_industrialization:aluminum_bolt",
+    "c": "modern_industrialization:aluminum_curved_plate",
+    "p": "#c:plates/aluminum"
   },
   "pattern": [
     "bcp",

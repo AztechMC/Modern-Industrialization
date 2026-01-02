@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:gears/tin"
+      "ingredient": "#c:gears/tin"
     }
   ],
   "item_outputs": [

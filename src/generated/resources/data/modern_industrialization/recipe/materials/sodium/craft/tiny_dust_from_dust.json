@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:sodium_dust"
-    }
+    "modern_industrialization:sodium_dust"
   ],
   "result": {
     "count": 9,

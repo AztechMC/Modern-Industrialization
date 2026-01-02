@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:aluminum_cable"
-    },
-    "V": {
-      "item": "modern_industrialization:turbo_machine_hull"
-    }
+    "U": "modern_industrialization:aluminum_cable",
+    "V": "modern_industrialization:turbo_machine_hull"
   },
   "pattern": [
     "U",

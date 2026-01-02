@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/iridium"
-    },
-    "y": {
-      "item": "modern_industrialization:iridium_ingot"
-    }
+    "x": "#c:ingots/iridium",
+    "y": "modern_industrialization:iridium_ingot"
   },
   "pattern": [
     "xxx",

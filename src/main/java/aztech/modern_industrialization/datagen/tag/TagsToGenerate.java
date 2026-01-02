@@ -37,7 +37,7 @@ public class TagsToGenerate {
     private static final Map<TagKey<Item>, List<ItemLike>> tagToItemMap = new HashMap<>();
     static final Set<TagKey<Item>> optionalTags = new HashSet<>();
     public static final Map<String, String> tagTranslations = new HashMap<>();
-    static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
+    static final Map<TagKey<Item>, Set<TagKey<Item>>> tagToBeAddedToAnotherTag = new HashMap<>();
 
     static Map<TagKey<Item>, List<Item>> getTags() {
         var ret = HashMap.<TagKey<Item>, List<Item>>newHashMap(tagToItemMap.size());
@@ -63,16 +63,13 @@ public class TagsToGenerate {
         return ret;
     }
 
-    private static void addTranslation(String tag, String tagEnglishName) {
-        var tagId = Identifier.parse(tag);
+    private static void addTranslation(TagKey<Item> tag, String tagEnglishName) {
+        var tagId = tag.location();
         tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 
-    public static void generateTag(String tag, ItemLike item, String tagEnglishName) {
-        if (tag.startsWith("#")) {
-            throw new IllegalArgumentException("Tag must not start with #: " + tag);
-        }
-        generateTagNoTranslation(ItemTags.create(Identifier.parse(tag)), item);
+    public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName) {
+        generateTagNoTranslation(tag, item);
         addTranslation(tag, tagEnglishName);
     }
 
@@ -80,20 +77,9 @@ public class TagsToGenerate {
         tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
     }
 
-    public static void addTagToTag(String tagTobeAdded, String tagTarget, String targetEnglishName) {
-        if (tagTobeAdded.startsWith("#")) {
-            throw new IllegalArgumentException("Tag must not start with #: " + tagTobeAdded);
-        }
-        if (tagTarget.startsWith("#")) {
-            throw new IllegalArgumentException("Tag must not start with #: " + tagTarget);
-        }
-
-        tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new TreeSet<>()).add(tagTobeAdded);
+    public static void addTagToTag(TagKey<Item> tagTobeAdded, TagKey<Item> tagTarget, String targetEnglishName) {
+        tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new HashSet<>()).add(tagTobeAdded);
         addTranslation(tagTarget, targetEnglishName);
-    }
-
-    public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName) {
-        generateTag(tag.location().toString(), item, tagEnglishName);
     }
 
     public static void markTagOptional(TagKey<Item> tag) {

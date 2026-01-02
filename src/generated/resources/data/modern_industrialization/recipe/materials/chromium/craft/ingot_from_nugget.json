@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/chromium"
-    },
-    "y": {
-      "item": "modern_industrialization:chromium_nugget"
-    }
+    "x": "#c:nuggets/chromium",
+    "y": "modern_industrialization:chromium_nugget"
   },
   "pattern": [
     "xxx",

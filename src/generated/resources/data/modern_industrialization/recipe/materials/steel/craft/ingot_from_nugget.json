@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/steel"
-    },
-    "y": {
-      "item": "modern_industrialization:steel_nugget"
-    }
+    "x": "#c:nuggets/steel",
+    "y": "modern_industrialization:steel_nugget"
   },
   "pattern": [
     "xxx",

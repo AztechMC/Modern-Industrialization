@@ -1,8 +1,0 @@
-{
-  "casing": "lv",
-  "default_overlays": {
-    "output": "modern_industrialization:block/overlays/output_energy",
-    "side": "modern_industrialization:block/machines/hatch_energy/overlay_side"
-  },
-  "loader": "modern_industrialization:machine"
-}

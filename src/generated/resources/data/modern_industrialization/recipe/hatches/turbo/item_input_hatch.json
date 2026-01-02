@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "minecraft:hopper"
-    },
-    "V": {
-      "item": "modern_industrialization:turbo_machine_hull"
-    }
+    "U": "minecraft:hopper",
+    "V": "modern_industrialization:turbo_machine_hull"
   },
   "pattern": [
     "U",

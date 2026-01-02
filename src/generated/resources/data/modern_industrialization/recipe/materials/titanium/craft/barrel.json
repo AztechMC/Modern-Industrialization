@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:plates/titanium"
-    },
-    "b": {
-      "tag": "c:barrels/wooden"
-    }
+    "#": "#c:plates/titanium",
+    "b": "#c:barrels/wooden"
   },
   "pattern": [
     "###",

@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:gears/titanium"
-    },
-    "R": {
-      "tag": "c:rods/titanium"
-    },
-    "b": {
-      "item": "modern_industrialization:titanium_bolt"
-    },
-    "c": {
-      "item": "modern_industrialization:titanium_curved_plate"
-    },
-    "p": {
-      "tag": "c:plates/titanium"
-    }
+    "G": "#c:gears/titanium",
+    "R": "#c:rods/titanium",
+    "b": "modern_industrialization:titanium_bolt",
+    "c": "modern_industrialization:titanium_curved_plate",
+    "p": "#c:plates/titanium"
   },
   "pattern": [
     "bcp",

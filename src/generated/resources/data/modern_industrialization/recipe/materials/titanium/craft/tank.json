@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:plates/titanium"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    }
+    "#": "#c:plates/titanium",
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "###",

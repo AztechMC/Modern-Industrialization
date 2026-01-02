@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "tag": "c:plates/gold"
-    },
-    "R": {
-      "item": "modern_industrialization:gold_ring"
-    },
-    "b": {
-      "item": "modern_industrialization:gold_bolt"
-    }
+    "P": "#c:plates/gold",
+    "R": "modern_industrialization:gold_ring",
+    "b": "modern_industrialization:gold_bolt"
   },
   "pattern": [
     "PbP",

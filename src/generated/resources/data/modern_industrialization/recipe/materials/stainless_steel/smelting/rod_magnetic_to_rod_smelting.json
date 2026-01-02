@@ -3,9 +3,7 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.0,
-  "ingredient": {
-    "item": "modern_industrialization:stainless_steel_rod_magnetic"
-  },
+  "ingredient": "modern_industrialization:stainless_steel_rod_magnetic",
   "result": {
     "count": 1,
     "id": "modern_industrialization:stainless_steel_rod"

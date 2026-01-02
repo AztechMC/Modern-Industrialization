@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:raw_materials/antimony"
-    },
-    "y": {
-      "item": "modern_industrialization:raw_antimony"
-    }
+    "x": "#c:raw_materials/antimony",
+    "y": "modern_industrialization:raw_antimony"
   },
   "pattern": [
     "xxx",

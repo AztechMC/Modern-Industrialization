@@ -51,16 +51,14 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
 
     public ShapedRecipeJson(String resultItem, int count, String... pattern) {
         this.pattern = pattern;
-        this.result = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(resultItem)), count);
+        this.result = new ItemStack(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(resultItem))), count);
     }
 
-    public ShapedRecipeJson addInput(char key, String maybeTag) {
-        Ingredient input;
-        if (maybeTag.startsWith("#")) {
-            input = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))));
-        } else {
-            input = Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
-        }
+    public ShapedRecipeJson addInput(char key, String id) {
+        return addInput(key, Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))));
+    }
+
+    public ShapedRecipeJson addInput(char key, Ingredient input) {
         if (this.key.put(key, input) != null) {
             throw new IllegalStateException("Key mapping is already registered: " + key);
         }

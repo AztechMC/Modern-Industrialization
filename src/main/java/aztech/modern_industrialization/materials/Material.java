@@ -30,8 +30,12 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -42,10 +46,10 @@ public class Material {
     final Map<PartKey, MaterialItemPart> parts;
     private final Map<MaterialProperty<?>, Object> properties;
 
-    public final Consumer<RecipeOutput> registerRecipes;
+    public final BiConsumer<HolderGetter<Item>, RecipeOutput> registerRecipes;
 
     Material(String name, Map<MaterialProperty<?>, Object> properties, Map<PartKey, MaterialItemPart> parts,
-            Consumer<RecipeOutput> registerRecipes) {
+             BiConsumer<HolderGetter<Item>, RecipeOutput> registerRecipes) {
         this.name = name;
         this.properties = properties;
         this.parts = parts;

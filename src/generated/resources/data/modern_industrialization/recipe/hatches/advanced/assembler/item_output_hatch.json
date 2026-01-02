@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "ingredient": "modern_industrialization:advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "minecraft:hopper"
+      "ingredient": "minecraft:hopper"
     }
   ],
   "item_outputs": [

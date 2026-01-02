@@ -5,7 +5,7 @@
   "fluid_inputs": [
     {
       "amount": 1000,
-      "fluid": "modern_industrialization:shale_oil"
+      "ingredient": "modern_industrialization:shale_oil"
     }
   ],
   "fluid_outputs": [

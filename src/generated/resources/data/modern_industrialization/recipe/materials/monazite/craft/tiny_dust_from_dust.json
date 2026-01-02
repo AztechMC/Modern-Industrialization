@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:monazite_dust"
-    }
+    "modern_industrialization:monazite_dust"
   ],
   "result": {
     "count": 9,

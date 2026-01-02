@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:tiny_dusts/redstone"
-    },
-    "y": {
-      "item": "modern_industrialization:redstone_tiny_dust"
-    }
+    "x": "#c:tiny_dusts/redstone",
+    "y": "modern_industrialization:redstone_tiny_dust"
   },
   "pattern": [
     "xxx",

@@ -3,9 +3,7 @@
   "category": "misc",
   "cookingtime": 100,
   "experience": 0.7,
-  "ingredient": {
-    "item": "modern_industrialization:antimony_ore"
-  },
+  "ingredient": "modern_industrialization:antimony_ore",
   "result": {
     "count": 1,
     "id": "modern_industrialization:antimony_ingot"

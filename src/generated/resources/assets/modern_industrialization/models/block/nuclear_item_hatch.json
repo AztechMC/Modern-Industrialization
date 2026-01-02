@@ -1,8 +1,0 @@
-{
-  "casing": "nuclear_casing",
-  "default_overlays": {
-    "item_auto": "modern_industrialization:block/overlays/item_auto",
-    "top": "modern_industrialization:block/overlays/output_item"
-  },
-  "loader": "modern_industrialization:machine"
-}

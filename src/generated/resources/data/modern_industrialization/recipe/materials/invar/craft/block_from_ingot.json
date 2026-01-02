@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/invar"
-    },
-    "y": {
-      "item": "modern_industrialization:invar_ingot"
-    }
+    "x": "#c:ingots/invar",
+    "y": "modern_industrialization:invar_ingot"
   },
   "pattern": [
     "xxx",

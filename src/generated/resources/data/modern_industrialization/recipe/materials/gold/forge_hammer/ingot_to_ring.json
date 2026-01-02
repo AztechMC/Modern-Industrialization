@@ -1,8 +1,6 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "ingredient": {
-    "tag": "c:ingots/gold"
-  },
+  "ingredient": "#c:ingots/gold",
   "result": {
     "count": 1,
     "id": "modern_industrialization:gold_ring"

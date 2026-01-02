@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:raw_materials/tungsten"
-    },
-    "y": {
-      "item": "modern_industrialization:raw_tungsten"
-    }
+    "x": "#c:raw_materials/tungsten",
+    "y": "modern_industrialization:raw_tungsten"
   },
   "pattern": [
     "xxx",

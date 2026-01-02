@@ -36,7 +36,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 
-public class AlloyRecipeProvider extends RecipeProvider {
+public class AlloyRecipeProvider extends MIRecipeProvider {
     protected AlloyRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -63,12 +63,11 @@ public class AlloyRecipeProvider extends RecipeProvider {
                 .addIngredient("neodymium", 2).Build(output);
     }
 
-    public static class AlloyBuilder {
+    public class AlloyBuilder {
         public final String output;
         private int totalAmount;
         private final List<String> ingredients = new ArrayList<>();
         private final List<Integer> ingredientAmounts = new ArrayList<>();
-        private static final Gson GSON = new Gson();
 
         public AlloyBuilder(String output) {
             this.output = output;
@@ -91,7 +90,7 @@ public class AlloyRecipeProvider extends RecipeProvider {
             return this;
         }
 
-        public void Build(RecipeOutput output) {
+        public void Build(RecipeOutput recipeOutput) {
             MachineRecipeBuilder dusts = new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100);
             dusts.addItemOutput("modern_industrialization:" + output + "_dust", totalAmount);
 
@@ -100,12 +99,12 @@ public class AlloyRecipeProvider extends RecipeProvider {
 
             for (int i = 0; i < ingredients.size(); i++) {
                 int n = ingredientAmounts.get(i);
-                dusts.addItemInput("#c:dusts/" + ingredients.get(i), n);
-                tinyDusts.addItemInput("#c:tiny_dusts/" + ingredients.get(i), n);
+                dusts.addItemInput(conventionTag("dusts/" + ingredients.get(i)), n);
+                tinyDusts.addItemInput(conventionTag("tiny_dusts/" + ingredients.get(i)), n);
             }
 
-            dusts.offerTo(output, "alloy/mixer/" + output + "/dust");
-            tinyDusts.offerTo(output, "alloy/mixer/" + output + "/tiny_dust");
+            dusts.offerTo(recipeOutput, "alloy/mixer/" + output + "/dust");
+            tinyDusts.offerTo(recipeOutput, "alloy/mixer/" + output + "/tiny_dust");
         }
     }
 

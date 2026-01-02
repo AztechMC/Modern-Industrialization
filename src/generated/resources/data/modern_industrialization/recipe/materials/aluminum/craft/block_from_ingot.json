@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/aluminum"
-    },
-    "y": {
-      "item": "modern_industrialization:aluminum_ingot"
-    }
+    "x": "#c:ingots/aluminum",
+    "y": "modern_industrialization:aluminum_ingot"
   },
   "pattern": [
     "xxx",

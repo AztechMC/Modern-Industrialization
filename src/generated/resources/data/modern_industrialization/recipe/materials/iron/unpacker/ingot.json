@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/iron"
+      "ingredient": "#c:storage_blocks/iron"
     }
   ],
   "item_outputs": [

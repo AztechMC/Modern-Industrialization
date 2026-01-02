@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/lead"
+      "ingredient": "#c:dusts/lead"
     },
     {
       "amount": 1,
-      "tag": "c:dusts/antimony"
+      "ingredient": "#c:dusts/antimony"
     }
   ],
   "item_outputs": [

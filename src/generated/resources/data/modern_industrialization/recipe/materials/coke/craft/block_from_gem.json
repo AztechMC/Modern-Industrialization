@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "item": "modern_industrialization:coke"
-    },
-    "y": {
-      "item": "modern_industrialization:coke"
-    }
+    "x": "modern_industrialization:coke",
+    "y": "modern_industrialization:coke"
   },
   "pattern": [
     "xxx",

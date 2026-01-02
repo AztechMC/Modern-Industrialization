@@ -1,9 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "damage": 60,
-  "ingredient": {
-    "tag": "c:ingots/bronze"
-  },
+  "ingredient": "#c:ingots/bronze",
   "result": {
     "count": 2,
     "id": "modern_industrialization:bronze_ring"

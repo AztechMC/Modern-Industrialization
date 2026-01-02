@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:gears/stainless_steel"
-    },
-    "R": {
-      "tag": "c:rods/stainless_steel"
-    },
-    "b": {
-      "item": "modern_industrialization:stainless_steel_bolt"
-    },
-    "c": {
-      "item": "modern_industrialization:stainless_steel_curved_plate"
-    },
-    "p": {
-      "tag": "c:plates/stainless_steel"
-    }
+    "G": "#c:gears/stainless_steel",
+    "R": "#c:rods/stainless_steel",
+    "b": "modern_industrialization:stainless_steel_bolt",
+    "c": "modern_industrialization:stainless_steel_curved_plate",
+    "p": "#c:plates/stainless_steel"
   },
   "pattern": [
     "bcp",

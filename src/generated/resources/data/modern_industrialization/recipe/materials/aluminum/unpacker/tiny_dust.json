@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/aluminum"
+      "ingredient": "#c:dusts/aluminum"
     }
   ],
   "item_outputs": [

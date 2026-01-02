@@ -1,9 +1,7 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
-  "ingredient": {
-    "tag": "c:plates/tin"
-  },
+  "ingredient": "#c:plates/tin",
   "result": {
     "count": 1,
     "id": "modern_industrialization:tin_curved_plate"

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:dusts/monazite"
-    },
-    "y": {
-      "item": "modern_industrialization:monazite_dust"
-    }
+    "x": "#c:dusts/monazite",
+    "y": "modern_industrialization:monazite_dust"
   },
   "pattern": [
     "xxx",

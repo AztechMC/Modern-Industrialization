@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "modern_industrialization:fluid_pipes"
+      "ingredient": "#modern_industrialization:fluid_pipes"
     },
     {
       "amount": 1,
-      "tag": "c:dyes/orange"
+      "ingredient": "#c:dyes/orange"
     }
   ],
   "item_outputs": [

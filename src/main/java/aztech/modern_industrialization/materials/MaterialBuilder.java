@@ -29,7 +29,10 @@ import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import java.util.*;
 import java.util.function.Consumer;
+
+import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import org.jspecify.annotations.Nullable;
 
 public final class MaterialBuilder {
@@ -131,9 +134,9 @@ public final class MaterialBuilder {
         return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
-    public void buildRecipes(RecipeOutput output) {
+    public void buildRecipes(HolderGetter<Item> items, RecipeOutput output) {
         Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
-        RecipeContext recipeContext = new RecipeContext(recipesMap);
+        RecipeContext recipeContext = new RecipeContext(items, recipesMap);
         for (RecipeAction action : recipesActions) {
             action.apply(recipeContext);
         }
@@ -164,10 +167,16 @@ public final class MaterialBuilder {
     }
 
     public class RecipeContext {
+        private final HolderGetter<Item> items;
         private final Map<String, MaterialRecipeBuilder> recipesMap;
 
-        public RecipeContext(Map<String, MaterialRecipeBuilder> recipesMap) {
+        public RecipeContext(HolderGetter<Item> items, Map<String, MaterialRecipeBuilder> recipesMap) {
+            this.items = items;
             this.recipesMap = recipesMap;
+        }
+
+        public HolderGetter<Item> items() {
+            return items;
         }
 
         public void addRecipe(MaterialRecipeBuilder builder) {

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/platinum"
-    },
-    "y": {
-      "item": "modern_industrialization:platinum_nugget"
-    }
+    "x": "#c:nuggets/platinum",
+    "y": "modern_industrialization:platinum_nugget"
   },
   "pattern": [
     "xxx",

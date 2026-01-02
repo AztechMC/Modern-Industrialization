@@ -5,13 +5,13 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:crimson_stem"
+      "ingredient": "minecraft:crimson_stem"
     }
   ],
   "item_outputs": [

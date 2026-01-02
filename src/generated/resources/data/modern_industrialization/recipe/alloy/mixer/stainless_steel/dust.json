@@ -5,19 +5,19 @@
   "item_inputs": [
     {
       "amount": 6,
-      "tag": "c:dusts/iron"
+      "ingredient": "#c:dusts/iron"
     },
     {
       "amount": 1,
-      "tag": "c:dusts/chromium"
+      "ingredient": "#c:dusts/chromium"
     },
     {
       "amount": 1,
-      "tag": "c:dusts/nickel"
+      "ingredient": "#c:dusts/nickel"
     },
     {
       "amount": 1,
-      "tag": "c:dusts/manganese"
+      "ingredient": "#c:dusts/manganese"
     }
   ],
   "item_outputs": [

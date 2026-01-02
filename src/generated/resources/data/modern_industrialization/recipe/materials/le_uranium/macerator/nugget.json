@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:nuggets/le_uranium"
+      "ingredient": "#c:nuggets/le_uranium"
     }
   ],
   "item_outputs": [

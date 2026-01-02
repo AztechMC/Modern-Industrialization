@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:bronze_macerator"
-    },
-    {
-      "item": "modern_industrialization:steel_upgrade"
-    }
+    "modern_industrialization:bronze_macerator",
+    "modern_industrialization:steel_upgrade"
   ],
   "result": {
     "count": 1,

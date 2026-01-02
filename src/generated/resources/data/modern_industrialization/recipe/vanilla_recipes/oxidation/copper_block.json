@@ -5,13 +5,13 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:oxygen"
+      "ingredient": "modern_industrialization:oxygen"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:copper_block"
+      "ingredient": "minecraft:copper_block"
     }
   ],
   "item_outputs": [

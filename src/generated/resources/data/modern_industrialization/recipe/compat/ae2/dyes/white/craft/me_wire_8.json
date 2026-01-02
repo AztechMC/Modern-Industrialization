@@ -7,12 +7,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "tag": "c:dyes/white"
-    },
-    "p": {
-      "tag": "modern_industrialization:me_wires"
-    }
+    "d": "#c:dyes/white",
+    "p": "#modern_industrialization:me_wires"
   },
   "pattern": [
     "ppp",

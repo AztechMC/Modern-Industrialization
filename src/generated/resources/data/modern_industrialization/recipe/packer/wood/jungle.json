@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:jungle_log"
+      "ingredient": "minecraft:jungle_log"
     }
   ],
   "item_outputs": [

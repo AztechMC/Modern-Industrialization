@@ -27,28 +27,29 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import org.jspecify.annotations.Nullable;
 
 public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permits MaterialItemPartImpl {
     /**
      * External parts are already registered and already have a texture,
      * but they're in the material system for recipe generation.
      */
-    static MaterialItemPart external(PartKey key, String taggedItemId, String itemId) {
-        return new MaterialItemPartImpl(key, taggedItemId, itemId, ctx -> {}, new TextureGenParams.NoTexture(), false);
+    static MaterialItemPart external(PartKey key, String itemId, @Nullable TagKey<Item> tag) {
+        return new MaterialItemPartImpl(key, itemId, tag, ctx -> {}, new TextureGenParams.NoTexture(), false);
     }
 
-    static MaterialItemPart external(PartKeyProvider part, String taggedItemId, String itemId) {
-        return external(part.key(), taggedItemId, itemId);
+    static MaterialItemPart external(PartKeyProvider part, String itemId, @Nullable TagKey<Item> tag) {
+        return external(part.key(), itemId, tag);
     }
 
     /**
@@ -56,7 +57,7 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
      * but they're in the material system for recipe generation.
      */
     static MaterialItemPart external(PartKeyProvider part, String itemId) {
-        return external(part, itemId, itemId);
+        return external(part, itemId, null);
     }
 
     /**
@@ -65,29 +66,15 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
     static MaterialItemPart simpleItem(PartKeyProvider part, String englishName, String itemPath) {
         String itemId = "modern_industrialization:" + itemPath;
 
-        return new MaterialItemPartImpl(part.key(), itemId, itemId, ctx -> {
+        return new MaterialItemPartImpl(part.key(), itemId, null, ctx -> {
             MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(ctx.getMaterialName()));
         }, new TextureGenParams.NoTexture(), true);
     }
 
     /**
-     * @return The common tag of this material prefixed by # if available, or the id
-     *         otherwise.
-     */
-    String getTaggedItemId();
-
-    default Ingredient getTaggedIngredient() {
-        var taggedItem = getTaggedItemId();
-        if (taggedItem.startsWith("#")) {
-            return Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(taggedItem.substring(1)))));
-        } else {
-            return Ingredient.of(asItem());
-        }
-    }
-
-    /**
      * @return The full id of this part. Includes the namespace and the path, separated by :.
      */
+    // TODO: replace by ResourceLocation
     String getItemId();
 
     @Override
@@ -98,6 +85,12 @@ public sealed interface MaterialItemPart extends PartKeyProvider, ItemLike permi
     default Block asBlock() {
         return BuiltInRegistries.BLOCK.getValueOrThrow(ResourceKey.create(Registries.BLOCK, Identifier.parse(getItemId())));
     }
+
+    /**
+     * Returns an ingredient for this item that will either be a tag ingredient (if the part is tagged),
+     * or a single item ingredient otherwise.
+     */
+    Ingredient asIngredient(HolderGetter<Item> items);
 
     /**
      * Perform any required registration.

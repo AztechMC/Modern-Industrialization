@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 6,
-      "tag": "c:dusts/uranium_238"
+      "ingredient": "#c:dusts/uranium_238"
     },
     {
       "amount": 3,
-      "tag": "c:dusts/plutonium"
+      "ingredient": "#c:dusts/plutonium"
     }
   ],
   "item_outputs": [

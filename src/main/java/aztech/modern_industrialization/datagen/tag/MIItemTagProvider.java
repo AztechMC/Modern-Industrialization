@@ -72,9 +72,8 @@ public class MIItemTagProvider extends ItemTagsProvider {
         }
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
-            var tagId = Identifier.parse(entry.getKey());
             for (var tag : entry.getValue()) {
-                tag(key(tagId)).addTag(key(tag));
+                tag(entry.getKey()).addTag(tag);
             }
         }
 

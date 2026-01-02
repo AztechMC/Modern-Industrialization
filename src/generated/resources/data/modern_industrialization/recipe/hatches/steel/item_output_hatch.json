@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:steel_machine_casing"
-    },
-    "V": {
-      "item": "minecraft:hopper"
-    }
+    "U": "modern_industrialization:steel_machine_casing",
+    "V": "minecraft:hopper"
   },
   "pattern": [
     "U",

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/tungsten"
+      "ingredient": "#c:nuggets/tungsten"
     }
   ],
   "item_outputs": [

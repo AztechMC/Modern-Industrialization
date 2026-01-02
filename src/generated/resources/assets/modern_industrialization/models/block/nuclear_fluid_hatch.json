@@ -1,8 +1,0 @@
-{
-  "casing": "nuclear_casing",
-  "default_overlays": {
-    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
-    "top": "modern_industrialization:block/overlays/output_fluid"
-  },
-  "loader": "modern_industrialization:machine"
-}

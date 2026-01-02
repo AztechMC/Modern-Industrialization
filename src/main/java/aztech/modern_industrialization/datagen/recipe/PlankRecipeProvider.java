@@ -34,7 +34,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class PlankRecipeProvider extends RecipeProvider {
+public final class PlankRecipeProvider extends MIRecipeProvider {
     PlankRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -59,36 +59,41 @@ public final class PlankRecipeProvider extends RecipeProvider {
 
         String packedSuffix = log ? "wood" : "hyphae";
 
-        var planks = new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("#minecraft:" + prefix + "_" + suffixTag, 1).addItemOutput("minecraft:" + prefix + "_planks", 6);
+        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput(tag("minecraft:" + prefix + "_" + suffixTag), 1)
+                .addItemOutput("minecraft:" + prefix + "_planks", 6)
+                .offerTo(output, "cutting_machine/planks/" + prefix);
 
-        planks.offerTo(output, "cutting_machine/planks/" + prefix);
+        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("minecraft:" + prefix + "_" + suffix, 1)
+                .addItemOutput("minecraft:stripped_" + prefix + "_" + suffix, 1)
+                .offerTo(output, "cutting_machine/stripped/" + prefix);
 
-        var stripped = new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_" + suffix, 1).addItemOutput("minecraft:stripped_" + prefix + "_" + suffix, 1);
+        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("minecraft:" + prefix + "_" + packedSuffix, 1)
+                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 1)
+                .offerTo(output, "cutting_machine/stripped_wood/" + prefix);
 
-        stripped.offerTo(output, "cutting_machine/stripped/" + prefix);
-
-        var strippedWood = new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_" + packedSuffix, 1).addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 1);
-
-        strippedWood.offerTo(output, "cutting_machine/stripped_wood/" + prefix);
-
-        var slab = new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_planks", 1).addItemOutput("minecraft:" + prefix + "_slab", 2);
-
-        slab.offerTo(output, "cutting_machine/slabs/" + prefix);
+        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .addFluidInput(MIFluids.LUBRICANT, 1)
+                .addItemInput("minecraft:" + prefix + "_planks", 1)
+                .addItemOutput("minecraft:" + prefix + "_slab", 2)
+                .offerTo(output, "cutting_machine/slabs/" + prefix);
 
         // packer
 
-        var packedWood = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput("minecraft:" + prefix + "_" + suffix, 4)
-                .addItemOutput("minecraft:" + prefix + "_" + packedSuffix, 3);
-        packedWood.offerTo(output, "packer/wood/" + prefix);
+        new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100)
+                .addItemInput("minecraft:" + prefix + "_" + suffix, 4)
+                .addItemOutput("minecraft:" + prefix + "_" + packedSuffix, 3)
+                .offerTo(output, "packer/wood/" + prefix);
 
-        var packedStrippedWood = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100)
+        new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100)
                 .addItemInput("minecraft:stripped_" + prefix + "_" + suffix, 4)
-                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 3);
-        packedStrippedWood.offerTo(output, "packer/stripped_wood/" + prefix);
+                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 3)
+                .offerTo(output, "packer/stripped_wood/" + prefix);
     }
 
     public static class Runner extends RecipeProvider.Runner {

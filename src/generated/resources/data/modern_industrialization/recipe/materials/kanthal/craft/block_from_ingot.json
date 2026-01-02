@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/kanthal"
-    },
-    "y": {
-      "item": "modern_industrialization:kanthal_ingot"
-    }
+    "x": "#c:ingots/kanthal",
+    "y": "modern_industrialization:kanthal_ingot"
   },
   "pattern": [
     "xxx",

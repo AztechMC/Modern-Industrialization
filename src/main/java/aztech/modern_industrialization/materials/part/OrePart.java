@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.materials.property.MaterialPropert
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
@@ -159,10 +160,10 @@ public class OrePart implements PartKeyProvider {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
-                    String tag = "c:ores/" + partContext.getMaterialName();
+                    var tag = MITags.convention("ores/" + partContext.getMaterialName());
 
                     TagsToGenerate.generateTag(tag, oreBlockBlockDefinition, partContext.getMaterialEnglishName() + " Ores");
-                    TagsToGenerate.addTagToTag(tag, Tags.Items.ORES.location().toString(), "Ores");
+                    TagsToGenerate.addTagToTag(tag, Tags.Items.ORES, "Ores");
                     if (stoneType.equals(TYPE_DEEPSLATE)) {
                         TagsToGenerate.generateTagNoTranslation(Tags.Items.ORES_IN_GROUND_DEEPSLATE, oreBlockBlockDefinition);
                     } else if (stoneType.equals(TYPE_STONE)) {
@@ -214,7 +215,7 @@ public class OrePart implements PartKeyProvider {
 
                 })
                 .withTexture(new TextureGenParams.Ore(stoneType, oreParams.set))
-                .withCustomPath((stoneType.equals(TYPE_STONE) ? "" : "%s_".formatted(stoneType.getPath())) + "%s_ore", "ores/%s");
+                .withCustomPath((stoneType.equals(TYPE_STONE) ? "" : "%s_".formatted(stoneType.getPath())) + "%s_ore", materialName -> MITags.convention("ores/" + materialName));
     }
 
     public static List<PartTemplate> ofAll(OrePartParams params) {

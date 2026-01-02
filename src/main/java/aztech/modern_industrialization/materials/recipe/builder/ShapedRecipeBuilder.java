@@ -85,7 +85,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
 
     public ShapedRecipeBuilder addTaggedPart(char key, PartKeyProvider part) {
         if (context.getPart(part) != null) {
-            addInput(key, context.getPart(part).getTaggedItemId());
+            addInput(key, context.getPart(part).asIngredient(context.items()));
         } else {
             canceled = true;
         }
@@ -93,24 +93,25 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder addInput(char key, TagKey<Item> tag) {
-        return addInput(key, "#" + tag.location().toString());
+        return addInput(key, Ingredient.of(context.items().getOrThrow(tag)));
     }
 
-    public ShapedRecipeBuilder addInput(char key, String maybeTag) {
-        if (!canceled) {
-            if (inputs.containsKey(key)) {
-                throw new IllegalArgumentException("Key mapping is already registered: " + key);
-            }
-            Ingredient ingredient = maybeTag.startsWith("#")
-                    ? Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ItemTags.create(Identifier.parse(maybeTag.substring(1)))))
-                    : Ingredient.of(BuiltInRegistries.ITEM.getValue(Identifier.parse(maybeTag)));
-            inputs.put(key, ingredient);
-        }
-        return this;
+    public ShapedRecipeBuilder addInput(char key, String id) {
+        return addInput(key, Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))));
     }
 
     public ShapedRecipeBuilder addInput(char key, ItemLike item) {
         return addInput(key, BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
+    }
+
+    public ShapedRecipeBuilder addInput(char key, Ingredient ingredient) {
+        if (!canceled) {
+            if (inputs.containsKey(key)) {
+                throw new IllegalArgumentException("Key mapping is already registered: " + key);
+            }
+            inputs.put(key, ingredient);
+        }
+        return this;
     }
 
     public ShapedRecipeBuilder exportToAssembler(int eu, int duration) {

@@ -5,14 +5,14 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:synthetic_oil"
+      "ingredient": "modern_industrialization:synthetic_oil"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "probability": 0.0,
-      "tag": "c:dyes/black"
+      "ingredient": "#c:dyes/black",
+      "probability": 0.0
     }
   ],
   "item_outputs": [

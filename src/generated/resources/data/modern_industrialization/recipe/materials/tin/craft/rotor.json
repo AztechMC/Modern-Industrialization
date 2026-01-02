@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "modern_industrialization:tin_blade"
-    },
-    "R": {
-      "item": "modern_industrialization:tin_ring"
-    },
-    "b": {
-      "item": "modern_industrialization:tin_bolt"
-    }
+    "B": "modern_industrialization:tin_blade",
+    "R": "modern_industrialization:tin_ring",
+    "b": "modern_industrialization:tin_bolt"
   },
   "pattern": [
     "bBb",

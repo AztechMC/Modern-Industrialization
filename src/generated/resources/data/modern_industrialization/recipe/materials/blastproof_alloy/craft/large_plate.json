@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:plates/blastproof_alloy"
-    }
+    "x": "#c:plates/blastproof_alloy"
   },
   "pattern": [
     "xx",

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/iridium"
+      "ingredient": "#c:nuggets/iridium"
     }
   ],
   "item_outputs": [

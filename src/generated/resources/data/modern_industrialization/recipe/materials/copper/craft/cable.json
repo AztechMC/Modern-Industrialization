@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "r": {
-      "item": "modern_industrialization:rubber_sheet"
-    },
-    "w": {
-      "item": "modern_industrialization:copper_wire"
-    }
+    "r": "modern_industrialization:rubber_sheet",
+    "w": "modern_industrialization:copper_wire"
   },
   "pattern": [
     "rrr",

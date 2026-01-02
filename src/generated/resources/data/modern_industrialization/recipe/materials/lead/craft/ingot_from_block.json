@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:lead_block"
-    }
+    "modern_industrialization:lead_block"
   ],
   "result": {
     "count": 9,

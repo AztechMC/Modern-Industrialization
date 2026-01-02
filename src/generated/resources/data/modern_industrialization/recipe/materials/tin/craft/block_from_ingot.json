@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/tin"
-    },
-    "y": {
-      "item": "modern_industrialization:tin_ingot"
-    }
+    "x": "#c:ingots/tin",
+    "y": "modern_industrialization:tin_ingot"
   },
   "pattern": [
     "xxx",

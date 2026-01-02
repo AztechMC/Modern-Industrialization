@@ -73,11 +73,11 @@ public class MIBlockTagProvider extends BlockTagsProvider {
         }
 
         for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
-            var tagId = Identifier.parse(entry.getKey());
             for (var tag : entry.getValue()) {
-                if (this.builders.containsKey(Identifier.parse(tag))) {
-                    tag(key(tagId)).addTag(key(tag));
-                }
+                // TODO: suspicious check
+//                if (this.builders.containsKey(Identifier.parse(tag))) {
+                    tag(key(entry.getKey().location())).addTag(key(tag.location()));
+//                }
             }
         }
     }

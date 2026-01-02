@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/nuclear_alloy"
+      "ingredient": "#c:plates/nuclear_alloy"
     }
   ],
   "item_outputs": [

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/diamond"
+      "ingredient": "#c:dusts/diamond"
     }
   ],
   "item_outputs": [

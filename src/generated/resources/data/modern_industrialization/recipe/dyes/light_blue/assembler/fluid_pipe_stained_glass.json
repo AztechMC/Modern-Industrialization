@@ -5,15 +5,15 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:light_blue_stained_glass_pane"
+      "ingredient": "minecraft:light_blue_stained_glass_pane"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:copper_rotor"
+      "ingredient": "modern_industrialization:copper_rotor"
     },
     {
       "amount": 6,
-      "item": "modern_industrialization:bronze_curved_plate"
+      "ingredient": "modern_industrialization:bronze_curved_plate"
     }
   ],
   "item_outputs": [

@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:netherite_leggings"
+      "ingredient": "minecraft:netherite_leggings"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_upgrade"
+      "ingredient": "modern_industrialization:quantum_upgrade"
     }
   ],
   "item_outputs": [

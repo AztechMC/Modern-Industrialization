@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/orange"
+      "ingredient": "#c:dyes/orange"
     },
     {
       "amount": 1,
-      "tag": "minecraft:candles"
+      "ingredient": "#minecraft:candles"
     }
   ],
   "item_outputs": [

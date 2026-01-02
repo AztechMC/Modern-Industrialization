@@ -5,13 +5,13 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "minecraft:acacia_logs"
+      "ingredient": "#minecraft:acacia_logs"
     }
   ],
   "item_outputs": [

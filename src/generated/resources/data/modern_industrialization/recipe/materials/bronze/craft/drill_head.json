@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:gears/bronze"
-    },
-    "R": {
-      "tag": "c:rods/bronze"
-    },
-    "b": {
-      "item": "modern_industrialization:bronze_bolt"
-    },
-    "c": {
-      "item": "modern_industrialization:bronze_curved_plate"
-    },
-    "p": {
-      "tag": "c:plates/bronze"
-    }
+    "G": "#c:gears/bronze",
+    "R": "#c:rods/bronze",
+    "b": "modern_industrialization:bronze_bolt",
+    "c": "modern_industrialization:bronze_curved_plate",
+    "p": "#c:plates/bronze"
   },
   "pattern": [
     "bcp",

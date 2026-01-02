@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:aluminum_tank"
-    },
-    "V": {
-      "item": "modern_industrialization:advanced_machine_hull"
-    }
+    "U": "modern_industrialization:aluminum_tank",
+    "V": "modern_industrialization:advanced_machine_hull"
   },
   "pattern": [
     "U",

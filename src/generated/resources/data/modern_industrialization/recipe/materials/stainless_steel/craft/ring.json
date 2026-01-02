@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/stainless_steel"
-    },
-    "b": {
-      "item": "modern_industrialization:stainless_steel_bolt"
-    }
+    "R": "#c:rods/stainless_steel",
+    "b": "modern_industrialization:stainless_steel_bolt"
   },
   "pattern": [
     "bRb",

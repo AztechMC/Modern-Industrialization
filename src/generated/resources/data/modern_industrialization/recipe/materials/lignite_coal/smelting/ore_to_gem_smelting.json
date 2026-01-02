@@ -3,9 +3,7 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.7,
-  "ingredient": {
-    "item": "modern_industrialization:lignite_coal_ore"
-  },
+  "ingredient": "modern_industrialization:lignite_coal_ore",
   "result": {
     "count": 1,
     "id": "modern_industrialization:lignite_coal"

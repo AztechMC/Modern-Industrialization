@@ -11,11 +11,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:silicon_ingot"
+      "ingredient": "modern_industrialization:silicon_ingot"
     },
     {
       "amount": 1,
-      "item": "ae2:silicon_press",
+      "ingredient": "ae2:silicon_press",
       "probability": 0.0
     }
   ],

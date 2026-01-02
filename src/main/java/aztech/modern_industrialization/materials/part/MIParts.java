@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import java.util.HashSet;
@@ -58,10 +59,10 @@ public class MIParts {
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
     public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
         var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-        TagsToGenerate.generateTag("c:gems/" + itemPath, item, englishName + "s");
+        TagsToGenerate.generateTag(MITags.convention("gems/" + itemPath), item, englishName + "s");
     })
             .withTexture(new TextureGenParams.Gem())
-            .withCustomPath("%s", "%s");
+            .withCustomPath("%s", MITags::convention);
 
     public static final PartTemplate HAMMER = new PartTemplate("Hammer", "hammer");
 
@@ -107,20 +108,16 @@ public class MIParts {
     public static final Map<PartKey, CategoryTag> CATEGORY_TAGS = Map.of(
             BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"),
             DUST.key(), new CategoryTag(Tags.Items.DUSTS, "Dusts"),
-            GEAR.key(), new CategoryTag("c:gears", "Gears"),
+            GEAR.key(), new CategoryTag(MITags.convention("gears"), "Gears"),
             INGOT.key(), new CategoryTag(Tags.Items.INGOTS, "Ingots"),
             NUGGET.key(), new CategoryTag(Tags.Items.NUGGETS, "Nuggets"),
-            PLATE.key(), new CategoryTag("c:plates", "Plates"),
+            PLATE.key(), new CategoryTag(MITags.convention("plates"), "Plates"),
             ROD.key(), new CategoryTag(Tags.Items.RODS, "Rods"),
             RAW_METAL.key(), new CategoryTag(Tags.Items.RAW_MATERIALS, "Raw Ores"),
-            TINY_DUST.key(), new CategoryTag("c:tiny_dusts", "Tiny Dusts"),
+            TINY_DUST.key(), new CategoryTag(MITags.convention("tiny_dusts"), "Tiny Dusts"),
             RAW_METAL_BLOCK.key(), new CategoryTag(Tags.Items.STORAGE_BLOCKS, "Storage Blocks"));
 
-    public record CategoryTag(String tag, String englishName) {
-        public CategoryTag(TagKey<Item> tag, String englishName) {
-            this(tag.location().toString(), englishName);
-        }
-    }
+    public record CategoryTag(TagKey<Item> tag, String englishName) { }
 
     public static final List<PartKey> BLOCKS = PartKeyProvider.of(ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL,
             MACHINE_CASING_PIPE, RAW_METAL_BLOCK);

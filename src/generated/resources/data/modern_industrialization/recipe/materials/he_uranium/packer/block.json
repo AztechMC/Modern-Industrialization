@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:ingots/he_uranium"
+      "ingredient": "#c:ingots/he_uranium"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],

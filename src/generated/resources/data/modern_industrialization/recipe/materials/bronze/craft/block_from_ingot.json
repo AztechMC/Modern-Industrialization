@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/bronze"
-    },
-    "y": {
-      "item": "modern_industrialization:bronze_ingot"
-    }
+    "x": "#c:ingots/bronze",
+    "y": "modern_industrialization:bronze_ingot"
   },
   "pattern": [
     "xxx",

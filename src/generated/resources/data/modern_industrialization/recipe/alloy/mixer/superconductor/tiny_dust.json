@@ -5,19 +5,19 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/iridium"
+      "ingredient": "#c:tiny_dusts/iridium"
     },
     {
       "amount": 3,
-      "tag": "c:tiny_dusts/annealed_copper"
+      "ingredient": "#c:tiny_dusts/annealed_copper"
     },
     {
       "amount": 3,
-      "tag": "c:tiny_dusts/yttrium"
+      "ingredient": "#c:tiny_dusts/yttrium"
     },
     {
       "amount": 2,
-      "tag": "c:tiny_dusts/neodymium"
+      "ingredient": "#c:tiny_dusts/neodymium"
     }
   ],
   "item_outputs": [

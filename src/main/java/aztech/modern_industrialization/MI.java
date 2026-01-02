@@ -27,6 +27,7 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
@@ -224,8 +225,7 @@ public class MI {
         });
 
         if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
-            // TODO 26.1
-//            MIAEAddon.init(modBus);
+            MIAEAddon.init(modBus);
         }
 
         modBus.addListener(AddPackFindersEvent.class, event -> {

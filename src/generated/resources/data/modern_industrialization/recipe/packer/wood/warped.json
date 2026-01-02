@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:warped_stem"
+      "ingredient": "minecraft:warped_stem"
     }
   ],
   "item_outputs": [

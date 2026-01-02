@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/aluminum"
-    },
-    "b": {
-      "item": "modern_industrialization:aluminum_bolt"
-    }
+    "R": "#c:rods/aluminum",
+    "b": "modern_industrialization:aluminum_bolt"
   },
   "pattern": [
     "bRb",

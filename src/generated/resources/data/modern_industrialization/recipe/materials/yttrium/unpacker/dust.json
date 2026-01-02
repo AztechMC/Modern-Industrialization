@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/yttrium"
+      "ingredient": "#c:storage_blocks/yttrium"
     }
   ],
   "item_outputs": [

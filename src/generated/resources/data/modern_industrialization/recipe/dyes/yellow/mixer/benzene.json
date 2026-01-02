@@ -5,14 +5,14 @@
   "fluid_inputs": [
     {
       "amount": 25,
-      "fluid": "modern_industrialization:benzene"
+      "ingredient": "modern_industrialization:benzene"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "probability": 0.0,
-      "tag": "c:dyes/yellow"
+      "ingredient": "#c:dyes/yellow",
+      "probability": 0.0
     }
   ],
   "item_outputs": [

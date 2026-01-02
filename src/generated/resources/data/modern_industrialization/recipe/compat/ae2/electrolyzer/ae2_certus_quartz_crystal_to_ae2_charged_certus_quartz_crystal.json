@@ -11,7 +11,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "ae2:certus_quartz_crystal"
+      "ingredient": "ae2:certus_quartz_crystal"
     }
   ],
   "item_outputs": [

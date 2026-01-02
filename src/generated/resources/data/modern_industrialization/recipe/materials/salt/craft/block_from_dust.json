@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:dusts/salt"
-    },
-    "y": {
-      "item": "modern_industrialization:salt_dust"
-    }
+    "x": "#c:dusts/salt",
+    "y": "modern_industrialization:salt_dust"
   },
   "pattern": [
     "xxx",

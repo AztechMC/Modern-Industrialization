@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:gears/gold"
-    },
-    "R": {
-      "tag": "c:rods/gold"
-    },
-    "b": {
-      "item": "modern_industrialization:gold_bolt"
-    },
-    "c": {
-      "item": "modern_industrialization:gold_curved_plate"
-    },
-    "p": {
-      "tag": "c:plates/gold"
-    }
+    "G": "#c:gears/gold",
+    "R": "#c:rods/gold",
+    "b": "modern_industrialization:gold_bolt",
+    "c": "modern_industrialization:gold_curved_plate",
+    "p": "#c:plates/gold"
   },
   "pattern": [
     "bcp",

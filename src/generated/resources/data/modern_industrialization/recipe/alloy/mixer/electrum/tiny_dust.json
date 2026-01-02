@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/gold"
+      "ingredient": "#c:tiny_dusts/gold"
     },
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/silver"
+      "ingredient": "#c:tiny_dusts/silver"
     }
   ],
   "item_outputs": [

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:highly_advanced_fluid_output_hatch"
-    }
+    "U": "modern_industrialization:highly_advanced_fluid_output_hatch"
   },
   "pattern": [
     "U"

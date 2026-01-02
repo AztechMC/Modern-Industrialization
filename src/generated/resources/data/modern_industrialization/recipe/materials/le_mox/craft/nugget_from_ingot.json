@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:le_mox_ingot"
-    }
+    "modern_industrialization:le_mox_ingot"
   ],
   "result": {
     "count": 9,

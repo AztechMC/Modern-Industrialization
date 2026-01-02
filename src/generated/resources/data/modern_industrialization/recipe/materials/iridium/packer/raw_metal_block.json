@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_materials/iridium"
+      "ingredient": "#c:raw_materials/iridium"
     }
   ],
   "item_outputs": [

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:plates/carbon"
-    }
+    "x": "#c:plates/carbon"
   },
   "pattern": [
     "xx",

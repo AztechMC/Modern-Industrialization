@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/pink"
+      "ingredient": "#c:dyes/pink"
     },
     {
       "amount": 1,
-      "tag": "minecraft:beds"
+      "ingredient": "#minecraft:beds"
     }
   ],
   "item_outputs": [

@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/white"
+      "ingredient": "#c:dyes/white"
     },
     {
       "amount": 1,
-      "tag": "c:shulker_boxes"
+      "ingredient": "#c:shulker_boxes"
     }
   ],
   "item_outputs": [

@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:rods/steel"
+      "ingredient": "#c:rods/steel"
     }
   ],
   "item_outputs": [

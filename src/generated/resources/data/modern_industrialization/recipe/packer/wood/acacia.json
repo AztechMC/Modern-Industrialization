@@ -5,7 +5,7 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:acacia_log"
+      "ingredient": "minecraft:acacia_log"
     }
   ],
   "item_outputs": [

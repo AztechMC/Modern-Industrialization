@@ -31,8 +31,14 @@ import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
+import com.mojang.datafixers.types.Func;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Function;
 
 public class PartTemplate implements PartKeyProvider {
     private final PartEnglishNameFormatter englishNameFormatter;
@@ -80,14 +86,13 @@ public class PartTemplate implements PartKeyProvider {
         return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part));
     }
 
-    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, String itemTag, ItemLike item) {
+    private static void setupTag(MaterialBuilder.PartContext context, PartKey part, TagKey<Item> generatedTag, ItemLike item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
         for (PartKey partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                var generatedTag = itemTag.replaceFirst("#", "");
-                TagsToGenerate.generateTag(generatedTag, item, getTagEnglishName(context, itemTag));
+                TagsToGenerate.generateTag(generatedTag, item, getTagEnglishName(context, generatedTag.location().getPath()));
 
                 var categoryTag = MIParts.CATEGORY_TAGS.get(partTagged.key());
                 if (categoryTag != null) {
@@ -97,10 +102,10 @@ public class PartTemplate implements PartKeyProvider {
         }
     }
 
-    private static String getTagEnglishName(MaterialBuilder.PartContext context, String tag) {
-        var parts = tag.split(":")[1].split("/");
+    private static String getTagEnglishName(MaterialBuilder.PartContext context, String tagPath) {
+        var parts = tagPath.split("/");
         if (parts.length != 2) {
-            throw new IllegalArgumentException("Tag " + tag + " has more than 2 slash-separated parts");
+            throw new IllegalArgumentException("Tag " + tagPath + " has more than 2 slash-separated parts");
         }
 
         var sb = new StringBuilder();
@@ -117,7 +122,7 @@ public class PartTemplate implements PartKeyProvider {
         }
 
         if (!material.equals(context.getMaterialName())) {
-            throw new IllegalArgumentException("Tag " + tag + " does not contain the material name after slash: " + context.getMaterialName());
+            throw new IllegalArgumentException("Tag " + tagPath + " does not contain the material name after slash: " + context.getMaterialName());
         }
 
         part = part.replace('_', ' ');
@@ -223,12 +228,12 @@ public class PartTemplate implements PartKeyProvider {
         return withOverlay(normal.key(), overlay);
     }
 
-    public PartTemplate withCustomPath(String itemPath, String itemTag) {
-        return new PartTemplate(englishNameFormatter, partKey, register, textureGenParams, new PartItemPathFormatter.Overridden(itemPath, itemTag));
+    public PartTemplate withCustomPath(String itemPath, Function<String, @Nullable TagKey<Item>> materialNameToTag) {
+        return new PartTemplate(englishNameFormatter, partKey, register, textureGenParams, new PartItemPathFormatter.Overridden(itemPath, materialNameToTag));
     }
 
     public PartTemplate withCustomPath(String itemPath) {
-        return withCustomPath(itemPath, itemPath);
+        return withCustomPath(itemPath, _ -> null);
     }
 
     public TextureGenParams getTextureGenParams() {
@@ -238,10 +243,10 @@ public class PartTemplate implements PartKeyProvider {
     public MaterialItemPart create(String material, String materialEnglishName) {
         String itemPath = this.itemPathFormatter.getPartItemPath(material, partKey);
         String itemId = this.itemPathFormatter.getPartItemId(material, partKey);
-        String itemTag = this.itemPathFormatter.getPartItemTag(material, partKey);
+        var itemTag = this.itemPathFormatter.getPartItemTag(material, partKey);
         String itemEnglishName = englishNameFormatter.format(materialEnglishName);
 
-        return new MaterialItemPartImpl(partKey, itemTag, itemId, ctx -> {
+        return new MaterialItemPartImpl(partKey, itemId, itemTag, ctx -> {
             register.register(ctx, partKey, itemPath, itemId, itemTag, itemEnglishName);
         }, this.textureGenParams, true);
     }
@@ -253,6 +258,6 @@ public class PartTemplate implements PartKeyProvider {
 
     @FunctionalInterface
     public interface Register {
-        void register(MaterialBuilder.PartContext partContext, PartKey part, String itemPath, String itemId, String itemTag, String itemEnglishName);
+        void register(MaterialBuilder.PartContext partContext, PartKey part, String itemPath, String itemId, @Nullable TagKey<Item> itemTag, String itemEnglishName);
     }
 }

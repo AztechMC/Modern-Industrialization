@@ -5,17 +5,17 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:soldering_alloy"
+      "ingredient": "modern_industrialization:soldering_alloy"
     }
   ],
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/invar"
+      "ingredient": "#c:plates/invar"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:invar_ring"
+      "ingredient": "modern_industrialization:invar_ring"
     }
   ],
   "item_outputs": [

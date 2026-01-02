@@ -5,25 +5,25 @@
   "fluid_inputs": [
     {
       "amount": 75,
-      "fluid": "modern_industrialization:soldering_alloy"
+      "ingredient": "modern_industrialization:soldering_alloy"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/gold"
+      "ingredient": "#c:plates/gold"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:gold_curved_plate"
+      "ingredient": "modern_industrialization:gold_curved_plate"
     },
     {
       "amount": 1,
-      "tag": "c:rods/gold"
+      "ingredient": "#c:rods/gold"
     },
     {
       "amount": 2,
-      "tag": "c:gears/gold"
+      "ingredient": "#c:gears/gold"
     }
   ],
   "item_outputs": [

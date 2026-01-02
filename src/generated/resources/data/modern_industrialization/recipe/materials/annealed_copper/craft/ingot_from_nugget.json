@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/annealed_copper"
-    },
-    "y": {
-      "item": "modern_industrialization:annealed_copper_nugget"
-    }
+    "x": "#c:nuggets/annealed_copper",
+    "y": "modern_industrialization:annealed_copper_nugget"
   },
   "pattern": [
     "xxx",

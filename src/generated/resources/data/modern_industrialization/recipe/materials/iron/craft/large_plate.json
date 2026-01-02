@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:plates/iron"
-    }
+    "x": "#c:plates/iron"
   },
   "pattern": [
     "xx",

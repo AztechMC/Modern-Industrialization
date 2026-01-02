@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:coke"
+      "ingredient": "modern_industrialization:coke"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],

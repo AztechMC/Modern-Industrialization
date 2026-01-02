@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/uranium"
-    },
-    "y": {
-      "item": "modern_industrialization:uranium_ingot"
-    }
+    "x": "#c:ingots/uranium",
+    "y": "modern_industrialization:uranium_ingot"
   },
   "pattern": [
     "xxx",

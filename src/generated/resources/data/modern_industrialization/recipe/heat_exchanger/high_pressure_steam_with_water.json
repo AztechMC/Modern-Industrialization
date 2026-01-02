@@ -5,11 +5,11 @@
   "fluid_inputs": [
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:high_pressure_steam"
+      "ingredient": "modern_industrialization:high_pressure_steam"
     },
     {
       "amount": 1000,
-      "fluid": "minecraft:water"
+      "ingredient": "minecraft:water"
     }
   ],
   "fluid_outputs": [

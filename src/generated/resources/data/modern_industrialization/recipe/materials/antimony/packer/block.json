@@ -5,11 +5,11 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:ingots/antimony"
+      "ingredient": "#c:ingots/antimony"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],

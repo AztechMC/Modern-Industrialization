@@ -5,13 +5,13 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:dark_oak_planks"
+      "ingredient": "minecraft:dark_oak_planks"
     }
   ],
   "item_outputs": [

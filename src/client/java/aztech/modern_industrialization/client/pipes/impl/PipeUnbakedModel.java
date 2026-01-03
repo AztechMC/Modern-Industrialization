@@ -11,6 +11,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
 import java.util.IdentityHashMap;
@@ -23,8 +24,7 @@ public class PipeUnbakedModel implements CustomUnbakedBlockStateModel {
     public static final MapCodec<PipeUnbakedModel> CODEC = MapCodec.unit(INSTANCE);
 
     private static final Identifier ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
-    private static final Material PARTICLE_SPRITE = new Material(AtlasIds.BLOCKS,
-            Identifier.parse("minecraft:block/iron_block"));
+    private static final Material PARTICLE_SPRITE = ClientHooks.getBlockMaterial(Identifier.parse("minecraft:block/iron_block"));
 
     @Override
     public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {

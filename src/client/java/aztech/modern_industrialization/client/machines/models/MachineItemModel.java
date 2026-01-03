@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 public record MachineItemModel(ItemTransforms transforms, Block machine) implements ItemModel {
     @Override
     public void update(ItemStackRenderState output, ItemStack item, ItemModelResolver resolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+        output.appendModelIdentityElement(machine);
+
         // A bit dirty...
         var machineModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(machine.defaultBlockState());
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "modern_industrialization:block/kanthal_coil_top",
+    "side": "modern_industrialization:block/kanthal_coil_side"
+  }
+}

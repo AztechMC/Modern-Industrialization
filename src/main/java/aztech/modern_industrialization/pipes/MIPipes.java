@@ -53,6 +53,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -103,12 +104,12 @@ public class MIPipes {
     }
 
     public static final BiConsumer<Item, ItemModelGenerators> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
-        // Delegate to block model
-        // TODO 26.1
-//        modelGenerator.getBuilder(BuiltInRegistries.ITEM.getKey(item).getPath())
-//                .customLoader(DelegatingModelBuilder::new)
-//                .delegate(modelGenerator.getExistingFile(MI.id("block/pipe")))
-//                .end();
+        try {
+            // TODO: temporary reflection hack
+            modelGenerator.itemModelOutput.accept(item, (ItemModel.Unbaked) Class.forName("aztech.modern_industrialization.client.pipes.impl.PipeItemModel$Unbaked").getConstructor().newInstance());
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException(exception);
+        }
     };
 
     private void registerFluidPipeType(PipeColor color) {

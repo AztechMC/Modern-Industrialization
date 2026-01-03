@@ -71,6 +71,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
 import net.neoforged.neoforge.client.model.quad.BakedNormals;
@@ -184,7 +185,7 @@ public class RenderHelper {
         consumer.putBulkData(matrixEntry, quad, red, green, blue, alpha, light, overlay);
     }
 
-    private static final Material LOCKED_TEXTURE_LOCATION = new Material(AtlasIds.BLOCKS, MI.id("block/locked"));
+    private static final Material LOCKED_TEXTURE_LOCATION = ClientHooks.getBlockMaterial(MI.id("block/locked"));
 
     public static void drawLockedTexture(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int colorRgb) {
         submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {

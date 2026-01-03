@@ -79,7 +79,7 @@ public final class TranslationProvider implements DataProvider {
         addTranslation("key.modern_industrialization.toggle_flight", "Toggle Flight");
         addTranslation("key.modern_industrialization.toggle_3x3", "Toggle 3x3 Mining");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
-        addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
+        addTranslation("tag.item.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
 
         addTranslation("config.jade.plugin_modern_industrialization.overclock", "Machine Overclock");
         addTranslation("config.jade.plugin_modern_industrialization.pipe", "Pipe Information");

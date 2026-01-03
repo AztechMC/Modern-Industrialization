@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 
 public class PipeNetworks extends SavedData {
     private static final Codec<PipeNetworks> CODEC = Codec.dispatchedMap(PipeNetworkType.CODEC, PipeNetworkManager::codec)
-            .xmap(PipeNetworks::new, n -> n.managers);
+            .xmap(map -> new PipeNetworks(new HashMap<>(map)), n -> n.managers);
     private static final SavedDataType<PipeNetworks> TYPE = new SavedDataType<>(
             "modern_industrialization_pipe_networks",
             () -> new PipeNetworks(new HashMap<>()),

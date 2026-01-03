@@ -1,0 +1,23 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "modern_industrialization:item/redstone_control_module_high"
+        },
+        "when": false
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "modern_industrialization:item/redstone_control_module_low"
+        },
+        "when": true
+      }
+    ],
+    "component": "modern_industrialization:low_signal",
+    "property": "minecraft:component"
+  }
+}

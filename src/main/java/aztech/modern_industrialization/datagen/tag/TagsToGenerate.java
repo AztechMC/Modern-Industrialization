@@ -65,7 +65,7 @@ public class TagsToGenerate {
 
     private static void addTranslation(TagKey<Item> tag, String tagEnglishName) {
         var tagId = tag.location();
-        tagTranslations.put("tag.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
+        tagTranslations.put("tag.item.%s.%s".formatted(tagId.getNamespace(), tagId.getPath()).replace('/', '.'), tagEnglishName);
     }
 
     public static void generateTag(TagKey<Item> tag, ItemLike item, String tagEnglishName) {

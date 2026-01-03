@@ -52,6 +52,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -102,8 +103,7 @@ public class MIPipesClient {
             @Override
             public PipeRenderer create(ModelBaker modelBaker) {
                 Material[] ids = sprites.stream()
-                        .map(n -> new Material(AtlasIds.BLOCKS,
-                                MI.id("block/pipes/" + n)))
+                        .map(n -> ClientHooks.getBlockMaterial(MI.id("block/pipes/" + n)))
                         .toArray(Material[]::new);
                 return new PipeMeshCache(modelBaker.sprites(), ids, innerQuads);
             }

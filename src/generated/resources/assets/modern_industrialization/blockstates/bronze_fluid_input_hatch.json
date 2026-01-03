@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": {
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:bronze",
+      "default_overlays": {
+        "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+        "output": "modern_industrialization:block/overlays/output_fluid",
+        "side": "modern_industrialization:block/machines/hatch_fluid/overlay_side"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modern_industrialization:item/le_uranium_fuel_rod_depleted"
+  }
+}

@@ -39,6 +39,9 @@ import aztech.modern_industrialization.items.tools.QuantumSword;
 import aztech.modern_industrialization.nuclear.NeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
@@ -47,7 +50,13 @@ import java.util.function.Function;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModels;
+import net.minecraft.client.renderer.item.SelectItemModel;
+import net.minecraft.client.renderer.item.properties.select.ComponentContents;
+import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperty;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -141,7 +150,28 @@ public final class MIItem {
     public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)), ITEMS_ORDERED.next());
 
     // Upgrades
-    public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item("Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new, (item, itemModelGenerators) -> {}, ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item(
+            "Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new,
+            (item, itemModelGenerators) -> {
+                var highModelId = MI.id("item/redstone_control_module_high");
+                ModelTemplates.FLAT_ITEM.create(
+                        highModelId,
+                        new TextureMapping().put(TextureSlot.LAYER0, MI.id("item/redstone_control_module_high")),
+                        itemModelGenerators.modelOutput);
+                var lowModelId = MI.id("item/redstone_control_module_low");
+                ModelTemplates.FLAT_ITEM.create(
+                        lowModelId,
+                        new TextureMapping().put(TextureSlot.LAYER0, MI.id("item/redstone_control_module_low")),
+                        itemModelGenerators.modelOutput);
+                itemModelGenerators.itemModelOutput.accept(item, new SelectItemModel.Unbaked(
+                        new SelectItemModel.UnbakedSwitch<>(
+                            new ComponentContents<>(MIComponents.LOW_SIGNAL.get()),
+                            List.of(
+                                    new SelectItemModel.SwitchCase<>(List.of(false), new BlockModelWrapper.Unbaked(highModelId, List.of())),
+                                    new SelectItemModel.SwitchCase<>(List.of(true), new BlockModelWrapper.Unbaked(lowModelId, List.of())))),
+                        Optional.empty()));
+            },
+            ITEMS_ORDERED.next());
     public static final ItemDefinition<Item> OVERDRIVE_MODULE = item("Overdrive Module", "overdrive_module", ITEMS_ORDERED.next());
 
     public static final ItemDefinition<Item> BASIC_UPGRADE = item("Basic Upgrade", "basic_upgrade", ITEMS_ORDERED.next());
@@ -252,12 +282,12 @@ public final class MIItem {
     }
 
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {}, sortOrder);
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.declareCustomModelItem(item), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> {}, sortOrder);
+        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.declareCustomModelItem(item), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,

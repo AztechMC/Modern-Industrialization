@@ -1,6 +1,6 @@
 {
   "credit": "Made with Blockbench",
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/block",
   "render_type": "cutout",
   "textures": {
     "particle": "#0"

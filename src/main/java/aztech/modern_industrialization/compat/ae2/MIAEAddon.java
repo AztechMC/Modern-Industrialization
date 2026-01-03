@@ -59,14 +59,13 @@ public class MIAEAddon {
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
             p -> new PartItem<>(p, EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {},
+            (item, gen) -> {
+                gen.declareCustomModelItem(item);
+            },
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
     public static void init(IEventBus modBus) {
-        // TODO 26.1
-//        PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-
         modBus.addListener(MIAEAddon::commonSetup);
         modBus.addListener(MIAEAddon::registerPartCapabilities);
     }

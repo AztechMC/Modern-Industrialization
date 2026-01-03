@@ -32,6 +32,7 @@ import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
 import com.mojang.datafixers.types.Func;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -188,10 +189,7 @@ public class PartTemplate implements PartKeyProvider {
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
                             .withModel((block, gen) -> {
-                                // TODO 26.1
-//                                String name = gen.name(block);
-//                                gen.simpleBlockWithItem(block,
-//                                        gen.models().cubeColumn(name, gen.blockTexture(name + "_side"), gen.blockTexture(name + "_top")));
+                                gen.createTrivialBlock(block, TexturedModel.COLUMN);
                             })
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)

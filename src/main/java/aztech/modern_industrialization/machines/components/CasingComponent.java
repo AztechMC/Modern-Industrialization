@@ -83,7 +83,7 @@ public class CasingComponent implements MachineComponent, DropableComponent {
 
     @Override
     public void readNbt(ValueInput input, boolean isUpgradingMachine) {
-        setCasingStack(input.read("casing", ItemStack.CODEC).orElse(ItemStack.EMPTY));
+        setCasingStack(input.read("casing", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
     }
 
     @Override

@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": {
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:lv",
+      "default_overlays": {
+        "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+        "front": "modern_industrialization:block/machines/compressor/overlay_front",
+        "front_active": "modern_industrialization:block/machines/compressor/overlay_front_active",
+        "item_auto": "modern_industrialization:block/overlays/item_auto",
+        "output": "modern_industrialization:block/overlays/output",
+        "side": "modern_industrialization:block/machines/compressor/overlay_side",
+        "side_active": "modern_industrialization:block/machines/compressor/overlay_side_active",
+        "top": "modern_industrialization:block/machines/compressor/overlay_top",
+        "top_active": "modern_industrialization:block/machines/compressor/overlay_top_active"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
+    }
+  }
+}

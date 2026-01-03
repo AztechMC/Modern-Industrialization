@@ -42,7 +42,9 @@ import java.util.function.Function;
 
 public class CasingModels {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final FileToIdConverter CASINGS_LISTER = FileToIdConverter.json("modern_industrialization/machine_casings");
+
+    public static final String FOLDER_NAME = "modern_industrialization/machine_casings";
+    private static final FileToIdConverter CASINGS_LISTER = FileToIdConverter.json(FOLDER_NAME);
 
     private record LoadedModels(Map<MachineCasing, CasingModel.Unbaked> models) {}
 

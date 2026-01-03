@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "": {
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:mv",
+      "default_overlays": {
+        "output": "modern_industrialization:block/machines/transformer/overlay_side",
+        "side": "modern_industrialization:block/overlays/output_energy",
+        "top": "modern_industrialization:block/machines/transformer/overlay_top"
+      },
+      "no_overlay_on_output_side": true,
+      "tiered_overlays": {}
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "modern_industrialization:block/quartz_ore"
+  }
+}

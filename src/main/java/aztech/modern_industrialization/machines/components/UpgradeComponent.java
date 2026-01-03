@@ -56,7 +56,7 @@ public class UpgradeComponent implements MachineComponent.ServerOnly, DropableCo
 
     @Override
     public void readNbt(ValueInput input, boolean isUpgradingMachine) {
-        itemStack = input.read("upgradesItemStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+        itemStack = input.read("upgradesItemStack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {

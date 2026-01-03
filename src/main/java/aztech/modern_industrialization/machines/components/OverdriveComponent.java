@@ -52,7 +52,7 @@ public class OverdriveComponent implements MachineComponent.ServerOnly, Dropable
 
     @Override
     public void readNbt(ValueInput input, boolean isUpgradingMachine) {
-        overdriveModule = input.read("overdriveModuleStack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+        overdriveModule = input.read("overdriveModuleStack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {

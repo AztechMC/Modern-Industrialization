@@ -49,7 +49,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
     private final float spriteSizeU;
     private final float spriteSizeV;
 
-    private final Vector3f[] workPos = new Vector3f[4];
+    private final Vector3f[] workPos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
     private final long[] workUv = new long[4];
 
     PipeMeshBuilder(List<BakedQuad> pipeQuads, List<BakedQuad> innerQuads, boolean addInnerQuads, int slotPos, Direction direction, TextureAtlasSprite sprite) {

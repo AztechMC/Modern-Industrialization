@@ -69,6 +69,9 @@ public class MachineRegistrationHelper {
                         .withModel((block, gen) -> {
                             // Model generation is handled in the model provider already.
                         })
+                        .withItemModel((block, gen) -> {
+                            // Model generation is handled in the model provider already.
+                        })
                         .isValidSpawn(MobSpawning.NO_SPAWN)
                         .isRedstoneConductor(Blocks::never));
 

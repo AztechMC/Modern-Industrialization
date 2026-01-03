@@ -32,14 +32,15 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.data.AtlasIds;
+import net.neoforged.neoforge.client.ClientHooks;
 
 public class MIAEAddonClient {
     private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
         @Override
         public PipeRenderer create(ModelBaker modelBaker) {
             return new PipeMeshCache(modelBaker.sprites(), new Material[] {
-                    new Material(AtlasIds.BLOCKS, MI.id("block/pipes/me")),
-                    new Material(AtlasIds.BLOCKS, MI.id("block/pipes/me_blocks"))
+                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me")),
+                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me_blocks"))
             }, false);
         }
     };

@@ -31,6 +31,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.jspecify.annotations.Nullable;
 
 public class QuadCube {
@@ -38,7 +39,7 @@ public class QuadCube {
     private BakedQuad @Nullable [] quads;
 
     public QuadCube(Identifier spriteLocation) {
-        this.spriteLocation = new Material(AtlasIds.BLOCKS, spriteLocation);
+        this.spriteLocation = ClientHooks.getBlockMaterial(spriteLocation);
     }
 
     public BakedQuad[] getQuads() {

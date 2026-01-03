@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.client.datagen;
 
+import aztech.modern_industrialization.client.datagen.model.MIModelProvider;
 import aztech.modern_industrialization.client.datagen.texture.MISpriteSourceProvider;
 import aztech.modern_industrialization.client.datagen.texture.TexturesProvider;
 import java.util.concurrent.CompletableFuture;
@@ -42,6 +43,6 @@ public class MIDatagenClient {
         gen.addProvider(true, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
         // TODO 26.1
 //        gen.addProvider(true, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));
-//        gen.addProvider(true, new MIModelProvider(gen.getPackOutput(), fileHelper));
+        gen.addProvider(true, new MIModelProvider(gen.getPackOutput()));
     }
 }

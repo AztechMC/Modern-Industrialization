@@ -15,11 +15,11 @@
   "fluid_outputs": [
     {
       "amount": 1000,
-      "fluid": "modern_industrialization:heavy_water"
+      "id": "modern_industrialization:heavy_water"
     },
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:high_pressure_heavy_water_steam"
+      "id": "modern_industrialization:high_pressure_heavy_water_steam"
     }
   ]
 }

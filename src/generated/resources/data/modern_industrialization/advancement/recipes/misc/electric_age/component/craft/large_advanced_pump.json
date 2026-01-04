@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_processing_unit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:processing_unit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modern_industrialization:electric_age/component/craft/large_advanced_pump"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_processing_unit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modern_industrialization:electric_age/component/craft/large_advanced_pump"
+    ]
+  }
+}

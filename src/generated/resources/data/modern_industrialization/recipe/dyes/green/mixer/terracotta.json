@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:green_terracotta"
+      "id": "minecraft:green_terracotta"
     }
   ]
 }

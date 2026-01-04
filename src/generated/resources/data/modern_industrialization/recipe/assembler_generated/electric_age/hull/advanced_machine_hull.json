@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:silicon_battery"
+    },
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:electronic_circuit"
+    },
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:advanced_machine_casing"
+    },
+    {
+      "amount": 3,
+      "ingredient": "modern_industrialization:electrum_cable"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:advanced_machine_hull"
+    }
+  ]
+}

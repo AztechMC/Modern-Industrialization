@@ -11,15 +11,15 @@
   "fluid_outputs": [
     {
       "amount": 50,
-      "fluid": "modern_industrialization:helium"
+      "id": "modern_industrialization:helium"
     },
     {
       "amount": 450,
-      "fluid": "modern_industrialization:sulfuric_crude_oil"
+      "id": "modern_industrialization:sulfuric_crude_oil"
     },
     {
       "amount": 500,
-      "fluid": "modern_industrialization:sulfuric_naphtha"
+      "id": "modern_industrialization:sulfuric_naphtha"
     }
   ]
 }

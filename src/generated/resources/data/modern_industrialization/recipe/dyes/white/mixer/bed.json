@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:white_bed"
+      "id": "minecraft:white_bed"
     }
   ]
 }

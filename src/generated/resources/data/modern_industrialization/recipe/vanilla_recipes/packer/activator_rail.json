@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "ingredient": "minecraft:rail"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:redstone_torch"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "id": "minecraft:activator_rail"
+    }
+  ]
+}

@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:superconductor_tiny_dust"
+      "id": "modern_industrialization:superconductor_tiny_dust"
     }
   ]
 }

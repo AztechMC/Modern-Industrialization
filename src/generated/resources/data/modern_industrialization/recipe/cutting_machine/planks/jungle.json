@@ -17,7 +17,7 @@
   "item_outputs": [
     {
       "amount": 6,
-      "item": "minecraft:jungle_planks"
+      "id": "minecraft:jungle_planks"
     }
   ]
 }

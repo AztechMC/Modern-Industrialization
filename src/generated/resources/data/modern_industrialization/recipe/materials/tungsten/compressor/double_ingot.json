@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:tungsten_plate"
+      "id": "modern_industrialization:tungsten_plate"
     }
   ]
 }

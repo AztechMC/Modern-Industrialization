@@ -11,19 +11,19 @@
   "fluid_outputs": [
     {
       "amount": 500,
-      "fluid": "modern_industrialization:light_fuel"
+      "id": "modern_industrialization:light_fuel"
     },
     {
       "amount": 100,
-      "fluid": "modern_industrialization:methane"
+      "id": "modern_industrialization:methane"
     },
     {
       "amount": 250,
-      "fluid": "modern_industrialization:butadiene"
+      "id": "modern_industrialization:butadiene"
     },
     {
       "amount": 150,
-      "fluid": "modern_industrialization:benzene"
+      "id": "modern_industrialization:benzene"
     }
   ]
 }

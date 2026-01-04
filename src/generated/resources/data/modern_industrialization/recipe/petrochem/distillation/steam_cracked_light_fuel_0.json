@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 200,
-      "fluid": "modern_industrialization:methane"
+      "id": "modern_industrialization:methane"
     }
   ]
 }

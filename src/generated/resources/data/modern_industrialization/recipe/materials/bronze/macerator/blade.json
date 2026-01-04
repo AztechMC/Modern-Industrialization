@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 5,
-      "item": "modern_industrialization:bronze_tiny_dust"
+      "id": "modern_industrialization:bronze_tiny_dust"
     }
   ]
 }

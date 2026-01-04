@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:cherry_wood"
+      "id": "minecraft:cherry_wood"
     }
   ]
 }

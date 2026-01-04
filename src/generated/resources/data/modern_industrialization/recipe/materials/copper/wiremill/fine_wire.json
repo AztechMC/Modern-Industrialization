@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:copper_fine_wire"
+      "id": "modern_industrialization:copper_fine_wire"
     }
   ]
 }

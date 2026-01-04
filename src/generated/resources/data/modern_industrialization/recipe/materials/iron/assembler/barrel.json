@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:iron_barrel"
+      "id": "modern_industrialization:iron_barrel"
     }
   ]
 }

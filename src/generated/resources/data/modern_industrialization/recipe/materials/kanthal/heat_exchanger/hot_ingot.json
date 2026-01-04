@@ -11,11 +11,11 @@
   "fluid_outputs": [
     {
       "amount": 13,
-      "fluid": "modern_industrialization:argon"
+      "id": "modern_industrialization:argon"
     },
     {
       "amount": 5,
-      "fluid": "modern_industrialization:helium"
+      "id": "modern_industrialization:helium"
     }
   ],
   "item_inputs": [
@@ -27,7 +27,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:kanthal_ingot"
+      "id": "modern_industrialization:kanthal_ingot"
     }
   ]
 }

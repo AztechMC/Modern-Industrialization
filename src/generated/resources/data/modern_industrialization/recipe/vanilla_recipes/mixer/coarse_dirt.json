@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:dirt"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:gravel"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "id": "minecraft:coarse_dirt"
+    }
+  ]
+}

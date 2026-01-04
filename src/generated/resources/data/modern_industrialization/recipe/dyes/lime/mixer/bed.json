@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:lime_bed"
+      "id": "minecraft:lime_bed"
     }
   ]
 }

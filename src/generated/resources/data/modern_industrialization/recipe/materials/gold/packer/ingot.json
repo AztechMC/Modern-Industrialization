@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     }
   ]
 }

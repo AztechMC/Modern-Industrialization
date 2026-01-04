@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:coal_block"
+      "id": "minecraft:coal_block"
     }
   ]
 }

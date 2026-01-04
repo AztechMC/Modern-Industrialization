@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 450,
-      "fluid": "modern_industrialization:sulfuric_crude_oil"
+      "id": "modern_industrialization:sulfuric_crude_oil"
     }
   ]
 }

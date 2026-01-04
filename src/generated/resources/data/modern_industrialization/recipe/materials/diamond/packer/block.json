@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:diamond_block"
+      "id": "minecraft:diamond_block"
     }
   ]
 }

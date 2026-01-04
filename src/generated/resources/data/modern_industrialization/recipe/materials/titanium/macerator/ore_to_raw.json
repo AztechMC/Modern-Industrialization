@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_titanium"
+      "id": "modern_industrialization:raw_titanium"
     }
   ]
 }

@@ -3609,8 +3609,7 @@ public class MIRecipeProvider extends BaseRecipeProvider {
     }
 
     private static ResourceKey<Recipe<?>> key(String path) {
-        // TODO: remove v2
-        return ResourceKey.create(Registries.RECIPE, MI.id("v2/" + path));
+        return ResourceKey.create(Registries.RECIPE, MI.id(path));
     }
     private static Item TODO = Items.DIAMOND; // TODO for advancement generation...
 

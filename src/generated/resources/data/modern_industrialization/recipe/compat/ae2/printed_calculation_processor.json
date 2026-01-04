@@ -22,7 +22,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "ae2:printed_calculation_processor"
+      "id": "ae2:printed_calculation_processor"
     }
   ]
 }

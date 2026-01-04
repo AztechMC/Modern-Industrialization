@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:lignite_coal"
+      "id": "modern_industrialization:lignite_coal"
     }
   ]
 }

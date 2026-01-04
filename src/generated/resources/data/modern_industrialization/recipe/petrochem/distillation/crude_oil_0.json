@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 500,
-      "fluid": "modern_industrialization:sulfuric_light_fuel"
+      "id": "modern_industrialization:sulfuric_light_fuel"
     }
   ]
 }

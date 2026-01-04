@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:beryllium_ingot"
+      "id": "modern_industrialization:beryllium_ingot"
     }
   ]
 }

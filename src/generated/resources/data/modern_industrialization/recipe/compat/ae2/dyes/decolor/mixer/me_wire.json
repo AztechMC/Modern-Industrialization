@@ -22,7 +22,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:me_wire"
+      "id": "modern_industrialization:me_wire"
     }
   ]
 }

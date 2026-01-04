@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:soldering_alloy_tiny_dust"
+      "id": "modern_industrialization:soldering_alloy_tiny_dust"
     }
   ]
 }

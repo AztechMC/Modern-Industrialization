@@ -122,7 +122,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 
     final MachineRecipeType type;
 
-    public int eu; // Also used for forge hammer damage
+    public int eu;
     public int duration;
     public List<ItemInput> itemInputs = new ArrayList<>();
     public List<FluidInput> fluidInputs = new ArrayList<>();
@@ -249,7 +249,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                 .validate(item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item));
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        ITEM_NON_AIR_CODEC.fieldOf("item")
+                        ITEM_NON_AIR_CODEC.fieldOf("id")
                                 .forGetter(itemOutput -> itemOutput.variant.getItem().builtInRegistryHolder()),
                         AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.amount),
                         DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
@@ -276,7 +276,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     public record FluidOutput(Fluid fluid, long amount, float probability) {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
+                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("id").forGetter(fluidOutput -> fluidOutput.fluid),
                         NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
                                 .forGetter(fluidOutput -> fluidOutput.amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))

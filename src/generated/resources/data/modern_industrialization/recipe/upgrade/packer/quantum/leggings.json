@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_leggings"
+      "id": "modern_industrialization:quantum_leggings"
     }
   ]
 }

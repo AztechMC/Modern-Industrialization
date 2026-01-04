@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:gray_bed"
+      "id": "minecraft:gray_bed"
     }
   ]
 }

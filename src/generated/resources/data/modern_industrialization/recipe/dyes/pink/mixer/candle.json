@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:pink_candle"
+      "id": "minecraft:pink_candle"
     }
   ]
 }

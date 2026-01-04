@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:ev_energy_output_hatch"
+      "id": "modern_industrialization:ev_energy_output_hatch"
     }
   ]
 }

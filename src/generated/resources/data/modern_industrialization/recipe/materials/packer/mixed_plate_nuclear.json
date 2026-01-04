@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:blastproof_alloy_plate"
+    },
+    {
+      "amount": 1,
+      "ingredient": "#c:plates/beryllium"
+    },
+    {
+      "amount": 1,
+      "ingredient": "#c:plates/cadmium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:mixed_plate_nuclear"
+    }
+  ]
+}

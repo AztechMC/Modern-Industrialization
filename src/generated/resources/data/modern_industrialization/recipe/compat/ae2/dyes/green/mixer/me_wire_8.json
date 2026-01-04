@@ -20,7 +20,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "modern_industrialization:green_me_wire"
+      "id": "modern_industrialization:green_me_wire"
     }
   ]
 }

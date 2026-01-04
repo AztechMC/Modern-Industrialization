@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:black_shulker_box"
+      "id": "minecraft:black_shulker_box"
     }
   ]
 }

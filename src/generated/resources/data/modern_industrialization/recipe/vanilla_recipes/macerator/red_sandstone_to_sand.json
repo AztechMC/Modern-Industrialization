@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:red_sandstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "id": "minecraft:red_sand"
+    }
+  ]
+}

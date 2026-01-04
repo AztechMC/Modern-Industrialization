@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:emerald_block"
+      "id": "minecraft:emerald_block"
     }
   ]
 }

@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:le_mox_fuel_rod_quad"
+      "id": "modern_industrialization:le_mox_fuel_rod_quad"
     }
   ]
 }

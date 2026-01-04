@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "duration": 400,
+  "eu": 16,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:chromium_hydrochloric_solution"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 450,
+      "id": "modern_industrialization:hydrogen"
+    },
+    {
+      "amount": 450,
+      "id": "modern_industrialization:chlorine"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 3,
+      "id": "modern_industrialization:chromium_tiny_dust"
+    }
+  ]
+}

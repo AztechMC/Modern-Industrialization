@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:gray_carpet"
+      "id": "minecraft:gray_carpet"
     }
   ]
 }

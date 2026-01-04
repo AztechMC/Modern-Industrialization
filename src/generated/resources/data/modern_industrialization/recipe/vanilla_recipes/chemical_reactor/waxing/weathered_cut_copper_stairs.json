@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:waxed_weathered_cut_copper_stairs"
+      "id": "minecraft:waxed_weathered_cut_copper_stairs"
     }
   ]
 }

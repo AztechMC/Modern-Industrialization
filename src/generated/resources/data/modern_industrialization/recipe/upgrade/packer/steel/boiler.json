@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_boiler"
+      "id": "modern_industrialization:steel_boiler"
     }
   ]
 }

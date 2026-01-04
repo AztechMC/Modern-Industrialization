@@ -29,7 +29,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_drill_head"
+      "id": "modern_industrialization:bronze_drill_head"
     }
   ]
 }

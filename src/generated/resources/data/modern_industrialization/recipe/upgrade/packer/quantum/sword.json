@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_sword"
+      "id": "modern_industrialization:quantum_sword"
     }
   ]
 }

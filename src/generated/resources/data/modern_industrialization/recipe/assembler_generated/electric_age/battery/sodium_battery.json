@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#c:plates/battery_alloy"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:aluminum_cable"
+    },
+    {
+      "amount": 4,
+      "ingredient": "modern_industrialization:battery_alloy_curved_plate"
+    },
+    {
+      "amount": 2,
+      "ingredient": "#c:dusts/sodium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:sodium_battery"
+    }
+  ]
+}

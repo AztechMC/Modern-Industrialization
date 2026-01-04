@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 600,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "minecraft:lava"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 17,
+      "id": "modern_industrialization:sulfur_dust"
+    },
+    {
+      "amount": 11,
+      "id": "modern_industrialization:copper_nugget"
+    },
+    {
+      "amount": 3,
+      "id": "modern_industrialization:aluminum_nugget",
+      "probability": 0.5
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:chromium_nugget",
+      "probability": 0.25
+    }
+  ]
+}

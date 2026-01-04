@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:chromium_plate"
+      "id": "modern_industrialization:chromium_plate"
     }
   ]
 }

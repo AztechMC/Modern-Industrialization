@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#c:raw_materials/lead"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:lead_dust"
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:raw_silver",
+      "probability": 0.5
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:lead_dust",
+      "probability": 0.5
+    }
+  ]
+}

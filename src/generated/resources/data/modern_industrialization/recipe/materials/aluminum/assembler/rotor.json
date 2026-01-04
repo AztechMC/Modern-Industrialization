@@ -21,7 +21,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:aluminum_rotor"
+      "id": "modern_industrialization:aluminum_rotor"
     }
   ]
 }

@@ -28,7 +28,7 @@
   "item_outputs": [
     {
       "amount": 16,
-      "item": "modern_industrialization:gray_me_wire"
+      "id": "modern_industrialization:gray_me_wire"
     }
   ]
 }

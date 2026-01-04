@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:cutting_machine",
+  "duration": 600,
+  "eu": 16,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "ingredient": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:monocrystalline_silicon"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 32,
+      "id": "modern_industrialization:silicon_wafer"
+    }
+  ]
+}

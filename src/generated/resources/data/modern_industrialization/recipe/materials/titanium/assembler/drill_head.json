@@ -29,7 +29,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_drill_head"
+      "id": "modern_industrialization:titanium_drill_head"
     }
   ]
 }

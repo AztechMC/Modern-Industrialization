@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:redstone_block"
+      "id": "minecraft:redstone_block"
     }
   ]
 }

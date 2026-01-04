@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 200,
+  "eu": 16,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:raw_biodiesel"
+    },
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:steam"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 700,
+      "id": "modern_industrialization:biodiesel"
+    },
+    {
+      "amount": 250,
+      "id": "modern_industrialization:ethanol"
+    }
+  ]
+}

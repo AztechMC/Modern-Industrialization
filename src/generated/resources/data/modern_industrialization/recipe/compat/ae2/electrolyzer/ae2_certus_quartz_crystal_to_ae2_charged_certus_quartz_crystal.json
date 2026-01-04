@@ -17,7 +17,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "ae2:charged_certus_quartz_crystal"
+      "id": "ae2:charged_certus_quartz_crystal"
     }
   ]
 }

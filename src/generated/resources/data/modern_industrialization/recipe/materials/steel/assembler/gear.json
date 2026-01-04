@@ -21,7 +21,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:steel_gear"
+      "id": "modern_industrialization:steel_gear"
     }
   ]
 }

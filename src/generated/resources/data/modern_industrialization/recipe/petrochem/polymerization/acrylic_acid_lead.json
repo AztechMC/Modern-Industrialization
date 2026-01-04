@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 300,
-      "fluid": "modern_industrialization:acrylic_glue"
+      "id": "modern_industrialization:acrylic_glue"
     }
   ],
   "item_inputs": [

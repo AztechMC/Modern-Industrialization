@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:nickel_block"
+      "id": "modern_industrialization:nickel_block"
     }
   ]
 }

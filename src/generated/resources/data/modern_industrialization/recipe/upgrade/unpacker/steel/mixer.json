@@ -11,11 +11,11 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_mixer"
+      "id": "modern_industrialization:bronze_mixer"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_upgrade"
+      "id": "modern_industrialization:steel_upgrade"
     }
   ]
 }

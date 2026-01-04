@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 75,
-      "fluid": "modern_industrialization:propene"
+      "id": "modern_industrialization:propene"
     }
   ]
 }

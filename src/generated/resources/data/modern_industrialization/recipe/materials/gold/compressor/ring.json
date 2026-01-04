@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:gold_ring"
+      "id": "modern_industrialization:gold_ring"
     }
   ]
 }

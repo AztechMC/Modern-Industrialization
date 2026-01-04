@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:compressor",
+  "duration": 600,
+  "eu": 32,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:mixed_ingot_blastproof"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:blastproof_alloy_plate"
+    }
+  ]
+}

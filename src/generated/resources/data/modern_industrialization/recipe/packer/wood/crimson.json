@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:crimson_hyphae"
+      "id": "minecraft:crimson_hyphae"
     }
   ]
 }

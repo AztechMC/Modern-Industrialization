@@ -11,11 +11,11 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_machine_hull"
+      "id": "modern_industrialization:highly_advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_tank"
+      "id": "modern_industrialization:titanium_tank"
     }
   ]
 }

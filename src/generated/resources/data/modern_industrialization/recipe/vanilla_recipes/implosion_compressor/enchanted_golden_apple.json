@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "duration": 10,
+  "eu": 1,
+  "item_inputs": [
+    {
+      "amount": 64,
+      "ingredient": "#c:storage_blocks/gold"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:apple"
+    },
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:industrial_tnt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "minecraft:enchanted_golden_apple"
+    }
+  ]
+}

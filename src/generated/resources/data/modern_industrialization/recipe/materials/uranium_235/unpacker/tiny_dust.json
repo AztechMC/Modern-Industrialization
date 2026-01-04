@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:uranium_235_tiny_dust"
+      "id": "modern_industrialization:uranium_235_tiny_dust"
     }
   ]
 }

@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_fluid_output_hatch"
+      "id": "modern_industrialization:highly_advanced_fluid_output_hatch"
     }
   ]
 }

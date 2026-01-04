@@ -15,7 +15,7 @@
   "fluid_outputs": [
     {
       "amount": 1000,
-      "fluid": "modern_industrialization:steam_cracked_light_fuel"
+      "id": "modern_industrialization:steam_cracked_light_fuel"
     }
   ]
 }

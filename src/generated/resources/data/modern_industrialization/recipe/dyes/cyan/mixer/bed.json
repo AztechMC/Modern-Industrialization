@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:cyan_bed"
+      "id": "minecraft:cyan_bed"
     }
   ]
 }

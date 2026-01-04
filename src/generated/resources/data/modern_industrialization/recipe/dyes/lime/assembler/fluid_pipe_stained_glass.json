@@ -19,7 +19,7 @@
   "item_outputs": [
     {
       "amount": 16,
-      "item": "modern_industrialization:lime_fluid_pipe"
+      "id": "modern_industrialization:lime_fluid_pipe"
     }
   ]
 }

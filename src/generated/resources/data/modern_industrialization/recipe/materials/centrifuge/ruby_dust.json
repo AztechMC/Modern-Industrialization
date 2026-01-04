@@ -1,0 +1,30 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 1200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 10,
+      "ingredient": "minecraft:redstone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 5,
+      "id": "modern_industrialization:iron_dust"
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:ruby_dust"
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:quartz_dust"
+    },
+    {
+      "amount": 1,
+      "id": "modern_industrialization:neodymium_tiny_dust",
+      "probability": 0.5
+    }
+  ]
+}

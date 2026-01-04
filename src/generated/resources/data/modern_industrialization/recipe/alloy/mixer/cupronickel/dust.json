@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:cupronickel_dust"
+      "id": "modern_industrialization:cupronickel_dust"
     }
   ]
 }

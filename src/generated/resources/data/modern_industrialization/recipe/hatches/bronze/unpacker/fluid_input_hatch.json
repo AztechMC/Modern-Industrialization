@@ -11,11 +11,11 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_machine_casing"
+      "id": "modern_industrialization:bronze_machine_casing"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_tank"
+      "id": "modern_industrialization:bronze_tank"
     }
   ]
 }

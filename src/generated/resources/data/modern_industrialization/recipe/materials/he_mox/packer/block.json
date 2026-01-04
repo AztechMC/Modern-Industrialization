@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:he_mox_block"
+      "id": "modern_industrialization:he_mox_block"
     }
   ]
 }

@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:yellow_shulker_box"
+      "id": "minecraft:yellow_shulker_box"
     }
   ]
 }

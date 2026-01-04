@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "ingredient": "modern_industrialization:bronze_curved_plate"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:copper_rotor"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:glass_pane"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "id": "modern_industrialization:fluid_pipe"
+    }
+  ]
+}

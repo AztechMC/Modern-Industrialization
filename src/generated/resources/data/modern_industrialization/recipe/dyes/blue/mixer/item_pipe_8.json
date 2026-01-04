@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "modern_industrialization:blue_item_pipe"
+      "id": "modern_industrialization:blue_item_pipe"
     }
   ]
 }

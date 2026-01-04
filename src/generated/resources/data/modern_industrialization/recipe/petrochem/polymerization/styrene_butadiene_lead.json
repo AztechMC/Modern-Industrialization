@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 300,
-      "fluid": "modern_industrialization:styrene_butadiene_rubber"
+      "id": "modern_industrialization:styrene_butadiene_rubber"
     }
   ],
   "item_inputs": [

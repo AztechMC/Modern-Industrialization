@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:brown_stained_glass_pane"
+      "id": "minecraft:brown_stained_glass_pane"
     }
   ]
 }

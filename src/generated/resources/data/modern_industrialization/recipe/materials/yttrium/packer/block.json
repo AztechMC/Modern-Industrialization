@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:yttrium_block"
+      "id": "modern_industrialization:yttrium_block"
     }
   ]
 }

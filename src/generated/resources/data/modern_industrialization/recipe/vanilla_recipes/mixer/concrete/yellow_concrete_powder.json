@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "ingredient": "minecraft:sand"
+    },
+    {
+      "amount": 4,
+      "ingredient": "minecraft:gravel"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:yellow_dye"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "id": "minecraft:yellow_concrete_powder"
+    }
+  ]
+}

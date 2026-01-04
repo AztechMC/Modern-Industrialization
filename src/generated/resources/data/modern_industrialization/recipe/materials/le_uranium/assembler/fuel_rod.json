@@ -33,7 +33,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:le_uranium_fuel_rod"
+      "id": "modern_industrialization:le_uranium_fuel_rod"
     }
   ]
 }

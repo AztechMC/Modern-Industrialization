@@ -27,7 +27,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "ae2:logic_processor"
+      "id": "ae2:logic_processor"
     }
   ]
 }

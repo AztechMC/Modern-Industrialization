@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "duration": 400,
+  "eu": 32,
+  "fluid_outputs": [
+    {
+      "amount": 3000,
+      "id": "modern_industrialization:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 23,
+      "ingredient": "#c:dusts/emerald"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 3,
+      "id": "modern_industrialization:beryllium_dust"
+    },
+    {
+      "amount": 2,
+      "id": "modern_industrialization:aluminum_dust"
+    },
+    {
+      "amount": 6,
+      "id": "modern_industrialization:silicon_dust"
+    }
+  ]
+}

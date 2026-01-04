@@ -15,11 +15,11 @@
   "fluid_outputs": [
     {
       "amount": 12000,
-      "fluid": "modern_industrialization:heavy_fuel"
+      "id": "modern_industrialization:heavy_fuel"
     },
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:sulfuric_acid"
+      "id": "modern_industrialization:sulfuric_acid"
     }
   ]
 }

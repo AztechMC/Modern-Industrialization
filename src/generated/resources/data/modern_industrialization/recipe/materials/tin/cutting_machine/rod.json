@@ -17,7 +17,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_bolt"
+      "id": "modern_industrialization:tin_bolt"
     }
   ]
 }

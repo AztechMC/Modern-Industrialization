@@ -17,7 +17,7 @@
   "item_outputs": [
     {
       "amount": 2,
-      "item": "minecraft:spruce_slab"
+      "id": "minecraft:spruce_slab"
     }
   ]
 }

@@ -21,7 +21,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_rotor"
+      "id": "modern_industrialization:bronze_rotor"
     }
   ]
 }

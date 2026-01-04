@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 3,
+      "ingredient": "modern_industrialization:steel_ring"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 6,
+      "id": "minecraft:iron_chain"
+    }
+  ]
+}

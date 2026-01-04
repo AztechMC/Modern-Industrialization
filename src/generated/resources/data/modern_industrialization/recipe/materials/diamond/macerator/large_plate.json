@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:diamond_dust"
+      "id": "modern_industrialization:diamond_dust"
     }
   ]
 }

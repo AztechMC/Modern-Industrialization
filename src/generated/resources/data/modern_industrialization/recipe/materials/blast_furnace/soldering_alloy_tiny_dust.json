@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 60,
+  "eu": 4,
+  "fluid_outputs": [
+    {
+      "amount": 10,
+      "id": "modern_industrialization:soldering_alloy"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#c:tiny_dusts/soldering_alloy"
+    }
+  ]
+}

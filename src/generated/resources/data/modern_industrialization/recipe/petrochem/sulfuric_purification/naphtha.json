@@ -15,11 +15,11 @@
   "fluid_outputs": [
     {
       "amount": 12000,
-      "fluid": "modern_industrialization:naphtha"
+      "id": "modern_industrialization:naphtha"
     },
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:sulfuric_acid"
+      "id": "modern_industrialization:sulfuric_acid"
     }
   ]
 }

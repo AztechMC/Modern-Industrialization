@@ -15,7 +15,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:lime_stained_glass"
+      "id": "minecraft:lime_stained_glass"
     }
   ]
 }

@@ -17,7 +17,7 @@
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:gold_rod"
+      "id": "modern_industrialization:gold_rod"
     }
   ]
 }

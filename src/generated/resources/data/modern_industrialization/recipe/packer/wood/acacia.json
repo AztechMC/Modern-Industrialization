@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:acacia_wood"
+      "id": "minecraft:acacia_wood"
     }
   ]
 }

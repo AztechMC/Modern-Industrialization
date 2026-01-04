@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:lapis_block"
+      "id": "minecraft:lapis_block"
     }
   ]
 }

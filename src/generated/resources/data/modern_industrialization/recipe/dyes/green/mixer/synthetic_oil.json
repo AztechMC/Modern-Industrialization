@@ -18,7 +18,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:green_dye"
+      "id": "minecraft:green_dye"
     }
   ]
 }

@@ -16,7 +16,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:tungsten_double_ingot"
+      "id": "modern_industrialization:tungsten_double_ingot"
     }
   ]
 }

@@ -11,7 +11,7 @@
   "fluid_outputs": [
     {
       "amount": 300,
-      "fluid": "modern_industrialization:polyvinyl_chloride"
+      "id": "modern_industrialization:polyvinyl_chloride"
     }
   ],
   "item_inputs": [

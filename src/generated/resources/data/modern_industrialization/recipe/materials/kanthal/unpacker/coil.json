@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 8,
-      "item": "modern_industrialization:kanthal_cable"
+      "id": "modern_industrialization:kanthal_cable"
     }
   ]
 }

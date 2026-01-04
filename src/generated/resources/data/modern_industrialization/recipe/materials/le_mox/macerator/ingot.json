@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:le_mox_dust"
+      "id": "modern_industrialization:le_mox_dust"
     }
   ]
 }

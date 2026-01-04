@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:cupronickel_plate"
+      "id": "modern_industrialization:cupronickel_plate"
     }
   ]
 }

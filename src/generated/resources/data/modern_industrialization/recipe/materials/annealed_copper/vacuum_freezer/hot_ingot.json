@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_ingot"
+      "id": "modern_industrialization:annealed_copper_ingot"
     }
   ]
 }

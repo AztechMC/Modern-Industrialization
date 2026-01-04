@@ -11,7 +11,7 @@
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:mangrove_wood"
+      "id": "minecraft:mangrove_wood"
     }
   ]
 }

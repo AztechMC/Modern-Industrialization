@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:analog_circuit",
+    "c": "modern_industrialization:tin_cable",
+    "d": "modern_industrialization:gold_drill_head",
+    "g": "#c:gears/iron",
+    "m": "modern_industrialization:motor",
+    "p": "#modern_industrialization:item_pipes"
+  },
+  "pattern": [
+    "gpd",
+    "mCp",
+    "cmg"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:gold_drill"
+  }
+}

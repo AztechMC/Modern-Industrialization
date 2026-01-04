@@ -1,0 +1,45 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 6000,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 9000,
+      "ingredient": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 6000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:bubble_coral_block"
+    },
+    {
+      "amount": 4,
+      "ingredient": "minecraft:bone_meal"
+    },
+    {
+      "amount": 4,
+      "ingredient": "#c:dusts/salt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "minecraft:bubble_coral_block"
+    },
+    {
+      "amount": 2,
+      "item": "minecraft:bubble_coral_fan"
+    },
+    {
+      "amount": 2,
+      "item": "minecraft:bubble_coral"
+    }
+  ]
+}

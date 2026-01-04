@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:robot_arm",
+    "C": "modern_industrialization:conveyor",
+    "H": "modern_industrialization:basic_machine_hull",
+    "c": "modern_industrialization:analog_circuit",
+    "p": "modern_industrialization:tin_cable"
+  },
+  "pattern": [
+    "AcA",
+    "CHC",
+    "pcp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:electric_packer"
+  }
+}

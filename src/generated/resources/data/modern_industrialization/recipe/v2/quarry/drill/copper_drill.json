@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": "modern_industrialization:copper_drill_head",
+    "f": "#modern_industrialization:fluid_pipes",
+    "g": "#c:gears/iron",
+    "p": "#modern_industrialization:item_pipes"
+  },
+  "pattern": [
+    "  d",
+    "gp ",
+    "fg "
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:copper_drill"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "modern_industrialization:basic_machine_hull",
+    "L": "modern_industrialization:inductor",
+    "p": "modern_industrialization:tin_cable",
+    "w": "modern_industrialization:tin_wire"
+  },
+  "pattern": [
+    "wLw",
+    "pHp",
+    "wLw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:polarizer"
+  }
+}

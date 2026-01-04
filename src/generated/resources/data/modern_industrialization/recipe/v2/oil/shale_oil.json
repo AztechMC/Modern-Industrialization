@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:oil_drilling_rig",
+  "duration": 200,
+  "eu": 32,
+  "fluid_outputs": [
+    {
+      "amount": 4000,
+      "fluid": "modern_industrialization:shale_oil"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:stainless_steel_drill",
+      "probability": 0.02
+    }
+  ]
+}

@@ -44,7 +44,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     private boolean canceled = false;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, int eu, int duration) {
-        super(type, eu, duration);
+        super(context.fluids(), context.items(), type, eu, duration);
         this.recipeId = type.getPath() + "/" + recipeSuffix;
         this.context = context;
         context.addRecipe(this);
@@ -80,7 +80,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            addItemInput(part.getItemId(), amount);
+            itemIn(part.getItemId(), amount);
         }
         return this;
     }
@@ -89,7 +89,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            addItemInput(part.asIngredient(context.items()), amount);
+            itemIn(part.asIngredient(context.items()), amount);
         }
         return this;
     }
@@ -102,7 +102,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            return addItemOutput(part.getItemId(), amount);
+            return itemOut(part.getItemId(), amount);
         }
         return this;
     }
@@ -115,7 +115,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            return addItemOutput(part.getItemId(), amount, probability);
+            return itemOut(part.getItemId(), amount, probability);
         }
         return this;
     }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/titanium",
+    "G": "#c:gears/titanium"
+  },
+  "pattern": [
+    "AAA",
+    "AGA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:solid_titanium_machine_casing"
+  }
+}

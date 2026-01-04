@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 400,
+  "eu": 4,
+  "fluid_inputs": [
+    {
+      "amount": 250,
+      "ingredient": "minecraft:water"
+    },
+    {
+      "amount": 500,
+      "ingredient": "modern_industrialization:sodium_hydroxide"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 4,
+      "ingredient": "#c:dusts/quartz"
+    },
+    {
+      "amount": 1,
+      "ingredient": "#c:tiny_dusts/iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "item": "minecraft:amethyst_shard"
+    }
+  ]
+}

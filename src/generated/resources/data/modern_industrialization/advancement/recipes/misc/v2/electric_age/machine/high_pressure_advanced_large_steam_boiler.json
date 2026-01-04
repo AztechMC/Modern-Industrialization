@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_processing_unit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:processing_unit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modern_industrialization:v2/electric_age/machine/high_pressure_advanced_large_steam_boiler"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_processing_unit"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modern_industrialization:v2/electric_age/machine/high_pressure_advanced_large_steam_boiler"
+    ]
+  }
+}

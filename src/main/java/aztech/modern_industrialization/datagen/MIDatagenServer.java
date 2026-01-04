@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.datagen.recipe.MIRecipeProvider;
 import aztech.modern_industrialization.datagen.tag.MIVillagerTradesTagProvider;
 import aztech.modern_industrialization.trading.MITradeSets;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
@@ -71,6 +72,7 @@ public class MIDatagenServer {
         // TODO 26.1 - run all of them in parallel?
         var aggregate = gen.addProvider(true, new AggregateDataProvider(gen.getPackOutput(), registries, "Server Data"));
 
+        aggregate.addProvider(MIRecipeProvider.Runner::new);
         aggregate.addProvider(PetrochemRecipeProvider.Runner::new);
         aggregate.addProvider(PlankRecipeProvider.Runner::new);
         aggregate.addProvider(HeatExchangerRecipeProvider.Runner::new);
@@ -78,8 +80,6 @@ public class MIDatagenServer {
         aggregate.addProvider(AlloyRecipeProvider.Runner::new);
         aggregate.addProvider(MaterialRecipeProvider.Runner::new);
         aggregate.addProvider(DyeRecipeProvider.Runner::new);
-        // TODO 26.1
-//        aggregate.addProvider(AssemblerRecipeProvider.Runner::new);
         if (!runtimeDatagen) {
             aggregate.addProvider(CompatRecipeProvider.Runner::new);
         }

@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 20,
+  "ingredient": "#c:ores/copper",
+  "result": {
+    "count": 8,
+    "id": "minecraft:raw_copper"
+  }
+}

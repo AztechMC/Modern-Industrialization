@@ -172,7 +172,7 @@ public class MIMaterials {
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply);
 
         if (compressor) {
-            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
+            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).itemOut("minecraft:" + gemPath, 1));
         }
         return res;
     }
@@ -272,7 +272,7 @@ public class MIMaterials {
                         .cancelRecipes("macerator/ore_to_crushed")
                         .addRecipes(context -> {
                             new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
-                                    .addTaggedPartInput(DUST, 1).addItemOutput("minecraft:quartz", 1);
+                                    .addTaggedPartInput(DUST, 1).itemOut("minecraft:quartz", 1);
                         })
                 );
 

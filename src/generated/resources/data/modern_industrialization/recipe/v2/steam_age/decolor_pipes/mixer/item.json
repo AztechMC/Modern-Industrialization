@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 125,
+      "ingredient": "minecraft:water"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#modern_industrialization:item_pipes"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:item_pipe"
+    }
+  ]
+}

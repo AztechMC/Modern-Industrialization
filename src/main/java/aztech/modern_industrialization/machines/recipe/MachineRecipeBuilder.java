@@ -26,19 +26,29 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.recipe.json.MIRecipeBuilder;
+import dev.latvian.mods.kubejs.recipe.RecipeKey;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.material.Fluid;
 
 public class MachineRecipeBuilder extends MIRecipeJson<MachineRecipeBuilder> implements MIRecipeBuilder {
-    public MachineRecipeBuilder(MachineRecipeType machineRecipeType, int eu, int duration) {
-        super(machineRecipeType, eu, duration);
+    public MachineRecipeBuilder(HolderGetter<Fluid> fluids, HolderGetter<Item> items, MachineRecipeType machineRecipeType, int eu, int duration) {
+        super(fluids, items, machineRecipeType, eu, duration);
     }
 
     public MachineRecipeBuilder(MIRecipeJson<?> otherWithSameData) {
         super(otherWithSameData);
     }
 
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> key) {
+        recipeOutput.accept(key, recipe, null);
+    }
+
+    // TODO: remove string path function
     @Override
     public void offerTo(RecipeOutput recipeOutput, String path) {
         recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), recipe, null);

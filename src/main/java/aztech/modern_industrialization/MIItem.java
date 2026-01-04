@@ -48,21 +48,17 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
-import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
-import net.minecraft.client.renderer.item.properties.select.SelectItemModelProperty;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -77,7 +73,7 @@ public final class MIItem {
 
     // @formatter:off
     // Guide book first so people read it!
-    public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
+    public static final ItemDefinition<GuideBookItem> GUIDEBOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
 
     // Forge hammer, then the various hammers!
     public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(p, ToolMaterial.IRON.durability(), ToolMaterial.IRON.durability()), ITEMS_ORDERED.next());
@@ -107,7 +103,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> ROBOT_ARM = item("Robot Arm", "robot_arm", ITEMS_ORDERED.next());
 
     // Circuits
-    public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_ORDERED.next());
+    public static final ItemDefinition<Item> ANALOG_CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_ORDERED.next());
     public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_ORDERED.next());
     public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_ORDERED.next());
     public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_ORDERED.next());

@@ -26,7 +26,7 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
-import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +36,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 
-public class AlloyRecipeProvider extends MIRecipeProvider {
+public class AlloyRecipeProvider extends BaseRecipeProvider {
     protected AlloyRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -91,16 +91,16 @@ public class AlloyRecipeProvider extends MIRecipeProvider {
         }
 
         public void Build(RecipeOutput recipeOutput) {
-            MachineRecipeBuilder dusts = new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100);
-            dusts.addItemOutput("modern_industrialization:" + output + "_dust", totalAmount);
+            MachineRecipeBuilder dusts = machine(MIMachineRecipeTypes.MIXER, 2, 100);
+            dusts.itemOut("modern_industrialization:" + output + "_dust", totalAmount);
 
-            MachineRecipeBuilder tinyDusts = new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100);
-            tinyDusts.addItemOutput("modern_industrialization:" + output + "_tiny_dust", totalAmount);
+            MachineRecipeBuilder tinyDusts = machine(MIMachineRecipeTypes.MIXER, 2, 100);
+            tinyDusts.itemOut("modern_industrialization:" + output + "_tiny_dust", totalAmount);
 
             for (int i = 0; i < ingredients.size(); i++) {
                 int n = ingredientAmounts.get(i);
-                dusts.addItemInput(conventionTag("dusts/" + ingredients.get(i)), n);
-                tinyDusts.addItemInput(conventionTag("tiny_dusts/" + ingredients.get(i)), n);
+                dusts.itemIn(conventionTag("dusts/" + ingredients.get(i)), n);
+                tinyDusts.itemIn(conventionTag("tiny_dusts/" + ingredients.get(i)), n);
             }
 
             dusts.offerTo(recipeOutput, "alloy/mixer/" + output + "/dust");

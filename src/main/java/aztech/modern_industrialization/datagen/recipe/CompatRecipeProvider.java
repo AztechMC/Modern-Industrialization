@@ -24,7 +24,6 @@
 
 package aztech.modern_industrialization.datagen.recipe;
 
-import appeng.api.ids.AETags;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
@@ -39,7 +38,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -49,14 +47,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
-public class CompatRecipeProvider extends MIRecipeProvider {
+public class CompatRecipeProvider extends BaseRecipeProvider {
     private String currentCompatModid;
     private ICondition[] conditions = null;
 
@@ -83,12 +80,12 @@ public class CompatRecipeProvider extends MIRecipeProvider {
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, item("ae2:fluix_crystal"), "ae2:fluix_dust", 1, 2, 100);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, item("ae2:sky_stone_block"), "ae2:sky_dust", 1, 2, 100);
 
-        addCompatRecipe("mixer/fluix", new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 8, 100)
-                .addItemInput("minecraft:quartz", 1)
-                .addItemInput("ae2:charged_certus_quartz_crystal", 1)
-                .addItemInput("minecraft:redstone", 1)
-                .addFluidInput(Fluids.WATER, 1000, 0)
-                .addItemOutput("ae2:fluix_crystal", 2));
+        addCompatRecipe("mixer/fluix", machine(MIMachineRecipeTypes.MIXER, 8, 100)
+                .itemIn("minecraft:quartz", 1)
+                .itemIn("ae2:charged_certus_quartz_crystal", 1)
+                .itemIn("minecraft:redstone", 1)
+                .fluidIn(Fluids.WATER, 1000, 0)
+                .itemOut("ae2:fluix_crystal", 2));
 
         for (var entry : Map.of(
                 "calculation", item("ae2:certus_quartz_crystal"),
@@ -97,26 +94,26 @@ public class CompatRecipeProvider extends MIRecipeProvider {
             var type = entry.getKey();
             var ingredient = entry.getValue();
 
-            addCompatRecipe("printed_" + type + "_processor", new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 8, 200)
-                    .addItemInput(ingredient, 1)
-                    .addItemInput("ae2:" + type + "_processor_press", 1, 0)
-                    .addItemOutput("ae2:printed_" + type + "_processor", 1));
-            addCompatRecipe(type + "_processor", new MachineRecipeBuilder(MIMachineRecipeTypes.ASSEMBLER, 8, 200)
-                    .addItemInput("ae2:printed_" + type + "_processor", 1)
-                    .addItemInput("ae2:printed_silicon", 1)
-                    .addFluidInput(MIFluids.MOLTEN_REDSTONE, 90)
-                    .addItemOutput("ae2:" + type + "_processor", 1));
+            addCompatRecipe("printed_" + type + "_processor", machine(MIMachineRecipeTypes.PACKER, 8, 200)
+                    .itemIn(ingredient, 1)
+                    .itemIn("ae2:" + type + "_processor_press", 1, 0)
+                    .itemOut("ae2:printed_" + type + "_processor", 1));
+            addCompatRecipe(type + "_processor", machine(MIMachineRecipeTypes.ASSEMBLER, 8, 200)
+                    .itemIn("ae2:printed_" + type + "_processor", 1)
+                    .itemIn("ae2:printed_silicon", 1)
+                    .fluidIn(MIFluids.MOLTEN_REDSTONE, 90)
+                    .itemOut("ae2:" + type + "_processor", 1));
         }
 
-        addCompatRecipe("printed_silicon", new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 8, 200)
-                .addItemInput(conventionTag("silicon"), 1)
-                .addItemInput("ae2:silicon_press", 1, 0)
-                .addItemOutput("ae2:printed_silicon", 1));
+        addCompatRecipe("printed_silicon", machine(MIMachineRecipeTypes.PACKER, 8, 200)
+                .itemIn(conventionTag("silicon"), 1)
+                .itemIn("ae2:silicon_press", 1, 0)
+                .itemOut("ae2:printed_silicon", 1));
 
-        addCompatRecipe("printed_silicon_from_ingot", new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 8, 200)
-                .addItemInput(MIMaterials.SILICON.getPart(MIParts.INGOT), 1)
-                .addItemInput("ae2:silicon_press", 1, 0)
-                .addItemOutput("ae2:printed_silicon", 1));
+        addCompatRecipe("printed_silicon_from_ingot", machine(MIMachineRecipeTypes.PACKER, 8, 200)
+                .itemIn(MIMaterials.SILICON.getPart(MIParts.INGOT), 1)
+                .itemIn("ae2:silicon_press", 1, 0)
+                .itemOut("ae2:printed_silicon", 1));
 
         // ME Wire stuff follows - only enable if AE2 is loaded AND if AE2 compat is enabled
         conditions = new ICondition[] { AECompatCondition.INSTANCE };
@@ -153,10 +150,10 @@ public class CompatRecipeProvider extends MIRecipeProvider {
                 .addInput('b', "minecraft:water_bucket")
                 .addInput('p', tag(MITags.ME_WIRES)));
         // decolor 1 me wire with mixer
-        addCompatRecipe("dyes/decolor/mixer/me_wire", new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                .addItemInput(tag(MITags.ME_WIRES), 1)
-                .addFluidInput(Fluids.WATER, 125)
-                .addItemOutput("modern_industrialization:me_wire", 1));
+        addCompatRecipe("dyes/decolor/mixer/me_wire", machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                .itemIn(tag(MITags.ME_WIRES), 1)
+                .fluidIn(Fluids.WATER, 125)
+                .itemOut("modern_industrialization:me_wire", 1));
         // 16 me wires direct
         var meWiresDirect = new ShapedRecipeJson("modern_industrialization:me_wire", 16, "qCq", "G G", "qCq")
                 .addInput('C', "modern_industrialization:bronze_curved_plate")
@@ -176,9 +173,9 @@ public class CompatRecipeProvider extends MIRecipeProvider {
                 items -> items.getFirst().unwrapKey().orElseThrow().identifier())
                 .toString().replace(':', '_').replace('/', '_');
         String id = "%s/%s_to_%s".formatted(machine.getPath(), inputName, output.replace(':', '_'));
-        addCompatRecipe(id, new MachineRecipeBuilder(machine, eu, duration)
-                .addItemInput(input, 1)
-                .addItemOutput(output, outputAmount));
+        addCompatRecipe(id, machine(machine, eu, duration)
+                .itemIn(input, 1)
+                .itemOut(output, outputAmount));
     }
 
     private void addCompatRecipe(String id, MIRecipeBuilder recipeJson) {

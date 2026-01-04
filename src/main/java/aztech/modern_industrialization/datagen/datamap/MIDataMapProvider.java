@@ -84,7 +84,7 @@ public class MIDataMapProvider extends DataMapProvider {
         addFuel("lignite_coal_tiny_dust", 160);
         addFuel("carbon_dust", 6400);
         addFuel("carbon_tiny_dust", 640);
-        addFuel(MIItem.GUIDE_BOOK.path(), 300);
+        addFuel(MIItem.GUIDEBOOK.path(), 300);
     }
 
     private void addFuel(String path, int value) {

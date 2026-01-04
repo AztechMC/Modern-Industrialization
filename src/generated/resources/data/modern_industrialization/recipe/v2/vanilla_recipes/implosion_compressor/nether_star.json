@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "duration": 10,
+  "eu": 64,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:singularity"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:lava_bucket"
+    },
+    {
+      "amount": 64,
+      "ingredient": "modern_industrialization:nuke"
+    },
+    {
+      "amount": 64,
+      "ingredient": "modern_industrialization:nuke"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:nether_star"
+    }
+  ]
+}

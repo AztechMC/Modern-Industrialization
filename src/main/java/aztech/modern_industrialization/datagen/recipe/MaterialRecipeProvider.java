@@ -33,7 +33,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MaterialRecipeProvider extends RecipeProvider {
+public class MaterialRecipeProvider extends BaseRecipeProvider {
     protected MaterialRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -41,7 +41,7 @@ public class MaterialRecipeProvider extends RecipeProvider {
     @Override
     protected void buildRecipes() {
         for (Material material : MaterialRegistry.getMaterials().values()) {
-            material.registerRecipes.accept(items, output);
+            material.registerRecipes.registerRecipes(fluids, items, output);
         }
     }
 

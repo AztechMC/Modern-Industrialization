@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 240,
+  "eu": 10,
+  "fluid_inputs": [
+    {
+      "amount": 400,
+      "ingredient": "modern_industrialization:propene"
+    },
+    {
+      "amount": 600,
+      "ingredient": "modern_industrialization:oxygen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 400,
+      "fluid": "modern_industrialization:acrylic_acid"
+    },
+    {
+      "amount": 400,
+      "fluid": "minecraft:water"
+    }
+  ]
+}

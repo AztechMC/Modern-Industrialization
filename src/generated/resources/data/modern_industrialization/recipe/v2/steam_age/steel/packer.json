@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:steel_machine_casing",
+    "G": "#c:gears/bronze",
+    "P": "#modern_industrialization:item_pipes",
+    "p": "#modern_industrialization:fluid_pipes"
+  },
+  "pattern": [
+    "PGP",
+    "GCG",
+    "ppp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:steel_packer"
+  }
+}

@@ -58,7 +58,7 @@ public class OreBlock extends Block {
                                           BlockHitResult hit) {
         if (handStack.getItem() == Items.BOOK) {
             handStack.shrink(1);
-            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
+            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDEBOOK));
             return InteractionResult.SUCCESS;
         }
         return super.useItemOn(handStack, state, world, pos, player, hand, hit);

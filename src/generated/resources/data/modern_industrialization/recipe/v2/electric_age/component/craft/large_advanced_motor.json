@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:processing_unit",
+    "m": "modern_industrialization:advanced_motor",
+    "r": "#c:rods/titanium"
+  },
+  "pattern": [
+    "mmm",
+    "Crr",
+    "mmm"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:large_advanced_motor"
+  }
+}

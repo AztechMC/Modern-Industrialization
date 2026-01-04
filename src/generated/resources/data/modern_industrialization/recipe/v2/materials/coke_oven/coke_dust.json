@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:coke_oven",
+  "duration": 600,
+  "eu": 2,
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:creosote"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#c:dusts/coal"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:coke_dust"
+    }
+  ]
+}

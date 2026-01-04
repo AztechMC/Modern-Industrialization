@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 600,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:heavy_fuel"
+    },
+    {
+      "amount": 5000,
+      "ingredient": "modern_industrialization:light_fuel"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 6000,
+      "fluid": "modern_industrialization:diesel"
+    }
+  ]
+}

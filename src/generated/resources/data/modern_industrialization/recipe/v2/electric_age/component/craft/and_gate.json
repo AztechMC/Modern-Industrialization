@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:op_amp",
+    "r": "modern_industrialization:resistor",
+    "w": "modern_industrialization:aluminum_wire"
+  },
+  "pattern": [
+    "wr ",
+    "wAw",
+    "wr "
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:and_gate"
+  }
+}

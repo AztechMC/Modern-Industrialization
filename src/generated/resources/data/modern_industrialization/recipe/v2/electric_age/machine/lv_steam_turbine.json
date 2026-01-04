@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:analog_circuit",
+    "H": "modern_industrialization:basic_machine_hull",
+    "c": "modern_industrialization:tin_cable",
+    "m": "modern_industrialization:motor",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "modern_industrialization:tin_rotor"
+  },
+  "pattern": [
+    "pCp",
+    "rHr",
+    "mcm"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:lv_steam_turbine"
+  }
+}

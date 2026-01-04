@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "#c:gears/steel",
+    "P": "#c:plates/steel"
+  },
+  "pattern": [
+    "PPP",
+    "PGP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:steel_machine_casing"
+  }
+}

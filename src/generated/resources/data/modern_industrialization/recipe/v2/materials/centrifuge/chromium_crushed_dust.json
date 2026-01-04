@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 2400,
+  "eu": 16,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "ingredient": "#c:dusts/ruby"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:chromium_crushed_dust"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:aluminum_dust"
+    }
+  ]
+}

@@ -41,7 +41,7 @@ import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DyeRecipeProvider extends MIRecipeProvider {
+public class DyeRecipeProvider extends BaseRecipeProvider {
     protected DyeRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -88,86 +88,86 @@ public class DyeRecipeProvider extends MIRecipeProvider {
                     .addInput('p', tag(MITags.FLUID_PIPES))
                     .offerTo(output, pathPrefix + "craft/fluid_pipe_1");
             // generate dyes with synthetic oil
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 200)
-                    .addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
-                    .addItemInput(dyeTag, 1, 0)
-                    .addItemOutput("minecraft:" + color.getName() + "_dye", 1)
+            machine(MIMachineRecipeTypes.MIXER, 2, 200)
+                    .fluidIn(MIFluids.SYNTHETIC_OIL, 100)
+                    .itemIn(dyeTag, 1, 0)
+                    .itemOut("minecraft:" + color.getName() + "_dye", 1)
                     .offerTo(output, pathPrefix + "mixer/synthetic_oil");
             // generate dyes with benzene
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 200)
-                    .addFluidInput(MIFluids.BENZENE, 25)
-                    .addItemInput(dyeTag, 1, 0)
-                    .addItemOutput("minecraft:" + color.getName() + "_dye", 1)
+            machine(MIMachineRecipeTypes.MIXER, 2, 200)
+                    .fluidIn(MIFluids.BENZENE, 25)
+                    .itemIn(dyeTag, 1, 0)
+                    .itemOut("minecraft:" + color.getName() + "_dye", 1)
                     .offerTo(output, pathPrefix + "mixer/benzene");
 
             // wool
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(ItemTags.WOOL), 8)
-                    .addItemOutput("minecraft:" + color.getName() + "_wool", 8)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(ItemTags.WOOL), 8)
+                    .itemOut("minecraft:" + color.getName() + "_wool", 8)
                     .offerTo(output, pathPrefix + "mixer/wool");
 
             // glass
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(Tags.Items.GLASS_BLOCKS), 8)
-                    .addItemOutput("minecraft:" + color.getName() + "_stained_glass", 8)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(Tags.Items.GLASS_BLOCKS), 8)
+                    .itemOut("minecraft:" + color.getName() + "_stained_glass", 8)
                     .offerTo(output, pathPrefix + "mixer/glass");
 
             // glassPane
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(Tags.Items.GLASS_PANES), 8)
-                    .addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(Tags.Items.GLASS_PANES), 8)
+                    .itemOut("minecraft:" + color.getName() + "_stained_glass_pane", 8)
                     .offerTo(output, pathPrefix + "mixer/glass_pane");
 
             // shulker Box
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(Tags.Items.SHULKER_BOXES), 1)
-                    .addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(Tags.Items.SHULKER_BOXES), 1)
+                    .itemOut("minecraft:" + color.getName() + "_shulker_box", 1)
                     .offerTo(output, pathPrefix + "mixer/shulker_box");
 
             // bed
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(ItemTags.BEDS), 1)
-                    .addItemOutput("minecraft:" + color.getName() + "_bed", 1)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(ItemTags.BEDS), 1)
+                    .itemOut("minecraft:" + color.getName() + "_bed", 1)
                     .offerTo(output, pathPrefix + "mixer/bed");
 
             // candle
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(ItemTags.CANDLES), 1)
-                    .addItemOutput("minecraft:" + color.getName() + "_candle", 1)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(ItemTags.CANDLES), 1)
+                    .itemOut("minecraft:" + color.getName() + "_candle", 1)
                     .offerTo(output, pathPrefix + "mixer/candle");
 
             // carpet
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(ItemTags.WOOL_CARPETS), 8)
-                    .addItemOutput("minecraft:" + color.getName() + "_carpet", 8)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(ItemTags.WOOL_CARPETS), 8)
+                    .itemOut("minecraft:" + color.getName() + "_carpet", 8)
                     .offerTo(output, pathPrefix + "mixer/carpet");
 
             // terracotta
-            new MachineRecipeBuilder(MIMachineRecipeTypes.MIXER, 2, 100)
-                    .addItemInput(dyeTag, 1)
-                    .addItemInput(tag(ItemTags.TERRACOTTA), 8)
-                    .addItemOutput("minecraft:" + color.getName() + "_terracotta", 8)
+            machine(MIMachineRecipeTypes.MIXER, 2, 100)
+                    .itemIn(dyeTag, 1)
+                    .itemIn(tag(ItemTags.TERRACOTTA), 8)
+                    .itemOut("minecraft:" + color.getName() + "_terracotta", 8)
                     .offerTo(output, pathPrefix + "mixer/terracotta");
 
             // glass pane cutting
-            new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                    .addFluidInput(MIFluids.LUBRICANT, 1)
-                    .addItemInput("minecraft:" + color.getName() + "_stained_glass", 6)
-                    .addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 16)
+            machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                    .fluidIn(MIFluids.LUBRICANT, 1)
+                    .itemIn("minecraft:" + color.getName() + "_stained_glass", 6)
+                    .itemOut("minecraft:" + color.getName() + "_stained_glass_pane", 16)
                     .offerTo(output, pathPrefix + "cutting_machine/glass_pane");
 
             // carpet cutting
-            new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                    .addFluidInput(MIFluids.LUBRICANT, 1)
-                    .addItemInput("minecraft:" + color.getName() + "_wool", 1)
-                    .addItemOutput("minecraft:" + color.getName() + "_carpet", 4)
+            machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                    .fluidIn(MIFluids.LUBRICANT, 1)
+                    .itemIn("minecraft:" + color.getName() + "_wool", 1)
+                    .itemOut("minecraft:" + color.getName() + "_carpet", 4)
                     .offerTo(output, pathPrefix + "cutting_machine/carpet");
         }
     }

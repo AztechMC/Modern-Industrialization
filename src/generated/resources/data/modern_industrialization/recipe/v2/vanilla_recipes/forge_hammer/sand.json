@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 10,
+  "ingredient": "minecraft:gravel",
+  "result": {
+    "count": 1,
+    "id": "minecraft:sand"
+  }
+}

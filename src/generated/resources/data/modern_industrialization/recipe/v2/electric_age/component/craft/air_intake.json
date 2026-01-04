@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": "modern_industrialization:stainless_steel_rotor",
+    "a": "#c:plates/aluminum",
+    "r": "#c:plates/stainless_steel"
+  },
+  "pattern": [
+    "ara",
+    "rRr",
+    "ara"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:air_intake"
+  }
+}

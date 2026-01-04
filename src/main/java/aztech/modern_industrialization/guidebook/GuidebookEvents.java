@@ -39,7 +39,7 @@ public class GuidebookEvents {
             if (MIServerConfig.INSTANCE.spawnWithGuideBook.getAsBoolean()) {
                 GuidebookPersistentState state = GuidebookPersistentState.get(((ServerPlayer) player).level().getServer());
                 if (!state.hasPlayerReceivedGuidebook(player)) {
-                    if (player.getInventory().add(new ItemStack(MIItem.GUIDE_BOOK))) {
+                    if (player.getInventory().add(new ItemStack(MIItem.GUIDEBOOK))) {
                         state.addPlayerReceivedGuidebook(player);
                     }
                 }
@@ -50,7 +50,7 @@ public class GuidebookEvents {
 
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerRespawnEvent.class, event -> {
             if (!event.isEndConquered() && MIServerConfig.INSTANCE.respawnWithGuideBook.getAsBoolean()) {
-                event.getEntity().getInventory().add(new ItemStack(MIItem.GUIDE_BOOK));
+                event.getEntity().getInventory().add(new ItemStack(MIItem.GUIDEBOOK));
             }
         });
     }

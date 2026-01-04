@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 600,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:polyvinyl_chloride"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 3,
+      "ingredient": "modern_industrialization:superconductor_wire"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:cooling_cell"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 6,
+      "item": "modern_industrialization:superconductor_cable"
+    }
+  ]
+}

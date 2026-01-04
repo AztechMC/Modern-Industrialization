@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 2000,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:helium"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 5,
+      "fluid": "modern_industrialization:helium_3"
+    }
+  ]
+}

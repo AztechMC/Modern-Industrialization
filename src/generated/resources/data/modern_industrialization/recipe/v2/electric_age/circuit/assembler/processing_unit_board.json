@@ -1,0 +1,35 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 1200,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 1500,
+      "ingredient": "modern_industrialization:polyvinyl_chloride"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 8,
+      "ingredient": "modern_industrialization:annealed_copper_cable"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:cadmium_battery"
+    },
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:digital_circuit_board"
+    },
+    {
+      "amount": 4,
+      "ingredient": "#c:plates/platinum"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:processing_unit_board"
+    }
+  ]
+}

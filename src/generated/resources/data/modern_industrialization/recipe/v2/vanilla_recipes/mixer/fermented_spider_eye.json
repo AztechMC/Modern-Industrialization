@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:spider_eye"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:brown_mushroom"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:sugar"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ]
+}

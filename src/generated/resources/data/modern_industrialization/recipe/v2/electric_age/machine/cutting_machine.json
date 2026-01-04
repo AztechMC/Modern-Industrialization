@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:analog_circuit",
+    "H": "modern_industrialization:basic_machine_hull",
+    "c": "modern_industrialization:conveyor",
+    "d": "modern_industrialization:invar_rotary_blade",
+    "g": "#c:glass_blocks",
+    "m": "modern_industrialization:motor"
+  },
+  "pattern": [
+    "gdg",
+    "mHm",
+    "CcC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:electric_cutting_machine"
+  }
+}

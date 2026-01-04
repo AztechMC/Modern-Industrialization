@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "modern_industrialization:battery_alloy_curved_plate",
+    "a": "#c:plates/battery_alloy",
+    "c": "modern_industrialization:tin_cable",
+    "r": "minecraft:redstone"
+  },
+  "pattern": [
+    "cac",
+    "BrB",
+    "BrB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:redstone_battery"
+  }
+}

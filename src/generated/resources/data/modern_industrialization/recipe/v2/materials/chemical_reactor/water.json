@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 200,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:oxygen"
+    },
+    {
+      "amount": 2000,
+      "ingredient": "modern_industrialization:hydrogen"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 3000,
+      "fluid": "minecraft:water"
+    }
+  ]
+}

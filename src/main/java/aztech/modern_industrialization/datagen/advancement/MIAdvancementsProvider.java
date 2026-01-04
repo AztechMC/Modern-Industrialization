@@ -123,7 +123,7 @@ public record MIAdvancementsProvider(TranslationProvider translations) implement
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> consumer) {
         var guidebook = newBuilder("guidebook")
-                .display(MIItem.GUIDE_BOOK,
+                .display(MIItem.GUIDEBOOK,
                         MIText.ModernIndustrialization.text(),
                         translateDescription("guidebook", "Welcome to Modern Industrialization! Make sure to check out the guidebook."),
                         MI.id("textures/block/fire_clay_bricks.png"),

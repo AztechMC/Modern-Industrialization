@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/bronze",
+    "H": "modern_industrialization:fire_clay_bricks"
+  },
+  "pattern": [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:bronze_plated_bricks"
+  }
+}

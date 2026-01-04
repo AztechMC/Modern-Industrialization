@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 1200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "ingredient": "minecraft:raw_iron"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "modern_industrialization:iron_dust"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:manganese_crushed_dust"
+    }
+  ]
+}

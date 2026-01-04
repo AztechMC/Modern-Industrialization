@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "modern_industrialization:analog_circuit_board",
+    "c": "modern_industrialization:capacitor",
+    "g": "minecraft:glass_pane",
+    "i": "modern_industrialization:inductor",
+    "r": "modern_industrialization:resistor"
+  },
+  "pattern": [
+    "ggg",
+    "rcr",
+    "ibi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:config_card"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_machine_casing": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:bronze_machine_casing"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modern_industrialization:v2/steam_age/bronze/compressor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_machine_casing"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modern_industrialization:v2/steam_age/bronze/compressor"
+    ]
+  }
+}

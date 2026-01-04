@@ -26,6 +26,7 @@ package aztech.modern_industrialization.recipe.json;
 
 import net.minecraft.data.recipes.RecipeOutput;
 
+// TODO: replace by vanilla interface?
 public interface MIRecipeBuilder {
     void offerTo(RecipeOutput recipeOutput, String path);
 }

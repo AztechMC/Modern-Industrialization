@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import org.jspecify.annotations.Nullable;
 
 public final class MaterialBuilder {
@@ -134,9 +135,9 @@ public final class MaterialBuilder {
         return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
-    public void buildRecipes(HolderGetter<Item> items, RecipeOutput output) {
+    public void buildRecipes(HolderGetter<Fluid> fluids, HolderGetter<Item> items, RecipeOutput output) {
         Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
-        RecipeContext recipeContext = new RecipeContext(items, recipesMap);
+        RecipeContext recipeContext = new RecipeContext(fluids, items, recipesMap);
         for (RecipeAction action : recipesActions) {
             action.apply(recipeContext);
         }
@@ -167,12 +168,18 @@ public final class MaterialBuilder {
     }
 
     public class RecipeContext {
+        private final HolderGetter<Fluid> fluids;
         private final HolderGetter<Item> items;
         private final Map<String, MaterialRecipeBuilder> recipesMap;
 
-        public RecipeContext(HolderGetter<Item> items, Map<String, MaterialRecipeBuilder> recipesMap) {
+        public RecipeContext(HolderGetter<Fluid> fluids, HolderGetter<Item> items, Map<String, MaterialRecipeBuilder> recipesMap) {
+            this.fluids = fluids;
             this.items = items;
             this.recipesMap = recipesMap;
+        }
+
+        public HolderGetter<Fluid> fluids() {
+            return fluids;
         }
 
         public HolderGetter<Item> items() {

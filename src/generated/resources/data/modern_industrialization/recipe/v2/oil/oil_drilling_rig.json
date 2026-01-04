@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "modern_industrialization:electronic_circuit",
+    "H": "modern_industrialization:advanced_machine_hull",
+    "L": "modern_industrialization:steel_large_plate",
+    "P": "modern_industrialization:large_pump",
+    "p": "#modern_industrialization:fluid_pipes"
+  },
+  "pattern": [
+    "LGL",
+    "PHP",
+    "LpL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:oil_drilling_rig"
+  }
+}

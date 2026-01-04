@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:blast_furnace"
+    },
+    {
+      "amount": 8,
+      "ingredient": "modern_industrialization:fire_clay_bricks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steam_blast_furnace"
+    }
+  ]
+}

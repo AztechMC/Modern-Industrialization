@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/nuclear_alloy",
+    "C": "modern_industrialization:turbo_machine_hull"
+  },
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:nuclear_casing"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:electronic_circuit",
+    "M": "modern_industrialization:large_motor",
+    "p": "modern_industrialization:pump",
+    "r": "modern_industrialization:aluminum_rotor"
+  },
+  "pattern": [
+    "ppp",
+    "rMr",
+    "CrC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:large_pump"
+  }
+}

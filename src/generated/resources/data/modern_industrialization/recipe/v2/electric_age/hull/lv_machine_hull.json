@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:analog_circuit",
+    "B": "modern_industrialization:redstone_battery",
+    "C": "modern_industrialization:steel_machine_casing",
+    "c": "modern_industrialization:tin_cable"
+  },
+  "pattern": [
+    " A ",
+    "BCB",
+    "ccc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:basic_machine_hull"
+  }
+}

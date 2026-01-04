@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "modern_industrialization:advanced_machine_hull",
+    "L": "#c:plates/battery_alloy",
+    "b": "modern_industrialization:silicon_battery"
+  },
+  "pattern": [
+    "bbb",
+    "LHL",
+    "bbb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:mv_storage_unit"
+  }
+}

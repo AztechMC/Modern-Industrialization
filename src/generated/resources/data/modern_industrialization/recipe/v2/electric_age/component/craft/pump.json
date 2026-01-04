@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "modern_industrialization:tin_bolt",
+    "m": "modern_industrialization:motor",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "modern_industrialization:tin_rotor"
+  },
+  "pattern": [
+    "ppp",
+    "rmr",
+    "brb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:pump"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "duration": 10,
+  "eu": 1,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:mixed_ingot_iridium"
+    },
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:industrial_tnt"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:iridium_plate"
+    }
+  ]
+}

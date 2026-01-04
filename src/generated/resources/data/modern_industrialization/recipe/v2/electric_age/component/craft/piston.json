@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": "modern_industrialization:tin_cable",
+    "g": "#c:gears/steel",
+    "m": "modern_industrialization:motor",
+    "p": "#c:plates/steel",
+    "r": "#c:rods/steel"
+  },
+  "pattern": [
+    "ppp",
+    "crr",
+    "cmg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:piston"
+  }
+}

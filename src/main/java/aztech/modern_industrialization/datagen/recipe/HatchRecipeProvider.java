@@ -34,7 +34,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public class HatchRecipeProvider extends RecipeProvider {
+public class HatchRecipeProvider extends BaseRecipeProvider {
     private static final String pathPrefix = "hatches/";
 
     protected HatchRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
@@ -82,8 +82,8 @@ public class HatchRecipeProvider extends RecipeProvider {
 
                         MachineRecipeBuilder craftAsbl = craft.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
 
-                        MachineRecipeBuilder unpacker = new MachineRecipeBuilder(MIMachineRecipeTypes.UNPACKER, 2, 200).addItemOutput(casing, 1)
-                                .addItemOutput(other, 1).addItemInput(AB[k], 1);
+                        MachineRecipeBuilder unpacker = machine(MIMachineRecipeTypes.UNPACKER, 2, 200).itemOut(casing, 1)
+                                .itemOut(other, 1).itemIn(AB[k], 1);
 
                         ShapedRecipeJson craftFromOther = new ShapedRecipeJson(AB[k], 1, "U").addInput('U', AB[(k + 1) % 2]);
 

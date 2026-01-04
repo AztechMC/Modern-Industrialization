@@ -36,6 +36,7 @@ import java.util.function.Consumer;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -46,10 +47,10 @@ public class Material {
     final Map<PartKey, MaterialItemPart> parts;
     private final Map<MaterialProperty<?>, Object> properties;
 
-    public final BiConsumer<HolderGetter<Item>, RecipeOutput> registerRecipes;
+    public final RecipeProvider registerRecipes;
 
     Material(String name, Map<MaterialProperty<?>, Object> properties, Map<PartKey, MaterialItemPart> parts,
-             BiConsumer<HolderGetter<Item>, RecipeOutput> registerRecipes) {
+             RecipeProvider registerRecipes) {
         this.name = name;
         this.properties = properties;
         this.parts = parts;
@@ -76,5 +77,10 @@ public class Material {
     @Nullable
     public <T> T get(MaterialProperty<T> prop) {
         return (T) properties.get(prop);
+    }
+
+    @FunctionalInterface
+    public interface RecipeProvider {
+        void registerRecipes(HolderGetter<Fluid> fluids, HolderGetter<Item> items, RecipeOutput output);
     }
 }

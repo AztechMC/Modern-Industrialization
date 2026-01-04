@@ -37,12 +37,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PetrochemRecipeProvider extends MIRecipeProvider {
+public class PetrochemRecipeProvider extends BaseRecipeProvider {
     protected PetrochemRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -98,18 +97,19 @@ public class PetrochemRecipeProvider extends MIRecipeProvider {
         String basePath = "petrochem/distillation/" + BuiltInRegistries.FLUID.getKey(input.fluid).getPath() + "_";
 
         // Full recipe
-        var full = new MachineRecipeBuilder(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
-        full.addFluidInput(input.fluid, input.amount);
+        var full = machine(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
+        full.fluidIn(input.fluid, input.amount);
         for (var output : outputs) {
-            full.addFluidOutput(output.fluid, output.amount);
+            full.fluidOut(output.fluid, output.amount);
         }
         full.offerTo(output, basePath + "full");
 
         // Partial recipes
         for (int i = 0; i < outputs.length; ++i) {
             var output = outputs[i];
-            new MachineRecipeBuilder(MIMachineRecipeTypes.DISTILLERY, eu, duration)
-                    .addFluidInput(input.fluid, input.amount).addFluidOutput(output.fluid, output.amount)
+            machine(MIMachineRecipeTypes.DISTILLERY, eu, duration)
+                    .fluidIn(input.fluid, input.amount)
+                    .fluidOut(output.fluid, output.amount)
                     .offerTo(this.output, basePath + i);
         }
     }
@@ -122,9 +122,9 @@ public class PetrochemRecipeProvider extends MIRecipeProvider {
         Fluid sulfuricFluid = BuiltInRegistries.FLUID.getValue(MI.id("sulfuric_" + baseName));
         Preconditions.checkArgument(sulfuricFluid instanceof MIFluid);
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
-                .addFluidInput(sulfuricFluid, 12000).addFluidInput(HYDROGEN.asFluid(), 2000)
-                .addFluidOutput(purifiedFluid, 12000).addFluidOutput(SULFURIC_ACID.asFluid(), 2000)
+        machine(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
+                .fluidIn(sulfuricFluid, 12000).fluidIn(HYDROGEN.asFluid(), 2000)
+                .fluidOut(purifiedFluid, 12000).fluidOut(SULFURIC_ACID.asFluid(), 2000)
                 .offerTo(output, "petrochem/sulfuric_purification/" + baseName);
     }
 
@@ -136,10 +136,10 @@ public class PetrochemRecipeProvider extends MIRecipeProvider {
         String baseNameInput = BuiltInRegistries.FLUID.getKey(input).getPath();
 
         for (var kind : PolymerizationKind.values()) {
-            new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
-                    .addItemInput(conventionTag("tiny_dusts/" + kind.catalystMaterial), kind.inputTinyDust)
-                    .addFluidInput(input, 500)
-                    .addFluidOutput(output, kind.outputMillis)
+            machine(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
+                    .itemIn(conventionTag("tiny_dusts/" + kind.catalystMaterial), kind.inputTinyDust)
+                    .fluidIn(input, 500)
+                    .fluidOut(output, kind.outputMillis)
                     .offerTo(this.output, "petrochem/polymerization/" + baseNameInput + "_" + kind.name().toLowerCase());
         }
     }
@@ -149,10 +149,10 @@ public class PetrochemRecipeProvider extends MIRecipeProvider {
     }
 
     private void generateSteamCracking(FluidLike input, FluidLike output) {
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
-                .addFluidInput(input, 1000)
-                .addFluidInput(STEAM, 100)
-                .addFluidOutput(output, 1000)
+        machine(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
+                .fluidIn(input, 1000)
+                .fluidIn(STEAM, 100)
+                .fluidOut(output, 1000)
                 .offerTo(this.output, "petrochem/steam_cracking/" + BuiltInRegistries.FLUID.getKey(input.asFluid()).getPath());
     }
 

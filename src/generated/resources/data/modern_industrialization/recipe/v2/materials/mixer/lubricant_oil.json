@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "ingredient": "modern_industrialization:naphtha"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 500,
+      "fluid": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:redstone"
+    }
+  ]
+}

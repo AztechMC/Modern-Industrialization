@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "modern_industrialization:electronic_circuit_board",
+    "d": "modern_industrialization:diode",
+    "t": "modern_industrialization:transistor",
+    "w": "modern_industrialization:electrum_fine_wire"
+  },
+  "pattern": [
+    "wdw",
+    "tbt",
+    "wdw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:overdrive_module"
+  }
+}

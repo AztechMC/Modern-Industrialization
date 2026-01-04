@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "B": "modern_industrialization:redstone_battery",
+    "b": "modern_industrialization:analog_circuit_board",
+    "e": "modern_industrialization:electrum_cable"
+  },
+  "pattern": [
+    "eAe",
+    "AbA",
+    "eBe"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:electronic_circuit_board"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:electronic_circuit",
+    "G": "#c:gears/aluminum",
+    "H": "modern_industrialization:advanced_machine_hull",
+    "P": "modern_industrialization:large_pump",
+    "c": "modern_industrialization:electrum_cable"
+  },
+  "pattern": [
+    "PCP",
+    "GHG",
+    "ccc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:mv_diesel_generator"
+  }
+}

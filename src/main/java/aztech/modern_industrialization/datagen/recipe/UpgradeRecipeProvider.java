@@ -39,7 +39,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 
-public class UpgradeRecipeProvider extends RecipeProvider {
+public class UpgradeRecipeProvider extends BaseRecipeProvider {
     protected UpgradeRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -66,13 +66,13 @@ public class UpgradeRecipeProvider extends RecipeProvider {
                     .requires(upgrade);
             recipe.offerTo(output, "upgrade/craft/steel/" + machine);
 
-            var recipePacker = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100).addItemInput(bronze, 1)
-                    .addItemInput(upgrade, 1).addItemOutput(steel, 1);
+            var recipePacker = machine(MIMachineRecipeTypes.PACKER, 2, 100).itemIn(bronze, 1)
+                    .itemIn(upgrade, 1).itemOut(steel, 1);
             recipePacker.offerTo(output, "upgrade/packer/steel/" + machine);
 
             if (!STEEL_NO_UNPACKER.contains(machine)) {
-                var recipeUnpacker = new MachineRecipeBuilder(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
-                        .addItemOutput(upgrade, 1).addItemInput(steel, 1);
+                var recipeUnpacker = machine(MIMachineRecipeTypes.UNPACKER, 2, 100).itemOut(bronze, 1)
+                        .itemOut(upgrade, 1).itemIn(steel, 1);
                 recipeUnpacker.offerTo(output, "upgrade/unpacker/steel/" + machine);
             }
         }
@@ -82,10 +82,10 @@ public class UpgradeRecipeProvider extends RecipeProvider {
 
     private void buildQuantumUpgrades() {
         for (var itemType : QUANTUM_ITEMS) {
-            var packerRecipe = new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 1_000_000, 200)
-                    .addItemInput("minecraft:netherite_" + itemType, 1)
-                    .addItemInput("modern_industrialization:quantum_upgrade", 1)
-                    .addItemOutput("modern_industrialization:quantum_" + itemType, 1);
+            var packerRecipe = machine(MIMachineRecipeTypes.PACKER, 1_000_000, 200)
+                    .itemIn("minecraft:netherite_" + itemType, 1)
+                    .itemIn("modern_industrialization:quantum_upgrade", 1)
+                    .itemOut("modern_industrialization:quantum_" + itemType, 1);
             packerRecipe.offerTo(output, "upgrade/packer/quantum/" + itemType);
         }
     }

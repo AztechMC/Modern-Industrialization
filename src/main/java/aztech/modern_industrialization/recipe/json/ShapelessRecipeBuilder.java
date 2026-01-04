@@ -37,6 +37,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
+// TODO: remove in favor of vanilla's
 public class ShapelessRecipeBuilder implements MIRecipeBuilder {
     private final ItemStack resultStack;
     private final NonNullList<Ingredient> ingredients = NonNullList.create();

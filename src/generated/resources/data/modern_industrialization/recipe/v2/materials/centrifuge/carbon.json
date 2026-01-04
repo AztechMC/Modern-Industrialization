@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 400,
+  "eu": 16,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#c:dusts/coal"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:carbon_dust"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:processing_unit",
+    "c": "modern_industrialization:annealed_copper_cable",
+    "d": "modern_industrialization:titanium_drill_head",
+    "g": "#c:gears/iron",
+    "m": "modern_industrialization:large_advanced_motor",
+    "p": "#modern_industrialization:item_pipes"
+  },
+  "pattern": [
+    "gpd",
+    "mCp",
+    "cmg"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:titanium_drill"
+  }
+}

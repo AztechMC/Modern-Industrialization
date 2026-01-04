@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:robot_arm",
+    "C": "modern_industrialization:advanced_machine_hull",
+    "G": "modern_industrialization:electronic_circuit",
+    "L": "modern_industrialization:large_motor",
+    "P": "modern_industrialization:steam_quarry"
+  },
+  "pattern": [
+    "LAL",
+    "GCG",
+    "LPL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:electric_quarry"
+  }
+}

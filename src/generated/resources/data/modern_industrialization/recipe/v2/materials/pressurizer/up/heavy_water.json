@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:pressurizer",
+  "duration": 1200,
+  "eu": 64,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "modern_industrialization:heavy_water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 125,
+      "fluid": "modern_industrialization:high_pressure_heavy_water"
+    }
+  ]
+}

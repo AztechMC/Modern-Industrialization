@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 7,
+      "ingredient": "#c:dusts/iron"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:coke_dust"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "modern_industrialization:uncooked_steel_dust"
+    }
+  ]
+}

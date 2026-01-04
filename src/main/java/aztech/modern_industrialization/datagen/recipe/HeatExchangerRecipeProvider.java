@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.concurrent.CompletableFuture;
 
-public class HeatExchangerRecipeProvider extends RecipeProvider {
+public class HeatExchangerRecipeProvider extends BaseRecipeProvider {
     protected HeatExchangerRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -65,16 +65,16 @@ public class HeatExchangerRecipeProvider extends RecipeProvider {
             for (int j = 0; j < cold.length; j++) {
                 if (i != j) {
 
-                    var recipe = new MachineRecipeBuilder(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
+                    var recipe = machine(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
 
                     String path = "heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
                             + fluidToString(cold[j], false);
 
-                    recipe.addFluidInput(fluidToString(hots[i], true), amountBaseHot / amount[i]);
-                    recipe.addFluidInput(fluidToString(cold[j], true), amountBaseCold / amount[j]);
+                    recipe.fluidIn(fluidToString(hots[i], true), amountBaseHot / amount[i]);
+                    recipe.fluidIn(fluidToString(cold[j], true), amountBaseCold / amount[j]);
 
-                    recipe.addFluidOutput(fluidToString(cold[i], true), amountBaseCold / amount[i]);
-                    recipe.addFluidOutput(fluidToString(hots[j], true), amountBaseHot / amount[j]);
+                    recipe.fluidOut(fluidToString(cold[i], true), amountBaseCold / amount[i]);
+                    recipe.fluidOut(fluidToString(hots[j], true), amountBaseHot / amount[j]);
 
                     recipe.offerTo(output, path);
                 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:tin_cable",
+    "a": "#c:plates/battery_alloy",
+    "c": "modern_industrialization:battery_alloy_curved_plate",
+    "r": "modern_industrialization:analog_circuit"
+  },
+  "pattern": [
+    "aCa",
+    "crc",
+    "aCa"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:portable_storage_unit"
+  }
+}

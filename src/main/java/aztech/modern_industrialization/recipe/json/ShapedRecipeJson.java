@@ -30,18 +30,24 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
+
+import aztech.modern_industrialization.util.EmptyHolderGetter;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.level.material.Fluid;
 
+// TODO: remove in favor of vanilla's
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class ShapedRecipeJson implements MIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
@@ -108,7 +114,11 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        var assemblerJson = new MachineRecipeBuilder(machine, eu, duration).addItemOutput(result.getItem(), result.getCount() / division);
+        var assemblerJson = new MachineRecipeBuilder(
+                EmptyHolderGetter.getInstance(),
+                EmptyHolderGetter.getInstance(),
+                machine, eu, duration)
+                .itemOut(result.getItem(), result.getCount() / division);
         for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {
@@ -123,7 +133,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }
 
-            assemblerJson.addItemInput(entry.getValue(), count / division, 1);
+            assemblerJson.itemIn(entry.getValue(), count / division, 1);
         }
 
         return assemblerJson;

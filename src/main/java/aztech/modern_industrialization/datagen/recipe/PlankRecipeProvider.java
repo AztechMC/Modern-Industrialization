@@ -34,7 +34,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
-public final class PlankRecipeProvider extends MIRecipeProvider {
+public final class PlankRecipeProvider extends BaseRecipeProvider {
     PlankRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -59,40 +59,40 @@ public final class PlankRecipeProvider extends MIRecipeProvider {
 
         String packedSuffix = log ? "wood" : "hyphae";
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                .addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput(tag("minecraft:" + prefix + "_" + suffixTag), 1)
-                .addItemOutput("minecraft:" + prefix + "_planks", 6)
+        machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .fluidIn(MIFluids.LUBRICANT, 1)
+                .itemIn(tag("minecraft:" + prefix + "_" + suffixTag), 1)
+                .itemOut("minecraft:" + prefix + "_planks", 6)
                 .offerTo(output, "cutting_machine/planks/" + prefix);
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                .addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_" + suffix, 1)
-                .addItemOutput("minecraft:stripped_" + prefix + "_" + suffix, 1)
+        machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .fluidIn(MIFluids.LUBRICANT, 1)
+                .itemIn("minecraft:" + prefix + "_" + suffix, 1)
+                .itemOut("minecraft:stripped_" + prefix + "_" + suffix, 1)
                 .offerTo(output, "cutting_machine/stripped/" + prefix);
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                .addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_" + packedSuffix, 1)
-                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 1)
+        machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .fluidIn(MIFluids.LUBRICANT, 1)
+                .itemIn("minecraft:" + prefix + "_" + packedSuffix, 1)
+                .itemOut("minecraft:stripped_" + prefix + "_" + packedSuffix, 1)
                 .offerTo(output, "cutting_machine/stripped_wood/" + prefix);
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
-                .addFluidInput(MIFluids.LUBRICANT, 1)
-                .addItemInput("minecraft:" + prefix + "_planks", 1)
-                .addItemOutput("minecraft:" + prefix + "_slab", 2)
+        machine(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100)
+                .fluidIn(MIFluids.LUBRICANT, 1)
+                .itemIn("minecraft:" + prefix + "_planks", 1)
+                .itemOut("minecraft:" + prefix + "_slab", 2)
                 .offerTo(output, "cutting_machine/slabs/" + prefix);
 
         // packer
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100)
-                .addItemInput("minecraft:" + prefix + "_" + suffix, 4)
-                .addItemOutput("minecraft:" + prefix + "_" + packedSuffix, 3)
+        machine(MIMachineRecipeTypes.PACKER, 2, 100)
+                .itemIn("minecraft:" + prefix + "_" + suffix, 4)
+                .itemOut("minecraft:" + prefix + "_" + packedSuffix, 3)
                 .offerTo(output, "packer/wood/" + prefix);
 
-        new MachineRecipeBuilder(MIMachineRecipeTypes.PACKER, 2, 100)
-                .addItemInput("minecraft:stripped_" + prefix + "_" + suffix, 4)
-                .addItemOutput("minecraft:stripped_" + prefix + "_" + packedSuffix, 3)
+        machine(MIMachineRecipeTypes.PACKER, 2, 100)
+                .itemIn("minecraft:stripped_" + prefix + "_" + suffix, 4)
+                .itemOut("minecraft:stripped_" + prefix + "_" + packedSuffix, 3)
                 .offerTo(output, "packer/stripped_wood/" + prefix);
     }
 

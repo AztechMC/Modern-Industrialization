@@ -274,15 +274,4 @@ public class MIClient {
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         MIKeybinds.init(event);
     }
-
-    @SubscribeEvent
-    private static void registerItemProperties(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            // TODO 26.1
-//            ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
-//                    (stack, level, entity, seed) -> {
-//                        return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
-//                    });
-        });
-    }
 }

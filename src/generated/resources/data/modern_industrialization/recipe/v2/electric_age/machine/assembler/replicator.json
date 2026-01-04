@@ -1,0 +1,31 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 8000,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "ingredient": "modern_industrialization:uu_matter"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:quantum_machine_hull"
+    },
+    {
+      "amount": 2,
+      "ingredient": "modern_industrialization:quantum_upgrade"
+    },
+    {
+      "amount": 4,
+      "ingredient": "modern_industrialization:quantum_circuit"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:replicator"
+    }
+  ]
+}

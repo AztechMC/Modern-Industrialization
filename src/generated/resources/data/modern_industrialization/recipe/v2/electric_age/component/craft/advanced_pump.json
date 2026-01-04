@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "modern_industrialization:stainless_steel_bolt",
+    "m": "modern_industrialization:advanced_motor",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "modern_industrialization:stainless_steel_rotor"
+  },
+  "pattern": [
+    "ppp",
+    "rmr",
+    "brb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:advanced_pump"
+  }
+}

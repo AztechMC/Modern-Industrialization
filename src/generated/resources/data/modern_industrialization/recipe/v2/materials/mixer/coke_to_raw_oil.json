@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 400,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "ingredient": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "fluid": "modern_industrialization:raw_synthetic_oil"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:coke_dust"
+    }
+  ]
+}

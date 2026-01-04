@@ -28,11 +28,12 @@ import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Map;
+
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,16 +45,20 @@ import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
 public class MIRecipeJson<T extends MIRecipeJson<?>> {
+    protected final HolderGetter<Fluid> fluids;
+    protected final HolderGetter<Item> items;
     protected final MachineRecipe recipe;
 
-    protected MIRecipeJson(MachineRecipeType machineRecipeType, int eu, int duration) {
+    protected MIRecipeJson(HolderGetter<Fluid> fluids, HolderGetter<Item> items, MachineRecipeType machineRecipeType, int eu, int duration) {
+        this.fluids = fluids;
+        this.items = items;
         this.recipe = new MachineRecipe(machineRecipeType);
         recipe.eu = eu;
         recipe.duration = duration;
     }
 
     protected MIRecipeJson(MIRecipeJson<?> otherWithSameData) {
-        this((MachineRecipeType) otherWithSameData.recipe.getType(), otherWithSameData.recipe.eu, otherWithSameData.recipe.duration);
+        this(otherWithSameData.fluids, otherWithSameData.items, (MachineRecipeType) otherWithSameData.recipe.getType(), otherWithSameData.recipe.eu, otherWithSameData.recipe.duration);
 
         recipe.itemInputs.addAll(otherWithSameData.recipe.itemInputs);
         recipe.fluidInputs.addAll(otherWithSameData.recipe.fluidInputs);
@@ -61,118 +66,146 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
         recipe.fluidOutputs.addAll(otherWithSameData.recipe.fluidOutputs);
     }
 
-    public static MIRecipeJson<MIRecipeJson<?>> create(MachineRecipeType machineRecipeType, int eu, int duration) {
-        return new MIRecipeJson<>(machineRecipeType, eu, duration);
+    @Deprecated(forRemoval = true)
+    public T itemIn(String id, int amount) {
+        return itemIn(id, amount, 1);
     }
 
-    public T addItemInput(String id, int amount) {
-        return addItemInput(id, amount, 1);
+    @Deprecated(forRemoval = true)
+    public T itemIn(String id, int amount, float probability) {
+        return itemIn(Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))), amount, probability);
     }
 
-    public T addItemInput(String id, int amount, float probability) {
-        return addItemInput(Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))), amount, probability);
+    public T itemIn(ItemLike item) {
+        return itemIn(item, 1);
     }
 
-    public T addItemInput(ItemLike item, int amount) {
-        return addItemInput(item.asItem(), amount, 1);
+    public T itemIn(ItemLike item, int amount) {
+        return itemIn(item.asItem(), amount, 1);
     }
 
-    public T addItemInput(ItemLike item, int amount, float probability) {
-        return addItemInput(Ingredient.of(item), amount, probability);
+    public T itemIn(ItemLike item, int amount, float probability) {
+        return itemIn(Ingredient.of(item), amount, probability);
     }
 
-    public T addItemInput(Ingredient ingredient, int amount) {
-        return addItemInput(ingredient, amount, 1);
+    public T itemIn(TagKey<Item> tag) {
+        return itemIn(tag, 1);
     }
 
-    public T addItemInput(Ingredient ingredient, int amount, float probability) {
+    public T itemIn(TagKey<Item> tag, int amount) {
+        return itemIn(tag, amount, 1);
+    }
+
+    public T itemIn(TagKey<Item> tag, int amount, float probability) {
+        return itemIn(Ingredient.of(items.getOrThrow(tag)), amount, probability);
+    }
+
+    public T itemIn(Ingredient ingredient) {
+        return itemIn(ingredient, 1);
+    }
+
+    public T itemIn(Ingredient ingredient, int amount) {
+        return itemIn(ingredient, amount, 1);
+    }
+
+    public T itemIn(Ingredient ingredient, int amount, float probability) {
         recipe.itemInputs.add(new MachineRecipe.ItemInput(ingredient, amount, probability));
         return (T) this;
     }
 
-    public T addItemOutput(String itemId, int amount) {
-        return addItemOutput(itemId, amount, 1);
+    @Deprecated(forRemoval = true)
+    public T itemOut(String itemId, int amount) {
+        return itemOut(itemId, amount, 1);
     }
 
-    public T addItemOutput(String itemId, int amount, float probability) {
-        return addItemOutput(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(itemId))), amount, probability);
+    @Deprecated(forRemoval = true)
+    public T itemOut(String itemId, int amount, float probability) {
+        return itemOut(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(itemId))), amount, probability);
     }
 
-    public T addItemOutput(ItemLike item, int amount) {
-        return addItemOutput(item, amount, 1);
+    public T itemOut(ItemLike item) {
+        return itemOut(item, 1);
     }
 
-    public T addItemOutput(Item item, int amount) {
-        return addItemOutput(item, amount, 1);
+    public T itemOut(ItemLike item, int amount) {
+        return itemOut(item, amount, 1);
     }
 
-    public T addItemOutput(ItemLike item, int amount, float probability) {
-        return addItemOutput(ItemVariant.of(item), amount, probability);
+    public T itemOut(ItemLike item, int amount, float probability) {
+        return itemOut(ItemVariant.of(item), amount, probability);
     }
 
-    public T addItemOutput(ItemVariant variant, int amount, float probability) {
+    public T itemOut(ItemVariant variant, int amount, float probability) {
         recipe.itemOutputs.add(new MachineRecipe.ItemOutput(variant, amount, probability));
         return (T) this;
     }
 
-    public T addFluidInput(String fluid, int amount) {
-        return addFluidInput(fluid, amount, 1);
+    @Deprecated(forRemoval = true)
+    public T fluidIn(String fluid, int amount) {
+        return fluidIn(fluid, amount, 1);
     }
 
-    public T addFluidInput(String fluid, int amount, float probability) {
-        return addFluidInput(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
+    @Deprecated(forRemoval = true)
+    public T fluidIn(String fluid, int amount, float probability) {
+        return fluidIn(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
     }
 
-    public T addFluidInput(FluidLike fluid, int amount, float probability) {
-        return addFluidInput(fluid.asFluid(), amount, probability);
+    public T fluidIn(FluidLike fluid, int amount) {
+        return fluidIn(fluid.asFluid(), amount);
     }
 
-    public T addFluidInput(FluidLike fluid, int amount) {
-        return addFluidInput(fluid.asFluid(), amount);
+    public T fluidIn(FluidLike fluid, int amount, float probability) {
+        return fluidIn(fluid.asFluid(), amount, probability);
     }
 
-    public T addFluidInput(Fluid fluid, int amount) {
-        return addFluidInput(fluid, amount, 1);
+    public T fluidIn(Fluid fluid, int amount) {
+        return fluidIn(fluid, amount, 1);
     }
 
-    public T addFluidInput(Fluid fluid, int amount, float probability) {
-        Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
-        if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
-            throw new RuntimeException("Could not find id for fluid " + fluid);
-        }
-        return addFluidInput(FluidIngredient.of(fluid), amount, probability);
+    public T fluidIn(Fluid fluid, int amount, float probability) {
+        return fluidIn(FluidIngredient.of(fluid), amount, probability);
     }
 
-    public T addFluidInput(TagKey<Fluid> tag, int amount) {
-        return addFluidInput(tag, amount, 1);
+    public T fluidIn(TagKey<Fluid> tag, int amount) {
+        return fluidIn(tag, amount, 1);
     }
 
-    public T addFluidInput(TagKey<Fluid> tag, int amount, float probability) {
-        return addFluidInput(FluidIngredient.of(BuiltInRegistries.FLUID.getOrThrow(tag)), amount, probability);
+    public T fluidIn(TagKey<Fluid> tag, int amount, float probability) {
+        return fluidIn(FluidIngredient.of(fluids.getOrThrow(tag)), amount, probability);
     }
 
-    public T addFluidInput(FluidIngredient ingredient, int amount, float probability) {
+    public T fluidIn(FluidIngredient ingredient, int amount) {
+        return fluidIn(ingredient, amount, 1);
+    }
+
+    public T fluidIn(FluidIngredient ingredient, int amount, float probability) {
         recipe.fluidInputs.add(new MachineRecipe.FluidInput(ingredient, amount, probability));
         return (T) this;
     }
 
-    public T addFluidOutput(String fluid, int amount) {
-        return addFluidOutput(fluid, amount, 1);
+    @Deprecated(forRemoval = true)
+    public T fluidOut(String fluid, int amount) {
+        return fluidOut(fluid, amount, 1);
     }
 
-    public T addFluidOutput(FluidLike fluid, int amount) {
-        return addFluidOutput(fluid.asFluid(), amount);
+    public T fluidOut(FluidLike fluid, int amount) {
+        return fluidOut(fluid.asFluid(), amount);
     }
 
-    public T addFluidOutput(String fluid, int amount, float probability) {
-        return addFluidOutput(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
+    public T fluidOut(FluidLike fluid, int amount, float probability) {
+        return fluidOut(fluid.asFluid(), amount);
     }
 
-    public T addFluidOutput(Fluid fluid, int amount) {
-        return addFluidOutput(fluid, amount, 1);
+    @Deprecated(forRemoval = true)
+    public T fluidOut(String fluid, int amount, float probability) {
+        return fluidOut(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluid)), amount, probability);
     }
 
-    public T addFluidOutput(Fluid fluid, int amount, float probability) {
+    public T fluidOut(Fluid fluid, int amount) {
+        return fluidOut(fluid, amount, 1);
+    }
+
+    public T fluidOut(Fluid fluid, int amount, float probability) {
         Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
         if (id.equals(BuiltInRegistries.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
@@ -200,7 +233,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        MIRecipeJson<?> assemblerJson = MIRecipeJson.create(machine, eu, duration).addItemOutput(result.getItem(), result.getCount() / division);
+        MIRecipeJson<?> assemblerJson = new MIRecipeJson<>(null, null, machine, eu, duration).itemOut(result.getItem(), result.getCount() / division);
         for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {
@@ -216,7 +249,7 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
             }
 
             Ingredient input = entry.getValue();
-            assemblerJson.addItemInput(input, count / division, 1);
+            assemblerJson.itemIn(input, count / division, 1);
         }
 
         return assemblerJson;

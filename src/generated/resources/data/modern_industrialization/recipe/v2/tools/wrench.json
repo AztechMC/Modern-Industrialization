@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "#c:plates/bronze"
+  },
+  "pattern": [
+    "b b",
+    "bbb",
+    " b "
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:wrench"
+  }
+}

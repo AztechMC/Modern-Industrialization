@@ -42,7 +42,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Datagen for recipes that produce vanilla materials using MI machines.
  */
-public class VanillaCompatRecipeProvider extends RecipeProvider {
+public class VanillaCompatRecipeProvider extends BaseRecipeProvider {
     protected VanillaCompatRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
         super(registries, output);
     }
@@ -84,9 +84,9 @@ public class VanillaCompatRecipeProvider extends RecipeProvider {
         generateWax(Items.OXIDIZED_CUT_COPPER_STAIRS, Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
 
         // misc recipes
-        new MachineRecipeBuilder(MIMachineRecipeTypes.MACERATOR, 2, 100)
-                .addItemInput(Items.STONE, 1)
-                .addItemOutput(Items.COBBLESTONE, 1)
+        machine(MIMachineRecipeTypes.MACERATOR, 2, 100)
+                .itemIn(Items.STONE, 1)
+                .itemOut(Items.COBBLESTONE, 1)
                 .offerTo(output, "vanilla_recipes/macerator/stone_to_cobblestone");
     }
 
@@ -97,10 +97,10 @@ public class VanillaCompatRecipeProvider extends RecipeProvider {
     }
 
     private void oxidize(Item from, Item to) {
-        new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
-                .addItemInput(from, 1)
-                .addFluidInput(MIFluids.OXYGEN, 100)
-                .addItemOutput(to, 1)
+        machine(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
+                .itemIn(from, 1)
+                .fluidIn(MIFluids.OXYGEN, 100)
+                .itemOut(to, 1)
                 .offerTo(output, "vanilla_recipes/oxidation/" + BuiltInRegistries.ITEM.getKey(from).getPath());
     }
 
@@ -108,10 +108,10 @@ public class VanillaCompatRecipeProvider extends RecipeProvider {
         var recipe = ShapelessRecipeBuilder.shapeless(to).requires(from).requires(MIItem.WAX);
         recipe.offerTo(output, "vanilla_recipes/waxing/" + BuiltInRegistries.ITEM.getKey(from).getPath());
 
-        MachineRecipeBuilder chemicalReactorRecipe = new MachineRecipeBuilder(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
-                .addItemInput(from, 1)
-                .addItemInput(MIItem.WAX, 1)
-                .addItemOutput(to, 1);
+        MachineRecipeBuilder chemicalReactorRecipe = machine(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
+                .itemIn(from, 1)
+                .itemIn(MIItem.WAX, 1)
+                .itemOut(to, 1);
 
         chemicalReactorRecipe.offerTo(output, "vanilla_recipes/chemical_reactor/waxing/" + BuiltInRegistries.ITEM.getKey(from).getPath());
     }

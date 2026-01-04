@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:steel_machine_casing",
+    "F": "modern_industrialization:fire_clay_bricks",
+    "G": "#c:gears/bronze",
+    "R": "modern_industrialization:bronze_rotor",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "#c:rods/bronze"
+  },
+  "pattern": [
+    "rRr",
+    "GCG",
+    "pFp"
+  ],
+  "result": {
+    "count": 2,
+    "id": "modern_industrialization:steel_upgrade"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": "modern_industrialization:large_motor",
+    "P": "modern_industrialization:large_pump",
+    "R": "modern_industrialization:aluminum_rotor",
+    "c": "modern_industrialization:electronic_circuit",
+    "t": "modern_industrialization:aluminum_tank"
+  },
+  "pattern": [
+    "PtP",
+    "McM",
+    "R R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "modern_industrialization:diesel_jetpack"
+  }
+}

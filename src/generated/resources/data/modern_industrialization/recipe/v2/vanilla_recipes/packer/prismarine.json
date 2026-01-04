@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "ingredient": "minecraft:prismarine_shard"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:prismarine"
+    }
+  ]
+}

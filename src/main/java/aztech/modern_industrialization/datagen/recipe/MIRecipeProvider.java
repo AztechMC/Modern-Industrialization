@@ -19,14 +19,19 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
 
 public class MIRecipeProvider extends BaseRecipeProvider {
     private final RecipeOutput assemblerExportOutput;
@@ -39,15 +44,15 @@ public class MIRecipeProvider extends BaseRecipeProvider {
     @Override
     protected void buildRecipes() {
         armorRecipes();
-        electric_ageRecipes();
-        fusion_reactorRecipes();
+        electricAgeRecipes();
+        fusionReactorRecipes();
         materialsRecipes();
         miscRecipes();
         oilRecipes();
         quarryRecipes();
-        steam_ageRecipes();
+        steamAgeRecipes();
         toolsRecipes();
-        vanilla_recipesRecipes();
+        vanillaRecipes();
     }
 
     private void armorRecipes() {
@@ -86,7 +91,7 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .save(output, key("armor/rubber_helmet"));
     }
 
-    private void electric_ageRecipes() {
+    private void electricAgeRecipes() {
         shaped(RecipeCategory.MISC, MIMaterials.CADMIUM.getPart(MIParts.BATTERY))
                 .pattern("cac")
                 .pattern("BrB")
@@ -1497,7 +1502,7 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .save(output, key("electric_age/blocks/assembler/quantum_tank"));
     }
 
-    private void fusion_reactorRecipes() {
+    private void fusionReactorRecipes() {
         machine(MIMachineRecipeTypes.FUSION_REACTOR, 16000, 1200)
                 .fluidIn(MIFluids.DEUTERIUM, 1000)
                 .fluidIn(MIFluids.DEUTERIUM, 1000)
@@ -1526,6 +1531,16 @@ public class MIRecipeProvider extends BaseRecipeProvider {
     }
 
     private void materialsRecipes() {
+        shapeless(RecipeCategory.MISC, MIMaterials.BRONZE.getPart(MIParts.DUST), 3)
+                .requires(partIngredient(MIMaterials.COPPER, MIParts.DUST), 3)
+                .requires(partIngredient(MIMaterials.TIN, MIParts.DUST))
+                .unlockedBy("has_tin", hasPartTag(MIMaterials.TIN, MIParts.INGOT))
+                .save(output, key("materials/bronze_dust"));
+        shapeless(RecipeCategory.MISC, MIMaterials.BRONZE.getPart(MIParts.TINY_DUST), 3)
+                .requires(partIngredient(MIMaterials.COPPER, MIParts.TINY_DUST), 3)
+                .requires(partIngredient(MIMaterials.TIN, MIParts.TINY_DUST))
+                .unlockedBy("has_tin", hasPartTag(MIMaterials.TIN, MIParts.INGOT))
+                .save(output, key("materials/bronze_tiny_dust"));
         shaped(RecipeCategory.MISC, MIBlock.FIRE_CLAY_BRICKS, 1)
                 .pattern("TT")
                 .pattern("TT")
@@ -1539,6 +1554,12 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .define('T', Items.CLAY_BALL)
                 .unlockedBy("TODO", has(TODO))
                 .save(output, key("materials/fire_clay_dust"));
+        shapeless(RecipeCategory.MISC, MIItem.UNCOOKED_STEEL_DUST, 7)
+                .requires(partIngredient(MIMaterials.IRON, MIParts.DUST), 7)
+                .requires(partIngredient(MIMaterials.COKE, MIParts.DUST), 2)
+                .unlockedBy("has_coke", has(MIMaterials.COKE.getPart(MIParts.GEM)))
+                .unlockedBy("has_coke_dust", hasPartTag(MIMaterials.COKE, MIParts.DUST))
+                .save(output, key("materials/uncooked_steel_dust"));
         machine(MIMachineRecipeTypes.ASSEMBLER, 32, 600)
                 .itemIn(MIBlock.INDUSTRIAL_TNT, 6)
                 .itemIn(MIMaterials.PLUTONIUM.getPart(MIParts.INGOT), 4)
@@ -2343,7 +2364,7 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .save(assemblerExportOutput, key("quarry/drill/titanium_drill"));
     }
 
-    private void steam_ageRecipes() {
+    private void steamAgeRecipes() {
         shaped(RecipeCategory.MISC, miItem("fluid_pipe"), 16)
                 .pattern("CCC")
                 .pattern("rPr")
@@ -2657,9 +2678,17 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .define('b', partIngredient(MIMaterials.BRONZE, MIParts.PLATE))
                 .unlockedBy("has_ingredient", hasPartTag(MIMaterials.BRONZE, MIParts.PLATE))
                 .save(output, key("tools/wrench"));
+        SmithingTransformRecipeBuilder.smithing(
+                Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+                Ingredient.of(MIItem.DIAMOND_HAMMER),
+                Ingredient.of(Items.NETHERITE_INGOT),
+                RecipeCategory.TOOLS,
+                MIItem.NETHERITE_HAMMER.asItem())
+                .unlocks("has_diamond_hammer", has(MIItem.DIAMOND_HAMMER))
+                .save(output, key("tools/smithing/netherite_hammer"));
     }
 
-    private void vanilla_recipesRecipes() {
+    private void vanillaRecipes() {
         shaped(RecipeCategory.MISC, Items.BLAST_FURNACE, 2)
                 .pattern("ppp")
                 .pattern("pfp")
@@ -2721,6 +2750,9 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .define('X', MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM))
                 .unlockedBy("TODO", has(TODO))
                 .save(output, key("vanilla_recipes/lignite_torch"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.WATER_BUCKET), RecipeCategory.MISC, MIFluids.STEAM.getBucket(), 0, 500)
+                .unlockedBy("has_bucket", has(Items.WATER_BUCKET))
+                .save(output.withConditions(new NotCondition(new ModLoadedCondition("dehydration"))), key("vanilla_recipes/steam_bucket"));
         shaped(RecipeCategory.MISC, Items.ANVIL, 2)
                 .pattern("III")
                 .pattern(" i ")

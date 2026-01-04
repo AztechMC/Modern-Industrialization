@@ -3,59 +3,59 @@
   "eu": 8,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:gold_drill",
+    "ingredient": "modern_industrialization:gold_drill",
     "amount": 1,
     "probability": 0.1
   },
   "item_outputs": [
     {
-      "item": "minecraft:netherrack",
+      "id": "minecraft:netherrack",
       "amount": 32,
       "probability": 0.5
     },
     {
-      "item": "minecraft:blackstone",
+      "id": "minecraft:blackstone",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:basalt",
+      "id": "minecraft:basalt",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:soul_soil",
+      "id": "minecraft:soul_soil",
       "amount": 20,
       "probability": 0.1
     },
     {
-      "item": "minecraft:magma_block",
+      "id": "minecraft:magma_block",
       "amount": 5,
       "probability": 0.1
     },
     {
-      "item": "minecraft:soul_sand",
+      "id": "minecraft:soul_sand",
       "amount": 20,
       "probability": 0.25
     },
     {
-      "item": "minecraft:ancient_debris",
+      "id": "minecraft:ancient_debris",
       "amount": 1,
       "probability": 0.05
     },
 
     {
-      "item": "minecraft:glowstone",
+      "id": "minecraft:glowstone",
       "amount": 4,
       "probability": 0.15
     },
     {
-      "item": "minecraft:nether_quartz_ore",
+      "id": "minecraft:nether_quartz_ore",
       "amount": 6,
       "probability": 0.15
     },
     {
-      "item": "minecraft:nether_gold_ore",
+      "id": "minecraft:nether_gold_ore",
       "amount": 1,
       "probability": 0.25
     }

@@ -59,7 +59,7 @@ public class MIParts {
     public static final PartTemplate GEAR = new PartTemplate("Gear", "gear");
     public static final PartTemplate GEM = new PartTemplate("%s", "gem").withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
         var item = PartTemplate.createSimpleItem(englishName, itemPath, partContext, part);
-        TagsToGenerate.generateTag(MITags.convention("gems/" + itemPath), item, englishName + "s");
+        TagsToGenerate.generateTag(itemTag, item, englishName + "s");
     })
             .withTexture(new TextureGenParams.Gem())
             .withCustomPath("%s", MITags::convention);

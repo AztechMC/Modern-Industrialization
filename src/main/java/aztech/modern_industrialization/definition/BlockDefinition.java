@@ -66,7 +66,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
         this.blockItem = MIItem.item(
                 englishName,
                 path(),
-                s -> blockItemCtor.apply(block.get(), s),
+                p -> blockItemCtor.apply(block.get(), p.useBlockDescriptionPrefix()),
                 itemModelGenerator,
                 sortOrder);
         this.modelGenerator = modelGenerator;

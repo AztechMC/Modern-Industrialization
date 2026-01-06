@@ -33,6 +33,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.FormattedCharSequence;
 
 class PriorityDisplay extends AbstractWidget {
@@ -64,6 +65,6 @@ class PriorityDisplay extends AbstractWidget {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         FormattedCharSequence orderedText = getMessage().getVisualOrderText();
         guiGraphics.drawString(textRenderer, orderedText, this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2,
-                this.getY() + (this.height - 8) / 2, isEnabled.getAsBoolean() ? 0x404040 : 0x707070, false);
+                this.getY() + (this.height - 8) / 2, isEnabled.getAsBoolean() ? CommonColors.DARK_GRAY : 0xFF707070, false);
     }
 }

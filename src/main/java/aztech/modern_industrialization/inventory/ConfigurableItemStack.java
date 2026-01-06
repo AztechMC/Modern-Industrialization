@@ -43,6 +43,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -75,6 +76,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
                             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("adjCap").forGetter(s -> s.adjustedCapacity))
                     .apply(i, ConfigurableItemStack::new));
     public static final StreamCodec<ByteBuf, ConfigurableItemStack> STREAM_CODEC = ByteBufCodecs.fromCodecTrusted(CODEC);
+    public static final StreamCodec<ByteBuf, List<ConfigurableItemStack>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
     private int adjustedCapacity = 64;
 

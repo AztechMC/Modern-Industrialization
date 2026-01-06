@@ -26,7 +26,7 @@ package aztech.modern_industrialization.client;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -38,13 +38,11 @@ import aztech.modern_industrialization.client.blocks.storage.barrel.DeferredBarr
 import aztech.modern_industrialization.client.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.client.datagen.MIDatagenClient;
 import aztech.modern_industrialization.client.items.ClientConfigCardTooltip;
-import aztech.modern_industrialization.client.items.SteamDrillHighlight;
 import aztech.modern_industrialization.client.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.client.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.client.items.armor.HudRenderer;
 import aztech.modern_industrialization.client.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.client.machines.MachineBlockEntityRenderer;
-import aztech.modern_industrialization.client.machines.MachineOverlayClient;
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.machines.models.CasingModels;
@@ -64,11 +62,9 @@ import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
 import aztech.modern_industrialization.items.ConfigCardItem;
-import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -88,6 +84,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -108,6 +105,8 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -115,6 +114,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID)
 public class MIClient {
@@ -199,6 +199,24 @@ public class MIClient {
         }
 
         MI.LOGGER.info("Modern Industrialization client setup done!");
+    }
+
+    @SubscribeEvent
+    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
+            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override
+                public Identifier getStillTexture() {
+                    return stillTexture;
+                }
+
+                @Override
+                public Identifier getFlowingTexture() {
+                    return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
+                }
+            }, fluidDefinition.getFluidType());
+        }
     }
 
     @SubscribeEvent

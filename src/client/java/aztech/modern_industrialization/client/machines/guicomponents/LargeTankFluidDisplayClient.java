@@ -39,6 +39,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
 
 public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeTankFluidDisplay.Data> {
@@ -80,7 +81,7 @@ public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeT
                             selectedShape.get(0), selectedShape.get(1), selectedShape.get(2));
                     var capacityText = FluidHelper.getFluidAmountLarge(capacity);
 
-                    guiGraphics.drawString(Minecraft.getInstance().font, capacityText, shapePanelBox.x() + 14, shapePanelBox.y() + 14, 0x404040,
+                    guiGraphics.drawString(Minecraft.getInstance().font, capacityText, shapePanelBox.x() + 14, shapePanelBox.y() + 14, CommonColors.DARK_GRAY,
                             false);
                 }
             }

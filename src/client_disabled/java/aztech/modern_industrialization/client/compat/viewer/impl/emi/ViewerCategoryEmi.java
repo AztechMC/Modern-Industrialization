@@ -62,7 +62,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
             @Override
             public void render(GuiGraphics guiGraphics, int x, int y, float delta) {
                 var texture = (ViewerCategory.Icon.Texture) category.icon;
-                guiGraphics.blit(texture.loc(), x - 1, y - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture.loc(), x - 1, y - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
             }
         });
 
@@ -406,7 +406,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
 
     private static void createFluidSlotBackground(WidgetHolder widgets, int x, int y) {
         widgets.addDrawable(0, 0, 0, 0, (guiGraphics, mouseX, mouseY, delta) -> {
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, x - 1 - 4, y - 1 - 4, 18, 0, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x - 1 - 4, y - 1 - 4, 18, 0, 18, 18);
         });
     }
 

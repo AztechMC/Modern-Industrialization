@@ -200,7 +200,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                     guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20, 256, 256);
                 }
                 case STEAM_ONLY -> {
-                    guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
                 }
                 case ELECTRIC_ONLY -> {
                     EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);

@@ -53,10 +53,10 @@ public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Para
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
             // background
-            guiGraphics.blit(TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2,
                     WIDTH + 2, HEIGHT + 2, 102, 6);
             int barPixels = (int) ((float) data / params.temperatureMax() * WIDTH);
-            guiGraphics.blit(TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels,
                     HEIGHT, 102, 6);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x + params.renderX() - 22, y + params.renderY() + HEIGHT / 2 - 10, 144, 0, 20, 20, 256, 256);
         }

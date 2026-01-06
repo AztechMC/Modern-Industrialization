@@ -51,6 +51,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -167,7 +168,7 @@ public class RenderHelper {
         float v0 = v1 + (sprite.getV0() - v1) * fractionUp;
         float u1 = sprite.getU1();
 
-        guiGraphics.innerBlit(RenderPipelines.GUI_TEXTURED, AtlasIds.BLOCKS, x0, x1, y0, y1, u0, u1, v0, v1, color | 0xFF000000);
+        guiGraphics.innerBlit(RenderPipelines.GUI_TEXTURED, TextureAtlas.LOCATION_BLOCKS, x0, x1, y0, y1, u0, u1, v0, v1, color | 0xFF000000);
 
         SodiumCompat.markSpriteActive(sprite);
     }

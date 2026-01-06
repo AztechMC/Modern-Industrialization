@@ -164,7 +164,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                                 guiGraphics.pose().translate(px, py);
                                 guiGraphics.pose().scale(18, 18);
-                                guiGraphics.blit(COLORBAR, 0, 0, u, v, 1, 1, 300, 60);
+                                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, COLORBAR, 0, 0, u, v, 1, 1, 300, 60);
                                 guiGraphics.pose().scale(1 / 18f, 1 / 18f);
                                 guiGraphics.pose().translate(-px, -py);
 
@@ -187,14 +187,14 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                 if (data.euFuelConsumption() > 0 && currentMode == Renderer.Mode.EU_GENERATION) {
                     Font font = Minecraft.getInstance().font;
-                    guiGraphics.drawString(font, getEfficiencyText(), x + 8, y + 16, 0xFFFFFF, false);
+                    guiGraphics.drawString(font, getEfficiencyText(), x + 8, y + 16, -1, false);
                 }
 
             } else {
                 Font font = Minecraft.getInstance().font;
                 Component text = MIText.MultiblockShapeInvalid.text().setStyle(TextHelper.RED.withBold(true));
                 int width = font.width(text);
-                guiGraphics.drawString(font, text, x + centerX - width / 2, y + centerY, 0xFFFFFF, false);
+                guiGraphics.drawString(font, text, x + centerX - width / 2, y + centerY, -1, false);
             }
         }
 

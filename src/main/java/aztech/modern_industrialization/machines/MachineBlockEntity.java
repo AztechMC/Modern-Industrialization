@@ -134,13 +134,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public final void writeScreenOpeningData(RegistryFriendlyByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
-        CompoundTag tag = new CompoundTag();
-        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
-            TagValueOutput output = TagValueOutput.createWithContext(reporter, buf.registryAccess());
-            NbtHelper.putList(output, "items", inv.getItemStacks(), ConfigurableItemStack.CODEC);
-            NbtHelper.putList(output, "fluids", inv.getFluidStacks(), ConfigurableFluidStack.CODEC);
-        }
-        buf.writeNbt(tag);
+        ConfigurableItemStack.LIST_STREAM_CODEC.encode(buf, inv.getItemStacks());
+        ConfigurableFluidStack.LIST_STREAM_CODEC.encode(buf, inv.getFluidStacks());
         // Write slot positions
         inv.itemPositions.write(buf);
         inv.fluidPositions.write(buf);

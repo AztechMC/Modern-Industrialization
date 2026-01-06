@@ -52,13 +52,13 @@ public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
+    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics guiGraphics) {
         // Slot background
-        graphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
         // Stack itself
-        RenderHelper.renderAndDecorateItem(graphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
+        RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack((int) data.amount()), x + 1, y + 1);
         // Burning flame next to the stack
         var progressParams = new ProgressBar.Params(0, 0, "furnace", 14, 14, true);
-        ProgressBarClient.renderProgress(graphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
+        ProgressBarClient.renderProgress(guiGraphics, x + 20, y, progressParams, (float) data.burnTicks() / data.maxBurnTicks());
     }
 }

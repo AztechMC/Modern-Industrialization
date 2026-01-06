@@ -44,10 +44,10 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class MIFluid extends Fluid {
     private final Supplier<MIFluidBlock> block;
     private final ItemLike bucketItem;
-    private final Supplier<MIFluidType> fluidType;
+    private final Supplier<FluidType> fluidType;
     public final int color;
 
-    public MIFluid(Supplier<MIFluidBlock> block, ItemLike bucketItem, Supplier<MIFluidType> fluidType, int color) {
+    public MIFluid(Supplier<MIFluidBlock> block, ItemLike bucketItem, Supplier<FluidType> fluidType, int color) {
         this.block = block;
         this.bucketItem = bucketItem;
         this.fluidType = fluidType;

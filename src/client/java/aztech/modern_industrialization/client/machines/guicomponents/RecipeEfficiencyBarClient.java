@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -56,10 +57,10 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
     public class Renderer implements ClientComponentRenderer {
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            guiGraphics.blit(TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
             if (data.hasActiveRecipe()) {
                 int barPixels = (int) ((float) data.efficiencyTicks() / data.maxEfficiencyTicks() * WIDTH);
-                guiGraphics.blit(TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels, HEIGHT, 102, 6);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels, HEIGHT, 102, 6);
             }
         }
 

@@ -79,6 +79,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
                     MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("capacity").forGetter(s -> s.capacity))
                     .apply(i, ConfigurableFluidStack::new));
     public static final StreamCodec<ByteBuf, ConfigurableFluidStack> STREAM_CODEC = ByteBufCodecs.fromCodecTrusted(CODEC);
+    public static final StreamCodec<ByteBuf, List<ConfigurableFluidStack>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
     private long capacity;
 

@@ -37,6 +37,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.CommonColors;
 
 public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection.LineInfo>, List<Integer>> {
     private Renderer renderer;
@@ -138,7 +139,7 @@ public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection
                     guiGraphics.drawString(
                             Minecraft.getInstance().font, tooltip,
                             box.x() + borderSize + outerPadding + btnSize + innerPadding + (textMaxWidth - width) / 2,
-                            topPos + getVerticalPos(i) + 2, 0x404040, false);
+                            topPos + getVerticalPos(i) + 2, CommonColors.DARK_GRAY, false);
                 }
             }
         }

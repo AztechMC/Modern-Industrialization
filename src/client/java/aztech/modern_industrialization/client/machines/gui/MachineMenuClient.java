@@ -54,14 +54,8 @@ public class MachineMenuClient extends MachineMenuCommon {
     @SuppressWarnings("ConstantConditions")
     public static MachineMenuClient create(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {
         // Inventory
-        List<ConfigurableItemStack> itemStacks = new ArrayList<>();
-        List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
-        CompoundTag tag = buf.readNbt();
-        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(() -> "client machine menu", LOGGER)) {
-            var input = TagValueInput.create(reporter, buf.registryAccess(), tag);
-            NbtHelper.getList(input, "items", itemStacks, ConfigurableItemStack.CODEC);
-            NbtHelper.getList(input, "fluids", fluidStacks, ConfigurableFluidStack.CODEC);
-        }
+        List<ConfigurableItemStack> itemStacks = ConfigurableItemStack.LIST_STREAM_CODEC.decode(buf);
+        List<ConfigurableFluidStack> fluidStacks = ConfigurableFluidStack.LIST_STREAM_CODEC.decode(buf);
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);

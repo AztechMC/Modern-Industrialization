@@ -41,6 +41,8 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -177,9 +179,9 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
                     int posX = centerX - 12;
                     int posY = centerY - 2;
 
-                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
 
-                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
                 });
 
                 Component neutronNumberText;

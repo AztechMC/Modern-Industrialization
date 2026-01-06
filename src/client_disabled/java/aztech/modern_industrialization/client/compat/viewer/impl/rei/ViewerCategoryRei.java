@@ -68,7 +68,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
         this.icon = wrapped.icon instanceof ViewerCategory.Icon.Stack stack ? EntryStacks.of(stack.stack())
                 : (guiGraphics, bounds, mouseX, mouseY, delta) -> {
                     var texture = (ViewerCategory.Icon.Texture) wrapped.icon;
-                    guiGraphics.blit(texture.loc(), bounds.x - 1, bounds.y - 1, texture.u(), texture.v(), 18, 18, 256, 256);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture.loc(), bounds.x - 1, bounds.y - 1, texture.u(), texture.v(), 18, 18, 256, 256);
                 };
     }
 
@@ -369,7 +369,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
 
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, point.x - 1, point.y - 1, 18, 0, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }
 

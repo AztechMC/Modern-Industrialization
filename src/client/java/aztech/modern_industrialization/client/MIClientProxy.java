@@ -104,26 +104,15 @@ public class MIClientProxy extends MICommonProxy {
         return Minecraft.getInstance().hasShiftDown();
     }
 
-    // TODO 26.1
-//    @Override
-//    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
-//        ((Consumer<IClientItemExtensions>) stupidClientProperties).accept(new IClientItemExtensions() {
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-//                return RenderHelper.BLOCK_AND_ENTITY_RENDERER;
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void registerPartTankClient(Supplier<? extends BlockEntityType<? extends AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
-//        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new TankRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
-//    }
-//
-//    @Override
-//    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
-//        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(context.itemModelResolver(), TextureHelper.getOverlayTextColor(meanRgb)));
-//    }
+    @Override
+    public void registerPartTankClient(Supplier<? extends BlockEntityType<? extends AbstractTankBlockEntity>> blockEntityType, int meanRgb) {
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new TankRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
+    }
+
+    @Override
+    public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(context.itemModelResolver(), TextureHelper.getOverlayTextColor(meanRgb)));
+    }
 
     @Override
     public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, RegistryFriendlyByteBuf buf) {

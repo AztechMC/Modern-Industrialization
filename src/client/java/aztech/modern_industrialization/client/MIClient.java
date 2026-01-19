@@ -58,6 +58,7 @@ import aztech.modern_industrialization.client.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.client.pipes.impl.PipeItemModel;
 import aztech.modern_industrialization.client.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.client.pipes.item.ItemPipeScreen;
+import aztech.modern_industrialization.client.util.UseBlockEntityRenderer;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
@@ -77,6 +78,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -104,6 +106,7 @@ import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -114,7 +117,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import org.jspecify.annotations.Nullable;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = MI.ID)
 public class MIClient {
@@ -242,14 +244,20 @@ public class MIClient {
     }
 
     @SubscribeEvent
+    private static void registerSpecialRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(UseBlockEntityRenderer.Unbaked.TYPE_ID, UseBlockEntityRenderer.Unbaked.CODEC);
+    }
+
+    @SubscribeEvent
     private static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
         CasingModels.loadModels(event);
     }
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
-    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<? extends BlockEntityType<? extends U>> bet,
-            BlockEntityRendererProvider<T, ?> renderer) {
+    public static <T extends BlockEntity, S extends BlockEntityRenderState> void registerBlockEntityRenderer(
+            Supplier<? extends BlockEntityType<? extends T>> bet,
+            BlockEntityRendererProvider<T, S> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }
 

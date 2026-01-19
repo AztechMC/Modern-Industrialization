@@ -224,31 +224,6 @@ public class RenderHelper {
         });
     }
 
-    // TODO 26.1
-//    public static final BlockEntityWithoutLevelRenderer BLOCK_AND_ENTITY_RENDERER = new BlockEntityWithoutLevelRenderer(null, null) {
-//        @Override
-//        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
-//                int overlay) {
-//            if (!(stack.getItem() instanceof BlockItem blockItem)) {
-//                throw new IllegalArgumentException("Stack must be a block item!");
-//            }
-//            if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
-//                throw new IllegalArgumentException("Block must be an entity block!");
-//            }
-//
-//            var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
-//            Objects.requireNonNull(fakeBlockEntity);
-//            fakeBlockEntity.applyComponentsFromItemStack(stack);
-//
-//            // Render the base block first
-//            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
-//            // Render additional data using the block entity renderer
-//            var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
-//            Objects.requireNonNull(renderer).render(fakeBlockEntity, 0.0f, matrices, vertexConsumers, light,
-//                    overlay);
-//        }
-//    };
-
     public static void renderVoxelShape(PoseStack poseStack, VertexConsumer consumer, VoxelShape shape, double x, double y, double z, float red,
             float green, float blue, float alpha) {
         for (AABB aabb : shape.toAabbs()) {

@@ -40,6 +40,8 @@ import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -47,10 +49,17 @@ import java.util.function.Function;
 
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.CompositeModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.SpecialModelWrapper;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -248,8 +257,19 @@ public class MIBlock {
         }
 
         public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
-            // TODO 26.1
-            return this;
+            return withItemModel((item, gen) -> {
+                var baseBlockModel = BuiltInRegistries.ITEM.getKey(item).withPrefix("block/");
+                try {
+                    gen.itemModelOutput.accept(item, new CompositeModel.Unbaked(List.of(
+                            new BlockModelWrapper.Unbaked(baseBlockModel, List.of()),
+                            // TODO: temporary reflection hack
+                            new SpecialModelWrapper.Unbaked(baseBlockModel, (SpecialModelRenderer.Unbaked) Class.forName("aztech.modern_industrialization.client.util.UseBlockEntityRenderer$Unbaked").getConstructor().newInstance()))
+                    ));
+                } catch (ReflectiveOperationException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            // TODO 26.1: what about this stuff?
 //            return withItemModel((item, gen) -> {
 //                var builder = gen.getBuilder(BuiltInRegistries.ITEM.getKey(item).toString())
 //                        .parent(new ModelFile.UncheckedModelFile("builtin/entity"));

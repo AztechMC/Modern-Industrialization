@@ -1,6 +1,18 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "modern_industrialization:block/iron_barrel"
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "modern_industrialization:block/iron_barrel"
+      },
+      {
+        "type": "minecraft:special",
+        "base": "modern_industrialization:block/iron_barrel",
+        "model": {
+          "type": "modern_industrialization:use_block_entity_renderer"
+        }
+      }
+    ]
   }
 }

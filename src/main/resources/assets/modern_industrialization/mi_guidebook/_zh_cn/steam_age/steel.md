@@ -12,7 +12,11 @@ item_ids:
 
 你可以研磨焦炭以获得焦炭粉，并将其与铁粉结合以获得生钢粉。当然，使用搅拌机能以更佳比例合成。现在，你需要一台蒸汽高炉将其变成钢。
 
-制作控制器、29块耐火黏土砖块和与焦炉相同的三个接口仓。
+制作控制器、29块耐火黏土砖块和与焦炉相同的三个仓室。
+
+<GameScene zoom="3" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="steam_blast_furnace" />
+</GameScene>
 
 高炉的结构和焦炉相似，不过用的是耐火黏土砖块，而且高了一层。
 

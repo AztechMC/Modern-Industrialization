@@ -3,7 +3,6 @@
   "damage": 20,
   "ingredient": "#c:rods/tin",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:tin_ring"
   }
 }

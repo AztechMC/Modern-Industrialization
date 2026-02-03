@@ -40,8 +40,8 @@ public class ItemStackHelper {
             return false;
         var itemStack = stack.toStack();
         var remainderStack = itemStack.getCraftingRemainder();
-        if (!remainderStack.isEmpty()) {
-            var remainder = ItemVariant.of(remainderStack);
+        if (remainderStack != null) {
+            var remainder = ItemVariant.of(remainderStack.create());
             if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(remainder)) {
                 if (!simulate) {
                     stack.setAmount(1);

@@ -79,7 +79,7 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
             builder.inputSlot(startPointX - 23, startPointY + 6).ingredient(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ForgeTool.TAG)), 1, 1).removeBackground().markCatalyst();
         }
 
-        builder.outputSlot(startPointX + 62, startPointY + 6).item(recipe.result());
+        builder.outputSlot(startPointX + 62, startPointY + 6).item(recipe.result().create());
     }
 
     @Override

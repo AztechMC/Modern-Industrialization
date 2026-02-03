@@ -37,6 +37,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
@@ -132,11 +133,11 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     }
 
     public T itemOut(ItemLike item, int amount, float probability) {
-        return itemOut(ItemVariant.of(item), amount, probability);
+        return itemOut(new ItemStackTemplate(item.asItem(), amount), probability);
     }
 
-    public T itemOut(ItemVariant variant, int amount, float probability) {
-        recipe.itemOutputs.add(new MachineRecipe.ItemOutput(variant, amount, probability));
+    public T itemOut(ItemStackTemplate output, float probability) {
+        recipe.itemOutputs.add(new MachineRecipe.ItemOutput(output, probability));
         return (T) this;
     }
 
@@ -226,14 +227,14 @@ public class MIRecipeJson<T extends MIRecipeJson<?>> {
     public static MIRecipeJson<?> fromShaped(
             MachineRecipeType machine,
             int eu, int duration, int division,
-            ItemStack result,
+            ItemStackTemplate result,
             String[] pattern,
             Map<Character, Ingredient> key) {
-        if (result.getCount() % division != 0) {
+        if (result.count() % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        MIRecipeJson<?> assemblerJson = new MIRecipeJson<>(null, null, machine, eu, duration).itemOut(result.getItem(), result.getCount() / division);
+        MIRecipeJson<?> assemblerJson = new MIRecipeJson<>(null, null, machine, eu, duration).itemOut(result.item().value(), result.count() / division);
         for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {

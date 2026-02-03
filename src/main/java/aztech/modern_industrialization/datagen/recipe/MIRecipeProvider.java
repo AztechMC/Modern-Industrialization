@@ -25,7 +25,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluids;
@@ -1832,15 +1834,15 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .fluidOut(MIFluids.HYDROGEN, 2000)
                 .fluidOut(MIFluids.OXYGEN, 1000)
                 .save(output, key("materials/electrolyzer/water"));
-        forgeHammer(Items.BRICK, new ItemStack(MIMaterials.BRICK.getPart(MIParts.TINY_DUST), 3), 0)
+        forgeHammer(Items.BRICK, new ItemStackTemplate(MIMaterials.BRICK.getPartItem(MIParts.TINY_DUST), 3), 0)
                 .save(output, key("materials/forge_hammer/brick_dust"));
         forgeHammer(Items.BRICK, MIMaterials.BRICK.getPart(MIParts.DUST), 20)
                 .save(output, key("materials/forge_hammer/brick_dust_with_tool"));
-        forgeHammer(Tags.Items.ORES_COPPER, new ItemStack(MIMaterials.COPPER.getPart(MIParts.DUST), 12), 60)
+        forgeHammer(Tags.Items.ORES_COPPER, new ItemStackTemplate(MIMaterials.COPPER.getPartItem(MIParts.DUST), 12), 60)
                 .save(output, key("materials/forge_hammer/copper_ore_to_dust_with_tool"));
-        forgeHammer(Tags.Items.ORES_COPPER, new ItemStack(Items.RAW_COPPER, 5), 0)
+        forgeHammer(Tags.Items.ORES_COPPER, new ItemStackTemplate(Items.RAW_COPPER, 5), 0)
                 .save(output, key("materials/forge_hammer/copper_ore_to_raw"));
-        forgeHammer(Tags.Items.ORES_COPPER, new ItemStack(Items.RAW_COPPER, 8), 20)
+        forgeHammer(Tags.Items.ORES_COPPER, new ItemStackTemplate(Items.RAW_COPPER, 8), 20)
                 .save(output, key("materials/forge_hammer/copper_ore_to_raw_with_tool"));
         machine(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 400)
                 .fluidIn(Fluids.LAVA, 10)
@@ -2750,7 +2752,7 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .define('X', MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM))
                 .unlockedBy("TODO", has(TODO))
                 .save(output, key("vanilla_recipes/lignite_torch"));
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.WATER_BUCKET), RecipeCategory.MISC, MIFluids.STEAM.getBucket(), 0, 500)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.WATER_BUCKET), RecipeCategory.MISC, CookingBookCategory.MISC, MIFluids.STEAM.getBucket(), 0, 500)
                 .unlockedBy("has_bucket", has(Items.WATER_BUCKET))
                 .save(output.withConditions(new NotCondition(new ModLoadedCondition("dehydration"))), key("vanilla_recipes/steam_bucket"));
         shaped(RecipeCategory.MISC, Items.ANVIL, 2)
@@ -2921,9 +2923,9 @@ public class MIRecipeProvider extends BaseRecipeProvider {
                 .fluidIn(MIFluids.LUBRICANT, 1)
                 .itemOut(Items.STICK, 2)
                 .save(output, key("vanilla_recipes/cutting_machine/sticks"));
-        forgeHammer(Items.BONE_BLOCK, new ItemStack(Items.BONE_MEAL, 9), 45)
+        forgeHammer(Items.BONE_BLOCK, new ItemStackTemplate(Items.BONE_MEAL, 9), 45)
                 .save(output, key("vanilla_recipes/forge_hammer/bone_meal_from_block"));
-        forgeHammer(Items.BONE, new ItemStack(Items.BONE_MEAL, 6), 30)
+        forgeHammer(Items.BONE, new ItemStackTemplate(Items.BONE_MEAL, 6), 30)
                 .save(output, key("vanilla_recipes/forge_hammer/bone_meal_from_bone"));
         forgeHammer(Items.COBBLESTONE, Items.GRAVEL, 10)
                 .save(output, key("vanilla_recipes/forge_hammer/gravel"));

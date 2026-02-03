@@ -32,6 +32,8 @@ import java.util.function.Predicate;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,8 @@ public class ItemVariantImpl implements ItemVariant {
     public static ItemVariant of(Item item) {
         Objects.requireNonNull(item, "Item may not be null.");
 
-        return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(new ItemStack(i)));
+        // Use ItemStack.EMPTY for air to allow instantiation of the blank variant before components are bound.
+        return noTagCache.computeIfAbsent(item, i -> new ItemVariantImpl(i == Items.AIR ? ItemStack.EMPTY : new ItemStack(i)));
     }
 
     public static ItemVariant of(ItemStack stack) {
@@ -78,6 +81,11 @@ public class ItemVariantImpl implements ItemVariant {
     @Override
     public boolean matches(ItemStack stack) {
         return ItemStack.isSameItemSameComponents(this.stack, stack);
+    }
+
+    @Override
+    public boolean matches(ItemStackTemplate template) {
+        return ItemStack.isSameItemSameComponents(this.stack, template);
     }
 
     @Override

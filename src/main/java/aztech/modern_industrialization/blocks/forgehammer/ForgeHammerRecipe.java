@@ -27,12 +27,12 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.MIRegistries;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -45,13 +45,13 @@ import net.minecraft.world.level.Level;
 public record ForgeHammerRecipe(
         Ingredient ingredient,
         int count,
-        ItemStack result,
+        ItemStackTemplate result,
         int hammerDamage) implements Recipe<RecipeInput> {
     private static final MapCodec<ForgeHammerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(ForgeHammerRecipe::ingredient),
                     ExtraCodecs.POSITIVE_INT.optionalFieldOf("count", 1).forGetter(ForgeHammerRecipe::count),
-                    ItemStack.CODEC.fieldOf("result").forGetter(ForgeHammerRecipe::result),
+                    ItemStackTemplate.CODEC.fieldOf("result").forGetter(ForgeHammerRecipe::result),
                     ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("damage", 0).forGetter(ForgeHammerRecipe::hammerDamage))
                     .apply(instance, ForgeHammerRecipe::new));
 
@@ -60,7 +60,7 @@ public record ForgeHammerRecipe(
             ForgeHammerRecipe::ingredient,
             ByteBufCodecs.VAR_INT,
             ForgeHammerRecipe::count,
-            ItemStack.STREAM_CODEC,
+            ItemStackTemplate.STREAM_CODEC,
             ForgeHammerRecipe::result,
             ByteBufCodecs.VAR_INT,
             ForgeHammerRecipe::hammerDamage,
@@ -72,7 +72,7 @@ public record ForgeHammerRecipe(
     }
 
     @Override
-    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(RecipeInput recipeInput) {
         throw new UnsupportedOperationException();
     }
 

@@ -5,7 +5,6 @@
   "experience": 0.08,
   "ingredient": "modern_industrialization:nickel_tiny_dust",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:nickel_nugget"
   }
 }

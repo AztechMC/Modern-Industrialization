@@ -3,7 +3,6 @@
   "count": 2,
   "ingredient": "#c:ingots/tin",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:tin_curved_plate"
   }
 }

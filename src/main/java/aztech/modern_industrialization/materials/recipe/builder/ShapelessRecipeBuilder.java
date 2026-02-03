@@ -32,6 +32,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -40,7 +41,7 @@ public class ShapelessRecipeBuilder implements MaterialRecipeBuilder {
     public final String recipeId;
     private final MaterialBuilder.RecipeContext context;
     private boolean canceled = false;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     public ShapelessRecipeBuilder(MaterialBuilder.RecipeContext context, PartKeyProvider result, int count, String id) {
@@ -51,7 +52,7 @@ public class ShapelessRecipeBuilder implements MaterialRecipeBuilder {
             this.result = null;
             canceled = true;
         } else {
-            this.result = new ItemStack(output.asItem(), count);
+            this.result = new ItemStackTemplate(output.asItem(), count);
         }
         context.addRecipe(this);
     }

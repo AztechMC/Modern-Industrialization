@@ -3,7 +3,6 @@
   "damage": 20,
   "ingredient": "minecraft:brick",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:brick_dust"
   }
 }

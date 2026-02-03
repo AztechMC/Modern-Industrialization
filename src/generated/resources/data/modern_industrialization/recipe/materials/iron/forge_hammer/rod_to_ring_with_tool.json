@@ -3,7 +3,6 @@
   "damage": 20,
   "ingredient": "#c:rods/iron",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:iron_ring"
   }
 }

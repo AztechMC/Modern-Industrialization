@@ -16,6 +16,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
@@ -46,14 +47,14 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     protected ForgeHammerRecipeBuilder forgeHammer(ItemLike input, ItemLike result, int hammerDamage) {
-        return new ForgeHammerRecipeBuilder(Ingredient.of(input), 1, new ItemStack(result), hammerDamage);
+        return new ForgeHammerRecipeBuilder(Ingredient.of(input), 1, new ItemStackTemplate(result.asItem()), hammerDamage);
     }
 
-    protected ForgeHammerRecipeBuilder forgeHammer(ItemLike input, ItemStack result, int hammerDamage) {
+    protected ForgeHammerRecipeBuilder forgeHammer(ItemLike input, ItemStackTemplate result, int hammerDamage) {
         return new ForgeHammerRecipeBuilder(Ingredient.of(input), 1, result, hammerDamage);
     }
 
-    protected ForgeHammerRecipeBuilder forgeHammer(TagKey<Item> input, ItemStack result, int hammerDamage) {
+    protected ForgeHammerRecipeBuilder forgeHammer(TagKey<Item> input, ItemStackTemplate result, int hammerDamage) {
         return new ForgeHammerRecipeBuilder(tag(input), 1, result, hammerDamage);
     }
 

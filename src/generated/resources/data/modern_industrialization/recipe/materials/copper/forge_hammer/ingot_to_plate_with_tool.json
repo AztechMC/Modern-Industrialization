@@ -3,7 +3,6 @@
   "damage": 20,
   "ingredient": "#c:ingots/copper",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:copper_plate"
   }
 }

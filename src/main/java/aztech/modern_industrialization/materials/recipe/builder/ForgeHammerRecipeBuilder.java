@@ -31,6 +31,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class ForgeHammerRecipeBuilder implements MaterialRecipeBuilder {
@@ -39,7 +40,7 @@ public class ForgeHammerRecipeBuilder implements MaterialRecipeBuilder {
     private boolean canceled = false;
     private final ForgeHammerRecipe recipe;
 
-    public ForgeHammerRecipeBuilder(MaterialBuilder.RecipeContext context, String id, Ingredient input, int inputCount, ItemStack output,
+    public ForgeHammerRecipeBuilder(MaterialBuilder.RecipeContext context, String id, Ingredient input, int inputCount, ItemStackTemplate output,
             int hammerDamage) {
         this.recipeId = "forge_hammer/" + id;
         this.context = context;

@@ -388,11 +388,11 @@ public class PipeNetworkManager {
     }
 
     private void incrementSpanned(BlockPos pos) {
-        spannedChunks.computeIfAbsent(ChunkPos.asLong(pos), p -> new HashSet<>()).add(pos.immutable());
+        spannedChunks.computeIfAbsent(ChunkPos.pack(pos), p -> new HashSet<>()).add(pos.immutable());
     }
 
     private void decrementSpanned(BlockPos pos) {
-        long chunkPos = ChunkPos.asLong(pos);
+        long chunkPos = ChunkPos.pack(pos);
         Set<BlockPos> set = spannedChunks.get(chunkPos);
         set.remove(pos);
         if (set.size() == 0) {

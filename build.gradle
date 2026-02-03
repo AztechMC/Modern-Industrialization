@@ -151,7 +151,8 @@ dependencies {
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")
 
-    localRuntimeOnly compileOnly("org.appliedenergistics:appliedenergistics2:${project.ae2_version}")
+    // TODO: AE2 runtime
+    /*localRuntimeOnly*/ compileOnly("org.appliedenergistics:appliedenergistics2:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
     compileOnly("earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}")
 

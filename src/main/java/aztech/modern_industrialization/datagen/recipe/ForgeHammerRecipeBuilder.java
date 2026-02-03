@@ -28,13 +28,14 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
 public class ForgeHammerRecipeBuilder {
     private final ForgeHammerRecipe recipe;
 
-    public ForgeHammerRecipeBuilder(Ingredient ingredient, int count, ItemStack result, int hammerDamage) {
+    public ForgeHammerRecipeBuilder(Ingredient ingredient, int count, ItemStackTemplate result, int hammerDamage) {
         this.recipe = new ForgeHammerRecipe(ingredient, count, result, hammerDamage);
     }
 

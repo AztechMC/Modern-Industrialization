@@ -36,6 +36,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -57,9 +58,9 @@ public class RecipeConversions {
         recipe.duration = smeltingRecipe.cookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
-        var result = smeltingRecipe.assemble(null, registryAccess);
+        var result = smeltingRecipe.assemble(null);
         recipe.itemOutputs = Collections
-                .singletonList(new MachineRecipe.ItemOutput(ItemVariant.of(result), result.getCount(), 1));
+                .singletonList(new MachineRecipe.ItemOutput(ItemStackTemplate.fromNonEmptyStack(result), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
     }
@@ -80,11 +81,10 @@ public class RecipeConversions {
         recipe.duration = 200;
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.input(), 1, 1));
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(FluidIngredient.of(MIFluids.LUBRICANT.asFluid()), 1, 1));
-        var result = stonecuttingRecipe.assemble(null, registryAccess);
+        var result = stonecuttingRecipe.assemble(null);
         recipe.itemOutputs = Collections
                 .singletonList(
-                        new MachineRecipe.ItemOutput(ItemVariant.of(result),
-                                result.getCount(), 1));
+                        new MachineRecipe.ItemOutput(ItemStackTemplate.fromNonEmptyStack(result), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
     }

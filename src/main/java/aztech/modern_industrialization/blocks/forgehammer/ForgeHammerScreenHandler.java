@@ -219,7 +219,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 ForgeHammerRecipe recipe = holder.value();
 
                 if (recipe.ingredient().test(input.getItem()) && recipe.count() <= input.getItem().getCount()) {
-                    var output = ItemVariant.of(recipe.result());
+                    var output = ItemVariant.of(recipe.result().create());
                     if ((recipe.hammerDamage() != 0) && (!tool.getItem().isEmpty())) {
                         outputs.add(output);
                         availableRecipes.add(holder);
@@ -247,7 +247,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             RecipeHolder<ForgeHammerRecipe> current = this.availableRecipes.get(getSelectedRecipe());
             if (current.value().hammerDamage() == 0
                     || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
-                this.output.set(current.value().result().copy());
+                this.output.set(current.value().result().create());
             } else {
                 this.output.set(ItemStack.EMPTY);
             }

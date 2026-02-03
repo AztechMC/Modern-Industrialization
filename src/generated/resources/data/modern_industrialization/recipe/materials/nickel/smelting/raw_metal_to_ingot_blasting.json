@@ -5,7 +5,6 @@
   "experience": 0.7,
   "ingredient": "modern_industrialization:raw_nickel",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:nickel_ingot"
   }
 }

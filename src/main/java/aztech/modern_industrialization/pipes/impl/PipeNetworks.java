@@ -88,7 +88,7 @@ public class PipeNetworks extends SavedData {
                 throw new IllegalStateException("Can only load pipe on server from the server thread.");
             }
 
-            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.asLong(pipe.getBlockPos()), chunk -> new ArrayList<>())
+            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.pack(pipe.getBlockPos()), chunk -> new ArrayList<>())
                     .add(pipe::loadPipes);
         }
     }

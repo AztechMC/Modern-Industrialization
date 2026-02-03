@@ -79,7 +79,7 @@ public class RuntimeDataGen {
 
         var modContainer = ModList.get().getModFileById(MI.ID);
         var registriesFuture = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
-        var gen = new DataGenerator(dataOutput, DetectedVersion.tryDetectVersion(), true);
+        var gen = new DataGenerator.Cached(dataOutput, DetectedVersion.tryDetectVersion(), true);
 
         for (var config : configs) {
             config.run(gen, registriesFuture, true);

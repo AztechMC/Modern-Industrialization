@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.TradeCost;
 import net.minecraft.world.item.trading.VillagerTrade;
@@ -86,14 +87,14 @@ public class MITrades {
     private static VillagerTrade sellItemsToVillager(ItemLike soldItem, int numberOfItems, int maxUses, int xp) {
         return new VillagerTrade(
                 new TradeCost(soldItem.asItem(), numberOfItems),
-                new ItemStack(Items.EMERALD),
+                new ItemStackTemplate(Items.EMERALD),
                 maxUses, xp, 0.05F, Optional.empty(), List.of());
     }
 
     private static VillagerTrade buyItemsFromVillager(ItemLike boughtItem, int emeraldCost, int numberOfItems, int xp) {
         return new VillagerTrade(
                 new TradeCost(Items.EMERALD, emeraldCost),
-                new ItemStack(boughtItem, numberOfItems),
+                new ItemStackTemplate(boughtItem.asItem(), numberOfItems),
                 12, xp, 0.05F, Optional.empty(), List.of());
     }
 }

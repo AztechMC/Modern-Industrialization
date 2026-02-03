@@ -3,7 +3,6 @@
   "damage": 40,
   "ingredient": "#c:ingots/bronze",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:bronze_curved_plate"
   }
 }

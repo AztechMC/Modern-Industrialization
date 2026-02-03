@@ -558,7 +558,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (randFloat > output.probability())
                     continue;
             }
-            int remainingAmount = output.amount();
+            int remainingAmount = output.template().count();
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
@@ -566,19 +566,20 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.equals(output.variant()) || key.isBlank()) {
+                    if (key.matches(output.template()) || key.isBlank()) {
+                        var outputVariant = ItemVariant.of(new ItemStack(output.template().item(), 1, output.template().components()));
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
                         int remainingCapacity = simulate || output.probability() < 1
-                                ? (int) stack.getRemainingCapacityFor(output.variant())
-                                : output.variant().getMaxStackSize() - (int) stack.getAmount();
+                                ? (int) stack.getRemainingCapacityFor(outputVariant)
+                                : outputVariant.getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (ins > 0) {
                             if (key.isBlank()) {
                                 if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
                                     stack.setAmount(ins);
-                                    stack.setKey(output.variant());
+                                    stack.setKey(outputVariant);
                                 } else {
                                     ins = 0;
                                 }
@@ -590,9 +591,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         // ins changed inside of previous if, need to check again!
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
-                            lockItems.add(output.variant().getItem());
+                            lockItems.add(outputVariant.getItem());
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);
+                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), outputVariant.getItem(), ins);
                             }
                         }
                         if (remainingAmount == 0)
@@ -748,9 +749,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
             handleLocking(
                     this.inventory.getItemOutputs(),
-                    item -> output.variant().isOf(item),
-                    output.amount(),
-                    output.variant()::getItem);
+                    item -> output.template().is(item),
+                    output.template().count(),
+                    () -> output.template().item().value());
         }
 
         // FLUID INPUTS

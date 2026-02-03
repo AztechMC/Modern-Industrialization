@@ -30,6 +30,8 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
@@ -75,7 +77,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
                     "",
                     CookingBookCategory.MISC,
                     Ingredient.of(input.asItem()),
-                    output.asItem().getDefaultInstance(),
+                    new ItemStackTemplate(output.asItem()),
                     experience,
                     cookingtime);
             context.addRecipe(this);

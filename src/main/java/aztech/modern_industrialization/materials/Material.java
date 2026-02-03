@@ -74,6 +74,10 @@ public class Material {
         return ret;
     }
 
+    public Item getPartItem(PartKeyProvider part) {
+        return getPart(part).asItem();
+    }
+
     @Nullable
     public <T> T get(MaterialProperty<T> prop) {
         return (T) properties.get(prop);

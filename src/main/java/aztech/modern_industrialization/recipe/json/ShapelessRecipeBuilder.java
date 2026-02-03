@@ -32,6 +32,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -39,14 +40,14 @@ import net.minecraft.world.level.ItemLike;
 
 // TODO: remove in favor of vanilla's
 public class ShapelessRecipeBuilder implements MIRecipeBuilder {
-    private final ItemStack resultStack;
+    private final ItemStackTemplate resultStack;
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     public ShapelessRecipeBuilder(ItemLike pResult, int pCount) {
-        this(new ItemStack(pResult, pCount));
+        this(new ItemStackTemplate(pResult.asItem(), pCount));
     }
 
-    public ShapelessRecipeBuilder(ItemStack result) {
+    public ShapelessRecipeBuilder(ItemStackTemplate result) {
         this.resultStack = result;
     }
 
@@ -64,7 +65,7 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
         return new ShapelessRecipeBuilder(pResult, pCount);
     }
 
-    public static ShapelessRecipeBuilder shapeless(ItemStack result) {
+    public static ShapelessRecipeBuilder shapeless(ItemStackTemplate result) {
         return new ShapelessRecipeBuilder(result);
     }
 

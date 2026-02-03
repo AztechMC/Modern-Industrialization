@@ -41,6 +41,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -53,11 +54,11 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, Ingredient> key = new HashMap<>();
-    public final ItemStack result;
+    public final ItemStackTemplate result;
 
     public ShapedRecipeJson(String resultItem, int count, String... pattern) {
         this.pattern = pattern;
-        this.result = new ItemStack(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(resultItem))), count);
+        this.result = new ItemStackTemplate(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(resultItem))), count);
     }
 
     public ShapedRecipeJson addInput(char key, String id) {
@@ -110,7 +111,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
     }
 
     public MachineRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
-        if (result.getCount() % division != 0) {
+        if (result.count() % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
@@ -118,7 +119,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
                 EmptyHolderGetter.getInstance(),
                 EmptyHolderGetter.getInstance(),
                 machine, eu, duration)
-                .itemOut(result.getItem(), result.getCount() / division);
+                .itemOut(result.item().value(), result.count() / division);
         for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {

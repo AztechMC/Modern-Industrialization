@@ -94,7 +94,7 @@ public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandle
             int l = i / 4;
             int m = y + l * 18 + 2;
 
-            RenderHelper.renderAndDecorateItem(guiGraphics, font, handler.getAvailableRecipes().get(i).value().result(), k, m);
+            RenderHelper.renderAndDecorateItem(guiGraphics, font, handler.getAvailableRecipes().get(i).value().result().create(), k, m);
         }
     }
 
@@ -125,7 +125,7 @@ public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandle
             int n = x1 + l % 4 * 16;
             int o = y1 + l / 4 * 18 + 2;
             if (x >= n && x < n + 16 && y >= o && y < o + 18) {
-                guiGraphics.setTooltipForNextFrame(font, handler.getAvailableRecipes().get(l).value().result(), x, y);
+                guiGraphics.setTooltipForNextFrame(font, handler.getAvailableRecipes().get(l).value().result().create(), x, y);
             }
         }
     }

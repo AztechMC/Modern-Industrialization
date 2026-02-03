@@ -14,7 +14,6 @@
   "experience": 0.0,
   "ingredient": "minecraft:water_bucket",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:steam_bucket"
   }
 }

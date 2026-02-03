@@ -3,7 +3,6 @@
   "damage": 20,
   "ingredient": "#c:rods/bronze",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:bronze_ring"
   }
 }

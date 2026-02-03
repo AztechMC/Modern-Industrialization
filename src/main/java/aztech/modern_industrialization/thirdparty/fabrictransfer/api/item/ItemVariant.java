@@ -30,7 +30,13 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.item.ItemV
 import com.mojang.serialization.Codec;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -39,6 +45,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
@@ -51,9 +58,30 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.NonExtendable
 public interface ItemVariant extends TransferVariant<Item> {
-    Codec<ItemVariant> CODEC = ExtraCodecs.optionalEmptyMap(
-            ItemStack.SINGLE_ITEM_CODEC.xmap(ItemVariant::of, ItemVariant::toStack))
-            .xmap(o -> o.orElse(ItemVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
+    // TODO: temporary, need to get rid of ItemVariant anyway
+    private static Codec<ItemVariant> makeCodec() {
+        Codec<Holder<Item>> ITEM_NON_AIR_CODEC = BuiltInRegistries.ITEM
+                .holderByNameCodec()
+                .validate(
+                        p_330100_ -> p_330100_.is(Items.AIR.builtInRegistryHolder())
+                                ? DataResult.error(() -> "Item must not be minecraft:air")
+                                : DataResult.success(p_330100_)
+                );
+        Codec<ItemStack> SINGLE_ITEM_CODEC = Codec.lazyInitialized(
+                () -> RecordCodecBuilder.create(
+                        p_337931_ -> p_337931_.group(
+                                        ITEM_NON_AIR_CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),
+                                        DataComponentPatch.CODEC
+                                                .optionalFieldOf("components", DataComponentPatch.EMPTY)
+                                                .forGetter(ItemStack::getComponentsPatch)
+                                )
+                                .apply(p_337931_, (p_332614_, p_332615_) -> new ItemStack(p_332614_, 1, p_332615_))
+                ));
+        return ExtraCodecs.optionalEmptyMap(SINGLE_ITEM_CODEC.xmap(ItemVariant::of, ItemVariant::toStack))
+                .xmap(o -> o.orElse(ItemVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
+    }
+
+    Codec<ItemVariant> CODEC = makeCodec();
     StreamCodec<RegistryFriendlyByteBuf, ItemVariant> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(ItemVariant::of, ItemVariant::toStack);
 
     /**
@@ -81,6 +109,8 @@ public interface ItemVariant extends TransferVariant<Item> {
      * Return true if the item and tag of this variant match those of the passed stack, and false otherwise.
      */
     boolean matches(ItemStack stack);
+
+    boolean matches(ItemStackTemplate template);
 
     /**
      * Tests an {@link ItemStack} predicate with the inner stack.

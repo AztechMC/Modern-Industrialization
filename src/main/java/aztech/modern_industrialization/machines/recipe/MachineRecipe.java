@@ -51,6 +51,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
@@ -144,7 +145,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(RecipeInput recipeInput) {
         throw new UnsupportedOperationException();
     }
 
@@ -243,33 +244,30 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
     }
 
-    public record ItemOutput(ItemVariant variant, int amount, float probability) {
+    public record ItemOutput(ItemStackTemplate template, float probability) {
         private static final Codec<Holder<Item>> ITEM_NON_AIR_CODEC = BuiltInRegistries.ITEM
                 .holderByNameCodec()
                 .validate(item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item));
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         ITEM_NON_AIR_CODEC.fieldOf("id")
-                                .forGetter(itemOutput -> itemOutput.variant.getItem().builtInRegistryHolder()),
-                        AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.amount),
+                                .forGetter(itemOutput -> itemOutput.template.item()),
+                        AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.template.count()),
                         DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
-                                .forGetter(itemOutput -> itemOutput.variant.getComponentsPatch()),
+                                .forGetter(itemOutput -> itemOutput.template.components()),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f)
                                 .forGetter(itemOutput -> itemOutput.probability))
-                        .apply(g, (item, count, components, probability) -> new ItemOutput(ItemVariant.of(new ItemStack(item, 1, components)), count,
-                                probability)));
+                        .apply(g, (item, count, components, probability) -> new ItemOutput(new ItemStackTemplate(item, count, components), probability)));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemOutput> STREAM_CODEC = StreamCodec.composite(
-                ItemVariant.STREAM_CODEC,
-                ItemOutput::variant,
-                ByteBufCodecs.VAR_INT,
-                ItemOutput::amount,
+                ItemStackTemplate.STREAM_CODEC,
+                ItemOutput::template,
                 ByteBufCodecs.FLOAT,
                 ItemOutput::probability,
                 ItemOutput::new);
 
         public ItemStack getStack() {
-            return variant.toStack(amount);
+            return template.create();
         }
     }
 

@@ -3,7 +3,6 @@
   "damage": 40,
   "ingredient": "#c:ingots/gold",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:gold_curved_plate"
   }
 }

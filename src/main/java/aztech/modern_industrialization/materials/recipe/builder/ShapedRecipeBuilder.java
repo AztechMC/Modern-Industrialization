@@ -43,6 +43,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -54,7 +55,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private final MaterialBuilder.RecipeContext context;
     private boolean canceled = false;
     private final String id;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final String[] pattern;
     private final Map<Character, Ingredient> inputs = new HashMap<>();
 
@@ -68,7 +69,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             this.pattern = null;
             canceled = true;
         } else {
-            this.result = new ItemStack(output.asItem(), count);
+            this.result = new ItemStackTemplate(output.asItem(), count);
             this.pattern = pattern;
         }
         context.addRecipe(this);

@@ -3,7 +3,6 @@
   "count": 2,
   "ingredient": "#c:ingots/copper",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:copper_curved_plate"
   }
 }

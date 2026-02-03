@@ -464,9 +464,9 @@ public class SteamDrillItem
                 setAmount(stack, getAmount(stack) - 1);
 
                 var remainder = burnt.getCraftingRemainder();
-                if (!remainder.isEmpty()) {
+                if (remainder != null) {
                     new ItemHandler(stack, this)
-                            .insertItem(0, remainder, false, true, true);
+                            .insertItem(0, remainder.create(), false, true, true);
                 }
             }
             return burnTicks;

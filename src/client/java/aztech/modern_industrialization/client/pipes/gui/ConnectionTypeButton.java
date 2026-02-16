@@ -58,6 +58,6 @@ class ConnectionTypeButton extends Button {
         this.renderDefaultSprite(graphics);
         // Text is a bit too large, so use a 0 (instead of 2) pixel margin for the "scrolling" effect
         var output = graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE);
-        this.renderScrollingStringOverContents(output, message, 2);
+        this.renderScrollingStringOverContents(output, getMessage(), 0);
     }
 }

@@ -45,6 +45,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
@@ -117,8 +118,8 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             title = title.copy().append(Component.literal(" "))
                     .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
-        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, 0x404040, false);
-        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
+        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
     }
 
     @Override

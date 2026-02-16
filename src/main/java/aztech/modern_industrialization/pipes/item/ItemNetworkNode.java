@@ -62,7 +62,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -87,9 +88,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.relative(direction);
-        // TODO 26.1
-//        return world.getCapability(Capabilities.ItemHandler.BLOCK, adjPos, direction.getOpposite()) != null;
-        return false;
+        return world.getCapability(Capabilities.Item.BLOCK, adjPos, direction.getOpposite()) != null;
     }
 
     @Override
@@ -256,7 +255,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final Map<Item, List<ItemStack>> stacksCache = new IdentityHashMap<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
         @Nullable
-        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = null;
+        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
             this.direction = direction;
@@ -277,13 +276,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        private boolean isInCache(ItemStack stack) {
-            var list = stacksCache.get(stack.getItem());
+        private boolean isInCache(ItemResource resource) {
+            var list = stacksCache.get(resource.getItem());
             if (list == null) {
                 return false;
             }
             for (ItemStack cachedStack : list) {
-                if (ItemStack.isSameItemSameComponents(cachedStack, stack)) {
+                if (resource.matches(cachedStack)) {
                     return true;
                 }
             }
@@ -298,8 +297,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        boolean canStackMoveThrough(ItemStack stack) {
-            return isInCache(stack) == whitelist;
+        boolean canMoveThrough(ItemResource resource) {
+            return isInCache(resource) == whitelist;
         }
 
         int getMoves() {

@@ -26,13 +26,15 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.inventory.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
-import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.transfer.CombinedInsertionHandler;
+import aztech.modern_industrialization.transfer.InsertionHandler;
+import aztech.modern_industrialization.transfer.MITransferUtil;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
+
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
@@ -41,8 +43,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import org.jspecify.annotations.Nullable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemNetwork extends PipeNetwork {
     public static final int TICK_RATE = 60;
@@ -50,6 +56,8 @@ public class ItemNetwork extends PipeNetwork {
 
     int inactiveTicks = 0;
     long lastMovedItems = 0;
+    @Nullable
+    ExtractionSource currentExtractionSource;
 
     public ItemNetwork(int id, ItemNetworkData data) {
         super(id, data);
@@ -75,12 +83,11 @@ public class ItemNetwork extends PipeNetwork {
                     var queryPos = pos.relative(connection.direction);
                     var querySide = connection.direction.getOpposite();
 
-                    // TODO 26.1
-//                    var source = world.getCapability(Capabilities.ItemHandler.BLOCK, queryPos, querySide);
-//
-//                    if (source != null) {
-//                        extractionSources.add(new ExtractionSource(connection, source, queryPos, querySide));
-//                    }
+                    var source = world.getCapability(Capabilities.Item.BLOCK, queryPos, querySide);
+
+                    if (source != null) {
+                        extractionSources.add(new ExtractionSource(connection, source, queryPos, querySide));
+                    }
                 }
             }
         }
@@ -89,48 +96,38 @@ public class ItemNetwork extends PipeNetwork {
 
         // Do the actual transfer.
         var insertTargets = getAggregatedInsertTargets(world);
+        var insertionHandler = new CombinedInsertionHandler<>(insertTargets);
         lastMovedItems = 0;
-        for (ExtractionSource target : extractionSources) {
-            // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
-            // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
-            while (insertTargets.size() > 0 && target.connection().extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
-                insertTargets.remove(insertTargets.size() - 1);
+        try (var tx = Transaction.openRoot()) {
+            for (ExtractionSource source : extractionSources) {
+                currentExtractionSource = source;
+                // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
+                // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
+                while (!insertTargets.isEmpty() && source.connection().extractPriority > insertTargets.getLast().getPriority()) {
+                    insertTargets.removeLast();
+                }
+
+                try {
+                    lastMovedItems += MITransferUtil.move(
+                            source.itemHandler(),
+                            insertionHandler,
+                            source.connection()::canMoveThrough,
+                            source.connection().getMoves(),
+                            tx);
+                } catch (Exception exception) {
+                    var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
+                    crashReport.addCategory("Block being extracted from:")
+                            .setDetail("Dimension", world.dimension())
+                            .setDetail("Position", source.queryPos())
+                            .setDetail("Accessed from side", source.querySide());
+                    throw new ReportedException(crashReport);
+                }
             }
 
-            try {
-                lastMovedItems += moveAll(world, target, insertTargets, target.connection()::canStackMoveThrough,
-                        target.connection().getMoves());
-            } catch (Exception exception) {
-                var crashReport = CrashReport.forThrowable(exception, "Moving items in a pipe network");
-                crashReport.addCategory("Block being extracted from:")
-                        .setDetail("Dimension", world.dimension())
-                        .setDetail("Position", target.queryPos())
-                        .setDetail("Accessed from side", target.querySide());
-                throw new ReportedException(crashReport);
-            }
+            tx.commit();
+        } finally {
+            currentExtractionSource = null;
         }
-    }
-
-    private static int moveAll(ServerLevel world, ExtractionSource target, List<? extends ItemSink> sinks, Predicate<ItemStack> filter,
-            int maxToMove) {
-        IItemHandler source = target.storage();
-        int moved = 0;
-
-        int sourceSlots = source.getSlots();
-        for (int i = 0; i < sourceSlots; ++i) {
-            // Filter check
-            var stack = source.getStackInSlot(i);
-            if (stack.isEmpty() || !filter.test(stack)) {
-                continue;
-            }
-
-            moved += ItemSink.listMoveAll(sinks, world, target, i, maxToMove - moved);
-            if (moved >= maxToMove) {
-                break;
-            }
-        }
-
-        return moved;
     }
 
     /**
@@ -144,14 +141,13 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        // TODO 26.1
-//                        connection.cache = BlockCapabilityCache.create(Capabilities.ItemHandler.BLOCK, world,
-//                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
+                        connection.cache = BlockCapabilityCache.create(Capabilities.Item.BLOCK, world,
+                                entry.getPos().relative(connection.direction), connection.direction.getOpposite());
                     }
                     var target = connection.cache.getCapability();
-                    if (target != null && target.getSlots() > 0) {
+                    if (target != null && target.size() > 0) {
                         PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
-                        InsertTarget it = new InsertTarget(connection, new ItemSink.HandlerWrapper(target, entry.getPos(), connection.direction));
+                        InsertTarget it = new InsertTarget(connection, target);
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
                             bucket.whitelist.add(it);
@@ -203,14 +199,14 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private interface Aggregate extends ItemSink {
+    private interface Aggregate extends InsertionHandler<ItemResource> {
         int getPriority();
     }
 
-    private static class WhitelistAggregate implements Aggregate {
+    private class WhitelistAggregate implements Aggregate {
         private final int priority;
         // Used when the inserted item doesn't have NBT
-        private final Map<Item, List<ItemSink>> map = new IdentityHashMap<>();
+        private final Map<Item, List<InsertTarget>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
@@ -222,14 +218,14 @@ public class ItemNetwork extends PipeNetwork {
                     ItemNetworkNode.ItemConnection conn = target.connection;
                     for (ItemStack stack : conn.stacks) {
                         if (stack.isComponentsPatchEmpty()) {
-                            map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target.target);
+                            map.computeIfAbsent(stack.getItem(), v -> new ArrayList<>()).add(target);
                         }
                     }
-                } else if (target.target.handler() instanceof WhitelistedItemStorage wis) {
+                } else if (target.target instanceof WhitelistedItemStorage wis) {
                     WHITELIST_CACHED_SET.clear();
                     wis.getWhitelistedItems(WHITELIST_CACHED_SET);
                     for (Item item : WHITELIST_CACHED_SET) {
-                        map.computeIfAbsent(item, v -> new ArrayList<>()).add(target.target);
+                        map.computeIfAbsent(item, v -> new ArrayList<>()).add(target);
                     }
                 } else {
                     throw new IllegalStateException("Internal item pipe error! Should never happen!");
@@ -238,18 +234,9 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
-            var stack = source.storage().getStackInSlot(sourceSlot);
-
-            if (!stack.isComponentsPatchEmpty()) {
-                return insertTargets(targets, world, source, sourceSlot, maxAmount);
-            }
-
-            List<ItemSink> targets = map.get(stack.getItem());
-            if (targets != null) {
-                return ItemSink.listMoveAll(targets, world, source, sourceSlot, maxAmount);
-            }
-            return 0;
+        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+            var insertionTargets = resource.isComponentsPatchEmpty() ? map.get(resource.getItem()) : targets;
+            return insertionTargets == null ? 0 : insertTargets(insertionTargets, resource, amount, transaction);
         }
 
         @Override
@@ -258,7 +245,7 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static class BlacklistAggregate implements Aggregate {
+    private class BlacklistAggregate implements Aggregate {
         private final int priority;
         private final List<InsertTarget> targets;
 
@@ -268,8 +255,8 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public int moveAll(ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
-            return insertTargets(targets, world, source, sourceSlot, maxAmount);
+        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+            return insertTargets(targets, resource, amount, transaction);
         }
 
         @Override
@@ -278,28 +265,20 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static int insertTargets(List<InsertTarget> targets, ServerLevel world, ExtractionSource source, int sourceSlot, int maxAmount) {
-        int moved = 0;
-
-        for (InsertTarget target : targets) {
-            if (source.connection() == target.connection()) {
+    private int insertTargets(List<InsertTarget> targets, ItemResource resource, int amount, TransactionContext transaction) {
+        int inserted = 0;
+        for (var target : targets) {
+            if (currentExtractionSource != null && currentExtractionSource.connection() == target.connection()) {
+                // Avoid self-insertion
                 continue;
             }
-            var stack = source.storage().getStackInSlot(sourceSlot);
-            if (stack.isEmpty()) {
-                break;
-            }
-
-            if (target.connection.canStackMoveThrough(stack)) {
-                moved += target.target.moveAll(world, source, sourceSlot, maxAmount - moved);
-                if (moved >= maxAmount) {
-                    break;
-                }
+            if (target.connection.canMoveThrough(resource)) {
+                inserted += ResourceHandlerUtil.insertStacking(target.target, resource, amount - inserted, transaction);
+                if (inserted == amount) break;
             }
         }
-
-        return moved;
+        return inserted;
     }
 
-    private record InsertTarget(ItemNetworkNode.ItemConnection connection, ItemSink.HandlerWrapper target) {}
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, ResourceHandler<ItemResource> target) {}
 }

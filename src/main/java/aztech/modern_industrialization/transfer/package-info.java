@@ -22,15 +22,7 @@
  * SOFTWARE.
  */
 
-package aztech.modern_industrialization.pipes.item;
+@NullMarked
+package aztech.modern_industrialization.transfer;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-
-record ExtractionSource(
-        ItemNetworkNode.ItemConnection connection,
-        ResourceHandler<ItemResource> itemHandler,
-        BlockPos queryPos,
-        Direction querySide) {}
+import org.jspecify.annotations.NullMarked;

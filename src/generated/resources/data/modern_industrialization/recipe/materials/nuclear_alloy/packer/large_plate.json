@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/nuclear_alloy"
+      "ingredient": "#c:plates/nuclear_alloy"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:nuclear_alloy_large_plate"
+      "id": "modern_industrialization:nuclear_alloy_large_plate"
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "modern_industrialization:fire_clay_bricks",
+    "F": "minecraft:blast_furnace"
+  },
+  "pattern": [
+    "BBB",
+    "BFB",
+    "BBB"
+  ],
+  "result": {
+    "id": "modern_industrialization:steam_blast_furnace"
+  }
+}

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:crimson_stem"
+      "ingredient": "minecraft:crimson_stem"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:crimson_hyphae"
+      "id": "minecraft:crimson_hyphae"
     }
   ]
 }

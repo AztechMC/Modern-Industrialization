@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:diode"
+      "ingredient": "modern_industrialization:diode"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:transistor"
+      "ingredient": "modern_industrialization:transistor"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:electrum_fine_wire"
+      "ingredient": "modern_industrialization:electrum_fine_wire"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:electronic_circuit_board"
+      "ingredient": "modern_industrialization:electronic_circuit_board"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:overdrive_module"
+      "id": "modern_industrialization:overdrive_module"
     }
   ]
 }

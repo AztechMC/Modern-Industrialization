@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/gold"
+      "ingredient": "#c:ingots/gold"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:gold_dust"
+      "id": "modern_industrialization:gold_dust"
     }
   ]
 }

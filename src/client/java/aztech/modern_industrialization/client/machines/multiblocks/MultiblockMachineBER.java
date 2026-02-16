@@ -54,52 +54,53 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         super(ctx);
     }
 
-    @Override
-    public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
-        super.render(be, tickDelta, matrices, vcp, light, overlay);
-
-        // Only render if holding a wrench AND if the shape is not valid.
-        boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
-        HatchType hatchType = getHeldHatchType();
-        if (drawHighlights || hatchType != null) {
-            ShapeMatcher matcher = be.createShapeMatcher();
-            var player = Minecraft.getInstance().player;
-
-            for (BlockPos pos : matcher.getPositions()) {
-                if (player != null && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > MAX_HIGHLIGHT_DISTANCE * MAX_HIGHLIGHT_DISTANCE) {
-                    // Skip blocks that are far from the player to mitigate FPS drops.
-                    continue;
-                }
-
-                matrices.pushPose();
-                matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
-
-                HatchFlags hatchFlag = matcher.getHatchFlags(pos);
-                if (hatchType != null) {
-                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
-                        // Highlight placeable hatches in green
-                        matrices.translate(-0.005, -0.005, -0.005);
-                        matrices.scale(1.01f, 1.01f, 1.01f);
-                        RenderHelper.drawOverlay(matrices, vcp, overlay);
-                    }
-                }
-                if (drawHighlights) {
-                    if (!matcher.matches(pos, be.getLevel())) {
-                        var existingState = be.getLevel().getBlockState(pos);
-                        if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
-                            // Enqueue state preview
-                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
-                        } else {
-                            // Enqueue red cube
-                            MultiblockErrorHighlight.enqueueHighlight(pos, null);
-                        }
-                    }
-                }
-
-                matrices.popPose();
-            }
-        }
-    }
+    // TODO 26.1
+//    @Override
+//    public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
+//        super.render(be, tickDelta, matrices, vcp, light, overlay);
+//
+//        // Only render if holding a wrench AND if the shape is not valid.
+//        boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
+//        HatchType hatchType = getHeldHatchType();
+//        if (drawHighlights || hatchType != null) {
+//            ShapeMatcher matcher = be.createShapeMatcher();
+//            var player = Minecraft.getInstance().player;
+//
+//            for (BlockPos pos : matcher.getPositions()) {
+//                if (player != null && player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > MAX_HIGHLIGHT_DISTANCE * MAX_HIGHLIGHT_DISTANCE) {
+//                    // Skip blocks that are far from the player to mitigate FPS drops.
+//                    continue;
+//                }
+//
+//                matrices.pushPose();
+//                matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
+//
+//                HatchFlags hatchFlag = matcher.getHatchFlags(pos);
+//                if (hatchType != null) {
+//                    if (MIClientConfig.INSTANCE.hatchPlacementOverlay.getAsBoolean() && hatchFlag != null && hatchFlag.allows(hatchType)) {
+//                        // Highlight placeable hatches in green
+//                        matrices.translate(-0.005, -0.005, -0.005);
+//                        matrices.scale(1.01f, 1.01f, 1.01f);
+//                        RenderHelper.drawOverlay(matrices, vcp, overlay);
+//                    }
+//                }
+//                if (drawHighlights) {
+//                    if (!matcher.matches(pos, be.getLevel())) {
+//                        var existingState = be.getLevel().getBlockState(pos);
+//                        if (existingState.isAir() || /* approximate check for e.g. grass and snow */ existingState.canBeReplaced()) {
+//                            // Enqueue state preview
+//                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
+//                        } else {
+//                            // Enqueue red cube
+//                            MultiblockErrorHighlight.enqueueHighlight(pos, null);
+//                        }
+//                    }
+//                }
+//
+//                matrices.popPose();
+//            }
+//        }
+//    }
 
     private static boolean isHoldingWrench() {
         Player player = Minecraft.getInstance().player;
@@ -130,10 +131,11 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         return null;
     }
 
-    @Override
-    public boolean shouldRenderOffScreen(MultiblockMachineBlockEntity pBlockEntity) {
-        return true;
-    }
+    // TODO 26.1
+//    @Override
+//    public boolean shouldRenderOffScreen(MultiblockMachineBlockEntity pBlockEntity) {
+//        return true;
+//    }
 
     @Override
     public AABB getRenderBoundingBox(MultiblockMachineBlockEntity blockEntity) {

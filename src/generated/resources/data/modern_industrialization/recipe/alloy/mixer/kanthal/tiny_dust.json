@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/stainless_steel"
+      "ingredient": "#c:tiny_dusts/stainless_steel"
     },
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/chromium"
+      "ingredient": "#c:tiny_dusts/chromium"
     },
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/aluminum"
+      "ingredient": "#c:tiny_dusts/aluminum"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:kanthal_tiny_dust"
+      "id": "modern_industrialization:kanthal_tiny_dust"
     }
   ]
 }

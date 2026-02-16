@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/titanium"
+      "ingredient": "#c:plates/titanium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_dust"
+      "id": "modern_industrialization:titanium_dust"
     }
   ]
 }

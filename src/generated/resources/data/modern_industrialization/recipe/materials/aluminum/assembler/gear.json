@@ -5,23 +5,23 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:soldering_alloy"
+      "ingredient": "modern_industrialization:soldering_alloy"
     }
   ],
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/aluminum"
+      "ingredient": "#c:plates/aluminum"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:aluminum_ring"
+      "ingredient": "modern_industrialization:aluminum_ring"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:aluminum_gear"
+      "id": "modern_industrialization:aluminum_gear"
     }
   ]
 }

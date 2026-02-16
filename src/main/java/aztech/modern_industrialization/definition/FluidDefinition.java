@@ -30,10 +30,11 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.fluid.MIBucketItem;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.fluid.MIFluidBlock;
-import aztech.modern_industrialization.fluid.MIFluidType;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -48,7 +49,7 @@ public class FluidDefinition extends Definition implements FluidLike {
     private final DeferredHolder<Fluid, MIFluid> fluid;
     private DeferredBlock<MIFluidBlock> fluidBlock;
     private ItemDefinition<MIBucketItem> bucketItemDefinition;
-    private DeferredHolder<FluidType, MIFluidType> fluidType;
+    private DeferredHolder<FluidType, FluidType> fluidType;
 
     public final int color;
     public final int opacity;
@@ -63,7 +64,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         this.isGas = isGas;
 
         fluid = MIFluids.FLUIDS.register(id, () -> new MIFluid(fluidBlock, bucketItemDefinition, fluidType, color));
-        fluidBlock = MIBlock.BLOCKS.register(id, () -> new MIFluidBlock(color));
+        fluidBlock = MIBlock.BLOCKS.registerBlock(id, p -> new MIFluidBlock(p, color));
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
                 id + "_bucket", s -> new MIBucketItem(fluid.get(), color, s), SortOrder.BUCKETS);
         fluidType = MIFluids.FLUID_TYPES.register(id,
@@ -73,7 +74,7 @@ public class FluidDefinition extends Definition implements FluidLike {
                     if (isGas) {
                         props.density(-1000); // Make it lighter than air!
                     }
-                    return new MIFluidType(fluidBlock, props);
+                    return new FluidType(props);
                 });
 
         this.fluidTexture = texture;
@@ -96,6 +97,10 @@ public class FluidDefinition extends Definition implements FluidLike {
 
     public BucketItem getBucket() {
         return bucketItemDefinition.asItem();
+    }
+
+    public FluidType getFluidType() {
+        return fluidType.get();
     }
 
     public FluidVariant variant() {

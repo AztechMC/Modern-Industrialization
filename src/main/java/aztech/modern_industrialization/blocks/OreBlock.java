@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -54,12 +54,12 @@ public class OreBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack handStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-            BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack handStack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                          BlockHitResult hit) {
         if (handStack.getItem() == Items.BOOK) {
             handStack.shrink(1);
-            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDE_BOOK));
-            return ItemInteractionResult.sidedSuccess(world.isClientSide);
+            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.GUIDEBOOK));
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(handStack, state, world, pos, player, hand, hit);
     }

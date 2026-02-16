@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:cherry_log"
+      "ingredient": "minecraft:cherry_log"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:cherry_wood"
+      "id": "minecraft:cherry_wood"
     }
   ]
 }

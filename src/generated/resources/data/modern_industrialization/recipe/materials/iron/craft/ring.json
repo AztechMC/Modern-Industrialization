@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/iron"
-    },
-    "b": {
-      "item": "modern_industrialization:iron_bolt"
-    }
+    "R": "#c:rods/iron",
+    "b": "modern_industrialization:iron_bolt"
   },
   "pattern": [
     "bRb",

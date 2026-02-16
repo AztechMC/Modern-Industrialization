@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 1500,
+  "eu": 64,
+  "fluid_inputs": [
+    {
+      "amount": 1250,
+      "ingredient": "modern_industrialization:argon"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 32,
+      "ingredient": "#c:dusts/silicon"
+    },
+    {
+      "amount": 1,
+      "ingredient": "#c:tiny_dusts/iridium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:monocrystalline_silicon"
+    }
+  ]
+}

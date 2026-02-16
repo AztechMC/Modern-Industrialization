@@ -30,18 +30,26 @@ import aztech.modern_industrialization.machines.blockentities.BoilerMachineBlock
 import aztech.modern_industrialization.machines.blockentities.SteamCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.SteamWaterPumpBlockEntity;
 import aztech.modern_industrialization.machines.init.MachineTier;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import org.slf4j.Logger;
 
 public class SteelUpgradeItem extends Item {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public SteelUpgradeItem(Properties properties) {
         super(properties);
     }
@@ -63,13 +71,13 @@ public class SteelUpgradeItem extends Item {
 
         // Find new block
         Block block = context.getLevel().getBlockState(context.getClickedPos()).getBlock();
-        ResourceLocation blockKey = BuiltInRegistries.BLOCK.getKey(block);
-        ResourceLocation newBlock = blockKey.withPath(p -> p.replace("bronze_", "steel_"));
+        Identifier blockKey = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier newBlock = blockKey.withPath(p -> p.replace("bronze_", "steel_"));
         if (!BuiltInRegistries.BLOCK.containsKey(newBlock)) {
             return super.useOn(context);
         }
 
-        BlockState newState = BuiltInRegistries.BLOCK.get(newBlock).defaultBlockState();
+        BlockState newState = BuiltInRegistries.BLOCK.getValue(newBlock).defaultBlockState();
 
         // Do the upgrade
         if (context.getLevel().isClientSide()) {
@@ -86,7 +94,10 @@ public class SteelUpgradeItem extends Item {
                 throw new RuntimeException("Upgraded machine should be a MachineBlockEntity, found " + newBe);
             }
 
-            newMachine.load(bronzeData, context.getLevel().registryAccess(), true);
+            try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(newBe.problemPath(), LOGGER)) {
+                ValueInput input = TagValueInput.create(reporter, context.getLevel().registryAccess(), bronzeData);
+                newMachine.load(input, true);
+            }
 
             // Give out the advancement
             if (context.getPlayer() instanceof ServerPlayer sp) {
@@ -102,6 +113,6 @@ public class SteelUpgradeItem extends Item {
             context.getItemInHand().shrink(1);
         }
 
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+        return InteractionResult.SUCCESS;
     }
 }

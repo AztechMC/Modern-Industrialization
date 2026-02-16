@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -44,13 +46,15 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -62,9 +66,10 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -85,6 +90,7 @@ import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jspecify.annotations.Nullable;
@@ -105,8 +111,10 @@ public class SteamDrillItem
         }
 
         public boolean canInsert(ItemVariant item) {
-            int burnTicks = item.toStack().getBurnTime(null);
-            return burnTicks > 0;
+            // TODO 26.1
+//            int burnTicks = item.toStack().getBurnTime(null);
+//            return burnTicks > 0;
+            return false;
         }
     };
 
@@ -151,7 +159,7 @@ public class SteamDrillItem
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (isSupportedBlock(stack, state) && canUse(stack) && !state.is(Tiers.NETHERITE.getIncorrectBlocksForDrops())) {
+        if (isSupportedBlock(stack, state) && canUse(stack) && !state.is(ToolMaterial.NETHERITE.incorrectBlocksForDrops())) {
             return true;
         }
         return super.isCorrectToolForDrops(stack, state);
@@ -364,9 +372,8 @@ public class SteamDrillItem
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         useFuel(stack, attacker);
-        return true;
     }
 
     private void useFuel(ItemStack stack, @Nullable LivingEntity entity) {
@@ -385,27 +392,27 @@ public class SteamDrillItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         // Enable or disable silk touch
         if (hand == InteractionHand.MAIN_HAND && user.isShiftKeyDown()) {
             ItemStack stack = user.getItemInHand(hand);
             setSilkTouch(stack, isNotSilkTouch(stack));
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 user.displayClientMessage(
                         isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text(), true);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         // Refill water
         ItemStack itemStack = user.getItemInHand(hand);
         BlockHitResult hitResult = getPlayerPOVHitResult(world, user, ClipContext.Fluid.ANY);
         if (hitResult.getType() != HitResult.Type.BLOCK)
-            return InteractionResultHolder.pass(itemStack);
+            return InteractionResult.PASS;
         FluidState fluidState = world.getFluidState(hitResult.getBlockPos());
         if (fluidState.getType() == Fluids.WATER || fluidState.getType() == Fluids.FLOWING_WATER) {
             fillWater(user, itemStack);
-            return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.use(world, user, hand);
@@ -414,25 +421,25 @@ public class SteamDrillItem
     private void fillWater(Player player, ItemStack stack) {
         if (stack.getOrDefault(MIComponents.WATER, 0) != FULL_WATER) {
             stack.set(MIComponents.WATER, FULL_WATER);
-            player.playNotifySound(SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1, 1);
+            player.playSound(SoundEvents.BUCKET_FILL, 1, 1);
         }
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
-        var fuel = stack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+    public void inventoryTick(ItemStack itemStack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+        var fuel = itemStack.getOrDefault(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         if (fuel.burnTicks() > 0) {
-            stack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(Math.max(0, fuel.burnTicks() - 5), fuel.maxBurnTicks()));
-            stack.update(MIComponents.WATER, 0, w -> Math.max(0, w - 5));
+            itemStack.set(MIComponents.STEAM_DRILL_FUEL, new SteamDrillFuel(Math.max(0, fuel.burnTicks() - 5), fuel.maxBurnTicks()));
+            itemStack.update(MIComponents.WATER, 0, w -> Math.max(0, w - 5));
         }
         if (fuel.burnTicks() == 0) {
-            stack.set(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
+            itemStack.set(MIComponents.STEAM_DRILL_FUEL, SteamDrillFuel.EMPTY);
         }
-        if (stack.getOrDefault(MIComponents.WATER.get(), 0) == 0) {
-            if (entity instanceof Player player) {
+        if (itemStack.getOrDefault(MIComponents.WATER.get(), 0) == 0) {
+            if (owner instanceof Player player) {
                 var inv = player.getInventory();
                 for (int i = 0; i < inv.getContainerSize(); ++i) {
-                    if (tryFillWater(player, stack, inv.getItem(i))) {
+                    if (tryFillWater(player, itemStack, inv.getItem(i))) {
                         break;
                     }
                 }
@@ -448,15 +455,18 @@ public class SteamDrillItem
     }
 
     private int consumeFuel(ItemStack stack, Simulation simulation) {
-        int burnTicks = getResource(stack).toStack().getBurnTime(null);
+        // TODO 26.1
+//        int burnTicks = getResource(stack).toStack().getBurnTime(null);
+        int burnTicks = 0;
         if (burnTicks > 0) {
             if (simulation.isActing()) {
                 var burnt = getResource(stack).toStack();
                 setAmount(stack, getAmount(stack) - 1);
 
-                if (burnt.hasCraftingRemainingItem()) {
+                var remainder = burnt.getCraftingRemainder();
+                if (remainder != null) {
                     new ItemHandler(stack, this)
-                            .insertItem(0, burnt.getCraftingRemainingItem(), false, true, true);
+                            .insertItem(0, remainder.create(), false, true, true);
                 }
             }
             return burnTicks;
@@ -515,7 +525,7 @@ public class SteamDrillItem
     }
 
     private boolean tryFillWater(Player player, ItemStack barrelLike, ItemStack fillSource) {
-        var otherStorage = fillSource.getCapability(Capabilities.FluidHandler.ITEM);
+        var otherStorage = FluidUtil.getFluidHandler(fillSource).orElse(null);
 
         if (otherStorage != null) {
             long totalWater = 0;
@@ -535,26 +545,26 @@ public class SteamDrillItem
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flag) {
         var data = (SteamDrillTooltipData) getTooltipImage(stack).get();
 
         // Water %
-        tooltip.add(MIText.WaterPercent.text(data.waterLevel).setStyle(TextHelper.WATER_TEXT));
+        tooltip.accept(MIText.WaterPercent.text(data.waterLevel).setStyle(TextHelper.WATER_TEXT));
         int barWater = (int) Math.ceil(data.waterLevel / 5d);
         int barVoid = 20 - barWater;
         // Water bar
-        tooltip.add(Component.literal("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
+        tooltip.accept(Component.literal("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
                 .append(Component.literal("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
         // Fuel left
         if (data.burnTicks > 0) {
-            tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
+            tooltip.accept(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
         // 3x3 state
-        tooltip.add(MIText.MiningArea
+        tooltip.accept(MIText.MiningArea
                 .text((this.isActivated(stack) ? MIText.MiningArea3x3 : MIText.MiningArea1x1).text().setStyle(TextHelper.NUMBER_TEXT))
                 .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));
         // Silk touch
-        tooltip.add(MIText.SilkTouchState
+        tooltip.accept(MIText.SilkTouchState
                 .text((isNotSilkTouch(stack) ? MIText.Deactivated.text().setStyle(TextHelper.RED)
                         : MIText.Activated.text().setStyle(TextHelper.GREEN)))
                 .setStyle(TextHelper.GRAY_TEXT.withItalic(false)));

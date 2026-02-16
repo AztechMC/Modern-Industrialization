@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:cupronickel_wire_magnetic"
+      "ingredient": "modern_industrialization:cupronickel_wire_magnetic"
     },
     {
       "amount": 2,
-      "tag": "c:rods/aluminum"
+      "ingredient": "#c:rods/aluminum"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:electronic_circuit"
+      "ingredient": "modern_industrialization:electronic_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:large_pump"
+      "ingredient": "modern_industrialization:large_pump"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electrolyzer"
+      "id": "modern_industrialization:electrolyzer"
     }
   ]
 }

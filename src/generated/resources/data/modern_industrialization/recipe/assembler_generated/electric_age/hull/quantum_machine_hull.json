@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:plutonium_battery"
+      "ingredient": "modern_industrialization:plutonium_battery"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_circuit"
+      "ingredient": "modern_industrialization:quantum_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_machine_casing"
+      "ingredient": "modern_industrialization:quantum_machine_casing"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:superconductor_cable"
+      "ingredient": "modern_industrialization:superconductor_cable"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_machine_hull"
+      "id": "modern_industrialization:quantum_machine_hull"
     }
   ]
 }

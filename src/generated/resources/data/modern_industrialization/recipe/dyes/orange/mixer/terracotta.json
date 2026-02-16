@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/orange"
+      "ingredient": "#c:dyes/orange"
     },
     {
       "amount": 8,
-      "tag": "minecraft:terracotta"
+      "ingredient": "#minecraft:terracotta"
     }
   ],
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:orange_terracotta"
+      "id": "minecraft:orange_terracotta"
     }
   ]
 }

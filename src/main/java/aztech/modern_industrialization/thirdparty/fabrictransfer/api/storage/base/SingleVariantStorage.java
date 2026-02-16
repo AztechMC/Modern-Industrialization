@@ -26,8 +26,8 @@ package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.ba
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.SnapshotJournal;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * A storage that can store a single transfer variant at any given time.

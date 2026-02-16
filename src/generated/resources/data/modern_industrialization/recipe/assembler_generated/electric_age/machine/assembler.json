@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:robot_arm"
+      "ingredient": "modern_industrialization:robot_arm"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:conveyor"
+      "ingredient": "modern_industrialization:conveyor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:assembler"
+      "id": "modern_industrialization:assembler"
     }
   ]
 }

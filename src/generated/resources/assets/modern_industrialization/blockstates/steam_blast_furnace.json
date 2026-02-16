@@ -1,7 +1,17 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/steam_blast_furnace"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:firebricks",
+      "default_overlays": {
+        "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+        "front": "modern_industrialization:block/machines/steam_blast_furnace/overlay_front",
+        "front_active": "modern_industrialization:block/machines/steam_blast_furnace/overlay_front_active",
+        "item_auto": "modern_industrialization:block/overlays/item_auto",
+        "output": "modern_industrialization:block/overlays/output"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

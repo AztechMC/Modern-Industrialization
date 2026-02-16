@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:coal_crushed_dust"
+      "ingredient": "modern_industrialization:coal_crushed_dust"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:coal_dust"
+      "id": "modern_industrialization:coal_dust"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:coal_dust",
+      "id": "modern_industrialization:coal_dust",
       "probability": 0.5
     }
   ]

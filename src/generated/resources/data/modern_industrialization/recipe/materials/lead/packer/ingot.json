@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/lead"
+      "ingredient": "#c:nuggets/lead"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:lead_ingot"
+      "id": "modern_industrialization:lead_ingot"
     }
   ]
 }

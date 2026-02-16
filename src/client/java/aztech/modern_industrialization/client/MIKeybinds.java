@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -55,10 +55,11 @@ public class MIKeybinds {
     }
 
     public static void init(RegisterKeyMappingsEvent event) {
+        event.registerCategory(CATEGORY);
         MAPPINGS.forEach(m -> event.register(m.holder().get()));
     }
 
-    public static final String CATEGORY = Util.makeDescriptionId("key.categories", MI.id(MI.ID));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(MI.id(MI.ID));
 
     public static final Keybind TOGGLE_FLIGHT = create(
             "toggle_flight",

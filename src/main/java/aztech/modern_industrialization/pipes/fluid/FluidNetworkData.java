@@ -27,39 +27,19 @@ package aztech.modern_industrialization.pipes.fluid;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
-public class FluidNetworkData extends PipeNetworkData {
-    FluidVariant fluid;
-
-    public FluidNetworkData(FluidVariant fluid) {
-        this.fluid = fluid;
-    }
+public record FluidNetworkData(FluidVariant fluid) implements PipeNetworkData {
+    public static final MapCodec<FluidNetworkData> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            FluidVariant.CODEC.fieldOf("fluid").forGetter(FluidNetworkData::fluid)
+    ).apply(i, FluidNetworkData::new));
 
     @Override
     public FluidNetworkData clone() {
         return new FluidNetworkData(fluid);
-    }
-
-    @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        fluid = NbtHelper.getFluidCompatible(tag, "fluid", registries);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        NbtHelper.putFluid(tag, "fluid", fluid, registries);
-        return tag;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FluidNetworkData) {
-            FluidNetworkData otherData = (FluidNetworkData) obj;
-            return otherData.fluid == fluid;
-        } else {
-            return false;
-        }
     }
 }

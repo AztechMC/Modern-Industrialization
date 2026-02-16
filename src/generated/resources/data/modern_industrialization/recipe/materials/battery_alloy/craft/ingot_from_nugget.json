@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/battery_alloy"
-    },
-    "y": {
-      "item": "modern_industrialization:battery_alloy_nugget"
-    }
+    "x": "#c:nuggets/battery_alloy",
+    "y": "modern_industrialization:battery_alloy_nugget"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:battery_alloy_ingot"
   }
 }

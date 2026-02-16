@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:dusts/soldering_alloy"
-    },
-    "y": {
-      "item": "modern_industrialization:soldering_alloy_dust"
-    }
+    "x": "#c:dusts/soldering_alloy",
+    "y": "modern_industrialization:soldering_alloy_dust"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:soldering_alloy_block"
   }
 }

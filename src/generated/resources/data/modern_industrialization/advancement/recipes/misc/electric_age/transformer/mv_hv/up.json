@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hull": {
+      "conditions": {
+        "items": [
+          {
+            "items": "modern_industrialization:advanced_machine_hull"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "modern_industrialization:electric_age/transformer/mv_hv/up"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hull"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "modern_industrialization:electric_age/transformer/mv_hv/up"
+    ]
+  }
+}

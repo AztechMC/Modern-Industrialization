@@ -42,6 +42,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Util;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -122,9 +123,11 @@ public class VersionEvents {
                 if (latestArtifactVersion.compareTo(currentVersion) > 0) {
                     String url = latestVersion.url;
 
-                    Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
-                            .applyFormat(ChatFormatting.UNDERLINE).applyFormat(ChatFormatting.GREEN).withHoverEvent(new HoverEvent(
-                                    HoverEvent.Action.SHOW_TEXT, MIText.ClickUrl.text()));
+                    Style styleClick = Style.EMPTY.withClickEvent(
+                            new ClickEvent.OpenUrl(Util.parseAndValidateUntrustedUri(url)))
+                            .applyFormat(ChatFormatting.UNDERLINE)
+                            .applyFormat(ChatFormatting.GREEN)
+                            .withHoverEvent(new HoverEvent.ShowText(MIText.ClickUrl.text()));
 
                     Minecraft.getInstance().execute(() -> {
                         if (Minecraft.getInstance().player == player) {

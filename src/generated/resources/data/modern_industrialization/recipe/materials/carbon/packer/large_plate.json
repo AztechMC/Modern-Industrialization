@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/carbon"
+      "ingredient": "#c:plates/carbon"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:carbon_large_plate"
+      "id": "modern_industrialization:carbon_large_plate"
     }
   ]
 }

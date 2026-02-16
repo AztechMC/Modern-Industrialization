@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:black_wool"
+      "ingredient": "minecraft:black_wool"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "minecraft:black_carpet"
+      "id": "minecraft:black_carpet"
     }
   ]
 }

@@ -28,18 +28,18 @@ import aztech.modern_industrialization.MI;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.neoforged.neoforge.client.data.SpriteSourceProvider;
 
 public class MISpriteSourceProvider extends SpriteSourceProvider {
-    public MISpriteSourceProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper fileHelper) {
-        super(packOutput, lookupProvider, MI.ID, fileHelper);
+    public MISpriteSourceProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider, MI.ID);
     }
 
     @Override
     protected void gather() {
-        atlas(BLOCKS_ATLAS)
+        atlas(AtlasIds.BLOCKS)
                 .addSource(new DirectoryLister("fluid", "fluid/"));
     }
 }

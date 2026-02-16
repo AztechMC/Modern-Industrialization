@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/blastproof_alloy"
+      "ingredient": "#c:plates/blastproof_alloy"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:blastproof_alloy_large_plate"
+      "id": "modern_industrialization:blastproof_alloy_large_plate"
     }
   ]
 }

@@ -35,14 +35,15 @@ import aztech.modern_industrialization.items.ForgeTool;
 import java.util.Comparator;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 
 public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammerRecipe>> {
-    public static final ResourceLocation ID = MI.id("forge_hammer");
+    public static final Identifier ID = MI.id("forge_hammer");
 
     private final int startPointX;
     private final int startPointY;
@@ -61,8 +62,8 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<ForgeHammerRecipe>> consumer) {
-        recipeManager.getAllRecipesFor(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<RecipeHolder<ForgeHammerRecipe>> consumer) {
+        recipeMap.byType(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get())
                 .stream()
                 .sorted(Comparator.comparing(RecipeHolder::id))
                 .forEach(consumer);
@@ -75,10 +76,10 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
         builder.inputSlot(startPointX + 5, startPointY + 6).ingredient(recipe.ingredient(), recipe.count(), 1);
 
         if (recipe.hammerDamage() > 0) {
-            builder.inputSlot(startPointX - 23, startPointY + 6).ingredient(Ingredient.of(ForgeTool.TAG), 1, 1).removeBackground().markCatalyst();
+            builder.inputSlot(startPointX - 23, startPointY + 6).ingredient(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(ForgeTool.TAG)), 1, 1).removeBackground().markCatalyst();
         }
 
-        builder.outputSlot(startPointX + 62, startPointY + 6).item(recipe.result());
+        builder.outputSlot(startPointX + 62, startPointY + 6).item(recipe.result().create());
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ForgeHammerCategory extends ViewerCategory<RecipeHolder<ForgeHammer
     }
 
     @Override
-    public ResourceLocation getRecipeId(RecipeHolder<ForgeHammerRecipe> recipe) {
-        return recipe.id();
+    public Identifier getRecipeId(RecipeHolder<ForgeHammerRecipe> recipe) {
+        return recipe.id().identifier();
     }
 }

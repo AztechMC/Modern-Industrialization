@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/titanium"
+      "ingredient": "#c:nuggets/titanium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_ingot"
+      "id": "modern_industrialization:titanium_ingot"
     }
   ]
 }

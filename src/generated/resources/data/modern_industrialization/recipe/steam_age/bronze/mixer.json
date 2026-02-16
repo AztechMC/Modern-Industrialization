@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:bronze_machine_casing",
+    "G": "#c:gears/copper",
+    "g": "#c:glass_blocks",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "modern_industrialization:copper_rotor"
+  },
+  "pattern": [
+    "gGg",
+    "rCr",
+    "ppp"
+  ],
+  "result": {
+    "id": "modern_industrialization:bronze_mixer"
+  }
+}

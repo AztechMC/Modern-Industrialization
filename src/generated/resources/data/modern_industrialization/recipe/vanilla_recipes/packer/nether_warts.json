@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 9,
+      "ingredient": "minecraft:nether_wart"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "minecraft:nether_wart_block"
+    }
+  ]
+}

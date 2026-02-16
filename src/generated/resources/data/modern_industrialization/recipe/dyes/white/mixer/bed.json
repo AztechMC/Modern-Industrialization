@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/white"
+      "ingredient": "#c:dyes/white"
     },
     {
       "amount": 1,
-      "tag": "minecraft:beds"
+      "ingredient": "#minecraft:beds"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:white_bed"
+      "id": "minecraft:white_bed"
     }
   ]
 }

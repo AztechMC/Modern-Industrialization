@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.property.MaterialProperty.MEAN_RGB;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MICapabilities;
 import aztech.modern_industrialization.MICommonProxy;
@@ -33,27 +34,33 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
-import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
-import aztech.modern_industrialization.items.ContainerItem;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+
+import java.util.Optional;
 import java.util.function.BiConsumer;
+
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jspecify.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
-    public static final BiConsumer<Block, BaseModelProvider> MODEL_GENERATOR = (block, gen) -> {
-        gen.simpleBlock(block, gen.models()
-                .getBuilder(gen.blockTexture(block).getPath())
-                .parent(gen.models().getExistingFile(gen.modLoc("base/tank")))
-                .texture("0", gen.blockTexture(block).toString()));
+    public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
+        var textureSlot = TextureSlot.create("0");
+        var template = new ModelTemplate(Optional.of(MI.id("base/tank")), Optional.empty(), textureSlot);
+        var texturedModel = TexturedModel.createDefault(b -> new TextureMapping().put(textureSlot, TextureMapping.getBlockTexture(b)), template);
+        gen.createTrivialBlock(block, texturedModel);
     };
 
     @Override
@@ -85,7 +92,7 @@ public class TankPart implements PartKeyProvider {
                             englishName,
                             itemPath,
                             MIBlock.BlockDefinitionParams.defaultStone()
-                                    .withBlockConstructor(s -> new TankBlock(factory, tankStorageBehaviour))
+                                    .withBlockConstructor(p -> new TankBlock(p, factory, tankStorageBehaviour))
                                     .withBlockItemConstructor(TankItem::new)
                                     .withModel(MODEL_GENERATOR)
                                     .withBlockEntityRendererItemModel()
@@ -95,17 +102,18 @@ public class TankPart implements PartKeyProvider {
                     TagsToGenerate.generateTag(MITags.TANKS, blockDefinition, "Tanks");
 
                     MIRegistries.BLOCK_ENTITIES.register(itemPath, () -> {
-                        var ret = BlockEntityType.Builder.of(factory::newBlockEntity, blockDefinition.asBlock()).build(null);
+                        var ret = new BlockEntityType<>(factory::newBlockEntity, blockDefinition.asBlock());
                         // noinspection unchecked,rawtypes
                         bet.setValue((BlockEntityType) ret);
                         return ret;
                     });
 
                     MICapabilities.onEvent(event -> {
-                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
-
-                        var item = (TankItem) blockDefinition.asItem();
-                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
+                        // TODO 26.1
+//                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
+//
+//                        var item = (TankItem) blockDefinition.asItem();
+//                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
                     });
 
                     MICommonProxy.INSTANCE.registerPartTankClient(bet::getValue, partContext.get(MEAN_RGB));

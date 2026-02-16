@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/lapis"
+      "ingredient": "#c:dusts/lapis"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:lapis_tiny_dust"
+      "id": "modern_industrialization:lapis_tiny_dust"
     }
   ]
 }

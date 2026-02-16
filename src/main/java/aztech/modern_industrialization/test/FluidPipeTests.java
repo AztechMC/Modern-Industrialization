@@ -32,9 +32,10 @@ import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.test.framework.MIGameTest;
 import aztech.modern_industrialization.test.framework.MIGameTestHelper;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
 public class FluidPipeTests {
@@ -113,7 +114,7 @@ public class FluidPipeTests {
                     // Replace by lava locked tank to make sure it gets ignored
                     helper.destroyBlock(extensionTank);
                     helper.emptyTank(extensionTank, MIMaterials.BRONZE);
-                    var tank = (TankBlockEntity) helper.getBlockEntity(extensionTank);
+                    var tank = helper.getBlockEntity(extensionTank, TankBlockEntity.class);
                     try (var tx = Transaction.openRoot()) {
                         // hacky way to toggle lock :P
                         tank.insert(FluidVariant.of(Fluids.LAVA), 1000, tx);

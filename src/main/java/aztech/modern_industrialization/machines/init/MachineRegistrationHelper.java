@@ -69,13 +69,16 @@ public class MachineRegistrationHelper {
                         .withModel((block, gen) -> {
                             // Model generation is handled in the model provider already.
                         })
+                        .withItemModel((block, gen) -> {
+                            // Model generation is handled in the model provider already.
+                        })
                         .isValidSpawn(MobSpawning.NO_SPAWN)
                         .isRedstoneConductor(Blocks::never));
 
         var blockEntityType = MIRegistries.BLOCK_ENTITIES.register(id, () -> {
             Block block = blockDefinition.asBlock();
 
-            bet[0] = BlockEntityType.Builder.of(ctor::apply, block).build(null);
+            bet[0] = new BlockEntityType<>(ctor::apply, block);
 
             for (Consumer<? super BlockEntityType<T>> extraRegistrator : extraRegistrators) {
                 extraRegistrator.accept(bet[0]);

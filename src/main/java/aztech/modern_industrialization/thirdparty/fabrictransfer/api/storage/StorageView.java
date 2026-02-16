@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * A view of a single stored resource in a {@link Storage}, for use with {@link Storage#iterator}.

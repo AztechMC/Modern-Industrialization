@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_tank"
+      "ingredient": "modern_industrialization:steel_tank"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:pump"
+      "ingredient": "modern_industrialization:pump"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_machine_casing"
+      "ingredient": "modern_industrialization:steel_machine_casing"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_tank_hatch"
+      "id": "modern_industrialization:large_tank_hatch"
     }
   ]
 }

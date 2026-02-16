@@ -45,12 +45,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -74,16 +76,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
             MI.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
-        if (amount > 0 && data.fluid.isBlank()) {
+        if (amount > 0 && data.fluid().isBlank()) {
             MI.LOGGER.warn("Amount > 0 but fluid is blank, deleting some fluid!");
             amount = 0;
         }
 
         for (FluidConnection connection : connections) {
             var storage = getNeighborStorage(world, pos, connection);
-            if (data.fluid.isBlank() && connection.canExtract()) {
+            if (data.fluid().isBlank() && connection.canExtract()) {
                 // Try to set fluid, will return null if none could be found.
-                data.fluid = FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE));
+                network.data = data = new FluidNetworkData(FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE)));
             }
             if (connection.canInsert() && connection.canExtract() && storage instanceof FluidNetworkExtensionTank extension) {
                 extensions.add(extension);
@@ -94,10 +96,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private IFluidHandler getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
-        if (connection.cache == null) {
-            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
-                    connection.direction.getOpposite());
-        }
+        // TODO 26.1
+//        if (connection.cache == null) {
+//            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
+//                    connection.direction.getOpposite());
+//        }
         var storage = connection.cache.getCapability();
         return Objects.requireNonNullElse(storage, EmptyFluidHandler.INSTANCE);
     }
@@ -130,7 +133,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
-        return world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
+        // TODO 26.1
+//        return world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
+        return false;
     }
 
     @Override
@@ -165,30 +170,25 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putLong("amount_ftl", amount);
+    public void save(ValueOutput output) {
+        output.putLong("amount", amount);
         for (FluidConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putInt("priority", connection.priority);
-            tag.put(connection.direction.toString(), connectionTag);
+            output.store(connection.direction.toString(), CompoundTag.CODEC, connectionTag);
         }
-        return tag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        amount = tag.getLong("amount_ftl");
+    public void read(ValueInput input) {
+        amount = input.getLongOr("amount", 0);
+        var keys = input.keySet();
         for (Direction direction : Direction.values()) {
-            if (tag.contains(direction.toString())) {
-                if (tag.getTagType(direction.toString()) == Tag.TAG_BYTE) {
-                    // Old format (before fluid pipe priorities)
-                    connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString())), 0));
-                } else {
-                    CompoundTag connectionTag = tag.getCompound(direction.toString());
-                    connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
-                            connectionTag.getInt("priority")));
-                }
+            if (keys.contains(direction.toString())) {
+                CompoundTag connectionTag = input.read(direction.toString(), CompoundTag.CODEC).orElseThrow();
+                connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByteOr("connections", (byte) 0)),
+                        connectionTag.getIntOr("priority", 0)));
             }
         }
     }
@@ -233,9 +233,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private class ScreenHandlerFactory implements PipeMenuProvider {
             private final FluidPipeInterface iface;
-            private final ResourceLocation pipeType;
+            private final Identifier pipeType;
 
-            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, Identifier pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
                     public FluidVariant getNetworkFluid() {
@@ -316,12 +316,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag writeCustomData(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid, registries);
+        tag.store("fluid", FluidVariant.CODEC, ((FluidNetworkData) network.data).fluid());
         return tag;
     }
 
     public void afterTick(ServerLevel world, BlockPos pos) {
-        FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid;
+        FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid();
         if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
             // Equivalent to calling sync()
@@ -335,7 +335,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     // Used in the Waila plugin
     private FluidVariant getFluid() {
-        return ((FluidNetworkData) network.data).fluid;
+        return ((FluidNetworkData) network.data).fluid();
     }
 
     public InGameInfo collectNetworkInfo() {

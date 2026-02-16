@@ -33,7 +33,10 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -46,19 +49,20 @@ import org.jspecify.annotations.Nullable;
 
 public class RecipeConversions {
     public static RecipeHolder<MachineRecipe> ofSmelting(RecipeHolder<SmeltingRecipe> holder, MachineRecipeType type, RegistryAccess registryAccess) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(), "/" + holder.id().getPath() + "_exported_mi_furnace");
+        var baseId = holder.id().identifier();
+        Identifier id = Identifier.fromNamespaceAndPath(baseId.getNamespace(), "/" + baseId.getPath() + "_exported_mi_furnace");
         var smeltingRecipe = holder.value();
-        Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
+        Ingredient ingredient = smeltingRecipe.input();
         MachineRecipe recipe = new MachineRecipe(type);
         recipe.eu = 2;
-        recipe.duration = smeltingRecipe.getCookingTime();
+        recipe.duration = smeltingRecipe.cookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
-        var result = smeltingRecipe.getResultItem(registryAccess);
+        var result = smeltingRecipe.assemble(null);
         recipe.itemOutputs = Collections
-                .singletonList(new MachineRecipe.ItemOutput(ItemVariant.of(result), result.getCount(), 1));
+                .singletonList(new MachineRecipe.ItemOutput(ItemStackTemplate.fromNonEmptyStack(result), 1));
         recipe.fluidOutputs = Collections.emptyList();
-        return new RecipeHolder<>(id, recipe);
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
     }
 
     @Nullable
@@ -68,20 +72,21 @@ public class RecipeConversions {
             return null;
         }
 
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
-                "/" + holder.id().getPath() + "_exported_mi_cutting_machine");
+        var baseId = holder.id().identifier();
+        Identifier id = Identifier.fromNamespaceAndPath(baseId.getNamespace(),
+                "/" + baseId.getPath() + "_exported_mi_cutting_machine");
         var stonecuttingRecipe = holder.value();
         MachineRecipe recipe = new MachineRecipe(type);
         recipe.eu = 2;
         recipe.duration = 200;
-        recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
+        recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.input(), 1, 1));
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(FluidIngredient.of(MIFluids.LUBRICANT.asFluid()), 1, 1));
+        var result = stonecuttingRecipe.assemble(null);
         recipe.itemOutputs = Collections
                 .singletonList(
-                        new MachineRecipe.ItemOutput(ItemVariant.of(stonecuttingRecipe.getResultItem(null)),
-                                stonecuttingRecipe.getResultItem(registryAccess).getCount(), 1));
+                        new MachineRecipe.ItemOutput(ItemStackTemplate.fromNonEmptyStack(result), 1));
         recipe.fluidOutputs = Collections.emptyList();
-        return new RecipeHolder<>(id, recipe);
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
     }
 
     @Nullable
@@ -96,7 +101,7 @@ public class RecipeConversions {
 
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {
-            ResourceLocation id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            Identifier id = MI.id("/" + BuiltInRegistries.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
             MachineRecipe plantOil = new MachineRecipe(MIMachineRecipeTypes.CENTRIFUGE);
             plantOil.eu = 8;
             plantOil.duration = 200;
@@ -113,7 +118,7 @@ public class RecipeConversions {
                     (long) (probability * FluidType.BUCKET_VOLUME),
                     1.0f));
             plantOil.itemOutputs = Collections.emptyList();
-            return new RecipeHolder<>(id, plantOil);
+            return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), plantOil);
         } else {
             return null;
         }

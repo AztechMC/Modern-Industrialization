@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/tungsten"
+      "ingredient": "#c:plates/tungsten"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:tungsten_large_plate"
+      "id": "modern_industrialization:tungsten_large_plate"
     }
   ]
 }

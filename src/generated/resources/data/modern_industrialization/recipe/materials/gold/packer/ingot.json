@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/gold"
+      "ingredient": "#c:nuggets/gold"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:gold_ingot"
+      "id": "minecraft:gold_ingot"
     }
   ]
 }

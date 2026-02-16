@@ -34,11 +34,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -107,11 +106,11 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int i, int j, ClickType actionType, Player player) {
+    public void clicked(int i, int j, ContainerInput actionType, Player player) {
         if (i >= 0) {
             Slot slot = this.slots.get(i);
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot) {
-                if (actionType != ClickType.PICKUP) {
+                if (actionType != ContainerInput.PICKUP) {
                     return;
                 }
                 ConfigurableFluidStack fluidStack = fluidSlot.getConfStack();
@@ -156,7 +155,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
                 // try to shift-click fluid first
-                var ctx = SlotAccess.forContainer(player.getInventory(), slot.getContainerSlot());
+                var ctx = player.getInventory().getSlot(slot.getContainerSlot());
                 for (var maybeFluidSlot : slots) {
                     if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
                             && fluidSlot.playerInteract(ctx, player, false)) {

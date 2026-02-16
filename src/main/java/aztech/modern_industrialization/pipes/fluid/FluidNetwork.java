@@ -47,8 +47,8 @@ public class FluidNetwork extends PipeNetwork {
     final PipeStatsCollector stats = new PipeStatsCollector();
     final PipeStatsCollector capacityStats = new PipeStatsCollector();
 
-    public FluidNetwork(int id, @Nullable PipeNetworkData data, int nodeCapacity) {
-        super(id, data == null ? new FluidNetworkData(FluidVariant.blank()) : data);
+    public FluidNetwork(int id, FluidNetworkData data, int nodeCapacity) {
+        super(id, data);
         this.nodeCapacity = nodeCapacity;
     }
 
@@ -68,7 +68,7 @@ public class FluidNetwork extends PipeNetwork {
             loadedNodeCount++;
         }
         long networkCapacity = (long) loadedNodeCount * nodeCapacity;
-        FluidVariant fluid = ((FluidNetworkData) data).fluid;
+        FluidVariant fluid = ((FluidNetworkData) data).fluid();
 
         long extracted = 0, inserted = 0;
 
@@ -226,7 +226,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     private boolean isEmpty(boolean onlyFluid) {
-        if (((FluidNetworkData) data).fluid.isBlank())
+        if (((FluidNetworkData) data).fluid().isBlank())
             return true;
         if (onlyFluid)
             return false;
@@ -242,8 +242,8 @@ public class FluidNetwork extends PipeNetwork {
      * Set this network's fluid if this network has an empty fluid.
      */
     protected void setFluid(FluidVariant fluid) {
-        if (((FluidNetworkData) data).fluid.isBlank()) {
-            ((FluidNetworkData) data).fluid = fluid;
+        if (((FluidNetworkData) data).fluid().isBlank()) {
+            data = new FluidNetworkData(fluid);
         }
     }
 
@@ -261,6 +261,6 @@ public class FluidNetwork extends PipeNetwork {
         for (PipeNetworkNode node : getRawNodeMap().values()) {
             ((FluidNetworkNode) node).amount = 0;
         }
-        ((FluidNetworkData) data).fluid = FluidVariant.blank();
+        data = new FluidNetworkData(FluidVariant.blank());
     }
 }

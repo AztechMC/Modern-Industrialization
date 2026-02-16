@@ -35,13 +35,13 @@ public class TextureHelper {
     public static void colorize(NativeImage image, Coloramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
-                int color = image.getPixelRGBA(i, j);
+                int color = image.getPixel(i, j);
                 double l = getLuminance(color);
                 int rgb = colorramp.getRGB(l);
                 int r = getRrgb(rgb);
                 int g = getGrgb(rgb);
                 int b = getBrgb(rgb);
-                image.setPixelRGBA(i, j, fromArgb(getA(color), r, g, b));
+                image.setPixel(i, j, fromArgb(getA(color), r, g, b));
             }
         }
     }
@@ -49,11 +49,11 @@ public class TextureHelper {
     public static void setAlpha(NativeImage image, int alpha) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
-                int color = image.getPixelRGBA(i, j);
+                int color = image.getPixel(i, j);
                 int r = getR(color);
                 int g = getG(color);
                 int b = getB(color);
-                image.setPixelRGBA(i, j, fromArgb(alpha, r, g, b));
+                image.setPixel(i, j, fromArgb(alpha, r, g, b));
             }
         }
     }
@@ -61,7 +61,7 @@ public class TextureHelper {
     public static void increaseBrightness(NativeImage image, float minBrightness) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
-                int color = image.getPixelRGBA(i, j);
+                int color = image.getPixel(i, j);
                 double l = getLuminance(color);
                 int r = getR(color);
                 int g = getG(color);
@@ -72,7 +72,7 @@ public class TextureHelper {
                 g = getGrgb(rgb);
                 b = getBrgb(rgb);
 
-                image.setPixelRGBA(i, j, fromArgb(getA(color), r, g, b));
+                image.setPixel(i, j, fromArgb(getA(color), r, g, b));
             }
         }
     }
@@ -160,7 +160,7 @@ public class TextureHelper {
 
             for (int i = 0; i < maxWidth; ++i) {
                 for (int j = 0; j < maxHeight; ++j) {
-                    newImage.setPixelRGBA(i, j, image.getPixelRGBA(i / wFactor, j / hFactor));
+                    newImage.setPixel(i, j, image.getPixel(i / wFactor, j / hFactor));
                 }
             }
 
@@ -181,14 +181,14 @@ public class TextureHelper {
 
         for (int i = 0; i < source.getWidth(); ++i) {
             for (int j = 0; j < source.getHeight(); ++j) {
-                int sourceColor = source.getPixelRGBA(i, j);
-                int topColor = top.getPixelRGBA(i, j);
+                int sourceColor = source.getPixel(i, j);
+                int topColor = top.getPixel(i, j);
                 double alphaSource = getA(sourceColor) / 255.0;
                 double alphaTop = getA(topColor) / 255.0;
                 double alphaOut = alphaTop + alphaSource * (1 - alphaTop);
                 BiFunction<Integer, Integer, Integer> mergeAlpha = (sourceValue,
                         topValue) -> (int) ((topValue * alphaTop + sourceValue * alphaSource * (1 - alphaTop)) / alphaOut);
-                output.setPixelRGBA(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
+                output.setPixel(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
                         mergeAlpha.apply(getG(sourceColor), getG(topColor)), mergeAlpha.apply(getB(sourceColor), getB(topColor))));
             }
         }
@@ -208,9 +208,9 @@ public class TextureHelper {
         for (int x = 0; x < lowerIngot.getWidth(); ++x) {
             for (int y = lowerIngot.getHeight(); y-- > 0;) {
                 if (y >= shiftDown) {
-                    lowerIngot.setPixelRGBA(x, y, lowerIngot.getPixelRGBA(x, y - shiftDown));
+                    lowerIngot.setPixel(x, y, lowerIngot.getPixel(x, y - shiftDown));
                 } else {
-                    lowerIngot.setPixelRGBA(x, y, 0);
+                    lowerIngot.setPixel(x, y, 0);
                 }
             }
         }
@@ -221,9 +221,9 @@ public class TextureHelper {
         for (int x = 0; x < upperIngot.getWidth(); ++x) {
             for (int y = 0; y < upperIngot.getHeight(); ++y) {
                 if (y + shiftUp < upperIngot.getHeight()) {
-                    upperIngot.setPixelRGBA(x, y, upperIngot.getPixelRGBA(x, y + shiftUp));
+                    upperIngot.setPixel(x, y, upperIngot.getPixel(x, y + shiftUp));
                 } else {
-                    upperIngot.setPixelRGBA(x, y, 0);
+                    upperIngot.setPixel(x, y, 0);
                 }
             }
         }
@@ -241,9 +241,9 @@ public class TextureHelper {
         for (int x = 0; x < lowerIngot.getWidth(); ++x) {
             for (int y = lowerIngot.getHeight(); y-- > 0;) {
                 if (y >= shiftDown) {
-                    lowerIngot.setPixelRGBA(x, y, lowerIngot.getPixelRGBA(x, y - shiftDown));
+                    lowerIngot.setPixel(x, y, lowerIngot.getPixel(x, y - shiftDown));
                 } else {
-                    lowerIngot.setPixelRGBA(x, y, 0);
+                    lowerIngot.setPixel(x, y, 0);
                 }
             }
         }
@@ -254,9 +254,9 @@ public class TextureHelper {
         for (int x = 0; x < upperIngot.getWidth(); ++x) {
             for (int y = 0; y < upperIngot.getHeight(); ++y) {
                 if (y + shiftUp < upperIngot.getHeight()) {
-                    upperIngot.setPixelRGBA(x, y, upperIngot.getPixelRGBA(x, y + shiftUp));
+                    upperIngot.setPixel(x, y, upperIngot.getPixel(x, y + shiftUp));
                 } else {
-                    upperIngot.setPixelRGBA(x, y, 0);
+                    upperIngot.setPixel(x, y, 0);
                 }
             }
         }
@@ -298,13 +298,13 @@ public class TextureHelper {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                flipped[i][height - j - 1] = image.getPixelRGBA(i, j);
+                flipped[i][height - j - 1] = image.getPixel(i, j);
             }
         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                image.setPixelRGBA(i, j, flipped[i][j]);
+                image.setPixel(i, j, flipped[i][j]);
             }
         }
     }

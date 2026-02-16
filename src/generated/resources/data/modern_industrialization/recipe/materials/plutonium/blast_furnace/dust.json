@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/plutonium"
+      "ingredient": "#c:dusts/plutonium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:plutonium_ingot"
+      "id": "modern_industrialization:plutonium_ingot"
     }
   ]
 }

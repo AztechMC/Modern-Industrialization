@@ -5,33 +5,33 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "minecraft:redstone"
+      "ingredient": "minecraft:redstone"
     },
     {
       "amount": 1,
-      "item": "minecraft:redstone_torch"
+      "ingredient": "minecraft:redstone_torch"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:capacitor"
+      "ingredient": "modern_industrialization:capacitor"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:resistor"
+      "ingredient": "modern_industrialization:resistor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:analog_circuit_board"
+      "ingredient": "modern_industrialization:analog_circuit_board"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:inductor"
+      "ingredient": "modern_industrialization:inductor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:redstone_control_module"
+      "id": "modern_industrialization:redstone_control_module"
     }
   ]
 }

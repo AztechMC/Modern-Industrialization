@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/sodium"
+      "ingredient": "#c:tiny_dusts/sodium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:sodium_dust"
+      "id": "modern_industrialization:sodium_dust"
     }
   ]
 }

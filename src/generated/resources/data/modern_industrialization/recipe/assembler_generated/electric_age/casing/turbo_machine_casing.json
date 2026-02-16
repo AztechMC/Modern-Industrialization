@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:plates/stainless_steel"
+      "ingredient": "#c:plates/stainless_steel"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "ingredient": "modern_industrialization:advanced_machine_hull"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_machine_casing"
+      "id": "modern_industrialization:turbo_machine_casing"
     }
   ]
 }

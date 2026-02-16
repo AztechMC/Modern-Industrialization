@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:rubber_sheet"
+      "ingredient": "modern_industrialization:rubber_sheet"
     },
     {
       "amount": 1,
-      "tag": "c:plates/copper"
+      "ingredient": "#c:plates/copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:analog_circuit_board"
+      "id": "modern_industrialization:analog_circuit_board"
     }
   ]
 }

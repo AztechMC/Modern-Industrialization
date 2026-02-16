@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 200,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "ingredient": "minecraft:water"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1000,
+      "id": "modern_industrialization:sugar_solution"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 8,
+      "ingredient": "minecraft:sugar"
+    }
+  ]
+}

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/uranium_238"
+      "ingredient": "#c:nuggets/uranium_238"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:uranium_238_ingot"
+      "id": "modern_industrialization:uranium_238_ingot"
     }
   ]
 }

@@ -31,7 +31,6 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.config.MIStartupConfig;
-import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.api.*;
@@ -51,21 +50,24 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.renderer.block.model.ItemModelGenerator;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.register("pipe",
-            () -> new PipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(2.0f)));
+    public static final Supplier<PipeBlock> BLOCK_PIPE = MIBlock.BLOCKS.registerBlock("pipe",
+            p -> new PipeBlock(p.mapColor(MapColor.METAL).destroyTime(2.0f)));
     public static Supplier<BlockEntityType<PipeBlockEntity>> BLOCK_ENTITY_TYPE_PIPE;
     public static volatile boolean transparentCamouflage = false;
     private final Map<PipeNetworkType, Supplier<PipeItem>> pipeItems = new HashMap<>();
@@ -81,7 +83,7 @@ public class MIPipes {
 
     public void setup() {
         BLOCK_ENTITY_TYPE_PIPE = MIRegistries.BLOCK_ENTITIES.register("pipe",
-                () -> BlockEntityType.Builder.of(PipeBlockEntity::new, BLOCK_PIPE.get()).build(null));
+                () -> new BlockEntityType<>(PipeBlockEntity::new, BLOCK_PIPE.get()));
 
         for (PipeColor color : PipeColor.values()) {
             registerFluidPipeType(color);
@@ -101,18 +103,19 @@ public class MIPipes {
         }
     }
 
-    public static final BiConsumer<Item, ItemModelProvider> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
-        // Delegate to block model
-        modelGenerator.getBuilder(BuiltInRegistries.ITEM.getKey(item).getPath())
-                .customLoader(DelegatingModelBuilder::new)
-                .delegate(modelGenerator.getExistingFile(MI.id("block/pipe")))
-                .end();
+    public static final BiConsumer<Item, ItemModelGenerators> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
+        try {
+            // TODO: temporary reflection hack
+            modelGenerator.itemModelOutput.accept(item, (ItemModel.Unbaked) Class.forName("aztech.modern_industrialization.client.pipes.impl.PipeItemModel$Unbaked").getConstructor().newInstance());
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException(exception);
+        }
     };
 
     private void registerFluidPipeType(PipeColor color) {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
-                FluidNetworkNode::new, color.color, true);
+                FluidNetworkData.CODEC, FluidNetworkNode::new, color.color, true);
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Fluid Pipe",
                 pipeId,
@@ -125,7 +128,7 @@ public class MIPipes {
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
-        PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
+        PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), ItemNetwork::new, ItemNetworkData.CODEC, ItemNetworkNode::new, color.color, true);
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Item Pipe",
                 pipeId,
@@ -139,7 +142,7 @@ public class MIPipes {
     public void registerCableType(String englishName, String name, int color, CableTier tier) {
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(MI.id(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
-                ElectricityNetworkNode::new, color, false);
+                ElectricityNetworkData.CODEC, ElectricityNetworkNode::new, color, false);
         var itemDef = MIItem.item(
                 englishName,
                 cableId,

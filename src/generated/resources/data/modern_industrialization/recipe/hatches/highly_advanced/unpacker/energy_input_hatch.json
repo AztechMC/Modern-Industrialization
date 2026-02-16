@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:ev_energy_input_hatch"
+      "ingredient": "modern_industrialization:ev_energy_input_hatch"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_machine_hull"
+      "id": "modern_industrialization:highly_advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_cable"
+      "id": "modern_industrialization:annealed_copper_cable"
     }
   ]
 }

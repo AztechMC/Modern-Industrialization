@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:rods/stainless_steel"
-    },
-    "P": {
-      "item": "modern_industrialization:stainless_steel_curved_plate"
-    }
+    "I": "#c:rods/stainless_steel",
+    "P": "modern_industrialization:stainless_steel_curved_plate"
   },
   "pattern": [
     "P",

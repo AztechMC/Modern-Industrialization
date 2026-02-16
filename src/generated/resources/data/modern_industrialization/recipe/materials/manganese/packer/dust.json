@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/manganese"
+      "ingredient": "#c:tiny_dusts/manganese"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:manganese_dust"
+      "id": "modern_industrialization:manganese_dust"
     }
   ]
 }

@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_item_input_hatch"
+      "ingredient": "modern_industrialization:advanced_item_input_hatch"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "id": "modern_industrialization:advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "minecraft:hopper"
+      "id": "minecraft:hopper"
     }
   ]
 }

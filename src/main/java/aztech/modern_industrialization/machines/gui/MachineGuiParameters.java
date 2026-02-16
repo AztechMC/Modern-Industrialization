@@ -26,15 +26,15 @@ package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MachineGuiParameters {
-    public final ResourceLocation blockId;
+    public final Identifier blockId;
     public final int playerInventoryX, playerInventoryY;
     public final int backgroundWidth, backgroundHeight;
     public final boolean lockButton;
 
-    private MachineGuiParameters(ResourceLocation blockId, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
+    private MachineGuiParameters(Identifier blockId, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
             boolean lockButton) {
         this.blockId = blockId;
         this.playerInventoryX = playerInventoryX;
@@ -45,7 +45,7 @@ public class MachineGuiParameters {
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(blockId);
+        buf.writeIdentifier(blockId);
         buf.writeInt(playerInventoryX);
         buf.writeInt(playerInventoryY);
         buf.writeInt(backgroundWidth);
@@ -54,16 +54,16 @@ public class MachineGuiParameters {
     }
 
     public static MachineGuiParameters read(FriendlyByteBuf buf) {
-        return new MachineGuiParameters(buf.readResourceLocation(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
+        return new MachineGuiParameters(buf.readIdentifier(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
     }
 
     public static class Builder {
-        private final ResourceLocation blockId;
+        private final Identifier blockId;
         public int playerInventoryX = 8, playerInventoryY = 84;
         private int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
 
-        public Builder(ResourceLocation blockId, boolean lockButton) {
+        public Builder(Identifier blockId, boolean lockButton) {
             this.blockId = blockId;
             this.lockButton = lockButton;
         }

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/battery_alloy"
+      "ingredient": "#c:ingots/battery_alloy"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:battery_alloy_nugget"
+      "id": "modern_industrialization:battery_alloy_nugget"
     }
   ]
 }

@@ -25,12 +25,16 @@
 package aztech.modern_industrialization;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class MITags {
     public static final TagKey<Item> WRENCHES = item("tools/wrench");
+
+    // TODO 26.1 - add MI.id("rubber_sheet") to it
+    public static final TagKey<Item> REPAIRS_RUBBER_ARMOR = miItem("repairs_rubber_armor");
 
     public static final TagKey<Item> BARRELS = miItem("barrels");
     public static final TagKey<Item> TANKS = miItem("tanks");
@@ -39,10 +43,14 @@ public class MITags {
     public static final TagKey<Item> ME_WIRES = miItem("me_wires");
 
     public static TagKey<Item> item(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), ResourceLocation.fromNamespaceAndPath("c", path));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 
     public static TagKey<Item> miItem(String path) {
-        return TagKey.create(BuiltInRegistries.ITEM.key(), MI.id(path));
+        return ItemTags.create(MI.id(path));
+    }
+
+    public static TagKey<Item> convention(String path) {
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", path));
     }
 }

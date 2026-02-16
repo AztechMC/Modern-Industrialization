@@ -26,20 +26,22 @@ package aztech.modern_industrialization.client.blocks.forgehammer;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 
-public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler> {
-    public static final ResourceLocation FORGE_HAMMER_GUI = MI.id("textures/gui/container/forge_hammer.png");
+public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandler> {
+    public static final Identifier FORGE_HAMMER_GUI = MI.id("textures/gui/container/forge_hammer.png");
 
     private static final int X_OFFSET = 61, Y_OFFSET = 14;
 
@@ -51,12 +53,12 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         int i = this.leftPos + X_OFFSET;
         int j = this.topPos + Y_OFFSET + 2;
 
-        int x1 = (int) Math.floor((mouseX - i) / 16d);
-        int y1 = (int) Math.floor((mouseY - j) / 18d);
+        int x1 = (int) Math.floor((event.x() - i) / 16d);
+        int y1 = (int) Math.floor((event.y() - j) / 18d);
 
         if (x1 >= 0 && x1 <= 3 && y1 >= 0 && y1 <= 2) {
             int id = x1 + y1 * 4;
@@ -67,7 +69,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
@@ -78,9 +80,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(FORGE_HAMMER_GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, FORGE_HAMMER_GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         int l = this.leftPos + X_OFFSET;
         int m = this.topPos + Y_OFFSET;
         this.renderRecipeBackground(guiGraphics, mouseX, mouseY, l, m);
@@ -94,7 +94,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
             int l = i / 4;
             int m = y + l * 18 + 2;
 
-            RenderHelper.renderAndDecorateItem(guiGraphics, font, handler.getAvailableRecipes().get(i).value().result(), k, m);
+            RenderHelper.renderAndDecorateItem(guiGraphics, font, handler.getAvailableRecipes().get(i).value().result().create(), k, m);
         }
     }
 
@@ -112,7 +112,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
                 n += 36;
             }
 
-            guiGraphics.blit(FORGE_HAMMER_GUI, k, m - 1, 0, n, 16, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, FORGE_HAMMER_GUI, k, m - 1, 0, n, 16, 18, 256, 256);
         }
     }
 
@@ -125,7 +125,7 @@ public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler>
             int n = x1 + l % 4 * 16;
             int o = y1 + l / 4 * 18 + 2;
             if (x >= n && x < n + 16 && y >= o && y < o + 18) {
-                guiGraphics.renderTooltip(font, handler.getAvailableRecipes().get(l).value().result(), x, y);
+                guiGraphics.setTooltipForNextFrame(font, handler.getAvailableRecipes().get(l).value().result().create(), x, y);
             }
         }
     }

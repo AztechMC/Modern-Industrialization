@@ -1,4 +1,7 @@
 # Machine models
+
+TODO 26.1: this needs an update
+
 Each machine model in MI consists of two parts:
 - A casing: the core cube of the machine. It that can never be rotated, and may be reused for multiple machines or by multiblock hatches.
 - A set of overlays: extra textures applied on some sides.

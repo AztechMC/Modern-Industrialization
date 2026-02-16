@@ -29,9 +29,11 @@ import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import java.util.function.Supplier;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class ReiSlotLocking implements GuiComponentServer<Unit, Boolean> {
     public static final Type<Unit, Boolean> TYPE = new Type<>(MI.id("rei_slot_locking"), StreamCodec.unit(Unit.INSTANCE), ByteBufCodecs.BOOL);
@@ -61,6 +63,6 @@ public class ReiSlotLocking implements GuiComponentServer<Unit, Boolean> {
 
     @FunctionalInterface
     public interface SlotLockable {
-        void lockSlots(ResourceLocation recipeId, Inventory inventory);
+        void lockSlots(ResourceKey<Recipe<?>> recipeId, Inventory inventory);
     }
 }

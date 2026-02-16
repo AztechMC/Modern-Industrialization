@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:motor"
+      "ingredient": "modern_industrialization:motor"
     },
     {
       "amount": 2,
-      "tag": "c:rods/steel"
+      "ingredient": "#c:rods/steel"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:tin_cable"
+      "ingredient": "modern_industrialization:tin_cable"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:piston"
+      "ingredient": "modern_industrialization:piston"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:robot_arm"
+      "id": "modern_industrialization:robot_arm"
     }
   ]
 }

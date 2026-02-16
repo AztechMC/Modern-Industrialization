@@ -29,11 +29,11 @@ import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     public BarrelBlockEntity(BlockEntityType type,
@@ -53,18 +53,18 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove("item");
+    public void removeComponentsFromTag(ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard("item");
     }
 
     @Override
-    public ItemVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
-        return ItemVariant.fromNbt(tag.getCompound("item"), registries);
+    public ItemVariant loadResource(ValueInput input) {
+        return input.read("item", ItemVariant.CODEC).orElse(ItemVariant.blank());
     }
 
     @Override
-    public void saveResource(ItemVariant resource, CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("item", resource.toNbt(registries));
+    public void saveResource(ItemVariant resource, ValueOutput output) {
+        output.store("item", ItemVariant.CODEC, resource);
     }
 }

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/annealed_copper"
+      "ingredient": "#c:dusts/annealed_copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_ingot"
+      "id": "modern_industrialization:annealed_copper_ingot"
     }
   ]
 }

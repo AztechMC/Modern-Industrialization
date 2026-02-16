@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:and_gate",
+    "N": "modern_industrialization:not_gate",
+    "O": "modern_industrialization:or_gate",
+    "b": "modern_industrialization:digital_circuit_board",
+    "c": "modern_industrialization:electronic_circuit"
+  },
+  "pattern": [
+    "cOc",
+    "NbN",
+    "cAc"
+  ],
+  "result": {
+    "id": "modern_industrialization:digital_circuit"
+  }
+}

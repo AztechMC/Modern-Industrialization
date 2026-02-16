@@ -28,7 +28,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Slo
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;

@@ -24,41 +24,41 @@
 
 package aztech.modern_industrialization.machines;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface MachineComponent {
-    void writeNbt(CompoundTag tag, HolderLookup.Provider registries);
+    void writeNbt(ValueOutput output);
 
-    void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine);
+    void readNbt(ValueInput input, boolean isUpgradingMachine);
 
-    default void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        writeNbt(tag, registries);
+    default void writeClientNbt(ValueOutput output) {
+        writeNbt(output);
     }
 
-    default void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        readNbt(tag, registries, false);
+    default void readClientNbt(ValueInput input) {
+        readNbt(input, false);
     }
 
     interface ClientOnly extends MachineComponent {
         @Override
-        default void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {}
+        default void writeNbt(ValueOutput output) {}
 
         @Override
-        default void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {}
+        default void readNbt(ValueInput input, boolean isUpgradingMachine) {}
 
         @Override
-        void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries);
+        void writeClientNbt(ValueOutput output);
 
         @Override
-        void readClientNbt(CompoundTag tag, HolderLookup.Provider registries);
+        void readClientNbt(ValueInput input);
     }
 
     interface ServerOnly extends MachineComponent {
         @Override
-        default void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {}
+        default void writeClientNbt(ValueOutput output) {}
 
         @Override
-        default void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {}
+        default void readClientNbt(ValueInput input) {}
     }
 }

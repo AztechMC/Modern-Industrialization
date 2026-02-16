@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/gold"
+      "ingredient": "#c:ores/gold"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:raw_gold"
+      "id": "minecraft:raw_gold"
     }
   ]
 }

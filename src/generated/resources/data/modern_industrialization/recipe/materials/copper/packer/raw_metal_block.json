@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_materials/copper"
+      "ingredient": "#c:raw_materials/copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:raw_copper_block"
+      "id": "minecraft:raw_copper_block"
     }
   ]
 }

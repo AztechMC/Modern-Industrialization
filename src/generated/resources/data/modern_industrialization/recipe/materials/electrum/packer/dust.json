@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/electrum"
+      "ingredient": "#c:tiny_dusts/electrum"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electrum_dust"
+      "id": "modern_industrialization:electrum_dust"
     }
   ]
 }

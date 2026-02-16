@@ -1,0 +1,28 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 200,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:heavy_water"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:lava",
+      "probability": 0.0
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:end_stone"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "id": "minecraft:end_stone"
+    }
+  ]
+}

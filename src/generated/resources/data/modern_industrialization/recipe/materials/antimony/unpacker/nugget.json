@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/antimony"
+      "ingredient": "#c:ingots/antimony"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:antimony_nugget"
+      "id": "modern_industrialization:antimony_nugget"
     }
   ]
 }

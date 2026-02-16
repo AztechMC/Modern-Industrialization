@@ -33,7 +33,9 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialItemPart;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import org.jspecify.annotations.Nullable;
 
 public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements MaterialRecipeBuilder {
@@ -42,7 +44,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     private boolean canceled = false;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, int eu, int duration) {
-        super(type, eu, duration);
+        super(context.fluids(), context.items(), type, eu, duration);
         this.recipeId = type.getPath() + "/" + recipeSuffix;
         this.context = context;
         context.addRecipe(this);
@@ -78,7 +80,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            addItemInput(part.getItemId(), amount);
+            itemIn(part.getItemId(), amount);
         }
         return this;
     }
@@ -87,7 +89,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            addItemInput(part.getTaggedItemId(), amount);
+            itemIn(part.asIngredient(context.items()), amount);
         }
         return this;
     }
@@ -100,7 +102,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            return addItemOutput(part.getItemId(), amount);
+            return itemOut(part.getItemId(), amount);
         }
         return this;
     }
@@ -113,7 +115,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
         if (part == null) {
             canceled = true;
         } else {
-            return addItemOutput(part.getItemId(), amount, probability);
+            return itemOut(part.getItemId(), amount, probability);
         }
         return this;
     }
@@ -136,7 +138,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            recipeOutput.accept(MI.id(fullId), recipe, null);
+            recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(fullId)), recipe, null);
         }
     }
 }

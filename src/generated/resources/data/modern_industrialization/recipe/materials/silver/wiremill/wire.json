@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/silver"
+      "ingredient": "#c:plates/silver"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:silver_wire"
+      "id": "modern_industrialization:silver_wire"
     }
   ]
 }

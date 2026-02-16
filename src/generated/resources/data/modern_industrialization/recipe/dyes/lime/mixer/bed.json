@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/lime"
+      "ingredient": "#c:dyes/lime"
     },
     {
       "amount": 1,
-      "tag": "minecraft:beds"
+      "ingredient": "#minecraft:beds"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:lime_bed"
+      "id": "minecraft:lime_bed"
     }
   ]
 }

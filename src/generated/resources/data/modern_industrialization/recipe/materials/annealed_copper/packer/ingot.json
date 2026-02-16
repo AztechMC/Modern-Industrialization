@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/annealed_copper"
+      "ingredient": "#c:nuggets/annealed_copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_ingot"
+      "id": "modern_industrialization:annealed_copper_ingot"
     }
   ]
 }

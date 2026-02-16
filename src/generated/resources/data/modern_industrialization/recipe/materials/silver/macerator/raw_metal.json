@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:raw_materials/silver"
+      "ingredient": "#c:raw_materials/silver"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:silver_dust"
+      "id": "modern_industrialization:silver_dust"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:silver_dust",
+      "id": "modern_industrialization:silver_dust",
       "probability": 0.5
     }
   ]

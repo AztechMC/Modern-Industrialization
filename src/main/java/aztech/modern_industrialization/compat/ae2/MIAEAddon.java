@@ -25,11 +25,9 @@
 package aztech.modern_industrialization.compat.ae2;
 
 import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.parts.PartModels;
 import appeng.api.parts.RegisterPartCapabilitiesEvent;
 import appeng.api.util.AEColor;
 import appeng.items.parts.PartItem;
-import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.*;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
@@ -60,14 +58,14 @@ public class MIAEAddon {
     public static final ItemDefinition<PartItem<EnergyP2PTunnelPart>> ENERGY_P2P_TUNNEL = MIItem.item(
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
-            p -> new PartItem<>(new Item.Properties(), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {},
+            p -> new PartItem<>(p, EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
+            (item, gen) -> {
+                gen.declareCustomModelItem(item);
+            },
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
     public static void init(IEventBus modBus) {
-        PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-
         modBus.addListener(MIAEAddon::commonSetup);
         modBus.addListener(MIAEAddon::registerPartCapabilities);
     }
@@ -107,6 +105,7 @@ public class MIAEAddon {
         var type = PipeNetworkType.register(
                 MI.id(pipeId),
                 (id, data) -> new MENetwork(id, data, aeColor),
+                MENetworkData.CODEC,
                 MENetworkNode::new,
                 color.color,
                 false);

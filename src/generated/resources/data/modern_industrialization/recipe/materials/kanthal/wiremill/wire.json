@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/kanthal"
+      "ingredient": "#c:plates/kanthal"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:kanthal_wire"
+      "id": "modern_industrialization:kanthal_wire"
     }
   ]
 }

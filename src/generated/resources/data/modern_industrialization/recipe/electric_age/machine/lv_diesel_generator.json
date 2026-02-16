@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:analog_circuit",
+    "G": "#c:gears/tin",
+    "H": "modern_industrialization:basic_machine_hull",
+    "P": "modern_industrialization:pump",
+    "c": "modern_industrialization:tin_cable"
+  },
+  "pattern": [
+    "PCP",
+    "GHG",
+    "ccc"
+  ],
+  "result": {
+    "id": "modern_industrialization:lv_diesel_generator"
+  }
+}

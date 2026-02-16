@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:kanthal_hot_ingot"
+      "ingredient": "modern_industrialization:kanthal_hot_ingot"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:kanthal_ingot"
+      "id": "modern_industrialization:kanthal_ingot"
     }
   ]
 }

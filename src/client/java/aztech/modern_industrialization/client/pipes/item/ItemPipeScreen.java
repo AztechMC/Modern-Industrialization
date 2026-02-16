@@ -40,14 +40,16 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
-    private static final ResourceLocation TEXTURE = MI.id("textures/gui/pipe/item.png");
+    private static final Identifier TEXTURE = MI.id("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, Inventory inventory, Component title) {
@@ -116,8 +118,8 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             title = title.copy().append(Component.literal(" "))
                     .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
-        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, 0x404040, false);
-        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 0x404040, false);
+        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
+        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
     }
 
     @Override
@@ -133,12 +135,12 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
                         MIText.PipeConnectionIn.text().setStyle(MITooltips.HIGHLIGHT_STYLE))
                         .setStyle(TextHelper.GRAY_TEXT));
             }
-            guiGraphics.renderTooltip(font, RenderHelper.splitTooltip(lines), x, y);
+            guiGraphics.setTooltipForNextFrame(font, RenderHelper.splitTooltip(lines), x, y);
         }
     }
 
     @Override
-    protected ResourceLocation getBackgroundTexture() {
+    protected Identifier getBackgroundTexture() {
         return TEXTURE;
     }
 
@@ -157,12 +159,11 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             int u = menu.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHoveredOrFocused() ? 20 : 0;
 
-            RenderSystem.enableDepthTest();
-            guiGraphics.blit(PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
         }
     }
 }

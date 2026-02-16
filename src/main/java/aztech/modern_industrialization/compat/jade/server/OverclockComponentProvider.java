@@ -27,13 +27,13 @@ package aztech.modern_industrialization.compat.jade.server;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.api.machine.holder.CrafterComponentHolder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 
 public class OverclockComponentProvider implements IServerDataProvider<BlockAccessor> {
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("overclock");
     }
 

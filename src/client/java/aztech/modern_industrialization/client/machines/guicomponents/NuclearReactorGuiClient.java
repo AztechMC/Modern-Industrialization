@@ -53,14 +53,15 @@ import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearReactorGui.Data> {
-    public static final ResourceLocation TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
+    public static final Identifier TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
 
     public NuclearReactorGuiClient(Unit params, NuclearReactorGui.Data data) {
         super(params, data);
@@ -76,9 +77,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
         Renderer.Mode currentMode = Renderer.Mode.NUCLEAR_FUEL;
         NeutronType neutronMode = BOTH;
 
-        ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")), 1);
+        ItemStack fuelStack = new ItemStack(BuiltInRegistries.ITEM.getValue(MI.id("uranium_fuel_rod")), 1);
 
-        private final ResourceLocation COLORBAR = MI.id("textures/gui/colorbar.png");
+        private final Identifier COLORBAR = MI.id("textures/gui/colorbar.png");
 
         private enum Mode {
             NUCLEAR_FUEL(0),
@@ -113,9 +114,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                             int py = y + centerY - data.gridSizeY() * 9 + j * 18;
 
                             if (tileData.isFluid()) {
-                                guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 18, 0, 18, 18);
+                                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 18, 0, 18, 18, 256, 256);
                             } else {
-                                guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 0, 0, 18, 18);
+                                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 0, 0, 18, 18, 256, 256);
                             }
 
                             TransferVariant<?> variant = tile.get().getVariant();
@@ -126,7 +127,6 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                     var stack = itemVariant.toStack((int) variantAmount);
                                     RenderHelper.renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, px + 1, py + 1);
                                 } else if (variant instanceof FluidVariant fluidVariant) {
-                                    RenderSystem.disableBlend();
                                     RenderHelper.drawFluidInGui(guiGraphics, fluidVariant, px + 1, py + 1);
                                 }
                             }
@@ -162,14 +162,11 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                     u = (int) (299 * NuclearReactorGui.neutronColorScheme(factor * neutronRate));
                                 }
 
-                                RenderSystem.disableDepthTest();
-                                RenderSystem.enableBlend();
-
-                                guiGraphics.pose().translate(px, py, 0);
-                                guiGraphics.pose().scale(18, 18, 1);
-                                guiGraphics.blit(COLORBAR, 0, 0, u, v, 1, 1, 300, 60);
-                                guiGraphics.pose().scale(1 / 18f, 1 / 18f, 1);
-                                guiGraphics.pose().translate(-px, -py, 0);
+                                guiGraphics.pose().translate(px, py);
+                                guiGraphics.pose().scale(18, 18);
+                                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, COLORBAR, 0, 0, u, v, 1, 1, 300, 60);
+                                guiGraphics.pose().scale(1 / 18f, 1 / 18f);
+                                guiGraphics.pose().translate(-px, -py);
 
                             }
 
@@ -177,10 +174,8 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                 if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
                                     if (itemVariant.getItem() instanceof NuclearComponentItem item) {
                                         if (tileData.getTemperature() + 100 > item.getMaxTemperature()) {
-                                            RenderSystem.enableBlend();
-                                            RenderSystem.disableDepthTest();
                                             if (System.currentTimeMillis() % 1000 > 500) {
-                                                guiGraphics.blit(MachineScreen.SLOT_ATLAS, px + 1, py + 1, 22, 58, 16, 16);
+                                                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px + 1, py + 1, 22, 58, 16, 16, 256, 256);
                                             }
                                         }
                                     }
@@ -192,16 +187,14 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                 if (data.euFuelConsumption() > 0 && currentMode == Renderer.Mode.EU_GENERATION) {
                     Font font = Minecraft.getInstance().font;
-                    guiGraphics.pose().translate(0, 0, 256);
-                    guiGraphics.drawString(font, getEfficiencyText(), x + 8, y + 16, 0xFFFFFF, false);
-                    guiGraphics.pose().translate(0, 0, -256);
+                    guiGraphics.drawString(font, getEfficiencyText(), x + 8, y + 16, -1, false);
                 }
 
             } else {
                 Font font = Minecraft.getInstance().font;
                 Component text = MIText.MultiblockShapeInvalid.text().setStyle(TextHelper.RED.withBold(true));
                 int width = font.width(text);
-                guiGraphics.drawString(font, text, x + centerX - width / 2, y + centerY, 0xFFFFFF, false);
+                guiGraphics.drawString(font, text, x + centerX - width / 2, y + centerY, -1, false);
             }
         }
 
@@ -221,9 +214,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                             long variantAmount = tile.get().getVariantAmount();
                             if (variantAmount > 0 & !variant.isBlank()) {
                                 if (variant instanceof ItemVariant itemVariant) {
-                                    guiGraphics.renderTooltip(font, itemVariant.toStack((int) variantAmount), cursorX, cursorY);
+                                    guiGraphics.setTooltipForNextFrame(font, itemVariant.toStack((int) variantAmount), cursorX, cursorY);
                                 } else if (variant instanceof FluidVariant fluidVariant) {
-                                    guiGraphics.renderTooltip(font,
+                                    guiGraphics.setTooltipForNextFrame(font,
                                             FluidHelper.getTooltipForFluidStorage(fluidVariant, variantAmount, NuclearHatch.capacity, false),
                                             Optional.empty(), cursorX, cursorY);
                                 }
@@ -241,12 +234,12 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                 }
                             }
 
-                            guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
+                            guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), cursorX, cursorY);
                             return;
 
                         } else if (currentMode == Renderer.Mode.EU_GENERATION) {
                             double euGeneration = tileData.getMeanEuGeneration();
-                            guiGraphics.renderTooltip(font, TextHelper.getEuTextTick(euGeneration, true), cursorX, cursorY);
+                            guiGraphics.setTooltipForNextFrame(font, TextHelper.getEuTextTick(euGeneration, true), cursorX, cursorY);
                             return;
                         } else {
                             double neutronRateFast;
@@ -313,7 +306,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                 }
                             }
 
-                            guiGraphics.renderTooltip(font, tooltips, Optional.empty(), cursorX, cursorY);
+                            guiGraphics.setTooltipForNextFrame(font, tooltips, Optional.empty(), cursorX, cursorY);
                             return;
                         }
 
@@ -331,7 +324,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                     Component tooltip = MIText.NuclearFuelEfficiencyTooltip.text(euProduction, euFuelConsumption);
 
-                    guiGraphics.renderTooltip(font, tooltip, cursorX, cursorY);
+                    guiGraphics.setTooltipForNextFrame(font, tooltip, cursorX, cursorY);
                 }
             }
         }
@@ -395,9 +388,9 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
                             RenderHelper.renderAndDecorateItem(guiGraphics, fuelStack, button.getX() + 1, button.getY() + 1);
                         } else if (currentMode == Renderer.Mode.EU_GENERATION) {
-                            guiGraphics.blit(MachineScreen.SLOT_ATLAS, button.getX() + 4, button.getY() + 2, 243, 1, 13, 17);
+                            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, button.getX() + 4, button.getY() + 2, 243, 1, 13, 17, 256, 256);
                         } else {
-                            guiGraphics.blit(MachineScreen.SLOT_ATLAS, button.getX(), button.getY(), 124 + currentMode.index * 20, 0, 20, 20);
+                            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, button.getX(), button.getY(), 124 + currentMode.index * 20, 0, 20, 20, 256, 256);
                         }
                     }, this::drawButton);
 
@@ -410,11 +403,11 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                         button.renderVanilla(guiGraphics, mouseX, mouseY, delta);
 
                         if (neutronMode == FAST) {
-                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16);
+                            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16, 256, 256);
                         } else if (neutronMode == NeutronType.THERMAL) {
-                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 160, 240, 16, 16);
+                            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 160, 240, 16, 16, 256, 256);
                         } else if (neutronMode == BOTH) {
-                            guiGraphics.blit(TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 80, 240, 16, 16);
+                            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 80, 240, 16, 16, 256, 256);
                         }
                     }, this::drawNeutronButton);
         }

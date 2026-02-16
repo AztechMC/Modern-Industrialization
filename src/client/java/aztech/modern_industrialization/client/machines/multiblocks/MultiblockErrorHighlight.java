@@ -30,7 +30,6 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -52,38 +51,36 @@ public class MultiblockErrorHighlight {
         highlightQueue.put(pos.immutable(), state);
     }
 
-    private static void end(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            return;
-        }
-        if (highlightQueue.size() > 0) {
-            RenderSystem.clear(256, Minecraft.ON_OSX);
-            var poseStack = event.getPoseStack();
-            poseStack.pushPose();
-            poseStack.mulPose(event.getModelViewMatrix());
-            for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
-                poseStack.pushPose();
-                Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-                BlockPos pos = entry.getKey();
-                double x = pos.getX() - cameraPos.x;
-                double y = pos.getY() - cameraPos.y;
-                double z = pos.getZ() - cameraPos.z;
-                poseStack.translate(x + 0.25, y + 0.25, z + 0.25);
-                poseStack.scale(0.5f, 0.5f, 0.5f);
-
-                BlockState state = entry.getValue();
-                if (state == null) {
-                    RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-                } else {
-                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, LightTexture.FULL_BRIGHT,
-                            OverlayTexture.NO_OVERLAY);
-                }
-
-                poseStack.popPose();
-            }
-            poseStack.popPose();
-            immediate.endBatch();
-            highlightQueue.clear();
-        }
+    private static void end(RenderLevelStageEvent.AfterLevel event) {
+        // TODO 26.1
+//        if (highlightQueue.size() > 0) {
+//            RenderSystem.clear(256, Minecraft.ON_OSX);
+//            var poseStack = event.getPoseStack();
+//            poseStack.pushPose();
+//            poseStack.mulPose(event.getModelViewMatrix());
+//            for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
+//                poseStack.pushPose();
+//                Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+//                BlockPos pos = entry.getKey();
+//                double x = pos.getX() - cameraPos.x;
+//                double y = pos.getY() - cameraPos.y;
+//                double z = pos.getZ() - cameraPos.z;
+//                poseStack.translate(x + 0.25, y + 0.25, z + 0.25);
+//                poseStack.scale(0.5f, 0.5f, 0.5f);
+//
+//                BlockState state = entry.getValue();
+//                if (state == null) {
+//                    RenderHelper.drawCube(poseStack, immediate, 1, 50f / 256, 50f / 256, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+//                } else {
+//                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, immediate, LightTexture.FULL_BRIGHT,
+//                            OverlayTexture.NO_OVERLAY);
+//                }
+//
+//                poseStack.popPose();
+//            }
+//            poseStack.popPose();
+//            immediate.endBatch();
+//            highlightQueue.clear();
+//        }
     }
 }

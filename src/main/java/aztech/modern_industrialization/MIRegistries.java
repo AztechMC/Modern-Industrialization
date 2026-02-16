@@ -33,17 +33,21 @@ import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlock
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.compat.ae2.AECompatCondition;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.trading.MITradeSets;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -65,14 +69,14 @@ public class MIRegistries {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MI.ID);
 
     public static final Supplier<BlockEntityType<CreativeBarrelBlockEntity>> CREATIVE_BARREL_BE = BLOCK_ENTITIES.register("creative_barrel", () -> {
-        return BlockEntityType.Builder.of(CreativeBarrelBlockEntity::new, MIBlock.CREATIVE_BARREL.get()).build(null);
+        return new BlockEntityType<>(CreativeBarrelBlockEntity::new, MIBlock.CREATIVE_BARREL.get());
     });
     public static final Supplier<BlockEntityType<CreativeTankBlockEntity>> CREATIVE_TANK_BE = BLOCK_ENTITIES.register("creative_tank", () -> {
-        return BlockEntityType.Builder.of(CreativeTankBlockEntity::new, MIBlock.CREATIVE_TANK.get()).build(null);
+        return new BlockEntityType<>(CreativeTankBlockEntity::new, MIBlock.CREATIVE_TANK.get());
     });
     public static final Supplier<BlockEntityType<CreativeStorageUnitBlockEntity>> CREATIVE_STORAGE_UNIT_BE = BLOCK_ENTITIES
             .register("creative_storage_unit", () -> {
-                return BlockEntityType.Builder.of(CreativeStorageUnitBlockEntity::new, MIBlock.CREATIVE_STORAGE_UNIT.get()).build(null);
+                return new BlockEntityType<>(CreativeStorageUnitBlockEntity::new, MIBlock.CREATIVE_STORAGE_UNIT.get());
             });
 
     // Conditions
@@ -130,12 +134,19 @@ public class MIRegistries {
 
     public static final Holder<VillagerProfession> INDUSTRIALIST = VILLAGER_PROFESSIONS.register("industrialist", () -> {
         return new VillagerProfession(
-                INDUSTRIALIST_POI.getId().toString(),
+                Component.translatable("entity.modern_industrialization.villager.industrialist"),
                 e -> e.is(INDUSTRIALIST_POI.getId()),
                 e -> e.is(INDUSTRIALIST_POI.getId()),
                 ImmutableSet.of(),
                 ImmutableSet.of(),
-                SoundEvents.VILLAGER_WORK_TOOLSMITH);
+                SoundEvents.VILLAGER_WORK_TOOLSMITH,
+                Int2ObjectMap.ofEntries(
+                        Int2ObjectMap.entry(1, MITradeSets.INDUSTRIALIST_LEVEL_1),
+                        Int2ObjectMap.entry(2, MITradeSets.INDUSTRIALIST_LEVEL_2),
+                        Int2ObjectMap.entry(3, MITradeSets.INDUSTRIALIST_LEVEL_3),
+                        Int2ObjectMap.entry(4, MITradeSets.INDUSTRIALIST_LEVEL_4),
+                        Int2ObjectMap.entry(5, MITradeSets.INDUSTRIALIST_LEVEL_5)
+                ));
     });
 
     // Attributes

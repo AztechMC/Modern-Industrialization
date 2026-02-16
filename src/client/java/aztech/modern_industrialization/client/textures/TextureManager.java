@@ -36,19 +36,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class TextureManager {
     private final ResourceProvider rm;
     private final BiConsumer<NativeImage, String> textureWriter;
     private final BiConsumer<JsonElement, String> mcMetaWriter;
     private final Queue<IORunnable> endRunnables = new ConcurrentLinkedQueue<>();
-    private final Set<String> generatedTextures = ConcurrentHashMap.newKeySet();
 
     private final Gson GSON = new Gson();
 
@@ -59,11 +57,11 @@ public class TextureManager {
     }
 
     public boolean hasAsset(String asset) {
-        return rm.getResource(ResourceLocation.parse(asset)).isPresent();
+        return rm.getResource(Identifier.parse(asset)).isPresent();
     }
 
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
-        var resource = rm.getResource(ResourceLocation.parse(textureId));
+        var resource = rm.getResource(Identifier.parse(textureId));
         if (resource.isPresent()) {
             try (var stream = resource.get().open()) {
                 return NativeImage.read(stream);
@@ -89,7 +87,7 @@ public class TextureManager {
         }
 
         String overrideId = textureId.replace(":textures/", ":datagen_texture_overrides/");
-        Optional<Resource> overrideResource = rm.getResource(ResourceLocation.parse(overrideId));
+        Optional<Resource> overrideResource = rm.getResource(Identifier.parse(overrideId));
 
         if (overrideResource.isPresent()) {
             // Copy the override over
@@ -101,8 +99,6 @@ public class TextureManager {
             // Write generated texture
             textureWriter.accept(image, textureId);
         }
-
-        generatedTextures.add(textureId.replace(":textures/", ":"));
 
         // Close image in any case...
         if (closeImage) {
@@ -123,11 +119,5 @@ public class TextureManager {
                 endRunnables.stream().map(r -> CompletableFuture.runAsync(r::safeRun, Util.backgroundExecutor())).toArray(CompletableFuture[]::new));
         endRunnables.clear();
         return ret;
-    }
-
-    public void markTexturesAsGenerated(ExistingFileHelper helper) {
-        for (var texture : generatedTextures) {
-            helper.trackGenerated(ResourceLocation.parse(texture), PackType.CLIENT_RESOURCES, "", "textures");
-        }
     }
 }

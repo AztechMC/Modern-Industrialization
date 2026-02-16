@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/superconductor"
+      "ingredient": "#c:tiny_dusts/superconductor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:superconductor_dust"
+      "id": "modern_industrialization:superconductor_dust"
     }
   ]
 }

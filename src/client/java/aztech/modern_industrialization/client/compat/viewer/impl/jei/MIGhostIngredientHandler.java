@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
-import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
@@ -42,9 +42,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScreen<?>> {
+class MIGhostIngredientHandler implements IGhostIngredientHandler<MIContainerScreen<?>> {
     @Override
-    public <I> List<Target<I>> getTargetsTyped(MIHandledScreen<?> gui, ITypedIngredient<I> typedIngredient, boolean doStart) {
+    public <I> List<Target<I>> getTargetsTyped(MIContainerScreen<?> gui, ITypedIngredient<I> typedIngredient, boolean doStart) {
         var ingredient = typedIngredient.getIngredient();
         List<Target<I>> bounds = new ArrayList<>();
 
@@ -130,7 +130,7 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIHandledScree
         return new Rect2i(cw.getX(), cw.getY(), cw.getWidth(), cw.getHeight());
     }
 
-    private static Rect2i getSlotTarget(Slot slot, MIHandledScreen<?> screen) {
+    private static Rect2i getSlotTarget(Slot slot, MIContainerScreen<?> screen) {
         return new Rect2i(slot.x + screen.getX(), slot.y + screen.getY(), 16, 16);
     }
 }

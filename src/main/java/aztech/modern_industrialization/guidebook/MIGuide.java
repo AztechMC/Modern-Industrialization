@@ -27,10 +27,10 @@ package aztech.modern_industrialization.guidebook;
 import aztech.modern_industrialization.MI;
 import guideme.Guide;
 import guideme.scene.element.SceneElementTagCompiler;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MIGuide {
-    public static final ResourceLocation ID = MI.id("book");
+    public static final Identifier ID = MI.id("book");
     private static Guide guide;
 
     public static void init() {

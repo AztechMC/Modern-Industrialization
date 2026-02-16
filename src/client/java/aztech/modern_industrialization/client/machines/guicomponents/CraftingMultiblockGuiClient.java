@@ -34,7 +34,8 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 
 public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, CraftingMultiblockGui.Data> {
@@ -52,25 +53,26 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
     }
 
     public static class BaseScreenRenderer {
-        private static final ResourceLocation TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
+        private static final Identifier TEXTURE = MI.id("textures/gui/container/multiblock_info.png");
 
         /**
          * Returns {@code deltaY}.
          */
         public int renderScreenAndStatus(boolean shapeValid, Font font, GuiGraphics guiGraphics, int x, int y) {
-            guiGraphics.blit(TEXTURE, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
-                    CraftingMultiblockGui.W, CraftingMultiblockGui.H, CraftingMultiblockGui.W, CraftingMultiblockGui.H);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + CraftingMultiblockGui.X, y + CraftingMultiblockGui.Y, 0, 0,
+                    CraftingMultiblockGui.W, CraftingMultiblockGui.H,
+                    CraftingMultiblockGui.W, CraftingMultiblockGui.H);
 
             int deltaY = 23;
 
             guiGraphics.drawString(font,
                     shapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
                     x + 10, y + deltaY,
-                    shapeValid ? 0xFFFFFF : 0xFF0000, false);
+                    shapeValid ? 0xFFFFFFFF : 0xFFFF0000, false);
             deltaY += 11;
 
             if (shapeValid) {
-                guiGraphics.drawString(font, MIText.MultiblockStatusActive.text(), x + 10, y + deltaY, 0xFFFFFF, false);
+                guiGraphics.drawString(font, MIText.MultiblockStatusActive.text(), x + 10, y + deltaY, 0xFFFFFFFF, false);
                 deltaY += 11;
             }
 
@@ -89,21 +91,21 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
                 if (data.activeRecipe().isPresent()) {
                     var recipe = data.activeRecipe().get();
 
-                    guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", recipe.progress() * 100) + " %"), x + 10, y + deltaY, 0xFFFFFF,
+                    guiGraphics.drawString(font, MIText.Progress.text(String.format("%.1f", recipe.progress() * 100) + " %"), x + 10, y + deltaY, 0xFFFFFFFF,
                             false);
                     deltaY += 11;
 
                     if (recipe.efficiencyTicks() != 0 || recipe.maxEfficiencyTicks() != 0) {
-                        guiGraphics.drawString(font, MIText.EfficiencyTicks.text(recipe.efficiencyTicks(), recipe.maxEfficiencyTicks()), x + 10, y + deltaY, 0xFFFFFF,
+                        guiGraphics.drawString(font, MIText.EfficiencyTicks.text(recipe.efficiencyTicks(), recipe.maxEfficiencyTicks()), x + 10, y + deltaY, 0xFFFFFFFF,
                                 false);
                         deltaY += 11;
                     }
 
-                    guiGraphics.drawString(font, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(recipe.baseRecipeEu())), x + 10, y + deltaY, 0xFFFFFF,
+                    guiGraphics.drawString(font, MIText.BaseEuRecipe.text(TextHelper.getEuTextTick(recipe.baseRecipeEu())), x + 10, y + deltaY, 0xFFFFFFFF,
                             false);
                     deltaY += 11;
 
-                    guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(recipe.currentRecipeEu())), x + 10, y + deltaY, 0xFFFFFF,
+                    guiGraphics.drawString(font, MIText.CurrentEuRecipe.text(TextHelper.getEuTextTick(recipe.currentRecipeEu())), x + 10, y + deltaY, 0xFFFFFFFF,
                             false);
                     deltaY += 11;
                 }
@@ -111,7 +113,7 @@ public class CraftingMultiblockGuiClient extends GuiComponentClient<Unit, Crafti
 
             if (data.remainingOverclockTicks() > 0) {
                 guiGraphics.drawString(font, GunpowderOverclockGuiClient.Renderer.formatOverclock(data.remainingOverclockTicks()), x + 10, y + deltaY,
-                        0xFFFFFF, false);
+                        0xFFFFFFFF, false);
             }
         }
     }

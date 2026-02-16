@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/invar"
-    },
-    "b": {
-      "item": "modern_industrialization:invar_bolt"
-    }
+    "R": "#c:rods/invar",
+    "b": "modern_industrialization:invar_bolt"
   },
   "pattern": [
     "bRb",

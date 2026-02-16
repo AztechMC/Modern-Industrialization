@@ -25,24 +25,24 @@
 package aztech.modern_industrialization.client.datagen;
 
 import aztech.modern_industrialization.client.datagen.model.MIModelProvider;
-import aztech.modern_industrialization.client.datagen.model.MachineCasingsProvider;
 import aztech.modern_industrialization.client.datagen.texture.MISpriteSourceProvider;
 import aztech.modern_industrialization.client.datagen.texture.TexturesProvider;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MIDatagenClient {
     public static void configure(
             DataGenerator gen,
-            ExistingFileHelper fileHelper,
             CompletableFuture<HolderLookup.Provider> lookupProvider,
-            boolean run,
             boolean runtimeDatagen) {
-        gen.addProvider(run, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider, fileHelper));
-        gen.addProvider(run, new TexturesProvider(gen.getPackOutput(), fileHelper, runtimeDatagen));
-        gen.addProvider(run, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));
-        gen.addProvider(run, new MIModelProvider(gen.getPackOutput(), fileHelper));
+        if (!runtimeDatagen) {
+            // Runtime datagen runs before sprite sources are registered, so skip this provider
+            gen.addProvider(true, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider));
+        }
+        gen.addProvider(true, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
+        // TODO 26.1
+//        gen.addProvider(true, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));
+        gen.addProvider(true, new MIModelProvider(gen.getPackOutput()));
     }
 }

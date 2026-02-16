@@ -5,35 +5,35 @@
   "fluid_inputs": [
     {
       "amount": 500,
-      "fluid": "modern_industrialization:soldering_alloy"
+      "ingredient": "modern_industrialization:soldering_alloy"
     },
     {
       "amount": 100,
-      "fluid": "modern_industrialization:helium"
+      "ingredient": "modern_industrialization:helium"
     }
   ],
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:blastproof_alloy_curved_plate"
+      "ingredient": "modern_industrialization:blastproof_alloy_curved_plate"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:large_motor"
+      "ingredient": "modern_industrialization:large_motor"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:robot_arm"
+      "ingredient": "modern_industrialization:robot_arm"
     },
     {
       "amount": 18,
-      "tag": "c:rods/cadmium"
+      "ingredient": "#c:rods/cadmium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:cadmium_control_rod"
+      "id": "modern_industrialization:cadmium_control_rod"
     }
   ]
 }

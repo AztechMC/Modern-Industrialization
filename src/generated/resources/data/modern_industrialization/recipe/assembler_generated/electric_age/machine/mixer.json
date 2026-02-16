@@ -5,33 +5,33 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:glass_blocks"
+      "ingredient": "#c:glass_blocks"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:motor"
+      "ingredient": "modern_industrialization:motor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     },
     {
       "amount": 1,
-      "tag": "modern_industrialization:fluid_pipes"
+      "ingredient": "#modern_industrialization:fluid_pipes"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_rotor"
+      "ingredient": "modern_industrialization:tin_rotor"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electric_mixer"
+      "id": "modern_industrialization:electric_mixer"
     }
   ]
 }

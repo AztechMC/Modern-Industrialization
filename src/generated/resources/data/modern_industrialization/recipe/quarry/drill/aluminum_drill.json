@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:electronic_circuit",
+    "c": "modern_industrialization:electrum_cable",
+    "d": "modern_industrialization:aluminum_drill_head",
+    "g": "#c:gears/iron",
+    "m": "modern_industrialization:pump",
+    "p": "#modern_industrialization:fluid_pipes"
+  },
+  "pattern": [
+    "gpd",
+    "mCp",
+    "cmg"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:aluminum_drill"
+  }
+}

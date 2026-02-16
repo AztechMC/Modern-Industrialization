@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_cable"
+      "ingredient": "modern_industrialization:tin_cable"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:motor"
+      "ingredient": "modern_industrialization:motor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electric_wiremill"
+      "id": "modern_industrialization:electric_wiremill"
     }
   ]
 }

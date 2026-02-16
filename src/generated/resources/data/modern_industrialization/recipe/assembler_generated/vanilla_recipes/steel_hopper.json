@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:chest"
+      "ingredient": "minecraft:chest"
     },
     {
       "amount": 5,
-      "tag": "c:plates/steel"
+      "ingredient": "#c:plates/steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "minecraft:hopper"
+      "id": "minecraft:hopper"
     }
   ]
 }

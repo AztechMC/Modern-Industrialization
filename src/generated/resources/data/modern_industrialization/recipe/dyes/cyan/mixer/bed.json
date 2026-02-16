@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/cyan"
+      "ingredient": "#c:dyes/cyan"
     },
     {
       "amount": 1,
-      "tag": "minecraft:beds"
+      "ingredient": "#minecraft:beds"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:cyan_bed"
+      "id": "minecraft:cyan_bed"
     }
   ]
 }

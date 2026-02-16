@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/silicon"
-    },
-    "y": {
-      "item": "modern_industrialization:silicon_ingot"
-    }
+    "x": "#c:ingots/silicon",
+    "y": "modern_industrialization:silicon_ingot"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:silicon_block"
   }
 }

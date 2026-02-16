@@ -50,17 +50,6 @@ public abstract class PipeNetwork {
         this.data = data;
     }
 
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        id = tag.getInt("id");
-        data.fromTag(tag.getCompound("data"), registries);
-    }
-
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putInt("id", id);
-        tag.put("data", data.toTag(new CompoundTag(), registries));
-        return tag;
-    }
-
     /**
      * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
      */
@@ -93,13 +82,13 @@ public abstract class PipeNetwork {
     public void setNode(BlockPos pos, @Nullable PipeNetworkNode node) {
         this.nodes.put(pos.immutable(), node);
 
-        this.nodesByChunk.computeIfAbsent(ChunkPos.asLong(pos), p -> new HashMap<>()).put(pos.immutable(), node);
+        this.nodesByChunk.computeIfAbsent(ChunkPos.pack(pos), p -> new HashMap<>()).put(pos.immutable(), node);
     }
 
     public void removeNode(BlockPos pos) {
         this.nodes.remove(pos);
 
-        long chunk = ChunkPos.asLong(pos);
+        long chunk = ChunkPos.pack(pos);
         Map<BlockPos, PipeNetworkNode> map = nodesByChunk.get(chunk);
         map.remove(pos);
         if (map.size() == 0) {

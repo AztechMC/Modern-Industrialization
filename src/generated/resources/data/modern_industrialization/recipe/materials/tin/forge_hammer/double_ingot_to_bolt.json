@@ -1,8 +1,6 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "ingredient": {
-    "item": "modern_industrialization:tin_double_ingot"
-  },
+  "ingredient": "modern_industrialization:tin_double_ingot",
   "result": {
     "count": 4,
     "id": "modern_industrialization:tin_bolt"

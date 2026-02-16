@@ -1,11 +1,8 @@
 {
   "type": "modern_industrialization:forge_hammer",
   "damage": 20,
-  "ingredient": {
-    "tag": "c:plates/copper"
-  },
+  "ingredient": "#c:plates/copper",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:copper_curved_plate"
   }
 }

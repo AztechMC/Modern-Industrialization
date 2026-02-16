@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.gui;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Server part of a synced component.
@@ -49,7 +49,7 @@ public interface GuiComponentServer<P, D> extends GuiComponent {
     Type<P, D> getType();
 
     record Type<P, D>(
-            ResourceLocation id,
+            Identifier id,
             StreamCodec<? super RegistryFriendlyByteBuf, P> paramsCodec,
             StreamCodec<? super RegistryFriendlyByteBuf, D> dataCodec) {}
 }

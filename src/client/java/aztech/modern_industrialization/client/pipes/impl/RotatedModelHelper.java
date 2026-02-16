@@ -25,49 +25,54 @@
 package aztech.modern_industrialization.client.pipes.impl;
 
 import com.mojang.math.Axis;
+import com.mojang.math.OctahedralGroup;
 import com.mojang.math.Transformation;
 import java.util.function.Function;
+
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RotatedModelHelper {
+    // TODO 26.1 - cleanup this mess, and then copy to MD
     /**
      * The model rotation to rotate a model facing NORTH to the correct facing direction.
      * Rotations are indexed by {@link Direction} id.
      */
     public static final ModelState[] PIPE_BAKE_SETTINGS = new ModelState[] {
-            preRotated(BlockModelRotation.X90_Y0, 270),
-            BlockModelRotation.X270_Y0,
-            BlockModelRotation.X0_Y0,
-            preRotated(BlockModelRotation.X0_Y180, 90),
-            preRotated(BlockModelRotation.X0_Y270, 90),
-            BlockModelRotation.X0_Y90,
+            preRotated(BlockModelRotation.get(OctahedralGroup.ROT_90_X_NEG), 270),
+            BlockModelRotation.get(OctahedralGroup.ROT_90_X_NEG.compose(OctahedralGroup.ROT_90_X_NEG).compose(OctahedralGroup.ROT_90_X_NEG)),
+            BlockModelRotation.IDENTITY,
+            preRotated(BlockModelRotation.get(OctahedralGroup.ROT_90_Y_NEG.compose(OctahedralGroup.ROT_90_Y_NEG)), 90),
+            preRotated(BlockModelRotation.get(OctahedralGroup.ROT_90_Y_NEG.compose(OctahedralGroup.ROT_90_Y_NEG).compose(OctahedralGroup.ROT_90_Y_NEG)), 90),
+            BlockModelRotation.get(OctahedralGroup.ROT_90_Y_NEG),
     };
 
     public static ModelState preRotated(BlockModelRotation rotation, float preAngle) {
         Transformation preRotation = new Transformation(null, Axis.ZP.rotationDegrees(preAngle), null, null);
-        Transformation combined = rotation.getRotation().compose(preRotation);
+        Transformation combined = rotation.transformation().compose(preRotation);
         return new ModelState() {
             @Override
-            public Transformation getRotation() {
+            public Transformation transformation() {
                 return combined;
             }
         };
     }
 
-    public static BakedModel[] loadRotatedModels(ResourceLocation modelId, ModelBaker modelBaker,
-            Function<Material, TextureAtlasSprite> spriteGetter) {
+    public static BlockModelPart[] loadRotatedModels(
+            Identifier modelId,
+            ModelBaker modelBaker) {
         // Load side models
-        BakedModel[] models = new BakedModel[6];
+        BlockModelPart[] models = new BlockModelPart[6];
 
         for (int i = 0; i < 6; ++i) {
-            models[i] = modelBaker.bake(modelId, PIPE_BAKE_SETTINGS[i], spriteGetter);
+            models[i] = SimpleModelWrapper.bake(modelBaker, modelId, PIPE_BAKE_SETTINGS[i]);
         }
 
         return models;

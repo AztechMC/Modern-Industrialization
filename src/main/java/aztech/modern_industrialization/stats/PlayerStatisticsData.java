@@ -29,29 +29,48 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class PlayerStatisticsData extends SavedData {
-    private final Map<UUID, PlayerStatistics> stats = new HashMap<>();
-    private final Function<UUID, PlayerStatistics> statsFactory = uuid -> new PlayerStatistics(this, uuid);
+    private static final Codec<PlayerStatisticsData> CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerStatistics.CODEC)
+            .xmap(m -> new PlayerStatisticsData(new HashMap<>(m)), psd -> psd.stats);
+    private static final SavedDataType<PlayerStatisticsData> TYPE = new SavedDataType<>(
+            "modern_industrialization_player_stats",
+            PlayerStatisticsData::new,
+            CODEC);
 
-    private PlayerStatisticsData(CompoundTag tag, HolderLookup.Provider registries) {
-        for (var key : tag.getAllKeys()) {
-            var uuid = UUID.fromString(key);
-            stats.put(uuid, new PlayerStatistics(this, uuid, tag.getCompound(key)));
-        }
+    public static PlayerStatisticsData get(MinecraftServer server) {
+        var overworld = server.getLevel(ServerLevel.OVERWORLD);
+        Objects.requireNonNull(overworld, "Couldn't find overworld");
+        return overworld.getDataStorage().computeIfAbsent(TYPE);
     }
 
-    private PlayerStatisticsData() {}
+    private final HashMap<UUID, PlayerStatistics> stats;
+
+    private PlayerStatisticsData(HashMap<UUID, PlayerStatistics> stats) {
+        this.stats = stats;
+    }
+
+    private PlayerStatisticsData() {
+        this(new HashMap<>());
+    }
 
     public PlayerStatistics get(UUID uuid) {
         Objects.requireNonNull(uuid);
-        return stats.computeIfAbsent(uuid, statsFactory);
+        var ret = stats.computeIfAbsent(uuid, u -> new PlayerStatistics());
+        ret.setDataAndUuid(this, uuid);
+        return ret;
     }
 
     public PlayerStatistics get(Player player) {
@@ -61,22 +80,5 @@ public class PlayerStatisticsData extends SavedData {
     @Override
     public boolean isDirty() {
         return true;
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        for (var entry : stats.entrySet()) {
-            tag.put(entry.getKey().toString(), entry.getValue().toTag());
-        }
-        return tag;
-    }
-
-    private static final String NAME = "modern_industrialization_player_stats";
-    private static final Factory<PlayerStatisticsData> FACTORY = new Factory<>(PlayerStatisticsData::new, PlayerStatisticsData::new);
-
-    public static PlayerStatisticsData get(MinecraftServer server) {
-        var overworld = server.getLevel(ServerLevel.OVERWORLD);
-        Objects.requireNonNull(overworld, "Couldn't find overworld");
-        return overworld.getDataStorage().computeIfAbsent(FACTORY, NAME);
     }
 }

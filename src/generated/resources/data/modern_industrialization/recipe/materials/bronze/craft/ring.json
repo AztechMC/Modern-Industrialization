@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/bronze"
-    },
-    "b": {
-      "item": "modern_industrialization:bronze_bolt"
-    }
+    "R": "#c:rods/bronze",
+    "b": "modern_industrialization:bronze_bolt"
   },
   "pattern": [
     "bRb",

@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:monazite_crushed_dust"
+      "ingredient": "modern_industrialization:monazite_crushed_dust"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:monazite_dust"
+      "id": "modern_industrialization:monazite_dust"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:monazite_dust",
+      "id": "modern_industrialization:monazite_dust",
       "probability": 0.5
     }
   ]

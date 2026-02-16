@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/copper"
+      "ingredient": "#c:nuggets/copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:copper_ingot"
+      "id": "minecraft:copper_ingot"
     }
   ]
 }

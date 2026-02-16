@@ -5,33 +5,33 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "modern_industrialization:fluid_pipes"
+      "ingredient": "#modern_industrialization:fluid_pipes"
     },
     {
       "amount": 2,
-      "tag": "c:gears/bronze"
+      "ingredient": "#c:gears/bronze"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_rotor"
+      "ingredient": "modern_industrialization:bronze_rotor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_machine_casing"
+      "ingredient": "modern_industrialization:steel_machine_casing"
     },
     {
       "amount": 2,
-      "tag": "c:rods/bronze"
+      "ingredient": "#c:rods/bronze"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:fire_clay_bricks"
+      "ingredient": "modern_industrialization:fire_clay_bricks"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:steel_upgrade"
+      "id": "modern_industrialization:steel_upgrade"
     }
   ]
 }

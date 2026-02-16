@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:birch_log"
+      "ingredient": "minecraft:birch_log"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:birch_wood"
+      "id": "minecraft:birch_wood"
     }
   ]
 }

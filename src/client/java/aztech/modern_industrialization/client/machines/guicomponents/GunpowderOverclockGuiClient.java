@@ -32,6 +32,7 @@ import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOverclockGui.Params, Integer> {
@@ -50,7 +51,7 @@ public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOve
             if (data > 0) {
                 int px = x + params.renderX();
                 int py = y + params.renderY();
-                guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 0, 58, 20, 20);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 0, 58, 20, 20, 256, 256);
             }
         }
 
@@ -58,7 +59,7 @@ public class GunpowderOverclockGuiClient extends GuiComponentClient<GunpowderOve
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (data > 0) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), 20, 20, cursorX - x, cursorY - y)) {
-                    guiGraphics.renderTooltip(font, formatOverclock(data), cursorX, cursorY);
+                    guiGraphics.setTooltipForNextFrame(font, formatOverclock(data), cursorX, cursorY);
                 }
             }
         }

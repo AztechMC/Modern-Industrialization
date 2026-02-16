@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "#c:gears/invar",
+    "d": "#c:dusts/diamond"
+  },
+  "pattern": [
+    " d ",
+    "dGd",
+    " d "
+  ],
+  "result": {
+    "id": "modern_industrialization:invar_rotary_blade"
+  }
+}

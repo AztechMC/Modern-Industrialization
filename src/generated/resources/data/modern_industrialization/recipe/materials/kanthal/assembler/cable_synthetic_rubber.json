@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 30,
-      "fluid": "modern_industrialization:synthetic_rubber"
+      "ingredient": "modern_industrialization:synthetic_rubber"
     }
   ],
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:kanthal_wire"
+      "ingredient": "modern_industrialization:kanthal_wire"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:kanthal_cable"
+      "id": "modern_industrialization:kanthal_cable"
     }
   ]
 }

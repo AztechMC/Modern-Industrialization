@@ -2,18 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "tag": "c:dyes/purple"
-    },
-    "p": {
-      "tag": "modern_industrialization:fluid_pipes"
-    }
+    "d": "#c:dyes/purple",
+    "p": "#modern_industrialization:fluid_pipes"
   },
   "pattern": [
     "pd"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:purple_fluid_pipe"
   }
 }

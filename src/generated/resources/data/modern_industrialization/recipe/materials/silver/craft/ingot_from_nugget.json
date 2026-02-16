@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:nuggets/silver"
-    },
-    "y": {
-      "item": "modern_industrialization:silver_nugget"
-    }
+    "x": "#c:nuggets/silver",
+    "y": "modern_industrialization:silver_nugget"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:silver_ingot"
   }
 }

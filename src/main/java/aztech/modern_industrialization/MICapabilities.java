@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
 
 public class MICapabilities {
     private static final List<Consumer<RegisterCapabilitiesEvent>> processors = new ArrayList<>();
@@ -44,15 +45,16 @@ public class MICapabilities {
     public static void init(RegisterCapabilitiesEvent event) {
         // Fluids
         for (var fluid : MIFluids.FLUID_DEFINITIONS.values()) {
-            event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), fluid.getBucket());
+            event.registerItem(Capabilities.Fluid.ITEM, (stack, access) -> new BucketResourceHandler(access), fluid.getBucket());
         }
 
         // Delayed processors
         processors.forEach(c -> c.accept(event));
 
         // Misc
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MIRegistries.CREATIVE_BARREL_BE.get(), (be, side) -> new SlotItemHandler(be));
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MIRegistries.CREATIVE_TANK_BE.get(), (be, side) -> new SlotFluidHandler(be));
+        // TODO 26.1
+//        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MIRegistries.CREATIVE_BARREL_BE.get(), (be, side) -> new SlotItemHandler(be));
+//        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MIRegistries.CREATIVE_TANK_BE.get(), (be, side) -> new SlotFluidHandler(be));
         event.registerBlockEntity(EnergyApi.SIDED, MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), (be, side) -> EnergyApi.CREATIVE);
 
         // Energy compat

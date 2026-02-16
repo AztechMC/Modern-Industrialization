@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:dusts/diamond"
+      "ingredient": "#c:dusts/diamond"
     },
     {
       "amount": 1,
-      "tag": "c:gears/invar"
+      "ingredient": "#c:gears/invar"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:invar_rotary_blade"
+      "id": "modern_industrialization:invar_rotary_blade"
     }
   ]
 }

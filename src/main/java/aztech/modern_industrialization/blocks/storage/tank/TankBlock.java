@@ -30,7 +30,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -43,8 +43,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
-    public TankBlock(EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
+    public TankBlock(BlockBehaviour.Properties properties, EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
+        super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory,
                 behaviour);
     }
@@ -53,19 +53,20 @@ public class TankBlock extends AbstractStorageBlock<FluidVariant> implements Ent
         return true;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
-        return 0;
-    }
+    // TODO 26.1
+//    @SuppressWarnings("deprecation")
+//    @Override
+//    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
+//        return 0;
+//    }
 
     @SuppressWarnings("deprecation")
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-            BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                       BlockHitResult hit) {
         if (((AbstractTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
-            return ItemInteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 }

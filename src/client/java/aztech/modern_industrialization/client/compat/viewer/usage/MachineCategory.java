@@ -47,14 +47,15 @@ import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {
@@ -80,20 +81,20 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private MachineCategory(MachineCategoryParams params, int width, int height) {
         super((Class) RecipeHolder.class, params.category,
                 Component.translatable("rei_categories.%s.%s".formatted(params.category.getNamespace(), params.category.getPath())),
-                BuiltInRegistries.ITEM.get(params.workstations.get(0)).getDefaultInstance(), width, height);
+                BuiltInRegistries.ITEM.getValue(params.workstations.get(0)).getDefaultInstance(), width, height);
 
         this.params = params;
     }
 
     @Override
     public void buildWorkstations(WorkstationConsumer consumer) {
-        for (ResourceLocation workstation : params.workstations) {
-            consumer.accept(BuiltInRegistries.ITEM.get(workstation));
+        for (Identifier workstation : params.workstations) {
+            consumer.accept(BuiltInRegistries.ITEM.getValue(workstation));
         }
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<RecipeHolder<MachineRecipe>> consumer) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<RecipeHolder<MachineRecipe>> consumer) {
         params.recipeType.getRecipesWithoutCache(Minecraft.getInstance().level).stream()
                 .filter(recipe -> params.recipePredicate.test(recipe.value()))
                 .sorted(Comparator.comparing(RecipeHolder::id))
@@ -190,23 +191,23 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
         // Draw filled energy bar
         widgets.drawable(guiGraphics -> {
-            guiGraphics.pose().pushPose();
+            guiGraphics.pose().pushMatrix();
 
-            guiGraphics.pose().translate(5, 5, 0);
-            guiGraphics.pose().scale(0.5f, 0.5f, 0.5f);
+            guiGraphics.pose().translate(5, 5);
+            guiGraphics.pose().scale(0.5f, 0.5f);
             switch (params.steamMode) {
                 case BOTH -> {
-                    guiGraphics.blit(MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, -2, -2, 80, 18, 20, 20, 256, 256);
                 }
                 case STEAM_ONLY -> {
-                    guiGraphics.blit(MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MI.id("textures/item/steam_bucket.png"), 0, 0, 0, 0, 16, 16, 16, 16);
                 }
                 case ELECTRIC_ONLY -> {
                     EnergyBarClient.Renderer.renderEnergy(guiGraphics, 0, 0, 1);
                 }
             }
 
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         });
         int endOfEuText;
         if (params.steamMode != SteamMode.NEITHER) {
@@ -235,7 +236,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
             List<ItemStack> displayedItems = new ArrayList<>();
             if (steelHatchRequired) {
-                displayedItems.add(BuiltInRegistries.ITEM.get(MI.id("steel_item_input_hatch")).getDefaultInstance());
+                displayedItems.add(BuiltInRegistries.ITEM.getValue(MI.id("steel_item_input_hatch")).getDefaultInstance());
             }
             if (upgradeEuRequired > 0) {
                 displayedItems.add(MIItem.BASIC_UPGRADE.stack());
@@ -250,20 +251,20 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 displayedItems.add(MIItem.WRENCH.stack());
             }
 
-            double x = width / 2f - 3;
-            double y = 3.75;
-            double wh = 10.8;
+            float x = width / 2f - 3;
+            float y = 3.75f;
+            float wh = 10.8f;
             widgets.drawable(graphics -> {
                 int itemIndex = (int) ((System.currentTimeMillis() / 1500L) % displayedItems.size());
                 ItemStack displayedItem = displayedItems.get(itemIndex).copyWithCount(1);
 
-                graphics.pose().pushPose();
+                graphics.pose().pushMatrix();
                 // Make sure that we don't overlap with the EU/t text
-                double itemx = Math.max(x, endOfEuText + 1);
-                graphics.pose().translate(itemx, y, 0);
-                graphics.pose().scale((float) wh / 16, (float) wh / 16, 1);
+                float itemx = Math.max(x, endOfEuText + 1);
+                graphics.pose().translate(itemx, y);
+                graphics.pose().scale((float) wh / 16, (float) wh / 16);
                 graphics.renderFakeItem(displayedItem, 0, 0);
-                graphics.pose().popPose();
+                graphics.pose().popMatrix();
             });
         }
         // Tooltips
@@ -315,7 +316,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
     private record DrawOffset(int x, int y) {}
 
     @Override
-    public ResourceLocation getRecipeId(RecipeHolder<MachineRecipe> recipe) {
-        return recipe.id();
+    public Identifier getRecipeId(RecipeHolder<MachineRecipe> recipe) {
+        return recipe.id().identifier();
     }
 }

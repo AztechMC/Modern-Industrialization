@@ -1,0 +1,8 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 20,
+  "ingredient": "minecraft:brick",
+  "result": {
+    "id": "modern_industrialization:brick_dust"
+  }
+}

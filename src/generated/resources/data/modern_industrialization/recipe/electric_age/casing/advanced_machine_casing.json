@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/aluminum",
+    "H": "modern_industrialization:basic_machine_hull"
+  },
+  "pattern": [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "result": {
+    "id": "modern_industrialization:advanced_machine_casing"
+  }
+}

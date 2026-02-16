@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "ingredient": "modern_industrialization:synthetic_rubber"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:paper"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 12,
+      "id": "modern_industrialization:rubber_sheet"
+    }
+  ]
+}

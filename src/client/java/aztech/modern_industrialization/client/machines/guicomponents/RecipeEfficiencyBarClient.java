@@ -37,8 +37,9 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficiencyBar.Params, RecipeEfficiencyBar.Data> {
     public RecipeEfficiencyBarClient(RecipeEfficiencyBar.Params params, RecipeEfficiencyBar.Data data) {
@@ -50,16 +51,16 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
         return new Renderer();
     }
 
-    private static final ResourceLocation TEXTURE = MI.id("textures/gui/efficiency_bar.png");
+    private static final Identifier TEXTURE = MI.id("textures/gui/efficiency_bar.png");
     private static final int WIDTH = 100, HEIGHT = 2;
 
     public class Renderer implements ClientComponentRenderer {
         @Override
         public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
-            guiGraphics.blit(TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
             if (data.hasActiveRecipe()) {
                 int barPixels = (int) ((float) data.efficiencyTicks() / data.maxEfficiencyTicks() * WIDTH);
-                guiGraphics.blit(TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels, HEIGHT, 102, 6);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX(), y + params.renderY(), 0, 0, barPixels, HEIGHT, 102, 6);
             }
         }
 
@@ -80,7 +81,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
 
                 tooltip.add(MIText.EfficiencyMaxOverclock.text(data.maxRecipeEu()));
 
-                guiGraphics.renderTooltip(font, tooltip, Optional.empty(), cursorX, cursorY);
+                guiGraphics.setTooltipForNextFrame(font, tooltip, Optional.empty(), cursorX, cursorY);
             }
         }
     }

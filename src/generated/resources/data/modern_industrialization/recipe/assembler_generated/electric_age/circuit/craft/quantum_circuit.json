@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:processing_unit"
+      "ingredient": "modern_industrialization:processing_unit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:cooling_cell"
+      "ingredient": "modern_industrialization:cooling_cell"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:qubit"
+      "ingredient": "modern_industrialization:qubit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_circuit_board"
+      "ingredient": "modern_industrialization:quantum_circuit_board"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:quantum_circuit"
+      "id": "modern_industrialization:quantum_circuit"
     }
   ]
 }

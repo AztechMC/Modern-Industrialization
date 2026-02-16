@@ -5,18 +5,18 @@
   "item_inputs": [
     {
       "amount": 9,
-      "item": "minecraft:coal"
+      "ingredient": "minecraft:coal"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:coal_block"
+      "id": "minecraft:coal_block"
     }
   ]
 }

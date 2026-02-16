@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#c:plates/steel",
+    "S": "modern_industrialization:silicon_p_doped_plate",
+    "e": "modern_industrialization:electrum_fine_wire",
+    "s": "modern_industrialization:silicon_n_doped_plate"
+  },
+  "pattern": [
+    " e ",
+    "PPP",
+    "SsS"
+  ],
+  "result": {
+    "count": 4,
+    "id": "modern_industrialization:transistor"
+  }
+}

@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 500,
-      "fluid": "modern_industrialization:styrene_butadiene"
+      "ingredient": "modern_industrialization:styrene_butadiene"
     }
   ],
   "fluid_outputs": [
     {
       "amount": 700,
-      "fluid": "modern_industrialization:styrene_butadiene_rubber"
+      "id": "modern_industrialization:styrene_butadiene_rubber"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/chromium"
+      "ingredient": "#c:tiny_dusts/chromium"
     }
   ]
 }

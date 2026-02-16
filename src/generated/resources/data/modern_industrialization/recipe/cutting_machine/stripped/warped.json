@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:warped_stem"
+      "ingredient": "minecraft:warped_stem"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:stripped_warped_stem"
+      "id": "minecraft:stripped_warped_stem"
     }
   ]
 }

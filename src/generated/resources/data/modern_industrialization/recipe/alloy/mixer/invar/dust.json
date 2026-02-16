@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:dusts/iron"
+      "ingredient": "#c:dusts/iron"
     },
     {
       "amount": 1,
-      "tag": "c:dusts/nickel"
+      "ingredient": "#c:dusts/nickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:invar_dust"
+      "id": "modern_industrialization:invar_dust"
     }
   ]
 }

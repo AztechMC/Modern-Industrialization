@@ -26,68 +26,28 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MI;
 import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import net.minecraft.Util;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import aztech.modern_industrialization.MITags;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Util;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
 public final class MIArmorMaterials {
-    private static final DeferredRegister<ArmorMaterial> DR = DeferredRegister.create(Registries.ARMOR_MATERIAL, MI.ID);
-
-    public static final Holder<ArmorMaterial> DIESEL_JETPACK = DR.register("diesel_jetpack", location -> new ArmorMaterial(
-            Map.of(),
-            0,
-            SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair Diesel Jetpack");
-            },
-            List.of(new ArmorMaterial.Layer(location)),
-            0,
-            0));
-    public static final Holder<ArmorMaterial> GRAVICHESTPLATE = DR.register("gravichestplate", location -> new ArmorMaterial(
-            Map.of(),
-            0,
-            SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair GraviChestPlate");
-            },
-            List.of(new ArmorMaterial.Layer(location)),
-            0,
-            0));
-    public static final Holder<ArmorMaterial> RUBBER = DR.register("rubber", location -> new ArmorMaterial(
-            Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-                for (var value : ArmorItem.Type.values()) {
+    public static final ArmorMaterial RUBBER = new ArmorMaterial(
+            40,
+            Util.make(new EnumMap<>(ArmorType.class), map -> {
+                for (var value : ArmorType.values()) {
                     map.put(value, 1);
                 }
             }),
             10,
             SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> Ingredient.of(BuiltInRegistries.ITEM.get(MI.id("rubber_sheet"))),
-            List.of(new ArmorMaterial.Layer(location)),
             0,
-            0));
-    public static final Holder<ArmorMaterial> QUANTUM = DR.register("quantum", location -> new ArmorMaterial(
-            Map.of(),
             0,
-            SoundEvents.ARMOR_EQUIP_GENERIC,
-            () -> {
-                throw new UnsupportedOperationException("Cannot repair quantum armor");
-            },
-            List.of(new ArmorMaterial.Layer(location)),
-            0,
-            0));
-
-    public static void init(IEventBus modEventBus) {
-        DR.register(modEventBus);
-    }
+            MITags.REPAIRS_RUBBER_ARMOR,
+            ResourceKey.create(EquipmentAssets.ROOT_ID, MI.id("rubber")));
 
     private MIArmorMaterials() {}
 }

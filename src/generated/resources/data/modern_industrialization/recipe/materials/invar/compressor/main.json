@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/invar"
+      "ingredient": "#c:ingots/invar"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:invar_plate"
+      "id": "modern_industrialization:invar_plate"
     }
   ]
 }

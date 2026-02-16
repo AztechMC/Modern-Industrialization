@@ -27,6 +27,7 @@ package aztech.modern_industrialization.materials.part;
 import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL;
 import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL_BLOCK;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import java.util.List;
@@ -38,11 +39,11 @@ public record RawMetalPart(boolean isBlock) implements PartKeyProvider {
         if (isBlock) {
             return part
                     .asBlock(SortOrder.RAW_ORE_BLOCKS, new TextureGenParams.RawMetal(true, set), 5, 6, 1)
-                    .withCustomPath("raw_%s_block", "storage_blocks/raw_%s");
+                    .withCustomPath("raw_%s_block", materialName -> MITags.convention("storage_blocks/raw_" + materialName));
         } else {
             return part
                     .withTexture(new TextureGenParams.RawMetal(false, set))
-                    .withCustomPath("raw_%s", "raw_materials/%s");
+                    .withCustomPath("raw_%s", materialName -> MITags.convention("raw_materials/" + materialName));
         }
     }
 

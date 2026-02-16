@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:rods/gold"
+      "ingredient": "#c:rods/gold"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:gold_ring"
+      "id": "modern_industrialization:gold_ring"
     }
   ]
 }

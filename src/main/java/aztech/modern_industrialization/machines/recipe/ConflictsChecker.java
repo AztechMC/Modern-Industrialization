@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -52,7 +52,7 @@ public class ConflictsChecker {
         int conflictTypeCount = 0;
 
         for (var type : MIMachineRecipeTypes.getRecipeTypes()) {
-            var conflicts = new TreeMap<ResourceLocation, List<ResourceLocation>>();
+            var conflicts = new TreeMap<Identifier, List<Identifier>>();
 
             for (var recipe : type.getRecipesWithCache(level)) {
                 var itemConfStacks = recipe.value().itemInputs.stream()
@@ -80,8 +80,8 @@ public class ConflictsChecker {
                     }
 
                     if (CrafterComponent.doInputsMatch(itemConfStacks, fluidConfStacks, otherRecipe.value())) {
-                        conflicts.computeIfAbsent(recipe.id(), i -> new ArrayList<>())
-                                .add(otherRecipe.id());
+                        conflicts.computeIfAbsent(recipe.id().identifier(), i -> new ArrayList<>())
+                                .add(otherRecipe.id().identifier());
                         conflictCount++;
                     }
                 }

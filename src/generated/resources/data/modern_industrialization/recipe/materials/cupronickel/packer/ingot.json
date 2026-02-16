@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/cupronickel"
+      "ingredient": "#c:nuggets/cupronickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:cupronickel_ingot"
+      "id": "modern_industrialization:cupronickel_ingot"
     }
   ]
 }

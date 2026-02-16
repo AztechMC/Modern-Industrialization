@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MICommonProxy;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -35,7 +36,7 @@ public interface BasePacket extends CustomPacketPayload {
     void handle(Context ctx);
 
     default void sendToServer() {
-        PacketDistributor.sendToServer(this);
+        ClientPacketDistributor.sendToServer(this);
     }
 
     default void sendToClient(ServerPlayer player) {

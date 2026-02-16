@@ -8,13 +8,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/osmium"
+      "ingredient": "#c:ores/osmium"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "mekanism:raw_osmium"
+      "id": "mekanism:raw_osmium"
     }
   ]
 }

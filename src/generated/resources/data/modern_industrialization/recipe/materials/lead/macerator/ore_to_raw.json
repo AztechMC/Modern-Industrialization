@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/lead"
+      "ingredient": "#c:ores/lead"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_lead"
+      "id": "modern_industrialization:raw_lead"
     }
   ]
 }

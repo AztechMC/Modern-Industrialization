@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "minecraft:furnace"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:minecart"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "minecraft:furnace_minecart"
+    }
+  ]
+}

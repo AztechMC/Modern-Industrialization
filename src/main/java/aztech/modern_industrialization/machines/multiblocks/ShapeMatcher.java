@@ -175,7 +175,7 @@ public class ShapeMatcher implements ChunkEventListener {
     public Set<ChunkPos> getSpannedChunks() {
         Set<ChunkPos> spannedChunks = new HashSet<>();
         for (BlockPos pos : simpleMembers.keySet()) {
-            spannedChunks.add(new ChunkPos(pos));
+            spannedChunks.add(ChunkPos.containing(pos));
         }
         return spannedChunks;
     }

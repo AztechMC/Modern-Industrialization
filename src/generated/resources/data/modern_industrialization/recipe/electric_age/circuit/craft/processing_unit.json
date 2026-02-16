@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "modern_industrialization:arithmetic_logic_unit",
+    "D": "modern_industrialization:digital_circuit",
+    "M": "modern_industrialization:random_access_memory",
+    "U": "modern_industrialization:memory_management_unit",
+    "b": "modern_industrialization:processing_unit_board"
+  },
+  "pattern": [
+    "DUD",
+    "MbM",
+    "DAD"
+  ],
+  "result": {
+    "id": "modern_industrialization:processing_unit"
+  }
+}

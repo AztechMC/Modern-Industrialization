@@ -42,7 +42,7 @@ public interface Coloramp {
                 int r = getRrgb(rgb);
                 int g = getGrgb(rgb);
                 int b = getBrgb(rgb);
-                image.setPixelRGBA(i, j, fromArgb(255, r, g, b));
+                image.setPixelABGR(i, j, fromArgb(255, r, g, b));
             }
         }
         return image;

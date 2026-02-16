@@ -27,22 +27,40 @@ package aztech.modern_industrialization.client.datagen.model;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.client.machines.models.CasingModel;
+import aztech.modern_industrialization.client.machines.models.CasingModels;
+import aztech.modern_industrialization.client.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class MachineCasingsProvider extends ModelProvider<BlockModelBuilder> {
-    public MachineCasingsProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MI.ID, MachineBakedModel.CASING_FOLDER, BlockModelBuilder::new, existingFileHelper);
+public class MachineCasingsProvider {
+    private final PackOutput.PathProvider machineCasingsPathProvider;
+    private final Map<Identifier, CasingModel.Unbaked> casingModels = new HashMap<>();
+
+    public MachineCasingsProvider(PackOutput output) {
+        this.machineCasingsPathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, CasingModels.FOLDER_NAME);
     }
 
-    @Override
-    protected void registerModels() {
+    public CompletableFuture<?> saveAll(CachedOutput cache) {
+        return DataProvider.saveAll(cache, CasingModel.Unbaked.CODEC, machineCasingsPathProvider, casingModels);
+    }
+
+    protected void generateModels(BlockModelGenerators blockModels) {
         for (var casing : MachineCasings.registeredCasings.values()) {
             if (casing.imitatedBlock != null) {
                 imitateBlock(casing, casing.imitatedBlock.get());
@@ -55,27 +73,38 @@ public class MachineCasingsProvider extends ModelProvider<BlockModelBuilder> {
         imitateBlock(CableTier.EV.casing, MIBlock.HIGHLY_ADVANCED_MACHINE_HULL.asBlock());
         imitateBlock(CableTier.SUPERCONDUCTOR.casing, MIBlock.QUANTUM_MACHINE_HULL.asBlock());
 
-        cubeBottomTop(MachineCasings.BRICKED_BRONZE, "block/casings/bricked_bronze", "block/fire_clay_bricks", "block/bronze_machine_casing");
-        cubeBottomTop(MachineCasings.BRICKED_STEEL, "block/casings/bricked_steel", "block/fire_clay_bricks", "block/steel_machine_casing");
-        cubeAll(MachineCasings.CONFIGURABLE_TANK, "block/casings/configurable_tank");
-        cubeAll(MachineCasings.STEEL_CRATE, "block/casings/steel_crate");
+        cubeBottomTop(blockModels, MachineCasings.BRICKED_BRONZE, "block/casings/bricked_bronze", "block/fire_clay_bricks", "block/bronze_machine_casing");
+        cubeBottomTop(blockModels, MachineCasings.BRICKED_STEEL, "block/casings/bricked_steel", "block/fire_clay_bricks", "block/steel_machine_casing");
+        cubeAll(blockModels, MachineCasings.CONFIGURABLE_TANK, "block/casings/configurable_tank");
+        cubeAll(blockModels, MachineCasings.STEEL_CRATE, "block/casings/steel_crate");
+    }
+
+    private void generateCasing(MachineCasing casing, BlockStateModel.Unbaked model) {
+        casingModels.put(casing.key, new CasingModel.Unbaked(model));
     }
 
     private void imitateBlock(MachineCasing casing, Block block) {
-        getBuilder(casing.key.toString())
-                .customLoader((bmb, existingFileHelper) -> new UseBlockModelModelBuilder<>(block, bmb, existingFileHelper));
+        generateCasing(casing, new UseBlockModelBakedModel.Unbaked(block));
     }
 
-    private void cubeBottomTop(MachineCasing casing, String side, String bottom, String top) {
-        cubeBottomTop(casing.key.toString(), MI.id(side), MI.id(bottom), MI.id(top));
+    private void cubeBottomTop(BlockModelGenerators blockModels, MachineCasing casing, String side, String bottom, String top) {
+        var modelId = casing.key.withPrefix("machine_casing/");
+        ModelTemplates.CUBE_BOTTOM_TOP.create(
+                modelId,
+                new TextureMapping()
+                        .put(TextureSlot.SIDE, MI.id(side))
+                        .put(TextureSlot.BOTTOM, MI.id(bottom))
+                        .put(TextureSlot.TOP, MI.id(top)),
+                blockModels.modelOutput);
+        generateCasing(casing, new SingleVariant.Unbaked(BlockModelGenerators.plainModel(modelId)));
     }
 
-    private void cubeAll(MachineCasing casing, String side) {
-        cubeAll(casing.key.toString(), MI.id(side));
-    }
-
-    @Override
-    public String getName() {
-        return "Machine Casings";
+    private void cubeAll(BlockModelGenerators blockModels, MachineCasing casing, String side) {
+        var modelId = casing.key.withPrefix("machine_casing/");
+        ModelTemplates.CUBE_ALL.create(
+                modelId,
+                new TextureMapping().put(TextureSlot.ALL, MI.id(side)),
+                blockModels.modelOutput);
+        generateCasing(casing, new SingleVariant.Unbaked(BlockModelGenerators.plainModel(modelId)));
     }
 }

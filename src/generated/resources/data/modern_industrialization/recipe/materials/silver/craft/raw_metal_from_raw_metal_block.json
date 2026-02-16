@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:raw_silver_block"
-    }
+    "modern_industrialization:raw_silver_block"
   ],
   "result": {
     "count": 9,

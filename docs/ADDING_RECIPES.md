@@ -8,8 +8,8 @@ In general, a machine recipe JSON in MI has the following properties:
 - `fluid_outputs`: The list of fluids it produces.
 - `process_conditions`: A list of additional conditions for the recipe to be processed by the machine.
 
-You can find plenty of examples for the JSON format in [our files](../src/main/resources/data/modern_industrialization/recipes).
-For example, the assembler recipe for the trash can looks [like this](../src/main/resources/data/modern_industrialization/recipes/trash_can_assembler.json).
+You can find plenty of examples for the JSON format in [our files](../src/generated/resources/data/modern_industrialization/recipes).
+For example, the assembler recipe for the trash can looks [like this](../src/generated/resources/data/modern_industrialization/recipes/trash_can_assembler.json).
 
 MI adds a nicer syntax when the recipes are being registered by KubeJS:
 - You need to create the recipe by specifying the values for `eu` and `duration`.

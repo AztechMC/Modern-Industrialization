@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:iron_double_ingot"
+      "ingredient": "modern_industrialization:iron_double_ingot"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:iron_rod"
+      "id": "modern_industrialization:iron_rod"
     }
   ]
 }

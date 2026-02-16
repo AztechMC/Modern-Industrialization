@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/stainless_steel"
+      "ingredient": "#c:dusts/stainless_steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:stainless_steel_hot_ingot"
+      "id": "modern_industrialization:stainless_steel_hot_ingot"
     }
   ]
 }

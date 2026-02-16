@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/annealed_copper"
+      "ingredient": "#c:ingots/annealed_copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_plate"
+      "id": "modern_industrialization:annealed_copper_plate"
     }
   ]
 }

@@ -28,15 +28,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 /**
  * A pipe network type.
  */
 public final class PipeNetworkType implements Comparable<PipeNetworkType> {
-    private final ResourceLocation identifier;
+    public static final Codec<PipeNetworkType> CODEC = Identifier.CODEC.comapFlatMap(id -> {
+        var type = get(id);
+        if (type == null) {
+            return DataResult.error(() -> "Unknown pipe network type: " + id);
+        }
+        return DataResult.success(type);
+    }, type -> type.identifier);
+
+    private final Identifier identifier;
     private final BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> networkCtor;
+    private final MapCodec<PipeNetworkData> dataCodec;
     private final Supplier<PipeNetworkNode> nodeCtor;
     /**
      * A "serial number" allowing type comparison for rendering.
@@ -46,25 +59,36 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final boolean opensGui;
     public Object renderer;
 
-    private static final Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
+    private static final Map<Identifier, PipeNetworkType> types = new HashMap<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(ResourceLocation identifier, BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> networkCtor,
-            Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, int serialNumber) {
+    private PipeNetworkType(
+            Identifier identifier,
+            BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
+            MapCodec<PipeNetworkData> dataCodec,
+            Supplier<PipeNetworkNode> nodeCtor,
+            int color,
+            boolean opensGui,
+            int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
+        this.dataCodec = dataCodec;
         this.nodeCtor = nodeCtor;
         this.color = color;
         this.opensGui = opensGui;
         this.serialNumber = serialNumber;
     }
 
-    public ResourceLocation getIdentifier() {
+    public Identifier getIdentifier() {
         return identifier;
     }
 
-    BiFunction<Integer, @Nullable PipeNetworkData, PipeNetwork> getNetworkCtor() {
+    BiFunction<Integer, PipeNetworkData, PipeNetwork> getNetworkCtor() {
         return networkCtor;
+    }
+
+    public MapCodec<PipeNetworkData> dataCodec() {
+        return dataCodec;
     }
 
     public Supplier<PipeNetworkNode> getNodeCtor() {
@@ -80,18 +104,23 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     }
 
     @Nullable
-    public static PipeNetworkType get(ResourceLocation identifier) {
+    public static PipeNetworkType get(Identifier identifier) {
         return types.get(identifier);
     }
 
-    public static Map<ResourceLocation, PipeNetworkType> getTypes() {
+    public static Map<Identifier, PipeNetworkType> getTypes() {
         return new HashMap<>(types);
     }
 
-    public static PipeNetworkType register(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
-            Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui) {
+    public static <D> PipeNetworkType register(
+            Identifier identifier,
+            BiFunction<Integer, D, PipeNetwork> networkCtor,
+            MapCodec<D> dataCodec,
+            Supplier<PipeNetworkNode> nodeCtor,
+            int color,
+            boolean opensGui) {
         color |= 0xff000000;
-        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, nextSerialNumber++);
+        PipeNetworkType type = new PipeNetworkType(identifier, (BiFunction) networkCtor, (MapCodec) dataCodec, nodeCtor, color, opensGui, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
         if (previousType != null) {
             throw new IllegalArgumentException("Attempting to register another PipeNetworkType with the same identifier.");

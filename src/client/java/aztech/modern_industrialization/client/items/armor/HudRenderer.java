@@ -40,11 +40,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
 public class HudRenderer {
+    private static final int TEXT_COLOR = 0xfff9fffe;
+
     public static void onRenderHud(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, MIClientConfig.INSTANCE.armorHudYPosition.getAsInt(), 0);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(0, MIClientConfig.INSTANCE.armorHudYPosition.getAsInt());
             ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
             if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);
@@ -55,10 +57,10 @@ public class HudRenderer {
                 } else {
                     jetpackActiveComponent = MIText.JetpackDisabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
                 }
-                guiGraphics.drawString(mc.font, jetpackActiveComponent, 4, 0, 16383998);
+                guiGraphics.drawString(mc.font, jetpackActiveComponent, 4, 0, TEXT_COLOR);
 
                 Component fillText = MIText.JetpackFill.text(FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
-                guiGraphics.drawString(mc.font, fillText, 4, 10, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 10, TEXT_COLOR);
             } else if (chest.getItem() instanceof GraviChestPlateItem gsp) {
                 boolean active = gsp.isActivated(chest);
 
@@ -70,12 +72,12 @@ public class HudRenderer {
                     gravichestplateActiveComponent = MIText.GravichestplateDisabled.text().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
                 }
 
-                guiGraphics.drawString(mc.font, gravichestplateActiveComponent, 4, 0, 16383998);
+                guiGraphics.drawString(mc.font, gravichestplateActiveComponent, 4, 0, TEXT_COLOR);
                 Component fillText = MIText.EnergyFill.text(
                         gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
-                guiGraphics.drawString(mc.font, fillText, 4, 10, 16383998);
+                guiGraphics.drawString(mc.font, fillText, 4, 10, TEXT_COLOR);
             }
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
     }
 }

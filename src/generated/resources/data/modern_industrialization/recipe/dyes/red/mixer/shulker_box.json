@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/red"
+      "ingredient": "#c:dyes/red"
     },
     {
       "amount": 1,
-      "tag": "c:shulker_boxes"
+      "ingredient": "#c:shulker_boxes"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:red_shulker_box"
+      "id": "minecraft:red_shulker_box"
     }
   ]
 }

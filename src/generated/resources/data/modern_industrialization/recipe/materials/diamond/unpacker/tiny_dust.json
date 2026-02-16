@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/diamond"
+      "ingredient": "#c:dusts/diamond"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:diamond_tiny_dust"
+      "id": "modern_industrialization:diamond_tiny_dust"
     }
   ]
 }

@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/magenta"
+      "ingredient": "#c:dyes/magenta"
     },
     {
       "amount": 1,
-      "tag": "minecraft:candles"
+      "ingredient": "#minecraft:candles"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:magenta_candle"
+      "id": "minecraft:magenta_candle"
     }
   ]
 }

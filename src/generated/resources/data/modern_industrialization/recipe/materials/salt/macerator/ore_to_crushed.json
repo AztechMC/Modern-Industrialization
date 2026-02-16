@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/salt"
+      "ingredient": "#c:ores/salt"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:salt_crushed_dust"
+      "id": "modern_industrialization:salt_crushed_dust"
     }
   ]
 }

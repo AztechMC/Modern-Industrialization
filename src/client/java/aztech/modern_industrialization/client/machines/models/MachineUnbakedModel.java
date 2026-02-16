@@ -26,176 +26,115 @@ package aztech.modern_industrialization.client.machines.models;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.models.MachineCasing;
-import aztech.modern_industrialization.machines.models.MachineCasings;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import org.jspecify.annotations.Nullable;
 
-public class MachineUnbakedModel implements IUnbakedGeometry<MachineUnbakedModel> {
-    public static final ResourceLocation LOADER_ID = MI.id("machine");
-    public static final IGeometryLoader<MachineUnbakedModel> LOADER = (jsonObject, deserializationContext) -> {
-        return new MachineUnbakedModel(jsonObject);
-    };
+import static aztech.modern_industrialization.client.machines.models.OverlayName.*;
 
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
+public record MachineUnbakedModel(
+        MachineCasing baseCasing,
+        Map<OverlayName, Identifier> defaultOverlays,
+        Map<MachineCasing, Map<OverlayName, Identifier>> tieredOverlays,
+        boolean noOverlayOnOutputSide) implements CustomUnbakedBlockStateModel {
+    public static final Identifier LOADER_ID = MI.id("machine");
 
-    private final MachineCasing baseCasing;
-    private final @Nullable Material[] defaultOverlays;
-    private final Map<MachineCasing, @Nullable Material[]> tieredOverlays = new HashMap<>();
-    private final boolean noOverlayOnOutputSide;
+    private static final Codec<Map<OverlayName, Identifier>> OVERLAYS_CODEC = Codec.unboundedMap(OverlayName.CODEC, Identifier.CODEC);
+    public static final MapCodec<MachineUnbakedModel> CODEC = RecordCodecBuilder.mapCodec(i ->
+            i.group(
+                    MachineCasing.CODEC.fieldOf("casing").forGetter(MachineUnbakedModel::baseCasing),
+                    OVERLAYS_CODEC.fieldOf("default_overlays").forGetter(MachineUnbakedModel::defaultOverlays),
+                    Codec.unboundedMap(MachineCasing.CODEC, OVERLAYS_CODEC).fieldOf("tiered_overlays").forGetter(MachineUnbakedModel::tieredOverlays),
+                    Codec.BOOL.fieldOf("no_overlay_on_output_side").forGetter(MachineUnbakedModel::noOverlayOnOutputSide))
+                    .apply(i, MachineUnbakedModel::new));
 
-    private MachineUnbakedModel(JsonObject obj) {
-        this.baseCasing = MachineCasings.get(GsonHelper.getAsString(obj, "casing"));
-
-        var defaultOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(obj, "default_overlays"), null);
-        this.defaultOverlays = defaultOverlaysJson.toSpriteIds();
-
-        var tieredOverlays = GsonHelper.getAsJsonObject(obj, "tiered_overlays", new JsonObject());
-        for (var casingTier : tieredOverlays.keySet()) {
-            var casingOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(tieredOverlays, casingTier), defaultOverlaysJson);
-            this.tieredOverlays.put(MachineCasings.get(casingTier), casingOverlaysJson.toSpriteIds());
-        }
-
-        this.noOverlayOnOutputSide = GsonHelper.getAsBoolean(obj, "no_overlay_on_output_side", false);
+    @Override
+    public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
+        return CODEC;
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ItemOverrides overrides) {
-        var defaultOverlays = loadSprites(spriteGetter, this.defaultOverlays);
+    public BlockStateModel bake(ModelBaker modelBakery) {
+        var defaultOverlays = loadSprites(modelBakery.sprites(), this.defaultOverlays);
         var tieredOverlays = new HashMap<MachineCasing, @Nullable TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
-            tieredOverlays.put(entry.getKey(), loadSprites(spriteGetter, entry.getValue()));
+            tieredOverlays.put(entry.getKey(), loadSprites(modelBakery.sprites(), entry.getValue()));
         }
-        return new MachineBakedModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
+        return new MachineBlockStateModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
     }
 
-    private static @Nullable TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, @Nullable Material[] ids) {
-        var sprites = new TextureAtlasSprite[ids.length];
-        for (int i = 0; i < ids.length; ++i) {
-            if (ids[i] != null) {
-                sprites[i] = textureGetter.apply(ids[i]);
+    @Override
+    public void resolveDependencies(Resolver resolver) {}
+
+    private static @Nullable TextureAtlasSprite[] loadSprites(SpriteGetter spriteGetter, Map<OverlayName, Identifier> overlays) {
+        var selectedMaterials = new OverlaySelector(overlays).toMaterials();
+        var sprites = new TextureAtlasSprite[selectedMaterials.length];
+        for (int i = 0; i < selectedMaterials.length; ++i) {
+            if (selectedMaterials[i] != null) {
+                sprites[i] = spriteGetter.get(selectedMaterials[i], () -> "machine unbaked model");
             }
         }
         return sprites;
     }
 
-    private static class OverlaysJson {
-        // All fields are nullable.
-        private @Nullable ResourceLocation top;
-        private @Nullable ResourceLocation top_active;
-        private @Nullable ResourceLocation side;
-        private @Nullable ResourceLocation side_active;
-        private @Nullable ResourceLocation bottom;
-        private @Nullable ResourceLocation bottom_active;
-        private @Nullable ResourceLocation front;
-        private @Nullable ResourceLocation front_active;
-        private @Nullable ResourceLocation left;
-        private @Nullable ResourceLocation left_active;
-        private @Nullable ResourceLocation right;
-        private @Nullable ResourceLocation right_active;
-        private @Nullable ResourceLocation back;
-        private @Nullable ResourceLocation back_active;
-        private @Nullable ResourceLocation top_s;
-        private @Nullable ResourceLocation top_s_active;
-        private @Nullable ResourceLocation top_w;
-        private @Nullable ResourceLocation top_w_active;
-        private @Nullable ResourceLocation top_n;
-        private @Nullable ResourceLocation top_n_active;
-        private @Nullable ResourceLocation top_e;
-        private @Nullable ResourceLocation top_e_active;
-        private @Nullable ResourceLocation bottom_s;
-        private @Nullable ResourceLocation bottom_s_active;
-        private @Nullable ResourceLocation bottom_w;
-        private @Nullable ResourceLocation bottom_w_active;
-        private @Nullable ResourceLocation bottom_n;
-        private @Nullable ResourceLocation bottom_n_active;
-        private @Nullable ResourceLocation bottom_e;
-        private @Nullable ResourceLocation bottom_e_active;
-        private @Nullable ResourceLocation output;
-        private @Nullable ResourceLocation item_auto;
-        private @Nullable ResourceLocation fluid_auto;
-
-        private static OverlaysJson parse(JsonObject json, @Nullable OverlaysJson defaultOverlay) {
-            var overlays = GSON.fromJson(json, OverlaysJson.class);
-
-            if (defaultOverlay != null) {
-                // Copy null fields from the default.
-                try {
-                    for (var field : OverlaysJson.class.getDeclaredFields()) {
-                        if (field.get(overlays) == null) {
-                            field.set(overlays, field.get(defaultOverlay));
-                        }
-                    }
-                } catch (IllegalAccessException ex) {
-                    throw new RuntimeException("Failed to copy fields from default overlay", ex);
-                }
-            }
-
-            return overlays;
-        }
-
+    private record OverlaySelector(Map<OverlayName, Identifier> overlays) {
         /**
          * Order is as follows:
          * Active and inactive: front, left, back, right, top S/W/N/E, bottom S/W/N/E,
          * output, item auto, fluid auto
          */
-        private @Nullable Material[] toSpriteIds() {
+        private @Nullable Material[] toMaterials() {
             return new @Nullable Material[] {
-                    select(front, side),
-                    select(front_active, front, side_active, side),
-                    select(left, side),
-                    select(left_active, left, side_active, side),
-                    select(back, side),
-                    select(back_active, back, side_active, side),
-                    select(right, side),
-                    select(right_active, right, side_active, side),
-                    select(top_s, top),
-                    select(top_s_active, top_s, top_active, top),
-                    select(top_w, top),
-                    select(top_w_active, top_w, top_active, top),
-                    select(top_n, top),
-                    select(top_n_active, top_n, top_active, top),
-                    select(top_e, top),
-                    select(top_e_active, top_e, top_active, top),
-                    select(bottom_s, bottom),
-                    select(bottom_s_active, bottom_s, bottom_active, bottom),
-                    select(bottom_w, bottom),
-                    select(bottom_w_active, bottom_w, bottom_active, bottom),
-                    select(bottom_n, bottom),
-                    select(bottom_n_active, bottom_n, bottom_active, bottom),
-                    select(bottom_e, bottom),
-                    select(bottom_e_active, bottom_e, bottom_active, bottom),
-                    select(output),
-                    select(item_auto),
-                    select(fluid_auto),
+                    select(FRONT, SIDE),
+                    select(FRONT_ACTIVE, FRONT, SIDE_ACTIVE, SIDE),
+                    select(LEFT, SIDE),
+                    select(LEFT_ACTIVE, LEFT, SIDE_ACTIVE, SIDE),
+                    select(BACK, SIDE),
+                    select(BACK_ACTIVE, BACK, SIDE_ACTIVE, SIDE),
+                    select(RIGHT, SIDE),
+                    select(RIGHT_ACTIVE, RIGHT, SIDE_ACTIVE, SIDE),
+                    select(TOP_S, TOP),
+                    select(TOP_S_ACTIVE, TOP_S, TOP_ACTIVE, TOP),
+                    select(TOP_W, TOP),
+                    select(TOP_W_ACTIVE, TOP_W, TOP_ACTIVE, TOP),
+                    select(TOP_N, TOP),
+                    select(TOP_N_ACTIVE, TOP_N, TOP_ACTIVE, TOP),
+                    select(TOP_E, TOP),
+                    select(TOP_E_ACTIVE, TOP_E, TOP_ACTIVE, TOP),
+                    select(BOTTOM_S, BOTTOM),
+                    select(BOTTOM_S_ACTIVE, BOTTOM_S, BOTTOM_ACTIVE, BOTTOM),
+                    select(BOTTOM_W, BOTTOM),
+                    select(BOTTOM_W_ACTIVE, BOTTOM_W, BOTTOM_ACTIVE, BOTTOM),
+                    select(BOTTOM_N, BOTTOM),
+                    select(BOTTOM_N_ACTIVE, BOTTOM_N, BOTTOM_ACTIVE, BOTTOM),
+                    select(BOTTOM_E, BOTTOM),
+                    select(BOTTOM_E_ACTIVE, BOTTOM_E, BOTTOM_ACTIVE, BOTTOM),
+                    select(OUTPUT),
+                    select(ITEM_AUTO),
+                    select(FLUID_AUTO),
             };
         }
 
         /**
-         * Select first non-null id, and convert it to a sprite id.
+         * select first non-null overlay, and convert it to a sprite material.
          */
         @Nullable
-        private static Material select(@Nullable ResourceLocation... candidates) {
-            for (var id : candidates) {
+        private Material select(OverlayName... candidates) {
+            for (var overlay : candidates) {
+                var id = overlays.get(overlay);
                 if (id != null) {
-                    return new Material(InventoryMenu.BLOCK_ATLAS, id);
+                    return ClientHooks.getBlockMaterial(id);
                 }
             }
             return null;

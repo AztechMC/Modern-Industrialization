@@ -29,16 +29,17 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.*;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class OverclockComponent implements MachineComponent {
     private final List<Catalyst> catalysts;
@@ -50,20 +51,20 @@ public class OverclockComponent implements MachineComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+    public void writeNbt(ValueOutput output) {
         for (var entry : tickMap.entrySet()) {
             var multiplierKey = String.format("overclock%.2f", entry.getKey().doubleValue());
-            tag.putInt(multiplierKey, entry.getValue().value);
+            output.putInt(multiplierKey, entry.getValue().value);
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
         for (Catalyst catalyst : catalysts) {
             var multiplierKey = String.format("overclock%.2f", catalyst.multiplier);
-            if (tag.contains(multiplierKey) && !tickMap.containsKey(catalyst.multiplier)) {
-                tickMap.put(catalyst.multiplier, new MutableTickCount(tag.getInt(multiplierKey)));
-            }
+            input.getInt(multiplierKey).ifPresent(multiplier -> {
+                tickMap.putIfAbsent(catalyst.multiplier, new MutableTickCount(multiplier));
+            });
         }
     }
 
@@ -75,7 +76,7 @@ public class OverclockComponent implements MachineComponent {
         return 0;
     }
 
-    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         var resourceInHand = BuiltInRegistries.ITEM.getKey(stackInHand.getItem());
 
@@ -96,11 +97,11 @@ public class OverclockComponent implements MachineComponent {
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
-                return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public void tick(MachineBlockEntity be) {
@@ -131,7 +132,7 @@ public class OverclockComponent implements MachineComponent {
         var tooltips = new ArrayList<Component>();
         for (Catalyst catalyst : catalysts) {
 
-            var catalystItem = BuiltInRegistries.ITEM.get(catalyst.resourceLocation);
+            var catalystItem = BuiltInRegistries.ITEM.getValue(catalyst.resourceLocation);
             tooltips.add(MITooltips.line(MIText.OverclockMachine).arg(catalystItem, MITooltips.ITEM_PARSER).arg(catalyst.multiplier)
                     .arg(catalyst.ticks).build());
         }
@@ -148,10 +149,10 @@ public class OverclockComponent implements MachineComponent {
     }
 
     public static List<Catalyst> getDefaultCatalysts() {
-        return List.of(new OverclockComponent.Catalyst(2D, ResourceLocation.parse("minecraft:gunpowder"), 120 * 20));
+        return List.of(new OverclockComponent.Catalyst(2D, Identifier.parse("minecraft:gunpowder"), 120 * 20));
     }
 
-    public record Catalyst(double multiplier, ResourceLocation resourceLocation, int ticks) {}
+    public record Catalyst(double multiplier, Identifier resourceLocation, int ticks) {}
 
     private static class MutableTickCount {
         public int value;

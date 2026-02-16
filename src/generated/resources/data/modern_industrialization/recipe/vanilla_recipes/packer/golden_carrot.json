@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "ingredient": "minecraft:gold_nugget"
+    },
+    {
+      "amount": 1,
+      "ingredient": "minecraft:carrot"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "minecraft:golden_carrot"
+    }
+  ]
+}

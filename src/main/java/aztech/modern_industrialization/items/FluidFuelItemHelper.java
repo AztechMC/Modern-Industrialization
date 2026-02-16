@@ -29,6 +29,8 @@ import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -60,7 +62,7 @@ public interface FluidFuelItemHelper {
 
         @Override
         public boolean canFillFluidType(FluidStack fluid) {
-            return fluid.getFluidHolder().getData(MIDataMaps.FLUID_FUELS) != null;
+            return fluid.typeHolder().getData(MIDataMaps.FLUID_FUELS) != null;
         }
 
         @Override
@@ -73,12 +75,12 @@ public interface FluidFuelItemHelper {
         }
     }
 
-    static void appendTooltip(ItemStack stack, List<Component> tooltip, long capacity) {
+    static void appendTooltip(ItemStack stack, Consumer<Component> tooltip, long capacity) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
         FluidVariant fluid = getFluid(stack);
-        tooltip.add(FluidHelper.getFluidName(fluid, true));
+        tooltip.accept(FluidHelper.getFluidName(fluid, true));
         if (!fluid.isBlank()) {
-            tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity).setStyle(style));
+            tooltip.accept(FluidHelper.getFluidAmount(getAmount(stack), capacity).setStyle(style));
         }
     }
 }

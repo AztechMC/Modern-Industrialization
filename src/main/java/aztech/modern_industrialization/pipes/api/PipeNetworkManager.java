@@ -28,7 +28,12 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.WorldHelper;
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.*;
+
+import java.io.Serial;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,13 +42,16 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.neoforged.fml.loading.FMLConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import org.jspecify.annotations.Nullable;
 
 public class PipeNetworkManager {
-    private static final boolean DEBUG_CHECKS = !FMLEnvironment.production;
+    private static final boolean DEBUG_CHECKS = !FMLLoader.getCurrent().isProduction();
 
     private final Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
     private final Map<BlockPos, Set<Direction>> links = new HashMap<>();
@@ -57,6 +65,54 @@ public class PipeNetworkManager {
 
     public PipeNetworkManager(PipeNetworkType type) {
         this.type = type;
+    }
+
+    public static Codec<PipeNetworkManager> codec(PipeNetworkType type) {
+        return SerializedManager.codec(type.dataCodec())
+                .xmap(serialized -> new PipeNetworkManager(type, serialized), PipeNetworkManager::serialize);
+    }
+
+    private PipeNetworkManager(PipeNetworkType type, SerializedManager serialized) {
+        this(type);
+
+        // networks
+        for (var serializedNetwork : serialized.networks()) {
+            PipeNetwork network = type.getNetworkCtor().apply(serializedNetwork.id(), serializedNetwork.data());
+            network.manager = this;
+            networks.add(network);
+        }
+
+        // networkByBlock and links
+        Map<Integer, PipeNetwork> networkIds = new HashMap<>();
+        for (PipeNetwork network : networks) {
+            networkIds.put(network.id, network);
+        }
+        for (var serializedNode : serialized.nodes()) {
+            PipeNetwork network = networkIds.get(serializedNode.networkId());
+            var pos = serializedNode.pos().immutable();
+            networkByBlock.put(pos, network);
+            network.setNode(pos, null);
+            links.put(pos, new HashSet<>(serializedNode.directions()));
+        }
+
+        // nextNetworkId
+        nextNetworkId = serialized.nextNetworkId;
+    }
+
+    private SerializedManager serialize() {
+        // networks
+        var serializedNetworks = new ArrayList<SerializedNetwork>();
+        for (PipeNetwork network : networks) {
+            serializedNetworks.add(new SerializedNetwork(network.id, network.data));
+        }
+
+        // networkByBlock and links
+        var serializedNodes = new ArrayList<SerializedNode>();
+        for (Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
+            serializedNodes.add(new SerializedNode(entry.getKey(), entry.getValue().id, links.get(entry.getKey())));
+        }
+
+        return new SerializedManager(serializedNetworks, serializedNodes, nextNetworkId);
     }
 
     /**
@@ -77,7 +133,7 @@ public class PipeNetworkManager {
             int chunkZ = ChunkPos.getZ(chunkPos);
             var chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
             if (chunk != null) {
-                chunk.setUnsaved(true);
+                chunk.markUnsaved();
             } else {
                 // This is not supposed to happen.
                 var sb = new StringBuilder();
@@ -332,74 +388,16 @@ public class PipeNetworkManager {
     }
 
     private void incrementSpanned(BlockPos pos) {
-        spannedChunks.computeIfAbsent(ChunkPos.asLong(pos), p -> new HashSet<>()).add(pos.immutable());
+        spannedChunks.computeIfAbsent(ChunkPos.pack(pos), p -> new HashSet<>()).add(pos.immutable());
     }
 
     private void decrementSpanned(BlockPos pos) {
-        long chunkPos = ChunkPos.asLong(pos);
+        long chunkPos = ChunkPos.pack(pos);
         Set<BlockPos> set = spannedChunks.get(chunkPos);
         set.remove(pos);
         if (set.size() == 0) {
             spannedChunks.remove(chunkPos);
         }
-    }
-
-    public void fromNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        // networks
-        ListTag networksTag = tag.getList("networks", new CompoundTag().getId());
-        for (Tag networkTag : networksTag) {
-            PipeNetwork network = type.getNetworkCtor().apply(-1, null);
-            network.manager = this;
-            network.fromTag((CompoundTag) networkTag, registries);
-            networks.add(network);
-        }
-
-        // networkByBlock and links
-        Map<Integer, PipeNetwork> networkIds = new HashMap<>();
-        for (PipeNetwork network : networks) {
-            networkIds.put(network.id, network);
-        }
-        int[] data = tag.getIntArray("networkByBlock");
-        for (int i = 0; i < data.length / 5; i++) {
-            PipeNetwork network = networkIds.get(data[5 * i + 3]);
-            BlockPos pos = new BlockPos(data[5 * i], data[5 * i + 1], data[5 * i + 2]);
-            networkByBlock.put(pos, network);
-            network.setNode(pos, null);
-            links.put(pos, new HashSet<>(Arrays.asList(NbtHelper.decodeDirections((byte) data[5 * i + 4]))));
-        }
-
-        // nextNetworkId
-        nextNetworkId = tag.getInt("nextNetworkId");
-        checkStateCoherence();
-    }
-
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        // networks
-        List<CompoundTag> networksTags = new ArrayList<>();
-        for (PipeNetwork network : networks) {
-            networksTags.add(network.toTag(new CompoundTag(), registries));
-        }
-        ListTag networksTag = new ListTag();
-        networksTag.addAll(networksTags);
-        tag.put("networks", networksTag);
-
-        // networkByBlock and links, every entry is identified by five consecutive
-        // integers: x, y, z, network id, encoded links
-        int[] networkByBlockData = new int[networkByBlock.size() * 5];
-        int i = 0;
-        for (Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
-            networkByBlockData[i++] = entry.getKey().getX();
-            networkByBlockData[i++] = entry.getKey().getY();
-            networkByBlockData[i++] = entry.getKey().getZ();
-            networkByBlockData[i++] = entry.getValue().id;
-            networkByBlockData[i++] = NbtHelper.encodeDirections(links.get(entry.getKey()));
-        }
-        tag.putIntArray("networkByBlock", networkByBlockData);
-
-        // nextNetworkId
-        tag.putInt("nextNetworkId", nextNetworkId);
-        checkStateCoherence();
-        return tag;
     }
 
     public PipeNetworkType getType() {
@@ -438,5 +436,36 @@ public class PipeNetworkManager {
     private void customAssert(boolean predicate) {
         if (!predicate)
             throw new NullPointerException("Predicate was false");
+    }
+
+    private record SerializedNetwork(int id, PipeNetworkData data) {
+        private static Codec<SerializedNetwork> codec(MapCodec<PipeNetworkData> dataCodec) {
+            return RecordCodecBuilder.create(i -> i.group(
+                    Codec.INT.fieldOf("id").forGetter(SerializedNetwork::id),
+                    dataCodec.forGetter(SerializedNetwork::data)
+            ).apply(i, SerializedNetwork::new));
+        }
+    }
+
+    private record SerializedNode(BlockPos pos, int networkId, Set<Direction> directions) {
+        private static Codec<SerializedNode> CODEC = RecordCodecBuilder.create(i -> i.group(
+                BlockPos.CODEC.fieldOf("pos").forGetter(SerializedNode::pos),
+                Codec.INT.fieldOf("networkId").forGetter(SerializedNode::networkId),
+                Direction.CODEC.listOf(0, Direction.values().length).xmap(Set::copyOf, List::copyOf)
+                        .fieldOf("directions").forGetter(SerializedNode::directions)
+        ).apply(i, SerializedNode::new));
+    }
+
+    private record SerializedManager(
+            List<SerializedNetwork> networks,
+            List<SerializedNode> nodes,
+            int nextNetworkId) {
+        private static Codec<SerializedManager> codec(MapCodec<PipeNetworkData> dataCodec) {
+            return RecordCodecBuilder.create(i -> i.group(
+                    SerializedNetwork.codec(dataCodec).listOf().fieldOf("networks").forGetter(SerializedManager::networks),
+                    SerializedNode.CODEC.listOf().fieldOf("nodes").forGetter(SerializedManager::nodes),
+                    Codec.INT.fieldOf("nextNetworkId").forGetter(SerializedManager::nextNetworkId)
+            ).apply(i, SerializedManager::new));
+        }
     }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:superconductor_coil",
+    "P": "modern_industrialization:superconductor_plate",
+    "U": "modern_industrialization:highly_advanced_upgrade",
+    "c": "modern_industrialization:cooling_cell"
+  },
+  "pattern": [
+    "PUP",
+    "PCP",
+    "cPc"
+  ],
+  "result": {
+    "id": "modern_industrialization:gravichestplate"
+  }
+}

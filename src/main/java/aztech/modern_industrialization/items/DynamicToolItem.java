@@ -32,8 +32,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface DynamicToolItem {
-    ItemStack SHEAR_STACK = new ItemStack(Items.SHEARS, 1);
-
     @ApiStatus.NonExtendable
     default boolean isSupportedBlock(ItemStack stack, BlockState state) {
         return stack.is(ItemTags.AXES) && state.is(BlockTags.MINEABLE_WITH_AXE)

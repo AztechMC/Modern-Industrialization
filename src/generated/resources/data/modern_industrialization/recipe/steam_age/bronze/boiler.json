@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "#c:plates/bronze",
+    "B": "modern_industrialization:fire_clay_bricks",
+    "F": "minecraft:furnace",
+    "T": "modern_industrialization:bronze_tank"
+  },
+  "pattern": [
+    "#T#",
+    "#F#",
+    "BBB"
+  ],
+  "result": {
+    "id": "modern_industrialization:bronze_boiler"
+  }
+}

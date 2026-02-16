@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:stripped_warped_stem"
+      "ingredient": "minecraft:stripped_warped_stem"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:stripped_warped_hyphae"
+      "id": "minecraft:stripped_warped_hyphae"
     }
   ]
 }

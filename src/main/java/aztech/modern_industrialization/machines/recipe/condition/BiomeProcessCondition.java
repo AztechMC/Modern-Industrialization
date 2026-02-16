@@ -30,7 +30,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import java.util.List;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -54,7 +54,7 @@ public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> bi
     static final StreamCodec<RegistryFriendlyByteBuf, BiomeProcessCondition> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.either(
                     ResourceKey.streamCodec(Registries.BIOME),
-                    ResourceLocation.STREAM_CODEC.map(rl -> TagKey.create(Registries.BIOME, rl), TagKey::location)),
+                    Identifier.STREAM_CODEC.map(rl -> TagKey.create(Registries.BIOME, rl), TagKey::location)),
             BiomeProcessCondition::biome,
             BiomeProcessCondition::new);
 
@@ -64,19 +64,19 @@ public record BiomeProcessCondition(Either<ResourceKey<Biome>, TagKey<Biome>> bi
         return biome.map(entityBiome::is, entityBiome::is);
     }
 
-    private static MutableComponent biomeId(ResourceLocation biomeLocation) {
+    private static MutableComponent biomeId(Identifier biomeLocation) {
         return Component.translatable(Util.makeDescriptionId("biome", biomeLocation));
     }
 
     @Override
     public void appendDescription(List<Component> list) {
         biome.ifLeft(rk -> {
-            list.add(MIText.RequiresBiome.text(biomeId(rk.location())));
+            list.add(MIText.RequiresBiome.text(biomeId(rk.identifier())));
         }).ifRight(tag -> {
             var holderLookup = MICommonProxy.INSTANCE.getClientPlayer().registryAccess();
             var biomeNames = holderLookup.lookupOrThrow(tag.registry()).get(tag).map(named -> {
                 return named.stream()
-                        .map(holder -> biomeId(holder.unwrapKey().orElseThrow().location()))
+                        .map(holder -> biomeId(holder.unwrapKey().orElseThrow().identifier()))
                         .reduce((a, b) -> a.append(", ").append(b))
                         .orElseThrow();
             }).orElse(Component.literal("???"));

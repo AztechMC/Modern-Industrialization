@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/uranium_238"
+      "ingredient": "#c:tiny_dusts/uranium_238"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:uranium_238_nugget"
+      "id": "modern_industrialization:uranium_238_nugget"
     }
   ]
 }

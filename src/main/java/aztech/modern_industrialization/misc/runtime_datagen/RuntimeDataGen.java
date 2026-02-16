@@ -25,27 +25,30 @@
 package aztech.modern_industrialization.misc.runtime_datagen;
 
 import aztech.modern_industrialization.MI;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import net.minecraft.DetectedVersion;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.registries.VanillaRegistries;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.fml.loading.LoadingModList;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class RuntimeDataGen {
     @FunctionalInterface
     public interface DataGenConfig {
-        void run(DataGenerator gen, ExistingFileHelper fileHelper, CompletableFuture<HolderLookup.Provider> registries, boolean run,
-                boolean runtimeDatagen);
+        void run(DataGenerator gen, CompletableFuture<HolderLookup.Provider> registries, boolean runtimeDatagen);
     }
 
     public static void run(DataGenConfig... configs) {
@@ -74,17 +77,12 @@ public class RuntimeDataGen {
 
         MI.LOGGER.info("Starting MI runtime data generation");
 
-        var modContainer = LoadingModList.get().getModFileById(MI.ID);
+        var modContainer = ModList.get().getModFileById(MI.ID);
         var registriesFuture = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
-        var gen = new DataGenerator(dataOutput, DetectedVersion.tryDetectVersion(), true);
+        var gen = new DataGenerator.Cached(dataOutput, DetectedVersion.tryDetectVersion(), true);
 
         for (var config : configs) {
-            config.run(
-                    gen,
-                    new ExistingFileHelper(List.of(), Set.of(), false, null, null),
-                    registriesFuture,
-                    true,
-                    true);
+            config.run(gen, registriesFuture, true);
         }
 
         gen.run();
@@ -107,8 +105,9 @@ public class RuntimeDataGen {
                     return;
                 }
 
-                var newCache = readCache(cachePath);
-                var oldCache = readCache(modContainer.getFile().findResource(".cache/" + cachePath.getFileName()));
+                var newCache = readCache(cachePath.toString(), () -> Files.newBufferedReader(cachePath));
+                var oldCache = readCache(cachePath.getFileName().toString(),
+                        () -> new BufferedReader(new InputStreamReader(modContainer.getFile().getContents().openFile(".cache/" + cachePath.getFileName()))));
 
                 for (var newEntry : newCache.entrySet()) {
                     var oldHash = oldCache.get(newEntry.getKey());
@@ -136,8 +135,8 @@ public class RuntimeDataGen {
     /**
      * Read cache, and return map from resource path to hash.
      */
-    private static Map<String, String> readCache(Path path) {
-        try (var reader = Files.newBufferedReader(path)) {
+    private static Map<String, String> readCache(String name, ReaderSupplier readerSupplier) {
+        try (var reader = readerSupplier.get()) {
             Map<String, String> map = new HashMap<>();
 
             // Skip header line
@@ -150,8 +149,13 @@ public class RuntimeDataGen {
 
             return map;
         } catch (IOException e) {
-            MI.LOGGER.warn("Failed to read cache file " + path, e);
+            MI.LOGGER.warn("Failed to read cache file " + name, e);
             return Map.of();
         }
+    }
+
+    @FunctionalInterface
+    private interface ReaderSupplier {
+        BufferedReader get() throws IOException;
     }
 }

@@ -25,8 +25,8 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.MachineComponent;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Syncing whether the multiblock shape is currently valid with the clients, to
@@ -48,12 +48,12 @@ public class ShapeValidComponent implements MachineComponent.ClientOnly {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putBoolean("shapeValid", shapeValid);
+    public void writeClientNbt(ValueOutput output) {
+        output.putBoolean("shapeValid", shapeValid);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        shapeValid = tag.getBoolean("shapeValid");
+    public void readClientNbt(ValueInput input) {
+        shapeValid = input.getBooleanOr("shapeValid", false);
     }
 }

@@ -25,26 +25,24 @@
 package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.network.BasePacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public record UpdateFluidSlotPacket(int syncId, int stackId, ConfigurableFluidStack newStack) implements BasePacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.ofMember(
-            UpdateFluidSlotPacket::write, UpdateFluidSlotPacket::new);
-
-    public UpdateFluidSlotPacket(RegistryFriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), buf.readVarInt(), new ConfigurableFluidStack(buf.readNbt(), buf.registryAccess()));
-    }
-
-    public void write(RegistryFriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        buf.writeVarInt(stackId);
-        buf.writeNbt(newStack.toNbt(buf.registryAccess()));
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, UpdateFluidSlotPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT,
+            UpdateFluidSlotPacket::syncId,
+            ByteBufCodecs.VAR_INT,
+            UpdateFluidSlotPacket::stackId,
+            ConfigurableFluidStack.STREAM_CODEC,
+            UpdateFluidSlotPacket::newStack,
+            UpdateFluidSlotPacket::new);
 
     @Override
     public void handle(Context ctx) {

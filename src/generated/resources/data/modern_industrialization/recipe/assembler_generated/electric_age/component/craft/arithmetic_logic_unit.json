@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/diamond"
+      "ingredient": "#c:plates/diamond"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:and_gate"
+      "ingredient": "modern_industrialization:and_gate"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:or_gate"
+      "ingredient": "modern_industrialization:or_gate"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:not_gate"
+      "ingredient": "modern_industrialization:not_gate"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:arithmetic_logic_unit"
+      "id": "modern_industrialization:arithmetic_logic_unit"
     }
   ]
 }

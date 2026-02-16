@@ -5,33 +5,33 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:large_advanced_pump"
+      "ingredient": "modern_industrialization:large_advanced_pump"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_machine_hull"
+      "ingredient": "modern_industrialization:highly_advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:processing_unit"
+      "ingredient": "modern_industrialization:processing_unit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:titanium_gear"
+      "ingredient": "modern_industrialization:titanium_gear"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:large_advanced_motor"
+      "ingredient": "modern_industrialization:large_advanced_motor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:hv_diesel_generator"
+      "ingredient": "modern_industrialization:hv_diesel_generator"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_diesel_generator"
+      "id": "modern_industrialization:large_diesel_generator"
     }
   ]
 }

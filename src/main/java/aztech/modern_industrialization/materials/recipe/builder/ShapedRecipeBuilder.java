@@ -35,12 +35,15 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -52,7 +55,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private final MaterialBuilder.RecipeContext context;
     private boolean canceled = false;
     private final String id;
-    private final ItemStack result;
+    private final ItemStackTemplate result;
     private final String[] pattern;
     private final Map<Character, Ingredient> inputs = new HashMap<>();
 
@@ -66,7 +69,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             this.pattern = null;
             canceled = true;
         } else {
-            this.result = new ItemStack(output.asItem(), count);
+            this.result = new ItemStackTemplate(output.asItem(), count);
             this.pattern = pattern;
         }
         context.addRecipe(this);
@@ -83,7 +86,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
 
     public ShapedRecipeBuilder addTaggedPart(char key, PartKeyProvider part) {
         if (context.getPart(part) != null) {
-            addInput(key, context.getPart(part).getTaggedItemId());
+            addInput(key, context.getPart(part).asIngredient(context.items()));
         } else {
             canceled = true;
         }
@@ -91,24 +94,25 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder addInput(char key, TagKey<Item> tag) {
-        return addInput(key, "#" + tag.location().toString());
+        return addInput(key, Ingredient.of(context.items().getOrThrow(tag)));
     }
 
-    public ShapedRecipeBuilder addInput(char key, String maybeTag) {
-        if (!canceled) {
-            if (inputs.containsKey(key)) {
-                throw new IllegalArgumentException("Key mapping is already registered: " + key);
-            }
-            Ingredient ingredient = maybeTag.startsWith("#")
-                    ? Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))))
-                    : Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
-            inputs.put(key, ingredient);
-        }
-        return this;
+    public ShapedRecipeBuilder addInput(char key, String id) {
+        return addInput(key, Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))));
     }
 
     public ShapedRecipeBuilder addInput(char key, ItemLike item) {
         return addInput(key, BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
+    }
+
+    public ShapedRecipeBuilder addInput(char key, Ingredient ingredient) {
+        if (!canceled) {
+            if (inputs.containsKey(key)) {
+                throw new IllegalArgumentException("Key mapping is already registered: " + key);
+            }
+            inputs.put(key, ingredient);
+        }
+        return this;
     }
 
     public ShapedRecipeBuilder exportToAssembler(int eu, int duration) {
@@ -161,7 +165,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             }
 
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            recipeOutput.accept(MI.id(fullId), new ShapedRecipe(
+            recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(fullId)), new ShapedRecipe(
                     "",
                     CraftingBookCategory.MISC,
                     ShapedRecipePattern.of(inputs, pattern),

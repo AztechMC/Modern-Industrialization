@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": "modern_industrialization:steel_machine_casing",
+    "p": "modern_industrialization:pump",
+    "t": "modern_industrialization:steel_tank"
+  },
+  "pattern": [
+    "t",
+    "p",
+    "S"
+  ],
+  "result": {
+    "id": "modern_industrialization:large_tank_hatch"
+  }
+}

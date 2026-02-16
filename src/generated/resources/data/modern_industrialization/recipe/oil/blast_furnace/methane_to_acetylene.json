@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 50,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 200,
+      "ingredient": "modern_industrialization:methane"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "id": "modern_industrialization:acetylene"
+    }
+  ]
+}

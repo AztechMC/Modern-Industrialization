@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/le_mox"
-    },
-    "y": {
-      "item": "modern_industrialization:le_mox_ingot"
-    }
+    "x": "#c:ingots/le_mox",
+    "y": "modern_industrialization:le_mox_ingot"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:le_mox_block"
   }
 }

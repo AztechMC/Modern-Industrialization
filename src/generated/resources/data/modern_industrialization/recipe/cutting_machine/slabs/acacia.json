@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:acacia_planks"
+      "ingredient": "minecraft:acacia_planks"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "minecraft:acacia_slab"
+      "id": "minecraft:acacia_slab"
     }
   ]
 }

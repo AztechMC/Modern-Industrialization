@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 8,
-      "tag": "c:plates/nuclear_alloy"
+      "ingredient": "#c:plates/nuclear_alloy"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_fluid_input_hatch"
+      "ingredient": "modern_industrialization:highly_advanced_fluid_input_hatch"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:nuclear_fluid_hatch"
+      "id": "modern_industrialization:nuclear_fluid_hatch"
     }
   ]
 }

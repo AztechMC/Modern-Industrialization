@@ -26,8 +26,8 @@ package aztech.modern_industrialization.debug;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.getId;
-import static net.minecraft.commands.arguments.ResourceLocationArgument.id;
+import static net.minecraft.commands.arguments.IdentifierArgument.getId;
+import static net.minecraft.commands.arguments.IdentifierArgument.id;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos;
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
 
@@ -38,6 +38,7 @@ import aztech.modern_industrialization.machines.recipe.ConflictsChecker;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -46,10 +47,12 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
@@ -69,7 +72,7 @@ public class DebugCommands {
             }
 
             event.getDispatcher().register(literal("mi")
-                    .requires(source -> source.hasPermission(4))
+                    .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                     .then(literal("pipes")
                             .then(argument("pos", blockPos())
                                     .then(literal("clear")
@@ -135,7 +138,7 @@ public class DebugCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int addGhostPipe(CommandSourceStack src, BlockPos pos, ResourceLocation pipeType) throws CommandSyntaxException {
+    private static int addGhostPipe(CommandSourceStack src, BlockPos pos, Identifier pipeType) throws CommandSyntaxException {
         PipeNetworkType type = PipeNetworkType.get(pipeType);
         if (type == null) {
             throw new SimpleCommandExceptionType(Component.literal("Unknown pipe network type: " + pipeType)).create();
@@ -157,7 +160,7 @@ public class DebugCommands {
     }
 
     private static int claimMachines(ServerPlayer player) {
-        for (var level : player.server.getAllLevels()) {
+        for (var level : player.level().getServer().getAllLevels()) {
             var chunkSource = level.getChunkSource();
             for (var pos : chunkSource.chunkMap.updatingChunkMap.keySet()) {
                 var chunk = chunkSource.getChunk(ChunkPos.getX(pos), ChunkPos.getZ(pos), false);
@@ -176,8 +179,9 @@ public class DebugCommands {
     }
 
     private static int dumpStats(ServerPlayer player) {
-        player.displayClientMessage(Component.literal(
-                PlayerStatisticsData.get(player.server).get(player).toTag().toString()), false);
+        var stats = PlayerStatisticsData.get(player.server).get(player);
+        var statsTag = PlayerStatistics.CODEC.encodeStart(NbtOps.INSTANCE, stats).getOrThrow();
+        player.displayClientMessage(Component.literal(statsTag.toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 

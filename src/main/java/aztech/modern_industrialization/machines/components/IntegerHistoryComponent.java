@@ -28,8 +28,9 @@ import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Tracks a history of values for different enum values as keys.
@@ -57,18 +58,19 @@ public class IntegerHistoryComponent<K extends Enum<K>> implements MachineCompon
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+    public void writeNbt(ValueOutput output) {
         for (K key : keys) {
-            tag.putIntArray(key.toString(), histories.get(key));
+            output.putIntArray(key.toString(), histories.get(key));
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
         for (K key : keys) {
             String keyString = key.toString();
-            if (tag.contains(keyString)) {
-                int[] array = tag.getIntArray(keyString);
+            var maybeArray = input.getIntArray(keyString);
+            if (maybeArray.isPresent()) {
+                int[] array = maybeArray.get();
                 if (array.length == tickHistorySize) {
                     histories.put(key, array);
                     continue;

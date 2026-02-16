@@ -28,6 +28,8 @@ import aztech.modern_industrialization.compat.argonauts.ArgonautsFacade;
 import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import aztech.modern_industrialization.compat.ftbteams.FTBTeamsFacade;
 import com.google.common.primitives.Ints;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.HashSet;
@@ -39,53 +41,62 @@ import java.util.UUID;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.Nullable;
 
 public class PlayerStatistics {
-    public static final PlayerStatistics DUMMY = new PlayerStatistics(null, null);
+    public static final PlayerStatistics DUMMY = new PlayerStatistics();
 
-    private final PlayerStatisticsData data;
+    public static final Codec<PlayerStatistics> CODEC = RecordCodecBuilder.create(
+            instance ->
+                    instance
+                            .group(
+                                    registryCodec(BuiltInRegistries.ITEM).fieldOf("usedItems").forGetter(s -> s.usedItems),
+                                    registryCodec(BuiltInRegistries.ITEM).fieldOf("producedItems").forGetter(s -> s.producedItems),
+                                    registryCodec(BuiltInRegistries.FLUID).fieldOf("usedFluids").forGetter(s -> s.usedFluids),
+                                    registryCodec(BuiltInRegistries.FLUID).fieldOf("producedFluids").forGetter(s -> s.producedFluids),
+                                    pendingCodec().fieldOf("pendingCraftedStats").forGetter(s -> s.pendingCraftedStats)
+                            )
+                            .apply(instance, PlayerStatistics::new));
+
+    private PlayerStatisticsData data;
     @Nullable
-    private final UUID uuid;
-    private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
-    private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
+    private UUID uuid;
+    private final IdentityHashMap<Item, StatisticValue> usedItems;
+    private final IdentityHashMap<Item, StatisticValue> producedItems;
+    private final IdentityHashMap<Fluid, StatisticValue> usedFluids;
+    private final IdentityHashMap<Fluid, StatisticValue> producedFluids;
+
+    // Items produced while the player was offline... this is used to award vanilla stats when the player comes back online.
+    private final Reference2LongMap<Item> pendingCraftedStats;
 
     private static final Set<UUID> uuidCache = new HashSet<>();
 
-    // Items produced while the player was offline... this is used to award vanilla stats when the player comes back online.
-    private final Reference2LongMap<Item> pendingCraftedStats = new Reference2LongOpenHashMap<>();
+    PlayerStatistics() {
+        this(new IdentityHashMap<>(), new IdentityHashMap<>(), new IdentityHashMap<>(), new IdentityHashMap<>(), new Reference2LongOpenHashMap<>());
+    }
 
-    PlayerStatistics(PlayerStatisticsData data, UUID uuid) {
+    PlayerStatistics(
+            IdentityHashMap<Item, StatisticValue> usedItems,
+            IdentityHashMap<Item, StatisticValue> producedItems,
+            IdentityHashMap<Fluid, StatisticValue> usedFluids,
+            IdentityHashMap<Fluid, StatisticValue> producedFluids,
+            Reference2LongMap<Item> pendingCraftedStats) {
+        this.usedItems = usedItems;
+        this.producedItems = producedItems;
+        this.usedFluids = usedFluids;
+        this.producedFluids = producedFluids;
+        this.pendingCraftedStats = pendingCraftedStats;
+    }
+
+    void setDataAndUuid(PlayerStatisticsData data, UUID uuid) {
         this.data = data;
         this.uuid = uuid;
-    }
-
-    PlayerStatistics(PlayerStatisticsData data, UUID uuid, CompoundTag nbt) {
-        this(data, uuid);
-        readNbt(BuiltInRegistries.ITEM, usedItems, nbt.getCompound("usedItems"));
-        readNbt(BuiltInRegistries.ITEM, producedItems, nbt.getCompound("producedItems"));
-        readNbt(BuiltInRegistries.FLUID, usedFluids, nbt.getCompound("usedFluids"));
-        readNbt(BuiltInRegistries.FLUID, producedFluids, nbt.getCompound("producedFluids"));
-        pendingReadNbt(pendingCraftedStats, nbt.getCompound("pendingCraftedStats"));
-    }
-
-    public CompoundTag toTag() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("usedItems", toNbt(BuiltInRegistries.ITEM, usedItems));
-        nbt.put("producedItems", toNbt(BuiltInRegistries.ITEM, producedItems));
-        nbt.put("usedFluids", toNbt(BuiltInRegistries.FLUID, usedFluids));
-        nbt.put("producedFluids", toNbt(BuiltInRegistries.FLUID, producedFluids));
-        nbt.put("pendingCraftedStats", pendingToNbt(pendingCraftedStats));
-        return nbt;
     }
 
     public void addUsedItems(ItemLike what, long amount) {
@@ -143,41 +154,17 @@ public class PlayerStatistics {
         }
     }
 
-    private static <T> void readNbt(Registry<T> registry, Map<T, StatisticValue> map, CompoundTag tag) {
-        for (var key : tag.getAllKeys()) {
-            try {
-                var val = registry.get(ResourceLocation.parse(key));
-                if (val != Items.AIR && val != Fluids.EMPTY) {
-                    map.put(val, new StatisticValue(tag.getCompound(key)));
-                }
-            } catch (Exception ignored) {}
-        }
+    private static <T> Codec<IdentityHashMap<T, StatisticValue>> registryCodec(Registry<T> registry) {
+        return Codec.unboundedMap(registry.byNameCodec(), StatisticValue.CODEC)
+                // Ignore errored values
+                .promotePartial(err -> {})
+                .xmap(IdentityHashMap::new, m -> m);
     }
 
-    private static <T> CompoundTag toNbt(Registry<T> registry, Map<T, StatisticValue> map) {
-        CompoundTag tag = new CompoundTag();
-        for (var entry : map.entrySet()) {
-            tag.put(registry.getKey(entry.getKey()).toString(), entry.getValue().toNbt());
-        }
-        return tag;
-    }
-
-    private static void pendingReadNbt(Reference2LongMap<Item> map, CompoundTag tag) {
-        for (var key : tag.getAllKeys()) {
-            try {
-                var val = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
-                if (val != Items.AIR) {
-                    map.put(val, tag.getLong(key));
-                }
-            } catch (Exception ignored) {}
-        }
-    }
-
-    private static CompoundTag pendingToNbt(Reference2LongMap<Item> map) {
-        CompoundTag tag = new CompoundTag();
-        for (var entry : map.reference2LongEntrySet()) {
-            tag.putLong(BuiltInRegistries.ITEM.getKey(entry.getKey()).toString(), entry.getLongValue());
-        }
-        return tag;
+    private static Codec<Reference2LongMap<Item>> pendingCodec() {
+        return Codec.unboundedMap(BuiltInRegistries.ITEM.byNameCodec(), Codec.LONG)
+                // Ignore errored values
+                .promotePartial(err -> {})
+                .xmap(Reference2LongOpenHashMap::new, m -> m);
     }
 }

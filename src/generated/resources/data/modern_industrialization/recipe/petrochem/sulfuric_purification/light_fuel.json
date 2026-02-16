@@ -5,21 +5,21 @@
   "fluid_inputs": [
     {
       "amount": 12000,
-      "fluid": "modern_industrialization:sulfuric_light_fuel"
+      "ingredient": "modern_industrialization:sulfuric_light_fuel"
     },
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:hydrogen"
+      "ingredient": "modern_industrialization:hydrogen"
     }
   ],
   "fluid_outputs": [
     {
       "amount": 12000,
-      "fluid": "modern_industrialization:light_fuel"
+      "id": "modern_industrialization:light_fuel"
     },
     {
       "amount": 2000,
-      "fluid": "modern_industrialization:sulfuric_acid"
+      "id": "modern_industrialization:sulfuric_acid"
     }
   ]
 }

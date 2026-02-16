@@ -5,20 +5,20 @@
   "fluid_inputs": [
     {
       "amount": 100,
-      "fluid": "modern_industrialization:synthetic_oil"
+      "ingredient": "modern_industrialization:synthetic_oil"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "probability": 0.0,
-      "tag": "c:dyes/purple"
+      "ingredient": "#c:dyes/purple",
+      "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:purple_dye"
+      "id": "minecraft:purple_dye"
     }
   ]
 }

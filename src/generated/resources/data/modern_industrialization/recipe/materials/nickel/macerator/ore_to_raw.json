@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/nickel"
+      "ingredient": "#c:ores/nickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_nickel"
+      "id": "modern_industrialization:raw_nickel"
     }
   ]
 }

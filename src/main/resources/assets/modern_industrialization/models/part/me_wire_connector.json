@@ -2,7 +2,8 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"1": "ae2:part/import_bus",
-		"2": "ae2:part/import_bus_sides"
+		"2": "ae2:part/import_bus_sides",
+		"particle": "#1"
 	},
 	"elements": [
 		{

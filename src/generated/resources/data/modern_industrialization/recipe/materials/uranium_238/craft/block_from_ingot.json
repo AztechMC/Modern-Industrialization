@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "tag": "c:ingots/uranium_238"
-    },
-    "y": {
-      "item": "modern_industrialization:uranium_238_ingot"
-    }
+    "x": "#c:ingots/uranium_238",
+    "y": "modern_industrialization:uranium_238_ingot"
   },
   "pattern": [
     "xxx",
@@ -15,7 +11,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:uranium_238_block"
   }
 }

@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_machine_casing"
+      "ingredient": "modern_industrialization:bronze_machine_casing"
     },
     {
       "amount": 1,
-      "item": "minecraft:hopper"
+      "ingredient": "minecraft:hopper"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_item_output_hatch"
+      "id": "modern_industrialization:bronze_item_output_hatch"
     }
   ]
 }

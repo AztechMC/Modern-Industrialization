@@ -35,13 +35,13 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.core.DefaultedRegistry;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * A component that turns fluids and/or item into energy.
@@ -89,13 +89,13 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putLong("euBuffer", euBuffer);
+    public void writeNbt(ValueOutput output) {
+        output.putLong("euBuffer", euBuffer);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        euBuffer = tag.getLong("euBuffer");
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        euBuffer = input.getLongOr("euBuffer", 0);
     }
 
     public long getEuProduction(List<ConfigurableFluidStack> fluidInputs,
@@ -263,7 +263,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
     }
 
     public static class EuProductionMapBuilder<T> {
-        private final Map<ResourceLocation, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource
+        private final Map<Identifier, Long> map = new HashMap<>(); // Must Stores as string, because KubeJS could add not loader yet resource
                                                                         // location
         private final DefaultedRegistry<T> registryAccess;
 
@@ -271,7 +271,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             this.registryAccess = registryAccess;
         }
 
-        public EuProductionMapBuilder<T> add(ResourceLocation resourceLocation,
+        public EuProductionMapBuilder<T> add(Identifier resourceLocation,
                 long eu) {
             map.put(resourceLocation, eu);
             return this;
@@ -286,7 +286,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
 
                 @Override
                 public List<T> getAllAccepted() {
-                    return map.keySet().stream().map(registryAccess::get).collect(Collectors.toList());
+                    return map.keySet().stream().map(registryAccess::getValue).collect(Collectors.toList());
                 }
             };
         }
@@ -297,7 +297,8 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             @Override
             public long getEuProduction(Item variant) {
                 // TODO NEO NBT-aware fuels
-                int burnTime = variant.getDefaultInstance().getBurnTime(null);
+                // TODO 21.6
+                int burnTime = 0; //variant.getDefaultInstance().getBurnTime(null);
                 return burnTime <= 0 ? 0 : burnTime * FuelBurningComponent.EU_PER_BURN_TICK;
             }
 

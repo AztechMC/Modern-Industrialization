@@ -28,48 +28,87 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.client.machines.models.MachineItemModel;
+import aztech.modern_industrialization.client.machines.models.MachineUnbakedModel;
+import aztech.modern_industrialization.client.machines.models.OverlayName;
 import aztech.modern_industrialization.client.pipes.impl.PipeUnbakedModel;
-import aztech.modern_industrialization.datagen.model.BaseModelProvider;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.MultiVariant;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class MIModelProvider extends BaseModelProvider {
-    public MIModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, exFileHelper);
+public class MIModelProvider extends ModelProvider {
+    private final MachineCasingsProvider casingsProvider;
+
+    public MIModelProvider(PackOutput output) {
+        super(output, MI.ID);
+        this.casingsProvider = new MachineCasingsProvider(output);
     }
 
     @Override
-    protected void registerStatesAndModels() {
+    public CompletableFuture<?> run(CachedOutput cache) {
+        var parentFuture = super.run(cache);
+        var casingModelsFuture = casingsProvider.saveAll(cache);
+        return CompletableFuture.allOf(parentFuture, casingModelsFuture);
+    }
+
+    @Override
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCK_DEFINITIONS.values()) {
-            blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), this);
+            blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), blockModels);
         }
 
         for (FluidDefinition fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
-            existingModel(fluidDefinition.asFluidBlock(), Blocks.AIR);
+            blockModels.createNonTemplateModelBlock(fluidDefinition.asFluidBlock(), Blocks.AIR);
         }
 
-        simpleBlock(MIPipes.BLOCK_PIPE.get(), models().getBuilder("pipe")
-                .customLoader(TrivialModelBuilder.begin(PipeUnbakedModel.LOADER_ID))
-                .end());
+        blockModels.blockStateOutput.accept(customModel(MIPipes.BLOCK_PIPE.get(), PipeUnbakedModel.INSTANCE));
 
         // Item models as well...
         for (ItemDefinition<?> itemDefinition : MIItem.ITEM_DEFINITIONS.values()) {
-            itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels());
+            itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModels);
         }
 
         // Machine models
         for (var entry : MachineModelsToGenerate.props.entrySet()) {
-            simpleBlockWithItem(BuiltInRegistries.BLOCK.get(MI.id(entry.getKey())), models()
-                    .getBuilder(entry.getKey())
-                    .customLoader((bmb, exFile) -> new MachineModelBuilder<>(entry.getValue(), bmb, exFile))
-                    .end());
+            var block = BuiltInRegistries.BLOCK.getValue(MI.id(entry.getKey()));
+            var props = entry.getValue();
+
+            var defaultOverlays = new HashMap<OverlayName, Identifier>();
+            for (var overlay : props.defaultOverlays().entrySet()) {
+                defaultOverlays.put(OverlayName.CODEC.byName(overlay.getKey()), overlay.getValue());
+            }
+
+            var model = new MachineUnbakedModel(
+                    props.casing(),
+                    defaultOverlays,
+                    Map.of(),
+                    props.noOverlayOnOutputSide());
+            blockModels.blockStateOutput.accept(customModel(block, model));
+            itemModels.itemModelOutput.accept(block.asItem(), new MachineItemModel.Unbaked(block));
         }
+
+        casingsProvider.generateModels(blockModels);
+    }
+
+    private static MultiVariantGenerator customModel(Block block, CustomUnbakedBlockStateModel customModel) {
+        return MultiVariantGenerator.dispatch(block, MultiVariant.of(new CustomBlockStateModelBuilder.Simple(customModel)));
     }
 }

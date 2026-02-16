@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "modern_industrialization:titanium_gear",
+    "H": "modern_industrialization:highly_advanced_machine_hull",
+    "c": "modern_industrialization:processing_unit",
+    "e": "modern_industrialization:hv_diesel_generator",
+    "m": "modern_industrialization:large_advanced_motor",
+    "p": "modern_industrialization:large_advanced_pump"
+  },
+  "pattern": [
+    "pcp",
+    "GHG",
+    "mem"
+  ],
+  "result": {
+    "id": "modern_industrialization:large_diesel_generator"
+  }
+}

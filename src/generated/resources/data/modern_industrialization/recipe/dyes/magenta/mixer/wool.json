@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/magenta"
+      "ingredient": "#c:dyes/magenta"
     },
     {
       "amount": 8,
-      "tag": "minecraft:wool"
+      "ingredient": "#minecraft:wool"
     }
   ],
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:magenta_wool"
+      "id": "minecraft:magenta_wool"
     }
   ]
 }

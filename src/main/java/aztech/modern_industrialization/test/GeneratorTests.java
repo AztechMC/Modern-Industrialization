@@ -29,7 +29,7 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.blockentities.GeneratorMachineBlockEntity;
 import aztech.modern_industrialization.test.framework.MIGameTest;
 import aztech.modern_industrialization.test.framework.MIGameTestHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -45,7 +45,7 @@ public class GeneratorTests {
         var lvDieselGeneratorBlock = BuiltInRegistries.BLOCK.getOptional(MI.id("lv_diesel_generator")).orElseThrow();
         helper.setBlock(generatorPos, lvDieselGeneratorBlock);
 
-        var dieselGenerator = (GeneratorMachineBlockEntity) helper.getBlockEntity(generatorPos);
+        var dieselGenerator = helper.getBlockEntity(generatorPos, GeneratorMachineBlockEntity.class);
 
         try (var tx = Transaction.openRoot()) {
             long inserted = dieselGenerator.getInventory().fluidStorage.insert(MIFluids.BIODIESEL.variant(), 1, tx);

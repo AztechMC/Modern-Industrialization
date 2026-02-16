@@ -30,6 +30,7 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.recipe.builder.ForgeHammerRecipeBuilder;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 /**
  * Standard forge hammer recipes for early-game materials.
@@ -86,8 +87,8 @@ public class ForgeHammerRecipes {
         var output = ctx.getPart(outputPart);
 
         if (input != null && output != null) {
-            var outputStack = new ItemStack(output, outputCount);
-            new ForgeHammerRecipeBuilder(ctx, recipeName, input.getTaggedIngredient(), inputCount, outputStack, cost);
+            var outputStack = new ItemStackTemplate(output.asItem(), outputCount);
+            new ForgeHammerRecipeBuilder(ctx, recipeName, input.asIngredient(ctx.items()), inputCount, outputStack, cost);
         }
     }
 

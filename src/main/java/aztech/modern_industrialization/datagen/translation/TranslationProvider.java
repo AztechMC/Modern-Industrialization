@@ -44,7 +44,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -73,13 +73,13 @@ public final class TranslationProvider implements DataProvider {
     private void addManualEntries() {
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
 
-        addTranslation("entity.minecraft.villager.modern_industrialization.industrialist", "Industrialist");
+        addTranslation("entity.modern_industrialization.villager.industrialist", "Industrialist");
 
         addTranslation("key.categories.modern_industrialization.modern_industrialization", "Modern Industrialization");
         addTranslation("key.modern_industrialization.toggle_flight", "Toggle Flight");
         addTranslation("key.modern_industrialization.toggle_3x3", "Toggle 3x3 Mining");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
-        addTranslation("tag.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
+        addTranslation("tag.item.modern_industrialization.replicator_blacklist", "Replicator Blacklist");
 
         addTranslation("config.jade.plugin_modern_industrialization.overclock", "Machine Overclock");
         addTranslation("config.jade.plugin_modern_industrialization.pipe", "Pipe Information");

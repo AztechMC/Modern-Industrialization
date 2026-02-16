@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:rods/invar"
+      "ingredient": "#c:rods/invar"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:invar_tiny_dust"
+      "id": "modern_industrialization:invar_tiny_dust"
     }
   ]
 }

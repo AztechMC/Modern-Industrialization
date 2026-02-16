@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:steel_tank"
+      "ingredient": "modern_industrialization:steel_tank"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:pump"
+      "ingredient": "modern_industrialization:pump"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_machine_casing"
+      "ingredient": "modern_industrialization:steel_machine_casing"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_rotor"
+      "ingredient": "modern_industrialization:tin_rotor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_tank"
+      "id": "modern_industrialization:large_tank"
     }
   ]
 }

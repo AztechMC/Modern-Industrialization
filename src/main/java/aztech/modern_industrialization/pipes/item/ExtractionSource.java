@@ -26,10 +26,11 @@ package aztech.modern_industrialization.pipes.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 record ExtractionSource(
         ItemNetworkNode.ItemConnection connection,
-        IItemHandler storage,
+        ResourceHandler<ItemResource> itemHandler,
         BlockPos queryPos,
         Direction querySide) {}

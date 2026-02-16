@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:mangrove_log"
+      "ingredient": "minecraft:mangrove_log"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:mangrove_wood"
+      "id": "minecraft:mangrove_wood"
     }
   ]
 }

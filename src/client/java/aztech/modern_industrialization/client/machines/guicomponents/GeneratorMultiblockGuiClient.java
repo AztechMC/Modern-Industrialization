@@ -59,11 +59,11 @@ public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, Gener
             if (data.isShapeValid()) {
                 deltaY += 11;
 
-                guiGraphics.drawString(font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 0xFFFFFF,
+                guiGraphics.drawString(font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
                         false);
                 deltaY += 11;
 
-                guiGraphics.drawString(font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 0xFFFFFF,
+                guiGraphics.drawString(font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
                         false);
                 deltaY += 11;
             }

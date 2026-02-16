@@ -3,43 +3,43 @@
   "eu": 4,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:bronze_drill",
+    "ingredient": "modern_industrialization:bronze_drill",
     "amount": 1,
     "probability": 0.04
   },
   "item_outputs": [
     {
-      "item": "minecraft:iron_ore",
+      "id": "minecraft:iron_ore",
       "amount": 1,
       "probability": 0.4
     },
     {
-      "item": "minecraft:coal_ore",
+      "id": "minecraft:coal_ore",
       "amount": 1,
       "probability": 0.4
     },
     {
-      "item": "modern_industrialization:lignite_coal_ore",
+      "id": "modern_industrialization:lignite_coal_ore",
       "amount": 1,
       "probability": 0.24
     },
     {
-      "item": "minecraft:copper_ore",
+      "id": "minecraft:copper_ore",
       "amount": 1,
       "probability": 0.2
     },
     {
-      "item": "modern_industrialization:tin_ore",
+      "id": "modern_industrialization:tin_ore",
       "amount": 1,
       "probability": 0.3
     },
     {
-      "item": "minecraft:gold_ore",
+      "id": "minecraft:gold_ore",
       "amount": 1,
       "probability": 0.15
     },
     {
-      "item": "minecraft:redstone_ore",
+      "id": "minecraft:redstone_ore",
       "amount": 1,
       "probability": 0.2
     },
@@ -47,7 +47,7 @@
       "neoforge:conditions": [
         { "type": "neoforge:mod_loaded", "modid": "create" }
       ],
-      "item": "create:zinc_ore",
+      "id": "create:zinc_ore",
       "amount": 1,
       "probability": 0.08
     },
@@ -55,7 +55,7 @@
       "neoforge:conditions": [
         { "type": "neoforge:mod_loaded", "modid": "mekanism" }
       ],
-      "item": "mekanism:osmium_ore",
+      "id": "mekanism:osmium_ore",
       "amount": 1,
       "probability": 0.12
     }

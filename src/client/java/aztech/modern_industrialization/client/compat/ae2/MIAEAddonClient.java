@@ -29,26 +29,18 @@ import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.pipes.impl.PipeMeshCache;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.data.AtlasIds;
+import net.neoforged.neoforge.client.ClientHooks;
 
 public class MIAEAddonClient {
     private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
         @Override
-        public Collection<Material> getSpriteDependencies() {
-            return List.of(new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks")));
-        }
-
-        @Override
-        public PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter) {
-            return new PipeMeshCache(textureGetter, new Material[] {
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me")),
-                    new Material(InventoryMenu.BLOCK_ATLAS, MI.id("block/pipes/me_blocks"))
+        public PipeRenderer create(ModelBaker modelBaker) {
+            return new PipeMeshCache(modelBaker.sprites(), new Material[] {
+                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me")),
+                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me_blocks"))
             }, false);
         }
     };

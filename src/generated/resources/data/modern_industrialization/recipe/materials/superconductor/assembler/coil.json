@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 8,
-      "item": "modern_industrialization:superconductor_cable"
+      "ingredient": "modern_industrialization:superconductor_cable"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:superconductor_coil"
+      "id": "modern_industrialization:superconductor_coil"
     }
   ]
 }

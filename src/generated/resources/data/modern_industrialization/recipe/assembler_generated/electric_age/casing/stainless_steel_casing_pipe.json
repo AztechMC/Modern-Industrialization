@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:clean_stainless_steel_machine_casing"
+      "ingredient": "modern_industrialization:clean_stainless_steel_machine_casing"
     },
     {
       "amount": 6,
-      "item": "modern_industrialization:stainless_steel_curved_plate"
+      "ingredient": "modern_industrialization:stainless_steel_curved_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:stainless_steel_machine_casing_pipe"
+      "id": "modern_industrialization:stainless_steel_machine_casing_pipe"
     }
   ]
 }

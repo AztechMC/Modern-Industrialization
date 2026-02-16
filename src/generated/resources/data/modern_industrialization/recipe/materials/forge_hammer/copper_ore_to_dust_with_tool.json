@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 60,
+  "ingredient": "#c:ores/copper",
+  "result": {
+    "count": 12,
+    "id": "modern_industrialization:copper_dust"
+  }
+}

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:tiny_dusts/aluminum"
+      "ingredient": "#c:tiny_dusts/aluminum"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:aluminum_nugget"
+      "id": "modern_industrialization:aluminum_nugget"
     }
   ]
 }

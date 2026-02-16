@@ -36,6 +36,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.CommonColors;
 
 public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection.LineInfo>, List<Integer>> {
     private Renderer renderer;
@@ -126,11 +128,10 @@ public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection
         public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
             var box = getBox(leftPos, topPos);
 
-            guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y(), 0, 0, box.w(), box.h() - 4);
-            guiGraphics.blit(MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, 0, 252, box.w(), 4);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.BACKGROUND, box.x(), box.y(), 0, 0, box.w(), box.h() - 4, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.BACKGROUND, box.x(), box.y() + box.h() - 4, 0, 252, box.w(), 4, 256, 256);
 
             if (isPanelOpen) {
-                RenderSystem.disableDepthTest();
                 for (int i = 0; i < params.size(); ++i) {
                     var line = params.get(i);
                     var tooltip = line.translations().get(data.get(i));
@@ -138,9 +139,8 @@ public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection
                     guiGraphics.drawString(
                             Minecraft.getInstance().font, tooltip,
                             box.x() + borderSize + outerPadding + btnSize + innerPadding + (textMaxWidth - width) / 2,
-                            topPos + getVerticalPos(i) + 2, 0x404040, false);
+                            topPos + getVerticalPos(i) + 2, CommonColors.DARK_GRAY, false);
                 }
-                RenderSystem.enableDepthTest();
             }
         }
 

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "tag": "c:rods/titanium"
-    },
-    "b": {
-      "item": "modern_industrialization:titanium_bolt"
-    }
+    "R": "#c:rods/titanium",
+    "b": "modern_industrialization:titanium_bolt"
   },
   "pattern": [
     "bRb",

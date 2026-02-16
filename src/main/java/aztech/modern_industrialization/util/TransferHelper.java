@@ -26,6 +26,7 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MI;
 import java.util.function.Predicate;
+
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -34,6 +35,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class TransferHelper {
     public static void moveAll(IItemHandler src, IItemHandler target, boolean stackInTarget) {
@@ -89,7 +91,8 @@ public class TransferHelper {
                 if (stack.getCount() != 1) {
                     continue;
                 }
-                var capability = stack.getCapability(Capabilities.ItemHandler.ITEM);
+                var handler = ItemAccess.forStack(stack).getCapability(Capabilities.Item.ITEM);
+                var capability = handler != null ? IItemHandler.of(handler) : null;
                 if (capability != null) {
                     var extracted = extractMatching(capability, predicate, maxAmount - ret.getCount());
                     if (ret.isEmpty()) {

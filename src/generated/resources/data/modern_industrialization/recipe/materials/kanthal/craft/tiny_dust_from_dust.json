@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:kanthal_dust"
-    }
+    "modern_industrialization:kanthal_dust"
   ],
   "result": {
     "count": 9,

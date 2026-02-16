@@ -23,13 +23,6 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.modern_industrialization]]
-modId="grandpower"
-type="required"
-versionRange="${grandpower_version_range}"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.modern_industrialization]]
 modId="guideme"
 type="required"
 versionRange="${guideme_version_range}"

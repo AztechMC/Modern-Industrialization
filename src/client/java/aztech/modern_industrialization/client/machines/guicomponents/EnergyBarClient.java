@@ -33,9 +33,12 @@ import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Collections;
 import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, EnergyBar.Data> {
@@ -53,11 +56,11 @@ public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, Energy
         public static final int HEIGHT = 18;
 
         public static void renderEnergy(GuiGraphics guiGraphics, int px, int py, float fill) {
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py, 230, 0, WIDTH, HEIGHT);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 230, 0, WIDTH, HEIGHT, 256, 256);
             int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
             if (fill > 0.95)
                 fillPixels = HEIGHT;
-            guiGraphics.blit(MachineScreen.SLOT_ATLAS, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels, 256, 256);
         }
 
         @Override
@@ -69,13 +72,13 @@ public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, Energy
         public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 Component tooltip;
-                if (Screen.hasShiftDown()) {
+                if (Minecraft.getInstance().hasShiftDown()) {
                     tooltip = MIText.EuMaxed.text(data.eu(), data.maxEu(), "");
                 } else {
                     TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(data.eu(), data.maxEu());
                     tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
                 }
-                guiGraphics.renderTooltip(font, Collections.singletonList(tooltip), Optional.empty(), cursorX, cursorY);
+                guiGraphics.setTooltipForNextFrame(font, Collections.singletonList(tooltip), Optional.empty(), cursorX, cursorY);
             }
         }
     }

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.sun.jdi.request.StepRequest;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
@@ -47,8 +51,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -85,7 +93,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     public static StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec(MachineRecipeType type) {
-        return NeoForgeStreamCodecs.composite(
+        return StreamCodec.composite(
                 ByteBufCodecs.VAR_INT,
                 r -> r.eu,
                 ByteBufCodecs.VAR_INT,
@@ -115,7 +123,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 
     final MachineRecipeType type;
 
-    public int eu; // Also used for forge hammer damage
+    public int eu;
     public int duration;
     public List<ItemInput> itemInputs = new ArrayList<>();
     public List<FluidInput> fluidInputs = new ArrayList<>();
@@ -132,57 +140,38 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
     public boolean matches(RecipeInput recipeInput, Level world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(RecipeInput recipeInput) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
+    public RecipeSerializer<MachineRecipe> getSerializer() {
+        return type;
+    }
+
+    @Override
+    public RecipeType<MachineRecipe> getType() {
+        return type;
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        // This function is implemented for AE2 pattern shift-clicking compat.
-        // This is the reason the counts of the ItemStacks in the ingredient are
-        // modified.
-        // (They should never be used somewhere else anyway)
-        return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : i.ingredient.getItems()) {
-                stack.setCount(i.amount);
-            }
-            return i.ingredient;
-        }).collect(Collectors.toList()));
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        for (ItemOutput o : itemOutputs) {
-            if (o.probability == 1) {
-                return o.getStack();
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return type;
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return type;
     }
 
     public boolean conditionsMatch(MachineProcessCondition.Context context) {
@@ -205,7 +194,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     public record ItemInput(Ingredient ingredient, int amount, float probability) {
         public static final Codec<ItemInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        Ingredient.MAP_CODEC_NONEMPTY.forGetter(ItemInput::ingredient),
+                        Ingredient.CODEC.fieldOf("ingredient").forGetter(ItemInput::ingredient),
                         AMOUNT_CODEC.forGetter(ItemInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(ItemInput::probability))
                         .apply(g, ItemInput::new));
@@ -224,7 +213,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
 
         public List<Item> getInputItems() {
-            return Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
+            return ingredient.items().map(Holder::value).distinct().collect(Collectors.toList());
         }
     }
 
@@ -236,7 +225,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
 
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        FluidIngredient.MAP_CODEC_NONEMPTY.forGetter(FluidInput::fluid),
+                        FluidIngredient.CODEC.fieldOf("ingredient").forGetter(FluidInput::fluid),
                         NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
@@ -251,41 +240,41 @@ public class MachineRecipe implements Recipe<RecipeInput> {
                 FluidInput::new);
 
         public List<Fluid> getInputFluids() {
-            return Arrays.stream(fluid.getStacks()).map(FluidStack::getFluid).distinct().collect(Collectors.toList());
+            return fluid.fluids().stream().map(Holder::value).distinct().collect(Collectors.toList());
         }
     }
 
-    public record ItemOutput(ItemVariant variant, int amount, float probability) {
+    public record ItemOutput(ItemStackTemplate template, float probability) {
+        private static final Codec<Holder<Item>> ITEM_NON_AIR_CODEC = BuiltInRegistries.ITEM
+                .holderByNameCodec()
+                .validate(item -> item.is(Items.AIR.builtInRegistryHolder()) ? DataResult.error(() -> "Item must not be minecraft:air") : DataResult.success(item));
         public static final Codec<ItemOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item")
-                                .forGetter(itemOutput -> itemOutput.variant.getItem().builtInRegistryHolder()),
-                        AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.amount),
+                        ITEM_NON_AIR_CODEC.fieldOf("id")
+                                .forGetter(itemOutput -> itemOutput.template.item()),
+                        AMOUNT_CODEC.forGetter(itemOutput -> itemOutput.template.count()),
                         DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
-                                .forGetter(itemOutput -> itemOutput.variant.getComponentsPatch()),
+                                .forGetter(itemOutput -> itemOutput.template.components()),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f)
                                 .forGetter(itemOutput -> itemOutput.probability))
-                        .apply(g, (item, count, components, probability) -> new ItemOutput(ItemVariant.of(new ItemStack(item, 1, components)), count,
-                                probability)));
+                        .apply(g, (item, count, components, probability) -> new ItemOutput(new ItemStackTemplate(item, count, components), probability)));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemOutput> STREAM_CODEC = StreamCodec.composite(
-                ItemVariant.STREAM_CODEC,
-                ItemOutput::variant,
-                ByteBufCodecs.VAR_INT,
-                ItemOutput::amount,
+                ItemStackTemplate.STREAM_CODEC,
+                ItemOutput::template,
                 ByteBufCodecs.FLOAT,
                 ItemOutput::probability,
                 ItemOutput::new);
 
         public ItemStack getStack() {
-            return variant.toStack(amount);
+            return template.create();
         }
     }
 
     public record FluidOutput(Fluid fluid, long amount, float probability) {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
-                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(fluidOutput -> fluidOutput.fluid),
+                        BuiltInRegistries.FLUID.byNameCodec().fieldOf("id").forGetter(fluidOutput -> fluidOutput.fluid),
                         NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
                                 .forGetter(fluidOutput -> fluidOutput.amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))

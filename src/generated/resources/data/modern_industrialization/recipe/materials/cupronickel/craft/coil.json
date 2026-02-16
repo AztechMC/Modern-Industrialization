@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "x": {
-      "item": "modern_industrialization:cupronickel_cable"
-    }
+    "x": "modern_industrialization:cupronickel_cable"
   },
   "pattern": [
     "xxx",
@@ -12,7 +10,6 @@
     "xxx"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:cupronickel_coil"
   }
 }

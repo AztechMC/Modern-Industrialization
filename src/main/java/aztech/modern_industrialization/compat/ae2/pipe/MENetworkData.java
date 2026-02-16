@@ -26,10 +26,18 @@ package aztech.modern_industrialization.compat.ae2.pipe;
 
 import appeng.api.networking.*;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.util.MIExtraCodecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public class MENetworkData extends PipeNetworkData {
+public class MENetworkData implements PipeNetworkData, ValueIOSerializable {
+    public static final MapCodec<MENetworkData> CODEC = MIExtraCodecs.valueSerializable(MENetworkData::new);
+
     private final IManagedGridNode mainNode;
 
     public MENetworkData() {
@@ -49,14 +57,13 @@ public class MENetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
-        this.getMainNode().loadFromNBT(tag);
+    public void deserialize(ValueInput input) {
+        this.getMainNode().deserialize(input);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        this.getMainNode().saveToNBT(tag);
-        return tag;
+    public void serialize(ValueOutput output) {
+        this.getMainNode().serialize(output);
     }
 
     // someone abuses equals

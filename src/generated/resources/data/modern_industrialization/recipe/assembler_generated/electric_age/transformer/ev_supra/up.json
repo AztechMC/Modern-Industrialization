@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:highly_advanced_machine_hull"
+      "ingredient": "modern_industrialization:highly_advanced_machine_hull"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:annealed_copper_cable"
+      "ingredient": "modern_industrialization:annealed_copper_cable"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:superconductor_cable"
+      "ingredient": "modern_industrialization:superconductor_cable"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:ev_superconductor_transformer"
+      "id": "modern_industrialization:ev_superconductor_transformer"
     }
   ]
 }

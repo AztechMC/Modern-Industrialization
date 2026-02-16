@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/he_uranium"
+      "ingredient": "#c:storage_blocks/he_uranium"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "modern_industrialization:he_uranium_ingot"
+      "id": "modern_industrialization:he_uranium_ingot"
     }
   ]
 }

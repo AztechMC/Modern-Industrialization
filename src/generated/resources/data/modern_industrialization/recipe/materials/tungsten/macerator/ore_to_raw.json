@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/tungsten"
+      "ingredient": "#c:ores/tungsten"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_tungsten"
+      "id": "modern_industrialization:raw_tungsten"
     }
   ]
 }

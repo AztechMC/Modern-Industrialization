@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 500,
-      "fluid": "modern_industrialization:acrylic_acid"
+      "ingredient": "modern_industrialization:acrylic_acid"
     }
   ],
   "fluid_outputs": [
     {
       "amount": 300,
-      "fluid": "modern_industrialization:acrylic_glue"
+      "id": "modern_industrialization:acrylic_glue"
     }
   ],
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:tiny_dusts/lead"
+      "ingredient": "#c:tiny_dusts/lead"
     }
   ]
 }

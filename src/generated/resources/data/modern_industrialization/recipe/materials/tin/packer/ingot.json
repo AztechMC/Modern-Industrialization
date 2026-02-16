@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/tin"
+      "ingredient": "#c:nuggets/tin"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:tin_ingot"
+      "id": "modern_industrialization:tin_ingot"
     }
   ]
 }

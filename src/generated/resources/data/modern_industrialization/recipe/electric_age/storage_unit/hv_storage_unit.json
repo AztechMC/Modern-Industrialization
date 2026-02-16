@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "modern_industrialization:turbo_machine_hull",
+    "L": "#c:plates/battery_alloy",
+    "b": "modern_industrialization:sodium_battery"
+  },
+  "pattern": [
+    "bbb",
+    "LHL",
+    "bbb"
+  ],
+  "result": {
+    "id": "modern_industrialization:hv_storage_unit"
+  }
+}

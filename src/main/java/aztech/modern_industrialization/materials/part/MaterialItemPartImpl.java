@@ -25,6 +25,12 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 /**
@@ -32,17 +38,17 @@ import java.util.function.Consumer;
  */
 final class MaterialItemPartImpl implements MaterialItemPart {
     private final PartKey key;
-    private final String taggedItemId;
     private final String itemId;
+    private final @Nullable TagKey<Item> tag;
     private final Consumer<MaterialBuilder.PartContext> registration;
     private final TextureGenParams textureGenParams;
     private final boolean internal;
 
-    MaterialItemPartImpl(PartKey key, String taggedItemId, String itemId,
+    MaterialItemPartImpl(PartKey key, String itemId, @Nullable TagKey<Item> tag,
             Consumer<MaterialBuilder.PartContext> registration, TextureGenParams textureGenParams, boolean internal) {
         this.key = key;
-        this.taggedItemId = taggedItemId;
         this.itemId = itemId;
+        this.tag = tag;
         this.registration = registration;
         this.textureGenParams = textureGenParams;
         this.internal = internal;
@@ -54,13 +60,13 @@ final class MaterialItemPartImpl implements MaterialItemPart {
     }
 
     @Override
-    public String getTaggedItemId() {
-        return taggedItemId;
+    public String getItemId() {
+        return itemId;
     }
 
     @Override
-    public String getItemId() {
-        return itemId;
+    public Ingredient asIngredient(HolderGetter<Item> items) {
+        return tag == null ? Ingredient.of(asItem()) : Ingredient.of(items.getOrThrow(tag));
     }
 
     @Override

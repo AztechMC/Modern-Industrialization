@@ -36,10 +36,10 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
@@ -55,13 +55,13 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         registerGuiComponent(new ProgressBar(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new MachineComponent() {
             @Override
-            public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-                tag.putInt("pumpingTicks", pumpingTicks);
+            public void writeNbt(ValueOutput output) {
+                output.putInt("pumpingTicks", pumpingTicks);
             }
 
             @Override
-            public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-                pumpingTicks = tag.getInt("pumpingTicks");
+            public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+                pumpingTicks = input.getIntOr("pumpingTicks", 0);
             }
         });
     }
@@ -75,7 +75,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
     @Override
     public void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             List<ConfigurableFluidStack> fluidStacks = getInventory().getFluidStacks();
             ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
             if (waterStack.getRemainingSpace() < FluidType.BUCKET_VOLUME / 8) {

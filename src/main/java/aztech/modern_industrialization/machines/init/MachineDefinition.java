@@ -28,11 +28,19 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.function.Supplier;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public record MachineDefinition<T extends MachineBlockEntity>(Supplier<BlockEntityType<T>> blockEntityType,
-        BlockDefinition<MachineBlock> blockDefinition) {
+        BlockDefinition<MachineBlock> blockDefinition) implements ItemLike {
     public MachineBlock asBlock() {
         return blockDefinition.asBlock();
+    }
+
+    @Override
+    public Item asItem() {
+        return blockDefinition.asItem();
     }
 }

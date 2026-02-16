@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:electronic_circuit"
+      "ingredient": "modern_industrialization:electronic_circuit"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:aluminum_rotor"
+      "ingredient": "modern_industrialization:aluminum_rotor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:large_motor"
+      "ingredient": "modern_industrialization:large_motor"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:pump"
+      "ingredient": "modern_industrialization:pump"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_pump"
+      "id": "modern_industrialization:large_pump"
     }
   ]
 }

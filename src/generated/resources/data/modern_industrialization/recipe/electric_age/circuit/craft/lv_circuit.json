@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "modern_industrialization:analog_circuit_board",
+    "C": "modern_industrialization:capacitor",
+    "L": "modern_industrialization:inductor",
+    "R": "modern_industrialization:resistor",
+    "w": "modern_industrialization:copper_wire"
+  },
+  "pattern": [
+    "RLR",
+    "CBC",
+    "www"
+  ],
+  "result": {
+    "id": "modern_industrialization:analog_circuit"
+  }
+}

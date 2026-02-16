@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/kanthal"
+      "ingredient": "#c:tiny_dusts/kanthal"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:kanthal_dust"
+      "id": "modern_industrialization:kanthal_dust"
     }
   ]
 }

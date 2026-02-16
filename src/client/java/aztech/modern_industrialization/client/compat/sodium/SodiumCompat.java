@@ -53,6 +53,7 @@ public class SodiumCompat {
         METHOD_HANDLE = handle;
     }
 
+    // TODO: audit all usages
     public static void markSpriteActive(@Nullable TextureAtlasSprite sprite) {
         if (sprite != null && METHOD_HANDLE != null) {
             try {

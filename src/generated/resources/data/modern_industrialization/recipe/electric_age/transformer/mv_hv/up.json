@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "modern_industrialization:advanced_machine_hull",
+    "I": "modern_industrialization:electrum_cable",
+    "O": "modern_industrialization:aluminum_cable"
+  },
+  "pattern": [
+    "II ",
+    " HO",
+    "II "
+  ],
+  "result": {
+    "id": "modern_industrialization:mv_hv_transformer"
+  }
+}

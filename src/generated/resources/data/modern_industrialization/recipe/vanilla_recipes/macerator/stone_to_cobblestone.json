@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "minecraft:stone"
+      "ingredient": "minecraft:stone"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:cobblestone"
+      "id": "minecraft:cobblestone"
     }
   ]
 }

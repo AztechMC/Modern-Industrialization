@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/uranium"
+      "ingredient": "#c:ores/uranium"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_uranium"
+      "id": "modern_industrialization:raw_uranium"
     }
   ]
 }

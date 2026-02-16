@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": "modern_industrialization:steel_ring"
+  },
+  "pattern": [
+    " R ",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "count": 6,
+    "id": "minecraft:iron_chain"
+  }
+}

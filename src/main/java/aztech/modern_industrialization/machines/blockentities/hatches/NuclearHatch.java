@@ -45,7 +45,7 @@ import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -365,15 +365,17 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
     public static void registerItemApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
-                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage.itemHandler : null);
+            // TODO 26.1
+//            event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, bet,
+//                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage.itemHandler : null);
         });
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
         MICapabilities.onEvent(event -> {
-            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
-                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage.fluidHandler : null);
+            // TODO 26.1
+//            event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet,
+//                    (be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage.fluidHandler : null);
         });
     }
 

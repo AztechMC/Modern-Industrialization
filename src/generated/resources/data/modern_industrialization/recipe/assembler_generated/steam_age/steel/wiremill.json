@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:gears/bronze"
+      "ingredient": "#c:gears/bronze"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_machine_casing"
+      "ingredient": "modern_industrialization:steel_machine_casing"
     },
     {
       "amount": 2,
-      "tag": "modern_industrialization:fluid_pipes"
+      "ingredient": "#modern_industrialization:fluid_pipes"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:bronze_rotor"
+      "ingredient": "modern_industrialization:bronze_rotor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_wiremill"
+      "id": "modern_industrialization:steel_wiremill"
     }
   ]
 }

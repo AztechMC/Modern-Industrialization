@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/superconductor"
+      "ingredient": "#c:ingots/superconductor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:superconductor_plate"
+      "id": "modern_industrialization:superconductor_plate"
     }
   ]
 }

@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.7,
-  "ingredient": {
-    "item": "modern_industrialization:lead_dust"
-  },
+  "ingredient": "modern_industrialization:lead_dust",
   "result": {
-    "count": 1,
     "id": "modern_industrialization:lead_ingot"
   }
 }

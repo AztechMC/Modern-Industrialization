@@ -1,7 +1,17 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/lv_diesel_generator"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:lv",
+      "default_overlays": {
+        "front": "modern_industrialization:block/machines/diesel_generator/overlay_front",
+        "front_active": "modern_industrialization:block/machines/diesel_generator/overlay_front_active",
+        "output": "modern_industrialization:block/overlays/output_energy",
+        "top": "modern_industrialization:block/machines/diesel_generator/overlay_top",
+        "top_active": "modern_industrialization:block/machines/diesel_generator/overlay_top_active"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

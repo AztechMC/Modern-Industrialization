@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:redstone_crushed_dust"
+      "ingredient": "modern_industrialization:redstone_crushed_dust"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:redstone"
+      "id": "minecraft:redstone"
     },
     {
       "amount": 1,
-      "item": "minecraft:redstone",
+      "id": "minecraft:redstone",
       "probability": 0.5
     }
   ]

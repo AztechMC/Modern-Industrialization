@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MIMachineRecipeTypes {
     private static final List<MachineRecipeType> recipeTypes = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MIMachineRecipeTypes {
         return create(name, MachineRecipeType::new);
     }
 
-    private static MachineRecipeType create(String name, Function<ResourceLocation, MachineRecipeType> ctor) {
+    private static MachineRecipeType create(String name, Function<Identifier, MachineRecipeType> ctor) {
         MachineRecipeType type = ctor.apply(MI.id(name));
         MIRegistries.RECIPE_SERIALIZERS.register(name, () -> type);
         MIRegistries.RECIPE_TYPES.register(name, () -> type);

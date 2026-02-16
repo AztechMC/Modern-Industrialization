@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": "minecraft:water_bucket",
+    "p": "#modern_industrialization:item_pipes"
+  },
+  "pattern": [
+    "pb"
+  ],
+  "result": {
+    "id": "modern_industrialization:item_pipe"
+  }
+}

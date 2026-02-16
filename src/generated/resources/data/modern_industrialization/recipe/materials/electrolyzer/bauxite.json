@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "duration": 1200,
+  "eu": 32,
+  "fluid_outputs": [
+    {
+      "amount": 2000,
+      "id": "modern_industrialization:oxygen"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 10,
+      "ingredient": "#c:dusts/bauxite"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "id": "modern_industrialization:aluminum_dust"
+    },
+    {
+      "amount": 3,
+      "id": "modern_industrialization:titanium_tiny_dust"
+    }
+  ]
+}

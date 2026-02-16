@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/cupronickel"
+      "ingredient": "#c:tiny_dusts/cupronickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:cupronickel_dust"
+      "id": "modern_industrialization:cupronickel_dust"
     }
   ]
 }

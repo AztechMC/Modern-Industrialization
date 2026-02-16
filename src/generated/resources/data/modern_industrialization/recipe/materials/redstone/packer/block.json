@@ -5,18 +5,18 @@
   "item_inputs": [
     {
       "amount": 9,
-      "item": "minecraft:redstone"
+      "ingredient": "minecraft:redstone"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:redstone_block"
+      "id": "minecraft:redstone_block"
     }
   ]
 }

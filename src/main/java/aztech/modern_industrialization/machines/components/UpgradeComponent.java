@@ -28,13 +28,14 @@ import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.MachineComponent;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class UpgradeComponent implements MachineComponent.ServerOnly, DropableComponent {
     private ItemStack itemStack = ItemStack.EMPTY;
@@ -49,19 +50,19 @@ public class UpgradeComponent implements MachineComponent.ServerOnly, DropableCo
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.put("upgradesItemStack", itemStack.saveOptional(registries));
+    public void writeNbt(ValueOutput output) {
+        output.store("upgradesItemStack", ItemStack.OPTIONAL_CODEC, itemStack);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        itemStack = ItemStack.parseOptional(registries, tag.getCompound("upgradesItemStack"));
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        itemStack = input.read("upgradesItemStack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
-    public ItemInteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.isEmpty()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (UpgradeComponent.getExtraEu(stackInHand.getItem()) > 0) {
             boolean changed = false;
@@ -84,12 +85,12 @@ public class UpgradeComponent implements MachineComponent.ServerOnly, DropableCo
                     be.sync();
 
                 }
-                return ItemInteractionResult.sidedSuccess(be.getLevel().isClientSide);
+                return InteractionResult.SUCCESS;
             }
 
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public long getAddMaxEUPerTick() {

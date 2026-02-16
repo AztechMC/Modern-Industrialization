@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 6,
-      "fluid": "modern_industrialization:styrene_butadiene_rubber"
+      "ingredient": "modern_industrialization:styrene_butadiene_rubber"
     }
   ],
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:platinum_wire"
+      "ingredient": "modern_industrialization:platinum_wire"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:platinum_cable"
+      "id": "modern_industrialization:platinum_cable"
     }
   ]
 }

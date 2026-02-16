@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:plasma_handling_iridium_machine_casing"
+      "ingredient": "modern_industrialization:plasma_handling_iridium_machine_casing"
     },
     {
       "amount": 6,
-      "item": "modern_industrialization:iridium_curved_plate"
+      "ingredient": "modern_industrialization:iridium_curved_plate"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:large_advanced_pump"
+      "ingredient": "modern_industrialization:large_advanced_pump"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:iridium_machine_casing_pipe"
+      "id": "modern_industrialization:iridium_machine_casing_pipe"
     }
   ]
 }

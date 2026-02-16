@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "tag": "c:dyes/gray"
-    },
-    "p": {
-      "tag": "modern_industrialization:item_pipes"
-    }
+    "d": "#c:dyes/gray",
+    "p": "#modern_industrialization:item_pipes"
   },
   "pattern": [
     "ppp",

@@ -6,33 +6,33 @@
   "eu": 128,
   "duration": 600,
   "item_inputs": {
-    "item": "mekanism:digital_miner",
+    "ingredient": "mekanism:digital_miner",
     "amount": 1,
     "probability": 0.05
   },
   "item_outputs": [
     {
-      "item": "mekanism:osmium_ore",
+      "id": "mekanism:osmium_ore",
       "amount": 1,
       "probability": 0.5
     },
     {
-      "item": "minecraft:diamond_ore",
+      "id": "minecraft:diamond_ore",
       "amount": 1,
       "probability": 0.25
     },
     {
-      "item": "modern_industrialization:lead_ore",
+      "id": "modern_industrialization:lead_ore",
       "amount": 1,
       "probability": 0.5
     },
     {
-      "item": "mekanism:fluorite_ore",
+      "id": "mekanism:fluorite_ore",
       "amount": 1,
       "probability": 0.4
     },
     {
-      "item": "modern_industrialization:uranium_ore",
+      "id": "modern_industrialization:uranium_ore",
       "amount": 1,
       "probability": 0.2
     }

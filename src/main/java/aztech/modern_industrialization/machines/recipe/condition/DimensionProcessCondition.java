@@ -54,7 +54,7 @@ public record DimensionProcessCondition(ResourceKey<Level> dimension) implements
 
     @Override
     public void appendDescription(List<Component> list) {
-        var loc = dimension.location();
+        var loc = dimension.identifier();
         var dimComponent = Component.translatable("dimension.%s.%s".formatted(loc.getNamespace(), loc.getPath()));
         list.add(MIText.RequiresDimension.text(dimComponent));
     }

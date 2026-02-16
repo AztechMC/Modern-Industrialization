@@ -26,28 +26,29 @@ package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
-import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.jspecify.annotations.Nullable;
 
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ManualPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = MI.id("manual");
+    private static final Identifier ID = MI.id("manual");
 
-    private IJeiRuntime jeiRuntime;
+    private @Nullable IJeiRuntime jeiRuntime;
 
-    private RecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(ResourceLocation category) {
-        return RecipeType.create(category.getNamespace(), category.getPath(), (Class) RecipeHolder.class);
+    private IRecipeType<RecipeHolder<MachineRecipe>> getMachineCategory(Identifier category) {
+        return IRecipeType.create(category.getNamespace(), category.getPath(), (Class) RecipeHolder.class);
     }
 
     @Override
@@ -67,13 +68,13 @@ public class ManualPluginJei implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGhostIngredientHandler((Class) MIHandledScreen.class, new MIGhostIngredientHandler());
+        registration.addGhostIngredientHandler((Class) MIContainerScreen.class, new MIGhostIngredientHandler());
         registration.addGuiContainerHandler(MachineScreen.class,
                 new MachineGuiContainerHandler(registration.getJeiHelpers().getIngredientManager(), () -> jeiRuntime));
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 }

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:iridium_curved_plate"
+      "ingredient": "modern_industrialization:iridium_curved_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:iridium_dust"
+      "id": "modern_industrialization:iridium_dust"
     }
   ]
 }

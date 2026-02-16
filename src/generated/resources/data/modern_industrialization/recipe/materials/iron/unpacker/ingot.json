@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:storage_blocks/iron"
+      "ingredient": "#c:storage_blocks/iron"
     }
   ],
   "item_outputs": [
     {
       "amount": 9,
-      "item": "minecraft:iron_ingot"
+      "id": "minecraft:iron_ingot"
     }
   ]
 }

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ores/tin"
+      "ingredient": "#c:ores/tin"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:raw_tin"
+      "id": "modern_industrialization:raw_tin"
     }
   ]
 }

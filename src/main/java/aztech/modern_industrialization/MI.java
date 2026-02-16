@@ -59,7 +59,7 @@ import aztech.modern_industrialization.test.framework.MIGameTests;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackSelectionConfig;
@@ -75,6 +75,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -87,12 +88,12 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
 import org.slf4j.Logger;
@@ -103,8 +104,8 @@ public class MI {
     public static final String ID = "modern_industrialization";
     public static final Logger LOGGER = LoggerFactory.getLogger("Modern Industrialization");
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(ID, path);
     }
 
     public MI(ModContainer modContainer, IEventBus modBus, Dist dist) {
@@ -119,7 +120,6 @@ public class MI {
         MIBlock.init(modBus);
         MIItem.init(modBus);
         MIRegistries.init(modBus);
-        MIArmorMaterials.init(modBus);
         MIMaterials.init();
 
         MIMachineRecipeTypes.init();
@@ -142,10 +142,15 @@ public class MI {
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, event -> MIKeyMap.clear(event.getEntity()));
         NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedInEvent.class, event -> {
             var player = (ServerPlayer) event.getEntity();
-            var server = Objects.requireNonNull(player.getServer());
+            var server = Objects.requireNonNull(player.level().getServer());
             PlayerStatisticsData.get(server).get(player).onPlayerJoin(player);
         });
-        NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, MIVillager::init);
+        NeoForge.EVENT_BUS.addListener(OnDatapackSyncEvent.class, event -> {
+            for (var entry : MIRegistries.RECIPE_TYPES.getEntries()) {
+                event.sendRecipes(entry.value());
+            }
+            event.sendRecipes(RecipeType.SMELTING, RecipeType.STONECUTTING);
+        });
 
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.RightClickBlock.class, event -> {
             if (event.getUseBlock().isFalse()) {
@@ -165,7 +170,7 @@ public class MI {
                 if (world.getBlockEntity(hitResult.getBlockPos()) instanceof WrenchableBlockEntity wrenchable) {
                     if (wrenchable.useWrench(player, hand, hitResult)) {
                         event.setCanceled(true);
-                        event.setCancellationResult(InteractionResult.sidedSuccess(world.isClientSide()));
+                        event.setCancellationResult(InteractionResult.SUCCESS);
                     }
                 }
             }
@@ -179,12 +184,6 @@ public class MI {
             if ((event.getLeft().getItem() instanceof DynamicToolItem && !event.getRight().isEmpty()) ||
                     (!event.getLeft().isEmpty() && event.getRight().getItem() instanceof DynamicToolItem)) {
                 event.setCanceled(true);
-                // According to the documentation setCanceled should be all we need, but unfortunately we have to manually override the output and
-                // cost too??
-                if (event.getPlayer().containerMenu instanceof AnvilMenu anvilMenu) {
-                    anvilMenu.getSlot(2).set(ItemStack.EMPTY);
-                    anvilMenu.setMaximumCost(0);
-                }
             }
         });
 
@@ -208,12 +207,10 @@ public class MI {
             FluidNuclearComponent.init();
         });
 
-        modBus.addListener(GatherDataEvent.class, event -> {
+        modBus.addListener(GatherDataEvent.Client.class, event -> {
             MIDatagenServer.configure(
                     event.getGenerator(),
-                    event.getExistingFileHelper(),
                     event.getLookupProvider(),
-                    event.includeServer(),
                     false);
         });
 
@@ -260,7 +257,8 @@ public class MI {
         });
 
         modBus.addListener(RegisterGameTestsEvent.class, event -> {
-            event.register(MIGameTests.class);
+            // TODO 26.1
+//            event.register(MIGameTests.class);
         });
 
         LOGGER.info("Modern Industrialization setup done!");

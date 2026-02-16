@@ -5,29 +5,29 @@
   "fluid_inputs": [
     {
       "amount": 20,
-      "fluid": "modern_industrialization:cryofluid"
+      "ingredient": "modern_industrialization:cryofluid"
     }
   ],
   "fluid_outputs": [
     {
       "amount": 13,
-      "fluid": "modern_industrialization:argon"
+      "id": "modern_industrialization:argon"
     },
     {
       "amount": 5,
-      "fluid": "modern_industrialization:helium"
+      "id": "modern_industrialization:helium"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:platinum_hot_ingot"
+      "ingredient": "modern_industrialization:platinum_hot_ingot"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:platinum_ingot"
+      "id": "modern_industrialization:platinum_ingot"
     }
   ]
 }

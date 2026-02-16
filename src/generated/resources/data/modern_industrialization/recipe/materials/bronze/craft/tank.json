@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:plates/bronze"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    }
+    "#": "#c:plates/bronze",
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "###",
@@ -15,7 +11,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:bronze_tank"
   }
 }

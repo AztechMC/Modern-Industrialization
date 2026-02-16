@@ -29,7 +29,7 @@ import aztech.modern_industrialization.items.tools.QuantumSword;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.TooltipFlag;
@@ -44,7 +44,7 @@ public class InfiniteDamageAttribute extends DisplayNamedAttribute {
     // Allows a modifier with the base id to render green with the effective value.
     // Other modifiers still render blue with the additional value.
     @Override
-    public ResourceLocation getBaseId() {
+    public Identifier getBaseId() {
         return QuantumSword.BASE_INFINITE_DAMAGE;
     }
 

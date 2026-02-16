@@ -24,29 +24,28 @@
 
 package aztech.modern_industrialization.client.util;
 
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.MutableQuadView;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.QuadBuffer;
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.QuadEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.jspecify.annotations.Nullable;
 
 public class QuadCube {
-    private final ResourceLocation spriteLocation;
+    private final Material spriteLocation;
     private BakedQuad @Nullable [] quads;
 
-    public QuadCube(ResourceLocation spriteLocation) {
-        this.spriteLocation = spriteLocation;
+    public QuadCube(Identifier spriteLocation) {
+        this.spriteLocation = ClientHooks.getBlockMaterial(spriteLocation);
     }
 
     public BakedQuad[] getQuads() {
-        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(spriteLocation);
+        var sprite = Minecraft.getInstance().getAtlasManager().get(spriteLocation);
         // Rebuild quads if the sprite changed
-        if (quads == null || quads[0].getSprite() != sprite) {
+        if (quads == null || quads[0].sprite() != sprite) {
             quads = buildQuads(sprite);
         }
         return quads;
@@ -55,10 +54,7 @@ public class QuadCube {
     private static BakedQuad[] buildQuads(TextureAtlasSprite sprite) {
         var quads = new BakedQuad[6];
         for (Direction direction : Direction.values()) {
-            QuadEmitter emitter = new QuadBuffer();
-            emitter.square(direction, 0, 0, 1, 1, 0);
-            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
-            quads[direction.get3DDataValue()] = emitter.toBakedQuad(sprite);
+            quads[direction.get3DDataValue()] = ModelHelper.bakeSprite(direction, sprite, 0);
         }
         return quads;
     }

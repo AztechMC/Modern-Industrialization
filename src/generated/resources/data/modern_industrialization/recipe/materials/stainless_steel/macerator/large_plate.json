@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:stainless_steel_large_plate"
+      "ingredient": "modern_industrialization:stainless_steel_large_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:stainless_steel_dust"
+      "id": "modern_industrialization:stainless_steel_dust"
     }
   ]
 }

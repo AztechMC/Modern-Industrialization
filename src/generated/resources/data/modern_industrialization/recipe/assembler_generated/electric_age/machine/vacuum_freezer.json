@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 3,
-      "item": "modern_industrialization:electronic_circuit"
+      "ingredient": "modern_industrialization:electronic_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "ingredient": "modern_industrialization:advanced_machine_hull"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:large_pump"
+      "ingredient": "modern_industrialization:large_pump"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:aluminum_large_plate"
+      "ingredient": "modern_industrialization:aluminum_large_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:vacuum_freezer"
+      "id": "modern_industrialization:vacuum_freezer"
     }
   ]
 }

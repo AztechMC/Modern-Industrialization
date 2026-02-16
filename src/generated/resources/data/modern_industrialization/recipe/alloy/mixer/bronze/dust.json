@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/tin"
+      "ingredient": "#c:dusts/tin"
     },
     {
       "amount": 3,
-      "tag": "c:dusts/copper"
+      "ingredient": "#c:dusts/copper"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:bronze_dust"
+      "id": "modern_industrialization:bronze_dust"
     }
   ]
 }

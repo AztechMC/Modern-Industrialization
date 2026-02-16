@@ -36,7 +36,7 @@ import org.joml.Matrix4f;
 
 public record ClientConfigCardTooltip(ConfigCardItem.TooltipData data) implements ClientTooltipComponent {
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return 20;
     }
 
@@ -46,21 +46,15 @@ public record ClientConfigCardTooltip(ConfigCardItem.TooltipData data) implement
     }
 
     @Override
-    public void renderImage(Font font, int mouseX, int mouseY, GuiGraphics guiGraphics) {
+    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
         int i = 0;
         for (var stack : data.filter()) {
-            RenderHelper.renderAndDecorateItem(guiGraphics, font, stack, mouseX + i * 18, mouseY);
+            RenderHelper.renderAndDecorateItem(graphics, font, stack, x + i * 18, y);
             if (++i >= 5) {
+                graphics.drawString(
+                        font, Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + i * 5, y + 5, -1, true);
                 break;
             }
-        }
-    }
-
-    @Override
-    public void renderText(Font font, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource) {
-        if (data.filter().size() >= 6) {
-            font.drawInBatch(Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + 18 * 5, y + 5, -1, true, matrix4f, bufferSource,
-                    Font.DisplayMode.NORMAL, 0, 0xF000F0);
         }
     }
 }

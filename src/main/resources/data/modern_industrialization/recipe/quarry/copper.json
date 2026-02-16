@@ -3,48 +3,48 @@
   "eu": 4,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:copper_drill",
+    "ingredient": "modern_industrialization:copper_drill",
     "amount": 1,
     "probability": 0.1
   },
   "item_outputs": [
     {
-      "item": "minecraft:cobblestone",
+      "id": "minecraft:cobblestone",
       "amount": 32,
       "probability": 0.5
     },
     {
-      "item": "minecraft:diorite",
+      "id": "minecraft:diorite",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:andesite",
+      "id": "minecraft:andesite",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:granite",
+      "id": "minecraft:granite",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:dirt",
+      "id": "minecraft:dirt",
       "amount": 10,
       "probability": 0.5
     },
     {
-      "item": "minecraft:gravel",
+      "id": "minecraft:gravel",
       "amount": 10,
       "probability": 0.5
     },
     {
-      "item": "minecraft:cobbled_deepslate",
+      "id": "minecraft:cobbled_deepslate",
       "amount": 16,
       "probability": 0.25
     },
     {
-      "item": "minecraft:tuff",
+      "id": "minecraft:tuff",
       "amount": 16,
       "probability": 0.25
     }

@@ -87,7 +87,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (super.useWrench(player, hand, hitResult)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 unlink();
             }
             return true;
@@ -98,7 +98,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             unlink();
         }
     }

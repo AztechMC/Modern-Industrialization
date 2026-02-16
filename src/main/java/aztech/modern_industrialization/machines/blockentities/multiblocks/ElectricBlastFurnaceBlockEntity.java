@@ -45,10 +45,10 @@ import com.google.common.base.Preconditions;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
-    public record Tier(ResourceLocation coilBlockId, long maxBaseEu, String englishName) {
+    public record Tier(Identifier coilBlockId, long maxBaseEu, String englishName) {
         public String getTranslationKey() {
             return "ebf_tier.modern_industrialization." + coilBlockId.getPath();
         }
@@ -59,7 +59,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractElectricCraftingMul
     }
 
     public static final List<Tier> tiers;
-    public static final Map<ResourceLocation, Tier> tiersByCoil;
+    public static final Map<Identifier, Tier> tiersByCoil;
     private static final ShapeTemplate[] shapeTemplates;
 
     static {

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/lapis"
+      "ingredient": "#c:dusts/lapis"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:lapis_lazuli"
+      "id": "minecraft:lapis_lazuli"
     }
   ]
 }

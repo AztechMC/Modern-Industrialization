@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 3,
-      "tag": "c:plates/silicon"
+      "ingredient": "#c:plates/silicon"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:electrum_fine_wire"
+      "ingredient": "modern_industrialization:electrum_fine_wire"
     },
     {
       "amount": 3,
-      "tag": "c:plates/steel"
+      "ingredient": "#c:plates/steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:transistor"
+      "id": "modern_industrialization:transistor"
     }
   ]
 }

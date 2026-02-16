@@ -8,17 +8,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:raw_materials/osmium"
+      "ingredient": "#c:raw_materials/osmium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "mekanism:dust_osmium"
+      "id": "mekanism:dust_osmium"
     },
     {
       "amount": 1,
-      "item": "mekanism:dust_osmium",
+      "id": "mekanism:dust_osmium",
       "probability": 0.5
     }
   ]

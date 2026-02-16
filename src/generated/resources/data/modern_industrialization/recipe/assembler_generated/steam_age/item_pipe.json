@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 6,
-      "item": "modern_industrialization:bronze_curved_plate"
+      "ingredient": "modern_industrialization:bronze_curved_plate"
     },
     {
       "amount": 2,
-      "tag": "c:gears/steel"
+      "ingredient": "#c:gears/steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 16,
-      "item": "modern_industrialization:item_pipe"
+      "id": "modern_industrialization:item_pipe"
     }
   ]
 }

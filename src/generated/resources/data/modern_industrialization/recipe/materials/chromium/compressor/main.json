@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/chromium"
+      "ingredient": "#c:ingots/chromium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:chromium_plate"
+      "id": "modern_industrialization:chromium_plate"
     }
   ]
 }

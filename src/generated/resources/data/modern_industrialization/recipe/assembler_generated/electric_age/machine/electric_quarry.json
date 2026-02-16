@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:large_motor"
+      "ingredient": "modern_industrialization:large_motor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:robot_arm"
+      "ingredient": "modern_industrialization:robot_arm"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:electronic_circuit"
+      "ingredient": "modern_industrialization:electronic_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steam_quarry"
+      "ingredient": "modern_industrialization:steam_quarry"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "ingredient": "modern_industrialization:advanced_machine_hull"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electric_quarry"
+      "id": "modern_industrialization:electric_quarry"
     }
   ]
 }

@@ -28,13 +28,13 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record MachineModelProperties(
         MachineCasing casing,
-        Map<String, ResourceLocation> defaultOverlays,
+        Map<String, Identifier> defaultOverlays,
         boolean noOverlayOnOutputSide) {
-    public MachineModelProperties(MachineCasing casing, Map<String, ResourceLocation> defaultOverlays, boolean noOverlayOnOutputSide) {
+    public MachineModelProperties(MachineCasing casing, Map<String, Identifier> defaultOverlays, boolean noOverlayOnOutputSide) {
         this.casing = casing;
         this.defaultOverlays = Map.copyOf(defaultOverlays);
         this.noOverlayOnOutputSide = noOverlayOnOutputSide;
@@ -56,7 +56,7 @@ public record MachineModelProperties(
 
     public static class Builder {
         private final MachineCasing casing;
-        private final Map<String, ResourceLocation> defaultOverlays;
+        private final Map<String, Identifier> defaultOverlays;
         private boolean noOverlayOnOutputSide = false;
 
         public Builder(MachineCasing casing) {
@@ -64,7 +64,7 @@ public record MachineModelProperties(
             this.defaultOverlays = new HashMap<>();
         }
 
-        public Builder addOverlay(String name, ResourceLocation texture) {
+        public Builder addOverlay(String name, Identifier texture) {
             defaultOverlays.put(name, texture);
             return this;
         }

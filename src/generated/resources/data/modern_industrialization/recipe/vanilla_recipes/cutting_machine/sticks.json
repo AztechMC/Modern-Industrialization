@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:cutting_machine",
+  "duration": 50,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "ingredient": "#minecraft:planks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "id": "minecraft:stick"
+    }
+  ]
+}

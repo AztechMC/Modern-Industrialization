@@ -28,8 +28,11 @@ import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -39,11 +42,13 @@ public class AggregateDataProvider implements DataProvider {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final PackOutput packOutput;
+    private final CompletableFuture<HolderLookup.Provider> registries;
     private final String name;
     private final List<DataProvider> providers = new ArrayList<>();
 
-    public AggregateDataProvider(PackOutput packOutput, String name) {
+    public AggregateDataProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String name) {
         this.packOutput = packOutput;
+        this.registries = registries;
         this.name = name;
     }
 
@@ -54,6 +59,10 @@ public class AggregateDataProvider implements DataProvider {
 
     public <T extends DataProvider> T addProvider(Function<PackOutput, T> providerConstructor) {
         return addProvider(providerConstructor.apply(packOutput));
+    }
+
+    public <T extends DataProvider> T addProvider(BiFunction<PackOutput, CompletableFuture<HolderLookup.Provider>, T> providerConstructor) {
+        return addProvider(providerConstructor.apply(packOutput, registries));
     }
 
     @Override

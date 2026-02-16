@@ -24,12 +24,13 @@
 
 package aztech.modern_industrialization.machines.recipe;
 
+import aztech.modern_industrialization.MICommonProxy;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import java.util.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -42,7 +43,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     private final MapCodec<MachineRecipe> codec;
     private final StreamCodec<RegistryFriendlyByteBuf, MachineRecipe> streamCodec;
 
-    public MachineRecipeType(ResourceLocation id) {
+    public MachineRecipeType(Identifier id) {
         this.id = id;
         var baseCodec = MachineRecipe.codec(this);
         this.codec = MapCodec.of(baseCodec, baseCodec.flatMap(machineRecipe -> {
@@ -60,7 +61,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
      * Never modify or store the result!
      */
     protected Collection<RecipeHolder<MachineRecipe>> getManagerRecipes(Level level) {
-        return level.getRecipeManager().getAllRecipesFor(this);
+        return MICommonProxy.INSTANCE.getRecipeMap(level).byType(this);
     }
 
     public Collection<RecipeHolder<MachineRecipe>> getRecipesWithoutCache(Level level) {
@@ -72,7 +73,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     }
 
     @Nullable
-    public RecipeHolder<MachineRecipe> getRecipe(ServerLevel world, ResourceLocation id) {
+    public RecipeHolder<MachineRecipe> getRecipe(ServerLevel world, Identifier id) {
         return getRecipesWithCache(world).stream().filter(r -> r.id().equals(id)).findFirst().orElse(null);
     }
 
@@ -131,7 +132,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return Collections.unmodifiableList(fluidOnlyRecipes);
     }
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private boolean allowItemInput = false;
     private boolean allowFluidInput = false;
     private boolean allowItemOutput = false;
@@ -157,7 +158,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return this;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

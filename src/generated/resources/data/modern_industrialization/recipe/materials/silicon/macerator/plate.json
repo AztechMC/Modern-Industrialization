@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/silicon"
+      "ingredient": "#c:plates/silicon"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:silicon_dust"
+      "id": "modern_industrialization:silicon_dust"
     }
   ]
 }

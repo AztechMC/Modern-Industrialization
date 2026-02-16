@@ -1,7 +1,15 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/advanced_item_input_hatch"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:mv",
+      "default_overlays": {
+        "item_auto": "modern_industrialization:block/overlays/item_auto",
+        "output": "modern_industrialization:block/overlays/output_item",
+        "side": "modern_industrialization:block/machines/hatch_item/overlay_side"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

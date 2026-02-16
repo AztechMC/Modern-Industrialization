@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:chromium_hot_ingot"
+      "ingredient": "modern_industrialization:chromium_hot_ingot"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:chromium_ingot"
+      "id": "modern_industrialization:chromium_ingot"
     }
   ]
 }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:lignite_coal_dust"
-    }
+    "modern_industrialization:lignite_coal_dust"
   ],
   "result": {
     "count": 9,

@@ -1,9 +1,0 @@
-{
-  "casing": "mv",
-  "default_overlays": {
-    "output": "modern_industrialization:block/overlays/output_energy",
-    "side": "modern_industrialization:block/machines/transformer/overlay_side",
-    "top": "modern_industrialization:block/machines/transformer/overlay_top"
-  },
-  "loader": "modern_industrialization:machine"
-}

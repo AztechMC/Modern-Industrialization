@@ -27,8 +27,11 @@ package aztech.modern_industrialization.materials.recipe.builder;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerRecipe;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class ForgeHammerRecipeBuilder implements MaterialRecipeBuilder {
@@ -37,7 +40,7 @@ public class ForgeHammerRecipeBuilder implements MaterialRecipeBuilder {
     private boolean canceled = false;
     private final ForgeHammerRecipe recipe;
 
-    public ForgeHammerRecipeBuilder(MaterialBuilder.RecipeContext context, String id, Ingredient input, int inputCount, ItemStack output,
+    public ForgeHammerRecipeBuilder(MaterialBuilder.RecipeContext context, String id, Ingredient input, int inputCount, ItemStackTemplate output,
             int hammerDamage) {
         this.recipeId = "forge_hammer/" + id;
         this.context = context;
@@ -64,7 +67,7 @@ public class ForgeHammerRecipeBuilder implements MaterialRecipeBuilder {
     public void save(RecipeOutput recipeOutput) {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            recipeOutput.accept(MI.id(fullId), recipe, null);
+            recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(fullId)), recipe, null);
         }
     }
 }

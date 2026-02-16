@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:nuggets/platinum"
+      "ingredient": "#c:nuggets/platinum"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:platinum_tiny_dust"
+      "id": "modern_industrialization:platinum_tiny_dust"
     }
   ]
 }

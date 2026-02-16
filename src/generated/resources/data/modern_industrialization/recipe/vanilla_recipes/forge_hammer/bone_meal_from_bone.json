@@ -1,0 +1,9 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "damage": 30,
+  "ingredient": "minecraft:bone",
+  "result": {
+    "count": 6,
+    "id": "minecraft:bone_meal"
+  }
+}

@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_machine_hull"
+      "ingredient": "modern_industrialization:turbo_machine_hull"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:advanced_pump"
+      "ingredient": "modern_industrialization:advanced_pump"
     },
     {
       "amount": 2,
-      "tag": "c:gears/stainless_steel"
+      "ingredient": "#c:gears/stainless_steel"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:aluminum_cable"
+      "ingredient": "modern_industrialization:aluminum_cable"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:digital_circuit"
+      "ingredient": "modern_industrialization:digital_circuit"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:hv_diesel_generator"
+      "id": "modern_industrialization:hv_diesel_generator"
     }
   ]
 }

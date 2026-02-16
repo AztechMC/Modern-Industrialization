@@ -1,7 +1,15 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/mv_steam_turbine"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:mv",
+      "default_overlays": {
+        "front": "modern_industrialization:block/machines/steam_turbine/overlay_front",
+        "front_active": "modern_industrialization:block/machines/steam_turbine/overlay_front_active",
+        "output": "modern_industrialization:block/overlays/output_energy"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

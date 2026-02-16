@@ -30,23 +30,23 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartModels;
 import appeng.parts.PartAdjacentApi;
 import appeng.parts.p2p.P2PTunnelPart;
 import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
-import dev.technici4n.grandpower.api.DelegatingEnergyStorage;
-import dev.technici4n.grandpower.api.EnergyStorageUtil;
-import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergyP2PTunnelPart extends P2PTunnelPart<EnergyP2PTunnelPart> implements IGridTickable {
-    private static final P2PModels MODELS = new P2PModels("part/energy_p2p_tunnel");
-
     private final PartAdjacentApi<MIEnergyStorage> adjacentCapability;
     private final MIEnergyStorage inputStorage = new InputEnergyStorage();
     private final EnergyBuffer outputBuffer = new EnergyBuffer();
@@ -69,16 +69,16 @@ public class EnergyP2PTunnelPart extends P2PTunnelPart<EnergyP2PTunnelPart> impl
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        outputBuffer.energy = data.getLong("energy");
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        outputBuffer.energy = input.getLongOr("energy", 0);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
         if (outputBuffer.energy > 0) {
-            data.putLong("energy", outputBuffer.energy);
+            output.putLong("energy", outputBuffer.energy);
         }
     }
 
@@ -104,74 +104,68 @@ public class EnergyP2PTunnelPart extends P2PTunnelPart<EnergyP2PTunnelPart> impl
                 adjacentEnergy = EnergyApi.EMPTY;
             }
 
-            long moved = EnergyStorageUtil.move(outputBuffer, adjacentEnergy, Long.MAX_VALUE);
+            int moved = EnergyHandlerUtil.move(outputBuffer, adjacentEnergy, Integer.MAX_VALUE, null);
             return moved > 0 ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
         } else {
             return TickRateModulation.IDLE;
         }
     }
 
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
-    }
+    // TODO 26.1
+//    @PartModels
+//    public static List<IPartModel> getModels() {
+//        return MODELS.getModels();
+//    }
+//
+//    @Override
+//    public IPartModel getStaticModels() {
+//        return MODELS.getModel(this.isPowered(), this.isActive());
+//    }
 
     private class InputEnergyStorage implements MIEnergyStorage.NoExtract {
         @Override
-        public boolean canReceive() {
-            return true;
-        }
-
-        @Override
-        public long receive(long maxAmount, boolean simulate) {
+        public int insert(int maxAmount, TransactionContext transaction) {
             StoragePreconditions.notNegative(maxAmount);
-            long total = 0;
+            int total = 0;
 
             final int outputTunnels = getOutputs().size();
-            final long amount = maxAmount;
+            final int amount = maxAmount;
 
             if (outputTunnels == 0 || amount == 0) {
                 return 0;
             }
 
-            final long amountPerOutput = amount / outputTunnels;
-            long overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+            final int amountPerOutput = amount / outputTunnels;
+            int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
             for (var target : getOutputs()) {
-                final long toSend = amountPerOutput + overflow;
+                final int toSend = amountPerOutput + overflow;
 
-                final long received = target.outputBuffer.receive(toSend, simulate);
+                final int received = target.outputBuffer.insert(toSend, transaction);
 
                 overflow = toSend - received;
                 total += received;
             }
 
-            if (!simulate) {
-                queueTunnelDrain(PowerUnit.FE, total * MIServerConfig.INSTANCE.forgeEnergyPerEu.getAsInt());
-            }
+            deductEnergyCost(total * MIServerConfig.INSTANCE.forgeEnergyPerEu.getAsInt(), PowerUnit.FE, transaction);
 
             return total;
         }
 
         @Override
-        public long getAmount() {
+        public long getAmountAsLong() {
             long tot = 0;
             for (var output : getOutputs()) {
-                tot += output.outputBuffer.getAmount();
+                tot += output.outputBuffer.getAmountAsLong();
             }
             return tot;
         }
 
         @Override
-        public long getCapacity() {
+        public long getCapacityAsLong() {
             long tot = 0;
             for (var output : getOutputs()) {
-                tot += output.outputBuffer.getCapacity();
+                tot += output.outputBuffer.getCapacityAsLong();
             }
             return tot;
         }
@@ -182,69 +176,70 @@ public class EnergyP2PTunnelPart extends P2PTunnelPart<EnergyP2PTunnelPart> impl
         }
     }
 
-    private class EnergyBuffer implements ILongEnergyStorage {
+    private class EnergyBuffer extends SnapshotJournal<Long> implements EnergyHandler {
         private long energy;
 
         @Override
-        public long receive(long maxReceive, boolean simulate) {
-            long inserted = Math.min(getCapacity() - energy, maxReceive);
+        protected Long createSnapshot() {
+            return energy;
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            energy = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Long originalState) {
+            getHost().markForSave();
+        }
+
+        @Override
+        public int insert(int amount, TransactionContext transaction) {
+            int inserted = (int) Math.min(getCapacityAsLong() - energy, amount);
             if (inserted > 0) {
-                if (!simulate) {
-                    energy += inserted;
-                    getHost().markForSave();
-                }
+                updateSnapshots(transaction);
+                energy += inserted;
                 return inserted;
             }
             return 0;
         }
 
         @Override
-        public long extract(long maxExtract, boolean simulate) {
+        public int extract(int amount, TransactionContext transaction) {
             // Note that extraction is allowed even if we are inactive since the p2p transfer already happened.
-            long extracted = Math.min(energy, maxExtract);
+            int extracted = (int) Math.min(energy, amount);
             if (extracted > 0) {
-                if (!simulate) {
-                    energy -= extracted;
-                    getHost().markForSave();
-                }
+                updateSnapshots(transaction);
+                energy -= extracted;
                 return extracted;
             }
             return 0;
         }
 
         @Override
-        public long getAmount() {
+        public long getAmountAsLong() {
             return energy;
         }
 
         @Override
-        public long getCapacity() {
+        public long getCapacityAsLong() {
             return isActive() ? CableTier.SUPERCONDUCTOR.getMaxTransfer() : 0;
-        }
-
-        @Override
-        public boolean canExtract() {
-            return true;
-        }
-
-        @Override
-        public boolean canReceive() {
-            return true;
         }
     }
 
-    private class OutputEnergyStorage extends DelegatingEnergyStorage implements MIEnergyStorage {
+    private class OutputEnergyStorage extends DelegatingEnergyHandler implements MIEnergyStorage {
         public OutputEnergyStorage() {
             super(outputBuffer);
         }
 
         @Override
-        public boolean canReceive() {
+        public boolean supportsInsertion() {
             return false;
         }
 
         @Override
-        public long receive(long maxReceive, boolean simulate) {
+        public int insert(int amount, TransactionContext transaction) {
             return 0;
         }
 

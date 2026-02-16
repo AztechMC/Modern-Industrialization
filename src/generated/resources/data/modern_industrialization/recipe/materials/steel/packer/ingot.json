@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/steel"
+      "ingredient": "#c:nuggets/steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_ingot"
+      "id": "modern_industrialization:steel_ingot"
     }
   ]
 }

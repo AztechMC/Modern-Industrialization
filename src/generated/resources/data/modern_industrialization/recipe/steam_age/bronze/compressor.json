@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:bronze_machine_casing",
+    "F": "modern_industrialization:forge_hammer",
+    "G": "#c:gears/copper",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "#c:rods/copper"
+  },
+  "pattern": [
+    "rFr",
+    "GCG",
+    "ppp"
+  ],
+  "result": {
+    "id": "modern_industrialization:bronze_compressor"
+  }
+}

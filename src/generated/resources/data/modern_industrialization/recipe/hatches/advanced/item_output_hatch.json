@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:advanced_machine_hull"
-    },
-    "V": {
-      "item": "minecraft:hopper"
-    }
+    "U": "modern_industrialization:advanced_machine_hull",
+    "V": "minecraft:hopper"
   },
   "pattern": [
     "U",
     "V"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:advanced_item_output_hatch"
   }
 }

@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
@@ -94,7 +94,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
             if (amount <= 0) {
                 return ItemStack.EMPTY;
             }
-            try (var tx = Transaction.hackyOpen()) {
+            try (var tx = TransactionLegacy.hackyOpen()) {
                 var variant = stacks.get(slot).getVariant();
                 if (variant.isBlank()) {
                     return ItemStack.EMPTY;

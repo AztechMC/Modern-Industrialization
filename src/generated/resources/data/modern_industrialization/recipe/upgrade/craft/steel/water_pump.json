@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:bronze_water_pump"
-    },
-    {
-      "item": "modern_industrialization:steel_upgrade"
-    }
+    "modern_industrialization:bronze_water_pump",
+    "modern_industrialization:steel_upgrade"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:steel_water_pump"
   }
 }

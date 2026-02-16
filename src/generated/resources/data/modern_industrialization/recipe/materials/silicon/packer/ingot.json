@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/silicon"
+      "ingredient": "#c:nuggets/silicon"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:silicon_ingot"
+      "id": "modern_industrialization:silicon_ingot"
     }
   ]
 }

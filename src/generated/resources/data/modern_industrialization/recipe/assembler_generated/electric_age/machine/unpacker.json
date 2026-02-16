@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:motor"
+      "ingredient": "modern_industrialization:motor"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:conveyor"
+      "ingredient": "modern_industrialization:conveyor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_cable"
+      "ingredient": "modern_industrialization:tin_cable"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electric_unpacker"
+      "id": "modern_industrialization:electric_unpacker"
     }
   ]
 }

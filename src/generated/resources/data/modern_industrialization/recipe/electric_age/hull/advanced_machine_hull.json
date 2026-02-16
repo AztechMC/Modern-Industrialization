@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "modern_industrialization:silicon_battery",
+    "C": "modern_industrialization:advanced_machine_casing",
+    "c": "modern_industrialization:electronic_circuit",
+    "p": "modern_industrialization:electrum_cable"
+  },
+  "pattern": [
+    " c ",
+    "BCB",
+    "ppp"
+  ],
+  "result": {
+    "id": "modern_industrialization:advanced_machine_hull"
+  }
+}

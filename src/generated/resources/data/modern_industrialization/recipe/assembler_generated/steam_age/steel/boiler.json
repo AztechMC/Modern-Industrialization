@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/steel"
+      "ingredient": "#c:plates/steel"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_tank"
+      "ingredient": "modern_industrialization:steel_tank"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:fire_clay_bricks"
+      "ingredient": "modern_industrialization:fire_clay_bricks"
     },
     {
       "amount": 1,
-      "item": "minecraft:furnace"
+      "ingredient": "minecraft:furnace"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_boiler"
+      "id": "modern_industrialization:steel_boiler"
     }
   ]
 }

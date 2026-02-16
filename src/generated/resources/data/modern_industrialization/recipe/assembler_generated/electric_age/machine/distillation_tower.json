@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:advanced_pump"
+      "ingredient": "modern_industrialization:advanced_pump"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_machine_hull"
+      "ingredient": "modern_industrialization:turbo_machine_hull"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:digital_circuit"
+      "ingredient": "modern_industrialization:digital_circuit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:distillery"
+      "ingredient": "modern_industrialization:distillery"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:distillation_tower"
+      "id": "modern_industrialization:distillation_tower"
     }
   ]
 }

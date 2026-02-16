@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:stripped_oak_log"
+      "ingredient": "minecraft:stripped_oak_log"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:stripped_oak_wood"
+      "id": "minecraft:stripped_oak_wood"
     }
   ]
 }

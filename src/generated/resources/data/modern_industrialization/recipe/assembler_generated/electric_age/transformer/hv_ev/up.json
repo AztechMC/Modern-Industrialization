@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:turbo_machine_hull"
+      "ingredient": "modern_industrialization:turbo_machine_hull"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:aluminum_cable"
+      "ingredient": "modern_industrialization:aluminum_cable"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:annealed_copper_cable"
+      "ingredient": "modern_industrialization:annealed_copper_cable"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:hv_ev_transformer"
+      "id": "modern_industrialization:hv_ev_transformer"
     }
   ]
 }

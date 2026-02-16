@@ -28,6 +28,8 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
 import java.util.function.Function;
+
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,27 +37,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class NbtHelper {
-    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid, HolderLookup.Provider registries) {
-        CompoundTag savedTag = new CompoundTag();
-        savedTag.put("fk", fluid.toNbt(registries));
-        tag.put(key, savedTag);
-    }
-
-    public static Item getItem(CompoundTag tag, String key) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.parse(tag.getString(key)));
-    }
-
-    public static void putItem(CompoundTag tag, String key, Item item) {
-        tag.putString(key, BuiltInRegistries.ITEM.getKey(item).toString());
-    }
-
     public static byte encodeDirections(Iterable<Direction> directions) {
         byte mask = 0;
         for (Direction direction : directions) {
@@ -93,52 +83,17 @@ public class NbtHelper {
         return connections;
     }
 
-    public static <T> void putList(CompoundTag tag, String key, List<T> list, Function<T, CompoundTag> encoder) {
-        ListTag listTag = new ListTag();
+    public static <T> void putList(ValueOutput output, String key, List<T> list, Codec<T> elementCodec) {
+        var outputList = output.list(key, elementCodec);
         for (T t : list) {
-            listTag.add(encoder.apply(t));
+            outputList.add(t);
         }
-        tag.put(key, listTag);
     }
 
-    public static <T> void getList(CompoundTag tag, String key, List<T> list, Function<CompoundTag, T> decoder) {
+    public static <T> void getList(ValueInput input, String key, List<T> list, Codec<T> elementCodec) {
         list.clear();
-        ListTag listTag = tag.getList(key, Tag.TAG_COMPOUND);
-        for (int i = 0; i < listTag.size(); ++i) {
-            CompoundTag elementTag = listTag.getCompound(i);
-            list.add(decoder.apply(elementTag));
-        }
-    }
-
-    public static FluidVariant getFluidCompatible(@Nullable CompoundTag tag, String key, HolderLookup.Provider registries) {
-        if (tag == null || !tag.contains(key))
-            return FluidVariant.blank();
-
-        if (tag.get(key) instanceof StringTag) {
-            return FluidVariant.of(BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString(key))));
-        } else {
-            CompoundTag compound = tag.getCompound(key);
-            if (compound.contains("fk")) {
-                return FluidVariant.fromNbt(compound.getCompound("fk"), registries);
-            } else {
-                return FluidVariant.of(readLbaTag(tag.getCompound(key)));
-            }
-        }
-    }
-
-    private static Fluid readLbaTag(CompoundTag tag) {
-        if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
-            return BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("ObjName")));
-        } else {
-            return Fluids.EMPTY;
-        }
-    }
-
-    public static void putNonzeroInt(CompoundTag tag, String key, int i) {
-        if (i == 0) {
-            tag.remove(key);
-        } else {
-            tag.putInt(key, i);
+        for (T t : input.listOrEmpty(key, elementCodec)) {
+            list.add(t);
         }
     }
 }

@@ -1,9 +1,0 @@
-{
-  "casing": "mv",
-  "default_overlays": {
-    "front": "modern_industrialization:block/machines/steam_turbine/overlay_front",
-    "front_active": "modern_industrialization:block/machines/steam_turbine/overlay_front_active",
-    "output": "modern_industrialization:block/overlays/output_energy"
-  },
-  "loader": "modern_industrialization:machine"
-}

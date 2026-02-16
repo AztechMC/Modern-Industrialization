@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:resistor"
+      "ingredient": "modern_industrialization:resistor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:op_amp"
+      "ingredient": "modern_industrialization:op_amp"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:aluminum_wire"
+      "ingredient": "modern_industrialization:aluminum_wire"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:and_gate"
+      "id": "modern_industrialization:and_gate"
     }
   ]
 }

@@ -28,16 +28,18 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIFluidStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.List;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SteamHeaterComponent extends TemperatureComponent {
     private static final int STEAM_TO_WATER = 16;
@@ -150,8 +152,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeNbt(tag, registries);
+    public void writeNbt(ValueOutput output) {
+        super.writeNbt(output);
 
         var buffer = new CompoundTag();
         for (var entry : steamBuffer.reference2LongEntrySet()) {
@@ -159,18 +161,18 @@ public class SteamHeaterComponent extends TemperatureComponent {
                 buffer.putLong(entry.getKey().toString(), entry.getLongValue());
             }
         }
-        tag.put("steamBuffer", buffer);
+        output.store("steamBuffer", CompoundTag.CODEC, buffer);
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        super.readNbt(tag, registries, isUpgradingMachine);
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        super.readNbt(input, isUpgradingMachine);
 
-        var steamBuffer = tag.getCompound("steamBuffer");
-        for (var key : steamBuffer.getAllKeys()) {
-            var fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(key));
+        var steamBuffer = input.read("steamBuffer", CompoundTag.CODEC).orElseThrow();
+        for (var key : steamBuffer.keySet()) {
+            var fluid = BuiltInRegistries.FLUID.getValue(Identifier.tryParse(key));
             if (fluid != Fluids.EMPTY) {
-                this.steamBuffer.put(fluid, steamBuffer.getLong(key));
+                this.steamBuffer.put(fluid, steamBuffer.getLongOr(key, 0));
             }
         }
     }

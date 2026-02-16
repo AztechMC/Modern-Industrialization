@@ -45,11 +45,10 @@ import com.mojang.serialization.DataResult;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -59,9 +58,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -86,7 +88,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.relative(direction);
-        return world.getCapability(Capabilities.ItemHandler.BLOCK, adjPos, direction.getOpposite()) != null;
+        return world.getCapability(Capabilities.Item.BLOCK, adjPos, direction.getOpposite()) != null;
     }
 
     @Override
@@ -141,7 +143,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void save(ValueOutput output) {
         for (ItemConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
@@ -149,37 +151,37 @@ public class ItemNetworkNode extends PipeNetworkNode {
             connectionTag.putInt("insertPriority", connection.insertPriority);
             connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].saveOptional(registries));
+                connectionTag.store(Integer.toString(i), ItemStack.OPTIONAL_CODEC, connection.stacks[i]);
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.saveOptional(registries));
-            tag.put(connection.direction.toString(), connectionTag);
+            connectionTag.store("upgradeStack", ItemStack.OPTIONAL_CODEC, connection.upgradeStack);
+            output.store(connection.direction.toString(), CompoundTag.CODEC, connectionTag);
         }
-        tag.putInt("inactiveTicks", inactiveTicks);
-        return tag;
+        output.putInt("inactiveTicks", inactiveTicks);
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void read(ValueInput input) {
+        var keySet = input.keySet();
         for (Direction direction : Direction.values()) {
-            if (tag.contains(direction.toString())) {
-                CompoundTag connectionTag = tag.getCompound(direction.toString());
-                int insertPriority = connectionTag.getInt("insertPriority");
-                int extractPriority = connectionTag.getInt("extractPriority");
-                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
+            if (keySet.contains(direction.toString())) {
+                CompoundTag connectionTag = input.read(direction.toString(), CompoundTag.CODEC).orElseThrow();
+                int insertPriority = connectionTag.getIntOr("insertPriority", 0);
+                int extractPriority = connectionTag.getIntOr("extractPriority", 0);
+                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByteOr("connections", (byte) 0)),
                         insertPriority, extractPriority);
-                connection.whitelist = connectionTag.getBoolean("whitelist");
+                connection.whitelist = connectionTag.getBooleanOr("whitelist", false);
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                    connection.stacks[i] = ItemStack.parseOptional(registries, connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i] = connectionTag.read(Integer.toString(i), ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
                     if (!connection.stacks[i].isEmpty()) {
                         connection.stacks[i].setCount(1);
                     }
                 }
                 connection.refreshStacksCache();
-                connection.upgradeStack = ItemStack.parseOptional(registries, connectionTag.getCompound("upgradeStack"));
+                connection.upgradeStack = connectionTag.read("upgradeStack", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
                 connections.add(connection);
             }
         }
-        inactiveTicks = tag.getInt("inactiveTicks");
+        inactiveTicks = input.getIntOr("inactiveTicks", 0);
     }
 
     public static PipeEndpointType decodeConnectionType(int i) {
@@ -253,7 +255,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final Map<Item, List<ItemStack>> stacksCache = new IdentityHashMap<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
         @Nullable
-        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = null;
+        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
             this.direction = direction;
@@ -274,13 +276,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        private boolean isInCache(ItemStack stack) {
-            var list = stacksCache.get(stack.getItem());
+        private boolean isInCache(ItemResource resource) {
+            var list = stacksCache.get(resource.getItem());
             if (list == null) {
                 return false;
             }
             for (ItemStack cachedStack : list) {
-                if (ItemStack.isSameItemSameComponents(cachedStack, stack)) {
+                if (resource.matches(cachedStack)) {
                     return true;
                 }
             }
@@ -295,12 +297,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        boolean canStackMoveThrough(ItemStack stack) {
-            return isInCache(stack) == whitelist;
+        boolean canMoveThrough(ItemResource resource) {
+            return isInCache(resource) == whitelist;
         }
 
         int getMoves() {
-            var upgradeData = upgradeStack.getItemHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
+            var upgradeData = upgradeStack.typeHolder().getData(MIDataMaps.ITEM_PIPE_UPGRADES);
             int extraExtractedItems = upgradeData == null ? 0 : upgradeData.maxExtractedItems();
             return MIServerConfig.INSTANCE.baseItemPipeTransfer.getAsInt() + (extraExtractedItems * upgradeStack.getCount());
         }
@@ -377,9 +379,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
         private class ScreenHandlerFactory implements PipeMenuProvider {
             private final ItemPipeInterface iface;
-            private final ResourceLocation pipeType;
+            private final Identifier pipeType;
 
-            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, ResourceLocation pipeType) {
+            private ScreenHandlerFactory(PipeScreenHandlerHelper helper, Identifier pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {

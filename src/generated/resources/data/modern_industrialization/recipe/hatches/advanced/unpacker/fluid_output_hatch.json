@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_fluid_output_hatch"
+      "ingredient": "modern_industrialization:advanced_fluid_output_hatch"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:advanced_machine_hull"
+      "id": "modern_industrialization:advanced_machine_hull"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:aluminum_tank"
+      "id": "modern_industrialization:aluminum_tank"
     }
   ]
 }

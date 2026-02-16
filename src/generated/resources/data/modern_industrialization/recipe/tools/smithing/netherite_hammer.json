@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": "minecraft:netherite_ingot",
+  "base": "modern_industrialization:diamond_hammer",
+  "result": {
+    "id": "modern_industrialization:netherite_hammer"
+  },
+  "template": "minecraft:netherite_upgrade_smithing_template"
+}

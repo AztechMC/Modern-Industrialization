@@ -24,8 +24,8 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.TransactionContext;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.impl.TransferApiImpl;
 import com.google.common.collect.Iterators;
 import java.util.Iterator;

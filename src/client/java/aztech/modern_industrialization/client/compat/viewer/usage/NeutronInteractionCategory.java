@@ -41,25 +41,27 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVa
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
-    public static final ResourceLocation TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
-    private static final ResourceLocation PROGRESS_BAR = MI.id("textures/gui/progress_bar/long_arrow.png");
+    public static final Identifier TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
+    private static final Identifier PROGRESS_BAR = MI.id("textures/gui/progress_bar/long_arrow.png");
 
     private final int centerX;
     private final int centerY;
 
     public NeutronInteractionCategory() {
         super(Recipe.class, MI.id("neutron_interaction"), MIText.NeutronInteraction.text(),
-                BuiltInRegistries.ITEM.get(MI.id("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
+                BuiltInRegistries.ITEM.getValue(MI.id("uranium_fuel_rod")).getDefaultInstance(), 150, 90);
 
         this.centerX = width / 2;
         this.centerY = height / 2 - 5;
@@ -71,7 +73,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     }
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
             NuclearComponentItem component = (NuclearComponentItem) item;
             if (component.neutronBehaviour != NeutronBehaviour.NO_INTERACTION) {
@@ -177,9 +179,9 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
                     int posX = centerX - 12;
                     int posY = centerY - 2;
 
-                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PROGRESS_BAR, posX, posY, 0, 0, 40, 20, 40, 40);
 
-                    guiGraphics.blit(PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PROGRESS_BAR, posX, posY, 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20, 40, 40);
                 });
 
                 Component neutronNumberText;
@@ -255,7 +257,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     }
 
     @Override
-    public ResourceLocation getRecipeId(NeutronInteractionCategory.Recipe recipe) {
+    public Identifier getRecipeId(NeutronInteractionCategory.Recipe recipe) {
         return NuclearComponent.getEmiRecipeId(recipe.nuclearComponent, "neutron_interaction", recipe.type.name().toLowerCase(Locale.ROOT));
     }
 

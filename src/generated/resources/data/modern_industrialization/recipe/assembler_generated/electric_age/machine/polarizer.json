@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:tin_wire"
+      "ingredient": "modern_industrialization:tin_wire"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:tin_cable"
+      "ingredient": "modern_industrialization:tin_cable"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:inductor"
+      "ingredient": "modern_industrialization:inductor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:polarizer"
+      "id": "modern_industrialization:polarizer"
     }
   ]
 }

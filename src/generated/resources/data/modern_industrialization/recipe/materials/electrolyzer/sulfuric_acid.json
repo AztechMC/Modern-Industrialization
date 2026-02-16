@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "duration": 300,
+  "eu": 32,
+  "fluid_inputs": [
+    {
+      "amount": 500,
+      "ingredient": "modern_industrialization:sulfuric_acid"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "id": "modern_industrialization:oxygen"
+    },
+    {
+      "amount": 200,
+      "id": "minecraft:water"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:sulfur_dust"
+    }
+  ]
+}

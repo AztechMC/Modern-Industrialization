@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:tin_cable"
+      "ingredient": "modern_industrialization:tin_cable"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:basic_machine_hull"
+      "ingredient": "modern_industrialization:basic_machine_hull"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:lv_energy_input_hatch"
+      "id": "modern_industrialization:lv_energy_input_hatch"
     }
   ]
 }

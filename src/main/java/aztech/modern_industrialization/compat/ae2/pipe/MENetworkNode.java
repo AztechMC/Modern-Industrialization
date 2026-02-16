@@ -35,11 +35,11 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class MENetworkNode extends PipeNetworkNode {
@@ -125,21 +125,20 @@ public class MENetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putByte("connections", NbtHelper.encodeDirections(connections));
+    public void save(ValueOutput output) {
+        output.putByte("connections", NbtHelper.encodeDirections(connections));
         if (mainNode != null) {
-            mainNode.saveToNBT(tag);
+            mainNode.serialize(output);
         }
-        return tag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag, HolderLookup.Provider registries) {
+    public void read(ValueInput input) {
         connections.clear();
-        connections.addAll(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
+        Collections.addAll(connections, NbtHelper.decodeDirections(input.getByteOr("connections", (byte) 0)));
         updateNode();
         if (mainNode != null) {
-            mainNode.loadFromNBT(tag);
+            mainNode.deserialize(input);
         }
     }
 

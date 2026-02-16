@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "modern_industrialization:solid_titanium_machine_casing",
+    "p": "modern_industrialization:titanium_curved_plate"
+  },
+  "pattern": [
+    "p p",
+    "p#p",
+    "p p"
+  ],
+  "result": {
+    "count": 2,
+    "id": "modern_industrialization:titanium_machine_casing_pipe"
+  }
+}

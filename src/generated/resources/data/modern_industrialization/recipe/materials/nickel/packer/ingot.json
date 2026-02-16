@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:nuggets/nickel"
+      "ingredient": "#c:nuggets/nickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:nickel_ingot"
+      "id": "modern_industrialization:nickel_ingot"
     }
   ]
 }

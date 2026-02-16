@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "duration": 200,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 200,
+      "ingredient": "modern_industrialization:naphtha"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 150,
+      "id": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "id": "modern_industrialization:wax"
+    }
+  ]
+}

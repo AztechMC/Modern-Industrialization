@@ -44,7 +44,7 @@ public class MultiblockTests {
         var controllerPos = new BlockPos(3, 1, 2);
         helper.setBlock(controllerPos, MultiblockMachines.LARGE_TANK.asBlock());
 
-        LargeTankMultiblockBlockEntity largeTank = helper.getBlockEntity(controllerPos);
+        LargeTankMultiblockBlockEntity largeTank = helper.getBlockEntity(controllerPos, LargeTankMultiblockBlockEntity.class);
         largeTank.createShapeMatcher().buildMultiblock(helper.getLevel());
 
         var comparatorPos0 = new BlockPos(3, 1, 1);

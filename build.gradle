@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.112'
+    id 'net.neoforged.moddev'
     id 'dev.lukebemish.immaculate' version '0.1.13'
     id 'net.neoforged.licenser' version '0.7.5'
     id 'me.modmuss50.mod-publish-plugin' version '1.0.0'
@@ -21,79 +21,10 @@ logger.lifecycle("Modern Industrialization version ${version}")
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 
     withSourcesJar()
-}
-
-repositories {
-    // for KJS
-    maven {
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-    // for AE2, JEI and Almost Unified
-    maven {
-        name "Modmaven"
-        url "https://modmaven.dev"
-        content {
-            includeGroup "appeng"
-            includeGroup "dev.technici4n"
-            includeGroup "mezz.jei"
-            includeGroup "com.almostreliable.mods"
-        }
-    }
-    maven {
-        url "https://maven.shedaniel.me"
-        content {
-            includeGroup "me.sargunvohra.mcmods"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "me.shedaniel"
-            includeGroup "dev.architectury"
-        }
-    }
-    maven {
-        url "https://maven.terraformersmc.com"
-        content {
-            includeGroup "com.terraformersmc"
-            includeGroup "dev.emi"
-        }
-    }
-    maven {
-        name 'Jitpack'
-        url 'https://jitpack.io'
-        content {
-            // For KubeJS
-            includeGroup "com.github.rtyley"
-        }
-    }
-    maven {
-        url "https://maven.ftb.dev/releases"
-        content {
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    // For KubeJS & FTBTeams/FTBQuests
-    maven {
-        url "https://maven.latvian.dev/releases"
-        content {
-            includeGroup "dev.latvian.apps"
-            includeGroup "dev.latvian.mods"
-            includeGroup "dev.ftb.mods"
-        }
-    }
-    maven {
-        url "https://maven.teamresourceful.com/repository/maven-public/"
-        content {
-            includeGroup "com.teamresourceful"
-            includeGroup "com.teamresourceful.resourcefullib"
-            includeGroup "earth.terrarium.argonauts"
-            includeGroup "earth.terrarium.athena"
-        }
-    }
 }
 
 sourceSets {
@@ -162,7 +93,7 @@ neoForge {
         }
 
         data {
-            data()
+            clientData()
             sourceSet = sourceSets.client
             loadedMods = [mods.modern_industrialization_with_client]
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
@@ -188,7 +119,6 @@ configurations {
 }
 
 dependencies {
-    api jarJar("dev.technici4n:GrandPower:${project.grandpower_version}")
     api "org.jspecify:jspecify:${project.jspecify_version}"
     implementation "org.appliedenergistics:guideme:${project.guideme_version}"
 
@@ -216,19 +146,20 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")
 
-    localRuntimeOnly compileOnly("appeng:appliedenergistics2:${project.ae2_version}")
+    // TODO: AE2 runtime
+    /*localRuntimeOnly*/ compileOnly("org.appliedenergistics:appliedenergistics2:${project.ae2_version}")
     compileOnly "earth.terrarium.argonauts:argonauts-neoforge-${project.argonauts_minecraft_version}:${project.argonauts_version}"
-    localRuntimeOnly compileOnly("earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}")
+    compileOnly("earth.terrarium.athena:athena-neoforge-${project.athena_minecraft_version}:${project.athena_version}")
 
     compileOnly "dev.ftb.mods:ftb-quests-neoforge:${project.ftb_quests_version}"
     compileOnly "dev.ftb.mods:ftb-teams-neoforge:${project.ftb_teams_version}"
 
-    compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.minecraft_version}-${project.au_version}:api"
+    compileOnly "com.almostreliable.mods:almostunified-neoforge:${project.au_minecraft_version}-${project.au_version}:api"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -236,7 +167,6 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             neo_version: neo_version,
             neo_version_range: neo_version_range,
             mod_version: version,
-            grandpower_version_range: grandpower_version_range,
             guideme_version_range: guideme_version_range,
             ae2_version_range: ae2_version_range,
             jei_version_range: jei_version_range,
@@ -259,6 +189,7 @@ tasks.withType(JavaCompile).configureEach {
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
+    it.options.compilerArgs.addAll("-Xmaxerrs", "9999")
 }
 
 jar {
@@ -411,9 +342,8 @@ publishMods {
     curseforge {
         projectId = project.curseforge_project
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-        javaVersions.add JavaVersion.VERSION_21
+        javaVersions.add JavaVersion.VERSION_25
         shared it
-        embeds "grandpower"
         optional "roughly-enough-items"
     }
 

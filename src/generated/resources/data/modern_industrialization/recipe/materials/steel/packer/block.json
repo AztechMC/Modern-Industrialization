@@ -5,18 +5,18 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:ingots/steel"
+      "ingredient": "#c:ingots/steel"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_block_template",
+      "ingredient": "modern_industrialization:packer_block_template",
       "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:steel_block"
+      "id": "modern_industrialization:steel_block"
     }
   ]
 }

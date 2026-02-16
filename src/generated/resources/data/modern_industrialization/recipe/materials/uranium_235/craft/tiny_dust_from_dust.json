@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:uranium_235_dust"
-    }
+    "modern_industrialization:uranium_235_dust"
   ],
   "result": {
     "count": 9,

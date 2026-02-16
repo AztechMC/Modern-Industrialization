@@ -5,29 +5,29 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:inductor"
+      "ingredient": "modern_industrialization:inductor"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:copper_wire"
+      "ingredient": "modern_industrialization:copper_wire"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:resistor"
+      "ingredient": "modern_industrialization:resistor"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:capacitor"
+      "ingredient": "modern_industrialization:capacitor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:analog_circuit_board"
+      "ingredient": "modern_industrialization:analog_circuit_board"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:analog_circuit"
+      "id": "modern_industrialization:analog_circuit"
     }
   ]
 }

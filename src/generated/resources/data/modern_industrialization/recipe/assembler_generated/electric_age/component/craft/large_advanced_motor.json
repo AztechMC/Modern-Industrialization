@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:processing_unit"
+      "ingredient": "modern_industrialization:processing_unit"
     },
     {
       "amount": 2,
-      "tag": "c:rods/titanium"
+      "ingredient": "#c:rods/titanium"
     },
     {
       "amount": 6,
-      "item": "modern_industrialization:advanced_motor"
+      "ingredient": "modern_industrialization:advanced_motor"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_advanced_motor"
+      "id": "modern_industrialization:large_advanced_motor"
     }
   ]
 }

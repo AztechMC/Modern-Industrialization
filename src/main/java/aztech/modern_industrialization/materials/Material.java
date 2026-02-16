@@ -30,8 +30,13 @@ import aztech.modern_industrialization.materials.part.PartKeyProvider;
 import aztech.modern_industrialization.materials.property.MaterialProperty;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -42,10 +47,10 @@ public class Material {
     final Map<PartKey, MaterialItemPart> parts;
     private final Map<MaterialProperty<?>, Object> properties;
 
-    public final Consumer<RecipeOutput> registerRecipes;
+    public final RecipeProvider registerRecipes;
 
     Material(String name, Map<MaterialProperty<?>, Object> properties, Map<PartKey, MaterialItemPart> parts,
-            Consumer<RecipeOutput> registerRecipes) {
+             RecipeProvider registerRecipes) {
         this.name = name;
         this.properties = properties;
         this.parts = parts;
@@ -69,8 +74,17 @@ public class Material {
         return ret;
     }
 
+    public Item getPartItem(PartKeyProvider part) {
+        return getPart(part).asItem();
+    }
+
     @Nullable
     public <T> T get(MaterialProperty<T> prop) {
         return (T) properties.get(prop);
+    }
+
+    @FunctionalInterface
+    public interface RecipeProvider {
+        void registerRecipes(HolderGetter<Fluid> fluids, HolderGetter<Item> items, RecipeOutput output);
     }
 }

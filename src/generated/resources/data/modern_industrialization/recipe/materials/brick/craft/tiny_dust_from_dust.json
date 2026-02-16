@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:brick_dust"
-    }
+    "modern_industrialization:brick_dust"
   ],
   "result": {
     "count": 9,

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_materials/uranium"
+      "ingredient": "#c:raw_materials/uranium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:raw_uranium_block"
+      "id": "modern_industrialization:raw_uranium_block"
     }
   ]
 }

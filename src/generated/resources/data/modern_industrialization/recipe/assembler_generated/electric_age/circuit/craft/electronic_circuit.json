@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:diode"
+      "ingredient": "modern_industrialization:diode"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:transistor"
+      "ingredient": "modern_industrialization:transistor"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:electronic_circuit_board"
+      "ingredient": "modern_industrialization:electronic_circuit_board"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:electronic_circuit"
+      "id": "modern_industrialization:electronic_circuit"
     }
   ]
 }

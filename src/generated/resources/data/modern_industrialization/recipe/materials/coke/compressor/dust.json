@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/coke"
+      "ingredient": "#c:dusts/coke"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:coke"
+      "id": "modern_industrialization:coke"
     }
   ]
 }

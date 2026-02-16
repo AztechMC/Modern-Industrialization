@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ProgressBar implements GuiComponentServer<ProgressBar.Params, Float> {
     public static final Type<Params, Float> TYPE = new Type<>(MI.id("progress_bar"), Params.STREAM_CODEC, ByteBufCodecs.FLOAT);
@@ -94,7 +94,7 @@ public class ProgressBar implements GuiComponentServer<ProgressBar.Params, Float
             }
         }
 
-        public ResourceLocation getTextureId() {
+        public Identifier getTextureId() {
             return MI.id("textures/gui/progress_bar/" + progressBarType + ".png");
         }
 

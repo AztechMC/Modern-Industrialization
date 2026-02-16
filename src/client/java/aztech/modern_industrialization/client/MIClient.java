@@ -26,7 +26,7 @@ package aztech.modern_industrialization.client;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
@@ -38,38 +38,34 @@ import aztech.modern_industrialization.client.blocks.storage.barrel.DeferredBarr
 import aztech.modern_industrialization.client.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.client.datagen.MIDatagenClient;
 import aztech.modern_industrialization.client.items.ClientConfigCardTooltip;
-import aztech.modern_industrialization.client.items.SteamDrillHighlight;
 import aztech.modern_industrialization.client.items.SteamDrillTooltipComponent;
 import aztech.modern_industrialization.client.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.client.items.armor.HudRenderer;
 import aztech.modern_industrialization.client.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.client.machines.MachineBlockEntityRenderer;
-import aztech.modern_industrialization.client.machines.MachineOverlayClient;
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.client.machines.models.CasingModels;
+import aztech.modern_industrialization.client.machines.models.MachineItemModel;
 import aztech.modern_industrialization.client.machines.models.MachineUnbakedModel;
-import aztech.modern_industrialization.client.machines.models.UseBlockModelUnbakedModel;
+import aztech.modern_industrialization.client.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.client.machines.multiblocks.MultiblockTankBER;
 import aztech.modern_industrialization.client.misc.VersionEvents;
 import aztech.modern_industrialization.client.pipes.MIPipesClient;
 import aztech.modern_industrialization.client.pipes.fluid.FluidPipeScreen;
-import aztech.modern_industrialization.client.pipes.impl.DelegatingUnbakedModel;
+import aztech.modern_industrialization.client.pipes.impl.PipeItemModel;
 import aztech.modern_industrialization.client.pipes.impl.PipeUnbakedModel;
 import aztech.modern_industrialization.client.pipes.item.ItemPipeScreen;
+import aztech.modern_industrialization.client.util.UseBlockEntityRenderer;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.MIDatagenServer;
-import aztech.modern_industrialization.datagen.model.DelegatingModelBuilder;
 import aztech.modern_industrialization.items.ConfigCardItem;
-import aztech.modern_industrialization.items.RedstoneControlModuleItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.components.FuelBurningComponent;
-import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.misc.runtime_datagen.RuntimeDataGen;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -82,14 +78,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -101,12 +98,18 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -126,12 +129,15 @@ public class MIClient {
         modContainer.registerConfig(ModConfig.Type.CLIENT, MIClientConfig.SPEC);
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
-        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
-        NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
+//        NeoForge.EVENT_BUS.addListener(SteamDrillHighlight::onBlockHighlight);
+//        NeoForge.EVENT_BUS.addListener(MachineOverlayClient::onBlockOutline);
         DeferredBarrelTextRenderer.init();
         MultiblockErrorHighlight.init();
         MIPipesClient.setupClient(modBus);
         VersionEvents.init(ModLoadingContext.get().getActiveContainer());
+        NeoForge.EVENT_BUS.addListener(RecipesReceivedEvent.class, event -> {
+            MIClientProxy.clientSideRecipes = event.getRecipeMap();
+        });
 
         NeoForge.EVENT_BUS.addListener(RenderFrameEvent.Pre.class, event -> {
             JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance());
@@ -146,35 +152,34 @@ public class MIClient {
             // != null check
             if (Minecraft.getInstance().level != null && MIClientConfig.INSTANCE.fuelTooltips.getAsBoolean()) {
                 try {
-                    int fuelTime = event.getItemStack().getBurnTime(null);
-                    if (fuelTime > 0) {
-                        long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
-                        event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
-                    }
+                    // TODO 26.1
+//                    int fuelTime = event.getItemStack().getBurnTime(null);
+//                    if (fuelTime > 0) {
+//                        long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
+//                        event.getToolTip().add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
+//                    }
                 } catch (Exception e) {
                     MI.LOGGER.warn("Could not show MI fuel tooltip.", e);
                 }
             }
 
             if (event.getFlags().isAdvanced() && MIClientConfig.INSTANCE.itemTagTooltips.getAsBoolean()) {
-                var ids = event.getItemStack().getTags().map(TagKey::location).sorted().toList();
-                for (ResourceLocation id : ids) {
+                var ids = event.getItemStack().tags().map(TagKey::location).sorted().toList();
+                for (Identifier id : ids) {
                     event.getToolTip().add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
                 }
             }
         });
 
-        modBus.addListener(GatherDataEvent.class, event -> {
+        modBus.addListener(GatherDataEvent.Client.class, event -> {
             MIDatagenClient.configure(
                     event.getGenerator(),
-                    event.getExistingFileHelper(),
                     event.getLookupProvider(),
-                    event.includeServer(),
                     false);
         });
 
         modBus.addListener(RegisterRenderBuffersEvent.class, event -> {
-            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
+//            event.registerRenderBuffer(MIRenderTypes.cutoutHighlight());
         });
 
         // Warn if neither JEI nor REI is present!
@@ -199,6 +204,24 @@ public class MIClient {
     }
 
     @SubscribeEvent
+    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
+            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override
+                public Identifier getStillTexture() {
+                    return stillTexture;
+                }
+
+                @Override
+                public Identifier getFlowingTexture() {
+                    return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
+                }
+            }, fluidDefinition.getFluidType());
+        }
+    }
+
+    @SubscribeEvent
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {
         event.register(MIRegistries.FORGE_HAMMER_MENU.get(), ForgeHammerScreen::new);
         event.register((MenuType<MachineMenuClient>) MIRegistries.MACHINE_MENU.get(), MachineScreen::new);
@@ -208,24 +231,33 @@ public class MIClient {
     }
 
     @SubscribeEvent
-    private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(DelegatingModelBuilder.LOADER_ID, DelegatingUnbakedModel.LOADER);
-        event.register(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.LOADER);
-        event.register(PipeUnbakedModel.LOADER_ID, PipeUnbakedModel.LOADER);
-        event.register(UseBlockModelUnbakedModel.LOADER_ID, UseBlockModelUnbakedModel.LOADER);
+    private static void registerBlockStateModels(RegisterBlockStateModels event) {
+        event.registerModel(MachineUnbakedModel.LOADER_ID, MachineUnbakedModel.CODEC);
+        event.registerModel(PipeUnbakedModel.TYPE_ID, PipeUnbakedModel.CODEC);
+        event.registerModel(UseBlockModelBakedModel.Unbaked.TYPE_ID, UseBlockModelBakedModel.Unbaked.CODEC);
     }
 
     @SubscribeEvent
-    private static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        for (var casing : MachineCasings.registeredCasings.values()) {
-            event.register(MachineBakedModel.getCasingModelId(casing));
-        }
+    private static void registerItemModels(RegisterItemModelsEvent event) {
+        event.register(MachineItemModel.Unbaked.TYPE_ID, MachineItemModel.Unbaked.CODEC);
+        event.register(PipeItemModel.Unbaked.TYPE_ID, PipeItemModel.Unbaked.CODEC);
+    }
+
+    @SubscribeEvent
+    private static void registerSpecialRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(UseBlockEntityRenderer.Unbaked.TYPE_ID, UseBlockEntityRenderer.Unbaked.CODEC);
+    }
+
+    @SubscribeEvent
+    private static void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
+        CasingModels.loadModels(event);
     }
 
     private static final List<Runnable> blockEntityRendererRegistrations = new ArrayList<>();
 
-    public static <T extends BlockEntity, U extends T> void registerBlockEntityRenderer(Supplier<? extends BlockEntityType<? extends U>> bet,
-            BlockEntityRendererProvider<T> renderer) {
+    public static <T extends BlockEntity, S extends BlockEntityRenderState> void registerBlockEntityRenderer(
+            Supplier<? extends BlockEntityType<? extends T>> bet,
+            BlockEntityRendererProvider<T, S> renderer) {
         blockEntityRendererRegistrations.add(() -> BlockEntityRenderers.register(bet.get(), renderer));
     }
 
@@ -246,7 +278,7 @@ public class MIClient {
             }
         }
 
-        BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(0x000000));
+        BlockEntityRenderers.register(MIRegistries.CREATIVE_BARREL_BE.get(), context -> new BarrelRenderer(context.itemModelResolver(), 0x000000));
         BlockEntityRenderers.register(MIRegistries.CREATIVE_TANK_BE.get(), context -> new TankRenderer(0x000000));
 
         blockEntityRendererRegistrations.forEach(Runnable::run);
@@ -267,15 +299,5 @@ public class MIClient {
     @SubscribeEvent
     private static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         MIKeybinds.init(event);
-    }
-
-    @SubscribeEvent
-    private static void registerItemProperties(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ItemProperties.register(MIItem.REDSTONE_CONTROL_MODULE.asItem(), MI.id("redstone_control_module"),
-                    (stack, level, entity, seed) -> {
-                        return RedstoneControlModuleItem.isRequiresLowSignal(stack) ? 0 : 1;
-                    });
-        });
     }
 }

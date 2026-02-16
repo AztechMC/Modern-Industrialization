@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:uranium_ingot"
-    }
+    "modern_industrialization:uranium_ingot"
   ],
   "result": {
     "count": 9,

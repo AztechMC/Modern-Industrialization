@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:plates/stainless_steel",
+    "G": "#c:gears/stainless_steel"
+  },
+  "pattern": [
+    "AAA",
+    "AGA",
+    "AAA"
+  ],
+  "result": {
+    "id": "modern_industrialization:clean_stainless_steel_machine_casing"
+  }
+}

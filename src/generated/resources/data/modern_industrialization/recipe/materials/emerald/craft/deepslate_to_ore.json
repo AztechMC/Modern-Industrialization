@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:deepslate_emerald_ore"
-    }
+    "minecraft:deepslate_emerald_ore"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:emerald_ore"
   }
 }

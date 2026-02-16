@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:ingots/he_uranium"
+      "ingredient": "#c:ingots/he_uranium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:he_uranium_dust"
+      "id": "modern_industrialization:he_uranium_dust"
     }
   ]
 }

@@ -70,7 +70,7 @@ public class ChunkEventListeners {
         });
         NeoForge.EVENT_BUS.addListener(BlockEvent.NeighborNotifyEvent.class, event -> {
             if (event.getLevel() instanceof Level level) {
-                onBlockStateChange(level, new ChunkPos(event.getPos()), event.getPos());
+                onBlockStateChange(level, ChunkPos.containing(event.getPos()), event.getPos());
             }
         });
     }

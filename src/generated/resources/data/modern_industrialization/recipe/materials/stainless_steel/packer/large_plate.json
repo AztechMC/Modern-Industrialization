@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/stainless_steel"
+      "ingredient": "#c:plates/stainless_steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:stainless_steel_large_plate"
+      "id": "modern_industrialization:stainless_steel_large_plate"
     }
   ]
 }

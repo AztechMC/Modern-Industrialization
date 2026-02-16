@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/cupronickel"
+      "ingredient": "#c:plates/cupronickel"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:cupronickel_wire"
+      "id": "modern_industrialization:cupronickel_wire"
     }
   ]
 }

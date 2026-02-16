@@ -5,21 +5,21 @@
   "item_inputs": [
     {
       "amount": 5,
-      "tag": "c:plates/bronze"
+      "ingredient": "#c:plates/bronze"
     },
     {
       "amount": 1,
-      "item": "minecraft:furnace"
+      "ingredient": "minecraft:furnace"
     },
     {
       "amount": 3,
-      "item": "modern_industrialization:fire_clay_bricks"
+      "ingredient": "modern_industrialization:fire_clay_bricks"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_furnace"
+      "id": "modern_industrialization:bronze_furnace"
     }
   ]
 }

@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "U": {
-      "item": "modern_industrialization:basic_machine_hull"
-    },
-    "V": {
-      "item": "modern_industrialization:tin_cable"
-    }
+    "U": "modern_industrialization:basic_machine_hull",
+    "V": "modern_industrialization:tin_cable"
   },
   "pattern": [
     "U",
     "V"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:lv_energy_output_hatch"
   }
 }

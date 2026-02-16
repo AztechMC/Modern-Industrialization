@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "minecraft:dark_oak_log"
+      "ingredient": "minecraft:dark_oak_log"
     }
   ],
   "item_outputs": [
     {
       "amount": 3,
-      "item": "minecraft:dark_oak_wood"
+      "id": "minecraft:dark_oak_wood"
     }
   ]
 }

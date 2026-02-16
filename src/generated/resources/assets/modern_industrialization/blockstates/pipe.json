@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/pipe"
+      "type": "modern_industrialization:pipe"
     }
   }
 }

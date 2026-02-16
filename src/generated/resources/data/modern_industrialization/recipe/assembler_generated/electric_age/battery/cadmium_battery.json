@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/battery_alloy"
+      "ingredient": "#c:plates/battery_alloy"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:annealed_copper_cable"
+      "ingredient": "modern_industrialization:annealed_copper_cable"
     },
     {
       "amount": 4,
-      "item": "modern_industrialization:battery_alloy_curved_plate"
+      "ingredient": "modern_industrialization:battery_alloy_curved_plate"
     },
     {
       "amount": 2,
-      "tag": "c:dusts/cadmium"
+      "ingredient": "#c:dusts/cadmium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:cadmium_battery"
+      "id": "modern_industrialization:cadmium_battery"
     }
   ]
 }

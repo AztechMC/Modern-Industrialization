@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:raw_materials/tin"
+      "ingredient": "#c:raw_materials/tin"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:raw_tin_block"
+      "id": "modern_industrialization:raw_tin_block"
     }
   ]
 }

@@ -100,7 +100,7 @@ public class GeneratorMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     @Override
     public final void tick() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             link();
             lastEuProduction = 0;
             if (allowNormalOperation) {

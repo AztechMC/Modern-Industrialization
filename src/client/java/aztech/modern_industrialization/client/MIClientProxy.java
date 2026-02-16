@@ -30,13 +30,15 @@ import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEnti
 import aztech.modern_industrialization.client.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.client.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.client.machines.gui.MachineMenuClient;
-import aztech.modern_industrialization.client.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.client.machines.models.CasingModels;
+import aztech.modern_industrialization.client.machines.models.MachineBlockStateModel;
 import aztech.modern_industrialization.client.machines.models.UseBlockModelBakedModel;
 import aztech.modern_industrialization.client.textures.TextureHelper;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.config.MIClientConfig;
 import aztech.modern_industrialization.items.SteamDrillHooks;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
@@ -45,13 +47,15 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -97,17 +101,7 @@ public class MIClientProxy extends MICommonProxy {
 
     @Override
     public boolean hasShiftDown() {
-        return Screen.hasShiftDown();
-    }
-
-    @Override
-    public void withStandardItemRenderer(Consumer<?> stupidClientProperties) {
-        ((Consumer<IClientItemExtensions>) stupidClientProperties).accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return RenderHelper.BLOCK_AND_ENTITY_RENDERER;
-            }
-        });
+        return Minecraft.getInstance().hasShiftDown();
     }
 
     @Override
@@ -117,7 +111,7 @@ public class MIClientProxy extends MICommonProxy {
 
     @Override
     public void registerPartBarrelClient(Supplier<BlockEntityType<BarrelBlockEntity>> blockEntityType, int meanRgb) {
-        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(TextureHelper.getOverlayTextColor(meanRgb)));
+        MIClient.registerBlockEntityRenderer(blockEntityType, context -> new BarrelRenderer(context.itemModelResolver(), TextureHelper.getOverlayTextColor(meanRgb)));
     }
 
     @Override
@@ -145,7 +139,7 @@ public class MIClientProxy extends MICommonProxy {
         if (casing == null) {
             // No override, then pull the casing from the machine's baked model.
             var machineModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            if (machineModel instanceof MachineBakedModel mbm) {
+            if (machineModel instanceof MachineBlockStateModel mbm) {
                 casing = mbm.getBaseCasing();
             } else {
                 // Couldn't find casing... :(
@@ -154,11 +148,22 @@ public class MIClientProxy extends MICommonProxy {
         }
 
         // Pull the block state from the casing model if possible
-        var casingModel = MachineBakedModel.getCasingModel(casing);
-        if (casingModel instanceof UseBlockModelBakedModel ubmbm) {
-            return ubmbm.getTargetState();
+        var casingModel = CasingModels.getCasingModel(casing);
+        if (casingModel.model() instanceof UseBlockModelBakedModel ubmbm) {
+            return ubmbm.targetState();
         }
         // Couldn't find target state
         return state;
+    }
+
+    @Nullable
+    public static RecipeMap clientSideRecipes = null;
+
+    @Override
+    public RecipeMap getRecipeMap(Level level) {
+        if (level instanceof ClientLevel && clientSideRecipes != null) {
+            return clientSideRecipes;
+        }
+        return super.getRecipeMap(level);
     }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "tag": "c:plates/stainless_steel"
-    },
-    "R": {
-      "item": "modern_industrialization:stainless_steel_ring"
-    },
-    "b": {
-      "item": "modern_industrialization:stainless_steel_bolt"
-    }
+    "P": "#c:plates/stainless_steel",
+    "R": "modern_industrialization:stainless_steel_ring",
+    "b": "modern_industrialization:stainless_steel_bolt"
   },
   "pattern": [
     "PbP",
@@ -18,7 +12,6 @@
     "PbP"
   ],
   "result": {
-    "count": 1,
     "id": "modern_industrialization:stainless_steel_gear"
   }
 }

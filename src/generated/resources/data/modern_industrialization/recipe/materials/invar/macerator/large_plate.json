@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:invar_large_plate"
+      "ingredient": "modern_industrialization:invar_large_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:invar_dust"
+      "id": "modern_industrialization:invar_dust"
     }
   ]
 }

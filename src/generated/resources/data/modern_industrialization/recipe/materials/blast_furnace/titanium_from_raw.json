@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 400,
+  "eu": 128,
+  "fluid_inputs": [
+    {
+      "amount": 3000,
+      "ingredient": "modern_industrialization:manganese_sulfuric_solution"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 2500,
+      "id": "modern_industrialization:manganese_sulfuric_solution"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 3,
+      "ingredient": "#c:raw_materials/titanium"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "id": "modern_industrialization:titanium_hot_ingot"
+    }
+  ]
+}

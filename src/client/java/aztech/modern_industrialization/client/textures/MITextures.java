@@ -43,15 +43,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jspecify.annotations.Nullable;
 
 public final class MITextures {
     public static CompletableFuture<?> offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
-            ResourceProvider manager, ExistingFileHelper fileHelper) {
+            ResourceProvider manager) {
         TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
 
         // Texture generation runs in two phases:
@@ -107,9 +106,6 @@ public final class MITextures {
                     // Do second phase work
                     return mtm.doEndWork();
                 }, Util.backgroundExecutor())
-                .thenRun(() -> {
-                    mtm.markTexturesAsGenerated(fileHelper);
-                })
                 .thenRun(() -> MI.LOGGER.info("I used the png to destroy the png."));
     }
 
@@ -226,7 +222,7 @@ public final class MITextures {
         }
     }
 
-    public static void casingFromTextureBricked(TextureManager tm, MachineCasing casing, ResourceLocation topTexturePath) {
+    public static void casingFromTextureBricked(TextureManager tm, MachineCasing casing, Identifier topTexturePath) {
         try (
                 var topTexture = tm.getAssetAsTexture(topTexturePath.toString());
                 var brickTexture = tm.getAssetAsTexture("modern_industrialization:textures/block/fire_clay_bricks.png")) {
@@ -237,7 +233,7 @@ public final class MITextures {
             try (NativeImage copy = TextureHelper.copy(topTexture)) {
                 for (int i = 0; i < copy.getWidth(); ++i) {
                     for (int j = copy.getHeight() / 2; j < copy.getHeight(); j++) {
-                        copy.setPixelRGBA(i, j, brickTexture.getPixelRGBA(i, j));
+                        copy.setPixel(i, j, brickTexture.getPixel(i, j));
                     }
                 }
                 String s = String.format("%s:textures/block/casings/%s.png", casing.key.getNamespace(), casing.key.getPath());

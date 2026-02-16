@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:rods/invar"
+      "ingredient": "#c:rods/invar"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:invar_bolt"
+      "id": "modern_industrialization:invar_bolt"
     }
   ]
 }

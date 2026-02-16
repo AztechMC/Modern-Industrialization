@@ -38,11 +38,11 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     public void buildWorkstations(WorkstationConsumer consumer) {}
 
     @Override
-    public void buildRecipes(RecipeManager recipeManager, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
+    public void buildRecipes(RecipeMap recipeMap, RegistryAccess registryAccess, Consumer<Recipe> consumer) {
         for (ReiMachineRecipes.MultiblockShape entry : ReiMachineRecipes.multiblockShapes) {
             consumer.accept(new Recipe(entry.machine(), entry.shapeTemplate(), entry.alternative()));
         }
@@ -79,17 +79,17 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
     }
 
     @Override
-    public ResourceLocation getRecipeId(Recipe recipe) {
+    public Identifier getRecipeId(Recipe recipe) {
         return recipe.id;
     }
 
     protected static class Recipe {
         public final ItemStack controller;
         public final List<ItemStack> materials = new ArrayList<>();
-        public final ResourceLocation id;
+        public final Identifier id;
 
-        public Recipe(ResourceLocation controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
-            this.controller = BuiltInRegistries.ITEM.get(controller).getDefaultInstance();
+        public Recipe(Identifier controller, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+            this.controller = BuiltInRegistries.ITEM.getValue(controller).getDefaultInstance();
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
             for (var entry : shapeTemplate.simpleMembers.entrySet()) {
@@ -103,7 +103,7 @@ public class MultiblockCategory extends ViewerCategory<MultiblockCategory.Recipe
             for (var entry : materials.entrySet()) {
                 this.materials.add(new ItemStack(entry.getKey(), entry.getValue()));
             }
-            this.id = ResourceLocation.fromNamespaceAndPath(controller.getNamespace(),
+            this.id = Identifier.fromNamespaceAndPath(controller.getNamespace(),
                     "/" + controller.getPath() + "/" + materials.size() + (alternative == null ? "" : "/" + alternative));
         }
     }

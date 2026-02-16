@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/green"
+      "ingredient": "#c:dyes/green"
     },
     {
       "amount": 8,
-      "tag": "c:glass_blocks"
+      "ingredient": "#c:glass_blocks"
     }
   ],
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:green_stained_glass"
+      "id": "minecraft:green_stained_glass"
     }
   ]
 }

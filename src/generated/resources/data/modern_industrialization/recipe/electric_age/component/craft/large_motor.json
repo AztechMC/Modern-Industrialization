@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:electronic_circuit",
+    "m": "modern_industrialization:motor",
+    "r": "#c:rods/aluminum"
+  },
+  "pattern": [
+    "mmm",
+    "Crr",
+    "mmm"
+  ],
+  "result": {
+    "id": "modern_industrialization:large_motor"
+  }
+}

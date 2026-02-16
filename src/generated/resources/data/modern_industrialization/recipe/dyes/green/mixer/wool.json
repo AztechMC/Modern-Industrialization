@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/green"
+      "ingredient": "#c:dyes/green"
     },
     {
       "amount": 8,
-      "tag": "minecraft:wool"
+      "ingredient": "#minecraft:wool"
     }
   ],
   "item_outputs": [
     {
       "amount": 8,
-      "item": "minecraft:green_wool"
+      "id": "minecraft:green_wool"
     }
   ]
 }

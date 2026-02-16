@@ -49,11 +49,15 @@ public final class SmeltingRecipes {
 
     public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu, int duration) {
         if (hotIngot) {
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(HOT_INGOT,
-                    1);
+            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration)
+                    .addTaggedPartInput(DUST, 1)
+                    .addPartOutput(HOT_INGOT, 1);
         } else {
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(INGOT, 1);
-            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1)
+            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "dust", eu, duration)
+                    .addTaggedPartInput(DUST, 1)
+                    .addPartOutput(INGOT, 1);
+            new MIRecipeBuilder(ctx, MIMachineRecipeTypes.BLAST_FURNACE, "tiny_dust", eu, duration / 10)
+                    .addTaggedPartInput(TINY_DUST, 1)
                     .addPartOutput(NUGGET, 1);
         }
     }

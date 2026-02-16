@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:plates/beryllium"
+      "ingredient": "#c:plates/beryllium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:beryllium_dust"
+      "id": "modern_industrialization:beryllium_dust"
     }
   ]
 }

@@ -26,24 +26,28 @@ package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.MI;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.tags.TagKey;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
+// TODO: remove in favor of vanilla's
 public class ShapelessRecipeBuilder implements MIRecipeBuilder {
-    private final ItemStack resultStack;
+    private final ItemStackTemplate resultStack;
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     public ShapelessRecipeBuilder(ItemLike pResult, int pCount) {
-        this(new ItemStack(pResult, pCount));
+        this(new ItemStackTemplate(pResult.asItem(), pCount));
     }
 
-    public ShapelessRecipeBuilder(ItemStack result) {
+    public ShapelessRecipeBuilder(ItemStackTemplate result) {
         this.resultStack = result;
     }
 
@@ -61,15 +65,8 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
         return new ShapelessRecipeBuilder(pResult, pCount);
     }
 
-    public static ShapelessRecipeBuilder shapeless(ItemStack result) {
+    public static ShapelessRecipeBuilder shapeless(ItemStackTemplate result) {
         return new ShapelessRecipeBuilder(result);
-    }
-
-    /**
-     * Adds an ingredient that can be any item in the given tag.
-     */
-    public ShapelessRecipeBuilder requires(TagKey<Item> pTag) {
-        return this.requires(Ingredient.of(pTag));
     }
 
     /**
@@ -114,6 +111,6 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
 
     @Override
     public void offerTo(RecipeOutput output, String path) {
-        output.accept(MI.id(path), buildRecipe(), null);
+        output.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), buildRecipe(), null);
     }
 }

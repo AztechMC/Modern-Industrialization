@@ -31,13 +31,13 @@ import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 
 public class PipeDataProvider implements IServerDataProvider<BlockAccessor> {
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return MI.id("pipe");
     }
 

@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 9,
-      "tag": "c:tiny_dusts/titanium"
+      "ingredient": "#c:tiny_dusts/titanium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:titanium_dust"
+      "id": "modern_industrialization:titanium_dust"
     }
   ]
 }

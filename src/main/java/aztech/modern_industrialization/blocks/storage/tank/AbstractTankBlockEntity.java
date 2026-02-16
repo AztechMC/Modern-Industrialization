@@ -36,6 +36,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
     public AbstractTankBlockEntity(BlockEntityType<?> bet,
@@ -50,19 +52,19 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove("fluid");
+    public void removeComponentsFromTag(ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard("fluid");
     }
 
     @Override
-    public FluidVariant loadResource(CompoundTag tag, HolderLookup.Provider registries) {
-        return NbtHelper.getFluidCompatible(tag, "fluid", registries);
+    public FluidVariant loadResource(ValueInput input) {
+        return input.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
     }
 
     @Override
-    public void saveResource(FluidVariant resource, CompoundTag tag, HolderLookup.Provider registries) {
-        NbtHelper.putFluid(tag, "fluid", getResource(), registries);
+    public void saveResource(FluidVariant resource, ValueOutput output) {
+        output.store("fluid", FluidVariant.CODEC, resource);
     }
 
     @Override

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "_": "minecraft:heavy_weighted_pressure_plate",
+    "i": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "___",
+    " i ",
+    "iii"
+  ],
+  "result": {
+    "id": "modern_industrialization:forge_hammer"
+  }
+}

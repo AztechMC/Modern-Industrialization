@@ -26,10 +26,11 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.MachineComponent;
 import java.util.UUID;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class PlacedByComponent implements MachineComponent {
@@ -37,16 +38,16 @@ public class PlacedByComponent implements MachineComponent {
     public UUID placerId = null;
 
     @Override
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
+    public void writeNbt(ValueOutput output) {
         if (placerId != null) {
-            tag.putString("placer", placerId.toString());
+            output.putString("placer", placerId.toString());
         }
     }
 
     @Override
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
         try {
-            placerId = UUID.fromString(tag.getString("placer"));
+            placerId = UUID.fromString(input.getStringOr("placer", ""));
         } catch (IllegalArgumentException iae) {
             placerId = null;
         }

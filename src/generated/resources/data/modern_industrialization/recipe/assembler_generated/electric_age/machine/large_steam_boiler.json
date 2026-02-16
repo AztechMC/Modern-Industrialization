@@ -5,25 +5,25 @@
   "item_inputs": [
     {
       "amount": 4,
-      "item": "modern_industrialization:bronze_plated_bricks"
+      "ingredient": "modern_industrialization:bronze_plated_bricks"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:analog_circuit"
+      "ingredient": "modern_industrialization:analog_circuit"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:bronze_boiler"
+      "ingredient": "modern_industrialization:bronze_boiler"
     },
     {
       "amount": 2,
-      "item": "modern_industrialization:bronze_curved_plate"
+      "ingredient": "modern_industrialization:bronze_curved_plate"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:large_steam_boiler"
+      "id": "modern_industrialization:large_steam_boiler"
     }
   ]
 }

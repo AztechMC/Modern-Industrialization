@@ -1,7 +1,14 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/nuclear_item_hatch"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:nuclear_casing",
+      "default_overlays": {
+        "item_auto": "modern_industrialization:block/overlays/item_auto",
+        "top": "modern_industrialization:block/overlays/output_item"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

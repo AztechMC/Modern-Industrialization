@@ -5,18 +5,18 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:ingots/nickel"
+      "ingredient": "#c:ingots/nickel"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_double_ingot_template",
+      "ingredient": "modern_industrialization:packer_double_ingot_template",
       "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:nickel_double_ingot"
+      "id": "modern_industrialization:nickel_double_ingot"
     }
   ]
 }

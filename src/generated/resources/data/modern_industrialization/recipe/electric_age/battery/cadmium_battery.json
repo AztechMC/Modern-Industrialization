@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "modern_industrialization:battery_alloy_curved_plate",
+    "a": "#c:plates/battery_alloy",
+    "c": "modern_industrialization:annealed_copper_cable",
+    "r": "#c:dusts/cadmium"
+  },
+  "pattern": [
+    "cac",
+    "BrB",
+    "BrB"
+  ],
+  "result": {
+    "id": "modern_industrialization:cadmium_battery"
+  }
+}

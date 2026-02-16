@@ -54,15 +54,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
@@ -146,7 +149,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
     @Nullable
     private RecipeHolder<MachineRecipe> activeRecipe = null;
     @Nullable
-    private ResourceLocation delayedActiveRecipe;
+    private Identifier delayedActiveRecipe;
 
     private long usedEnergy;
     private long recipeEnergy;
@@ -418,30 +421,30 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
-    public void writeNbt(CompoundTag tag, HolderLookup.Provider registries) {
-        tag.putLong("usedEnergy", this.usedEnergy);
-        tag.putLong("recipeEnergy", this.recipeEnergy);
-        tag.putLong("recipeMaxEu", this.recipeMaxEu);
+    public void writeNbt(ValueOutput output) {
+        output.putLong("usedEnergy", this.usedEnergy);
+        output.putLong("recipeEnergy", this.recipeEnergy);
+        output.putLong("recipeMaxEu", this.recipeMaxEu);
         if (activeRecipe != null) {
-            tag.putString("activeRecipe", this.activeRecipe.id().toString());
+            output.putString("activeRecipe", this.activeRecipe.id().toString());
         } else if (delayedActiveRecipe != null) {
-            tag.putString("activeRecipe", this.delayedActiveRecipe.toString());
+            output.putString("activeRecipe", this.delayedActiveRecipe.toString());
         }
-        tag.putInt("efficiencyTicks", this.efficiencyTicks);
-        tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
+        output.putInt("efficiencyTicks", this.efficiencyTicks);
+        output.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgradingMachine) {
-        this.usedEnergy = tag.getInt("usedEnergy");
-        this.recipeEnergy = tag.getInt("recipeEnergy");
-        this.recipeMaxEu = tag.getInt("recipeMaxEu");
-        this.delayedActiveRecipe = tag.contains("activeRecipe") ? ResourceLocation.parse(tag.getString("activeRecipe")) : null;
+    public void readNbt(ValueInput input, boolean isUpgradingMachine) {
+        this.usedEnergy = input.getIntOr("usedEnergy", 0);
+        this.recipeEnergy = input.getIntOr("recipeEnergy", 0);
+        this.recipeMaxEu = input.getIntOr("recipeMaxEu", 0);
+        this.delayedActiveRecipe = input.getString("activeRecipe").map(Identifier::parse).orElse(null);
         if (delayedActiveRecipe == null && usedEnergy > 0) {
             usedEnergy = 0;
             MI.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
         }
-        this.efficiencyTicks = tag.getInt("efficiencyTicks");
-        this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
+        this.efficiencyTicks = input.getIntOr("efficiencyTicks", 0);
+        this.maxEfficiencyTicks = input.getIntOr("maxEfficiencyTicks", 0);
     }
 
     public static boolean doInputsMatch(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs, MachineRecipe recipe) {
@@ -528,8 +531,8 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
 
     private static boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
         if (ingredient.isSimple()) {
-            for (var stack : ingredient.getStacks()) {
-                if (resource.equals(FluidVariant.of(stack.getFluid()))) {
+            for (var fluidHolder : ingredient.fluids()) {
+                if (resource.equals(FluidVariant.of(fluidHolder.value()))) {
                     return true;
                 }
             }
@@ -555,7 +558,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 if (randFloat > output.probability())
                     continue;
             }
-            int remainingAmount = output.amount();
+            int remainingAmount = output.template().count();
             // Try to insert in non-empty stacks or locked first, then also allow insertion
             // in empty stacks.
             for (int loopRun = 0; loopRun < 2; loopRun++) {
@@ -563,19 +566,20 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
                     ItemVariant key = stack.getResource();
-                    if (key.equals(output.variant()) || key.isBlank()) {
+                    if (key.matches(output.template()) || key.isBlank()) {
+                        var outputVariant = ItemVariant.of(new ItemStack(output.template().item(), 1, output.template().components()));
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
                         int remainingCapacity = simulate || output.probability() < 1
-                                ? (int) stack.getRemainingCapacityFor(output.variant())
-                                : output.variant().getMaxStackSize() - (int) stack.getAmount();
+                                ? (int) stack.getRemainingCapacityFor(outputVariant)
+                                : outputVariant.getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (ins > 0) {
                             if (key.isBlank()) {
                                 if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
                                     stack.setAmount(ins);
-                                    stack.setKey(output.variant());
+                                    stack.setKey(outputVariant);
                                 } else {
                                     ins = 0;
                                 }
@@ -587,9 +591,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         // ins changed inside of previous if, need to check again!
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
-                            lockItems.add(output.variant().getItem());
+                            lockItems.add(outputVariant.getItem());
                             if (!simulate) {
-                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), output.variant().getItem(), ins);
+                                behavior.getStatsOrDummy().addProducedItems(behavior.getCrafterWorld(), outputVariant.getItem(), ins);
                             }
                         }
                         if (remainingAmount == 0)
@@ -698,7 +702,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         AbstractConfigurableStack.playerLockNoOverride(newLockedInstance, requiredAmount, stacks);
     }
 
-    public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
+    public void lockRecipe(ResourceKey<Recipe<?>> recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
         Optional<RecipeHolder<MachineRecipe>> optionalMachineRecipe = behavior.recipeType().getRecipesWithCache(behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.id().equals(recipeId)).findFirst();
@@ -729,7 +733,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         }
                         // Find the first match that is an item from MI (useful for ingots for example)
                         for (Item item : inputItems) {
-                            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+                            Identifier id = BuiltInRegistries.ITEM.getKey(item);
                             if (id.getNamespace().equals(MI.ID)) {
                                 return item;
                             }
@@ -745,9 +749,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         for (MachineRecipe.ItemOutput output : recipe.value().itemOutputs) {
             handleLocking(
                     this.inventory.getItemOutputs(),
-                    item -> output.variant().isOf(item),
-                    output.amount(),
-                    output.variant()::getItem);
+                    item -> output.template().is(item),
+                    output.template().count(),
+                    () -> output.template().item().value());
         }
 
         // FLUID INPUTS
@@ -767,7 +771,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                         List<Fluid> inputFluids = input.getInputFluids();
                         // Find the first match that is an item from MI
                         for (Fluid fluid : inputFluids) {
-                            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+                            Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
                             if (id.getNamespace().equals(MI.ID)) {
                                 return fluid;
                             }

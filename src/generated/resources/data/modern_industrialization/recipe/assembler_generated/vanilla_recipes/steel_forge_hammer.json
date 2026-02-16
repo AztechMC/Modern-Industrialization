@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 3,
-      "tag": "c:plates/steel"
+      "ingredient": "#c:plates/steel"
     },
     {
       "amount": 4,
-      "tag": "c:ingots/steel"
+      "ingredient": "#c:ingots/steel"
     }
   ],
   "item_outputs": [
     {
       "amount": 2,
-      "item": "modern_industrialization:forge_hammer"
+      "id": "modern_industrialization:forge_hammer"
     }
   ]
 }

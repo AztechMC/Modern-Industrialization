@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:cadmium_dust"
-    }
+    "modern_industrialization:cadmium_dust"
   ],
   "result": {
     "count": 9,

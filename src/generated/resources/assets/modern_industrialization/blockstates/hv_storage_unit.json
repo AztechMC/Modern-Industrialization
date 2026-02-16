@@ -1,7 +1,14 @@
 {
   "variants": {
     "": {
-      "model": "modern_industrialization:block/hv_storage_unit"
+      "type": "modern_industrialization:machine",
+      "casing": "modern_industrialization:hv",
+      "default_overlays": {
+        "output": "modern_industrialization:block/overlays/output_energy",
+        "side": "modern_industrialization:block/machines/electric_storage/overlay_side"
+      },
+      "no_overlay_on_output_side": false,
+      "tiered_overlays": {}
     }
   }
 }

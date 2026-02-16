@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -36,27 +36,27 @@ import org.jspecify.annotations.Nullable;
  * called even if REI is not loaded, and should not reference the REI API.
  */
 public class ReiMachineRecipes {
-    public static final Map<ResourceLocation, MachineCategoryParams> categories = new TreeMap<>();
+    public static final Map<Identifier, MachineCategoryParams> categories = new TreeMap<>();
     /**
      * Maps a machine block id to the list of recipe categories.
      */
-    public static final Map<ResourceLocation, List<ClickAreaCategory>> machineToClickAreaCategory = new HashMap<>();
+    public static final Map<Identifier, List<ClickAreaCategory>> machineToClickAreaCategory = new HashMap<>();
     /**
      * Maps a machine block id to the parameters of the click area for the recipe.
      */
-    public static final Map<ResourceLocation, Rectangle> machineToClickArea = new HashMap<>();
+    public static final Map<Identifier, Rectangle> machineToClickArea = new HashMap<>();
     /**
      * List of registered multiblock shape "recipes".
      */
     public static final List<MultiblockShape> multiblockShapes = new ArrayList<>();
 
-    public static void registerCategory(ResourceLocation machine, MachineCategoryParams params) {
+    public static void registerCategory(Identifier machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
             throw new IllegalStateException("Machine was already registered: " + machine);
         }
     }
 
-    public static void registerWorkstation(ResourceLocation machine, ResourceLocation item) {
+    public static void registerWorkstation(Identifier machine, Identifier item) {
         MachineCategoryParams params = categories.get(machine);
         if (params == null) {
             throw new NullPointerException("Machine params may not be null for machine " + machine);
@@ -64,21 +64,21 @@ public class ReiMachineRecipes {
         params.workstations.add(item);
     }
 
-    public static void registerRecipeCategoryForMachine(ResourceLocation machine, ResourceLocation category) {
+    public static void registerRecipeCategoryForMachine(Identifier machine, Identifier category) {
         registerRecipeCategoryForMachine(machine, category, MachineScreenPredicate.ANY);
     }
 
-    public static void registerRecipeCategoryForMachine(ResourceLocation machine, ResourceLocation category,
+    public static void registerRecipeCategoryForMachine(Identifier machine, Identifier category,
             MachineScreenPredicate screenPredicate) {
         machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
                 .add(new ClickAreaCategory(category, screenPredicate));
     }
 
-    public static void registerMachineClickArea(ResourceLocation machine, Rectangle clickArea) {
+    public static void registerMachineClickArea(Identifier machine, Rectangle clickArea) {
         machineToClickArea.put(machine, clickArea);
     }
 
-    public static void registerMultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate) {
+    public static void registerMultiblockShape(Identifier machine, ShapeTemplate shapeTemplate) {
         registerMultiblockShape(machine, shapeTemplate, null);
     }
 
@@ -86,7 +86,7 @@ public class ReiMachineRecipes {
         registerMultiblockShape(MI.id(machine), shapeTemplate);
     }
 
-    public static void registerMultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
+    public static void registerMultiblockShape(Identifier machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {
         multiblockShapes.add(new MultiblockShape(machine, shapeTemplate, alternative));
     }
 
@@ -95,10 +95,10 @@ public class ReiMachineRecipes {
     }
 
     public static class ClickAreaCategory {
-        public final ResourceLocation category;
+        public final Identifier category;
         public final MachineScreenPredicate predicate;
 
-        ClickAreaCategory(ResourceLocation category, MachineScreenPredicate predicate) {
+        ClickAreaCategory(Identifier category, MachineScreenPredicate predicate) {
             this.category = category;
             this.predicate = predicate;
         }
@@ -109,5 +109,5 @@ public class ReiMachineRecipes {
         MULTIBLOCK,
     }
 
-    public record MultiblockShape(ResourceLocation machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {}
+    public record MultiblockShape(Identifier machine, ShapeTemplate shapeTemplate, @Nullable String alternative) {}
 }

@@ -5,18 +5,18 @@
   "item_inputs": [
     {
       "amount": 2,
-      "tag": "c:ingots/battery_alloy"
+      "ingredient": "#c:ingots/battery_alloy"
     },
     {
       "amount": 1,
-      "item": "modern_industrialization:packer_double_ingot_template",
+      "ingredient": "modern_industrialization:packer_double_ingot_template",
       "probability": 0.0
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:battery_alloy_double_ingot"
+      "id": "modern_industrialization:battery_alloy_double_ingot"
     }
   ]
 }

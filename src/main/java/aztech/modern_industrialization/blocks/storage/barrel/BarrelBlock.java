@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,8 +47,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
-    public BarrelBlock(EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
-        super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
+    public BarrelBlock(Properties properties, EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
+        super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
     }
 
@@ -118,7 +118,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                if (stack.getItem() instanceof BarrelItem barrelItem) {
 //                    var storage = ContainerItem.GenericItemStorage.of(stack, barrelItem);
 //                    if (StorageUtil.move(barrel, storage, (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-//                        return InteractionResult.sidedSuccess(world.isClientSide);
+//                        return InteractionResult.sidedSuccess(world.isClientSide());
 //                    }
 //                }
 
@@ -146,7 +146,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 
             if (useBlock(event.getHitVec(), event.getHand(), event.getEntity(), event.getLevel())) {
                 event.setCanceled(true);
-                event.setCancellationResult(InteractionResult.sidedSuccess(event.getSide().isClient()));
+                event.setCancellationResult(InteractionResult.SUCCESS);
             }
         });
         NeoForge.EVENT_BUS.addListener(PlayerInteractEvent.LeftClickBlock.class, event -> {

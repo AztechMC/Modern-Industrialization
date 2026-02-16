@@ -25,6 +25,7 @@
 package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.client.compat.viewer.usage.ViewerSetup;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +37,12 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @JeiPlugin
 @REIPluginCompatIgnore
 public class ViewerPluginJei implements IModPlugin {
-    private static final ResourceLocation ID = MI.id("viewer");
+    private static final Identifier ID = MI.id("viewer");
 
     private final List<ViewerCategoryJei<?>> categories = new ArrayList<>();
 
@@ -61,7 +62,7 @@ public class ViewerPluginJei implements IModPlugin {
         for (var category : categories) {
             category.wrapped.buildWorkstations(items -> {
                 for (var item : items) {
-                    registration.addRecipeCatalyst(item.asItem().getDefaultInstance(), category.recipeType);
+                    registration.addCraftingStation(category.recipeType, item.asItem().getDefaultInstance());
                 }
             });
         }
@@ -77,12 +78,12 @@ public class ViewerPluginJei implements IModPlugin {
     private static <D> void registerCategoryRecipes(IRecipeRegistration registration, ViewerCategoryJei<D> category) {
         var level = Minecraft.getInstance().level;
         List<D> recipes = new ArrayList<>();
-        category.wrapped.buildRecipes(level.getRecipeManager(), level.registryAccess(), recipes::add);
+        category.wrapped.buildRecipes(MICommonProxy.INSTANCE.getRecipeMap(level), level.registryAccess(), recipes::add);
         registration.addRecipes(category.recipeType, recipes);
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return ID;
     }
 }

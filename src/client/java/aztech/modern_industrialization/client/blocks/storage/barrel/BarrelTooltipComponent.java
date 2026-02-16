@@ -29,36 +29,37 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.LightCoordsUtil;
 import org.joml.Matrix4f;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return 30;
     }
 
     @Override
-    public int getWidth(Font textRenderer) {
-        return Math.max(textRenderer.width(data.variant().toStack().getHoverName()), 20 + textRenderer.width(getItemNumber()));
+    public int getWidth(Font font) {
+        return Math.max(font.width(data.variant().toStack().getHoverName()), 20 + font.width(getItemNumber()));
     }
 
     @Override
-    public void renderText(Font textRenderer, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource immediate) {
+    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
+        RenderHelper.renderAndDecorateItem(graphics, font, data.variant().toStack(), x, y + 10);
+
         Style style = MITooltips.DEFAULT_STYLE;
 
-        textRenderer.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate,
-                Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+        graphics.drawString(font, data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true);
 
-        textRenderer.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, Font.DisplayMode.NORMAL, 0,
-                LightTexture.FULL_BRIGHT);
+        graphics.drawString(font, getItemNumber(), x + 20, y + 15, -1, true);
     }
 
     public Component getItemNumber() {
@@ -75,7 +76,7 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
             String capacityStr;
             Component percent = MITooltips.INVERTED_RATIO_PERCENTAGE_PARSER.parse((double) amount / capacity);
 
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 amountStr = "" + amount;
                 capacityStr = "" + capacity;
 
@@ -89,10 +90,5 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
         }
 
         return itemNumber;
-    }
-
-    @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
-        RenderHelper.renderAndDecorateItem(guiGraphics, font, data.variant().toStack(), x, y + 10);
     }
 }

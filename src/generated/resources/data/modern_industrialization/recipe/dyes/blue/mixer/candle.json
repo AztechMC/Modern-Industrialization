@@ -5,17 +5,17 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dyes/blue"
+      "ingredient": "#c:dyes/blue"
     },
     {
       "amount": 1,
-      "tag": "minecraft:candles"
+      "ingredient": "#minecraft:candles"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:blue_candle"
+      "id": "minecraft:blue_candle"
     }
   ]
 }

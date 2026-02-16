@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:dusts/quartz"
+      "ingredient": "#c:dusts/quartz"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "minecraft:quartz"
+      "id": "minecraft:quartz"
     }
   ]
 }

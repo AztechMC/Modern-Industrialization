@@ -25,22 +25,24 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.MI;
+import aztech.modern_industrialization.datagen.recipe.MIRecipeProvider;
+import aztech.modern_industrialization.datagen.tag.MIVillagerTradesTagProvider;
+import aztech.modern_industrialization.trading.MITradeSets;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.datamap.MIDataMapProvider;
 import aztech.modern_industrialization.datagen.dynreg.DynamicRegistryDatagen;
 import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.loot.MIGiftLoot;
-import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.DyeRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.HatchRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.MaterialRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
-import aztech.modern_industrialization.datagen.recipe.UpgradeProvider;
-import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
+import aztech.modern_industrialization.datagen.recipe.AlloyRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.CompatRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.DyeRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.HatchRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.HeatExchangerRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.MaterialRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.PetrochemRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.PlankRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.UpgradeRecipeProvider;
+import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipeProvider;
 import aztech.modern_industrialization.datagen.structure.EmptyTestStructureGenerator;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIFluidTagProvider;
@@ -50,59 +52,68 @@ import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+
+import aztech.modern_industrialization.trading.MITrades;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MIDatagenServer {
     public static void configure(
             DataGenerator gen,
-            ExistingFileHelper fileHelper,
-            CompletableFuture<HolderLookup.Provider> lookupProvider,
-            boolean run,
+            CompletableFuture<HolderLookup.Provider> registries,
             boolean runtimeDatagen) {
-        var aggregate = gen.addProvider(run, new AggregateDataProvider(gen.getPackOutput(), "Server Data"));
+        // TODO 26.1 - run all of them in parallel?
+        var aggregate = gen.addProvider(true, new AggregateDataProvider(gen.getPackOutput(), registries, "Server Data"));
 
-        aggregate.addProvider(PetrochemRecipesProvider::new);
-        aggregate.addProvider(PlankRecipesProvider::new);
-        aggregate.addProvider(HeatExchangerRecipesProvider::new);
-        aggregate.addProvider(HatchRecipesProvider::new);
-        aggregate.addProvider(AlloyRecipesProvider::new);
-        aggregate.addProvider(MaterialRecipesProvider::new);
-        aggregate.addProvider(DyeRecipesProvider::new);
-        aggregate.addProvider(AssemblerRecipesProvider::new);
+        aggregate.addProvider(MIRecipeProvider.Runner::new);
+        aggregate.addProvider(PetrochemRecipeProvider.Runner::new);
+        aggregate.addProvider(PlankRecipeProvider.Runner::new);
+        aggregate.addProvider(HeatExchangerRecipeProvider.Runner::new);
+        aggregate.addProvider(HatchRecipeProvider.Runner::new);
+        aggregate.addProvider(AlloyRecipeProvider.Runner::new);
+        aggregate.addProvider(MaterialRecipeProvider.Runner::new);
+        aggregate.addProvider(DyeRecipeProvider.Runner::new);
         if (!runtimeDatagen) {
-            aggregate.addProvider(CompatRecipesProvider::new);
+            aggregate.addProvider(CompatRecipeProvider.Runner::new);
         }
-        aggregate.addProvider(UpgradeProvider::new);
-        aggregate.addProvider(VanillaCompatRecipesProvider::new);
+        aggregate.addProvider(UpgradeRecipeProvider.Runner::new);
+        aggregate.addProvider(VanillaCompatRecipeProvider.Runner::new);
 
         aggregate.addProvider(EmptyTestStructureGenerator::new);
 
-        gen.addProvider(run, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
+        gen.addProvider(true, new LootTableProvider(gen.getPackOutput(), Set.of(), List.of(
                 new LootTableProvider.SubProviderEntry(BlockLootTableProvider::new, LootContextParamSets.BLOCK),
                 new LootTableProvider.SubProviderEntry(MIGiftLoot::new, LootContextParamSets.GIFT)),
-                lookupProvider));
+                registries));
 
-        gen.addProvider(run,
-                new DatapackBuiltinEntriesProvider(gen.getPackOutput(), lookupProvider, DynamicRegistryDatagen.getBuilder(), Set.of(MI.ID)));
+        var registrySetBuilder = DynamicRegistryDatagen.getBuilder();
+        registrySetBuilder.add(Registries.TRADE_SET, MITradeSets::bootstrap);
+        registrySetBuilder.add(Registries.VILLAGER_TRADE, MITrades::bootstrap);
+        var registriesWithMiPatch = RegistryPatchGenerator.createLookup(registries, registrySetBuilder);
+        gen.addProvider(true,
+                new DatapackBuiltinEntriesProvider(gen.getPackOutput(), registriesWithMiPatch, Set.of(MI.ID)));
+        var registriesWithMi = registriesWithMiPatch.thenApply(RegistrySetBuilder.PatchedRegistries::full);
 
-        gen.addProvider(run, new MIBlockTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
-        gen.addProvider(run, new MIFluidTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
-        gen.addProvider(run, new MIItemTagProvider(gen.getPackOutput(), lookupProvider, fileHelper, runtimeDatagen));
-        gen.addProvider(run, new MIPoiTypeTagProvider(gen.getPackOutput(), lookupProvider, fileHelper));
+        gen.addProvider(true, new MIBlockTagProvider(gen.getPackOutput(), registries));
+        gen.addProvider(true, new MIFluidTagProvider(gen.getPackOutput(), registries));
+        gen.addProvider(true, new MIItemTagProvider(gen.getPackOutput(), registries, runtimeDatagen));
+        gen.addProvider(true, new MIPoiTypeTagProvider(gen.getPackOutput(), registries));
+        gen.addProvider(true, new MIVillagerTradesTagProvider(gen.getPackOutput(), registriesWithMi));
 
-        gen.addProvider(run, new MIDataMapProvider(gen.getPackOutput(), lookupProvider));
+        gen.addProvider(true, new MIDataMapProvider(gen.getPackOutput(), registries));
 
         var translationProvider = new TranslationProvider(gen.getPackOutput());
-        gen.addProvider(run, new AdvancementProvider(gen.getPackOutput(), lookupProvider, fileHelper, List.of(
+        gen.addProvider(true, new AdvancementProvider(gen.getPackOutput(), registries, List.of(
                 new MIAdvancementsProvider(translationProvider))));
 
         // Must either remain separate or be made to use futures to wait for dependencies!
-        gen.addProvider(run, translationProvider);
+        gen.addProvider(true, translationProvider);
     }
 }

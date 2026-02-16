@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "d": {
-      "tag": "c:dyes/red"
-    },
-    "p": {
-      "tag": "modern_industrialization:fluid_pipes"
-    }
+    "d": "#c:dyes/red",
+    "p": "#modern_industrialization:fluid_pipes"
   },
   "pattern": [
     "ppp",

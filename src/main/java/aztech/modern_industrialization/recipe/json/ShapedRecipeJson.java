@@ -30,35 +30,42 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeBuilder;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
+
+import aztech.modern_industrialization.util.EmptyHolderGetter;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.level.material.Fluid;
 
+// TODO: remove in favor of vanilla's
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class ShapedRecipeJson implements MIRecipeBuilder {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, Ingredient> key = new HashMap<>();
-    public final ItemStack result;
+    public final ItemStackTemplate result;
 
     public ShapedRecipeJson(String resultItem, int count, String... pattern) {
         this.pattern = pattern;
-        this.result = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(resultItem)), count);
+        this.result = new ItemStackTemplate(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(resultItem))), count);
     }
 
-    public ShapedRecipeJson addInput(char key, String maybeTag) {
-        Ingredient input;
-        if (maybeTag.startsWith("#")) {
-            input = Ingredient.of(ItemTags.create(ResourceLocation.parse(maybeTag.substring(1))));
-        } else {
-            input = Ingredient.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(maybeTag)));
-        }
+    public ShapedRecipeJson addInput(char key, String id) {
+        return addInput(key, Ingredient.of(BuiltInRegistries.ITEM.getValueOrThrow(ResourceKey.create(Registries.ITEM, Identifier.parse(id)))));
+    }
+
+    public ShapedRecipeJson addInput(char key, Ingredient input) {
         if (this.key.put(key, input) != null) {
             throw new IllegalStateException("Key mapping is already registered: " + key);
         }
@@ -104,11 +111,15 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
     }
 
     public MachineRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
-        if (result.getCount() % division != 0) {
+        if (result.count() % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        var assemblerJson = new MachineRecipeBuilder(machine, eu, duration).addItemOutput(result.getItem(), result.getCount() / division);
+        var assemblerJson = new MachineRecipeBuilder(
+                EmptyHolderGetter.getInstance(),
+                EmptyHolderGetter.getInstance(),
+                machine, eu, duration)
+                .itemOut(result.item().value(), result.count() / division);
         for (Map.Entry<Character, Ingredient> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {
@@ -123,7 +134,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }
 
-            assemblerJson.addItemInput(entry.getValue(), count / division, 1);
+            assemblerJson.itemIn(entry.getValue(), count / division, 1);
         }
 
         return assemblerJson;
@@ -131,7 +142,7 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
 
     @Override
     public void offerTo(RecipeOutput recipeOutput, String path) {
-        recipeOutput.accept(MI.id(path), new ShapedRecipe(
+        recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), new ShapedRecipe(
                 "",
                 CraftingBookCategory.MISC,
                 ShapedRecipePattern.of(key, pattern),

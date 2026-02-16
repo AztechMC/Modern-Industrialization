@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "modern_industrialization:he_uranium_block"
-    }
+    "modern_industrialization:he_uranium_block"
   ],
   "result": {
     "count": 9,

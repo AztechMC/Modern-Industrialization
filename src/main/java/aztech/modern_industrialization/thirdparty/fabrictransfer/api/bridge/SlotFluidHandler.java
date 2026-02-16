@@ -24,9 +24,10 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.inventory.TransactionLegacy;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.primitives.Ints;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -53,7 +54,7 @@ public class SlotFluidHandler implements IFluidHandler {
         if (disallowIo() || stack.isEmpty()) {
             return 0;
         }
-        try (var tx = Transaction.hackyOpen()) {
+        try (var tx = TransactionLegacy.hackyOpen()) {
             var inserted = storage.insert(FluidVariant.of(stack), stack.getAmount(), tx);
             if (action.execute()) {
                 tx.commit();
@@ -75,7 +76,7 @@ public class SlotFluidHandler implements IFluidHandler {
         if (disallowIo() || amount <= 0) {
             return FluidStack.EMPTY;
         }
-        try (var tx = Transaction.hackyOpen()) {
+        try (var tx = TransactionLegacy.hackyOpen()) {
             var resource = storage.getResource();
             if (resource.isBlank()) {
                 return FluidStack.EMPTY;

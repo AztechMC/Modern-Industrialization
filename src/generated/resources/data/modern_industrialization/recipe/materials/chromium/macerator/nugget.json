@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "c:nuggets/chromium"
+      "ingredient": "#c:nuggets/chromium"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:chromium_tiny_dust"
+      "id": "modern_industrialization:chromium_tiny_dust"
     }
   ]
 }

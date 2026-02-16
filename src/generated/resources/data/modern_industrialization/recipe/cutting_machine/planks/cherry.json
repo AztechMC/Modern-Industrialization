@@ -5,19 +5,19 @@
   "fluid_inputs": [
     {
       "amount": 1,
-      "fluid": "modern_industrialization:lubricant"
+      "ingredient": "modern_industrialization:lubricant"
     }
   ],
   "item_inputs": [
     {
       "amount": 1,
-      "tag": "minecraft:cherry_logs"
+      "ingredient": "#minecraft:cherry_logs"
     }
   ],
   "item_outputs": [
     {
       "amount": 6,
-      "item": "minecraft:cherry_planks"
+      "id": "minecraft:cherry_planks"
     }
   ]
 }

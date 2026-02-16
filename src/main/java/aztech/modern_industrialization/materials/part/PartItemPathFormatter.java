@@ -24,6 +24,13 @@
 
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.MITags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Function;
+
 public sealed interface PartItemPathFormatter {
     static String idFromPath(String path) {
         return "modern_industrialization:" + path;
@@ -31,7 +38,8 @@ public sealed interface PartItemPathFormatter {
 
     String getPartItemPath(String materialName, PartKey partKey);
 
-    String getPartItemTag(String materialName, PartKey partKey);
+    @Nullable
+    TagKey<Item> getPartItemTag(String materialName, PartKey partKey);
 
     default String getPartItemId(String materialName, PartKey partKey) {
         return "modern_industrialization:" + getPartItemPath(materialName, partKey);
@@ -44,16 +52,16 @@ public sealed interface PartItemPathFormatter {
         }
 
         @Override
-        public String getPartItemTag(String materialName, PartKey partKey) {
+        public @Nullable TagKey<Item> getPartItemTag(String materialName, PartKey partKey) {
             if (MIParts.TAGGED_PARTS.contains(partKey)) {
-                return "#c:%ss/%s".formatted(partKey.key, materialName);
+                return MITags.convention("%ss/%s".formatted(partKey.key, materialName));
             } else {
-                return idFromPath(getPartItemPath(materialName, partKey));
+                return null;
             }
         }
     }
 
-    record Overridden(String path, String tag) implements PartItemPathFormatter {
+    record Overridden(String path, Function<String, @Nullable TagKey<Item>> materialNameToTag) implements PartItemPathFormatter {
         @Override
         public String getPartItemPath(String materialName, PartKey partKey) {
             if (path.contains("%s")) {
@@ -64,16 +72,8 @@ public sealed interface PartItemPathFormatter {
         }
 
         @Override
-        public String getPartItemTag(String materialName, PartKey partKey) {
-            if (MIParts.TAGGED_PARTS.contains(partKey)) {
-                if (tag.contains("%s")) {
-                    return "#c:" + String.format(tag, materialName);
-                } else {
-                    return tag;
-                }
-            } else {
-                return idFromPath(getPartItemPath(materialName, partKey));
-            }
+        public @Nullable TagKey<Item> getPartItemTag(String materialName, PartKey partKey) {
+            return materialNameToTag.apply(materialName);
         }
     }
 }

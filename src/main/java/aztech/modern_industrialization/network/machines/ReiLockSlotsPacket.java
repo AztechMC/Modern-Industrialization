@@ -29,15 +29,18 @@ import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.network.MIStreamCodecs;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.crafting.Recipe;
 
-public record ReiLockSlotsPacket(int containedId, ResourceLocation recipeId) implements BasePacket {
+public record ReiLockSlotsPacket(int containedId, ResourceKey<Recipe<?>> recipeId) implements BasePacket {
     public static final StreamCodec<ByteBuf, ReiLockSlotsPacket> STREAM_CODEC = StreamCodec.composite(
             MIStreamCodecs.BYTE,
             ReiLockSlotsPacket::containedId,
-            ResourceLocation.STREAM_CODEC,
+            ResourceKey.streamCodec(Registries.RECIPE),
             ReiLockSlotsPacket::recipeId,
             ReiLockSlotsPacket::new);
 

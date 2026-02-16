@@ -5,13 +5,13 @@
   "item_inputs": [
     {
       "amount": 4,
-      "tag": "c:plates/diamond"
+      "ingredient": "#c:plates/diamond"
     }
   ],
   "item_outputs": [
     {
       "amount": 1,
-      "item": "modern_industrialization:diamond_large_plate"
+      "id": "modern_industrialization:diamond_large_plate"
     }
   ]
 }

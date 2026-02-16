@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "modern_industrialization:analog_circuit",
+    "H": "modern_industrialization:basic_machine_hull",
+    "g": "#c:glass_blocks",
+    "m": "modern_industrialization:motor",
+    "p": "#modern_industrialization:fluid_pipes",
+    "r": "modern_industrialization:tin_rotor"
+  },
+  "pattern": [
+    "gmg",
+    "rHr",
+    "CpC"
+  ],
+  "result": {
+    "id": "modern_industrialization:electric_mixer"
+  }
+}

@@ -26,41 +26,57 @@ package aztech.modern_industrialization.client.pipes.impl;
 
 import static net.minecraft.core.Direction.*;
 
-import aztech.modern_industrialization.client.thirdparty.fabricrendering.QuadEmitter;
+import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.impl.PipePartBuilder;
+import net.minecraft.client.model.geom.builders.UVPair;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.client.model.quad.BakedNormals;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+
+import java.util.List;
 
 public class PipeMeshBuilder extends PipePartBuilder {
-    protected final QuadEmitter emitter;
+    private final List<BakedQuad> pipeQuads;
+    private final List<BakedQuad> innerQuads;
+    private final boolean addInnerQuads;
+
     private final TextureAtlasSprite sprite;
     private final float spriteSizeU;
     private final float spriteSizeV;
 
-    PipeMeshBuilder(QuadEmitter emitter, int slotPos, Direction direction, TextureAtlasSprite sprite) {
+    private final Vector3f[] workPos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
+    private final long[] workUv = new long[4];
+
+    PipeMeshBuilder(List<BakedQuad> pipeQuads, List<BakedQuad> innerQuads, boolean addInnerQuads, int slotPos, Direction direction, TextureAtlasSprite sprite) {
         super(slotPos, direction);
-        this.emitter = emitter;
+        this.pipeQuads = pipeQuads;
+        this.innerQuads = innerQuads;
+        this.addInnerQuads = addInnerQuads;
         this.sprite = sprite;
         this.spriteSizeU = sprite.getU1() - sprite.getU0();
         this.spriteSizeV = sprite.getV1() - sprite.getV0();
     }
 
-    /**
-     * Add a quad, BUT DON'T EMIT.
-     */
-    protected void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
-        emitter.square(direction, left, bottom, right, top, depth);
-        emitter.cullFace(null);
+    private void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
+        // Already emit the fluid quad, the UV will be baked when rendering so it's not needed here
+        if (addInnerQuads) {
+            ModelHelper.square(workPos, direction, left, bottom, right, top, depth + 0.001f);
+            innerQuads.add(new BakedQuad(
+                    new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
+                    0, 0, 0, 0,
+                    -1, direction, sprite, true, 0,
+                    BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));
+        }
+
+        ModelHelper.square(workPos, direction, left, bottom, right, top, depth);
     }
 
-    /**
-     * Add a quad with double arguments, BUT DON'T EMIT.
-     */
-    private void quad(Direction direction, double left, double bottom, double right, double top, double depth) {
-        quad(direction, (float) left, (float) bottom, (float) right, (float) top, (float) depth);
-    }
-
+    // TODO: reformat and use vec2 for uvs
     /**
      * Add a quad with four corners and the facing direction. It is important that 1
      * and 4 be opposite corners! UVs are actually (u, v, whatever)
@@ -68,11 +84,11 @@ public class PipeMeshBuilder extends PipePartBuilder {
     private void quad(Vec3 facing, Vec3[] corners, Vec3[] uvs) {
         if (corners.length != 4 || uvs.length != 4)
             throw new RuntimeException("This is a bug, please report!");
-        Vec3 c1 = corners[0];
-        Vec3 c4 = corners[3];
-        Direction direction = Direction.getNearest(facing.x, facing.y, facing.z);
-        double x = Math.min(c1.x, c4.x), y = Math.min(c1.y, c4.y), z = Math.min(c1.z, c4.z);
-        double X = Math.max(c1.x, c4.x), Y = Math.max(c1.y, c4.y), Z = Math.max(c1.z, c4.z);
+        Vector3fc c1 = corners[0].toVector3f();
+        Vector3fc c4 = corners[3].toVector3f();
+        Direction direction = Direction.getApproximateNearest(facing.x, facing.y, facing.z);
+        float x = Math.min(c1.x(), c4.x()), y = Math.min(c1.y(), c4.y()), z = Math.min(c1.z(), c4.z());
+        float X = Math.max(c1.x(), c4.x()), Y = Math.max(c1.y(), c4.y()), Z = Math.max(c1.z(), c4.z());
         if (direction == UP)
             quad(UP, x, 1 - Z, X, 1 - z, 1 - Y);
         else if (direction == DOWN)
@@ -88,17 +104,21 @@ public class PipeMeshBuilder extends PipePartBuilder {
 
         // Map the uvs onto the quad
         for (int i = 0; i < 4; ++i) {
-            Vec3 vertexPos = new Vec3(emitter.copyPos(i, null));
+            Vec3 vertexPos = new Vec3(workPos[i]);
             for (int j = 0; j < 4; ++j) {
                 if (vertexPos.subtract(corners[j]).lengthSqr() < 1e-6) {
                     float realU = sprite.getU0() + spriteSizeU * (float) uvs[j].x();
                     float realV = sprite.getV0() + spriteSizeV * (float) uvs[j].y();
-                    emitter.uv(i, realU, realV);
+                    workUv[i] = UVPair.pack(realU, realV);
                 }
             }
         }
 
-        emitter.emit();
+        pipeQuads.add(new BakedQuad(
+                new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
+                workUv[0],  workUv[1], workUv[2], workUv[3],
+                -1, direction, sprite, true, 0,
+                BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));
     }
 
     private static final double COL_WIDTH = 1 / 8.0;
@@ -159,14 +179,14 @@ public class PipeMeshBuilder extends PipePartBuilder {
      * @param directions: a bitset with the directions
      */
     void noConnection(int directions) {
-        if ((directions & (1 << Direction.getNearest(facing.x, facing.y, facing.z).get3DDataValue())) > 0) {
+        if ((directions & (1 << Direction.getApproximateNearest(facing.x, facing.y, facing.z).get3DDataValue())) > 0) {
             return; // don't render when there is already a connection in this direction
         }
         // Get the 4 connections as '0's and '1's
         int[] sidesDirections = new int[4];
         for (int i = 0; i < 4; ++i) {
             Vec3 up = up();
-            Direction sideDir = Direction.getNearest(up.x, up.y, up.z);
+            Direction sideDir = Direction.getApproximateNearest(up.x, up.y, up.z);
             sidesDirections[i] = (directions >> sideDir.get3DDataValue()) & 1;
             rotateCw();
         }
@@ -205,23 +225,5 @@ public class PipeMeshBuilder extends PipePartBuilder {
         arr[2] = arr[3];
         arr[3] = arr[1];
         arr[1] = tmp;
-    }
-
-    public static class InnerQuads extends PipeMeshBuilder {
-        InnerQuads(QuadEmitter emitter, int slotPos, Direction direction, TextureAtlasSprite sprite) {
-            super(emitter, slotPos, direction, sprite);
-        }
-
-        @Override
-        protected void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
-            // create the inner qud
-            super.quad(direction, left, bottom, right, top, depth + 0.001f);
-            // set the tag
-            emitter.tag(1);
-            // emit the quad
-            emitter.emit();
-            // create the actual quad
-            super.quad(direction, left, bottom, right, top, depth);
-        }
     }
 }

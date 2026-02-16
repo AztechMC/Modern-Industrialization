@@ -28,7 +28,7 @@ import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.Fluid
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public interface NuclearComponent<T extends TransferVariant> {
@@ -55,7 +55,7 @@ public interface NuclearComponent<T extends TransferVariant> {
         return Integer.MAX_VALUE;
     }
 
-    static ResourceLocation getEmiRecipeId(NuclearComponent<?> component, String category, String type) {
+    static Identifier getEmiRecipeId(NuclearComponent<?> component, String category, String type) {
         return switch (component.getVariant()) {
             case ItemVariant itemVariant -> BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
             case FluidVariant fluidVariant -> BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);

@@ -70,7 +70,7 @@ public class ElectricityNetwork extends PipeNetwork {
         long inserted = transferForTargets(MIEnergyStorage::receive, storages, insertMaxAmount);
         networkAmount -= inserted;
 
-        stats.addValue(Math.max(extracted, inserted));
+        stats.addValues(extracted, inserted);
 
         // Split energy evenly across the nodes
         for (var entry : iterateTickingNodes()) {

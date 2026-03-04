@@ -2,7 +2,7 @@
 navigation:
   title: "大型蒸汽锅炉"
   icon: "modern_industrialization:large_steam_boiler"
-  position: 102
+  position: 103
   parent: modern_industrialization:electric_age.md
 item_ids:
   - modern_industrialization:large_steam_boiler
@@ -13,13 +13,17 @@ item_ids:
 
 # 大型蒸汽锅炉
 
-大型蒸汽锅炉是小型青铜和钢制锅炉的升级版本。它使用燃料的速度比熔炉快8倍，但在完全加热时会产生256mb/t的蒸汽。不要忘记加水，否则它不会起作用！
+<GameScene zoom="2" interactive={true} fullWidth={true}>
+    <MultiblockShape controller="large_steam_boiler" />
+</GameScene>
+
+大型蒸汽锅炉是较小型的青铜和钢锅炉的升级版本。其燃料消耗速度是熔炉的8倍，但在完全加热时能以256 mB/t的速度产生蒸汽。
 
 <Recipe id="modern_industrialization:electric_age/machine/large_steam_boiler_asbl" />
 
-与单方块版本不同，在大型蒸汽锅炉中，80%未消耗的热量将会散失。这意味着当输出低于最大值时，通过消耗燃料产出的能量将会大幅减少。如果锅炉没有持续在最大输出运行，就会出现这种情况。
+与单方块版本不同，在大型蒸汽锅炉中，任何未消耗热量的80%都会损失掉。这意味着，当输出功率降至最大值以下时，燃料消耗产生的能量比例将大幅下降。这种情况会在锅炉未以最大输出功率持续运行时发生。
 
-你需要的主要方块是镀青铜砖块，但你还需要青铜管道机器外壳和耐热机器外壳。
+主要方块是镀青铜砖块，但你还需要青铜管道机器外壳和耐热机器外壳。
 
 <Recipe id="modern_industrialization:electric_age/casing/bronze_plated_bricks_asbl" />
 
@@ -35,5 +39,5 @@ item_ids:
 
 中间的两个方块是青铜管道机器外壳。
 
-接口仓必须放在底层。
+仓室必须放在底层。
 

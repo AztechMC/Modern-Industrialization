@@ -1,10 +1,13 @@
 ---
 navigation:
-  title: "终局之战"
+  title: "游戏终局"
   icon: "modern_industrialization:singularity"
   position: 4
 ---
 
-# 终局之战
+# 游戏终局
+你现在已处于**游戏终局**！
+
+量子物理难道只有核裂变吗？当然不是！
 
 <SubPages />

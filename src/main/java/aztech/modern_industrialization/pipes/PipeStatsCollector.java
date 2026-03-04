@@ -28,16 +28,23 @@ public class PipeStatsCollector {
     private static final int REFRESH_RATE = 20;
 
     private long lastStat = 0;
-    private long currentTot = 0;
+    private long currentTotInsert = 0;
+    private long currentTotExtract = 0;
     private int ticks = 0;
 
     public void addValue(long newMoved) {
-        currentTot += newMoved;
+        addValues(newMoved, 0);
+    }
+
+    public void addValues(long extracted, long inserted) {
+        currentTotExtract += extracted;
+        currentTotInsert += inserted;
         ticks++;
 
         if (ticks == REFRESH_RATE) {
-            lastStat = currentTot / REFRESH_RATE;
-            currentTot = 0;
+            lastStat = Math.max(currentTotExtract, currentTotInsert) / REFRESH_RATE;
+            currentTotExtract = 0;
+            currentTotInsert = 0;
             ticks = 0;
         }
     }

@@ -19,15 +19,15 @@ item_ids:
 
 <Recipe id="modern_industrialization:materials/iron/craft/hammer" />
 
-现在，你可能需要考虑制作蒸汽采矿钻头来直接获取矿石，而无需使用精准采集镐。
+现在，你可能需要考虑制作蒸汽采矿手钻来直接获取矿石，而无需使用精准采集镐。
 
 <Recipe id="modern_industrialization:forge_hammer" />
 
-蒸汽采矿钻头一次可以挖掘3x3范围的方块，非常适合游戏早期的挖矿需求！它还自带精准采集，能与锻压台很好地配合。
+蒸汽采矿手钻一次可以挖掘3x3范围的方块，非常适合游戏早期的挖矿需求！它还自带精准采集，能与锻压台很好地配合。
 
 <Recipe id="modern_industrialization:tools/steam_mining_drill" />
 
-蒸汽采矿钻头需要水和固体燃料（例如煤炭）。
+蒸汽采矿手钻需要水和固体燃料（例如煤炭）。
 
 右键点击水源以将其注满水，并确保时不时在物品栏中用燃料物品右键点击钻头来添加燃料。燃料会在你挖矿时缓慢消耗。
 

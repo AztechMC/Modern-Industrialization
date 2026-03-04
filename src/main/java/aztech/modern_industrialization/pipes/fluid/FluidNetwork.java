@@ -113,7 +113,7 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
 
-        stats.addValue(Math.max(extracted, inserted));
+        stats.addValues(extracted, inserted);
         capacityStats.addValue(networkCapacity);
 
         for (var entry : iterateTickingNodes()) {

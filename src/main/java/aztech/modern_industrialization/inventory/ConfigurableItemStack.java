@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.machine.component.ItemAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,8 @@ import org.jspecify.annotations.Nullable;
  */
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
     private int adjustedCapacity = 64;
+
+    private @Nullable ItemStack cachedItemStack;
 
     public ConfigurableItemStack() {}
 
@@ -189,6 +192,32 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     @Override
     public ItemVariant getVariant() {
         return getResource();
+    }
+
+    @Override
+    public ItemStack toStack() {
+        if (cachedItemStack == null) {
+            cachedItemStack = ItemAccess.super.toStack();
+        }
+        return cachedItemStack;
+    }
+
+    @Override
+    public void setAmount(long amount) {
+        super.setAmount(amount);
+        cachedItemStack = null;
+    }
+
+    @Override
+    public void setKey(ItemVariant key) {
+        super.setKey(key);
+        cachedItemStack = null;
+    }
+
+    @Override
+    public void revertToSnapshot(ResourceAmount<ItemVariant> ra) {
+        super.revertToSnapshot(ra);
+        cachedItemStack = null;
     }
 
     public class ConfigurableItemSlot extends HackySlot implements ReiDraggable, BackgroundRenderedSlot {

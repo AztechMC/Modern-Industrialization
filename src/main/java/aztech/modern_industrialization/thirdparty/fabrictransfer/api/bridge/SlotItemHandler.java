@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge;
 
+import aztech.modern_industrialization.inventory.FilledItemStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
 import aztech.modern_industrialization.thirdparty.fabrictransfer.api.transaction.Transaction;
@@ -31,7 +32,7 @@ import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements IItemHandler {
+public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements IItemHandler, FilledItemStorage {
     @Override
     public int getSlots() {
         return 1;
@@ -82,5 +83,10 @@ public record SlotItemHandler(SingleSlotStorage<ItemVariant> storage) implements
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean isFull() {
+        return storage.getAmount() >= storage.getCapacity();
     }
 }

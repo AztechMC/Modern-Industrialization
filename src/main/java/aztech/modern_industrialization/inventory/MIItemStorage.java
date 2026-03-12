@@ -41,7 +41,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         super(stacks, false);
     }
 
-    public class ItemHandler implements IItemHandler, WhitelistedItemStorage {
+    public class ItemHandler implements IItemHandler, WhitelistedItemStorage, FilledItemStorage {
         @Override
         public int getSlots() {
             return stacks.size();
@@ -136,6 +136,16 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
                     whitelist.add(stack.getLockedInstance());
                 }
             }
+        }
+
+        @Override
+        public boolean isFull() {
+            for (var stack : stacks) {
+                if (!stack.isLockedTo(Items.AIR) && stack.getAmount() < stack.getCapacity()) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

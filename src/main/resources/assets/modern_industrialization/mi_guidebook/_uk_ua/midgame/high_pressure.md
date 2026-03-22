@@ -30,7 +30,7 @@ item_ids:
 <GameScene zoom="2" interactive={true} fullWidth={true}>
     <MultiblockShape controller="high_pressure_large_steam_boiler" />
 </GameScene>
-      
+
 Отримавши доступ до високотискної води, ви можете використовувати вискотискний великий паровий котел для виробництва високотискного пару.
 
 Одне мВ високотискного пару коштує 8 мВ звичайного пару, тобто 8 EU.

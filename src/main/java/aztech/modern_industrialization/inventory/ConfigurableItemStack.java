@@ -204,20 +204,20 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     @Override
     public void setAmount(long amount) {
-        super.setAmount(amount);
         cachedItemStack = null;
+        super.setAmount(amount);
     }
 
     @Override
     public void setKey(ItemVariant key) {
-        super.setKey(key);
         cachedItemStack = null;
+        super.setKey(key);
     }
 
     @Override
     public void revertToSnapshot(ResourceAmount<ItemVariant> ra) {
-        super.revertToSnapshot(ra);
         cachedItemStack = null;
+        super.revertToSnapshot(ra);
     }
 
     public class ConfigurableItemSlot extends HackySlot implements ReiDraggable, BackgroundRenderedSlot {
@@ -260,6 +260,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         protected void setRealStack(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
+            cachedItemStack = null;
             notifyListeners();
             markDirty.run();
         }

@@ -31,7 +31,6 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidFuelsCategory extends ViewerCategory<Fluid> {
     public FluidFuelsCategory() {
@@ -66,7 +66,7 @@ public class FluidFuelsCategory extends ViewerCategory<Fluid> {
 
     @Override
     public void buildLayout(Fluid recipe, LayoutBuilder builder) {
-        builder.inputSlot(15, 10).variant(FluidVariant.of(recipe));
+        builder.inputSlot(15, 10).resource(FluidResource.of(recipe));
     }
 
     @Override

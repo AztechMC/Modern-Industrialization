@@ -26,17 +26,18 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
+public interface ItemContainingItemHelper extends ContainerItem<ItemResource> {
     default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             Mutable<ItemStack> ref = new MutableObject<>(slot.getItem());
@@ -66,7 +67,8 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
             throw new AssertionError("This method should only be called on a ItemContainingItemHelper.");
         }
 
-        var barrelHandler = new ItemHandler(barrelLike, this);
+        // TODO 26.1
+        IItemHandler barrelHandler = null;// new ItemHandler(barrelLike, this);
 
         // Try to fill barrel with otherStack
         int otherCount = otherStack.getValue().getCount();
@@ -94,12 +96,12 @@ public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
     }
 
     @Override
-    default DataComponentType<ResourceStorage<ItemVariant>> getComponentType() {
+    default DataComponentType<ResourceStorage<ItemResource>> getComponentType() {
         return MIComponents.ITEM_STORAGE.get();
     }
 
     @Override
-    default ResourceStorage<ItemVariant> getDefaultComponent() {
+    default ResourceStorage<ItemResource> getDefaultComponent() {
         return ResourceStorage.ITEM_EMPTY;
     }
 }

@@ -24,16 +24,15 @@
 
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.Storage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import aztech.modern_industrialization.transfer.MIPreconditions;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfigurableStack<T, K>> implements Storage<K> {
+public class MIStorage<T, K extends DataComponentHolderResource<T>, S extends AbstractConfigurableStack<T, K>> implements ResourceHandler<K> {
     final List<S> stacks;
     private final boolean oneSlotPerResource; // true for fluids, false for items
 
@@ -42,14 +41,65 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
         this.oneSlotPerResource = oneSlotPerResource;
     }
 
+    @Override
+    public int size() {
+        return stacks.size();
+    }
+
+    @Override
+    public K getResource(int index) {
+        return stacks.get(index).getResource();
+    }
+
+    @Override
+    public long getAmountAsLong(int index) {
+        return stacks.get(index).getAmount();
+    }
+
+    @Override
+    public long getCapacityAsLong(int index, K resource) {
+        return stacks.get(index).getTotalCapacityFor(resource.value());
+    }
+
+    @Override
+    public boolean isValid(int index, K resource) {
+        return stacks.get(index).isResourceAllowedByLock(resource);
+    }
+
+    private int insertDirect(S stack, K resource, int amount, TransactionContext transaction) {
+        if ((stack.getAmount() == 0 && stack.isResourceAllowedByLock(resource)) || stack.getResource().equals(resource)) {
+            int inserted = Math.min(amount, stack.getRemainingCapacityFor(resource));
+
+            if (inserted > 0) {
+                stack.updateSnapshots(transaction);
+                stack.setKey(resource);
+                stack.increment(inserted);
+            }
+
+            return inserted;
+        }
+
+        return 0;
+    }
+
+    @Override
+    public int insert(int index, K resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        S stack = stacks.get(index);
+        if (!stack.canPipesInsert()) {
+            return 0;
+        }
+        return insertDirect(stack, resource, amount, transaction);
+    }
+
     /**
      * @param filter    Return false to skip some configurable stacks.
      * @param lockSlots Whether to lock slots or not.
      */
-    public long insert(K resource, long maxAmount, TransactionContext tx, Predicate<? super S> filter, boolean lockSlots) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+    public int insert(K resource, int maxAmount, TransactionContext tx, Predicate<? super S> filter, boolean lockSlots) {
+        MIPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
         boolean containsResourceAlready = false;
-        long totalInserted = 0;
+        int totalInserted = 0;
 
         outer:
         for (int iter = 0; iter < 2; ++iter) {
@@ -67,25 +117,15 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
                     } else {
                         canInsert = iter == 1;
                     }
-                } else if (stack.getAmount() == 0) {
-                    // If the amount is 0, we check if the lock allows it.
-                    canInsert = stack.isResourceAllowedByLock(resource);
                 } else {
-                    // Otherwise we check that the resources match exactly.
-                    canInsert = stack.getResource().equals(resource);
+                    canInsert = true;
                 }
 
                 if (canInsert) {
-                    long inserted = Math.min(maxAmount - totalInserted, stack.getRemainingCapacityFor(resource));
+                    int inserted = insertDirect(stack, resource, Math.min(maxAmount - totalInserted, stack.getRemainingCapacityFor(resource)), tx);
 
-                    if (inserted > 0) {
-                        stack.updateSnapshots(tx);
-                        stack.setKey(resource);
-                        stack.increment(inserted);
-
-                        if (lockSlots) {
-                            stack.enableMachineLock(resource.getObject());
-                        }
+                    if (inserted > 0 && lockSlots) {
+                        stack.enableMachineLock(resource.value());
                     }
 
                     totalInserted += inserted;
@@ -98,54 +138,61 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
         return totalInserted;
     }
 
-    public long insertAllSlot(K resource, long maxAmount, TransactionContext tx) {
-        return insert(resource, maxAmount, tx, (slot) -> true, false);
+    public int insertAllSlot(K resource, int maxAmount, TransactionContext tx) {
+        return insert(resource, maxAmount, tx, s -> true, false);
     }
 
     @Override
-    public long insert(K resource, long maxAmount, TransactionContext transaction) {
+    public int insert(K resource, int maxAmount, TransactionContext transaction) {
         return insert(resource, maxAmount, transaction, AbstractConfigurableStack::canPipesInsert, false);
     }
 
-    public long extract(K resource, long maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        long amount = 0;
+    private int extractDirect(S stack, K key, int maxAmount, TransactionContext transaction) {
+        if (key.equals(stack.getResource())) {
+            int extracted = Math.min(stack.getAmount(), maxAmount);
+            stack.updateSnapshots(transaction);
+            stack.decrement(extracted);
+            return extracted;
+        }
+        return 0;
+    }
+
+    @Override
+    public int extract(int index, K resource, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        S stack = stacks.get(index);
+        if (!stack.canPipesExtract()) {
+            return 0;
+        }
+        return extractDirect(stack, resource, amount, transaction);
+    }
+
+    public int extract(K resource, int maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
+        MIPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+        int amount = 0;
         for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
-            if (!filter.test(stacks.get(i))) {
+            S stack = stacks.get(i);
+            if (!filter.test(stack)) {
                 continue;
             }
-            amount += stacks.get(i).extract(resource, maxAmount - amount, transaction);
+            amount += extractDirect(stack, resource, maxAmount - amount, transaction);
         }
         return amount;
     }
 
     @Override
-    public long extract(K resource, long maxAmount, TransactionContext transaction) {
-        return extract(resource, maxAmount, transaction, (slot) -> true);
+    public int extract(K resource, int maxAmount, TransactionContext transaction) {
+        return extract(resource, maxAmount, transaction, AbstractConfigurableStack::canPipesExtract);
     }
 
     /*
      * Ignore requirement for slot to have pipeExtract = true
      */
-    public long extractAllSlot(K resource, long maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        long amount = 0;
-        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
-            if (!filter.test(stacks.get(i))) {
-                continue;
-            }
-            amount += stacks.get(i).extractDirect(resource, maxAmount - amount, transaction);
-        }
-        return amount;
+    public int extractAllSlot(K resource, int maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
+        return extract(resource, maxAmount, transaction, filter);
     }
 
-    public long extractAllSlot(K resource, long maxAmount, TransactionContext transaction) {
-        return extractAllSlot(resource, maxAmount, transaction, (slot) -> true);
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    public Iterator<StorageView<K>> iterator() {
-        return (Iterator) stacks.iterator();
+    public int extractAllSlot(K resource, int maxAmount, TransactionContext transaction) {
+        return extractAllSlot(resource, maxAmount, transaction, s -> true);
     }
 }

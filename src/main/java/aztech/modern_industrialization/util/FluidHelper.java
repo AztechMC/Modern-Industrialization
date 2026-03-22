@@ -26,8 +26,6 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.network.chat.Component;
@@ -35,14 +33,15 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidHelper {
-    public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
-        if (fluid.isBlank()) {
+    public static Component getFluidName(FluidResource fluid, boolean grayIfEmpty) {
+        if (fluid.isEmpty()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false) : Style.EMPTY;
             return MIText.Empty.text().setStyle(style);
         } else {
-            return FluidVariantAttributes.getName(fluid);
+            return fluid.toStack(1).getHoverName();
         }
     }
 
@@ -90,8 +89,8 @@ public class FluidHelper {
         }
     }
 
-    public static List<Component> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
-        if (fluid.isBlank()) {
+    public static List<Component> getTooltip(FluidResource fluid, boolean grayIfEmpty) {
+        if (fluid.isEmpty()) {
             ArrayList<Component> list = new ArrayList();
             list.add(getFluidName(fluid, grayIfEmpty));
             return list;
@@ -99,13 +98,13 @@ public class FluidHelper {
         return MICommonProxy.INSTANCE.getFluidTooltip(fluid);
     }
 
-    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
+    public static List<Component> getTooltipForFluidStorage(FluidResource fluid, long amount, long capacity, boolean grayIfEmpty) {
         List<Component> tooltip = getTooltip(fluid, grayIfEmpty);
         tooltip.add(getFluidAmount(amount, capacity));
         return tooltip;
     }
 
-    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
+    public static List<Component> getTooltipForFluidStorage(FluidResource fluid, long amount, long capacity) {
         return getTooltipForFluidStorage(fluid, amount, capacity, true);
     }
 }

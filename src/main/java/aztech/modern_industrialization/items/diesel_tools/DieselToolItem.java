@@ -31,7 +31,6 @@ import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +115,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     private float getMiningSpeedMultiplier(ItemStack stack) {
         long amount = FluidFuelItemHelper.getAmount(stack);
         if (amount > 0) {
-            FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
+            var fluid = FluidFuelItemHelper.getFluid(stack);
             int burnTicks = FluidFuel.getEu(fluid.getFluid());
             if (burnTicks > 0) {
                 return 1.0f + burnTicks / 8.0f;

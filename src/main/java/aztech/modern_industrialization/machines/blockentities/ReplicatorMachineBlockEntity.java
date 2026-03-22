@@ -39,7 +39,7 @@ import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         this.redstoneControl = new RedstoneControlComponent();
         ProgressBar.Params progressBarParams = new ProgressBar.Params(85, 34, "arrow");
 
-        long capacity = FluidType.BUCKET_VOLUME * 256;
+        int capacity = FluidType.BUCKET_VOLUME * 256;
 
         List<ConfigurableFluidStack> fluidInput = Collections
                 .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATTER.asFluid()));
@@ -146,9 +146,9 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     }
 
     public boolean replicationStep(boolean simulate) {
-        ItemVariant itemVariant = inventoryComponent.getItemInputs().get(0).getResource();
+        ItemResource itemVariant = inventoryComponent.getItemInputs().get(0).getResource();
 
-        if (!itemVariant.isBlank()) {
+        if (!itemVariant.isEmpty()) {
             if (!canReplicate(itemVariant.toStack())) {
                 return false;
             }
@@ -158,7 +158,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
                 long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
-                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATTER.variant(), FluidType.BUCKET_VOLUME / 10, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATTER.resource(), FluidType.BUCKET_VOLUME / 10, tx);
 
                 if (inserted == 1 && uuMatterExtraced == FluidType.BUCKET_VOLUME / 10) {
                     if (!simulate) {

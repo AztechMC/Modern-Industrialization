@@ -26,14 +26,15 @@ package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
@@ -41,30 +42,31 @@ public class CreativeTankBlockEntity extends AbstractTankBlockEntity {
     }
 
     @Override
-    public boolean onPlayerUse(Player player) {
-        if (isResourceBlank()) {
-            var fluid = FluidUtil.getFluidContained(player.getItemInHand(InteractionHand.MAIN_HAND));
-            if (fluid.isPresent()) {
-                setFluid(FluidVariant.of(fluid.get()));
+    public boolean onPlayerUse(Player player, InteractionHand hand) {
+        if (resource.isEmpty()) {
+            var fluid = FluidUtil.getFirstStackContained(player.getItemInHand(hand));
+            if (!fluid.isEmpty()) {
+                setFluid(FluidResource.of(fluid));
                 return true;
             }
-            return !isResourceBlank();
+            return !resource.isEmpty();
         } else {
-            // Fill all of the stacks, fuck it!
-            var fluidHandler = FluidUtil.getFluidHandler(player.getItemInHand(InteractionHand.MAIN_HAND)).orElse(null);
+            var fluidHandler = ItemAccess.forPlayerInteraction(player, hand).getCapability(Capabilities.Fluid.ITEM);
             if (fluidHandler != null) {
-                int inserted = fluidHandler.fill(resource.toStack(Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
-                if (inserted > 0) {
-                    player.setItemInHand(InteractionHand.MAIN_HAND, fluidHandler.getContainer());
-                    return true;
+                try (var tx = Transaction.openRoot()) {
+                    int inserted = fluidHandler.insert(resource, Integer.MAX_VALUE, tx);
+                    if (inserted > 0) {
+                        tx.commit();
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
-    public void setFluid(FluidVariant variant) {
-        resource = variant;
+    public void setFluid(FluidResource resource) {
+        this.resource = resource;
         onChanged();
     }
 }

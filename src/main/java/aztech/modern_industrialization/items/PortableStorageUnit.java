@@ -26,7 +26,6 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.Optional;
@@ -37,6 +36,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class PortableStorageUnit extends Item implements ItemContainingItemHelper, MIEnergyItem {
     public static final Reference2LongMap<Item> CAPACITY_PER_BATTERY = new Reference2LongOpenHashMap<>();
@@ -60,14 +60,15 @@ public class PortableStorageUnit extends Item implements ItemContainingItemHelpe
     }
 
     @Override
-    public StorageBehaviour<ItemVariant> getBehaviour() {
+    public StorageBehaviour<ItemResource> getBehaviour() {
         return new StorageBehaviour<>() {
             @Override
-            public long getCapacityForResource(ItemVariant resource) {
+            public long getCapacityForResource(ItemResource resource) {
                 return MAX_BATTERY_COUNT;
             }
 
-            public boolean canInsert(ItemVariant maybeBattery) {
+            @Override
+            public boolean canInsert(ItemResource maybeBattery) {
                 return CAPACITY_PER_BATTERY.containsKey(maybeBattery.getItem());
             }
         };

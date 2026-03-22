@@ -27,7 +27,6 @@ package aztech.modern_industrialization.blocks.storage.tank;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import java.util.function.Consumer;
@@ -38,8 +37,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
+public class TankItem extends AbstractStorageBlockItem<FluidResource> {
     public TankItem(TankBlock block, Properties settings) {
         super(block, settings);
     }
@@ -55,7 +55,7 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
                 if (!isUnlocked(stack)) {
                     FluidHelper.getTooltipForFluidStorage(getResource(stack), 0, capacity).forEach(tooltip);
                 } else {
-                    FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity).forEach(tooltip);
+                    FluidHelper.getTooltipForFluidStorage(FluidResource.EMPTY, 0, capacity).forEach(tooltip);
                 }
             } else {
                 FluidHelper.getTooltipForFluidStorage(getResource(stack), getAmount(stack), capacity).forEach(tooltip);
@@ -66,12 +66,12 @@ public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
     }
 
     @Override
-    public DataComponentType<ResourceStorage<FluidVariant>> getComponentType() {
+    public DataComponentType<ResourceStorage<FluidResource>> getComponentType() {
         return MIComponents.FLUID_STORAGE.get();
     }
 
     @Override
-    public ResourceStorage<FluidVariant> getDefaultComponent() {
+    public ResourceStorage<FluidResource> getDefaultComponent() {
         return ResourceStorage.FLUID_EMPTY;
     }
 }

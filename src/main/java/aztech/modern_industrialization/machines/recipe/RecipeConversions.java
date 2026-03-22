@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.config.MIServerConfig;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
@@ -115,7 +114,7 @@ public class RecipeConversions {
 
             plantOil.fluidOutputs = List.of(new MachineRecipe.FluidOutput(
                     MIFluids.PLANT_OIL.asFluid(),
-                    (long) (probability * FluidType.BUCKET_VOLUME),
+                    (int) (probability * FluidType.BUCKET_VOLUME),
                     1.0f));
             plantOil.itemOutputs = Collections.emptyList();
             return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), plantOil);

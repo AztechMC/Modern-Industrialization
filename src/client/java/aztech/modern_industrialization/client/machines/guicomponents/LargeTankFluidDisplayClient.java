@@ -30,9 +30,8 @@ import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.guicomponents.LargeTankFluidDisplay;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
@@ -41,6 +40,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeTankFluidDisplay.Data> {
     public LargeTankFluidDisplayClient(Unit params, LargeTankFluidDisplay.Data data) {
@@ -54,12 +54,12 @@ public class LargeTankFluidDisplayClient extends GuiComponentClient<Unit, LargeT
 
             @Override
             public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
-                FluidVariant fluid = data.fluid();
+                FluidResource fluid = data.fluid();
                 float fracFull = (float) data.amount() / data.capacity();
 
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, leftPos + posX, topPos + posY, 92, 38, 46, 62, 256, 256);
 
-                if (!fluid.isBlank()) {
+                if (!fluid.isEmpty()) {
                     for (int i = 0; i < 2; i++) {
                         for (int j = 0; j < 3; j++) {
                             float localFullness = Math.min(Math.max(3 * fracFull - (2 - j), 0), 1);

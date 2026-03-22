@@ -26,8 +26,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.ItemAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
@@ -43,8 +41,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -53,18 +49,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> implements ItemAccess {
+public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemResource> implements ItemAccess {
     // TODO: more efficient encoding?
     public static final Codec<ConfigurableItemStack> CODEC = RecordCodecBuilder.create(
             i -> i.group(
-                            ItemVariant.CODEC.fieldOf("key").forGetter(s -> s.key),
-                            MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(s -> s.amount),
+                            ItemResource.OPTIONAL_CODEC.fieldOf("key").forGetter(s -> s.key),
+                            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("amount").forGetter(s -> s.amount),
                             BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf("locked").forGetter(s -> Optional.ofNullable(s.lockedInstance)),
                             Codec.BOOL.fieldOf("machineLocked").forGetter(s -> s.machineLocked),
                             Codec.BOOL.fieldOf("playerLocked").forGetter(s -> s.playerLocked),
@@ -82,7 +79,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     public ConfigurableItemStack() {}
 
-    private ConfigurableItemStack(ItemVariant key, long amount, Optional<Item> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, int adjustedCapacity) {
+    private ConfigurableItemStack(ItemResource key, int amount, Optional<Item> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, int adjustedCapacity) {
         super(key, amount, lockedInstance.orElse(null), playerLocked, machineLocked, playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
         this.adjustedCapacity = adjustedCapacity;
     }
@@ -112,7 +109,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
     public static ConfigurableItemStack lockedInputSlot(Item item) {
         ConfigurableItemStack stack = new ConfigurableItemStack();
-        stack.key = ItemVariant.of(item);
+        stack.key = ItemResource.of(item);
         stack.lockedInstance = item;
         stack.playerInsert = true;
         stack.playerLockable = false;
@@ -144,8 +141,8 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    protected ItemVariant getBlankVariant() {
-        return ItemVariant.blank();
+    protected ItemResource getBlankVariant() {
+        return ItemResource.EMPTY;
     }
 
     @Override
@@ -154,22 +151,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    protected Registry<Item> getRegistry() {
-        return BuiltInRegistries.ITEM;
+    public int getCapacity() {
+        return key.isEmpty() ? adjustedCapacity : Math.min(adjustedCapacity, key.getMaxStackSize());
     }
 
     @Override
-    protected ItemVariant readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries) {
-        return ItemVariant.fromNbt(compound, registries);
-    }
-
-    @Override
-    public long getCapacity() {
-        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getMaxStackSize());
-    }
-
-    @Override
-    public long getRemainingCapacityFor(ItemVariant key) {
+    public int getRemainingCapacityFor(ItemResource key) {
         if (adjustedCapacity < amount) {
             return 0; // Make sure we don't get negative counts if this happens!
         }
@@ -177,8 +164,9 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    public long getTotalCapacityFor(Item instance) {
-        return Math.min(ItemVariant.of(instance).getMaxStackSize(), adjustedCapacity);
+    public int getTotalCapacityFor(Item instance) {
+        // TODO: should be made stack-aware
+        return Math.min(instance.getDefaultMaxStackSize(), adjustedCapacity);
     }
 
     /**
@@ -210,7 +198,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    public ItemVariant getVariant() {
+    public ItemResource getVariant() {
         return getResource();
     }
 
@@ -252,7 +240,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
 
         @Override
         protected void setRealStack(ItemStack stack) {
-            key = ItemVariant.of(stack);
+            key = ItemResource.of(stack);
             amount = stack.getCount();
             notifyListeners();
             markDirty.run();
@@ -264,13 +252,13 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidResource fluidResource, Simulation simulation) {
             return false;
         }
 
         @Override
-        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
-            return playerLock(itemKey.getItem(), simulation);
+        public boolean dragItem(ItemResource itemResource, Simulation simulation) {
+            return playerLock(itemResource.getItem(), simulation);
         }
 
         @Override

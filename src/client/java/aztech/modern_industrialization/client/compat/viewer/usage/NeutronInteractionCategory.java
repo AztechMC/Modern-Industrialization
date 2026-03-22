@@ -36,8 +36,6 @@ import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -51,6 +49,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractionCategory.Recipe> {
     public static final Identifier TEXTURE_ATLAS = NuclearReactorGuiClient.TEXTURE_ATLAS;
@@ -85,7 +85,7 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
                 consumer.accept(new Recipe(component, CategoryType.FISSION));
             }
 
-            ItemVariant product = component.getNeutronProduct();
+            ItemResource product = component.getNeutronProduct();
             if (product != null) {
                 consumer.accept(new Recipe(component, CategoryType.NEUTRON_PRODUCT));
             }
@@ -111,25 +111,25 @@ public class NeutronInteractionCategory extends ViewerCategory<NeutronInteractio
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
         switch (recipe.type) {
             case FISSION -> {
-                builder.inputSlot(52, centerY).variant(recipe.nuclearComponent.getVariant());
+                builder.inputSlot(52, centerY).resource(recipe.nuclearComponent.getVariant());
             }
             case NEUTRON_PRODUCT -> {
                 long amount = recipe.nuclearComponent.getNeutronProductAmount();
                 int baseX = 66;
 
-                if (recipe.nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
-                    builder.inputSlot(baseX - 35, centerY).item(itemVariant.toStack());
-                    ItemVariant product = (ItemVariant) recipe.nuclearComponent.getNeutronProduct();
+                if (recipe.nuclearComponent.getVariant() instanceof ItemResource itemResource) {
+                    builder.inputSlot(baseX - 35, centerY).item(itemResource.toStack());
+                    ItemResource product = (ItemResource) recipe.nuclearComponent.getNeutronProduct();
                     builder.outputSlot(baseX + 35, centerY).item(product.toStack((int) amount));
-                } else if (recipe.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
+                } else if (recipe.nuclearComponent.getVariant() instanceof FluidResource fluidResource) {
                     float probability = (float) recipe.nuclearComponent.getNeutronProductProbability();
-                    builder.inputSlot(baseX - 35, centerY).fluid(fluidVariant, 1, probability);
-                    FluidVariant product = (FluidVariant) recipe.nuclearComponent.getNeutronProduct();
+                    builder.inputSlot(baseX - 35, centerY).fluid(fluidResource, 1, probability);
+                    FluidResource product = (FluidResource) recipe.nuclearComponent.getNeutronProduct();
                     builder.outputSlot(baseX + 35, centerY).fluid(product, amount, probability);
                 }
             }
             case FAST_NEUTRON_INTERACTION, THERMAL_NEUTRON_INTERACTION -> {
-                builder.inputSlot(66, centerY).variant(recipe.nuclearComponent.getVariant());
+                builder.inputSlot(66, centerY).resource(recipe.nuclearComponent.getVariant());
             }
         }
     }

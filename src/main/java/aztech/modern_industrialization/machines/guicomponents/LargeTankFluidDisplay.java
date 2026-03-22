@@ -26,12 +26,12 @@ package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.gui.GuiComponentServer;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Supplier;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class LargeTankFluidDisplay implements GuiComponentServer<Unit, LargeTankFluidDisplay.Data> {
     public static final Type<Unit, Data> TYPE = new Type<>(MI.id("large_tank_fluid_display"), StreamCodec.unit(Unit.INSTANCE), Data.STREAM_CODEC);
@@ -57,9 +57,9 @@ public class LargeTankFluidDisplay implements GuiComponentServer<Unit, LargeTank
         return TYPE;
     }
 
-    public record Data(FluidVariant fluid, long amount, long capacity) {
+    public record Data(FluidResource fluid, long amount, long capacity) {
         public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                FluidVariant.STREAM_CODEC,
+                FluidResource.STREAM_CODEC,
                 Data::fluid,
                 ByteBufCodecs.VAR_LONG,
                 Data::amount,

@@ -25,8 +25,6 @@
 package aztech.modern_industrialization.client.compat.viewer.abstraction;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.List;
 import java.util.function.Consumer;
@@ -40,6 +38,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -112,9 +112,9 @@ public abstract class ViewerCategory<D> {
     }
 
     public interface SlotBuilder {
-        SlotBuilder variant(TransferVariant<?> variant); // no amount is shown
+        SlotBuilder resource(Resource variant); // no amount is shown
 
-        SlotBuilder fluid(FluidVariant fluid, long amount, float probability);
+        SlotBuilder fluid(FluidResource fluid, long amount, float probability);
 
         SlotBuilder fluid(FluidIngredient ingredient, long amount, float probability);
 
@@ -132,12 +132,12 @@ public abstract class ViewerCategory<D> {
 
         class NoOp implements SlotBuilder {
             @Override
-            public SlotBuilder variant(TransferVariant<?> variant) {
+            public SlotBuilder resource(Resource resource) {
                 return this;
             }
 
             @Override
-            public SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
+            public SlotBuilder fluid(FluidResource fluid, long amount, float probability) {
                 return this;
             }
 

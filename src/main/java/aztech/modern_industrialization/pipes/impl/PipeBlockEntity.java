@@ -36,7 +36,6 @@ import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.TransferHelper;
 import aztech.modern_industrialization.util.WorldHelper;
@@ -74,6 +73,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -521,7 +521,7 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             renderedConnections[i] = Arrays.copyOf(entry.getValue(), 6);
             var data = this.customData.get(entry.getKey());
             if (data.contains("fluid")) {
-                customData[i] = data.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
+                customData[i] = data.read("fluid", FluidResource.OPTIONAL_CODEC).orElse(FluidResource.EMPTY);
             }
             i++;
         }

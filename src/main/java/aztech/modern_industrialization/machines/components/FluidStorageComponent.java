@@ -27,86 +27,78 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.machines.MachineComponent;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkExtensionTank;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleVariantStorage;
 import com.google.common.base.Preconditions;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 
 public class FluidStorageComponent implements MachineComponent, FluidAccess {
     private final Runnable changeCallback;
-    private long capacity;
+    private int capacity;
 
-    SingleVariantStorage<FluidVariant> singleStorageVariant = new SingleVariantStorage<>() {
+    private final FluidStacksResourceHandler fluidHandler = new FluidStacksResourceHandler(1, 0) {
+        // Capacity is dynamic, don't pass it through the constructor but rather override the method
         @Override
-        protected FluidVariant getBlankVariant() {
-            return FluidVariant.blank();
-        }
-
-        @Override
-        protected long getCapacity(FluidVariant variant) {
+        protected int getCapacity(int index, FluidResource resource) {
             return capacity;
         }
 
         @Override
-        protected void onRootCommit(ResourceAmount<FluidVariant> originalState) {
-            if (!originalState.resource().equals(variant) || originalState.amount() != amount) {
-                changeCallback.run();
-            }
+        protected void onContentsChanged(int index, FluidStack previousContents) {
+            changeCallback.run();
         }
     };
-    private final IFluidHandler fluidHandler = new FluidNetworkExtensionTank(singleStorageVariant);
+    private final ResourceHandler<FluidResource> exposedFluidHandler = new FluidNetworkExtensionTank(fluidHandler);
 
     public FluidStorageComponent(Runnable changeCallback) {
         this.changeCallback = changeCallback;
     }
 
-    public SingleVariantStorage<FluidVariant> getFluidStorage() {
-        return singleStorageVariant;
-    }
-
-    public IFluidHandler getFluidHandler() {
+    public ResourceHandler<FluidResource> getFluidHandler() {
         return fluidHandler;
     }
 
+    public ResourceHandler<FluidResource> getExposedFluidHandler() {
+        return exposedFluidHandler;
+    }
+
     @Override
-    public long getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(long capacity) {
+    public void setCapacity(int capacity) {
         Preconditions.checkArgument(capacity >= 0, "Fluid Capacity must be > 0");
         this.capacity = capacity;
-        singleStorageVariant.amount = Math.min(singleStorageVariant.amount, capacity);
+        this.fluidHandler.set(0, getFluid(), Math.min(getAmount(), capacity));
     }
 
-    public FluidVariant getFluid() {
-        return singleStorageVariant.variant;
+    public FluidResource getFluid() {
+        return fluidHandler.getResource(0);
     }
 
     @Override
-    public long getAmount() {
-        return singleStorageVariant.amount;
+    public int getAmount() {
+        return fluidHandler.getAmountAsInt(0);
     }
 
     @Override
     public void writeNbt(ValueOutput output) {
-        output.store("fluid", FluidVariant.CODEC, singleStorageVariant.variant);
-        output.putLong("amount", singleStorageVariant.amount);
-        output.putLong("capacity", capacity);
+        fluidHandler.serialize(output);
+        output.putInt("capacity", capacity);
     }
 
     @Override
     public void readNbt(ValueInput input, boolean isUpgradingMachine) {
-        singleStorageVariant.variant = input.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
-        singleStorageVariant.amount = input.getLongOr("amount", 0);
-        capacity = input.getLongOr("capacity", 0);
+        fluidHandler.deserialize(input);
+        capacity = input.getIntOr("capacity", 0);
     }
 
     @Override
-    public FluidVariant getVariant() {
+    public FluidResource getVariant() {
         return getFluid();
     }
 }

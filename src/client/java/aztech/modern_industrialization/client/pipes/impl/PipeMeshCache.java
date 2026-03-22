@@ -25,11 +25,10 @@
 package aztech.modern_industrialization.client.pipes.impl;
 
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
-import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
 import aztech.modern_industrialization.client.util.ModelHelper;
+import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.impl.PipePartBuilder;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +46,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
@@ -151,9 +151,9 @@ public class PipeMeshCache implements PipeRenderer {
 
         TextureAtlasSprite still;
         int fluidColor;
-        if (customData instanceof FluidVariant fluid) {
-            still = FluidVariantRendering.getSprite(fluid);
-            fluidColor = FluidVariantRendering.getColor(fluid, view, pos);
+        if (customData instanceof FluidResource fluid) {
+            still = RenderHelper.getFluidSprite(fluid);
+            fluidColor = RenderHelper.getFluidColor(fluid, view, pos);
         } else {
             still = null;
             fluidColor = -1;

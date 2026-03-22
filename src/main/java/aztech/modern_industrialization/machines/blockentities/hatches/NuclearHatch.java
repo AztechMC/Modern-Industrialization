@@ -42,9 +42,9 @@ import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.multiblocks.HatchTypes;
 import aztech.modern_industrialization.nuclear.*;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import com.google.common.base.Preconditions;
 import java.util.*;
@@ -65,7 +65,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
     public final NeutronHistoryComponent neutronHistory;
     public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
-    public static final long capacity = 64 * FluidType.BUCKET_VOLUME;
+    public static final int capacity = 64 * FluidType.BUCKET_VOLUME;
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
@@ -143,8 +143,8 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
                 this.inventory.autoExtractItems(level, worldPosition, Direction.UP);
             }
 
-            ItemVariant itemVariant = (ItemVariant) this.getVariant();
-            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+            ItemResource itemVariant = (ItemResource) this.getVariant();
+            if (!itemVariant.isEmpty() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
                 if (abs.getNeutronProduct() != null) {
                     try (Transaction tx = Transaction.openRoot()) {
                         this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
@@ -189,7 +189,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
     }
 
     @Override
-    public TransferVariant getVariant() {
+    public Resource getVariant() {
         if (isFluid) {
             return this.inventory.getFluidStacks().get(0).getResource();
         } else {
@@ -229,9 +229,9 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
         int neutronsProduced = 0;
 
         if (!isFluid) {
-            ItemVariant itemVariant = (ItemVariant) this.getVariant();
+            ItemResource itemVariant = (ItemResource) this.getVariant();
 
-            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+            if (!itemVariant.isEmpty() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
 
                 if (itemVariant.getItem() instanceof NuclearFuel) {
                     meanNeutron += NuclearConstant.BASE_NEUTRON;
@@ -253,7 +253,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
                         ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
                         absStack.updateSnapshots(tx);
                         absStack.setAmount(0);
-                        absStack.setKey(ItemVariant.blank());
+                        absStack.setKey(ItemResource.EMPTY);
 
                         if (abs.getNeutronProduct() != null) {
                             long inserted = this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
@@ -267,7 +267,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
                         }
                     }
                 } else {
-                    this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+                    this.getInventory().getItemStacks().get(0).setKey(ItemResource.of(stack));
                 }
 
             }
@@ -285,8 +285,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
     public void fluidNeutronProductTick(int neutron, boolean simul) {
         if (isFluid) {
-            @Nullable
-            NuclearComponent<FluidVariant> component = (NuclearComponent<FluidVariant>) this.getComponent();
+            NuclearComponent<FluidResource> component = (NuclearComponent<FluidResource>) this.getComponent();
 
             if (component == null) {
                 return;
@@ -303,7 +302,7 @@ public class NuclearHatch extends HatchBlockEntity implements NuclearTile {
 
             if (simul || actualRecipe > 0) {
                 try (Transaction tx = Transaction.openRoot()) {
-                    long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
+                    int extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
                             AbstractConfigurableStack::canPipesInsert);
                     this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
                             AbstractConfigurableStack::canPipesExtract, true);

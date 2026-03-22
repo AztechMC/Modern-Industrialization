@@ -39,7 +39,6 @@ import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -56,6 +55,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeMap;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>> {
     public static MachineCategory create(MachineCategoryParams params) {
@@ -154,7 +154,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 var input = recipe.fluidInputs.get(i);
                 slot.fluid(input.fluid(), input.amount(), input.probability());
             } else {
-                slot.variant(FluidVariant.blank());
+                slot.resource(FluidResource.EMPTY);
             }
         }
     }
@@ -170,9 +170,9 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
 
             if (i < recipe.fluidOutputs.size()) {
                 var output = recipe.fluidOutputs.get(i);
-                slot.fluid(FluidVariant.of(output.fluid()), output.amount(), output.probability());
+                slot.fluid(FluidResource.of(output.fluid()), output.amount(), output.probability());
             } else {
-                slot.variant(FluidVariant.blank());
+                slot.resource(FluidResource.EMPTY);
             }
         }
     }

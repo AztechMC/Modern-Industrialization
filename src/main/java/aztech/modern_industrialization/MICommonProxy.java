@@ -27,8 +27,6 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariantAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -51,6 +49,7 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -110,9 +109,10 @@ public class MICommonProxy {
     }
 
     // In case there is ever a client-side specific version of this...
-    public List<Component> getFluidTooltip(FluidVariant variant) {
+    // TODO 26.1: now there is
+    public List<Component> getFluidTooltip(FluidResource variant) {
         List<Component> list = new ArrayList<>();
-        list.add(FluidVariantAttributes.getName(variant));
+        list.add(variant.toStack(1).getHoverName());
         return list;
     }
 

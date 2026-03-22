@@ -24,7 +24,7 @@
 
 package aztech.modern_industrialization.blocks.storage.barrel;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public record BarrelTooltipData(ItemVariant variant, long amount, long capacity, boolean creative) implements TooltipComponent {}
+public record BarrelTooltipData(ItemResource variant, long amount, long capacity, boolean creative) implements TooltipComponent {}

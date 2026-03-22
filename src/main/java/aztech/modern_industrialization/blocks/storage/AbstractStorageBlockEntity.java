@@ -27,10 +27,10 @@ package aztech.modern_industrialization.blocks.storage;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.FastBlockEntity;
 import aztech.modern_industrialization.blocks.WrenchableBlockEntity;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
+import aztech.modern_industrialization.transfer.LongResourceStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
@@ -43,7 +43,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -53,16 +52,12 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
-        implements SingleSlotStorage<T>, WrenchableBlockEntity {
-    @Override
-    public long getVersion() {
-        return version;
-    }
+import java.util.Objects;
 
+public abstract class AbstractStorageBlockEntity<T extends Resource> extends FastBlockEntity
+        implements ResourceHandler<T>, WrenchableBlockEntity {
     protected T resource;
     protected long amount;
-    private long version;
     private boolean isLocked;
 
     public final StorageBehaviour<T> behaviour;
@@ -71,7 +66,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     public AbstractStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        resource = getBlankResource();
+        resource = getEmptyResource();
         this.behaviour = ((AbstractStorageBlock<T>) state.getBlock()).behavior;
     }
 
@@ -81,7 +76,6 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     public void onChanged() {
-        version++;
         setChanged();
         if (!level.isClientSide())
             sync();
@@ -116,24 +110,27 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public boolean supportsExtraction() {
-        return true;
+    public int size() {
+        return 1;
     }
 
     @Override
-    public boolean supportsInsertion() {
-        return !behaviour.isCreative();
+    public boolean isValid(int index, T resource) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmpty(resource);
+        return !this.isLocked() || this.resource.equals(resource);
     }
 
-    public long insert(T resource, long maxAmount, TransactionContext transaction, boolean ignoreLock) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+    public int insert(int index, T resource, int maxAmount, TransactionContext transaction, boolean ignoreLock) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
 
         if (behaviour.isCreative()) {
             return 0;
         }
 
-        if ((this.resource.isBlank() && (ignoreLock || !this.isLocked())) || this.resource.equals(resource)) {
-            long inserted = Math.min(maxAmount, behaviour.getCapacityForResource(resource) - amount);
+        if ((this.resource.isEmpty() && (ignoreLock || !this.isLocked())) || this.resource.equals(resource)) {
+            int inserted = (int) Math.min(maxAmount, behaviour.getCapacityForResource(resource) - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);
                 amount += inserted;
@@ -145,24 +142,25 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public long insert(T resource, long maxAmount, TransactionContext transaction) {
-        return insert(resource, maxAmount, transaction, false);
+    public int insert(int index, T resource, int maxAmount, TransactionContext transaction) {
+        return insert(index, resource, maxAmount, transaction, false);
     }
 
     @Override
-    public long extract(T resource, long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+    public int extract(int index, T resource, int maxAmount, TransactionContext transaction) {
+        Objects.checkIndex(index, size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
 
         if (behaviour.isCreative()) {
             return maxAmount;
         } else {
             if (resource.equals(this.resource)) {
-                long extracted = Math.min(maxAmount, amount);
+                int extracted = (int) Math.min(maxAmount, amount);
                 if (extracted > 0) {
                     participant.updateSnapshots(transaction);
                     amount -= extracted;
                     if (amount == 0 && !isLocked()) {
-                        this.resource = getBlankResource();
+                        this.resource = getEmptyResource();
                     }
                 }
                 return extracted;
@@ -172,18 +170,15 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
-    public boolean isResourceBlank() {
-        return getResource().isBlank();
-    }
-
-    @Override
-    public T getResource() {
+    public T getResource(int index) {
+        Objects.checkIndex(index, size());
         return resource;
     }
 
     @Override
-    public long getAmount() {
-        if (isResourceBlank()) {
+    public long getAmountAsLong(int index) {
+        Objects.checkIndex(index, size());
+        if (resource.isEmpty()) {
             return 0;
         }
         if (!behaviour.isCreative()) {
@@ -197,29 +192,31 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         if (!behaviour.isCreative()) {
             return amount == 0;
         } else {
-            return resource.isBlank();
+            return resource.isEmpty();
         }
     }
 
     @Override
-    public long getCapacity() {
+    public long getCapacityAsLong(int index, T resource) {
+        Objects.checkIndex(index, size());
+        // TODO 26.1: check handling of the empty resource
         return behaviour.getCapacityForResource(resource);
     }
 
-    private class ResourceParticipant extends SnapshotJournal<ResourceAmount<T>> {
+    private class ResourceParticipant extends SnapshotJournal<LongResourceStack<T>> {
         @Override
-        protected ResourceAmount<T> createSnapshot() {
-            return new ResourceAmount<>(resource, amount);
+        protected LongResourceStack<T> createSnapshot() {
+            return new LongResourceStack<>(resource, amount);
         }
 
         @Override
-        protected void revertToSnapshot(ResourceAmount<T> snapshot) {
+        protected void revertToSnapshot(LongResourceStack<T> snapshot) {
             resource = snapshot.resource();
             amount = snapshot.amount();
         }
 
         @Override
-        protected void onRootCommit(ResourceAmount<T> originalState) {
+        protected void onRootCommit(LongResourceStack<T> originalState) {
             onChanged();
         }
     }
@@ -235,7 +232,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         if (behaviour.isLockable()) {
             isLocked = !isLocked;
             if (!isLocked && amount == 0) {
-                resource = getBlankResource();
+                resource = getEmptyResource();
             }
             setChanged();
         }
@@ -285,7 +282,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
         if (!behaviour.isCreative()) {
             amount = input.getLongOr("amt", 0);
-            if (resource.isBlank()) {
+            if (resource.isEmpty()) {
                 amount = 0;
             }
         }
@@ -313,5 +310,5 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     public abstract void saveResource(T resource, ValueOutput output);
 
-    public abstract T getBlankResource();
+    public abstract T getEmptyResource();
 }

@@ -24,11 +24,9 @@
 
 package aztech.modern_industrialization.client.machines.multiblocks;
 
-import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;

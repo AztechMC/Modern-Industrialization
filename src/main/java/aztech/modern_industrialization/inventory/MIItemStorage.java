@@ -24,117 +24,33 @@
 
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import com.google.common.primitives.Ints;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import java.util.List;
 import java.util.Set;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.items.IItemHandler;
 
-public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> {
-    public final IItemHandler itemHandler = new ItemHandler();
-
+public class MIItemStorage extends MIStorage<Item, ItemResource, ConfigurableItemStack> implements WhitelistedItemStorage {
     public MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }
 
-    public class ItemHandler implements IItemHandler, WhitelistedItemStorage {
-        @Override
-        public int getSlots() {
-            return stacks.size();
-        }
-
-        @Override
-        public ItemStack getStackInSlot(int slot) {
-            return stacks.get(slot).getVariant().toStack(Ints.saturatedCast(stacks.get(slot).getAmount()));
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack item, boolean simulate) {
-            if (item.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-
-            var stack = stacks.get(slot);
-            if (!stack.pipesInsert) {
-                return item;
-            }
-
-            ItemVariant resource = ItemVariant.of(item);
-
-            boolean canInsert;
-
-            if (stack.getAmount() == 0) {
-                // If the amount is 0, we check if the lock allows it.
-                canInsert = stack.isResourceAllowedByLock(resource);
-            } else {
-                // Otherwise we check that the resources match exactly.
-                canInsert = stack.getResource().equals(resource);
-            }
-
-            if (canInsert) {
-                long inserted = Math.min(item.getCount(), stack.getRemainingCapacityFor(resource));
-
-                if (inserted > 0 && !simulate) {
-                    stack.setKey(resource);
-                    stack.increment(inserted);
-                }
-
-                return inserted == item.getCount() ? ItemStack.EMPTY : resource.toStack((int) (item.getCount() - inserted));
-            }
-
-            return item;
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (amount <= 0) {
-                return ItemStack.EMPTY;
-            }
-            try (var tx = TransactionLegacy.hackyOpen()) {
-                var variant = stacks.get(slot).getVariant();
-                if (variant.isBlank()) {
-                    return ItemStack.EMPTY;
-                }
-
-                long result = stacks.get(slot).extract(variant, amount, tx);
-                if (result > 0 && !simulate) {
-                    tx.commit();
-                }
-                return result == 0 ? ItemStack.EMPTY : variant.toStack((int) result);
+    @Override
+    public boolean currentlyWhitelisted() {
+        // Only whitelisted if everything is locked.
+        for (ConfigurableItemStack stack : stacks) {
+            if (stack.pipesInsert && stack.getLockedInstance() == null) {
+                return false;
             }
         }
+        return true;
+    }
 
-        @Override
-        public int getSlotLimit(int slot) {
-            return (int) stacks.get(slot).getCapacity();
-        }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return stacks.get(slot).isResourceAllowedByLock(stack.getItem());
-        }
-
-        @Override
-        public boolean currentlyWhitelisted() {
-            // Only whitelisted if everything is locked.
-            for (ConfigurableItemStack stack : stacks) {
-                if (stack.pipesInsert && stack.getLockedInstance() == null) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public void getWhitelistedItems(Set<Item> whitelist) {
-            for (ConfigurableItemStack stack : stacks) {
-                if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
-                    whitelist.add(stack.getLockedInstance());
-                }
+    @Override
+    public void getWhitelistedItems(Set<Item> whitelist) {
+        for (ConfigurableItemStack stack : stacks) {
+            if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
+                whitelist.add(stack.getLockedInstance());
             }
         }
     }

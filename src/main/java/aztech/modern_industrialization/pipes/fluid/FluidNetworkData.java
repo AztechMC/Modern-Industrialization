@@ -25,17 +25,16 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.util.NbtHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public record FluidNetworkData(FluidVariant fluid) implements PipeNetworkData {
+public record FluidNetworkData(FluidResource fluid) implements PipeNetworkData {
     public static final MapCodec<FluidNetworkData> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            FluidVariant.CODEC.fieldOf("fluid").forGetter(FluidNetworkData::fluid)
+            FluidResource.OPTIONAL_CODEC.fieldOf("fluid").forGetter(FluidNetworkData::fluid)
     ).apply(i, FluidNetworkData::new));
 
     @Override

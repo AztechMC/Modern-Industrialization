@@ -31,8 +31,6 @@ import aztech.modern_industrialization.network.pipes.SetItemWhitelistPacket;
 import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -42,6 +40,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ItemPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 196;
@@ -196,14 +196,14 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidResource fluidResource, Simulation simulation) {
             return false;
         }
 
         @Override
-        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
+        public boolean dragItem(ItemResource itemResource, Simulation simulation) {
             if (simulation.isActing()) {
-                set(itemKey.toStack());
+                set(itemResource.toStack());
             }
             return true;
         }

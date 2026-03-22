@@ -34,13 +34,11 @@ import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.RegistryAccess;
@@ -50,6 +48,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractionCategory.Recipe> {
     private final int centerX;
@@ -91,7 +90,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
         }
 
         for (String s : new String[] { "item", "fluid" }) {
-            consumer.accept(new Recipe(new NuclearComponent<ItemVariant>() {
+            consumer.accept(new Recipe(new NuclearComponent<ItemResource>() {
                 @Override
                 public double getHeatConduction() {
                     return NuclearConstant.BASE_HEAT_CONDUCTION;
@@ -107,8 +106,8 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
                 }
 
                 @Override
-                public ItemVariant getVariant() {
-                    return ItemVariant.of(BuiltInRegistries.ITEM.getValue(MI.id(String.format("nuclear_%s_hatch", s))));
+                public ItemResource getVariant() {
+                    return ItemResource.of(BuiltInRegistries.ITEM.getValue(MI.id(String.format("nuclear_%s_hatch", s))));
                 }
             }, CategoryType.THERMAL_PROPERTIES));
         }
@@ -116,7 +115,7 @@ public class ThermalInteractionCategory extends ViewerCategory<ThermalInteractio
 
     @Override
     public void buildLayout(Recipe recipe, LayoutBuilder builder) {
-        builder.inputSlot(px, 22).variant(recipe.nuclearComponent.getVariant());
+        builder.inputSlot(px, 22).resource(recipe.nuclearComponent.getVariant());
     }
 
     @Override

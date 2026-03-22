@@ -24,11 +24,11 @@
 
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
 public interface NuclearTileData {
@@ -44,7 +44,8 @@ public interface NuclearTileData {
 
     double getMeanEuGeneration();
 
-    TransferVariant getVariant();
+    // TODO I don't like this
+    Resource getVariant();
 
     long getVariantAmount();
 
@@ -52,15 +53,15 @@ public interface NuclearTileData {
 
     @Nullable
     default NuclearComponent<?> getComponent() {
-        TransferVariant<?> variant = getVariant();
+        var variant = getVariant();
 
-        if (variant instanceof ItemVariant resource) {
-            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof NuclearComponent<?> comp) {
+        if (variant instanceof ItemResource resource) {
+            if (!variant.isEmpty() && getVariantAmount() > 0 && resource.getItem() instanceof NuclearComponent<?> comp) {
                 return comp;
             }
 
-        } else if (variant instanceof FluidVariant resource) {
-            if (!resource.isBlank() && getVariantAmount() > 0) {
+        } else if (variant instanceof FluidResource resource) {
+            if (!resource.isEmpty() && getVariantAmount() > 0) {
                 return FluidNuclearComponent.get(resource.getFluid());
             }
         }
@@ -87,7 +88,11 @@ public interface NuclearTileData {
             buf.writeDouble(tile.getMeanEuGeneration());
 
             buf.writeBoolean(!tile.isFluid());
-            tile.getVariant().toPacket(buf);
+            if (tile.isFluid()) {
+                FluidResource.STREAM_CODEC.encode(buf, (FluidResource) tile.getVariant());
+            } else {
+                ItemResource.STREAM_CODEC.encode(buf, (ItemResource) tile.getVariant());
+            }
             buf.writeLong(tile.getVariantAmount());
 
         } else {
@@ -113,7 +118,7 @@ public interface NuclearTileData {
             final double euGeneration = buf.readDouble();
 
             final boolean isItem = buf.readBoolean();
-            final TransferVariant variant = isItem ? ItemVariant.fromPacket(buf) : FluidVariant.fromPacket(buf);
+            final Resource variant = isItem ? ItemResource.STREAM_CODEC.decode(buf) : FluidResource.STREAM_CODEC.decode(buf);
             final long amount = buf.readLong();
 
             return Optional.of(new NuclearTileData() {
@@ -158,7 +163,7 @@ public interface NuclearTileData {
                 }
 
                 @Override
-                public TransferVariant getVariant() {
+                public Resource getVariant() {
                     return variant;
                 }
 

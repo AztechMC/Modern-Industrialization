@@ -43,8 +43,9 @@ public class TankComponentProvider implements IServerExtensionProvider<FluidView
     @Override
     public List<ViewGroup<FluidView.Data>> getGroups(Accessor<?> accessor) {
         var tank = (TankBlockEntity) accessor.getTarget();
+        var resource = tank.getResource(0);
         return List.of(new ViewGroup<>(List.of(
-                new FluidView.Data(MIJadeCommonPlugin.fluidStack(tank.getResource(), tank.getAmount()), tank.getCapacity()))));
+                new FluidView.Data(MIJadeCommonPlugin.fluidStack(resource, tank.getAmountAsLong(0)), tank.getCapacityAsLong(0, resource)))));
     }
 
     @Override

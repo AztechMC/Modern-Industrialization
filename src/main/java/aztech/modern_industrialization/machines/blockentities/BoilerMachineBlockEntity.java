@@ -50,6 +50,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.wrapper.PlayerInvWrapper;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -136,7 +137,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     protected InteractionResult useItemOn(Player player, InteractionHand hand, Direction face) {
         var heldItem = player.getItemInHand(hand);
         if (!heldItem.isEmpty()) {
-            var waterSlotHandler = new MIFluidStorage(inventory.getFluidStacks().subList(0, 1)).fluidHandler;
+            var waterSlotHandler = IFluidHandler.of(new MIFluidStorage(inventory.getFluidStacks().subList(0, 1)));
             var result = FluidUtil.tryEmptyContainerAndStow(heldItem, waterSlotHandler, new PlayerInvWrapper(player.getInventory()),
                     Integer.MAX_VALUE, player, true);
             if (result.isSuccess()) {

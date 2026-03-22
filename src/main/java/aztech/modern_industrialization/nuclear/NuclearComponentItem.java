@@ -27,10 +27,10 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class NuclearComponentItem extends Item implements NuclearComponent<ItemVariant> {
+public class NuclearComponentItem extends Item implements NuclearComponent<ItemResource> {
     public final int maxTemperature;
     public final double heatConduction;
     public final NeutronBehaviour neutronBehaviour;
@@ -64,7 +64,7 @@ public class NuclearComponentItem extends Item implements NuclearComponent<ItemV
     }
 
     @Override
-    public ItemVariant getVariant() {
-        return ItemVariant.of(this);
+    public ItemResource getVariant() {
+        return ItemResource.of(this);
     }
 }

@@ -31,7 +31,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.test.framework.MIGameTest;
 import aztech.modern_industrialization.test.framework.MIGameTestHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -117,7 +117,7 @@ public class FluidPipeTests {
                     var tank = helper.getBlockEntity(extensionTank, TankBlockEntity.class);
                     try (var tx = Transaction.openRoot()) {
                         // hacky way to toggle lock :P
-                        tank.insert(FluidVariant.of(Fluids.LAVA), 1000, tx);
+                        tank.insert(FluidResource.of(Fluids.LAVA), 1000, tx);
                         tank.toggleLocked();
                     }
                 })

@@ -28,8 +28,6 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +42,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ConflictsChecker {
     public static Path writeConflictReport(ServerLevel level) throws IOException {
@@ -59,7 +59,7 @@ public class ConflictsChecker {
                         .map(input -> {
                             var confStack = new ConfigurableItemStack();
                             var item = input.getInputItems().stream().findFirst().orElse(Items.AIR);
-                            confStack.setKey(ItemVariant.of(item));
+                            confStack.setKey(ItemResource.of(item));
                             confStack.setAmount(Integer.MAX_VALUE);
                             return confStack;
                         })
@@ -68,7 +68,7 @@ public class ConflictsChecker {
                         .map(input -> {
                             var confStack = new ConfigurableFluidStack(Integer.MAX_VALUE);
                             var fluid = input.getInputFluids().stream().findFirst().orElse(Fluids.EMPTY);
-                            confStack.setKey(FluidVariant.of(fluid));
+                            confStack.setKey(FluidResource.of(fluid));
                             confStack.setAmount(Integer.MAX_VALUE);
                             return confStack;
                         })

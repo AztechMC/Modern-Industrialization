@@ -38,7 +38,6 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TransferHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -352,7 +351,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 upgradeStack = requestedUpgrade;
             } else {
                 // Otherwise -> try to grab the upgrades from the player's inventory, and deposit the old one.
-                ItemVariant requestedVariant = ItemVariant.of(requestedUpgrade);
+                ItemResource requestedVariant = ItemResource.of(requestedUpgrade);
 
                 if (requestedVariant.matches(upgradeStack)) {
                     int delta = requestedUpgrade.getCount() - upgradeStack.getCount();
@@ -373,7 +372,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        private int fetchItems(Player player, ItemVariant what, int maxAmount) {
+        private int fetchItems(Player player, ItemResource what, int maxAmount) {
             return TransferHelper.extractMatching(player.getInventory(), what::matches, maxAmount, false).getCount();
         }
 

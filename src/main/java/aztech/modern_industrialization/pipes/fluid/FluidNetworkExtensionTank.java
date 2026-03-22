@@ -24,32 +24,40 @@
 
 package aztech.modern_industrialization.pipes.fluid;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.SingleSlotStorage;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Act as a pipe network extension when connected to a fluid pipe in I/O mode.
  */
-public class FluidNetworkExtensionTank extends SlotFluidHandler {
+public class FluidNetworkExtensionTank extends DelegatingResourceHandler<FluidResource> {
     private static final int NOT_CLAIMED = -1;
     private int lastClaimTick = NOT_CLAIMED;
 
-    public FluidNetworkExtensionTank(SingleSlotStorage<FluidVariant> storage) {
-        super(storage);
+    public FluidNetworkExtensionTank(ResourceHandler<FluidResource> handler) {
+        if (handler.size() != 1) {
+            throw new IllegalArgumentException("Can only have a handler of size 1, received: " + handler.size());
+        }
+        if (handler.getCapacityAsLong(0, FluidResource.EMPTY) > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Can only have a handler with int capacity");
+        }
+        super(handler);
     }
 
-    public boolean tryClaimForNetwork(Level level, FluidVariant networkFluid) {
-        if (storage.getAmount() != 0 && !storage.getResource().equals(networkFluid)) {
+    public boolean tryClaimForNetwork(Level level, FluidResource networkFluid) {
+        var handler = delegate.get();
+        if (handler.getAmountAsLong(0) != 0 && !handler.getResource(0).equals(networkFluid)) {
             return false;
         }
 
         try (var tx = Transaction.openRoot()) {
-            storage.extract(networkFluid, storage.getAmount(), tx);
-            long inserted = storage.insert(networkFluid, storage.getCapacity(), tx);
-            if (inserted != storage.getCapacity()) {
+            handler.extract(networkFluid, handler.getAmountAsInt(0), tx);
+            long inserted = handler.insert(networkFluid, handler.getCapacityAsInt(0, FluidResource.EMPTY), tx);
+            if (inserted != handler.getCapacityAsInt(0, FluidResource.EMPTY)) {
                 // Tank locked to a different fluid
                 return false;
             }
@@ -65,30 +73,32 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
     }
 
     public void clear() {
-        if (storage.getAmount() == 0) {
+        var handler = delegate.get();
+        if (handler.getAmountAsLong(0) == 0) {
             return;
         }
         try (var tx = Transaction.openRoot()) {
-            storage.extract(storage.getResource(), storage.getAmount(), tx);
+            handler.extract(handler.getResource(0), handler.getAmountAsInt(0), tx);
             tx.commit();
         }
-        if (storage.getAmount() > 0) {
+        if (handler.getAmountAsInt(0) > 0) {
             throw new IllegalStateException("Internal MI error: extension %s should be empty after clearing it.".formatted(this));
         }
     }
 
-    public void releaseFromNetwork(FluidVariant fluid, long amount) {
-        if (storage.getAmount() > 0) {
+    public void releaseFromNetwork(FluidResource fluid, int amount) {
+        var handler = delegate.get();
+        if (handler.getAmountAsLong(0) > 0) {
             throw new IllegalStateException("Internal MI error: extension %s should be empty when being released.".formatted(this));
         }
         lastClaimTick = NOT_CLAIMED;
-        if (fluid.isBlank()) {
-            if (storage.getAmount() != 0) {
+        if (fluid.isEmpty()) {
+            if (handler.getAmountAsLong(0) != 0) {
                 throw new IllegalStateException("Internal MI error: releasing extension %s from network with non-empty tank.".formatted(this));
             }
         }
         try (var tx = Transaction.openRoot()) {
-            long inserted = storage.insert(fluid, amount, tx);
+            long inserted = handler.insert(fluid, amount, tx);
             tx.commit();
             if (inserted != amount) {
                 throw new IllegalStateException(
@@ -97,17 +107,52 @@ public class FluidNetworkExtensionTank extends SlotFluidHandler {
         }
     }
 
+    public long getAmount() {
+        return getAmountAsLong(0);
+    }
+
     public long getCapacity() {
-        return storage.getCapacity();
+        return getCapacityAsLong(0, FluidResource.EMPTY);
     }
 
     @Override
+    public int insert(FluidResource resource, int amount, TransactionContext transaction) {
+        if (disallowIo()) {
+            return 0;
+        }
+        return super.insert(resource, amount, transaction);
+    }
+
+    @Override
+    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        if (disallowIo()) {
+            return 0;
+        }
+        return super.insert(index, resource, amount, transaction);
+    }
+
+    @Override
+    public int extract(FluidResource resource, int amount, TransactionContext transaction) {
+        if (disallowIo()) {
+            return 0;
+        }
+        return super.extract(resource, amount, transaction);
+    }
+
+    @Override
+    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        if (disallowIo()) {
+            return 0;
+        }
+        return super.extract(index, resource, amount, transaction);
+    }
+
     protected boolean disallowIo() {
         return lastClaimTick != NOT_CLAIMED;
     }
 
     @Override
     public String toString() {
-        return "FluidNetworkExtensionTank{" + storage + '}';
+        return "FluidNetworkExtensionTank{" + delegate.get() + '}';
     }
 }

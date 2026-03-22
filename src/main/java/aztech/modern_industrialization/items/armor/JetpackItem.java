@@ -29,7 +29,6 @@ import aztech.modern_industrialization.api.datamaps.FluidFuel;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.ActivatableItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -90,7 +89,7 @@ public class JetpackItem extends Item implements ActivatableItem {
 
     private void tickArmor(ItemStack stack, Player player) {
         if (isActivated(stack) && !player.onGround()) {
-            FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
+            var fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
                 // Always consume one mb of fuel

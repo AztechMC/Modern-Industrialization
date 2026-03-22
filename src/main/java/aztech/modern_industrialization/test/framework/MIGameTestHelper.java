@@ -34,7 +34,6 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +46,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -63,7 +63,7 @@ public class MIGameTestHelper extends GameTestHelper {
     public void creativeTank(BlockPos pos, Fluid fluid) {
         setBlock(pos, MIBlock.CREATIVE_TANK.get());
         var tank = getBlockEntity(pos, CreativeTankBlockEntity.class);
-        tank.setFluid(FluidVariant.of(fluid));
+        tank.setFluid(FluidResource.of(fluid));
     }
 
     public void emptyTank(BlockPos pos) {

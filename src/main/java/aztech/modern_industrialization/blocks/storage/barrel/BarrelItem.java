@@ -27,7 +27,6 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
 import aztech.modern_industrialization.items.ItemContainingItemHelper;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Optional;
@@ -48,8 +47,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
+public class BarrelItem extends AbstractStorageBlockItem<ItemResource> implements ItemContainingItemHelper {
     private static final int ITEM_BAR_COLOR = ARGB.colorFromFloat(1.0F, 0.44F, 0.53F, 1.0F);
 
     public BarrelItem(BarrelBlock block, Properties settings) {
@@ -79,7 +79,7 @@ public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements
                 return Optional.of(new BarrelTooltipData(getResource(stack), getAmount(stack),
                         getCurrentCapacity(stack), false));
             }
-        } else if (!getResource(stack).isBlank()) {
+        } else if (!getResource(stack).isEmpty()) {
             return Optional.of(new BarrelTooltipData(getResource(stack), -1,
                     -1, true));
         }

@@ -24,17 +24,17 @@
 
 package aztech.modern_industrialization.api.machine.component;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import com.google.common.primitives.Ints;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus;
 
 // TODO: rename? the conflict with NeoForge's ItemAccess is annoying
 public interface ItemAccess {
     @ApiStatus.Internal // Don't rely on these types existing forever!
-    ItemVariant getVariant();
+    ItemResource getVariant();
 
-    long getAmount();
+    int getAmount();
 
     default ItemStack toStack() {
         return getVariant().toStack(Ints.saturatedCast(getAmount()));

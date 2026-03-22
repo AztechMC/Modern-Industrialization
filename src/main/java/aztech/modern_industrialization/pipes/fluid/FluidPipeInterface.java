@@ -26,29 +26,29 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInterface {
-    FluidVariant getNetworkFluid();
+    FluidResource getNetworkFluid();
 
-    void setNetworkFluid(FluidVariant fluid);
+    void setNetworkFluid(FluidResource fluid);
 
     boolean canUse(Player player);
 
     static FluidPipeInterface ofBuf(RegistryFriendlyByteBuf buf) {
-        FluidVariant[] networkFluid = new FluidVariant[] { FluidVariant.fromPacket(buf) };
+        FluidResource[] networkFluid = new FluidResource[] { FluidResource.STREAM_CODEC.decode(buf) };
         int[] type = new int[] { buf.readInt() };
         int[] priority = new int[] { buf.readInt() };
         return new FluidPipeInterface() {
             @Override
-            public FluidVariant getNetworkFluid() {
+            public FluidResource getNetworkFluid() {
                 return networkFluid[0];
             }
 
             @Override
-            public void setNetworkFluid(FluidVariant fluid) {
+            public void setNetworkFluid(FluidResource fluid) {
                 networkFluid[0] = fluid;
             }
 
@@ -80,7 +80,7 @@ public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInt
     }
 
     default void toBuf(RegistryFriendlyByteBuf buf) {
-        getNetworkFluid().toPacket(buf);
+        FluidResource.STREAM_CODEC.encode(buf, getNetworkFluid());
         buf.writeInt(getConnectionType());
         buf.writeInt(getPriority(0));
     }

@@ -24,10 +24,9 @@
 
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageView;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.base.ResourceAmount;
+import aztech.modern_industrialization.transfer.MIPreconditions;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import aztech.modern_industrialization.util.Simulation;
@@ -41,11 +40,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
-public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotJournal<ResourceAmount<K>>
-        implements StorageView<K>, ConfigurableSlot {
+public abstract class AbstractConfigurableStack<T, K extends DataComponentHolderResource<T>> extends SnapshotJournal<ResourceStack<K>>
+        implements ConfigurableSlot {
     private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
-    protected long amount = 0;
+    protected int amount = 0;
     @Nullable
     protected T lockedInstance = null;
     protected boolean playerLocked = false;
@@ -71,7 +70,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.pipesExtract = other.pipesExtract;
     }
 
-    protected AbstractConfigurableStack(K key, long amount, @Nullable T lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract) {
+    protected AbstractConfigurableStack(K key, int amount, @Nullable T lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract) {
         this.key = key;
         this.amount = amount;
         this.lockedInstance = lockedInstance;
@@ -100,13 +99,9 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     protected abstract K getBlankVariant();
 
-    protected abstract Registry<T> getRegistry();
+    protected abstract int getRemainingCapacityFor(K key);
 
-    protected abstract K readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries);
-
-    protected abstract long getRemainingCapacityFor(K key);
-
-    public abstract long getTotalCapacityFor(T instance);
+    public abstract int getTotalCapacityFor(T instance);
 
     @Override
     public SlotConfig getConfig() {
@@ -132,7 +127,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
                 pipesExtract);
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
         if (amount == 0) {
             this.key = getBlankVariant();
@@ -144,11 +139,11 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.setAmount(0);
     }
 
-    public void increment(long amount) {
+    public void increment(int amount) {
         setAmount(this.amount + amount);
     }
 
-    public void decrement(long amount) {
+    public void decrement(int amount) {
         increment(-amount);
     }
 
@@ -162,7 +157,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     }
 
     public boolean isResourceAllowedByLock(K key) {
-        return isResourceAllowedByLock(key.getObject());
+        return isResourceAllowedByLock(key.value());
     }
 
     public boolean canPlayerInsert() {
@@ -225,7 +220,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         if (!machineLocked && !playerLocked) {
             lockedInstance = null;
         } else if (lockedInstance == null) {
-            lockedInstance = key.getObject();
+            lockedInstance = key.value();
         }
         notifyListeners();
     }
@@ -237,14 +232,14 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     /**
      * Lock range of stacks (without overriding existing locks).
      */
-    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, long requiredAmount,
+    public static <T, K extends DataComponentHolderResource<T>> void playerLockNoOverride(T instance, int requiredAmount,
             List<? extends AbstractConfigurableStack<T, K>> stacks) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean allowEmptyStacks = iter == 1;
 
             for (AbstractConfigurableStack<T, K> stack : stacks) {
                 if (stack.lockedInstance == null || stack.lockedInstance == stack.getEmptyInstance()) {
-                    if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
+                    if (stack.key.is(instance) || (stack.isEmpty() && allowEmptyStacks)) {
                         var capacity = stack.getTotalCapacityFor(instance);
                         if (capacity <= 0) {
                             continue;
@@ -266,7 +261,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
      * Try locking the slot to the given instance, return true if it succeeded
      */
     public boolean playerLock(T instance, Simulation simulation) {
-        if (key.isBlank() || key.getObject() == instance) {
+        if (key.isEmpty() || key.is(instance)) {
             if (simulation.isActing()) {
                 lockedInstance = instance;
                 playerLocked = true;
@@ -285,58 +280,33 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         return pipesInsert;
     }
 
-    @Override
-    public long extract(K key, long maxAmount, TransactionContext transaction) {
-        if (pipesExtract) {
-            return extractDirect(key, maxAmount, transaction);
-        } else {
-            return 0;
-        }
-    }
-
-    public long extractDirect(K key, long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notBlankNotNegative(key, maxAmount);
-        if (key.equals(this.key)) {
-            long extracted = Math.min(amount, maxAmount);
-            updateSnapshots(transaction);
-            decrement(extracted);
-            return extracted;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean isResourceBlank() {
-        return key.isBlank();
-    }
-
     public boolean isEmpty() {
-        return isResourceBlank();
+        return key.isEmpty();
     }
 
-    @Override
     public K getResource() {
         return key;
     }
 
-    @Override
-    public long getAmount() {
+    public int getAmount() {
         return amount;
     }
 
+    public abstract int getCapacity();
+
     @Override
-    public ResourceAmount<K> createSnapshot() {
-        return new ResourceAmount<>(key, amount);
+    public ResourceStack<K> createSnapshot() {
+        return new ResourceStack<>(key, amount);
     }
 
     @Override
-    public void revertToSnapshot(ResourceAmount<K> ra) {
+    public void revertToSnapshot(ResourceStack<K> ra) {
         this.amount = ra.amount();
         this.key = ra.resource();
     }
 
     @Override
-    protected void onRootCommit(ResourceAmount<K> originalState) {
+    protected void onRootCommit(ResourceStack<K> originalState) {
         notifyListeners();
     }
 }

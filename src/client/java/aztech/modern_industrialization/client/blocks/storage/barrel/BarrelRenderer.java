@@ -27,7 +27,6 @@ package aztech.modern_industrialization.client.blocks.storage.barrel;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.config.MIClientConfig;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -69,7 +68,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BarrelBlockEntity, Ba
         BlockEntityRenderer.super.extractRenderState(barrel, state, partialTicks, cameraPosition, breakProgress);
         state.locked = barrel.isLocked();
         this.itemModelResolver.updateForTopItem(
-                state.stackRenderState, barrel.getResource().toStack(), ItemDisplayContext.GUI, barrel.getLevel(), null, 0);
+                state.stackRenderState, barrel.getResource(0).toStack(), ItemDisplayContext.GUI, barrel.getLevel(), null, 0);
     }
 
     @Override

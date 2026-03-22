@@ -26,31 +26,31 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public record FluidNuclearComponent(
-        FluidVariant variant,
+        FluidResource variant,
         double heatConduction,
         NeutronBehaviour neutronBehaviour,
-        FluidVariant neutronProduct,
-        long neutronProductAmount,
-        double neutronProductProbability) implements NuclearComponent<FluidVariant> {
+        FluidResource neutronProduct,
+        int neutronProductAmount,
+        double neutronProductProbability) implements NuclearComponent<FluidResource> {
     public FluidNuclearComponent(
             Fluid fluid,
             double heatConduction,
             double density,
             NuclearConstant.ScatteringType type,
             IsotopeParams params,
-            FluidVariant neutronProduct,
-            long neutronProductAmount,
+            FluidResource neutronProduct,
+            int neutronProductAmount,
             double neutronProductProbability) {
         this(
-                FluidVariant.of(fluid),
+                FluidResource.of(fluid),
                 heatConduction * density,
                 NeutronBehaviour.of(type, params, density),
                 neutronProduct,
@@ -59,7 +59,7 @@ public record FluidNuclearComponent(
     }
 
     @Override
-    public FluidVariant getVariant() {
+    public FluidResource getVariant() {
         return variant;
     }
 
@@ -74,12 +74,12 @@ public record FluidNuclearComponent(
     }
 
     @Override
-    public FluidVariant getNeutronProduct() {
+    public FluidResource getNeutronProduct() {
         return neutronProduct;
     }
 
     @Override
-    public long getNeutronProductAmount() {
+    public int getNeutronProductAmount() {
         return neutronProductAmount;
     }
 
@@ -114,7 +114,7 @@ public record FluidNuclearComponent(
                 1,
                 NuclearConstant.ScatteringType.ULTRA_LIGHT,
                 NuclearConstant.HYDROGEN,
-                MIFluids.DEUTERIUM.variant(),
+                MIFluids.DEUTERIUM.resource(),
                 1,
                 1));
         register(new FluidNuclearComponent(MIFluids.HEAVY_WATER.asFluid(),
@@ -122,7 +122,7 @@ public record FluidNuclearComponent(
                 1,
                 NuclearConstant.ScatteringType.LIGHT,
                 NuclearConstant.DEUTERIUM,
-                MIFluids.TRITIUM.variant(),
+                MIFluids.TRITIUM.resource(),
                 1,
                 1));
         register(new FluidNuclearComponent(MIFluids.HIGH_PRESSURE_WATER.asFluid(),
@@ -130,7 +130,7 @@ public record FluidNuclearComponent(
                 4,
                 NuclearConstant.ScatteringType.ULTRA_LIGHT,
                 NuclearConstant.HYDROGEN,
-                MIFluids.DEUTERIUM.variant(),
+                MIFluids.DEUTERIUM.resource(),
                 8,
                 0.125));
         register(new FluidNuclearComponent(MIFluids.HIGH_PRESSURE_HEAVY_WATER.asFluid(),
@@ -138,7 +138,7 @@ public record FluidNuclearComponent(
                 4,
                 NuclearConstant.ScatteringType.LIGHT,
                 NuclearConstant.DEUTERIUM,
-                MIFluids.TRITIUM.variant(),
+                MIFluids.TRITIUM.resource(),
                 8,
                 0.125));
 

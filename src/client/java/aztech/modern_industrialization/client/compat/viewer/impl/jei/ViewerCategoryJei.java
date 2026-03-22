@@ -28,9 +28,6 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCategory;
 import aztech.modern_industrialization.client.compat.viewer.impl.ViewerUtil;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -60,6 +57,9 @@ import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.display.FluidStackContentsFactory;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
 class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
@@ -122,17 +122,17 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
 
                 return new ViewerCategory.SlotBuilder() {
                     @Override
-                    public ViewerCategory.SlotBuilder variant(TransferVariant<?> variant) {
-                        if (variant instanceof ItemVariant item) {
+                    public ViewerCategory.SlotBuilder resource(Resource resource) {
+                        if (resource instanceof ItemResource item) {
                             item(item.toStack());
-                        } else if (variant instanceof FluidVariant fluid) {
-                            if (!fluid.isBlank()) {
+                        } else if (resource instanceof FluidResource fluid) {
+                            if (!fluid.isEmpty()) {
                                 // Use 1000 as the amount to make JEI render the full sprite
                                 slotBuilder.add(fluid.getFluid(), FluidType.BUCKET_VOLUME, fluid.getComponentsPatch());
                             }
                             slotBuilder.setBackground(fluidSlot, -1, -1);
                         } else {
-                            throw new IllegalArgumentException("Unknown variant type: " + variant.getClass());
+                            throw new IllegalArgumentException("Unknown resource type: " + resource.getClass());
                         }
                         return this;
                     }
@@ -148,7 +148,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                     }
 
                     @Override
-                    public ViewerCategory.SlotBuilder fluid(FluidVariant fluid, long amount, float probability) {
+                    public ViewerCategory.SlotBuilder fluid(FluidResource fluid, long amount, float probability) {
                         slotBuilder.add(fluid.getFluid(), amount, fluid.getComponentsPatch());
                         // This call displays the full sprite (instead of JEI's partial rendering)
                         slotBuilder.setFluidRenderer(1, false, 16, 16);

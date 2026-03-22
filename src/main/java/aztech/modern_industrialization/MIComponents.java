@@ -27,8 +27,6 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
 import aztech.modern_industrialization.items.SteamDrillFuel;
 import aztech.modern_industrialization.pipes.item.SavedItemPipeConfig;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
@@ -40,6 +38,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public final class MIComponents {
     private static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MI.ID);
@@ -65,10 +65,10 @@ public final class MIComponents {
 
     public static final Supplier<DataComponentType<SimpleFluidContent>> FLUID_CONTENT = COMPONENTS.registerComponentType("fluid_content",
             builder -> builder.persistent(SimpleFluidContent.CODEC).networkSynchronized(SimpleFluidContent.STREAM_CODEC));
-    public static final Supplier<DataComponentType<ResourceStorage<FluidVariant>>> FLUID_STORAGE = COMPONENTS.registerComponentType("fluid_storage",
-            ResourceStorage.component(FluidVariant.CODEC, FluidVariant.STREAM_CODEC));
-    public static final Supplier<DataComponentType<ResourceStorage<ItemVariant>>> ITEM_STORAGE = COMPONENTS.registerComponentType("item_storage",
-            ResourceStorage.component(ItemVariant.CODEC, ItemVariant.STREAM_CODEC));
+    public static final Supplier<DataComponentType<ResourceStorage<FluidResource>>> FLUID_STORAGE = COMPONENTS.registerComponentType("fluid_storage",
+            ResourceStorage.component(FluidResource.OPTIONAL_CODEC, FluidResource.STREAM_CODEC));
+    public static final Supplier<DataComponentType<ResourceStorage<ItemResource>>> ITEM_STORAGE = COMPONENTS.registerComponentType("item_storage",
+            ResourceStorage.component(ItemResource.OPTIONAL_CODEC, ItemResource.STREAM_CODEC));
 
     public static void init(IEventBus modEventBus) {
         COMPONENTS.register(modEventBus);

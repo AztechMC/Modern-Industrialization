@@ -27,7 +27,7 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.core.BlockPos;
@@ -46,8 +46,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
-public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements EntityBlock {
-    public BarrelBlock(Properties properties, EntityBlock factory, StorageBehaviour<ItemVariant> behaviour) {
+public class BarrelBlock extends AbstractStorageBlock<ItemResource> implements EntityBlock {
+    public BarrelBlock(Properties properties, EntityBlock factory, StorageBehaviour<ItemResource> behaviour) {
         super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory, behaviour);
     }
@@ -57,9 +57,9 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
                 && hitResult.getDirection().getAxis().isHorizontal()) {
 
             if (barrel.behaviour.isCreative()) {
-                ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
-                if (!currentInHand.isBlank() && barrel.isResourceBlank()) {
-                    barrel.setResource(currentInHand);
+                var currentInHand = player.getItemInHand(hand);
+                if (!currentInHand.isEmpty() && barrel.getResource(0).isEmpty()) {
+                    barrel.setResource(ItemResource.of(currentInHand));
                     return true;
                 }
             }
@@ -75,7 +75,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
                 var handItem = player.getItemInHand(hand);
                 if (!handItem.isEmpty()) {
                     try (var tx = Transaction.openRoot()) {
-                        long inserted = barrel.insert(ItemVariant.of(handItem), handItem.getCount(), tx, true);
+                        long inserted = barrel.insert(0, ItemResource.of(handItem), handItem.getCount(), tx, true);
                         if (inserted > 0) {
                             tx.commit();
                             handItem.shrink((int) inserted);
@@ -84,8 +84,8 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
                     }
                 }
             } else {
-                ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
-                if (!currentInHand.isBlank()) {
+                ItemResource currentInHand = ItemResource.of(player.getMainHandItem());
+                if (!currentInHand.isEmpty()) {
                     try (var tx = Transaction.openRoot()) {
                         long inserted = 0;
                         for (int i = 0; i < Inventory.INVENTORY_SIZE; ++i) {
@@ -94,7 +94,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
                                 continue;
                             }
 
-                            long thisIter = barrel.insert(currentInHand, stack.getCount(), tx, true);
+                            long thisIter = barrel.insert(0, currentInHand, stack.getCount(), tx, true);
                             inserted += thisIter;
                             stack.shrink((int) thisIter);
                         }
@@ -123,7 +123,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
 //                }
 
                 try (Transaction transaction = Transaction.openRoot()) {
-                    ItemVariant extractedResource = barrel.getResource();
+                    var extractedResource = barrel.getResource(0);
 
                     long extracted = barrel.extract(extractedResource,
                             player.isShiftKeyDown() ? 1 : extractedResource.toStack().getMaxStackSize(),
@@ -167,7 +167,7 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
         return new BarrelStorage(stackCapacity);
     }
 
-    public static class BarrelStorage extends StorageBehaviour<ItemVariant> {
+    public static class BarrelStorage extends StorageBehaviour<ItemResource> {
         public final long stackCapacity;
 
         public BarrelStorage(long stackCapacity) {
@@ -180,8 +180,8 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
         }
 
         @Override
-        public long getCapacityForResource(ItemVariant resource) {
-            if (resource.isBlank()) {
+        public long getCapacityForResource(ItemResource resource) {
+            if (resource.isEmpty()) {
                 return stackCapacity * 64;
             } else {
                 return stackCapacity * resource.getMaxStackSize();
@@ -189,8 +189,8 @@ public class BarrelBlock extends AbstractStorageBlock<ItemVariant> implements En
         }
 
         @Override
-        public boolean canInsert(ItemVariant resource) {
-            return resource.getItem().canFitInsideContainerItems();
+        public boolean canInsert(ItemResource resource) {
+            return resource.toStack().canFitInsideContainerItems();
         }
     }
 }

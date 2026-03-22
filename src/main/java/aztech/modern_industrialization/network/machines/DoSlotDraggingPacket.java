@@ -26,22 +26,22 @@ package aztech.modern_industrialization.network.machines;
 
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.BasePacket;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
-public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, @Nullable ItemVariant itemVariant,
-        @Nullable FluidVariant fluidVariant) implements BasePacket {
-    public DoSlotDraggingPacket(int containerId, int slotId, ItemVariant itemVariant) {
+public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, @Nullable ItemResource itemVariant,
+        @Nullable FluidResource fluidVariant) implements BasePacket {
+    public DoSlotDraggingPacket(int containerId, int slotId, ItemResource itemVariant) {
         this(containerId, slotId, true, itemVariant, null);
     }
 
-    public DoSlotDraggingPacket(int containerId, int slotId, FluidVariant fluidVariant) {
+    public DoSlotDraggingPacket(int containerId, int slotId, FluidResource fluidVariant) {
         this(containerId, slotId, false, null, fluidVariant);
     }
 
@@ -50,7 +50,7 @@ public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, 
     }
 
     private DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, RegistryFriendlyByteBuf buf) {
-        this(containerId, slotId, isItem, isItem ? ItemVariant.fromPacket(buf) : null, isItem ? null : FluidVariant.fromPacket(buf));
+        this(containerId, slotId, isItem, isItem ? ItemResource.STREAM_CODEC.decode(buf) : null, isItem ? null : FluidResource.STREAM_CODEC.decode(buf));
     }
 
     public static StreamCodec<RegistryFriendlyByteBuf, DoSlotDraggingPacket> STREAM_CODEC = StreamCodec.ofMember(
@@ -61,9 +61,9 @@ public record DoSlotDraggingPacket(int containerId, int slotId, boolean isItem, 
         buf.writeVarInt(slotId);
         buf.writeBoolean(isItem);
         if (isItem) {
-            itemVariant.toPacket(buf);
+            ItemResource.STREAM_CODEC.encode(buf, itemVariant);
         } else {
-            fluidVariant.toPacket(buf);
+            FluidResource.STREAM_CODEC.encode(buf, fluidVariant);
         }
     }
 

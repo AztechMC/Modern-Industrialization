@@ -24,9 +24,9 @@
 
 package aztech.modern_industrialization.compat.viewer;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * Can be implemented by slots or {@code AbstractWidget}
@@ -35,7 +35,7 @@ import aztech.modern_industrialization.util.Simulation;
  * if dragging is accepted.
  */
 public interface ReiDraggable {
-    boolean dragFluid(FluidVariant fluidKey, Simulation simulation);
+    boolean dragFluid(FluidResource fluidResource, Simulation simulation);
 
-    boolean dragItem(ItemVariant itemKey, Simulation simulation);
+    boolean dragItem(ItemResource itemResource, Simulation simulation);
 }

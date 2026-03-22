@@ -25,20 +25,13 @@
 package aztech.modern_industrialization.client.util;
 
 import aztech.modern_industrialization.MI;
-import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.client.compat.sodium.SodiumCompat;
-import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -48,8 +41,6 @@ import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -61,23 +52,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.RenderTypeHelper;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
 import net.neoforged.neoforge.client.model.quad.BakedNormals;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -102,12 +86,49 @@ public class RenderHelper {
 //        }
 //    }
 
+    /**
+     * Return the render handler for the passed fluid, if available, or the default instance otherwise.
+     */
+    private static IClientFluidTypeExtensions getExtensions(FluidResource resource) {
+        return IClientFluidTypeExtensions.of(resource.getFluid().getFluidType());
+    }
+
+    /**
+     * Return the still sprite that should be used to render the passed fluid resource, or null if it's not available.
+     * The sprite should be rendered using the color returned by {@link #getFluidColor}.
+     */
+    @Nullable
+    public static TextureAtlasSprite getFluidSprite(FluidResource fluidResource) {
+        if (fluidResource.isEmpty()) {
+            return null;
+        }
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                .getSprite(getExtensions(fluidResource).getStillTexture(fluidResource.toStack(1)));
+    }
+
+    /**
+     * Return the position-independent color that should be used to render {@linkplain #getFluidSprite the sprite} of the passed fluid variant.
+     */
+    public static int getFluidColor(FluidResource fluidResource) {
+        return getExtensions(fluidResource).getTintColor(fluidResource.toStack(1));
+    }
+
+    /**
+     * Return the position-dependent color that should be used to render {@linkplain #getFluidSprite the sprite} of the passed fluid variant.
+     */
+    public static int getFluidColor(FluidResource fluidResource, @Nullable BlockAndTintGetter level, BlockPos pos) {
+        if (level == null) {
+            return getFluidColor(fluidResource);
+        }
+        return getExtensions(fluidResource).getTintColor(fluidResource.getFluid().defaultFluidState(), level, pos);
+    }
+
     private static final float TANK_W = 1 / 16f + 0.001f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, FluidVariant fluid, float fillLevel, int color) {
+    public static void drawFluidInTank(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, FluidResource fluid, float fillLevel, int color) {
         submitNodeCollector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(), (pose, vc) -> {
-            TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
+            TextureAtlasSprite sprite = getFluidSprite(fluid);
             if (sprite == null) {
                 return;
             }
@@ -150,13 +171,13 @@ public class RenderHelper {
         });
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int x0, int y0) {
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidResource fluid, int x0, int y0) {
         drawFluidInGui(guiGraphics, fluid, x0, y0, 16, 1);
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidVariant fluid, int x0, int y0, int scale, float fractionUp) {
-        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
-        int color = FluidVariantRendering.getColor(fluid);
+    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidResource fluid, int x0, int y0, int scale, float fractionUp) {
+        TextureAtlasSprite sprite = getFluidSprite(fluid);
+        int color = getFluidColor(fluid);
 
         if (sprite == null)
             return;

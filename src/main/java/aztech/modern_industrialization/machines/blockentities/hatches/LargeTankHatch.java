@@ -42,8 +42,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComponentHolder {
@@ -99,8 +100,8 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
         invalidateCapabilities();
     }
 
-    private IFluidHandler getStorage() {
-        return controller == null ? EmptyFluidHandler.INSTANCE : controller.getExposedFluidHandler();
+    private ResourceHandler<FluidResource> getStorage() {
+        return controller == null ? EmptyResourceHandler.instance() : controller.getExposedFluidHandler();
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {

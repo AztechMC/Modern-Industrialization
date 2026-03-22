@@ -46,22 +46,20 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
@@ -119,7 +117,7 @@ public class MIPipes {
         var itemDef = MIItem.item(
                 color.englishNamePrefix + "Fluid Pipe",
                 pipeId,
-                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())),
+                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidResource.EMPTY)),
                 ITEM_MODEL_GENERATOR,
                 SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);

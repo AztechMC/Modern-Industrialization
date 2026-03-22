@@ -34,12 +34,10 @@ import appeng.parts.PartAdjacentApi;
 import appeng.parts.p2p.P2PTunnelPart;
 import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.config.MIServerConfig;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
-import java.util.List;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
@@ -125,7 +123,7 @@ public class EnergyP2PTunnelPart extends P2PTunnelPart<EnergyP2PTunnelPart> impl
     private class InputEnergyStorage implements MIEnergyStorage.NoExtract {
         @Override
         public int insert(int maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notNegative(maxAmount);
+            TransferPreconditions.checkNonNegative(maxAmount);
             int total = 0;
 
             final int outputTunnels = getOutputs().size();

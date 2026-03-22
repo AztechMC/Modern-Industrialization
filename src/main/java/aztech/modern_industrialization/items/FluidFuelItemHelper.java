@@ -26,7 +26,6 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.api.datamaps.MIDataMaps;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import java.util.function.Consumer;
@@ -38,13 +37,14 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 /**
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
-    static FluidVariant getFluid(ItemStack stack) {
-        return FluidVariant.of(new ItemStorage(stack, 0).getFluid());
+    static FluidResource getFluid(ItemStack stack) {
+        return FluidResource.of(new ItemStorage(stack, 0).getFluid());
     }
 
     static int getAmount(ItemStack stack) {
@@ -77,9 +77,9 @@ public interface FluidFuelItemHelper {
 
     static void appendTooltip(ItemStack stack, Consumer<Component> tooltip, long capacity) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        FluidVariant fluid = getFluid(stack);
+        var fluid = getFluid(stack);
         tooltip.accept(FluidHelper.getFluidName(fluid, true));
-        if (!fluid.isBlank()) {
+        if (!fluid.isEmpty()) {
             tooltip.accept(FluidHelper.getFluidAmount(getAmount(stack), capacity).setStyle(style));
         }
     }

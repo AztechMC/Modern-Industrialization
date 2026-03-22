@@ -25,7 +25,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ItemStackHelper {
     /**
@@ -36,12 +36,12 @@ public class ItemStackHelper {
      * @return false if the fuel could not be consumed, true otherwise
      */
     public static boolean consumeFuel(ConfigurableItemStack stack, boolean simulate) {
-        if (stack.isResourceBlank())
+        if (stack.isEmpty())
             return false;
         var itemStack = stack.toStack();
         var remainderStack = itemStack.getCraftingRemainder();
         if (remainderStack != null) {
-            var remainder = ItemVariant.of(remainderStack.create());
+            var remainder = ItemResource.of(remainderStack.create());
             if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(remainder)) {
                 if (!simulate) {
                     stack.setAmount(1);

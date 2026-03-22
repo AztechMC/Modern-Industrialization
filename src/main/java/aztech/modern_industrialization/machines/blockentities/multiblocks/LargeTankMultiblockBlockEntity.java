@@ -42,8 +42,6 @@ import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -54,8 +52,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, FluidStorageComponentHolder {
@@ -63,7 +63,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
     private static final int[] Z_SIZES = new int[] { 3, 4, 5, 6, 7 };
 
-    public static final long BUCKET_PER_STRUCTURE_BLOCK = 64;
+    public static final int BUCKET_PER_STRUCTURE_BLOCK = 64;
 
     private static int getXComponent(int shapeIndex) {
         return shapeIndex / 25;
@@ -194,7 +194,9 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     public LargeTankFluidDisplay.Data getFluidData() {
-        return new LargeTankFluidDisplay.Data(fluidStorage.getFluid(), fluidStorage.getAmount(), fluidStorage.getCapacity());
+        // TODO 26.1
+        var resource = FluidResource.of(fluidStorage.getFluid().toStack(1));
+        return new LargeTankFluidDisplay.Data(resource, fluidStorage.getAmount(), fluidStorage.getCapacity());
     }
 
     public MIInventory getInventory() {
@@ -233,7 +235,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
     }
 
-    public static long getCapacityFromComponents(int xIndex, int yIndex, int zIndex) {
+    public static int getCapacityFromComponents(int xIndex, int yIndex, int zIndex) {
         int sizeX = X_SIZES[xIndex];
         int sizeY = Y_SIZES[yIndex];
         int sizeZ = Z_SIZES[zIndex];
@@ -245,7 +247,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     protected void onRematch(ShapeMatcher shapeMatcher) {
         if (shapeMatcher.isMatchSuccessful()) {
             int index = activeShape.getActiveShapeIndex();
-            long capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
+            int capacity = getCapacityFromComponents(getXComponent(index), getYComponent(index), getZComponent(index));
             fluidStorage.setCapacity(capacity);
 
             // Already set it here such that the setController and setChanged calls below
@@ -263,15 +265,15 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         invalidateCapabilities();
     }
 
-    public IFluidHandler getExposedFluidHandler() {
+    public ResourceHandler<FluidResource> getExposedFluidHandler() {
         if (isShapeValid()) {
-            return fluidStorage.getFluidHandler();
+            return fluidStorage.getExposedFluidHandler();
         } else {
-            return EmptyFluidHandler.INSTANCE;
+            return EmptyResourceHandler.instance();
         }
     }
 
-    public FluidVariant getFluid() {
+    public FluidResource getFluid() {
         return fluidStorage.getFluid();
     }
 
@@ -320,7 +322,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     @Override
     public int getComparatorOutput() {
         if (isShapeValid()) {
-            return StorageUtil.calculateComparatorOutput(fluidStorage.getFluidStorage());
+            return ResourceHandlerUtil.getRedstoneSignalFromResourceHandler(fluidStorage.getFluidHandler());
         } else {
             return 0;
         }

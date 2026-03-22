@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.client.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
-import aztech.modern_industrialization.client.thirdparty.fabrictransfer.FluidVariantRendering;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -51,13 +50,13 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
     @Override
     public void extractRenderState(AbstractTankBlockEntity tank, TankRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(tank, state, partialTicks, cameraPosition, breakProgress);
-        state.resource = tank.getResource();
-        state.fluidColor = FluidVariantRendering.getColor(state.resource, tank.getLevel(), tank.getBlockPos());;
-        if (!tank.getResource().isBlank()) {
+        state.resource = tank.getResource(0);
+        state.fluidColor = RenderHelper.getFluidColor(state.resource, tank.getLevel(), tank.getBlockPos());;
+        if (!tank.getResource(0).isEmpty()) {
             if (tank.behaviour.isCreative()) {
                 state.fillLevel = 1;
-            } else if (tank.getAmount() > 0) {
-                state.fillLevel = (float) tank.getAmount() / tank.getCapacity();
+            } else if (tank.getAmountAsLong(0) > 0) {
+                state.fillLevel = (float) tank.getAmountAsLong(0) / tank.getCapacityAsLong(0, state.resource);
             } else if (tank.isLocked()) {
                 state.fillLevel = 0.01f;
             } else {
@@ -69,7 +68,7 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
 
     @Override
     public void submit(TankRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
-        if (!state.resource.isBlank() && state.fillLevel > 0) {
+        if (!state.resource.isEmpty() && state.fillLevel > 0) {
             RenderHelper.drawFluidInTank(poseStack, submitNodeCollector, state.resource, state.fillLevel, state.fluidColor);
         }
         if (state.locked) {

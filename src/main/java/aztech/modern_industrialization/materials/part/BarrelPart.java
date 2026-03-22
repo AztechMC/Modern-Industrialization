@@ -38,10 +38,10 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jspecify.annotations.Nullable;
 
@@ -65,7 +65,7 @@ public class BarrelPart implements PartKeyProvider {
         PartTemplate template = new PartTemplate(englishNameFormatter, key()).asColumnBlock(SortOrder.BARRELS)
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
-                    StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
+                    StorageBehaviour<ItemResource> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
 
                     EntityBlock factory = (pos, state) -> new BarrelBlockEntity(bet.getValue(), pos, state);
 

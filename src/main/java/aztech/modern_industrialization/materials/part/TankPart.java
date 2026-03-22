@@ -37,7 +37,6 @@ import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -51,7 +50,9 @@ import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jspecify.annotations.Nullable;
 
@@ -84,7 +85,7 @@ public class TankPart implements PartKeyProvider {
                 .asBlock(SortOrder.TANKS, new TextureGenParams.SimpleRecoloredBlock())
                 .withRegister((partContext, part, itemPath, itemId, itemTag, englishName) -> {
 
-                    StorageBehaviour<FluidVariant> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);
+                    StorageBehaviour<FluidResource> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);
 
                     EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state);
 
@@ -109,9 +110,9 @@ public class TankPart implements PartKeyProvider {
                     });
 
                     MICapabilities.onEvent(event -> {
+                        event.registerBlockEntity(Capabilities.Fluid.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
+
                         // TODO 26.1
-//                        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, bet.getValue(), (be, side) -> be.fluidHandler);
-//
 //                        var item = (TankItem) blockDefinition.asItem();
 //                        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new ContainerItem.FluidHandler(stack, item), item);
                     });

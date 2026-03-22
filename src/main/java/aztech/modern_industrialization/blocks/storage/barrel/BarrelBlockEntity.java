@@ -27,15 +27,15 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
+public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemResource> {
     public BarrelBlockEntity(BlockEntityType type,
             BlockPos pos,
             BlockState state) {
@@ -43,13 +43,13 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public DataComponentType<ResourceStorage<ItemVariant>> componentType() {
+    public DataComponentType<ResourceStorage<ItemResource>> componentType() {
         return MIComponents.ITEM_STORAGE.get();
     }
 
     @Override
-    public ItemVariant getBlankResource() {
-        return ItemVariant.blank();
+    public ItemResource getEmptyResource() {
+        return ItemResource.EMPTY;
     }
 
     @Override
@@ -59,12 +59,12 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public ItemVariant loadResource(ValueInput input) {
-        return input.read("item", ItemVariant.CODEC).orElse(ItemVariant.blank());
+    public ItemResource loadResource(ValueInput input) {
+        return input.read("item", ItemResource.OPTIONAL_CODEC).orElse(ItemResource.EMPTY);
     }
 
     @Override
-    public void saveResource(ItemVariant resource, ValueOutput output) {
-        output.store("item", ItemVariant.CODEC, resource);
+    public void saveResource(ItemResource resource, ValueOutput output) {
+        output.store("item", ItemResource.OPTIONAL_CODEC, resource);
     }
 }

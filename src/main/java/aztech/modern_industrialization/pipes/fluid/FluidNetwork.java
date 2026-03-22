@@ -28,7 +28,6 @@ import aztech.modern_industrialization.pipes.PipeStatsCollector;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import com.google.common.primitives.Ints;
 import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
@@ -36,7 +35,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -68,16 +70,16 @@ public class FluidNetwork extends PipeNetwork {
             loadedNodeCount++;
         }
         long networkCapacity = (long) loadedNodeCount * nodeCapacity;
-        FluidVariant fluid = ((FluidNetworkData) data).fluid();
+        FluidResource fluid = ((FluidNetworkData) data).fluid();
 
         long extracted = 0, inserted = 0;
 
-        if (!fluid.isBlank()) {
+        if (!fluid.isEmpty()) {
             var it = extensions.iterator();
             while (it.hasNext()) {
                 var extension = it.next();
                 if (extension.tryClaimForNetwork(world, fluid)) {
-                    networkAmount += extension.storage().getAmount();
+                    networkAmount += extension.getAmount();
                     networkCapacity += extension.getCapacity();
                     extension.clear();
                 } else {
@@ -86,11 +88,15 @@ public class FluidNetwork extends PipeNetwork {
             }
 
             // Extract from targets into the network
-            extracted = transferByPriority(TransferOperation.EXTRACT, targets, fluid, networkCapacity - networkAmount);
-            networkAmount += extracted;
-            // Insert into the targets from the network
-            inserted = transferByPriority(TransferOperation.INSERT, targets, fluid, networkAmount);
-            networkAmount -= inserted;
+            try (var tx = Transaction.openRoot()) {
+                extracted = transferByPriority(TransferOperation.EXTRACT, targets, fluid, networkCapacity - networkAmount, tx);
+                networkAmount += extracted;
+                // Insert into the targets from the network
+                inserted = transferByPriority(TransferOperation.INSERT, targets, fluid, networkAmount, tx);
+                networkAmount -= inserted;
+
+                tx.commit();
+            }
 
             // Rebalance fluid inside the extensions and nodes
             var sortedExtensions = new ArrayList<>(extensions);
@@ -99,7 +105,7 @@ public class FluidNetwork extends PipeNetwork {
             long removedCapacity = 0;
             for (var extension : sortedExtensions) {
                 var capacity = extension.getCapacity();
-                long toInsert = (long) Math.ceil((double) networkAmount * capacity / (networkCapacity - removedCapacity));
+                int toInsert = Ints.saturatedCast((long) Math.ceil((double) networkAmount * capacity / (networkCapacity - removedCapacity)));
                 extension.releaseFromNetwork(fluid, toInsert);
                 networkAmount -= toInsert;
                 removedCapacity += capacity;
@@ -127,7 +133,7 @@ public class FluidNetwork extends PipeNetwork {
      *
      * @return The amount that was successfully transferred.
      */
-    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidVariant fluid, long maxAmount) {
+    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidResource fluid, long maxAmount, TransactionContext transaction) {
         // Sort by decreasing priority
         targets.sort(Comparator.comparingInt(target -> -target.priority));
         // Transfer for each bucket
@@ -135,7 +141,7 @@ public class FluidNetwork extends PipeNetwork {
         int bucketStart = 0;
         for (int i = 0; i < targets.size(); ++i) {
             if (i == targets.size() - 1 || targets.get(bucketStart).priority != targets.get(i + 1).priority) {
-                transferredAmount += transferForBucket(operation, targets.subList(bucketStart, i + 1), fluid, maxAmount - transferredAmount);
+                transferredAmount += transferForBucket(operation, targets.subList(bucketStart, i + 1), fluid, maxAmount - transferredAmount, transaction);
                 bucketStart = i + 1;
             }
         }
@@ -148,13 +154,16 @@ public class FluidNetwork extends PipeNetwork {
      *
      * @return The amount that was successfully transferred.
      */
-    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidVariant fluid, long maxAmount) {
+    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidResource fluid, long maxAmount, TransactionContext transaction) {
         // Shuffle the bucket for better average transfer when simulation returns the
         // same result every time
         Collections.shuffle(bucket);
         // Simulate the transfer for every target
+        int maxAmountInt = Ints.saturatedCast(maxAmount);
         for (FluidTarget target : bucket) {
-            target.simulationResult = operation.transfer(target.storage, fluid, maxAmount, true);
+            try (var nested = Transaction.open(transaction)) {
+                target.simulationResult = operation.transfer(target.storage, fluid, maxAmountInt, nested);
+            }
         }
         // Sort from low result to high result
         bucket.sort(Comparator.comparingLong(target -> target.simulationResult));
@@ -164,9 +173,9 @@ public class FluidNetwork extends PipeNetwork {
             FluidTarget target = bucket.get(i);
             int remainingTargets = bucket.size() - i;
             long remainingAmount = maxAmount - transferredAmount;
-            long targetMaxAmount = remainingAmount / remainingTargets;
+            int targetMaxAmount = Ints.saturatedCast(remainingAmount / remainingTargets);
 
-            transferredAmount += operation.transfer(target.storage, fluid, targetMaxAmount, false);
+            transferredAmount += operation.transfer(target.storage, fluid, targetMaxAmount, transaction);
         }
         return transferredAmount;
     }
@@ -174,33 +183,29 @@ public class FluidNetwork extends PipeNetwork {
     private enum TransferOperation {
         INSERT {
             @Override
-            long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
-                return handler.fill(
-                        fluid.toStack(Ints.saturatedCast(maxAmount)),
-                        simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+            int internalTransfer(ResourceHandler<FluidResource> handler, FluidResource fluid, int maxAmount, TransactionContext transaction) {
+                return handler.insert(fluid, maxAmount, transaction);
             }
         },
         EXTRACT {
             @Override
-            long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
-                return handler.drain(
-                        fluid.toStack(Ints.saturatedCast(maxAmount)),
-                        simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
+            int internalTransfer(ResourceHandler<FluidResource> handler, FluidResource fluid, int maxAmount, TransactionContext transaction) {
+                return handler.extract(fluid, maxAmount, transaction);
             }
         };
 
-        abstract long internalTransfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate);
+        abstract int internalTransfer(ResourceHandler<FluidResource> handler, FluidResource fluid, int maxAmount, TransactionContext transaction);
 
-        long transfer(IFluidHandler handler, FluidVariant fluid, long maxAmount, boolean simulate) {
-            long ret = internalTransfer(handler, fluid, maxAmount, simulate);
+        int transfer(ResourceHandler<FluidResource> handler, FluidResource fluid, int maxAmount, TransactionContext transaction) {
+            int ret = internalTransfer(handler, fluid, maxAmount, transaction);
             if (ret < 0) {
-                LOGGER.error("Transfer operation {}({}, {}, {}) on fluid handler {} returned negative amount: {}", this, fluid, maxAmount, simulate,
+                LOGGER.error("Transfer operation {}({}, {}, {}) on fluid handler {} returned negative amount: {}", this, fluid, maxAmount, transaction,
                         handler, ret);
                 return 0;
             }
             if (ret > maxAmount) {
                 LOGGER.error("Transfer operation {}({}, {}, {}) on fluid handler {} returned more than requested: {}", this, fluid, maxAmount,
-                        simulate, handler, ret);
+                        transaction, handler, ret);
                 return maxAmount;
             }
             return ret;
@@ -226,7 +231,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     private boolean isEmpty(boolean onlyFluid) {
-        if (((FluidNetworkData) data).fluid().isBlank())
+        if (((FluidNetworkData) data).fluid().isEmpty())
             return true;
         if (onlyFluid)
             return false;
@@ -241,8 +246,8 @@ public class FluidNetwork extends PipeNetwork {
     /**
      * Set this network's fluid if this network has an empty fluid.
      */
-    protected void setFluid(FluidVariant fluid) {
-        if (((FluidNetworkData) data).fluid().isBlank()) {
+    protected void setFluid(FluidResource fluid) {
+        if (((FluidNetworkData) data).fluid().isEmpty()) {
             data = new FluidNetworkData(fluid);
         }
     }
@@ -261,6 +266,6 @@ public class FluidNetwork extends PipeNetwork {
         for (PipeNetworkNode node : getRawNodeMap().values()) {
             ((FluidNetworkNode) node).amount = 0;
         }
-        data = new FluidNetworkData(FluidVariant.blank());
+        data = new FluidNetworkData(FluidResource.EMPTY);
     }
 }

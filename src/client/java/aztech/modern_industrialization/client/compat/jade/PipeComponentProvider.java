@@ -32,7 +32,6 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
 import aztech.modern_industrialization.pipes.item.ItemNetwork;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -42,6 +41,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -83,7 +83,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
         if (shape != null) {
             CompoundTag tag = accessor.getServerData().getCompoundOrEmpty(shape.type.getIdentifier().toString());
             if (tag.contains("fluid")) {
-                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompoundOrEmpty("fluid"), accessor.getLevel().registryAccess());
+                FluidResource fluid = tag.read("fluid", FluidResource.OPTIONAL_CODEC).orElse(FluidResource.EMPTY);
                 long stored = tag.getLongOr("amount", 0);
                 long capacity = tag.getIntOr("capacity", 0);
                 long transfer = tag.getLongOr("transfer", 0);
@@ -96,7 +96,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 var capacityText = MIJadeClientPlugin.getUnicodeMillibuckets(capacity, true);
 
                 Component text;
-                if (fluid.isBlank()) {
+                if (fluid.isEmpty()) {
                     text = Component.translatable("jade.fluid", MIText.Empty.text(), Component.literal(capacityText).withStyle(ChatFormatting.GRAY));
                 } else if (accessor.showDetails()) {
                     text = Component.translatable("jade.fluid2", fluidName.withStyle(ChatFormatting.WHITE),
@@ -115,7 +115,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
 //                        true));
 
                 // Transfer rate
-                if (!fluid.isBlank()) {
+                if (!fluid.isEmpty()) {
                     var transferText = MIJadeClientPlugin.getUnicodeMillibuckets(transfer, true);
                     var maxTransferText = MIJadeClientPlugin.getUnicodeMillibuckets(maxTransfer, true);
 

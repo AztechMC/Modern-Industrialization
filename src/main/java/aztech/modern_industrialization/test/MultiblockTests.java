@@ -35,8 +35,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ComparatorBlock;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class MultiblockTests {
     @MIGameTest
@@ -72,7 +72,10 @@ public class MultiblockTests {
                     helper.assertBlockProperty(redstonePos, RedStoneWireBlock.POWER, 0);
                 })
                 .thenExecute(() -> {
-                    largeTank.getExposedFluidHandler().fill(new FluidStack(Fluids.WATER, 1), IFluidHandler.FluidAction.EXECUTE);
+                    try (var tx = Transaction.openRoot()) {
+                        largeTank.getExposedFluidHandler().insert(FluidResource.of(Fluids.WATER), 1, tx);
+                        tx.commit();
+                    }
                 })
                 .thenIdle(3) // redstone update time (gametests run after the level tick so the delay is 1 more than usual)
                 .thenExecute(() -> {
@@ -82,7 +85,9 @@ public class MultiblockTests {
                     helper.assertBlockProperty(redstonePos, RedStoneWireBlock.POWER, 1);
                 })
                 .thenExecute(() -> {
-                    largeTank.getExposedFluidHandler().fill(new FluidStack(Fluids.WATER, Integer.MAX_VALUE), IFluidHandler.FluidAction.EXECUTE);
+                    try (var tx = Transaction.openRoot()) {
+                        largeTank.getExposedFluidHandler().insert(FluidResource.of(Fluids.WATER), Integer.MAX_VALUE, tx);
+                    }
                 })
                 .thenIdle(3) // redstone update time
                 .thenExecute(() -> {

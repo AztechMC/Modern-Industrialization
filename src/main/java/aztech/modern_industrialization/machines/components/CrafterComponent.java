@@ -41,9 +41,6 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
@@ -69,6 +66,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
 import org.jspecify.annotations.Nullable;
 
 public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAccess {
@@ -501,14 +501,14 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                     continue;
                 }
             }
-            long remainingAmount = input.amount();
+            int remainingAmount = input.amount();
             for (int istack = 0; istack < stacks.size(); ++istack) {
                 if (oneInputPerStack && usedStacks[istack]) {
                     continue;
                 }
                 ConfigurableFluidStack stack = stacks.get(istack);
                 if (fluidIngredientMatch(stack.getResource(), input.fluid())) {
-                    long taken = Math.min(remainingAmount, stack.getAmount());
+                    int taken = Math.min(remainingAmount, stack.getAmount());
                     if (taken > 0) {
                         if (oneInputPerStack) {
                             usedStacks[istack] = true;
@@ -529,10 +529,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         return ok;
     }
 
-    private static boolean fluidIngredientMatch(FluidVariant resource, FluidIngredient ingredient) {
+    private static boolean fluidIngredientMatch(FluidResource resource, FluidIngredient ingredient) {
         if (ingredient.isSimple()) {
             for (var fluidHolder : ingredient.fluids()) {
-                if (resource.equals(FluidVariant.of(fluidHolder.value()))) {
+                if (resource.equals(FluidResource.of(fluidHolder.value()))) {
                     return true;
                 }
             }
@@ -565,9 +565,9 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                 int stackId = 0;
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
-                    ItemVariant key = stack.getResource();
-                    if (key.matches(output.template()) || key.isBlank()) {
-                        var outputVariant = ItemVariant.of(new ItemStack(output.template().item(), 1, output.template().components()));
+                    ItemResource key = stack.getResource();
+                    if (key.matches(output.template()) || key.isEmpty()) {
+                        var outputVariant = ItemResource.of(new ItemStack(output.template().item(), 1, output.template().components()));
                         // If simulating or chanced output, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
@@ -576,7 +576,7 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
                                 : outputVariant.getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (ins > 0) {
-                            if (key.isBlank()) {
+                            if (key.isEmpty()) {
                                 if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(output.getStack())) {
                                     stack.setAmount(ins);
                                     stack.setKey(outputVariant);
@@ -636,10 +636,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
             for (int tries = 0; tries < 2; ++tries) {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
-                    FluidVariant outputKey = FluidVariant.of(output.fluid());
+                    FluidResource outputKey = FluidResource.of(output.fluid());
                     if (stack.isResourceAllowedByLock(outputKey)
-                            && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
-                        long inserted = Math.min(output.amount(), stack.getRemainingSpace());
+                            && ((tries == 1 && stack.isEmpty()) || stack.getResource().equals(outputKey))) {
+                        int inserted = Math.min(output.amount(), stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setKey(outputKey);
                             stack.increment(inserted);
@@ -680,10 +680,10 @@ public class CrafterComponent implements MachineComponent.ServerOnly, CrafterAcc
         }
     }
 
-    private static <T, K extends TransferVariant<T>, S extends AbstractConfigurableStack<T, K>> void handleLocking(
+    private static <T, K extends DataComponentHolderResource<T>, S extends AbstractConfigurableStack<T, K>> void handleLocking(
             List<S> stacks,
             Predicate<T> matchesRecipe,
-            long requiredAmount,
+            int requiredAmount,
             Supplier<@Nullable T> lockTarget) {
         for (S stack : stacks) {
             if (stack.getLockedInstance() != null && matchesRecipe.apply(stack.getLockedInstance())) {

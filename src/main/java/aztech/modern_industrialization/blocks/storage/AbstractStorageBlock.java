@@ -24,9 +24,6 @@
 
 package aztech.modern_industrialization.blocks.storage;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StorageUtil;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
-
 import java.util.Dictionary;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -41,9 +38,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.Nullable;
 
-public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block implements EntityBlock {
+public class AbstractStorageBlock<T extends Resource> extends Block implements EntityBlock {
     public final EntityBlock factory;
     public final StorageBehaviour<T> behavior;
 
@@ -86,7 +85,7 @@ public class AbstractStorageBlock<T extends TransferVariant<?>> extends Block im
     @Override
     protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         if (level.getBlockEntity(pos) instanceof AbstractStorageBlockEntity<?> storageBlockEntity) {
-            return StorageUtil.calculateComparatorOutput(storageBlockEntity);
+            return ResourceHandlerUtil.getRedstoneSignalFromResourceHandler(storageBlockEntity);
         }
         return 0;
     }

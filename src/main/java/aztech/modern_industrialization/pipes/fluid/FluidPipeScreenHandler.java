@@ -29,19 +29,19 @@ import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
 import aztech.modern_industrialization.network.pipes.SetPriorityPacket;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 153;
 
     public final FluidPipeInterface iface;
     private final Inventory playerInventory;
-    private FluidVariant trackedNetworkFluid;
+    private FluidResource trackedNetworkFluid;
     private int trackedPriority;
     private int trackedType;
 

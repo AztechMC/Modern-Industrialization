@@ -31,14 +31,12 @@ import aztech.modern_industrialization.fluid.MIBucketItem;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.fluid.MIFluidBlock;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidDefinition extends Definition implements FluidLike {
     public static final int LOW_OPACITY = 180;
@@ -103,7 +101,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         return fluidType.get();
     }
 
-    public FluidVariant variant() {
-        return FluidVariant.of(asFluid());
+    public FluidResource resource() {
+        return FluidResource.of(asFluid());
     }
 }

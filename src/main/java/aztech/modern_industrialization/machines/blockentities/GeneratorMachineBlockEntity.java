@@ -68,7 +68,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
-            long fluidCapacity,
+            int fluidCapacity,
             FluidItemConsumerComponent fluidItemConsumer) {
         super(bep, new MachineGuiParameters.Builder(name, fluidItemConsumer.doAllowMoreThanOne()).build(),
                 hasFacing ? new OrientationComponent.Params(true, false, false) : OrientationComponent.Params.noFacing(false, false));
@@ -147,7 +147,7 @@ public class GeneratorMachineBlockEntity extends MachineBlockEntity implements T
             boolean hasFacing,
             CableTier outputTier,
             long energyCapacity,
-            long fluidCapacity,
+            int fluidCapacity,
             long maxEnergyOutput,
             FluidDefinition acceptedFluid,
             long fluidEUperMb) {

@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.Map;
 
 import net.minecraft.core.HolderGetter;

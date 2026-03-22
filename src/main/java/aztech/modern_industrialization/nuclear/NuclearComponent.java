@@ -24,14 +24,14 @@
 
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
 import org.jspecify.annotations.Nullable;
 
-public interface NuclearComponent<T extends TransferVariant> {
+public interface NuclearComponent<T extends DataComponentHolderResource> {
     double getHeatConduction();
 
     NeutronBehaviour getNeutronBehaviour();
@@ -43,7 +43,7 @@ public interface NuclearComponent<T extends TransferVariant> {
         return null;
     }
 
-    default long getNeutronProductAmount() {
+    default int getNeutronProductAmount() {
         return 0;
     }
 
@@ -57,9 +57,9 @@ public interface NuclearComponent<T extends TransferVariant> {
 
     static Identifier getEmiRecipeId(NuclearComponent<?> component, String category, String type) {
         return switch (component.getVariant()) {
-            case ItemVariant itemVariant -> BuiltInRegistries.ITEM.getKey(itemVariant.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
-            case FluidVariant fluidVariant -> BuiltInRegistries.FLUID.getKey(fluidVariant.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);
-            case Object object -> throw new IllegalArgumentException("Unknown component variant " + object);
+            case ItemResource itemResource -> BuiltInRegistries.ITEM.getKey(itemResource.getItem()).withPrefix("/" + category + "/item/").withSuffix("/" + type);
+            case FluidResource fluidResource -> BuiltInRegistries.FLUID.getKey(fluidResource.getFluid()).withPrefix("/" + category + "/fluid/").withSuffix("/" + type);
+            case Object object -> throw new IllegalArgumentException("Unknown component resource " + object);
         };
     }
 }

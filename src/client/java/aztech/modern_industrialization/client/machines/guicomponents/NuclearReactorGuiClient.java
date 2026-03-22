@@ -41,12 +41,9 @@ import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearTileData;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +56,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 
 public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearReactorGui.Data> {
     public static final Identifier TEXTURE_ATLAS = MI.id("textures/gui/rei/texture_atlas.png");
@@ -119,15 +119,15 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 0, 0, 18, 18, 256, 256);
                             }
 
-                            TransferVariant<?> variant = tile.get().getVariant();
+                            Resource variant = tile.get().getVariant();
                             long variantAmount = tile.get().getVariantAmount();
 
-                            if (variantAmount > 0 & !variant.isBlank()) {
-                                if (variant instanceof ItemVariant itemVariant) {
-                                    var stack = itemVariant.toStack((int) variantAmount);
+                            if (variantAmount > 0 & !variant.isEmpty()) {
+                                if (variant instanceof ItemResource itemResource) {
+                                    var stack = itemResource.toStack((int) variantAmount);
                                     RenderHelper.renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, px + 1, py + 1);
-                                } else if (variant instanceof FluidVariant fluidVariant) {
-                                    RenderHelper.drawFluidInGui(guiGraphics, fluidVariant, px + 1, py + 1);
+                                } else if (variant instanceof FluidResource fluidResource) {
+                                    RenderHelper.drawFluidInGui(guiGraphics, fluidResource, px + 1, py + 1);
                                 }
                             }
 
@@ -171,8 +171,8 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                             }
 
                             if (currentMode == Renderer.Mode.TEMPERATURE) {
-                                if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
-                                    if (itemVariant.getItem() instanceof NuclearComponentItem item) {
+                                if (!variant.isEmpty() && variant instanceof ItemResource itemResource) {
+                                    if (itemResource.getItem() instanceof NuclearComponentItem item) {
                                         if (tileData.getTemperature() + 100 > item.getMaxTemperature()) {
                                             if (System.currentTimeMillis() % 1000 > 500) {
                                                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px + 1, py + 1, 22, 58, 16, 16, 256, 256);
@@ -209,15 +209,15 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                     Optional<NuclearTileData> tile = data.tilesData().get(index).data();
                     if (tile.isPresent()) {
                         NuclearTileData tileData = tile.get();
-                        TransferVariant<?> variant = tileData.getVariant();
+                        Resource variant = tileData.getVariant();
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
                             long variantAmount = tile.get().getVariantAmount();
-                            if (variantAmount > 0 & !variant.isBlank()) {
-                                if (variant instanceof ItemVariant itemVariant) {
-                                    guiGraphics.setTooltipForNextFrame(font, itemVariant.toStack((int) variantAmount), cursorX, cursorY);
-                                } else if (variant instanceof FluidVariant fluidVariant) {
+                            if (variantAmount > 0 & !variant.isEmpty()) {
+                                if (variant instanceof ItemResource itemResource) {
+                                    guiGraphics.setTooltipForNextFrame(font, itemResource.toStack((int) variantAmount), cursorX, cursorY);
+                                } else if (variant instanceof FluidResource fluidResource) {
                                     guiGraphics.setTooltipForNextFrame(font,
-                                            FluidHelper.getTooltipForFluidStorage(fluidVariant, variantAmount, NuclearHatch.capacity, false),
+                                            FluidHelper.getTooltipForFluidStorage(fluidResource, variantAmount, NuclearHatch.capacity, false),
                                             Optional.empty(), cursorX, cursorY);
                                 }
                             }
@@ -228,8 +228,8 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                             tooltip.add(MIText.Temperature.text(temperature));
 
-                            if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
-                                if (itemVariant.getItem() instanceof NuclearComponentItem item) {
+                            if (!variant.isEmpty() && variant instanceof ItemResource itemResource) {
+                                if (itemResource.getItem() instanceof NuclearComponentItem item) {
                                     tooltip.add(MIText.MaxTemp.text(item.getMaxTemperature()).setStyle(TextHelper.YELLOW));
                                 }
                             }

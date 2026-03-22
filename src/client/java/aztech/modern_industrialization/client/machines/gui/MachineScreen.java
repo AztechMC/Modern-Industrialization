@@ -36,7 +36,6 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.network.machines.AdjustSlotCapacityPacket;
 import aztech.modern_industrialization.network.machines.LockAllPacket;
 import aztech.modern_industrialization.network.machines.SetLockingModePacket;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.TextHelper;
@@ -61,6 +60,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class MachineScreen extends MIContainerScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
     public static final Identifier SLOT_ATLAS = MI.id("textures/gui/container/slot_atlas.png");
@@ -250,8 +250,8 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
     protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
             ConfigurableFluidStack stack = cfs.getConfStack();
-            FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
-            if (!renderedKey.isBlank()) {
+            FluidResource renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidResource.of(stack.getLockedInstance());
+            if (!renderedKey.isEmpty()) {
                 RenderHelper.drawFluidInGui(guiGraphics, renderedKey, slot.x, slot.y);
             }
             return;
@@ -259,7 +259,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
 
         if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
             ConfigurableItemStack itemStack = itemSlot.getConfStack();
-            if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
+            if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isEmpty()) {
                 Item item = itemStack.getLockedInstance();
                 if (item != Items.AIR) {
                     RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x, slot.y, "0");
@@ -273,7 +273,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
         Slot slot = hoveredSlot;
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-            FluidVariant renderedKey = stack.getLockedInstance() != null ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
+            FluidResource renderedKey = stack.getLockedInstance() != null ? FluidResource.of(stack.getLockedInstance()) : stack.getResource();
             List<Component> tooltip = new ArrayList<>(
                     FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
 

@@ -32,7 +32,6 @@ import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -41,6 +40,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
@@ -86,8 +86,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
                 updateActive(eu > 0);
 
                 if (pumpingTicks == OPERATION_TICKS) {
-                    waterStack.setKey(FluidVariant.of(Fluids.WATER));
-                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * FluidType.BUCKET_VOLUME / 8,
+                    waterStack.setKey(FluidResource.of(Fluids.WATER));
+                    waterStack.increment(Math.min(getWaterMultiplier() * getWaterSourceCount() * FluidType.BUCKET_VOLUME / 8,
                             waterStack.getRemainingSpace()));
                     pumpingTicks = 0;
                 }

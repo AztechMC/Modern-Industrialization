@@ -26,8 +26,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.machine.component.FluidAccess;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
@@ -47,27 +45,29 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidVariant> implements FluidAccess {
+public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidResource> implements FluidAccess {
     // TODO: more efficient encoding?
     public static final Codec<ConfigurableFluidStack> CODEC = RecordCodecBuilder.create(
             i -> i.group(
-                    FluidVariant.CODEC.fieldOf("key").forGetter(s -> s.key),
-                    MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("amount").forGetter(s -> s.amount),
+                    FluidResource.OPTIONAL_CODEC.fieldOf("key").forGetter(s -> s.key),
+                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("amount").forGetter(s -> s.amount),
                     BuiltInRegistries.FLUID.byNameCodec().optionalFieldOf("locked").forGetter(s -> Optional.ofNullable(s.lockedInstance)),
                     Codec.BOOL.fieldOf("machineLocked").forGetter(s -> s.machineLocked),
                     Codec.BOOL.fieldOf("playerLocked").forGetter(s -> s.playerLocked),
@@ -76,32 +76,32 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
                     Codec.BOOL.fieldOf("playerExtract").forGetter(s -> s.playerExtract),
                     Codec.BOOL.fieldOf("pipesInsert").forGetter(s -> s.pipesInsert),
                     Codec.BOOL.fieldOf("pipesExtract").forGetter(s -> s.pipesExtract),
-                    MIExtraCodecs.NON_NEGATIVE_LONG.fieldOf("capacity").forGetter(s -> s.capacity))
+                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("capacity").forGetter(s -> s.capacity))
                     .apply(i, ConfigurableFluidStack::new));
     public static final StreamCodec<ByteBuf, ConfigurableFluidStack> STREAM_CODEC = ByteBufCodecs.fromCodecTrusted(CODEC);
     public static final StreamCodec<ByteBuf, List<ConfigurableFluidStack>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
-    private long capacity;
+    private int capacity;
 
-    public ConfigurableFluidStack(long capacity) {
+    public ConfigurableFluidStack(int capacity) {
         super();
         this.capacity = capacity;
     }
 
-    public static ConfigurableFluidStack standardInputSlot(long capacity) {
+    public static ConfigurableFluidStack standardInputSlot(int capacity) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.playerInsert = true;
         stack.pipesInsert = true;
         return stack;
     }
 
-    public static ConfigurableFluidStack standardOutputSlot(long capacity) {
+    public static ConfigurableFluidStack standardOutputSlot(int capacity) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.pipesExtract = true;
         return stack;
     }
 
-    public static ConfigurableFluidStack standardIOSlot(long capacity, boolean pipeIO) {
+    public static ConfigurableFluidStack standardIOSlot(int capacity, boolean pipeIO) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.playerInsert = true;
         if (pipeIO) {
@@ -111,9 +111,9 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return stack;
     }
 
-    public static ConfigurableFluidStack lockedInputSlot(long capacity, Fluid fluid) {
+    public static ConfigurableFluidStack lockedInputSlot(int capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidVariant.of(fluid);
+        stack.key = FluidResource.of(fluid);
         stack.lockedInstance = fluid;
         stack.playerInsert = true;
         stack.playerLockable = false;
@@ -122,9 +122,9 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return stack;
     }
 
-    public static ConfigurableFluidStack lockedOutputSlot(long capacity, Fluid fluid) {
+    public static ConfigurableFluidStack lockedOutputSlot(int capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidVariant.of(fluid);
+        stack.key = FluidResource.of(fluid);
         stack.lockedInstance = fluid;
         stack.playerLockable = false;
         stack.playerLocked = true;
@@ -137,7 +137,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         this.capacity = other.capacity;
     }
 
-    private ConfigurableFluidStack(FluidVariant key, long amount, Optional<Fluid> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, long capacity) {
+    private ConfigurableFluidStack(FluidResource key, int amount, Optional<Fluid> lockedInstance, boolean playerLocked, boolean machineLocked, boolean playerLockable, boolean playerInsert, boolean playerExtract, boolean pipesInsert, boolean pipesExtract, int capacity) {
         super(key, amount, lockedInstance.orElse(null), playerLocked, machineLocked, playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
         this.capacity = capacity;
     }
@@ -171,8 +171,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected FluidVariant getBlankVariant() {
-        return FluidVariant.blank();
+    protected FluidResource getBlankVariant() {
+        return FluidResource.EMPTY;
     }
 
     @Override
@@ -181,31 +181,21 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected Registry<Fluid> getRegistry() {
-        return BuiltInRegistries.FLUID;
-    }
-
-    @Override
-    protected FluidVariant readVariantFromNbt(CompoundTag compound, HolderLookup.Provider registries) {
-        return FluidVariant.fromNbt(compound, registries);
-    }
-
-    @Override
-    public long getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
     @Override
-    protected long getRemainingCapacityFor(FluidVariant key) {
+    protected int getRemainingCapacityFor(FluidResource key) {
         return getRemainingSpace();
     }
 
     @Override
-    public long getTotalCapacityFor(Fluid instance) {
+    public int getTotalCapacityFor(Fluid instance) {
         return capacity;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(int amount) {
         super.setAmount(amount);
         if (amount > capacity)
             throw new IllegalStateException("amount > capacity in the fluid stack");
@@ -213,20 +203,20 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             throw new IllegalStateException("amount < 0 in the fluid stack");
     }
 
-    public void setCapacity(long capacity) {
+    public void setCapacity(int capacity) {
         Preconditions.checkArgument(capacity >= 0, "Fluid Capacity must be > 0");
         this.capacity = capacity;
         if (amount > capacity)
             amount = capacity;
     }
 
-    public long getRemainingSpace() {
+    public int getRemainingSpace() {
         return capacity - amount;
     }
 
     @Override
-    public FluidVariant getVariant() {
-        return getResource();
+    public FluidResource getVariant() {
+        return FluidResource.of(getResource().toStack(1));
     }
 
     public class ConfigurableFluidSlot extends Slot implements ReiDraggable, BackgroundRenderedSlot {
@@ -256,12 +246,12 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             return false;
         }
 
-        public boolean canInsertFluid(FluidVariant fluid) {
-            FluidVariant storedFluid = getConfStack().getResource();
-            return playerInsert && isResourceAllowedByLock(fluid.getFluid()) && (storedFluid.isBlank() || storedFluid.equals(fluid));
+        public boolean canInsertFluid(FluidResource fluid) {
+            FluidResource storedFluid = getConfStack().getResource();
+            return playerInsert && isResourceAllowedByLock(fluid.getFluid()) && (storedFluid.isEmpty() || storedFluid.equals(fluid));
         }
 
-        public boolean canExtractFluid(FluidVariant fluid) {
+        public boolean canExtractFluid(FluidResource fluid) {
             return playerExtract;
         }
 
@@ -283,12 +273,12 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
-        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
-            return playerLock(fluidKey.getFluid(), simulation);
+        public boolean dragFluid(FluidResource fluidResource, Simulation simulation) {
+            return playerLock(fluidResource.getFluid(), simulation);
         }
 
         @Override
-        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
+        public boolean dragItem(ItemResource itemResource, Simulation simulation) {
             return false;
         }
 
@@ -304,7 +294,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             }
 
             // Copy contents into temporary IFluidHandler
-            var slotTank = new FluidTank(Ints.saturatedCast(getCapacity()), fs -> canInsertFluid(FluidVariant.of(fs)));
+            var slotTank = new FluidTank(Ints.saturatedCast(getCapacity()), fs -> canInsertFluid(FluidResource.of(fs)));
             slotTank.setFluid(getVariant().toStack(Ints.saturatedCast(getAmount())));
 
             // Extract first
@@ -317,13 +307,13 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
                     true);
             if (extractResult.isSuccess()) {
                 slot.set(extractResult.getResult());
-                setKey(FluidVariant.of(slotTank.getFluid()));
+                setKey(FluidResource.of(slotTank.getFluid()));
                 setAmount(slotTank.getFluidAmount());
                 return true;
             }
 
             // Otherwise insert
-            if (!allowSlotExtract || isEmpty() || !canExtractFluid(getVariant())) {
+            if (!allowSlotExtract || isEmpty() || !canExtractFluid(getResource())) {
                 return false;
             }
 
@@ -336,7 +326,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
                     true);
             if (insertResult.isSuccess()) {
                 slot.set(insertResult.getResult());
-                setKey(FluidVariant.of(slotTank.getFluid()));
+                setKey(FluidResource.of(slotTank.getFluid()));
                 setAmount(slotTank.getFluidAmount());
                 return true;
             }

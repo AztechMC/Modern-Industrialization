@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.items.ForgeTool;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import java.util.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -49,6 +48,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ForgeHammerScreenHandler extends AbstractContainerMenu {
     private final DataSlot selectedRecipe;
@@ -209,7 +209,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
         this.output.set(ItemStack.EMPTY);
 
         if (!input.getItem().isEmpty()) {
-            Set<ItemVariant> outputs = new HashSet<>();
+            Set<ItemResource> outputs = new HashSet<>();
 
             var recipes = new ArrayList<>(MICommonProxy.INSTANCE.getRecipeMap(this.world).byType(MIRegistries.FORGE_HAMMER_RECIPE_TYPE.get()));
             // Process recipes with hammer damage first, duplicates will be filtered by output!
@@ -219,7 +219,7 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
                 ForgeHammerRecipe recipe = holder.value();
 
                 if (recipe.ingredient().test(input.getItem()) && recipe.count() <= input.getItem().getCount()) {
-                    var output = ItemVariant.of(recipe.result().create());
+                    var output = ItemResource.of(recipe.result().create());
                     if ((recipe.hammerDamage() != 0) && (!tool.getItem().isEmpty())) {
                         outputs.add(output);
                         availableRecipes.add(holder);

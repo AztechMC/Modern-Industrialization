@@ -25,7 +25,6 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import java.util.List;
 import java.util.function.Function;
 

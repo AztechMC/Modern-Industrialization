@@ -27,10 +27,11 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIFluidStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import it.unimi.dsi.fastutil.objects.Reference2LongMap;
-import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+
 import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -62,7 +63,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
     /**
      * Amount of steam for which we already consumed the water.
      */
-    private final Reference2LongMap<Fluid> steamBuffer = new Reference2LongOpenHashMap<>();
+    private final Reference2IntMap<Fluid> steamBuffer = new Reference2IntOpenHashMap<>();
 
     public SteamHeaterComponent(double temperatureMax, long maxEuProduction, long euPerDegree) {
         this(maxEuProduction, maxEuProduction, euPerDegree, true, false, false);
@@ -118,28 +119,28 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
     // Return true if any steam was made.
     private double tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
-        FluidVariant waterKey = FluidVariant.of(water);
-        FluidVariant steamKey = FluidVariant.of(steam);
+        FluidResource waterKey = FluidResource.of(water);
+        FluidResource steamKey = FluidResource.of(steam);
 
         if (getTemperature() > 100d) {
-            long steamProduction = (long) ((getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
+            int steamProduction = (int) ((getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
 
             try (Transaction tx = Transaction.openRoot()) {
-                long inserted;
+                int inserted;
                 try (Transaction simul = Transaction.open(tx)) { // insertion Simulation
                     inserted = output.insertAllSlot(steamKey, steamProduction, simul);
                 }
                 if (inserted > 0) {
                     // Round water consumption up
-                    long waterToUse = (inserted - steamBuffer.getLong(steam) + STEAM_TO_WATER - 1) / STEAM_TO_WATER;
+                    int waterToUse = (inserted - steamBuffer.getInt(steam) + STEAM_TO_WATER - 1) / STEAM_TO_WATER;
                     // Extract water
-                    long extracted = input.extractAllSlot(waterKey, waterToUse, tx);
+                    int extracted = input.extractAllSlot(waterKey, waterToUse, tx);
                     // Add to steam buffer
-                    steamBuffer.mergeLong(steam, extracted * STEAM_TO_WATER, Long::sum);
+                    steamBuffer.mergeInt(steam, extracted * STEAM_TO_WATER, Integer::sum);
 
                     // Produce steam
-                    long producedSteam = output.insertAllSlot(steamKey, Math.min(steamProduction, steamBuffer.getLong(steam)), tx);
-                    steamBuffer.mergeLong(steam, -producedSteam, Long::sum);
+                    int producedSteam = output.insertAllSlot(steamKey, Math.min(steamProduction, steamBuffer.getInt(steam)), tx);
+                    steamBuffer.mergeInt(steam, -producedSteam, Integer::sum);
 
                     double euProduced = producedSteam * euPerSteamMb;
                     decreaseTemperature(euProduced / euPerDegree);
@@ -156,9 +157,9 @@ public class SteamHeaterComponent extends TemperatureComponent {
         super.writeNbt(output);
 
         var buffer = new CompoundTag();
-        for (var entry : steamBuffer.reference2LongEntrySet()) {
-            if (entry.getLongValue() != 0) {
-                buffer.putLong(entry.getKey().toString(), entry.getLongValue());
+        for (var entry : steamBuffer.reference2IntEntrySet()) {
+            if (entry.getIntValue() != 0) {
+                buffer.putInt(entry.getKey().toString(), entry.getIntValue());
             }
         }
         output.store("steamBuffer", CompoundTag.CODEC, buffer);
@@ -172,7 +173,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
         for (var key : steamBuffer.keySet()) {
             var fluid = BuiltInRegistries.FLUID.getValue(Identifier.tryParse(key));
             if (fluid != Fluids.EMPTY) {
-                this.steamBuffer.put(fluid, steamBuffer.getLongOr(key, 0));
+                this.steamBuffer.put(fluid, steamBuffer.getIntOr(key, 0));
             }
         }
     }

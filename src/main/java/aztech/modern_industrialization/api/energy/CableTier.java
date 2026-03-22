@@ -29,12 +29,13 @@ import aztech.modern_industrialization.MIBlockKeys;
 import aztech.modern_industrialization.compat.kubejs.KubeJSProxy;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.StoragePreconditions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
+import aztech.modern_industrialization.transfer.MIPreconditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -77,7 +78,7 @@ public final class CableTier implements Comparable<CableTier> {
 
     @ApiStatus.Internal
     public CableTier(String name, String shortEnglishName, String longEnglishName, long eu, @Nullable Identifier itemKey, boolean builtin) {
-        StoragePreconditions.notNegative(eu);
+        MIPreconditions.checkNonNegative(eu);
 
         this.name = name;
         this.shortEnglishName = shortEnglishName;

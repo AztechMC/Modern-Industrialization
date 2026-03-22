@@ -122,7 +122,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             Fluid fluid = stack.getResource().getFluid();
             if (fluidEUProductionMap.accept(fluid) && stack.getAmount() > 0) {
                 long fuelEu = fluidEUProductionMap.getEuProduction(fluid);
-                long usedDroplets = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
+                int usedDroplets = (int) Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount());
                 euProduced += usedDroplets * fuelEu;
                 stack.decrement(usedDroplets);
 
@@ -138,7 +138,7 @@ public class FluidItemConsumerComponent implements MachineComponent.ServerOnly {
             if (itemEUProductionMap.accept(fuel) && stack.getAmount() > 0) {
                 if (!itemEUProductionMap.isStandardFuels() || ItemStackHelper.consumeFuel(stack, true)) {
                     long fuelEU = itemEUProductionMap.getEuProduction(fuel);
-                    long usedItem = Math.min((maxEuProduced - euProduced + fuelEU - 1) / fuelEU, stack.getAmount());
+                    int usedItem = (int) Math.min((maxEuProduced - euProduced + fuelEU - 1) / fuelEU, stack.getAmount());
                     euProduced += fuelEU * usedItem;
 
                     if (itemEUProductionMap.isStandardFuels()) {

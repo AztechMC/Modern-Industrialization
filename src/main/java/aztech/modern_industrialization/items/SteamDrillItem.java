@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MICommonProxy;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
@@ -92,6 +91,7 @@ import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.jspecify.annotations.Nullable;
 
@@ -104,13 +104,14 @@ import org.jspecify.annotations.Nullable;
 public class SteamDrillItem
         extends Item
         implements DynamicToolItem, ItemContainingItemHelper, ActivatableItem {
-    public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
+    public static final StorageBehaviour<ItemResource> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
-        public long getCapacityForResource(ItemVariant resource) {
+        public long getCapacityForResource(ItemResource resource) {
             return resource.getMaxStackSize();
         }
 
-        public boolean canInsert(ItemVariant item) {
+        @Override
+        public boolean canInsert(ItemResource item) {
             // TODO 26.1
 //            int burnTicks = item.toStack().getBurnTime(null);
 //            return burnTicks > 0;
@@ -465,8 +466,9 @@ public class SteamDrillItem
 
                 var remainder = burnt.getCraftingRemainder();
                 if (remainder != null) {
-                    new ItemHandler(stack, this)
-                            .insertItem(0, remainder.create(), false, true, true);
+                    // TODO 26.1
+//                    new ItemHandler(stack, this)
+//                            .insertItem(0, remainder.create(), false, true, true);
                 }
             }
             return burnTicks;
@@ -571,10 +573,10 @@ public class SteamDrillItem
     }
 
     @Override
-    public StorageBehaviour<ItemVariant> getBehaviour() {
+    public StorageBehaviour<ItemResource> getBehaviour() {
         return DRILL_BEHAVIOUR;
     }
 
-    public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)
+    public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemResource variant, long amount)
             implements TooltipComponent {}
 }

@@ -32,6 +32,7 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 
@@ -50,7 +51,7 @@ public class PipeDataProvider implements IServerDataProvider<BlockAccessor> {
 
             if (node instanceof FluidNetworkNode fluidNode) {
                 var info = fluidNode.collectNetworkInfo();
-                pipeData.put("fluid", info.fluid().toNbt(be.getLevel().registryAccess()));
+                pipeData.store("fluid", FluidResource.OPTIONAL_CODEC, info.fluid());
                 pipeData.putLong("amount", info.stored());
                 pipeData.putLong("capacity", info.capacity());
                 pipeData.putLong("transfer", info.transfer());

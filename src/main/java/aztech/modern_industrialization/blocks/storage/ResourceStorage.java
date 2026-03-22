@@ -24,9 +24,6 @@
 
 package aztech.modern_industrialization.blocks.storage;
 
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,16 +32,19 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 
-public record ResourceStorage<T extends TransferVariant<?>>(T resource, long amount, boolean locked) {
+public record ResourceStorage<T extends Resource>(T resource, long amount, boolean locked) {
     public ResourceStorage {
-        if (resource.isBlank() && amount != 0) {
-            throw new IllegalArgumentException("Expected 0 amount for blank resoruce, got " + amount);
+        if (resource.isEmpty() && amount != 0) {
+            throw new IllegalArgumentException("Expected 0 amount for empty resoruce, got " + amount);
         }
     }
 
-    public static final ResourceStorage<FluidVariant> FLUID_EMPTY = new ResourceStorage<>(FluidVariant.blank(), 0, false);
-    public static final ResourceStorage<ItemVariant> ITEM_EMPTY = new ResourceStorage<>(ItemVariant.blank(), 0, false);
+    public static final ResourceStorage<FluidResource> FLUID_EMPTY = new ResourceStorage<>(FluidResource.EMPTY, 0, false);
+    public static final ResourceStorage<ItemResource> ITEM_EMPTY = new ResourceStorage<>(ItemResource.EMPTY, 0, false);
 
     public ResourceStorage<T> withResource(T resource) {
         return new ResourceStorage<>(resource, amount, locked);
@@ -58,14 +58,14 @@ public record ResourceStorage<T extends TransferVariant<?>>(T resource, long amo
         return new ResourceStorage<>(resource, amount, locked);
     }
 
-    public static <T extends TransferVariant<?>> Codec<ResourceStorage<T>> codec(Codec<T> variantCodec) {
+    public static <T extends Resource> Codec<ResourceStorage<T>> codec(Codec<T> variantCodec) {
         return RecordCodecBuilder.create(instance -> instance.group(
                 variantCodec.fieldOf("resource").forGetter(ResourceStorage::resource),
                 MIExtraCodecs.POSITIVE_LONG.optionalFieldOf("amount", 0L).forGetter(ResourceStorage::amount),
                 Codec.BOOL.optionalFieldOf("locked", false).forGetter(ResourceStorage::locked)).apply(instance, ResourceStorage::new));
     }
 
-    public static <T extends TransferVariant<?>> StreamCodec<RegistryFriendlyByteBuf, ResourceStorage<T>> streamCodec(
+    public static <T extends Resource> StreamCodec<RegistryFriendlyByteBuf, ResourceStorage<T>> streamCodec(
             StreamCodec<RegistryFriendlyByteBuf, T> variantCodec) {
         return StreamCodec.composite(
                 variantCodec,
@@ -75,14 +75,14 @@ public record ResourceStorage<T extends TransferVariant<?>>(T resource, long amo
                 ByteBufCodecs.BOOL,
                 ResourceStorage::locked,
                 (resource, amount, locked) -> {
-                    if (resource.isBlank()) {
+                    if (resource.isEmpty()) {
                         amount = 0L;
                     }
                     return new ResourceStorage<>(resource, amount, locked);
                 });
     }
 
-    public static <T extends TransferVariant<?>> UnaryOperator<DataComponentType.Builder<ResourceStorage<T>>> component(Codec<T> variantCodec,
+    public static <T extends Resource> UnaryOperator<DataComponentType.Builder<ResourceStorage<T>>> component(Codec<T> variantCodec,
             StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
         return builder -> builder.persistent(codec(variantCodec)).networkSynchronized(streamCodec(streamCodec));
     }

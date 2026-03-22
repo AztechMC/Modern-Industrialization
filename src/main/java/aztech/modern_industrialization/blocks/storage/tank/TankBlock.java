@@ -26,7 +26,6 @@ package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -41,9 +40,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public class TankBlock extends AbstractStorageBlock<FluidVariant> implements EntityBlock {
-    public TankBlock(BlockBehaviour.Properties properties, EntityBlock factory, StorageBehaviour<FluidVariant> behaviour) {
+public class TankBlock extends AbstractStorageBlock<FluidResource> implements EntityBlock {
+    public TankBlock(BlockBehaviour.Properties properties, EntityBlock factory, StorageBehaviour<FluidResource> behaviour) {
         super(properties.mapColor(MapColor.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN)
                 .isRedstoneConductor(Blocks::never), factory,
                 behaviour);
@@ -64,7 +64,7 @@ public class TankBlock extends AbstractStorageBlock<FluidVariant> implements Ent
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                        BlockHitResult hit) {
-        if (((AbstractTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
+        if (((AbstractTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player, hand)) {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

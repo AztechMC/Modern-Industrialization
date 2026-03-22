@@ -27,19 +27,19 @@ package aztech.modern_industrialization.blocks.storage.tank;
 import aztech.modern_industrialization.MIComponents;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.blocks.storage.ResourceStorage;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
+public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidResource> {
     public AbstractTankBlockEntity(BlockEntityType<?> bet,
             BlockPos pos,
             BlockState state) {
@@ -47,7 +47,7 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     @Override
-    public DataComponentType<ResourceStorage<FluidVariant>> componentType() {
+    public DataComponentType<ResourceStorage<FluidResource>> componentType() {
         return MIComponents.FLUID_STORAGE.get();
     }
 
@@ -58,19 +58,19 @@ public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity
     }
 
     @Override
-    public FluidVariant loadResource(ValueInput input) {
-        return input.read("fluid", FluidVariant.CODEC).orElse(FluidVariant.blank());
+    public FluidResource loadResource(ValueInput input) {
+        return input.read("fluid", FluidResource.OPTIONAL_CODEC).orElse(FluidResource.EMPTY);
     }
 
     @Override
-    public void saveResource(FluidVariant resource, ValueOutput output) {
-        output.store("fluid", FluidVariant.CODEC, resource);
+    public void saveResource(FluidResource resource, ValueOutput output) {
+        output.store("fluid", FluidResource.OPTIONAL_CODEC, resource);
     }
 
     @Override
-    public FluidVariant getBlankResource() {
-        return FluidVariant.blank();
+    public FluidResource getEmptyResource() {
+        return FluidResource.EMPTY;
     }
 
-    public abstract boolean onPlayerUse(Player player);
+    public abstract boolean onPlayerUse(Player player, InteractionHand hand);
 }

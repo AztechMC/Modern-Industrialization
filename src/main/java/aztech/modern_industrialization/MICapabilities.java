@@ -25,8 +25,6 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotFluidHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.bridge.SlotItemHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

@@ -25,23 +25,17 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
-import aztech.modern_industrialization.util.DefaultedListWrapper;
 import aztech.modern_industrialization.util.MIExtraCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.sun.jdi.request.StepRequest;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -63,9 +57,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public class MachineRecipe implements Recipe<RecipeInput> {
     public static MapCodec<MachineRecipe> codec(MachineRecipeType type) {
@@ -217,23 +209,23 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
     }
 
-    public record FluidInput(FluidIngredient fluid, long amount, float probability) {
+    public record FluidInput(FluidIngredient fluid, int amount, float probability) {
         @Deprecated(forRemoval = true)
-        public FluidInput(Fluid fluid, long amount, float probability) {
+        public FluidInput(Fluid fluid, int amount, float probability) {
             this(FluidIngredient.of(fluid), amount, probability);
         }
 
         public static final Codec<FluidInput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         FluidIngredient.CODEC.fieldOf("ingredient").forGetter(FluidInput::fluid),
-                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L).forGetter(FluidInput::amount),
+                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1).forGetter(FluidInput::amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(FluidInput::probability))
                         .apply(g, FluidInput::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidInput> STREAM_CODEC = StreamCodec.composite(
                 FluidIngredient.STREAM_CODEC,
                 FluidInput::fluid,
-                ByteBufCodecs.VAR_LONG,
+                ByteBufCodecs.VAR_INT,
                 FluidInput::amount,
                 ByteBufCodecs.FLOAT,
                 FluidInput::probability,
@@ -271,11 +263,11 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         }
     }
 
-    public record FluidOutput(Fluid fluid, long amount, float probability) {
+    public record FluidOutput(Fluid fluid, int amount, float probability) {
         public static final Codec<FluidOutput> CODEC = RecordCodecBuilder.create(
                 g -> g.group(
                         BuiltInRegistries.FLUID.byNameCodec().fieldOf("id").forGetter(fluidOutput -> fluidOutput.fluid),
-                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(MIExtraCodecs.POSITIVE_LONG, "amount", 1L)
+                        NeoForgeExtraCodecs.optionalFieldAlwaysWrite(ExtraCodecs.POSITIVE_INT, "amount", 1)
                                 .forGetter(fluidOutput -> fluidOutput.amount),
                         MIExtraCodecs.FLOAT_01.optionalFieldOf("probability", 1f).forGetter(fluidOutput -> fluidOutput.probability))
                         .apply(g, FluidOutput::new));
@@ -283,7 +275,7 @@ public class MachineRecipe implements Recipe<RecipeInput> {
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidOutput> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.registry(Registries.FLUID),
                 FluidOutput::fluid,
-                ByteBufCodecs.VAR_LONG,
+                ByteBufCodecs.VAR_INT,
                 FluidOutput::amount,
                 ByteBufCodecs.FLOAT,
                 FluidOutput::probability,

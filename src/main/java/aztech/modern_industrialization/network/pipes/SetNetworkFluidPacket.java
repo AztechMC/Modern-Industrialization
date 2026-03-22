@@ -26,23 +26,17 @@ package aztech.modern_industrialization.network.pipes;
 
 import aztech.modern_industrialization.network.BasePacket;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
-public record SetNetworkFluidPacket(int syncId, FluidVariant fluid) implements BasePacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, SetNetworkFluidPacket> STREAM_CODEC = StreamCodec.ofMember(
-            SetNetworkFluidPacket::write, SetNetworkFluidPacket::new);
-
-    public SetNetworkFluidPacket(RegistryFriendlyByteBuf buf) {
-        this(buf.readUnsignedByte(), FluidVariant.fromPacket(buf));
-    }
-
-    public void write(RegistryFriendlyByteBuf buf) {
-        buf.writeByte(syncId);
-        fluid.toPacket(buf);
-    }
+public record SetNetworkFluidPacket(int syncId, FluidResource fluid) implements BasePacket {
+    public static final StreamCodec<RegistryFriendlyByteBuf, SetNetworkFluidPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SetNetworkFluidPacket::syncId,
+            FluidResource.STREAM_CODEC, SetNetworkFluidPacket::fluid,
+            SetNetworkFluidPacket::new);
 
     @Override
     public void handle(Context ctx) {

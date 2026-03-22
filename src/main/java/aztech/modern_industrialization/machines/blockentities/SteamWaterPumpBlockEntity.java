@@ -43,7 +43,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
         super(bep, bronze ? "bronze_water_pump" : "steel_water_pump");
         this.bronze = bronze;
 
-        long capacity = FluidType.BUCKET_VOLUME * (bronze ? 8 : 16);
+        int capacity = FluidType.BUCKET_VOLUME * (bronze ? 8 : 16);
         List<ConfigurableFluidStack> fluidStacks = Arrays.asList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.STEAM.asFluid()),
                 ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER));
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(21, 30).addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build();

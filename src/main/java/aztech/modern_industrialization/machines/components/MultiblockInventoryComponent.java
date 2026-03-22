@@ -31,7 +31,8 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.storage.TransferVariant;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -69,7 +70,7 @@ public class MultiblockInventoryComponent implements CrafterComponent.Inventory,
         invHash++;
     }
 
-    private <T, Stack extends AbstractConfigurableStack<T, ? extends TransferVariant<T>>> void rebuildList(
+    private <T, Stack extends AbstractConfigurableStack<T, ? extends DataComponentHolderResource<T>>> void rebuildList(
             List<HatchBlockEntity> sortedHatches, List<Stack> stacks, BiConsumer<HatchBlockEntity, List<Stack>> appender) {
         for (var stack : stacks) {
             stack.removeListener(listener);

@@ -27,8 +27,6 @@ package aztech.modern_industrialization.client.compat.viewer.impl.jei;
 import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.machines.DoSlotDraggingPacket;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 class MIGhostIngredientHandler implements IGhostIngredientHandler<MIContainerScreen<?>> {
     @Override
@@ -48,8 +48,8 @@ class MIGhostIngredientHandler implements IGhostIngredientHandler<MIContainerScr
         var ingredient = typedIngredient.getIngredient();
         List<Target<I>> bounds = new ArrayList<>();
 
-        FluidVariant fk = ingredient instanceof FluidStack fs ? FluidVariant.of(fs) : null;
-        ItemVariant ik = ingredient instanceof ItemStack is ? ItemVariant.of(is) : null;
+        FluidResource fk = ingredient instanceof FluidStack fs ? FluidResource.of(fs) : null;
+        ItemResource ik = ingredient instanceof ItemStack is ? ItemResource.of(is) : null;
         for (GuiEventListener element : gui.children()) {
             if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
                 if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {

@@ -34,7 +34,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandlerHelper;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
+import aztech.modern_industrialization.transfer.IOResourceHandler;
 import aztech.modern_industrialization.util.IOFluidHandler;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
@@ -55,14 +55,16 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public class FluidNetworkNode extends PipeNetworkNode {
     long amount = 0;
     private final List<FluidConnection> connections = new ArrayList<>();
-    private FluidVariant cachedFluid = FluidVariant.blank();
+    private FluidResource cachedFluid = FluidResource.EMPTY;
 
     /**
      * Add all valid targets to the target list, and pick the fluid for the network
@@ -76,33 +78,35 @@ public class FluidNetworkNode extends PipeNetworkNode {
             MI.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
-        if (amount > 0 && data.fluid().isBlank()) {
-            MI.LOGGER.warn("Amount > 0 but fluid is blank, deleting some fluid!");
+        if (amount > 0 && data.fluid().isEmpty()) {
+            MI.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
             amount = 0;
         }
 
         for (FluidConnection connection : connections) {
             var storage = getNeighborStorage(world, pos, connection);
-            if (data.fluid().isBlank() && connection.canExtract()) {
+            if (data.fluid().isEmpty() && connection.canExtract()) {
                 // Try to set fluid, will return null if none could be found.
-                network.data = data = new FluidNetworkData(FluidVariant.of(storage.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE)));
+                var extractableResource = ResourceHandlerUtil.findExtractableResource(storage, fr -> true, null);
+                if (extractableResource != null) {
+                    network.data = data = new FluidNetworkData(extractableResource);
+                }
             }
             if (connection.canInsert() && connection.canExtract() && storage instanceof FluidNetworkExtensionTank extension) {
                 extensions.add(extension);
             } else {
-                targets.add(new FluidTarget(connection.priority, new IOFluidHandler(storage, connection.canInsert(), connection.canExtract())));
+                targets.add(new FluidTarget(connection.priority, new IOResourceHandler<>(storage, connection.canInsert(), connection.canExtract())));
             }
         }
     }
 
-    private IFluidHandler getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
-        // TODO 26.1
-//        if (connection.cache == null) {
-//            connection.cache = BlockCapabilityCache.create(Capabilities.FluidHandler.BLOCK, world, pos.relative(connection.direction),
-//                    connection.direction.getOpposite());
-//        }
+    private ResourceHandler<FluidResource> getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
+        if (connection.cache == null) {
+            connection.cache = BlockCapabilityCache.create(Capabilities.Fluid.BLOCK, world, pos.relative(connection.direction),
+                    connection.direction.getOpposite());
+        }
         var storage = connection.cache.getCapability();
-        return Objects.requireNonNullElse(storage, EmptyFluidHandler.INSTANCE);
+        return Objects.requireNonNullElse(storage, EmptyResourceHandler.instance());
     }
 
     @Override
@@ -215,7 +219,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
-        private @Nullable BlockCapabilityCache<IFluidHandler, @Nullable Direction> cache;
+        private @Nullable BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction> cache;
 
         private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
@@ -238,20 +242,20 @@ public class FluidNetworkNode extends PipeNetworkNode {
             private ScreenHandlerFactory(PipeScreenHandlerHelper helper, Identifier pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
-                    public FluidVariant getNetworkFluid() {
+                    public FluidResource getNetworkFluid() {
                         if (network != null) {
                             return getFluid();
                         } else {
-                            return FluidVariant.blank();
+                            return FluidResource.EMPTY;
                         }
                     }
 
                     @Override
-                    public void setNetworkFluid(FluidVariant fluid) {
+                    public void setNetworkFluid(FluidResource fluid) {
                         FluidNetwork network = (FluidNetwork) FluidNetworkNode.this.network;
                         if (network != null && !getNetworkFluid().equals(fluid)) {
                             network.clearFluid();
-                            if (!fluid.isBlank()) {
+                            if (!fluid.isEmpty()) {
                                 network.setFluid(fluid);
                             }
                             helper.callMarkDirty();
@@ -316,12 +320,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag writeCustomData(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        tag.store("fluid", FluidVariant.CODEC, ((FluidNetworkData) network.data).fluid());
+        tag.store("fluid", FluidResource.OPTIONAL_CODEC, ((FluidNetworkData) network.data).fluid());
         return tag;
     }
 
     public void afterTick(ServerLevel world, BlockPos pos) {
-        FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid();
+        FluidResource networkFluid = ((FluidNetworkData) network.data).fluid();
         if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
             // Equivalent to calling sync()
@@ -334,7 +338,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     // Used in the Waila plugin
-    private FluidVariant getFluid() {
+    private FluidResource getFluid() {
         return ((FluidNetworkData) network.data).fluid();
     }
 
@@ -349,5 +353,5 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return new InGameInfo(getFluid(), stored, capacity, fluidNetwork.stats.getValue(), fluidNetwork.capacityStats.getValue());
     }
 
-    public record InGameInfo(FluidVariant fluid, long stored, long capacity, long transfer, long maxTransfer) {}
+    public record InGameInfo(FluidResource fluid, long stored, long capacity, long transfer, long maxTransfer) {}
 }

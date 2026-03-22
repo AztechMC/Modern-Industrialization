@@ -124,7 +124,7 @@ record MachineGuiContainerHandler(IIngredientManager ingredientManager, Supplier
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
             if (stack.getAmount() > 0) {
                 var fluid = stack.getResource();
-                if (!fluid.isBlank()) {
+                if (!fluid.isEmpty()) {
                     return fluid.toStack(1);
                 }
             } else if (stack.getLockedInstance() != null) {

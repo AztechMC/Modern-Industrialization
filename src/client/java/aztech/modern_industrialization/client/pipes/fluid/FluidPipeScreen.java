@@ -34,10 +34,8 @@ import aztech.modern_industrialization.compat.viewer.ReiDraggable;
 import aztech.modern_industrialization.network.pipes.SetNetworkFluidPacket;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeInterface;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.fluid.FluidVariant;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import aztech.modern_industrialization.util.*;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -51,6 +49,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final Identifier TEXTURE = MI.id("textures/gui/pipe/fluid.png");
@@ -88,7 +88,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
                 new NetworkFluidButton(72 + this.leftPos, 20 + this.topPos, widget -> updateNetworkFluid(), () -> {
                     List<Component> lines = new ArrayList<>();
                     lines.add(FluidHelper.getFluidName(menu.iface.getNetworkFluid(), false));
-                    if (!menu.iface.getNetworkFluid().isBlank()) {
+                    if (!menu.iface.getNetworkFluid().isEmpty()) {
                         lines.add(MIText.NetworkFluidHelpClear.text().setStyle(TextHelper.GRAY_TEXT));
                     } else {
                         lines.add(MIText.NetworkFluidHelpSet.text().setStyle(TextHelper.GRAY_TEXT));
@@ -99,22 +99,22 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
     private void updateNetworkFluid() {
         FluidPipeInterface iface = menu.iface;
-        FluidVariant targetFluid = null;
-        if (iface.getNetworkFluid().isBlank()) {
+        FluidResource targetFluid = null;
+        if (iface.getNetworkFluid().isEmpty()) {
             // Want to set the fluid
-            FluidVariant fluid = FluidVariant.of(FluidUtil.getFluidContained(menu.getCarried()).orElse(FluidStack.EMPTY));
-            if (!fluid.isBlank()) {
+            FluidResource fluid = FluidResource.of(FluidUtil.getFluidContained(menu.getCarried()).orElse(FluidStack.EMPTY));
+            if (!fluid.isEmpty()) {
                 targetFluid = fluid;
             }
         } else if (Minecraft.getInstance().hasShiftDown()) {
-            targetFluid = FluidVariant.blank();
+            targetFluid = FluidResource.EMPTY;
         }
         if (targetFluid != null) {
             setNetworkFluid(targetFluid);
         }
     }
 
-    private void setNetworkFluid(FluidVariant fluidKey) {
+    private void setNetworkFluid(FluidResource fluidKey) {
         menu.iface.setNetworkFluid(fluidKey);
         new SetNetworkFluidPacket(menu.containerId, fluidKey).sendToServer();
     }
@@ -140,7 +140,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             // Render fluid slot
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, getX() - 1, getY() - 1, 18, 0, 18, 18, 256, 256);
             // Render the fluid itself
-            if (!iface.getNetworkFluid().isBlank()) {
+            if (!iface.getNetworkFluid().isEmpty()) {
                 RenderHelper.drawFluidInGui(guiGraphics, iface.getNetworkFluid(), getX(), getY());
             }
             // Render the white hover effect
@@ -155,15 +155,15 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         }
 
         @Override
-        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidResource fluidResource, Simulation simulation) {
             if (simulation.isActing()) {
-                setNetworkFluid(fluidKey);
+                setNetworkFluid(fluidResource);
             }
             return true;
         }
 
         @Override
-        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
+        public boolean dragItem(ItemResource itemResource, Simulation simulation) {
             return false;
         }
     }

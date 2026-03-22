@@ -29,11 +29,11 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.components.NuclearEfficiencyHistoryComponent;
-import aztech.modern_industrialization.thirdparty.fabrictransfer.api.item.ItemVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class NuclearFuel extends NuclearAbsorbable {
     public final double directEnergyFactor;
@@ -86,12 +86,12 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     @Override
-    public ItemVariant getNeutronProduct() {
-        return ItemVariant.of(BuiltInRegistries.ITEM.getOptional(depletedVersionId).get());
+    public ItemResource getNeutronProduct() {
+        return ItemResource.of(BuiltInRegistries.ITEM.getOptional(depletedVersionId).get());
     }
 
     @Override
-    public long getNeutronProductAmount() {
+    public int getNeutronProductAmount() {
         return size;
     }
 

@@ -56,11 +56,13 @@ public interface ItemVariant extends TransferVariant<Item> {
             .xmap(o -> o.orElse(ItemVariant.blank()), fv -> fv.isBlank() ? Optional.empty() : Optional.of(fv));
     StreamCodec<RegistryFriendlyByteBuf, ItemVariant> STREAM_CODEC = ItemStack.OPTIONAL_STREAM_CODEC.map(ItemVariant::of, ItemVariant::toStack);
 
+    ItemVariant BLANK = of(Items.AIR);
+
     /**
      * Retrieve a blank ItemVariant.
      */
     static ItemVariant blank() {
-        return of(Items.AIR);
+        return BLANK;
     }
 
     /**

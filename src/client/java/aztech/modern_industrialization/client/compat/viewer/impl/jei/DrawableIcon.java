@@ -28,7 +28,7 @@ import aztech.modern_industrialization.client.compat.viewer.abstraction.ViewerCa
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class DrawableIcon implements IDrawable {
@@ -57,7 +57,7 @@ public class DrawableIcon implements IDrawable {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture.loc(), xOffset - 1, yOffset - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
     }
 }

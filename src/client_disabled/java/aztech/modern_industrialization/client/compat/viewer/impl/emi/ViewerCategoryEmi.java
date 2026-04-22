@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -60,7 +60,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
     public ViewerCategoryEmi(ViewerCategory<D> category) {
         super(category.id, category.icon instanceof ViewerCategory.Icon.Stack stack ? EmiStack.of(stack.stack()) : new EmiRenderable() {
             @Override
-            public void render(GuiGraphics guiGraphics, int x, int y, float delta) {
+            public void render(GuiGraphicsExtractor guiGraphics, int x, int y, float delta) {
                 var texture = (ViewerCategory.Icon.Texture) category.icon;
                 guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture.loc(), x - 1, y - 1, 0, texture.u(), texture.v(), 18, 18, 256, 256);
             }
@@ -313,7 +313,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                 }
 
                 @Override
-                public void drawable(Consumer<GuiGraphics> widget) {
+                public void drawable(Consumer<GuiGraphicsExtractor> widget) {
                     widgets.addDrawable(-4, -4, 0, 0, (matrices, mouseX, mouseY, delta) -> {
                         widget.accept(matrices);
                     });
@@ -350,7 +350,7 @@ class ViewerCategoryEmi<D> extends EmiRecipeCategory {
                             }
 
                             @Override
-                            public void drawStack(GuiGraphics draw, int mouseX, int mouseY, float delta) {
+                            public void drawStack(GuiGraphicsExtractor draw, int mouseX, int mouseY, float delta) {
                                 var stack = pages.getStack(finalIndex);
 
                                 Bounds bounds = getBounds();

@@ -32,7 +32,7 @@ import aztech.modern_industrialization.machines.guicomponents.GeneratorMultibloc
 import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Unit;
 
 public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, GeneratorMultiblockGui.Data> {
@@ -51,7 +51,7 @@ public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, Gener
 
     public class Renderer extends CraftingMultiblockGuiClient.BaseScreenRenderer implements ClientComponentRenderer {
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             Font font = Minecraft.getInstance().font;
 
             int deltaY = renderScreenAndStatus(data.isShapeValid(), font, guiGraphics, x, y);
@@ -59,11 +59,11 @@ public class GeneratorMultiblockGuiClient extends GuiComponentClient<Unit, Gener
             if (data.isShapeValid()) {
                 deltaY += 11;
 
-                guiGraphics.drawString(font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
+                guiGraphics.text(font, MIText.GeneratorCurrentEu.text(TextHelper.getEuTextTick(data.currentEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
                         false);
                 deltaY += 11;
 
-                guiGraphics.drawString(font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
+                guiGraphics.text(font, MIText.GeneratorMaxEu.text(TextHelper.getEuTextTick(data.maxEuGeneration())), x + 10, y + deltaY, 0xFFFFFFFF,
                         false);
                 deltaY += 11;
             }

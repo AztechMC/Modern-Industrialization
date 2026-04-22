@@ -34,10 +34,10 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jspecify.annotations.Nullable;
 
 public record FluidNuclearComponent(
-        FluidResource variant,
+        Fluid fluid,
         double heatConduction,
         NeutronBehaviour neutronBehaviour,
-        FluidResource neutronProduct,
+        Fluid neutronProduct,
         int neutronProductAmount,
         double neutronProductProbability) implements NuclearComponent<FluidResource> {
     public FluidNuclearComponent(
@@ -46,11 +46,11 @@ public record FluidNuclearComponent(
             double density,
             NuclearConstant.ScatteringType type,
             IsotopeParams params,
-            FluidResource neutronProduct,
+            Fluid neutronProduct,
             int neutronProductAmount,
             double neutronProductProbability) {
         this(
-                FluidResource.of(fluid),
+                fluid,
                 heatConduction * density,
                 NeutronBehaviour.of(type, params, density),
                 neutronProduct,
@@ -60,7 +60,7 @@ public record FluidNuclearComponent(
 
     @Override
     public FluidResource getVariant() {
-        return variant;
+        return FluidResource.of(fluid);
     }
 
     @Override
@@ -75,7 +75,7 @@ public record FluidNuclearComponent(
 
     @Override
     public FluidResource getNeutronProduct() {
-        return neutronProduct;
+        return FluidResource.of(neutronProduct);
     }
 
     @Override
@@ -91,7 +91,7 @@ public record FluidNuclearComponent(
     private static final Map<Fluid, FluidNuclearComponent> registry = new IdentityHashMap<>();
 
     public static void register(FluidNuclearComponent component) {
-        Fluid fluid = component.getVariant().getFluid();
+        Fluid fluid = component.fluid();
         if (registry.containsKey(fluid)) {
             throw new IllegalArgumentException("Already registered fluid-neutron interaction for " + fluid);
         }
@@ -114,7 +114,7 @@ public record FluidNuclearComponent(
                 1,
                 NuclearConstant.ScatteringType.ULTRA_LIGHT,
                 NuclearConstant.HYDROGEN,
-                MIFluids.DEUTERIUM.resource(),
+                MIFluids.DEUTERIUM.asFluid(),
                 1,
                 1));
         register(new FluidNuclearComponent(MIFluids.HEAVY_WATER.asFluid(),
@@ -122,7 +122,7 @@ public record FluidNuclearComponent(
                 1,
                 NuclearConstant.ScatteringType.LIGHT,
                 NuclearConstant.DEUTERIUM,
-                MIFluids.TRITIUM.resource(),
+                MIFluids.TRITIUM.asFluid(),
                 1,
                 1));
         register(new FluidNuclearComponent(MIFluids.HIGH_PRESSURE_WATER.asFluid(),
@@ -130,7 +130,7 @@ public record FluidNuclearComponent(
                 4,
                 NuclearConstant.ScatteringType.ULTRA_LIGHT,
                 NuclearConstant.HYDROGEN,
-                MIFluids.DEUTERIUM.resource(),
+                MIFluids.DEUTERIUM.asFluid(),
                 8,
                 0.125));
         register(new FluidNuclearComponent(MIFluids.HIGH_PRESSURE_HEAVY_WATER.asFluid(),
@@ -138,7 +138,7 @@ public record FluidNuclearComponent(
                 4,
                 NuclearConstant.ScatteringType.LIGHT,
                 NuclearConstant.DEUTERIUM,
-                MIFluids.TRITIUM.resource(),
+                MIFluids.TRITIUM.asFluid(),
                 8,
                 0.125));
 

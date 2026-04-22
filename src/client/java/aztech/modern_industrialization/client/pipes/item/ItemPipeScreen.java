@@ -38,7 +38,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -112,19 +112,19 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
      * @reason Override the title to add a warning when the slot is empty
      */
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Component title = this.title;
         if (menu.pipeInterface.isWhitelist() && menu.pipeInterface.isFilterEmpty()) {
             title = title.copy().append(Component.literal(" "))
                     .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
-        guiGraphics.drawString(font, title, this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
-        guiGraphics.drawString(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
+        guiGraphics.text(font, title, this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
+        guiGraphics.text(font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
-        super.renderTooltip(guiGraphics, x, y);
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
+        super.extractTooltip(guiGraphics, x, y);
 
         if (this.hoveredSlot != null && this.hoveredSlot instanceof ItemPipeScreenHandler.UpgradeSlot && !this.hoveredSlot.hasItem()) {
             List<Component> lines = new ArrayList<>();
@@ -159,7 +159,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
             int u = menu.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHoveredOrFocused() ? 20 : 0;
 

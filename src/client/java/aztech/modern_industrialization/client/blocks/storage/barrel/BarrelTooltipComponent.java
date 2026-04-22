@@ -31,7 +31,7 @@ import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,14 +52,14 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
+    public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
         RenderHelper.renderAndDecorateItem(graphics, font, data.variant().toStack(), x, y + 10);
 
         Style style = MITooltips.DEFAULT_STYLE;
 
-        graphics.drawString(font, data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true);
+        graphics.text(font, data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true);
 
-        graphics.drawString(font, getItemNumber(), x + 20, y + 15, -1, true);
+        graphics.text(font, getItemNumber(), x + 20, y + 15, -1, true);
     }
 
     public Component getItemNumber() {

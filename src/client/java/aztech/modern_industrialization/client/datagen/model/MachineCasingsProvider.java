@@ -37,8 +37,9 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -92,9 +93,9 @@ public class MachineCasingsProvider {
         ModelTemplates.CUBE_BOTTOM_TOP.create(
                 modelId,
                 new TextureMapping()
-                        .put(TextureSlot.SIDE, MI.id(side))
-                        .put(TextureSlot.BOTTOM, MI.id(bottom))
-                        .put(TextureSlot.TOP, MI.id(top)),
+                        .put(TextureSlot.SIDE, new Material(MI.id(side)))
+                        .put(TextureSlot.BOTTOM, new Material(MI.id(bottom)))
+                        .put(TextureSlot.TOP, new Material(MI.id(top))),
                 blockModels.modelOutput);
         generateCasing(casing, new SingleVariant.Unbaked(BlockModelGenerators.plainModel(modelId)));
     }
@@ -103,7 +104,7 @@ public class MachineCasingsProvider {
         var modelId = casing.key.withPrefix("machine_casing/");
         ModelTemplates.CUBE_ALL.create(
                 modelId,
-                new TextureMapping().put(TextureSlot.ALL, MI.id(side)),
+                new TextureMapping().put(TextureSlot.ALL, new Material(MI.id(side))),
                 blockModels.modelOutput);
         generateCasing(casing, new SingleVariant.Unbaked(BlockModelGenerators.plainModel(modelId)));
     }

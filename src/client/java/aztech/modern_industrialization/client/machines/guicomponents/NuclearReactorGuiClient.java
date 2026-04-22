@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -102,7 +102,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
         Component[] neutronModeTooltip = new Component[] { MIText.FastNeutron.text(), MIText.ThermalNeutron.text(), MIText.Both.text() };
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             if (data.valid()) {
                 for (int i = 0; i < data.gridSizeX(); i++) {
                     for (int j = 0; j < data.gridSizeY(); j++) {
@@ -187,19 +187,19 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
 
                 if (data.euFuelConsumption() > 0 && currentMode == Renderer.Mode.EU_GENERATION) {
                     Font font = Minecraft.getInstance().font;
-                    guiGraphics.drawString(font, getEfficiencyText(), x + 8, y + 16, -1, false);
+                    guiGraphics.text(font, getEfficiencyText(), x + 8, y + 16, -1, false);
                 }
 
             } else {
                 Font font = Minecraft.getInstance().font;
                 Component text = MIText.MultiblockShapeInvalid.text().setStyle(TextHelper.RED.withBold(true));
                 int width = font.width(text);
-                guiGraphics.drawString(font, text, x + centerX - width / 2, y + centerY, -1, false);
+                guiGraphics.text(font, text, x + centerX - width / 2, y + centerY, -1, false);
             }
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int x, int y, int cursorX, int cursorY) {
             int i = (cursorX - (x + centerX - data.gridSizeX() * 9)) / 18;
             int j = (cursorY - (y + centerY - data.gridSizeY() * 9)) / 18;
 
@@ -384,7 +384,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                                     .text(modeTooltip[previousMode().index])
                                     .setStyle(TextHelper.GRAY_TEXT)),
                     (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
-                        button.renderVanilla(guiGraphics, mouseX, mouseY, delta);
+                        button.extractRenderState(guiGraphics, mouseX, mouseY, delta);
                         if (currentMode == Renderer.Mode.NUCLEAR_FUEL) {
                             RenderHelper.renderAndDecorateItem(guiGraphics, fuelStack, button.getX() + 1, button.getY() + 1);
                         } else if (currentMode == Renderer.Mode.EU_GENERATION) {
@@ -400,7 +400,7 @@ public class NuclearReactorGuiClient extends GuiComponentClient<Unit, NuclearRea
                             MIText.ShiftClickToSwitch.text(neutronModeTooltip[previousNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
                     (screen, button, guiGraphics, mouseX, mouseY, delta) -> {
 
-                        button.renderVanilla(guiGraphics, mouseX, mouseY, delta);
+                        button.extractRenderState(guiGraphics, mouseX, mouseY, delta);
 
                         if (neutronMode == FAST) {
                             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE_ATLAS, button.getX() + 2, button.getY() + 2, 0, 240, 16, 16, 256, 256);

@@ -32,23 +32,26 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.logging.LogUtils;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.IdentityHashMap;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +63,7 @@ import org.jspecify.annotations.Nullable;
  * Renders an overlay if the machine is active.
  */
 public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T, MachineRenderState> {
-    private final BlockModelShaper blockModels;
+    private final BlockModelSet blockModels;
     @Nullable
     private BlockState lastBlockState = null;
     @Nullable
@@ -87,7 +90,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     }
 
     public MachineBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.blockModels = ctx.blockRenderDispatcher().getBlockModelShaper();
+        this.blockModels = Minecraft.getInstance().getModelManager().getBlockModelSet();
     }
 
     @Override
@@ -135,8 +138,11 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
             }
             int packedLight = activeOverlay.packedLight;
             submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
-                vc.putBulkData(pose, quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLight, OverlayTexture.NO_OVERLAY);
-                SodiumCompat.markSpriteActive(quad.sprite());
+                var quadInstance = new QuadInstance();
+                quadInstance.setLightCoords(packedLight);
+                vc.putBakedQuad(pose, quad, quadInstance);
+                // TODO 26.1
+//                SodiumCompat.markSpriteActive(quad.sprite());
             });
         }
     }
@@ -152,9 +158,9 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
         if (cachedQuads[cachedQuadIndex] == null) {
-            TextureAtlasSprite sprite = model == null ? null : MachineBlockStateModel.getSprite(model.getSprites(casing), d, facing, true);
+            var sprite = model == null ? null : MachineBlockStateModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
-                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(d, sprite, -2 * MachineBlockStateModel.Z_OFFSET);
+                cachedQuads[cachedQuadIndex] = ModelHelper.bakeSprite(d, sprite.sprite(), -2 * MachineBlockStateModel.Z_OFFSET);
             } else {
                 cachedQuads[cachedQuadIndex] = NO_QUAD;
             }
@@ -166,7 +172,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
     @Nullable
     private MachineBlockStateModel getMachineModel(BlockState state) {
-        var model = blockModels.getBlockModel(state);
+        var model = blockModels.get(state);
 
         if (UNWRAP_BAKED_MODEL != null) {
             // TODO Continuity support

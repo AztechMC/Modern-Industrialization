@@ -66,6 +66,8 @@ public record ForgeHammerRecipe(
             ForgeHammerRecipe::hammerDamage,
             ForgeHammerRecipe::new);
 
+    public static final RecipeSerializer<ForgeHammerRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     @Override
     public boolean matches(RecipeInput recipeInput, Level world) {
         throw new UnsupportedOperationException();
@@ -79,6 +81,16 @@ public record ForgeHammerRecipe(
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public String group() {
+        return "";
     }
 
     @Override
@@ -99,17 +111,5 @@ public record ForgeHammerRecipe(
     @Override
     public RecipeBookCategory recipeBookCategory() {
         throw new UnsupportedOperationException();
-    }
-
-    public static class Serializer implements RecipeSerializer<ForgeHammerRecipe> {
-        @Override
-        public MapCodec<ForgeHammerRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, ForgeHammerRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     }
 }

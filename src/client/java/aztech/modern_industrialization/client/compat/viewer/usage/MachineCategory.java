@@ -263,7 +263,7 @@ public class MachineCategory extends ViewerCategory<RecipeHolder<MachineRecipe>>
                 float itemx = Math.max(x, endOfEuText + 1);
                 graphics.pose().translate(itemx, y);
                 graphics.pose().scale((float) wh / 16, (float) wh / 16);
-                graphics.renderFakeItem(displayedItem, 0, 0);
+                graphics.fakeItem(displayedItem, 0, 0);
                 graphics.pose().popMatrix();
             });
         }

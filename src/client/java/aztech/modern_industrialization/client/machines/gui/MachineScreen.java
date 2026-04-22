@@ -45,7 +45,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
@@ -111,7 +111,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
         }
     }
 
-    public void blitButton(Button button, GuiGraphics guiGraphics, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV) {
+    public void blitButton(Button button, GuiGraphicsExtractor guiGraphics, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), baseU, baseV, button.getWidth(), button.getHeight(), 256, 256);
         if (button.isHoveredOrFocused()) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight(), 256, 256);
@@ -121,18 +121,18 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
     /**
      * Helper method to draw a 20x20 button.
      */
-    public void blitButton(Button button, GuiGraphics guiGraphics, int u, int v) {
+    public void blitButton(Button button, GuiGraphicsExtractor guiGraphics, int u, int v) {
         blitButton(button, guiGraphics, u, v, 60, 18);
     }
 
     /**
      * Helper method to draw a 12x12 button.
      */
-    public void blitButtonSmall(Button button, GuiGraphics guiGraphics, int u, int v) {
+    public void blitButtonSmall(Button button, GuiGraphicsExtractor guiGraphics, int u, int v) {
         blitButton(button, guiGraphics, u, v, 138, 58);
     }
 
-    public void blitButtonNoHighlight(Button button, GuiGraphics guiGraphics, int u, int v) {
+    public void blitButtonNoHighlight(Button button, GuiGraphicsExtractor guiGraphics, int u, int v) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOT_ATLAS, button.getX(), button.getY(), u, v, button.getWidth(), button.getHeight(), 256, 256);
     }
 
@@ -180,7 +180,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         // Update button visibility
         for (var element : renderables) {
             if (element instanceof MachineButton machineButton) {
@@ -189,7 +189,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
         }
 
         // Normal render - handles background and slots
-        super.render(guiGraphics, mouseX, mouseY, delta);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         // Tooltips
         renderConfigurableSlotTooltips(guiGraphics, mouseX, mouseY);
         for (ClientComponentRenderer renderer : renderers) {
@@ -213,26 +213,28 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
      * We override this method to clip the title if it's too long.
      */
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, titleToRender(), this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.text(this.font, titleToRender(), this.titleLabelX, this.titleLabelY, CommonColors.DARK_GRAY, false);
+        guiGraphics.text(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, CommonColors.DARK_GRAY, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+
         int bw = menu.guiParams.backgroundWidth;
         int bh = menu.guiParams.backgroundHeight;
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4, 256, 256);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, bw, 4, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BACKGROUND, leftPos, topPos, 0, 0, bw, 4, 256, 256);
 
         for (ClientComponentRenderer renderer : renderers) {
-            renderer.renderBackground(guiGraphics, leftPos, topPos);
+            renderer.extractBackground(graphics, leftPos, topPos);
         }
 
-        renderConfigurableSlotBackgrounds(guiGraphics);
+        renderConfigurableSlotBackgrounds(graphics);
     }
 
-    private void renderConfigurableSlotBackgrounds(GuiGraphics guiGraphics) {
+    private void renderConfigurableSlotBackgrounds(GuiGraphicsExtractor guiGraphics) {
         for (Slot slot : this.menu.slots) {
             if (slot instanceof BackgroundRenderedSlot brs) {
                 var atlas = brs.getBackgroundAtlasLocation();
@@ -247,12 +249,12 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
     }
 
     @Override
-    protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
+    protected void extractSlot(GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY) {
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot cfs) {
             ConfigurableFluidStack stack = cfs.getConfStack();
             FluidResource renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidResource.of(stack.getLockedInstance());
             if (!renderedKey.isEmpty()) {
-                RenderHelper.drawFluidInGui(guiGraphics, renderedKey, slot.x, slot.y);
+                RenderHelper.drawFluidInGui(graphics, renderedKey, slot.x, slot.y);
             }
             return;
         }
@@ -262,14 +264,14 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
             if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isEmpty()) {
                 Item item = itemStack.getLockedInstance();
                 if (item != Items.AIR) {
-                    RenderHelper.renderAndDecorateItem(guiGraphics, font, new ItemStack(item), slot.x, slot.y, "0");
+                    RenderHelper.renderAndDecorateItem(graphics, font, new ItemStack(item), slot.x, slot.y, "0");
                 }
             }
         }
-        super.renderSlot(guiGraphics, slot, mouseX, mouseY);
+        super.extractSlot(graphics, slot, mouseX, mouseY);
     }
 
-    private void renderConfigurableSlotTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderConfigurableSlotTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Slot slot = hoveredSlot;
         if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
             ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
@@ -295,7 +297,7 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
         }
     }
 
-    private void renderConfigurableItemStackTooltip(GuiGraphics guiGraphics, ConfigurableItemStack stack, int mouseX, int mouseY) {
+    private void renderConfigurableItemStackTooltip(GuiGraphicsExtractor guiGraphics, ConfigurableItemStack stack, int mouseX, int mouseY) {
         ItemStack vanillaStack = stack.isEmpty() ? stack.getLockedInstance() == null ? ItemStack.EMPTY : new ItemStack(stack.getLockedInstance())
                 : stack.getResource().toStack((int) stack.getAmount());
         // Regular information
@@ -377,18 +379,14 @@ public class MachineScreen extends MIContainerScreen<MachineMenuClient> implemen
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        public final void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
             this.visible = isPresent.get();
-            super.render(guiGraphics, mouseX, mouseY, partialTick);
+            super.extractRenderState(graphics, mouseX, mouseY, a);
         }
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
             renderer.renderButton(MachineScreen.this, this, guiGraphics, mouseX, mouseY, partialTick);
-        }
-
-        public void renderVanilla(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-            super.renderWidget(guiGraphics, mouseX, mouseY, delta);
         }
     }
 }

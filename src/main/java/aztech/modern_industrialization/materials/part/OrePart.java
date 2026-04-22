@@ -156,7 +156,7 @@ public class OrePart implements PartKeyProvider {
 
                     // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
                     // (i.e. the drop is raw ore).
-                    if (mainPartKey.equals(MIParts.INGOT.key()) != (oreParams.xpDropped.getMaxValue() == 0)) {
+                    if (mainPartKey.equals(MIParts.INGOT.key()) != (oreParams.xpDropped.maxInclusive() == 0)) {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 

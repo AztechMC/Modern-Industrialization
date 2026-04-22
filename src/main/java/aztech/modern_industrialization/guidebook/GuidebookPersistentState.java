@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.guidebook;
 
+import aztech.modern_industrialization.MI;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.HashSet;
@@ -42,7 +43,7 @@ public class GuidebookPersistentState extends SavedData {
                     UUIDUtil.CODEC_SET.fieldOf("receivedPlayers").forGetter(s -> s.receivedPlayers))
                     .apply(i, GuidebookPersistentState::new));
     private static final SavedDataType<GuidebookPersistentState> TYPE = new SavedDataType<>(
-            "modern_industrialization_guidebook",
+            MI.id("guidebook"),
             GuidebookPersistentState::new,
             CODEC);
 

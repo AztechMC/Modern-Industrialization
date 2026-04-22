@@ -33,7 +33,7 @@ import aztech.modern_industrialization.network.machines.SetAutoExtractPacket;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class AutoExtractClient extends GuiComponentClient<AutoExtract.Params, AutoExtract.Data> {
@@ -112,6 +112,6 @@ public class AutoExtractClient extends GuiComponentClient<AutoExtract.Params, Au
         }
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {}
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {}
     }
 }

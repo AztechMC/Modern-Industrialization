@@ -36,7 +36,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 
 public class MultiblockTankBER extends MultiblockMachineBER {
     public MultiblockTankBER(BlockEntityRendererProvider.Context context) {

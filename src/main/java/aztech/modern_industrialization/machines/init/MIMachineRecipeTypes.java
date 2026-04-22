@@ -86,7 +86,7 @@ public class MIMachineRecipeTypes {
 
     private static MachineRecipeType create(String name, Function<Identifier, MachineRecipeType> ctor) {
         MachineRecipeType type = ctor.apply(MI.id(name));
-        MIRegistries.RECIPE_SERIALIZERS.register(name, () -> type);
+        MIRegistries.RECIPE_SERIALIZERS.register(name, () -> type.serializer);
         MIRegistries.RECIPE_TYPES.register(name, () -> type);
         recipeTypes.add(type);
         return type;

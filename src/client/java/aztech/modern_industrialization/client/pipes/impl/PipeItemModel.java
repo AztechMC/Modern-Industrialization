@@ -8,11 +8,12 @@ import aztech.modern_industrialization.pipes.impl.PipeItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,12 +22,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
@@ -44,23 +44,21 @@ public record PipeItemModel(ItemTransforms transforms, PipeBlockStateModel block
 
             var layer = output.newLayer();
             layer.setUsesBlockLight(true);
-            layer.setParticleIcon(blockModel.particleIcon());
-            layer.setTransform(transforms.getTransform(displayContext));
+            layer.setParticleMaterial(blockModel.particleMaterial());
+            layer.setItemTransform(transforms.getTransform(displayContext));
             Consumer<BakedQuad> quadConsumer = quad -> {
                 layer.prepareQuadList().add(new BakedQuad(
                         scalePos(quad.position0()), scalePos(quad.position1()), scalePos(quad.position2()), scalePos(quad.position3()),
                         quad.packedUV0(), quad.packedUV1(), quad.packedUV2(), quad.packedUV3(),
-                        quad.tintIndex(), quad.direction(), quad.sprite(), quad.shade(), quad.lightEmission(),
-                        quad.bakedNormals(), quad.bakedColors(), quad.hasAmbientOcclusion()));
+                        quad.direction(), quad.materialInfo(), quad.bakedNormals(), quad.bakedColors()));
             };
 
             PipeEndpointType[][] connections = new @Nullable PipeEndpointType[][] {
                     { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
             blockModel.renderers.get(PipeRenderer.get(type)).draw(
                     quadConsumer, q -> {},
-                    EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO,
+                    BlockAndTintGetter.EMPTY, BlockPos.ZERO,
                     0, connections, color, null);
-            layer.setRenderType(Sheets.cutoutBlockSheet());
         }
     }
 
@@ -85,7 +83,7 @@ public record PipeItemModel(ItemTransforms transforms, PipeBlockStateModel block
         }
 
         @Override
-        public ItemModel bake(BakingContext context) {
+        public ItemModel bake(BakingContext context, Matrix4fc transformation) {
             return new PipeItemModel(
                     context.blockModelBaker().getModel(BLOCK_BLOCK).getTopTransforms(),
                     PipeUnbakedModel.getOrBakeBlockModel(context.blockModelBaker()));

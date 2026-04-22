@@ -48,7 +48,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -325,7 +325,7 @@ class ViewerCategoryRei<D> implements DisplayCategory<ViewerCategoryRei<D>.Viewe
             }
 
             @Override
-            public void drawable(Consumer<GuiGraphics> widget) {
+            public void drawable(Consumer<GuiGraphicsExtractor> widget) {
                 widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
                     guiGraphics.pose().pushPose();
                     guiGraphics.pose().translate(bounds.x, bounds.y, 0);

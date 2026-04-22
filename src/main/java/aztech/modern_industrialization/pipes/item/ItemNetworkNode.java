@@ -235,10 +235,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (player.isShiftKeyDown()) {
                 stack.remove(MIComponents.CAMOUFLAGE);
                 stack.set(MIComponents.SAVED_CONFIG, conn.getConfig());
-                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
+                player.sendOverlayMessage(MIText.ConfigCardSet.text());
             } else if (stack.has(MIComponents.SAVED_CONFIG)) {
                 conn.applyConfig(pipe, stack.get(MIComponents.SAVED_CONFIG), player);
-                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
+                player.sendOverlayMessage(MIText.ConfigCardApplied.text());
             }
             return true;
         }

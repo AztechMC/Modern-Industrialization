@@ -27,15 +27,11 @@ package aztech.modern_industrialization.client.pipes.impl;
 import com.mojang.math.Axis;
 import com.mojang.math.OctahedralGroup;
 import com.mojang.math.Transformation;
-import java.util.function.Function;
-
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
@@ -65,11 +61,11 @@ public class RotatedModelHelper {
         };
     }
 
-    public static BlockModelPart[] loadRotatedModels(
+    public static BlockStateModelPart[] loadRotatedModels(
             Identifier modelId,
             ModelBaker modelBaker) {
         // Load side models
-        BlockModelPart[] models = new BlockModelPart[6];
+        BlockStateModelPart[] models = new BlockStateModelPart[6];
 
         for (int i = 0; i < 6; ++i) {
             models[i] = SimpleModelWrapper.bake(modelBaker, modelId, PIPE_BAKE_SETTINGS[i]);

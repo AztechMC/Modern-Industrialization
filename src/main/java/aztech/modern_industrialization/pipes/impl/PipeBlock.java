@@ -45,7 +45,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -111,7 +111,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    protected FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
@@ -219,10 +219,9 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand,
-                                       BlockHitResult hit) {
+                                          BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         if (pipeEntity.tryApplyCamouflage(player, hand)) {
@@ -243,9 +242,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return InteractionResult.SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> droppedStacks = new ArrayList<>();
         for (PipeNetworkNode node : pipeEntity.getNodes()) {
@@ -266,9 +264,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    protected int getLightBlock(BlockState state) {
+    protected int getLightDampening(BlockState state) {
         return state.getValue(CAMOUFLAGED) ? Level.MAX_BRIGHTNESS : 0;
     }
 
@@ -277,9 +274,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
@@ -305,7 +301,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
             @Nullable BlockPos sourcePos) {
         if (renderView instanceof ServerLevel) {
             if (renderView.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {

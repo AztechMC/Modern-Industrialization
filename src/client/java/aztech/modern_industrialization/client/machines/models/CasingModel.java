@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.client.machines.models;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 

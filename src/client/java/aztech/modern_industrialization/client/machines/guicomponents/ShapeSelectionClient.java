@@ -35,7 +35,7 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.CommonColors;
 
@@ -125,7 +125,7 @@ public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection
         }
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int leftPos, int topPos) {
             var box = getBox(leftPos, topPos);
 
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.BACKGROUND, box.x(), box.y(), 0, 0, box.w(), box.h() - 4, 256, 256);
@@ -136,7 +136,7 @@ public class ShapeSelectionClient extends GuiComponentClient<List<ShapeSelection
                     var line = params.get(i);
                     var tooltip = line.translations().get(data.get(i));
                     var width = Minecraft.getInstance().font.width(tooltip);
-                    guiGraphics.drawString(
+                    guiGraphics.text(
                             Minecraft.getInstance().font, tooltip,
                             box.x() + borderSize + outerPadding + btnSize + innerPadding + (textMaxWidth - width) / 2,
                             topPos + getVerticalPos(i) + 2, CommonColors.DARK_GRAY, false);

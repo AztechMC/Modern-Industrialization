@@ -24,6 +24,7 @@
 
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.machines.gui.GuiComponentServer;
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -51,7 +52,7 @@ public class PipeNetworks extends SavedData {
     private static final Codec<PipeNetworks> CODEC = Codec.dispatchedMap(PipeNetworkType.CODEC, PipeNetworkManager::codec)
             .xmap(map -> new PipeNetworks(new HashMap<>(map)), n -> n.managers);
     private static final SavedDataType<PipeNetworks> TYPE = new SavedDataType<>(
-            "modern_industrialization_pipe_networks",
+            MI.id("pipe_networks"),
             () -> new PipeNetworks(new HashMap<>()),
             CODEC);
 

@@ -27,11 +27,12 @@ package aztech.modern_industrialization.client.blocks.storage.tank;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -51,7 +52,7 @@ public class TankRenderer implements BlockEntityRenderer<AbstractTankBlockEntity
     public void extractRenderState(AbstractTankBlockEntity tank, TankRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(tank, state, partialTicks, cameraPosition, breakProgress);
         state.resource = tank.getResource(0);
-        state.fluidColor = RenderHelper.getFluidColor(state.resource, tank.getLevel(), tank.getBlockPos());;
+        state.fluidColor = RenderHelper.getFluidColor(state.resource, (ClientLevel) tank.getLevel(), tank.getBlockPos());;
         if (!tank.getResource(0).isEmpty()) {
             if (tank.behaviour.isCreative()) {
                 state.fillLevel = 1;

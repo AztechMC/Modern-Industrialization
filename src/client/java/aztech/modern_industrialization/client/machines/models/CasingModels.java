@@ -7,11 +7,10 @@ import com.google.gson.JsonParseException;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelDefinition;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.BlockStateDefinitions;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.Identifier;
@@ -97,7 +96,7 @@ public class CasingModels {
 
         event.register(KEY, new UnbakedStandaloneModel<>() {
             @Override
-            public Map<MachineCasing, CasingModel> bake(ModelBaker baker) {
+            public Map<MachineCasing, CasingModel> bake(ModelBaker baker, ModelDebugName name) {
                 Map<MachineCasing, CasingModel> bakedModels = new HashMap<>();
                 for (var entry : loadedModels.models.entrySet()) {
                     bakedModels.put(entry.getKey(), entry.getValue().bake(baker));

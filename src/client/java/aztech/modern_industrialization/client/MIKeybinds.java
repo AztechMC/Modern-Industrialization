@@ -85,8 +85,7 @@ public class MIKeybinds {
             toggleableItemAction(
                     EquipmentSlot.MAINHAND,
                     i -> i.is(MIItem.STEAM_MINING_DRILL.asItem()),
-                    (player, activated) -> player.displayClientMessage((activated ? MIText.ToolSwitched3x3 : MIText.ToolSwitchedNo3x3).text(),
-                            true)));
+                    (player, activated) -> player.sendOverlayMessage((activated ? MIText.ToolSwitched3x3 : MIText.ToolSwitchedNo3x3).text())));
 
     private static Keybind create(String id, Function<String, KeyMapping> creator, Runnable action) {
         String descriptionId = Util.makeDescriptionId("key", MI.id(id));

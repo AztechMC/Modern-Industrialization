@@ -34,7 +34,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class ShapelessRecipeBuilder implements MaterialRecipeBuilder {
@@ -88,8 +90,8 @@ public class ShapelessRecipeBuilder implements MaterialRecipeBuilder {
             recipeOutput.accept(
                     ResourceKey.create(Registries.RECIPE, MI.id(fullId)),
                     new ShapelessRecipe(
-                            "",
-                            CraftingBookCategory.MISC,
+                            new Recipe.CommonInfo(true),
+                            new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""),
                             result,
                             ingredients),
                     null);

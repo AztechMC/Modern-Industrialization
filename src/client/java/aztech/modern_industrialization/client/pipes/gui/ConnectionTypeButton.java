@@ -30,7 +30,7 @@ import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -54,10 +54,10 @@ class ConnectionTypeButton extends Button {
     }
 
     @Override
-    protected void renderContents(GuiGraphics graphics, int mouseX, int mouseY, float a) {
-        this.renderDefaultSprite(graphics);
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        this.extractDefaultSprite(graphics);
         // Text is a bit too large, so use a 0 (instead of 2) pixel margin for the "scrolling" effect
-        var output = graphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE);
-        this.renderScrollingStringOverContents(output, getMessage(), 0);
+        var output = graphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE);
+        this.extractScrollingStringOverContents(output, getMessage(), 0);
     }
 }

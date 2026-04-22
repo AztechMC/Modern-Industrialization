@@ -43,7 +43,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.material.Fluid;
@@ -143,8 +145,8 @@ public class ShapedRecipeJson implements MIRecipeBuilder {
     @Override
     public void offerTo(RecipeOutput recipeOutput, String path) {
         recipeOutput.accept(ResourceKey.create(Registries.RECIPE, MI.id(path)), new ShapedRecipe(
-                "",
-                CraftingBookCategory.MISC,
+                new Recipe.CommonInfo(true),
+                new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""),
                 ShapedRecipePattern.of(key, pattern),
                 result), null);
     }

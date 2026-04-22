@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
+import aztech.modern_industrialization.MI;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.core.HolderLookup;
@@ -46,7 +47,7 @@ public class PlayerStatisticsData extends SavedData {
     private static final Codec<PlayerStatisticsData> CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, PlayerStatistics.CODEC)
             .xmap(m -> new PlayerStatisticsData(new HashMap<>(m)), psd -> psd.stats);
     private static final SavedDataType<PlayerStatisticsData> TYPE = new SavedDataType<>(
-            "modern_industrialization_player_stats",
+            MI.id("player_stats"),
             PlayerStatisticsData::new,
             CODEC);
 

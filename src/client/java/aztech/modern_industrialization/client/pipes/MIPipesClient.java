@@ -45,8 +45,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -59,8 +59,8 @@ import net.neoforged.neoforge.common.NeoForge;
 
 public class MIPipesClient {
     public static void setupClient(IEventBus modBus) {
-        modBus.addListener(RegisterColorHandlersEvent.Block.class, event -> {
-            event.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE.get());
+        modBus.addListener(RegisterColorHandlersEvent.BlockTintSources.class, event -> {
+            event.register(List.of(new PipeColorProvider()), MIPipes.BLOCK_PIPE.get());
         });
         registerRenderers();
 
@@ -92,7 +92,7 @@ public class MIPipesClient {
                 MIPipes.transparentCamouflage = !MIPipes.transparentCamouflage;
                 Minecraft.getInstance().levelRenderer.allChanged();
                 var miText = MIPipes.transparentCamouflage ? MIText.TransparentCamouflageEnabled : MIText.TransparentCamouflageDisabled;
-                player.displayClientMessage(miText.text(), true);
+                player.sendOverlayMessage(miText.text());
                 event.setCanceled(true);
             }
         });
@@ -103,9 +103,9 @@ public class MIPipesClient {
             @Override
             public PipeRenderer create(ModelBaker modelBaker) {
                 Material[] ids = sprites.stream()
-                        .map(n -> ClientHooks.getBlockMaterial(MI.id("block/pipes/" + n)))
+                        .map(n -> new Material(MI.id("block/pipes/" + n)))
                         .toArray(Material[]::new);
-                return new PipeMeshCache(modelBaker.sprites(), ids, innerQuads);
+                return new PipeMeshCache(modelBaker.materials(), ids, innerQuads);
             }
         };
     }

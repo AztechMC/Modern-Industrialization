@@ -6,12 +6,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -19,30 +19,33 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
-public record MachineItemModel(ItemTransforms transforms, Block machine) implements ItemModel {
+import java.util.ArrayList;
+
+public record MachineItemModel(ItemTransforms transforms, Matrix4fc transformation, Block machine) implements ItemModel {
     @Override
     public void update(ItemStackRenderState output, ItemStack item, ItemModelResolver resolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         output.appendModelIdentityElement(machine);
 
         // A bit dirty...
-        var machineModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(machine.defaultBlockState());
+        var machineModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(machine.defaultBlockState());
 
         var layer = output.newLayer();
         layer.setUsesBlockLight(true);
-        layer.setParticleIcon(machineModel.particleIcon());
-        layer.setTransform(transforms.getTransform(displayContext));
+        layer.setLocalTransform(transformation);
+        layer.setParticleMaterial(machineModel.particleMaterial());
+        layer.setItemTransform(transforms.getTransform(displayContext));
 
-        var parts = machineModel.collectParts(EmptyBlockAndTintGetter.INSTANCE, BlockPos.ZERO, machine.defaultBlockState(), RandomSource.create(seed));
+        var parts = new ArrayList<BlockStateModelPart>();
+        machineModel.collectParts(BlockAndTintGetter.EMPTY, BlockPos.ZERO, machine.defaultBlockState(), RandomSource.create(seed), parts);
         for (var part : parts) {
             for (var direction : ModelHelper.DIRECTIONS_WITH_NULL) {
                 layer.prepareQuadList().addAll(part.getQuads(direction));
             }
         }
-        layer.setRenderType(Sheets.cutoutBlockSheet());
     }
 
     public record Unbaked(Block machine) implements ItemModel.Unbaked {
@@ -61,9 +64,10 @@ public record MachineItemModel(ItemTransforms transforms, Block machine) impleme
         }
 
         @Override
-        public ItemModel bake(BakingContext context) {
+        public ItemModel bake(BakingContext context, Matrix4fc transformation) {
             return new MachineItemModel(
                     context.blockModelBaker().getModel(BLOCK_BLOCK).getTopTransforms(),
+                    transformation,
                     machine);
         }
 

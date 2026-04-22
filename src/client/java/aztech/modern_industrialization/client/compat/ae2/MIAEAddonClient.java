@@ -29,18 +29,17 @@ import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.pipes.impl.PipeMeshCache;
 import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.data.AtlasIds;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.neoforged.neoforge.client.ClientHooks;
 
 public class MIAEAddonClient {
     private static final PipeRenderer.Factory ME_RENDERER = new PipeRenderer.Factory() {
         @Override
         public PipeRenderer create(ModelBaker modelBaker) {
-            return new PipeMeshCache(modelBaker.sprites(), new Material[] {
-                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me")),
-                    ClientHooks.getBlockMaterial(MI.id("block/pipes/me_blocks"))
+            return new PipeMeshCache(modelBaker.materials(), new Material[] {
+                    new Material(MI.id("block/pipes/me")),
+                    new Material(MI.id("block/pipes/me_blocks"))
             }, false);
         }
     };

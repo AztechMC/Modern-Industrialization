@@ -84,8 +84,8 @@ public class ConfigCardItem extends Item {
         if (CamouflageHelper.isReasonableCamouflage(hitState)) {
             player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
             player.getItemInHand(usedHand).set(MIComponents.CAMOUFLAGE, hitState);
-            player.displayClientMessage(
-                    MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build(), true);
+            player.sendOverlayMessage(
+                    MITooltips.line(MIText.ConfigCardSetCamouflage, Style.EMPTY).arg(hitState, MITooltips.BLOCK_STATE_PARSER).build());
             return true;
         }
         return false;
@@ -96,7 +96,7 @@ public class ConfigCardItem extends Item {
         if (player.isShiftKeyDown()) {
             player.getItemInHand(usedHand).remove(MIComponents.SAVED_CONFIG);
             player.getItemInHand(usedHand).remove(MIComponents.CAMOUFLAGE);
-            player.displayClientMessage(MIText.ConfigCardCleared.text(), true);
+            player.sendOverlayMessage(MIText.ConfigCardCleared.text());
             return InteractionResult.SUCCESS;
         }
         return super.use(level, player, usedHand);

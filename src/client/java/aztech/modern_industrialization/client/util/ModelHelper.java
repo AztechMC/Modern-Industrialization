@@ -28,11 +28,10 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
@@ -71,11 +70,13 @@ public class ModelHelper {
 
         long[] uv = ModelHelper.bakeUvs(pos, sprite, d);
 
+        var material = new Material.Baked(sprite, false);
+        var materialInfo = BakedQuad.MaterialInfo.of(material, sprite.transparency(), -1, true, 0, true);
         return new BakedQuad(
                 pos[0], pos[1], pos[2], pos[3],
                 uv[0], uv[1], uv[2], uv[3],
-                -1, d, sprite, true, 0,
-                BakedNormals.of(BakedNormals.pack(d.getUnitVec3f())), BakedColors.DEFAULT, true);
+                d, materialInfo,
+                BakedNormals.of(BakedNormals.pack(d.getUnitVec3f())), BakedColors.DEFAULT);
     }
 
     public static void square(Vector3f[] out, Direction nominalFace, float left, float bottom, float right, float top, float depth) {

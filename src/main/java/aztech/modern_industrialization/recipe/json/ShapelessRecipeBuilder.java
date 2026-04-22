@@ -34,7 +34,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
@@ -106,7 +108,7 @@ public class ShapelessRecipeBuilder implements MIRecipeBuilder {
     }
 
     public ShapelessRecipe buildRecipe() {
-        return new ShapelessRecipe("", CraftingBookCategory.MISC, this.resultStack, ingredients);
+        return new ShapelessRecipe(new Recipe.CommonInfo(true), new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), this.resultStack, ingredients);
     }
 
     @Override

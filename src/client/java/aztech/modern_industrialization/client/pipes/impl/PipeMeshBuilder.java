@@ -29,8 +29,9 @@ import static net.minecraft.core.Direction.*;
 import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.impl.PipePartBuilder;
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
@@ -69,8 +70,8 @@ public class PipeMeshBuilder extends PipePartBuilder {
             innerQuads.add(new BakedQuad(
                     new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
                     0, 0, 0, 0,
-                    -1, direction, sprite, true, 0,
-                    BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));
+                    direction,
+                    new BakedQuad.MaterialInfo(sprite, null, null, -1, true, 0, true)));
         }
 
         ModelHelper.square(workPos, direction, left, bottom, right, top, depth);
@@ -117,8 +118,8 @@ public class PipeMeshBuilder extends PipePartBuilder {
         pipeQuads.add(new BakedQuad(
                 new Vector3f(workPos[0]), new Vector3f(workPos[1]), new Vector3f(workPos[2]), new Vector3f(workPos[3]),
                 workUv[0],  workUv[1], workUv[2], workUv[3],
-                -1, direction, sprite, true, 0,
-                BakedNormals.UNSPECIFIED, BakedColors.DEFAULT, true));
+                direction,
+                BakedQuad.MaterialInfo.of(new Material.Baked(sprite, false), sprite.transparency(), -1, true, 0, true)));
     }
 
     private static final double COL_WIDTH = 1 / 8.0;

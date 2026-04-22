@@ -28,26 +28,26 @@ import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.client.util.ModelHelper;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
-import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import aztech.modern_industrialization.pipes.impl.PipeItem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.platform.Transparency;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +58,18 @@ import java.util.Map;
  * and two for connection handling.
  */
 public class PipeBlockStateModel implements DynamicBlockStateModel {
-    private final TextureAtlasSprite particleSprite;
+    private final Material.Baked particleMaterial;
     final Map<PipeRenderer.Factory, PipeRenderer> renderers;
-    private final BlockModelPart @Nullable [] meWireConnectors;
+    private final BlockStateModelPart @Nullable [] meWireConnectors;
 
-    public PipeBlockStateModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, BlockModelPart @Nullable [] meWireConnectors) {
-        this.particleSprite = particleSprite;
+    public PipeBlockStateModel(Material.Baked particleMaterial, Map<PipeRenderer.Factory, PipeRenderer> renderers, BlockStateModelPart @Nullable [] meWireConnectors) {
+        this.particleMaterial = particleMaterial;
         this.renderers = renderers;
         this.meWireConnectors = meWireConnectors;
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         var attachment = level.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
         if (attachment == null) {
             return;
@@ -89,10 +89,10 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
                         attachment.renderedConnections(), color, attachment.customData()[slot]);
             }
 
-            parts.add(new SimpleModelWrapper(cutoutQuads.build(), true, particleSprite, ChunkSectionLayer.CUTOUT));
+            parts.add(new SimpleModelWrapper(cutoutQuads.build(), true, particleMaterial));
             var allTranslucentQuads = translucentQuads.build();
             if (!allTranslucentQuads.getAll().isEmpty()) {
-                parts.add(new SimpleModelWrapper(allTranslucentQuads, true, particleSprite, ChunkSectionLayer.TRANSLUCENT));
+                parts.add(new SimpleModelWrapper(allTranslucentQuads, true, particleMaterial));
             }
 
             boolean hasMeWire = false;
@@ -131,8 +131,10 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
                 }
             }
 
-            var camouflageModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(camouflage);
-            for (var basePart : camouflageModel.collectParts(level, pos, camouflage, random)) {
+            var camouflageModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(camouflage);
+            var camouflageParts = new ArrayList<BlockStateModelPart>();
+            camouflageModel.collectParts(level, pos, state, random, camouflageParts);
+            for (var basePart : camouflageParts) {
                 var newQuads = new QuadCollection.Builder();
                 for (var direction : aztech.modern_industrialization.client.util.ModelHelper.DIRECTIONS_WITH_NULL) {
                     if (adjacentCamouflages.contains(direction)) {
@@ -143,9 +145,12 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
                     for (var baseQuad : basePart.getQuads(direction)) {
                         int colorMultiplier = -1;
 
-                        if (baseQuad.isTinted()) {
+                        if (baseQuad.materialInfo().isTinted()) {
                             var blockColorMap = Minecraft.getInstance().getBlockColors();
-                            colorMultiplier = 0xFF000000 | blockColorMap.getColor(camouflage, level, pos, baseQuad.tintIndex());
+                            var tintSource = blockColorMap.getTintSource(camouflage, baseQuad.materialInfo().tintIndex());
+                            if (tintSource != null) {
+                                colorMultiplier = 0xFF000000 | tintSource.colorInWorld(camouflage, level, pos);
+                            }
                         }
 
                         if (MIPipes.transparentCamouflage) {
@@ -154,13 +159,17 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
 
                         BakedQuad newQuad;
                         if (colorMultiplier != -1) {
+                            var baseInfo = baseQuad.materialInfo();
+                            var newMaterialInfo = BakedQuad.MaterialInfo.of(
+                                    new Material.Baked(baseInfo.sprite(), false),
+                                    MIPipes.transparentCamouflage ? baseInfo.sprite().transparency() : baseInfo.sprite().transparency().or(Transparency.TRANSLUCENT),
+                                    -1, baseInfo.shade(), baseInfo.lightEmission(), baseInfo.ambientOcclusion());
                             newQuad = new BakedQuad(
                                     baseQuad.position0(), baseQuad.position1(), baseQuad.position2(), baseQuad.position3(),
                                     baseQuad.packedUV0(), baseQuad.packedUV1(), baseQuad.packedUV2(), baseQuad.packedUV3(),
-                                    -1, baseQuad.direction(), baseQuad.sprite(), baseQuad.shade(), baseQuad.lightEmission(),
+                                    baseQuad.direction(), newMaterialInfo,
                                     baseQuad.bakedNormals(),
-                                    multiplyColor(baseQuad.bakedColors(), colorMultiplier),
-                                    baseQuad.hasAmbientOcclusion());
+                                    multiplyColor(baseQuad.bakedColors(), colorMultiplier));
                         } else {
                             newQuad = baseQuad;
                         }
@@ -173,8 +182,7 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
                         camouflage,
                         newQuads.build(),
                         basePart.ambientOcclusion(),
-                        particleSprite,
-                        MIPipes.transparentCamouflage ? ChunkSectionLayer.TRANSLUCENT : basePart.getRenderType(camouflage)));
+                        particleMaterial));
             }
         }
     }
@@ -190,8 +198,16 @@ public class PipeBlockStateModel implements DynamicBlockStateModel {
         };
     }
 
+    @Deprecated
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return particleSprite;
+    public Material.Baked particleMaterial() {
+        return particleMaterial;
+    }
+
+    @Deprecated
+    @Override
+    @BakedQuad.MaterialFlags
+    public int materialFlags() {
+        return BakedQuad.FLAG_TRANSLUCENT | BakedQuad.FLAG_ANIMATED;
     }
 }

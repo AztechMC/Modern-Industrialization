@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.client.machines;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import org.jspecify.annotations.Nullable;
 
 public class MachineRenderState extends BlockEntityRenderState {

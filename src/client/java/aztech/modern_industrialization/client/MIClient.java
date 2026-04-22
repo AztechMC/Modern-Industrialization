@@ -187,7 +187,7 @@ public class MIClient {
                 && !ModList.get().isLoaded("roughlyenoughitems")) {
             NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> {
                 if (MIClientConfig.INSTANCE.missingRecipeViewerMessage.getAsBoolean()) {
-                    event.getPlayer().displayClientMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD), false);
+                    event.getPlayer().sendSystemMessage(MIText.NoEmi.text().withStyle(ChatFormatting.GOLD));
                 }
             });
         }
@@ -203,23 +203,24 @@ public class MIClient {
         MI.LOGGER.info("Modern Industrialization client setup done!");
     }
 
-    @SubscribeEvent
-    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
-            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
-            event.registerFluidType(new IClientFluidTypeExtensions() {
-                @Override
-                public Identifier getStillTexture() {
-                    return stillTexture;
-                }
-
-                @Override
-                public Identifier getFlowingTexture() {
-                    return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
-                }
-            }, fluidDefinition.getFluidType());
-        }
-    }
+    // TODO 26.1
+//    @SubscribeEvent
+//    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+//        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
+//            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
+//            event.registerFluidType(new IClientFluidTypeExtensions() {
+//                @Override
+//                public Identifier getStillTexture() {
+//                    return stillTexture;
+//                }
+//
+//                @Override
+//                public Identifier getFlowingTexture() {
+//                    return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
+//                }
+//            }, fluidDefinition.getFluidType());
+//        }
+//    }
 
     @SubscribeEvent
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {

@@ -36,6 +36,7 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import org.jspecify.annotations.Nullable;
 
@@ -74,8 +75,8 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         } else {
             AbstractCookingRecipe.Factory<?> factory = blasting ? BlastingRecipe::new : SmeltingRecipe::new;
             this.smeltingRecipe = factory.create(
-                    "",
-                    CookingBookCategory.MISC,
+                    new Recipe.CommonInfo(true),
+                    new AbstractCookingRecipe.CookingBookInfo(CookingBookCategory.MISC, ""),
                     Ingredient.of(input.asItem()),
                     new ItemStackTemplate(output.asItem()),
                     experience,

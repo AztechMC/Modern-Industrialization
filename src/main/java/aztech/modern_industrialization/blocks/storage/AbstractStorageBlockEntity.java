@@ -102,8 +102,7 @@ public abstract class AbstractStorageBlockEntity<T extends Resource> extends Fas
         } else {
             if (this.behaviour.isLockable()) {
                 this.toggleLocked();
-                player.displayClientMessage(
-                        isLocked() ? MIText.Locked.text() : MIText.Unlocked.text(), true);
+                player.sendOverlayMessage(isLocked() ? MIText.Locked.text() : MIText.Unlocked.text());
             }
         }
         return true;

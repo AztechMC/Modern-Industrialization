@@ -30,7 +30,7 @@ import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.RenderPipelines;
 
@@ -52,7 +52,7 @@ public class SteamDrillTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics guiGraphics) {
+    public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor guiGraphics) {
         // Slot background
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, x, y, 0, 0, 18, 18, 256, 256);
         // Stack itself

@@ -35,7 +35,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -88,7 +88,7 @@ class MIDragDropHandler implements EmiDragDropHandler<Screen> {
     }
 
     @Override
-    public void render(Screen screen, EmiIngredient ingredient, GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void render(Screen screen, EmiIngredient ingredient, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (!(screen instanceof MIHandledScreen<?> gui)) {
             return;
         }

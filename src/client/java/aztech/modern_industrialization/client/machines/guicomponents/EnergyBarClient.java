@@ -36,7 +36,7 @@ import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, Energy
         public static final int WIDTH = 13;
         public static final int HEIGHT = 18;
 
-        public static void renderEnergy(GuiGraphics guiGraphics, int px, int py, float fill) {
+        public static void renderEnergy(GuiGraphicsExtractor guiGraphics, int px, int py, float fill) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, px, py, 230, 0, WIDTH, HEIGHT, 256, 256);
             int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
             if (fill > 0.95)
@@ -64,12 +64,12 @@ public class EnergyBarClient extends GuiComponentClient<EnergyBar.Params, Energy
         }
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             renderEnergy(guiGraphics, x + params.renderX(), y + params.renderY(), (float) data.eu() / data.maxEu());
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 Component tooltip;
                 if (Minecraft.getInstance().hasShiftDown()) {

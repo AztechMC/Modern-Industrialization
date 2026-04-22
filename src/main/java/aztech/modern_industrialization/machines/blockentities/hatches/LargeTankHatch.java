@@ -67,7 +67,7 @@ public class LargeTankHatch extends HatchBlockEntity implements FluidStorageComp
         if (controller != null) {
             controller.openMenu(player);
         } else {
-            player.displayClientMessage(MIText.NoLargeTank.text().withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(MIText.NoLargeTank.text().withStyle(ChatFormatting.RED));
         }
     }
 

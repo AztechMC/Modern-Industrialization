@@ -113,7 +113,14 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
     public static ConfigurableFluidStack lockedInputSlot(int capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidResource.of(fluid);
+        try {
+            stack.key = FluidResource.of(fluid);
+        } catch (NullPointerException npe) {
+            // Horrible hack such that this can be used at startup (in BER registration)
+            if (!npe.getMessage().contains("Components not bound yet")) {
+                throw npe;
+            }
+        }
         stack.lockedInstance = fluid;
         stack.playerInsert = true;
         stack.playerLockable = false;
@@ -124,7 +131,14 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
     public static ConfigurableFluidStack lockedOutputSlot(int capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidResource.of(fluid);
+        try {
+            stack.key = FluidResource.of(fluid);
+        } catch (NullPointerException npe) {
+            // Horrible hack such that this can be used at startup (in BER registration)
+            if (!npe.getMessage().contains("Components not bound yet")) {
+                throw npe;
+            }
+        }
         stack.lockedInstance = fluid;
         stack.playerLockable = false;
         stack.playerLocked = true;

@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.items.ConfigCardItem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -46,12 +46,12 @@ public record ClientConfigCardTooltip(ConfigCardItem.TooltipData data) implement
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int w, int h, GuiGraphics graphics) {
+    public void extractImage(Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
         int i = 0;
         for (var stack : data.filter()) {
             RenderHelper.renderAndDecorateItem(graphics, font, stack, x + i * 18, y);
             if (++i >= 5) {
-                graphics.drawString(
+                graphics.text(
                         font, Component.literal("+ ...").withStyle(MITooltips.DEFAULT_STYLE), x + i * 5, y + 5, -1, true);
                 break;
             }

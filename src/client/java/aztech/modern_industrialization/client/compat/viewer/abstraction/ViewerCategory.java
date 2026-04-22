@@ -28,7 +28,7 @@ import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.List;
 import java.util.function.Consumer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -185,7 +185,7 @@ public abstract class ViewerCategory<D> {
             });
         }
 
-        void drawable(Consumer<GuiGraphics> widget);
+        void drawable(Consumer<GuiGraphicsExtractor> widget);
 
         void tooltip(int x, int y, int w, int h, List<Component> tooltip);
 

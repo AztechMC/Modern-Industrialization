@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -56,7 +56,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
 
     public class Renderer implements ClientComponentRenderer {
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2, WIDTH + 2, HEIGHT + 2, 102, 6);
             if (data.hasActiveRecipe()) {
                 int barPixels = (int) ((float) data.efficiencyTicks() / data.maxEfficiencyTicks() * WIDTH);
@@ -65,7 +65,7 @@ public class RecipeEfficiencyBarClient extends GuiComponentClient<RecipeEfficien
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                 List<Component> tooltip = new ArrayList<>();
                 if (data.hasActiveRecipe()) {

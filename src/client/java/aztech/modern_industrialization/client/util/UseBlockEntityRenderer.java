@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 public record UseBlockEntityRenderer() implements SpecialModelRenderer<ItemResource> {
     @Override
-    public void submit(@Nullable ItemResource resource, ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+    public void submit(@Nullable ItemResource resource, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         Objects.requireNonNull(resource, "UseBlockEntityRenderer resource must not be null");
         if (!(resource.getItem() instanceof BlockItem blockItem)) {
             throw new IllegalArgumentException("Stack must be a block item!");
@@ -52,19 +52,19 @@ public record UseBlockEntityRenderer() implements SpecialModelRenderer<ItemResou
         return ItemResource.of(stack);
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<ItemResource> {
         public static final Identifier TYPE_ID = MI.id("use_block_entity_renderer");
 
         public static final Unbaked INSTANCE = new Unbaked();
         public static final MapCodec<Unbaked> CODEC = MapCodec.unit(INSTANCE);
 
         @Override
-        public SpecialModelRenderer<?> bake(BakingContext context) {
+        public SpecialModelRenderer<ItemResource> bake(BakingContext context) {
             return new UseBlockEntityRenderer();
         }
 
         @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+        public MapCodec<? extends SpecialModelRenderer.Unbaked<ItemResource>> type() {
             return CODEC;
         }
     }

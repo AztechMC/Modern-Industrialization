@@ -51,9 +51,10 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
+import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -152,19 +153,20 @@ public final class MIItem {
                 var highModelId = MI.id("item/redstone_control_module_high");
                 ModelTemplates.FLAT_ITEM.create(
                         highModelId,
-                        new TextureMapping().put(TextureSlot.LAYER0, MI.id("item/redstone_control_module_high")),
+                        new TextureMapping().put(TextureSlot.LAYER0, new Material(MI.id("item/redstone_control_module_high"))),
                         itemModelGenerators.modelOutput);
                 var lowModelId = MI.id("item/redstone_control_module_low");
                 ModelTemplates.FLAT_ITEM.create(
                         lowModelId,
-                        new TextureMapping().put(TextureSlot.LAYER0, MI.id("item/redstone_control_module_low")),
+                        new TextureMapping().put(TextureSlot.LAYER0, new Material(MI.id("item/redstone_control_module_low"))),
                         itemModelGenerators.modelOutput);
                 itemModelGenerators.itemModelOutput.accept(item, new SelectItemModel.Unbaked(
+                        Optional.empty(),
                         new SelectItemModel.UnbakedSwitch<>(
                             new ComponentContents<>(MIComponents.LOW_SIGNAL.get()),
                             List.of(
-                                    new SelectItemModel.SwitchCase<>(List.of(false), new BlockModelWrapper.Unbaked(highModelId, List.of())),
-                                    new SelectItemModel.SwitchCase<>(List.of(true), new BlockModelWrapper.Unbaked(lowModelId, List.of())))),
+                                    new SelectItemModel.SwitchCase<>(List.of(false), new CuboidItemModelWrapper.Unbaked(highModelId, Optional.empty(), List.of())),
+                                    new SelectItemModel.SwitchCase<>(List.of(true), new CuboidItemModelWrapper.Unbaked(lowModelId, Optional.empty(), List.of())))),
                         Optional.empty()));
             },
             ITEMS_ORDERED.next());

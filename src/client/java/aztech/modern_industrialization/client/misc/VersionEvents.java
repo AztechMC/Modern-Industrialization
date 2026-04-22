@@ -131,10 +131,9 @@ public class VersionEvents {
 
                     Minecraft.getInstance().execute(() -> {
                         if (Minecraft.getInstance().player == player) {
-                            player.displayClientMessage(
+                            player.sendSystemMessage(
                                     MIText.NewVersion.text(latestVersionString,
-                                            MIText.CurseForge.text().setStyle(styleClick)),
-                                    false);
+                                            MIText.CurseForge.text().setStyle(styleClick)));
                         }
                     });
                 }

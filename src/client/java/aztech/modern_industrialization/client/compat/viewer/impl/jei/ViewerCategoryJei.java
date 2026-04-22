@@ -47,7 +47,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -235,7 +235,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
     }
 
     @Override
-    public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(D recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(-4, -4);
 
@@ -251,7 +251,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
                     case RIGHT -> x - width;
                 };
 
-                guiGraphics.drawString(font, text, (int) alignedX, (int) y, overrideColor ? 0xFF404040 : -1, shadow);
+                guiGraphics.text(font, text, (int) alignedX, (int) y, overrideColor ? 0xFF404040 : -1, shadow);
             }
 
             @Override
@@ -266,7 +266,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             }
 
             @Override
-            public void drawable(Consumer<GuiGraphics> widget) {
+            public void drawable(Consumer<GuiGraphicsExtractor> widget) {
                 widget.accept(guiGraphics);
             }
 
@@ -305,7 +305,7 @@ class ViewerCategoryJei<D> extends AbstractRecipeCategory<D> {
             public void texture(Identifier loc, int x, int y, int u, int v, int width, int height) {}
 
             @Override
-            public void drawable(Consumer<GuiGraphics> widget) {}
+            public void drawable(Consumer<GuiGraphicsExtractor> widget) {}
 
             @Override
             public void tooltip(int x, int y, int w, int h, List<Component> tooltip) {

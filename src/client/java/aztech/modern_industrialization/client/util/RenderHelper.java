@@ -27,6 +27,7 @@ package aztech.modern_industrialization.client.util;
 import aztech.modern_industrialization.MI;
 import aztech.modern_industrialization.client.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import java.util.ArrayList;
@@ -34,17 +35,20 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
@@ -53,7 +57,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -89,8 +92,8 @@ public class RenderHelper {
     /**
      * Return the render handler for the passed fluid, if available, or the default instance otherwise.
      */
-    private static IClientFluidTypeExtensions getExtensions(FluidResource resource) {
-        return IClientFluidTypeExtensions.of(resource.getFluid().getFluidType());
+    private static FluidModel getModel(FluidResource resource) {
+        return Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(resource.getFluid().defaultFluidState());
     }
 
     /**
@@ -102,15 +105,15 @@ public class RenderHelper {
         if (fluidResource.isEmpty()) {
             return null;
         }
-        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(getExtensions(fluidResource).getStillTexture(fluidResource.toStack(1)));
+        return getModel(fluidResource).stillMaterial().sprite();
     }
 
     /**
      * Return the position-independent color that should be used to render {@linkplain #getFluidSprite the sprite} of the passed fluid variant.
      */
     public static int getFluidColor(FluidResource fluidResource) {
-        return getExtensions(fluidResource).getTintColor(fluidResource.toStack(1));
+        var tintSource = getModel(fluidResource).fluidTintSource();
+        return tintSource == null ? -1 : tintSource.colorAsStack(fluidResource.toStack(1));
     }
 
     /**
@@ -120,7 +123,8 @@ public class RenderHelper {
         if (level == null) {
             return getFluidColor(fluidResource);
         }
-        return getExtensions(fluidResource).getTintColor(fluidResource.getFluid().defaultFluidState(), level, pos);
+        var tintSource = getModel(fluidResource).fluidTintSource();
+        return tintSource == null ? -1 : tintSource.colorInWorld(fluidResource.getFluid().defaultFluidState().createLegacyBlock(), level, pos);
     }
 
     private static final float TANK_W = 1 / 16f + 0.001f;
@@ -132,9 +136,6 @@ public class RenderHelper {
             if (sprite == null) {
                 return;
             }
-            float r = ((color >> 16) & 255) / 256f;
-            float g = ((color >> 8) & 255) / 256f;
-            float b = (color & 255) / 256f;
 
             SodiumCompat.markSpriteActive(sprite);
 
@@ -150,6 +151,9 @@ public class RenderHelper {
                 bottomHeight = 1 - fill;
             }
 
+            var quadInstance = new QuadInstance();
+            quadInstance.setColor(ARGB.opaque(color));
+
             for (Direction direction : Direction.values()) {
                 Vector3f[] pos = new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() };
                 if (direction.getAxis().isVertical()) {
@@ -160,22 +164,25 @@ public class RenderHelper {
 
                 long[] uv = ModelHelper.bakeUvs(pos, sprite, direction);
 
+                var info = BakedQuad.MaterialInfo.of(
+                        new Material.Baked(sprite, false),
+                        sprite.transparency(), -1, true, 0, true);
                 var quad = new BakedQuad(
                         pos[0], pos[1], pos[2], pos[3],
                         uv[0], uv[1], uv[2], uv[3],
-                        -1, direction, sprite, true, 0,
-                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT, true);
+                        direction, info,
+                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT);
 
-                vc.putBulkData(pose, quad, r, g, b, 1, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                vc.putBakedQuad(pose, quad, quadInstance);
             }
         });
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidResource fluid, int x0, int y0) {
+    public static void drawFluidInGui(GuiGraphicsExtractor guiGraphics, FluidResource fluid, int x0, int y0) {
         drawFluidInGui(guiGraphics, fluid, x0, y0, 16, 1);
     }
 
-    public static void drawFluidInGui(GuiGraphics guiGraphics, FluidResource fluid, int x0, int y0, int scale, float fractionUp) {
+    public static void drawFluidInGui(GuiGraphicsExtractor guiGraphics, FluidResource fluid, int x0, int y0, int scale, float fractionUp) {
         TextureAtlasSprite sprite = getFluidSprite(fluid);
         int color = getFluidColor(fluid);
 
@@ -202,21 +209,15 @@ public class RenderHelper {
                 && pointY < (double) (yStart + height + 1);
     }
 
-    public static void quadWithAlpha(VertexConsumer consumer, PoseStack.Pose matrixEntry, BakedQuad quad, float red, float green, float blue,
-            float alpha, int light, int overlay) {
-        consumer.putBulkData(matrixEntry, quad, red, green, blue, alpha, light, overlay);
-    }
-
-    private static final Material LOCKED_TEXTURE_LOCATION = ClientHooks.getBlockMaterial(MI.id("block/locked"));
+    private static final SpriteId LOCKED_TEXTURE_LOCATION = new SpriteId(AtlasIds.BLOCKS, MI.id("block/locked"));
 
     public static void drawLockedTexture(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int colorRgb) {
         submitNodeCollector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
             var sprite = Minecraft.getInstance().getAtlasManager().get(LOCKED_TEXTURE_LOCATION);
             // draw the sprite on each face
 
-            float r = (colorRgb >> 16 & 255) / 255.0F;
-            float g = (colorRgb >> 8 & 255) / 255.0F;
-            float b = (colorRgb & 255) / 255.0F;
+            var quadInstance = new QuadInstance();
+            quadInstance.setColor(ARGB.opaque(colorRgb));
 
             for (Direction direction : Direction.values()) {
                 if (direction.getAxis().isVertical()) {
@@ -232,15 +233,16 @@ public class RenderHelper {
 
                 long[] uv = ModelHelper.bakeUvs(pos, sprite, direction);
 
+                var info = BakedQuad.MaterialInfo.of(
+                        new Material.Baked(sprite, false),
+                        sprite.transparency(), -1, true, 0, true);
                 var quad = new BakedQuad(
                         pos[0], pos[1], pos[2], pos[3],
                         uv[0], uv[1], uv[2], uv[3],
-                        -1, direction, sprite, true, 0,
-                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT, true);
+                        direction, info,
+                        BakedNormals.of(BakedNormals.pack(direction.getUnitVec3f())), BakedColors.DEFAULT);
 
-                vc.putBulkData(pose,
-                        quad,
-                        r, g, b, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+                vc.putBakedQuad(pose, quad, quadInstance);
             }
         });
     }
@@ -252,17 +254,17 @@ public class RenderHelper {
         }
     }
 
-    public static void renderAndDecorateItem(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
+    public static void renderAndDecorateItem(GuiGraphicsExtractor guiGraphics, ItemStack stack, int x, int y) {
         renderAndDecorateItem(guiGraphics, Minecraft.getInstance().font, stack, x, y);
     }
 
-    public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
+    public static void renderAndDecorateItem(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int x, int y) {
         renderAndDecorateItem(guiGraphics, font, stack, x, y, null);
     }
 
-    public static void renderAndDecorateItem(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y, @Nullable String text) {
-        guiGraphics.renderItem(stack, x, y);
-        guiGraphics.renderItemDecorations(font, stack, x, y, text);
+    public static void renderAndDecorateItem(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int x, int y, @Nullable String text) {
+        guiGraphics.item(stack, x, y);
+        guiGraphics.itemDecorations(font, stack, x, y, text);
     }
 
     public static List<FormattedCharSequence> splitTooltip(List<Component> components) {

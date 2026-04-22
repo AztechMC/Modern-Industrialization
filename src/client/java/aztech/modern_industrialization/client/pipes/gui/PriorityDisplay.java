@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -62,9 +62,9 @@ class PriorityDisplay extends AbstractWidget {
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         FormattedCharSequence orderedText = getMessage().getVisualOrderText();
-        guiGraphics.drawString(textRenderer, orderedText, this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2,
+        guiGraphics.text(textRenderer, orderedText, this.getX() + this.width / 2 - textRenderer.width(orderedText) / 2,
                 this.getY() + (this.height - 8) / 2, isEnabled.getAsBoolean() ? CommonColors.DARK_GRAY : 0xFF707070, false);
     }
 }

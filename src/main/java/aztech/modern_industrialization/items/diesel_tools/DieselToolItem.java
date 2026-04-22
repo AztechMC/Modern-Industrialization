@@ -53,6 +53,7 @@ import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ShovelItem;
@@ -169,7 +170,7 @@ public class DieselToolItem extends Item implements DynamicToolItem {
         return (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
     }
 
-    private static boolean isFortune(ItemStack stack) {
+    private static boolean isFortune(ItemInstance stack) {
         return !stack.getOrDefault(MIComponents.SILK_TOUCH, false);
     }
 
@@ -184,9 +185,8 @@ public class DieselToolItem extends Item implements DynamicToolItem {
             ItemStack stack = user.getItemInHand(hand);
             setFortune(stack, !isFortune(stack));
             if (!world.isClientSide()) {
-                user.displayClientMessage(
-                        isFortune(stack) ? MIText.ToolSwitchedFortune.text() : MIText.ToolSwitchedSilkTouch.text(),
-                        true);
+                user.sendOverlayMessage(
+                        isFortune(stack) ? MIText.ToolSwitchedFortune.text() : MIText.ToolSwitchedSilkTouch.text());
             }
             return InteractionResult.SUCCESS;
         }
@@ -250,12 +250,16 @@ public class DieselToolItem extends Item implements DynamicToolItem {
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-        return getAllEnchantments(stack, enchantment.unwrapLookup()).getLevel(enchantment);
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
+        return getAllEnchantmentsFromInstance(stack, enchantment.unwrapLookup()).getLevel(enchantment);
     }
 
     @Override
     public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
+        return getAllEnchantmentsFromInstance(stack, lookup);
+    }
+
+    public ItemEnchantments getAllEnchantmentsFromInstance(ItemInstance stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
         var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
             if (!isFortune(stack)) {

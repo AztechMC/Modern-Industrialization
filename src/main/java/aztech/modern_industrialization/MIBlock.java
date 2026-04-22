@@ -54,8 +54,8 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.CompositeModel;
+import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.SpecialModelWrapper;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -261,9 +261,10 @@ public class MIBlock {
                 var baseBlockModel = BuiltInRegistries.ITEM.getKey(item).withPrefix("block/");
                 try {
                     gen.itemModelOutput.accept(item, new CompositeModel.Unbaked(List.of(
-                            new BlockModelWrapper.Unbaked(baseBlockModel, List.of()),
+                            new CuboidItemModelWrapper.Unbaked(baseBlockModel, Optional.empty(), List.of()),
                             // TODO: temporary reflection hack
-                            new SpecialModelWrapper.Unbaked(baseBlockModel, (SpecialModelRenderer.Unbaked) Class.forName("aztech.modern_industrialization.client.util.UseBlockEntityRenderer$Unbaked").getConstructor().newInstance()))
+                            new SpecialModelWrapper.Unbaked(baseBlockModel, Optional.empty(), (SpecialModelRenderer.Unbaked) Class.forName("aztech.modern_industrialization.client.util.UseBlockEntityRenderer$Unbaked").getConstructor().newInstance())),
+                            Optional.empty()
                     ));
                 } catch (ReflectiveOperationException e) {
                     throw new RuntimeException(e);

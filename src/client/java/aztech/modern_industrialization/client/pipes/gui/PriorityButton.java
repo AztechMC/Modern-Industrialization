@@ -32,7 +32,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -51,7 +51,7 @@ class PriorityButton extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         this.active = this.isEnabled.getAsBoolean();
 
         Minecraft minecraftClient = Minecraft.getInstance();
@@ -59,7 +59,7 @@ class PriorityButton extends Button {
         int v = this.isHoveredOrFocused() ? 40 + this.height : 40;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, PipeGuiHelper.BUTTON_TEXTURE, this.getX(), this.getY(), u, v, this.width, this.height, 256, 256);
         int j = this.active ? 16777215 : 10526880;
-        guiGraphics.drawCenteredString(font, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
+        guiGraphics.centeredText(font, getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2,
                 j | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 }

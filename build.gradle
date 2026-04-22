@@ -146,7 +146,7 @@ dependencies {
         throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
-    /*localRuntimeOnly*/ compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
+    localRuntimeOnly compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
 
     // TODO: compileOnly because implementation will cause datagen to crash... hopefully kubejs fixes it soon
     /*localRuntimeOnly*/ compileOnly("dev.latvian.mods:kubejs-neoforge:${project.kubejs_version}")

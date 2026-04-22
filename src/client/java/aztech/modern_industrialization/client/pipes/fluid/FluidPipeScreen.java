@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -136,7 +136,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         }
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
             // Render fluid slot
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, MachineScreen.SLOT_ATLAS, getX() - 1, getY() - 1, 18, 0, 18, 18, 256, 256);
             // Render the fluid itself

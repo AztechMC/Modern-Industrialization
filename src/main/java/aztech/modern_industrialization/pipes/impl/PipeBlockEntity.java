@@ -363,8 +363,8 @@ public class PipeBlockEntity extends FastBlockEntity implements PipeScreenHandle
             var extracted = TransferHelper.extractMatching(player.getInventory(), s -> s.is(itemToUse), 1, true);
 
             if (extracted.isEmpty()) {
-                player.displayClientMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
-                        .arg(newCamouflage, MITooltips.BLOCK_STATE_PARSER).build().withStyle(ChatFormatting.RED), true);
+                player.sendOverlayMessage(MITooltips.line(MIText.ConfigCardNoCamouflageInInventory)
+                        .arg(newCamouflage, MITooltips.BLOCK_STATE_PARSER).build().withStyle(ChatFormatting.RED));
                 return true; // return true to prevent other interactions
             }
         }

@@ -33,8 +33,10 @@ import java.util.function.Consumer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -43,12 +45,12 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
-    static FluidResource getFluid(ItemStack stack) {
-        return FluidResource.of(new ItemStorage(stack, 0).getFluid());
+    static FluidResource getFluid(ItemInstance stack) {
+        return FluidResource.of(stack.getOrDefault(MIComponents.FLUID_CONTENT, SimpleFluidContent.EMPTY).copy());
     }
 
-    static int getAmount(ItemStack stack) {
-        return new ItemStorage(stack, 0).getFluid().getAmount();
+    static int getAmount(ItemInstance stack) {
+        return stack.getOrDefault(MIComponents.FLUID_CONTENT, SimpleFluidContent.EMPTY).getAmount();
     }
 
     static void decrement(ItemStack stack) {

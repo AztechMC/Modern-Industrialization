@@ -30,7 +30,7 @@ import aztech.modern_industrialization.client.screen.MIContainerScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -73,21 +73,16 @@ public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandle
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, FORGE_HAMMER_GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, FORGE_HAMMER_GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         int l = this.leftPos + X_OFFSET;
         int m = this.topPos + Y_OFFSET;
-        this.renderRecipeBackground(guiGraphics, mouseX, mouseY, l, m);
-        this.renderRecipeIcons(guiGraphics, l, m);
+        this.renderRecipeBackground(graphics, mouseX, mouseY, l, m);
+        this.renderRecipeIcons(graphics, l, m);
     }
 
-    private void renderRecipeIcons(GuiGraphics guiGraphics, int x, int y) {
+    private void renderRecipeIcons(GuiGraphicsExtractor guiGraphics, int x, int y) {
         for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
 
             int k = x + i % 4 * 16;
@@ -98,7 +93,7 @@ public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandle
         }
     }
 
-    private void renderRecipeBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y) {
+    private void renderRecipeBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int x, int y) {
         for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
 
             int k = x + i % 4 * 16;
@@ -116,8 +111,9 @@ public class ForgeHammerScreen extends MIContainerScreen<ForgeHammerScreenHandle
         }
     }
 
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
-        super.renderTooltip(guiGraphics, x, y);
+    @Override
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
+        super.extractTooltip(guiGraphics, x, y);
         int x1 = this.leftPos + X_OFFSET;
         int y1 = this.topPos + Y_OFFSET;
 

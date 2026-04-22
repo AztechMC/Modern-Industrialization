@@ -28,7 +28,7 @@ import aztech.modern_industrialization.client.machines.gui.ClientComponentRender
 import aztech.modern_industrialization.client.machines.gui.GuiComponentClient;
 import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class ProgressBarClient extends GuiComponentClient<ProgressBar.Params, Float> {
@@ -36,7 +36,7 @@ public class ProgressBarClient extends GuiComponentClient<ProgressBar.Params, Fl
         super(params, data);
     }
 
-    public static void renderProgress(GuiGraphics guiGraphics, int x, int y, ProgressBar.Params params, float progress) {
+    public static void renderProgress(GuiGraphicsExtractor guiGraphics, int x, int y, ProgressBar.Params params, float progress) {
         // background
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, params.getTextureId(), x + params.renderX(), y + params.renderY(), 0, 0, params.width(), params.height(), params.width(), params.textureHeight());
         // foreground
@@ -59,7 +59,7 @@ public class ProgressBarClient extends GuiComponentClient<ProgressBar.Params, Fl
 
     public class Renderer implements ClientComponentRenderer {
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             renderProgress(guiGraphics, x, y, params, data);
         }
     }

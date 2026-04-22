@@ -25,27 +25,27 @@
 package aztech.modern_industrialization.client.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.ClientHooks;
 import org.jspecify.annotations.Nullable;
 
 public class QuadCube {
-    private final Material spriteLocation;
+    private final SpriteId spriteLocation;
     private BakedQuad @Nullable [] quads;
 
     public QuadCube(Identifier spriteLocation) {
-        this.spriteLocation = ClientHooks.getBlockMaterial(spriteLocation);
+        // TODO: is this the right atlas id?
+        this.spriteLocation = new SpriteId(AtlasIds.BLOCKS, spriteLocation);
     }
 
     public BakedQuad[] getQuads() {
         var sprite = Minecraft.getInstance().getAtlasManager().get(spriteLocation);
         // Rebuild quads if the sprite changed
-        if (quads == null || quads[0].sprite() != sprite) {
+        if (quads == null || quads[0].materialInfo().sprite() != sprite) {
             quads = buildQuads(sprite);
         }
         return quads;

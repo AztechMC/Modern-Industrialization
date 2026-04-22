@@ -39,7 +39,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -150,7 +150,7 @@ public class MachineBlock extends Block implements TickableBlock {
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter renderView, BlockPos pos, Direction side, @Nullable BlockState sourceState,
             @Nullable BlockPos sourcePos) {
         if (renderView instanceof ServerLevel) {
             // Well... we pull the information from the model, so nothing to do here.

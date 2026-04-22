@@ -29,10 +29,10 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 
 import java.util.function.Consumer;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import org.jspecify.annotations.Nullable;
 
 public interface PipeRenderer {

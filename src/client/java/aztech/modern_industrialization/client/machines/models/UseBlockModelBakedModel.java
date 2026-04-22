@@ -31,15 +31,16 @@ import aztech.modern_industrialization.MI;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
@@ -58,18 +59,30 @@ public record UseBlockModelBakedModel(BlockState targetState,
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         stateModel.get().collectParts(level, pos, state, random, parts);
     }
 
     @Override
-    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        return stateModel.get().particleIcon(level, pos, state);
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        return stateModel.get().particleMaterial(level, pos, state);
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return stateModel.get().particleIcon();
+    public Material.Baked particleMaterial() {
+        return stateModel.get().particleMaterial();
+    }
+
+    @Deprecated
+    @Override
+    @BakedQuad.MaterialFlags
+    public int materialFlags() {
+        return stateModel.get().materialFlags();
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        return stateModel.get().materialFlags(level, pos, state);
     }
 
     public record Unbaked(Block block) implements CustomUnbakedBlockStateModel {
@@ -90,7 +103,7 @@ public record UseBlockModelBakedModel(BlockState targetState,
             var targetState = block.defaultBlockState();
             return new UseBlockModelBakedModel(
                     targetState,
-                    Lazy.of(() -> Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(targetState)));
+                    Lazy.of(() -> Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(targetState)));
         }
 
         @Override

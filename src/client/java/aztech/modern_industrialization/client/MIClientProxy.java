@@ -54,7 +54,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeMap;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -120,7 +120,7 @@ public class MIClientProxy extends MICommonProxy {
     }
 
     @Override
-    public BlockState getMachineCasingBlockState(BlockState state, BlockAndTintGetter renderView, BlockPos pos) {
+    public BlockState getMachineCasingBlockState(BlockState state, BlockAndLightGetter renderView, BlockPos pos) {
         var be = renderView.getBlockEntity(pos); // Note: not safe to access fields!
         if (!MIClientConfig.INSTANCE.interMachineConnectedTextures.getAsBoolean()) {
             // Use the machine's own state, unless we are a hatch or a multiblock controller of course.
@@ -138,7 +138,7 @@ public class MIClientProxy extends MICommonProxy {
         var casing = clientData.casing;
         if (casing == null) {
             // No override, then pull the casing from the machine's baked model.
-            var machineModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            var machineModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
             if (machineModel instanceof MachineBlockStateModel mbm) {
                 casing = mbm.getBaseCasing();
             } else {

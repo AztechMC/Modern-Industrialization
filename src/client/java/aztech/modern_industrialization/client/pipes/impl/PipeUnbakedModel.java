@@ -5,13 +5,10 @@ import aztech.modern_industrialization.client.pipes.MIPipesClient;
 import aztech.modern_industrialization.client.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.data.AtlasIds;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
 import java.util.IdentityHashMap;
@@ -24,7 +21,7 @@ public class PipeUnbakedModel implements CustomUnbakedBlockStateModel {
     public static final MapCodec<PipeUnbakedModel> CODEC = MapCodec.unit(INSTANCE);
 
     private static final Identifier ME_WIRE_CONNECTOR_MODEL = MI.id("part/me_wire_connector");
-    private static final Material PARTICLE_SPRITE = ClientHooks.getBlockMaterial(Identifier.parse("minecraft:block/iron_block"));
+    private static final Material PARTICLE_SPRITE = new Material(Identifier.parse("minecraft:block/iron_block"));
 
     @Override
     public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
@@ -55,13 +52,13 @@ public class PipeUnbakedModel implements CustomUnbakedBlockStateModel {
                 renderers.put(rendererFactory, rendererFactory.create(modelBakery));
             }
 
-            BlockModelPart[] meWireConnectors = null;
+            BlockStateModelPart[] meWireConnectors = null;
             if (MIStartupConfig.INSTANCE.loadAe2Compat()) {
                 meWireConnectors = RotatedModelHelper.loadRotatedModels(ME_WIRE_CONNECTOR_MODEL, modelBakery);
             }
 
             return new PipeBlockStateModel(
-                    modelBakery.sprites().get(PARTICLE_SPRITE, () -> "pipe model"),
+                    modelBakery.materials().get(PARTICLE_SPRITE, () -> "pipe model"),
                     renderers,
                     meWireConnectors);
         }

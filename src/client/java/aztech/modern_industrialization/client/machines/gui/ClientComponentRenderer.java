@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -38,9 +38,9 @@ import net.minecraft.network.chat.Component;
 public interface ClientComponentRenderer {
     default void addButtons(ButtonContainer container) {}
 
-    void renderBackground(GuiGraphics guiGraphics, int leftPos, int topPos);
+    void extractBackground(GuiGraphicsExtractor guiGraphics, int leftPos, int topPos);
 
-    default void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {}
+    default void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int leftPos, int topPos, int cursorX, int cursorY) {}
 
     default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {}
 
@@ -70,7 +70,7 @@ public interface ClientComponentRenderer {
 
     @FunctionalInterface
     interface CustomButtonRenderer {
-        void renderButton(MachineScreen screen, MachineScreen.MachineButton button, GuiGraphics guiGraphics, int mouseX, int mouseY,
+        void renderButton(MachineScreen screen, MachineScreen.MachineButton button, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY,
                 float partialTicks);
     }
 }

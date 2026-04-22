@@ -40,7 +40,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeMap;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,7 +126,7 @@ public class MICommonProxy {
         throw new UnsupportedOperationException("Only supported on the server");
     }
 
-    public BlockState getMachineCasingBlockState(BlockState state, BlockAndTintGetter renderView, BlockPos pos) {
+    public BlockState getMachineCasingBlockState(BlockState state, BlockAndLightGetter renderView, BlockPos pos) {
         return state;
     }
 

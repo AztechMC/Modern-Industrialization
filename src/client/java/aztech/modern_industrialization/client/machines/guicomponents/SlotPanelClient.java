@@ -33,7 +33,7 @@ import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.util.Rectangle;
 import java.util.List;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
@@ -100,7 +100,7 @@ public class SlotPanelClient extends GuiComponentClient<List<SlotPanel.SlotType>
             }
 
             @Override
-            public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+            public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
                 var box = getBox(x, y);
 
                 int textureX = box.x() - x - box.w();
@@ -109,7 +109,7 @@ public class SlotPanelClient extends GuiComponentClient<List<SlotPanel.SlotType>
             }
 
             @Override
-            public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int x, int y, int cursorX, int cursorY) {
                 if (screen.getFocusedSlot() instanceof SlotTooltip st && !screen.getFocusedSlot().hasItem()) {
                     guiGraphics.setTooltipForNextFrame(font, st.getTooltip(), cursorX, cursorY);
                 }

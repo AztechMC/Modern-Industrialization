@@ -181,7 +181,7 @@ public class DebugCommands {
     private static int dumpStats(ServerPlayer player) {
         var stats = PlayerStatisticsData.get(player.server).get(player);
         var statsTag = PlayerStatistics.CODEC.encodeStart(NbtOps.INSTANCE, stats).getOrThrow();
-        player.displayClientMessage(Component.literal(statsTag.toString()), false);
+        player.sendSystemMessage(Component.literal(statsTag.toString()));
         return Command.SINGLE_SUCCESS;
     }
 

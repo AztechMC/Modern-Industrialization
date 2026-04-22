@@ -63,6 +63,7 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
@@ -130,7 +131,7 @@ public class SteamDrillItem
                 .component(MIComponents.WATER, 0));
     }
 
-    private static boolean isNotSilkTouch(ItemStack stack) {
+    private static boolean isNotSilkTouch(ItemInstance stack) {
         return !stack.getOrDefault(MIComponents.SILK_TOUCH, true);
     }
 
@@ -399,8 +400,8 @@ public class SteamDrillItem
             ItemStack stack = user.getItemInHand(hand);
             setSilkTouch(stack, isNotSilkTouch(stack));
             if (!world.isClientSide()) {
-                user.displayClientMessage(
-                        isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text(), true);
+                user.sendOverlayMessage(
+                        isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text());
             }
             return InteractionResult.SUCCESS;
         }
@@ -477,12 +478,17 @@ public class SteamDrillItem
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-        return getAllEnchantments(stack, enchantment.unwrapLookup()).getLevel(enchantment);
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
+        return getAllEnchantmentsFromInstance(stack, enchantment.unwrapLookup()).getLevel(enchantment);
     }
 
     @Override
     public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
+        // TODO hopefully this gets fixed?
+        return getAllEnchantmentsFromInstance(stack, lookup);
+    }
+
+    private ItemEnchantments getAllEnchantmentsFromInstance(ItemInstance stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
         var map = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
         if (!isNotSilkTouch(stack)) {
             lookup.get(Enchantments.SILK_TOUCH).ifPresent(h -> map.set(h, 1));

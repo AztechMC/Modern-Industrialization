@@ -26,27 +26,28 @@ package aztech.modern_industrialization.client.pipes.impl;
 
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import java.util.concurrent.ThreadLocalRandom;
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
 
-public class PipeColorProvider implements BlockColor {
+public class PipeColorProvider implements BlockTintSource {
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter world, @Nullable BlockPos pos, int tintIndex) {
-        if (pos != null && world != null) {
-            var data = world.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
-            if (data == null)
-                return -1;
-
-            int n = data.types().length;
-            if (n == 0)
-                return -1;
-
-            int i = ThreadLocalRandom.current().nextInt(n);
-            return data.types()[i].getColor();
-        }
+    public int color(BlockState state) {
         return -1;
+    }
+
+    @Override
+    public int colorAsTerrainParticle(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+        var data = level.getModelData(pos).get(PipeBlockEntity.RenderAttachment.KEY);
+        if (data == null)
+            return -1;
+
+        int n = data.types().length;
+        if (n == 0)
+            return -1;
+
+        int i = ThreadLocalRandom.current().nextInt(n);
+        return data.types()[i].getColor();
     }
 }

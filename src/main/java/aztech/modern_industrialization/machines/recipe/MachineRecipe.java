@@ -147,8 +147,18 @@ public class MachineRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Override
     public RecipeSerializer<MachineRecipe> getSerializer() {
-        return type;
+        return type.serializer;
     }
 
     @Override

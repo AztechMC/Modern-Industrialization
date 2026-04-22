@@ -32,7 +32,7 @@ import aztech.modern_industrialization.client.machines.gui.MachineScreen;
 import aztech.modern_industrialization.client.util.RenderHelper;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
@@ -51,7 +51,7 @@ public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Para
         private final int WIDTH = 100, HEIGHT = 2;
 
         @Override
-        public void renderBackground(GuiGraphics guiGraphics, int x, int y) {
+        public void extractBackground(GuiGraphicsExtractor guiGraphics, int x, int y) {
             // background
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x + params.renderX() - 1, y + params.renderY() - 1, 0, 2,
                     WIDTH + 2, HEIGHT + 2, 102, 6);
@@ -62,7 +62,7 @@ public class TemperatureBarClient extends GuiComponentClient<TemperatureBar.Para
         }
 
         @Override
-        public void renderTooltip(MachineScreen screen, Font font, GuiGraphics guiGraphics, int x, int y, int cursorX, int cursorY) {
+        public void renderTooltip(MachineScreen screen, Font font, GuiGraphicsExtractor guiGraphics, int x, int y, int cursorX, int cursorY) {
             if (RenderHelper.isPointWithinRectangle(params.renderX(), params.renderY(), WIDTH, HEIGHT, cursorX - x,
                     cursorY - y)) {
                 guiGraphics.setTooltipForNextFrame(font, MIText.Temperature.text(data), cursorX, cursorY);

@@ -31,11 +31,11 @@ import java.util.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -66,10 +66,10 @@ public record MachineUnbakedModel(
 
     @Override
     public BlockStateModel bake(ModelBaker modelBakery) {
-        var defaultOverlays = loadSprites(modelBakery.sprites(), this.defaultOverlays);
-        var tieredOverlays = new HashMap<MachineCasing, @Nullable TextureAtlasSprite[]>();
+        var defaultOverlays = loadMaterials(modelBakery.materials(), this.defaultOverlays);
+        var tieredOverlays = new HashMap<MachineCasing, Material.@Nullable Baked[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
-            tieredOverlays.put(entry.getKey(), loadSprites(modelBakery.sprites(), entry.getValue()));
+            tieredOverlays.put(entry.getKey(), loadMaterials(modelBakery.materials(), entry.getValue()));
         }
         return new MachineBlockStateModel(baseCasing, defaultOverlays, tieredOverlays, noOverlayOnOutputSide);
     }
@@ -77,15 +77,15 @@ public record MachineUnbakedModel(
     @Override
     public void resolveDependencies(Resolver resolver) {}
 
-    private static @Nullable TextureAtlasSprite[] loadSprites(SpriteGetter spriteGetter, Map<OverlayName, Identifier> overlays) {
+    private static Material.@Nullable Baked[] loadMaterials(MaterialBaker materialBaker, Map<OverlayName, Identifier> overlays) {
         var selectedMaterials = new OverlaySelector(overlays).toMaterials();
-        var sprites = new TextureAtlasSprite[selectedMaterials.length];
+        var materials = new Material.Baked[selectedMaterials.length];
         for (int i = 0; i < selectedMaterials.length; ++i) {
             if (selectedMaterials[i] != null) {
-                sprites[i] = spriteGetter.get(selectedMaterials[i], () -> "machine unbaked model");
+                materials[i] = materialBaker.get(selectedMaterials[i], () -> "machine unbaked model");
             }
         }
-        return sprites;
+        return materials;
     }
 
     private record OverlaySelector(Map<OverlayName, Identifier> overlays) {
@@ -134,7 +134,7 @@ public record MachineUnbakedModel(
             for (var overlay : candidates) {
                 var id = overlays.get(overlay);
                 if (id != null) {
-                    return ClientHooks.getBlockMaterial(id);
+                    return new Material(id);
                 }
             }
             return null;

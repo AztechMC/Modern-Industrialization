@@ -76,9 +76,11 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -101,6 +103,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -203,24 +206,17 @@ public class MIClient {
         MI.LOGGER.info("Modern Industrialization client setup done!");
     }
 
-    // TODO 26.1
-//    @SubscribeEvent
-//    private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-//        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
-//            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
-//            event.registerFluidType(new IClientFluidTypeExtensions() {
-//                @Override
-//                public Identifier getStillTexture() {
-//                    return stillTexture;
-//                }
-//
-//                @Override
-//                public Identifier getFlowingTexture() {
-//                    return IClientFluidTypeExtensions.of(Fluids.WATER).getFlowingTexture();
-//                }
-//            }, fluidDefinition.getFluidType());
-//        }
-//    }
+    @SubscribeEvent
+    private static void registerFluidModels(RegisterFluidModelsEvent event) {
+        for (var fluidDefinition : MIFluids.FLUID_DEFINITIONS.values()) {
+            var stillTexture = fluidDefinition.getId().withPath("fluid/%s_still"::formatted);
+            var model = new FluidModel.Unbaked(
+                    new Material(stillTexture),
+                    new Material(Identifier.withDefaultNamespace("block/water_still")),
+                    null, null);
+            event.register(model, fluidDefinition.asFluid());
+        }
+    }
 
     @SubscribeEvent
     private static void registerMenuScreens(RegisterMenuScreensEvent event) {

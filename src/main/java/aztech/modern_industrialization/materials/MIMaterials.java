@@ -645,7 +645,8 @@ public class MIMaterials {
                         .addParts(ORE.of(MaterialOreSet.DIAMOND))
                         .addParts(MACHINE_CASING.of("Quantum Machine Casing", "quantum_machine_casing", 6000f))
 
-                        .addParts(TANK.of("Quantum Tank","quantum_tank",  Integer.MAX_VALUE))
+                        // The quantum tank is now limited to less than max int such that it can work as an extension tank
+                        .addParts(TANK.of("Quantum Tank","quantum_tank", Integer.MAX_VALUE / 1000))
                         .addParts(BARREL.of("Quantum Barrel", "quantum_barrel", Integer.MAX_VALUE))
 
                         .addParts(MACHINE_CASING_SPECIAL.of(

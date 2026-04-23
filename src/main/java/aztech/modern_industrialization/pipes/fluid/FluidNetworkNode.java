@@ -137,9 +137,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
-        // TODO 26.1
-//        return world.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
-        return false;
+        return world.getCapability(Capabilities.Fluid.BLOCK, pos.relative(direction), direction.getOpposite()) != null;
     }
 
     @Override

@@ -34,7 +34,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
 
 public class MICapabilities {
@@ -50,9 +49,8 @@ public class MICapabilities {
         processors.forEach(c -> c.accept(event));
 
         // Misc
-        // TODO 26.1
-//        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MIRegistries.CREATIVE_BARREL_BE.get(), (be, side) -> new SlotItemHandler(be));
-//        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MIRegistries.CREATIVE_TANK_BE.get(), (be, side) -> new SlotFluidHandler(be));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, MIRegistries.CREATIVE_BARREL_BE.get(), (be, side) -> be);
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, MIRegistries.CREATIVE_TANK_BE.get(), (be, side) -> be);
         event.registerBlockEntity(EnergyApi.SIDED, MIRegistries.CREATIVE_STORAGE_UNIT_BE.get(), (be, side) -> EnergyApi.CREATIVE);
 
         // Energy compat

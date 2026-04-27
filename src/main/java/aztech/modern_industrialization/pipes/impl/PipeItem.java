@@ -157,9 +157,9 @@ public class PipeItem extends Item {
     }
 
     private static boolean canPlace(UseOnContext ctx, BlockPos pos) {
-        if(!ctx.getLevel().isInWorldBounds(pos)) {
+        if (!ctx.getLevel().isInWorldBounds(pos)) {
             int worldHeightLimit = ctx.getLevel().getMaxBuildHeight();
-            if(ctx.getPlayer() instanceof ServerPlayer player && pos.getY() >= worldHeightLimit) {
+            if (ctx.getPlayer() instanceof ServerPlayer player && pos.getY() >= worldHeightLimit) {
                 player.sendSystemMessage(Component.translatable("build.tooHigh", worldHeightLimit - 1).withStyle(ChatFormatting.RED), true);
             }
             return false;

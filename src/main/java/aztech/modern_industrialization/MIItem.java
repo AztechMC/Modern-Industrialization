@@ -27,6 +27,7 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.items.SortOrder.*;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.definition.GeneratedItemModel;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.guidebook.GuideBookItem;
 import aztech.modern_industrialization.items.*;
@@ -47,14 +48,6 @@ import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
-import net.minecraft.client.renderer.item.SelectItemModel;
-import net.minecraft.client.renderer.item.properties.select.ComponentContents;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -149,26 +142,7 @@ public final class MIItem {
     // Upgrades
     public static final ItemDefinition<Item> REDSTONE_CONTROL_MODULE = item(
             "Redstone Control Module", "redstone_control_module", RedstoneControlModuleItem::new,
-            (item, itemModelGenerators) -> {
-                var highModelId = MI.id("item/redstone_control_module_high");
-                ModelTemplates.FLAT_ITEM.create(
-                        highModelId,
-                        new TextureMapping().put(TextureSlot.LAYER0, new Material(MI.id("item/redstone_control_module_high"))),
-                        itemModelGenerators.modelOutput);
-                var lowModelId = MI.id("item/redstone_control_module_low");
-                ModelTemplates.FLAT_ITEM.create(
-                        lowModelId,
-                        new TextureMapping().put(TextureSlot.LAYER0, new Material(MI.id("item/redstone_control_module_low"))),
-                        itemModelGenerators.modelOutput);
-                itemModelGenerators.itemModelOutput.accept(item, new SelectItemModel.Unbaked(
-                        Optional.empty(),
-                        new SelectItemModel.UnbakedSwitch<>(
-                            new ComponentContents<>(MIComponents.LOW_SIGNAL.get()),
-                            List.of(
-                                    new SelectItemModel.SwitchCase<>(List.of(false), new CuboidItemModelWrapper.Unbaked(highModelId, Optional.empty(), List.of())),
-                                    new SelectItemModel.SwitchCase<>(List.of(true), new CuboidItemModelWrapper.Unbaked(lowModelId, Optional.empty(), List.of())))),
-                        Optional.empty()));
-            },
+            new GeneratedItemModel.None(),
             ITEMS_ORDERED.next());
     public static final ItemDefinition<Item> OVERDRIVE_MODULE = item("Overdrive Module", "overdrive_module", ITEMS_ORDERED.next());
 
@@ -262,37 +236,35 @@ public final class MIItem {
             String englishName,
             String path,
             Function<Item.Properties, T> ctor,
-            BiConsumer<Item, ItemModelGenerators> modelGenerator,
+            GeneratedItemModel generatedItemModel,
             SortOrder sortOrder) {
         var holder = ITEMS.registerItem(path, ctor);
-        var def = new ItemDefinition<>(englishName, holder, modelGenerator, sortOrder);
+        var def = new ItemDefinition<>(englishName, holder, generatedItemModel, sortOrder);
         ITEM_DEFINITIONS.put(holder.getId(), def);
         return def;
     }
 
     public static ItemDefinition<Item> item(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, Item::new, new GeneratedItemModel.FlatItem(), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> item(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_ITEM), sortOrder);
+        return MIItem.item(englishName, path, ctor, new GeneratedItemModel.FlatItem(), sortOrder);
     }
 
     public static ItemDefinition<Item> itemNoModel(String englishName, String path, SortOrder sortOrder) {
-        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> modelGenerator.declareCustomModelItem(item), sortOrder);
+        return MIItem.item(englishName, path, Item::new, new GeneratedItemModel.Custom(), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemNoModel(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, ctor, (item, modelGenerator) -> modelGenerator.declareCustomModelItem(item), sortOrder);
+        return MIItem.item(englishName, path, ctor, new GeneratedItemModel.Custom(), sortOrder);
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<Item.Properties, T> ctor,
             SortOrder sortOrder) {
-        return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), (item, modelGenerator) -> {
-            modelGenerator.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
-        }, sortOrder);
+        return MIItem.item(englishName, path, p -> ctor.apply(p.stacksTo(1)), new GeneratedItemModel.FlatHandheldItem(), sortOrder);
     }
 
     private MIItem() {}

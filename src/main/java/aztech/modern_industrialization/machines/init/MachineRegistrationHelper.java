@@ -29,6 +29,8 @@ import aztech.modern_industrialization.MIRegistries;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.GeneratedBlockModel;
+import aztech.modern_industrialization.definition.GeneratedItemModel;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
@@ -66,12 +68,9 @@ public class MachineRegistrationHelper {
                 MIBlock.BlockDefinitionParams.defaultStone()
                         .sortOrder(SortOrder.MACHINES)
                         .withBlockConstructor((s) -> new MachineBlock(ctor, s))
-                        .withModel((block, gen) -> {
-                            // Model generation is handled in the model provider already.
-                        })
-                        .withItemModel((block, gen) -> {
-                            // Model generation is handled in the model provider already.
-                        })
+                        // Model generation is handled in the model provider already.
+                        .withModel(new GeneratedBlockModel.None())
+                        .withItemModel(new GeneratedItemModel.None())
                         .isValidSpawn(MobSpawning.NO_SPAWN)
                         .isRedstoneConductor(Blocks::never));
 

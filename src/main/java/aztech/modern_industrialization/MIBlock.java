@@ -38,6 +38,8 @@ import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.datagen.loot.MIBlockLoot;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.GeneratedBlockModel;
+import aztech.modern_industrialization.definition.GeneratedItemModel;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
 
@@ -47,19 +49,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.item.CompositeModel;
-import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.SpecialModelWrapper;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -90,9 +79,7 @@ public class MIBlock {
     // Forge hammer
     public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
             BlockDefinitionParams.defaultStone().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER)
-                    .withModel((block, gen) -> {
-                        gen.createNonTemplateModelBlock(block);
-                    })
+                    .withModel(new GeneratedBlockModel.NoTemplateModel())
                     .destroyTime(6.0f).explosionResistance(1200)
                     .sound(SoundType.ANVIL));
 
@@ -118,7 +105,7 @@ public class MIBlock {
             BlockDefinitionParams.defaultStone()
                     .withBlockConstructor(p -> new TankBlock(p, CreativeTankBlockEntity::new, StorageBehaviour.creative()))
                     .withBlockItemConstructor(TankItem::new)
-                    .withModel(TankPart.MODEL_GENERATOR)
+                    .withModel(new GeneratedBlockModel.Tank())
                     .withBlockEntityRendererItemModel()
                     .noLootTable()
     )
@@ -135,9 +122,7 @@ public class MIBlock {
             BlockDefinitionParams.defaultStone()
                     .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new, StorageBehaviour.creative()))
                     .withBlockItemConstructor(BarrelItem::new)
-                    .withModel((block, gen) -> {
-                        gen.createTrivialBlock(block, TexturedModel.COLUMN);
-                    })
+                    .withModel(new GeneratedBlockModel.TrivialColumn())
                     .withBlockEntityRendererItemModel()
                     .noLootTable()
     );
@@ -159,8 +144,8 @@ public class MIBlock {
                 englishName,
                 holder,
                 params.blockItemCtor,
-                params.modelGenerator,
-                params.itemModelGenerator,
+                params.generatedBlockModel,
+                params.generatedItemModel,
                 params.blockLoot,
                 params.tags,
                 params.sortOrder);
@@ -183,22 +168,14 @@ public class MIBlock {
                 BlockDefinitionParams.of(
                         BlockBehaviour.Properties.of().mapColor(MapColor.FIRE).ignitedByLava().instabreak().sound(SoundType.GRASS))
                         .clearTags()
-                        .withModel((block, gen) -> {
-                            var mapping = new TextureMapping()
-                                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(Blocks.TNT, "_top"))
-                                    .put(TextureSlot.BOTTOM, TextureMapping.getBlockTexture(Blocks.TNT, "_bottom"))
-                                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block));
-
-                            gen.createTrivialBlock(block, b -> new TexturedModel(mapping, ModelTemplates.CUBE_BOTTOM_TOP));
-                        }));
+                        .withModel(new GeneratedBlockModel.Explosive()));
     }
 
     // TODO: try to clean this up
     public static class BlockDefinitionParams<T extends Block> {
         public final BlockBehaviour.Properties props;
-        // TODO: these need to go into the client sourceset
-        public BiConsumer<Block, BlockModelGenerators> modelGenerator;
-        public BiConsumer<Item, ItemModelGenerators> itemModelGenerator = (item, gen) -> {};
+        public GeneratedBlockModel generatedBlockModel;
+        public GeneratedItemModel generatedItemModel = new GeneratedItemModel.None();
         @Nullable
         public MIBlockLoot blockLoot;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
@@ -210,13 +187,13 @@ public class MIBlock {
         protected BlockDefinitionParams(BlockBehaviour.Properties properties,
                 Function<BlockBehaviour.Properties, T> ctor,
                 BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
-                BiConsumer<Block, BlockModelGenerators> modelGenerator,
+                GeneratedBlockModel generatedBlockModel,
                 @Nullable MIBlockLoot blockLoot,
                 List<TagKey<Block>> tags) {
             this.props = properties;
             this.ctor = ctor;
             this.blockItemCtor = blockItemCtor;
-            this.modelGenerator = modelGenerator;
+            this.generatedBlockModel = generatedBlockModel;
             this.blockLoot = blockLoot;
             this.tags.addAll(tags);
         }
@@ -227,8 +204,7 @@ public class MIBlock {
 
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
             return new BlockDefinitionParams<>(properties, Block::new, BlockItem::new,
-                    // TODO 26.1 - need to generate the item model as well?
-                    (block, modelGenerator) -> modelGenerator.createTrivialCube(block),
+                    new GeneratedBlockModel.TrivialCube(),
                     new MIBlockLoot.DropSelf(),
                     List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
         }
@@ -238,7 +214,7 @@ public class MIBlock {
         }
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
-            return new BlockDefinitionParams<>(props, ctor, (BiFunction) this.blockItemCtor, this.modelGenerator, this.blockLoot, this.tags);
+            return new BlockDefinitionParams<>(props, ctor, (BiFunction) this.blockItemCtor, this.generatedBlockModel, this.blockLoot, this.tags);
         }
 
         public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor) {
@@ -246,30 +222,18 @@ public class MIBlock {
             return this;
         }
 
-        public BlockDefinitionParams<T> withModel(BiConsumer<Block, BlockModelGenerators> modelGenerator) {
-            this.modelGenerator = modelGenerator;
+        public BlockDefinitionParams<T> withModel(GeneratedBlockModel generatedBlockModel) {
+            this.generatedBlockModel = generatedBlockModel;
             return this;
         }
 
-        public BlockDefinitionParams<T> withItemModel(BiConsumer<Item, ItemModelGenerators> itemModelGenerator) {
-            this.itemModelGenerator = itemModelGenerator;
+        public BlockDefinitionParams<T> withItemModel(GeneratedItemModel generatedItemModel) {
+            this.generatedItemModel = generatedItemModel;
             return this;
         }
 
         public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
-            return withItemModel((item, gen) -> {
-                var baseBlockModel = BuiltInRegistries.ITEM.getKey(item).withPrefix("block/");
-                try {
-                    gen.itemModelOutput.accept(item, new CompositeModel.Unbaked(List.of(
-                            new CuboidItemModelWrapper.Unbaked(baseBlockModel, Optional.empty(), List.of()),
-                            // TODO: temporary reflection hack
-                            new SpecialModelWrapper.Unbaked(baseBlockModel, Optional.empty(), (SpecialModelRenderer.Unbaked) Class.forName("aztech.modern_industrialization.client.util.UseBlockEntityRenderer$Unbaked").getConstructor().newInstance())),
-                            Optional.empty()
-                    ));
-                } catch (ReflectiveOperationException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            return withItemModel(new GeneratedItemModel.BlockEntityRenderer());
             // TODO 26.1: what about this stuff?
 //            return withItemModel((item, gen) -> {
 //                var builder = gen.getBuilder(BuiltInRegistries.ITEM.getKey(item).toString())

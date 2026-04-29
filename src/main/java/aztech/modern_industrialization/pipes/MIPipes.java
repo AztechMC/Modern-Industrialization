@@ -32,6 +32,7 @@ import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.GeneratedItemModel;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
@@ -51,8 +52,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -101,15 +100,6 @@ public class MIPipes {
         }
     }
 
-    public static final BiConsumer<Item, ItemModelGenerators> ITEM_MODEL_GENERATOR = (item, modelGenerator) -> {
-        try {
-            // TODO: temporary reflection hack
-            modelGenerator.itemModelOutput.accept(item, (ItemModel.Unbaked) Class.forName("aztech.modern_industrialization.client.pipes.impl.PipeItemModel$Unbaked").getConstructor().newInstance());
-        } catch (ReflectiveOperationException exception) {
-            throw new RuntimeException(exception);
-        }
-    };
-
     private void registerFluidPipeType(PipeColor color) {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(MI.id(pipeId), (id, data) -> new FluidNetwork(id, data, FluidType.BUCKET_VOLUME),
@@ -118,7 +108,7 @@ public class MIPipes {
                 color.englishNamePrefix + "Fluid Pipe",
                 pipeId,
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidResource.EMPTY)),
-                ITEM_MODEL_GENERATOR,
+                new GeneratedItemModel.Pipe(),
                 SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, itemDef, "Fluid Pipes");
@@ -131,7 +121,7 @@ public class MIPipes {
                 color.englishNamePrefix + "Item Pipe",
                 pipeId,
                 prop -> new PipeItem(prop, type, new ItemNetworkData()),
-                ITEM_MODEL_GENERATOR,
+                new GeneratedItemModel.Pipe(),
                 SortOrder.PIPES.and(color));
         register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, itemDef, "Item Pipes");
@@ -145,7 +135,7 @@ public class MIPipes {
                 englishName,
                 cableId,
                 prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
-                ITEM_MODEL_GENERATOR,
+                new GeneratedItemModel.Pipe(),
                 SortOrder.CABLES.and(tier));
         register(type, itemDef::asItem);
         ELECTRICITY_PIPE_TIER.put(type, tier);

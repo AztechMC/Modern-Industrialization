@@ -32,8 +32,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -46,7 +44,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     private final DeferredBlock<T> block;
     public final ItemDefinition<BlockItem> blockItem;
 
-    public final BiConsumer<Block, BlockModelGenerators> modelGenerator;
+    public final GeneratedBlockModel generatedBlockModel;
     @Nullable
     public final MIBlockLoot blockLoot;
     public final List<TagKey<Block>> tags;
@@ -56,8 +54,8 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
 
     public BlockDefinition(String englishName, DeferredBlock<T> block,
             BiFunction<? super T, Item.Properties, BlockItem> blockItemCtor,
-            BiConsumer<Block, BlockModelGenerators> modelGenerator,
-            BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
+            GeneratedBlockModel generatedBlockModel,
+            GeneratedItemModel generatedItemModel,
             @Nullable MIBlockLoot blockLoot,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
@@ -67,9 +65,9 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
                 englishName,
                 path(),
                 p -> blockItemCtor.apply(block.get(), p.useBlockDescriptionPrefix()),
-                itemModelGenerator,
+                generatedItemModel,
                 sortOrder);
-        this.modelGenerator = modelGenerator;
+        this.generatedBlockModel = generatedBlockModel;
         this.blockLoot = blockLoot;
         this.tags = tags;
     }

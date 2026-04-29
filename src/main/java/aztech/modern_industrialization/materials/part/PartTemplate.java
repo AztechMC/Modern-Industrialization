@@ -27,12 +27,12 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.GeneratedBlockModel;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.TagHelper;
 import com.mojang.datafixers.types.Func;
-import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -188,9 +188,7 @@ public class PartTemplate implements PartKeyProvider {
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
                             .sortOrder(sortOrder.and(partContext.getMaterialName()))
-                            .withModel((block, gen) -> {
-                                gen.createTrivialBlock(block, TexturedModel.COLUMN);
-                            })
+                            .withModel(new GeneratedBlockModel.TrivialColumn())
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)
 

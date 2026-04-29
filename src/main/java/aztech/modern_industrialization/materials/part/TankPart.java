@@ -36,18 +36,12 @@ import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.GeneratedBlockModel;
 import aztech.modern_industrialization.items.SortOrder;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-import net.minecraft.client.data.models.BlockModelGenerators;
-import net.minecraft.client.data.models.model.ModelTemplate;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -57,13 +51,6 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.jspecify.annotations.Nullable;
 
 public class TankPart implements PartKeyProvider {
-    public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
-        var textureSlot = TextureSlot.create("0");
-        var template = new ModelTemplate(Optional.of(MI.id("base/tank")), Optional.empty(), textureSlot);
-        var texturedModel = TexturedModel.createDefault(b -> new TextureMapping().put(textureSlot, TextureMapping.getBlockTexture(b)), template);
-        gen.createTrivialBlock(block, texturedModel);
-    };
-
     @Override
     public PartKey key() {
         return new PartKey("tank");
@@ -95,7 +82,7 @@ public class TankPart implements PartKeyProvider {
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(p -> new TankBlock(p, factory, tankStorageBehaviour))
                                     .withBlockItemConstructor(TankItem::new)
-                                    .withModel(MODEL_GENERATOR)
+                                    .withModel(new GeneratedBlockModel.Tank())
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
                                     .sortOrder(SortOrder.TANKS.and(bucketCapacity)));

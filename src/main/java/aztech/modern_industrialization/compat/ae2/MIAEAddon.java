@@ -36,6 +36,7 @@ import aztech.modern_industrialization.compat.ae2.pipe.MENetworkData;
 import aztech.modern_industrialization.compat.ae2.pipe.MENetworkNode;
 import aztech.modern_industrialization.config.MIStartupConfig;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.GeneratedItemModel;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -44,7 +45,6 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -59,9 +59,7 @@ public class MIAEAddon {
             "EU P2P Tunnel",
             "energy_p2p_tunnel",
             p -> new PartItem<>(p, EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new),
-            (item, gen) -> {
-                gen.declareCustomModelItem(item);
-            },
+            new GeneratedItemModel.Custom(),
             SortOrder.CABLES.and(CableTier.SUPERCONDUCTOR).and("extra"));
     public static final List<PipeNetworkType> PIPES = new ArrayList<>();
 
@@ -114,7 +112,7 @@ public class MIAEAddon {
                 color.englishNamePrefix + "ME Wire",
                 pipeId,
                 prop -> new PipeItem(prop, type, new MENetworkData()),
-                MIPipes.ITEM_MODEL_GENERATOR,
+                new GeneratedItemModel.Pipe(),
                 SortOrder.PIPES.and(color));
         MIPipes.INSTANCE.register(type, itemDef::asItem);
         TagsToGenerate.generateTag(MITags.ME_WIRES, itemDef, "ME Wires");

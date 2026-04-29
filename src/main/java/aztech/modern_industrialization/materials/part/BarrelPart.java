@@ -37,8 +37,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.GeneratedBlockModel;
 import aztech.modern_industrialization.items.SortOrder;
-import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -75,9 +75,7 @@ public class BarrelPart implements PartKeyProvider {
                             MIBlock.BlockDefinitionParams.defaultStone()
                                     .withBlockConstructor(p -> new BarrelBlock(p, factory, barrelStorageBehaviour))
                                     .withBlockItemConstructor(BarrelItem::new)
-                                    .withModel((block, gen) -> {
-                                        gen.createTrivialBlock(block, TexturedModel.COLUMN);
-                                    })
+                                    .withModel(new GeneratedBlockModel.TrivialColumn())
                                     .withBlockEntityRendererItemModel()
                                     .noLootTable()
                                     .sortOrder(SortOrder.BARRELS.and(stackCapacity)));

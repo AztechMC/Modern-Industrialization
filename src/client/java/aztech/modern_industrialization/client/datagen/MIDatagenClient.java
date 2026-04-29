@@ -41,8 +41,6 @@ public class MIDatagenClient {
             gen.addProvider(true, new MISpriteSourceProvider(gen.getPackOutput(), lookupProvider));
         }
         gen.addProvider(true, new TexturesProvider(gen.getPackOutput(), runtimeDatagen));
-        // TODO 26.1
-//        gen.addProvider(true, new MachineCasingsProvider(gen.getPackOutput(), fileHelper));
         gen.addProvider(true, new MIModelProvider(gen.getPackOutput()));
     }
 }
